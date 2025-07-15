@@ -1,0 +1,98 @@
+# Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+**/*.tfstate
+**/*.tfstate.*
+
+# .zip files
+**/*.zip
+
+# Crash log files
+crash.log
+
+# Validator manifests
+**/manifest-*.yaml
+
+# Ignore any .tfvars files that are generated automatically for each Terraform run. Most
+# .tfvars files are managed as part of configuration and so should be included in
+# version control.
+#
+# example.tfvars
+
+# Ignore override files as they are usually used to override resources locally and so
+# are not checked in
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Include override files you do wish to add to version control using negated pattern
+#
+# !example_override.tf
+
+# Include tfplan files to ignore the plan output of command: terraform plan -out=tfplan
+# example: *tfplan*
+.DS_Store
+
+# Dynamic environment artifacts
+tmp/
+.dynamic-env/
+/output/
+
+# Intellij idea
+.idea/
+
+# Environment
+.env
+
+# Helm
+charts
+
+# Markdown to Confluence
+.markdown-confluence.json
+
+# Tasks
+.task
+/tools/mcp-proxy/docs/prd/
+
+# PRD files (Product Requirements Documents)
+**/prd.txt
+prd.txt
+
+# Log files
+*.log
+
+# Logs
+logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+dev-debug.log
+# Dependency directories
+node_modules/
+# Environment variables
+.env
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+# OS specific
+
+.taskmaster/
+CLAUDE.md
+/scripts/
+taskmapper.db
+tools/taskmapper/taskmapper
+/tools/taskmapper/bin/
+coverage.out
+benchmarks/
+**/*/benchmark*
+
+# Task files
+# tasks.json
+# tasks/ 

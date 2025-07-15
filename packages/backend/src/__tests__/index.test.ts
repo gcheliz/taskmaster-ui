@@ -1,5 +1,5 @@
 import request from 'supertest';
-import app from '../index';
+import app from '../app';
 
 describe('Health endpoints', () => {
   it('should return health status', async () => {
@@ -16,5 +16,12 @@ describe('Health endpoints', () => {
     expect(response.body).toHaveProperty('status', 'API is running');
     expect(response.body).toHaveProperty('version', '1.0.0');
     expect(response.body).toHaveProperty('timestamp');
+  });
+
+  it('should return 404 for unknown routes', async () => {
+    const response = await request(app).get('/unknown-route');
+    expect(response.status).toBe(404);
+    expect(response.body).toHaveProperty('success', false);
+    expect(response.body).toHaveProperty('error');
   });
 });

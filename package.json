@@ -1,0 +1,38 @@
+{
+  "name": "taskmaster-ui",
+  "version": "1.0.0",
+  "description": "Task Master UI - Web interface for task management and CI/CD integration",
+  "main": "index.js",
+  "workspaces": [
+    "packages/backend",
+    "packages/frontend"
+  ],
+  "scripts": {
+    "diagram:generate": "./.venv/bin/kube-diagrams -o diagrams/kubernetes-diagram.png packages/backend/kubernetes/deployment.yaml packages/frontend/kubernetes/deployment.yaml",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "npm run dev --workspace=backend",
+    "dev:frontend": "npm run dev --workspace=frontend\"",
+    "build": "npm run build --workspace=backend && npm run build --workspace=frontend",
+    "test": "npm run test --workspace=backend && npm run test --workspace=frontend",
+    "lint": "npm run lint --workspace=backend && npm run lint --workspace=frontend",
+    "format": "npm run format --workspace=backend && npm run format --workspace=frontend"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gcheliz/taskmaster-ui.git"
+  },
+  "keywords": ["taskmaster", "ui", "task-management", "ci-cd"],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gcheliz/taskmaster-ui/issues"
+  },
+  "homepage": "https://github.com/gcheliz/taskmaster-ui#readme",
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "eslint": "^8.56.0",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "prettier": "^3.1.1"
+  }
+}

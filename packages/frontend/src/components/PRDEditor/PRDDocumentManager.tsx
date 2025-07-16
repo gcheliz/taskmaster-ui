@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { PRDEditorWithToolbar } from './PRDEditorWithToolbar';
-import { PRDAnalysisButton } from './PRDAnalysisButton';
+import { PRDAnalysisPanel } from './PRDAnalysisPanel';
 import { usePRDDocument } from './hooks/usePRDDocument';
 import type { PRDDocument } from './services/prdApi';
 import type { PRDAnalysisResult } from '../../services/api';
@@ -18,8 +18,16 @@ export interface PRDDocumentManagerProps {
   onOperationComplete?: (operation: string, success: boolean, data?: any) => void;
   /** Callback when PRD analysis completes */
   onAnalysisComplete?: (result: PRDAnalysisResult) => void;
-  /** Whether to show analysis button */
-  showAnalysisButton?: boolean;
+  /** Whether to show analysis panel */
+  showAnalysisPanel?: boolean;
+  /** Initial analysis panel visibility */
+  initialAnalysisPanelVisible?: boolean;
+  /** Whether to show analysis panel in compact mode */
+  compactAnalysisPanel?: boolean;
+  /** Callback when task is selected from analysis */
+  onTaskSelect?: (taskIndex: number, task: any) => void;
+  /** Callback when dependency is selected from analysis */
+  onDependencySelect?: (dependency: any) => void;
 }
 
 /**
@@ -39,12 +47,17 @@ export const PRDDocumentManager: React.FC<PRDDocumentManagerProps> = ({
   className = '',
   onOperationComplete,
   onAnalysisComplete,
-  showAnalysisButton = true
+  showAnalysisPanel = true,
+  initialAnalysisPanelVisible = false,
+  compactAnalysisPanel = false,
+  onTaskSelect,
+  onDependencySelect
 }) => {
   const [showDocumentList, setShowDocumentList] = useState(false);
   const [currentContent, setCurrentContent] = useState('');
   const [currentTitle, setCurrentTitle] = useState('');
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [analysisPanelVisible, setAnalysisPanelVisible] = useState(initialAnalysisPanelVisible);
 
   const {
     document,
@@ -192,20 +205,12 @@ export const PRDDocumentManager: React.FC<PRDDocumentManagerProps> = ({
     onAnalysisComplete?.(result);
   };
 
-  const handleAnalysisError = (error: Error) => {
-    setNotification({
-      type: 'error',
-      message: `Analysis failed: ${error.message}`
-    });
-    setTimeout(() => setNotification(null), 5000);
+  const handleAnalysisPanelVisibilityChange = (isVisible: boolean) => {
+    setAnalysisPanelVisible(isVisible);
   };
 
-  const handleAnalysisStart = () => {
-    setNotification({
-      type: 'success',
-      message: 'Starting PRD analysis...'
-    });
-    setTimeout(() => setNotification(null), 3000);
+  const handleToggleAnalysisPanel = () => {
+    setAnalysisPanelVisible(!analysisPanelVisible);
   };
 
   const formatDate = (dateString: string) => {
@@ -242,14 +247,15 @@ export const PRDDocumentManager: React.FC<PRDDocumentManagerProps> = ({
           >
             💾 {saving ? 'Saving...' : 'Save'}
           </button>
-          {showAnalysisButton && (
-            <PRDAnalysisButton
-              content={currentContent}
-              onAnalysisComplete={handleAnalysisComplete}
-              onAnalysisError={handleAnalysisError}
-              onAnalysisStart={handleAnalysisStart}
-              className="toolbar-analysis"
-            />
+          {showAnalysisPanel && (
+            <button
+              type="button"
+              onClick={handleToggleAnalysisPanel}
+              className={`toolbar-button analysis-toggle ${analysisPanelVisible ? 'active' : ''}`}
+              title={analysisPanelVisible ? 'Hide Analysis Panel' : 'Show Analysis Panel'}
+            >
+              🔍 {analysisPanelVisible ? 'Hide Analysis' : 'Show Analysis'}
+            </button>
           )}
         </div>
         
@@ -328,18 +334,36 @@ export const PRDDocumentManager: React.FC<PRDDocumentManagerProps> = ({
         </div>
       )}
 
-      {/* Editor */}
-      <div className="editor-container">
-        <PRDEditorWithToolbar
-          initialContent={currentContent}
-          title={currentTitle}
-          onContentChange={handleContentChange}
-          onTitleChange={handleTitleChange}
-          onAutoSave={handleAutoSave}
-          autoSave={true}
-          autoSaveInterval={2000} // Local auto-save interval
-          placeholder="Start writing your PRD document..."
-        />
+      {/* Main Content */}
+      <div className="main-content">
+        {/* Editor */}
+        <div className="editor-container">
+          <PRDEditorWithToolbar
+            initialContent={currentContent}
+            title={currentTitle}
+            onContentChange={handleContentChange}
+            onTitleChange={handleTitleChange}
+            onAutoSave={handleAutoSave}
+            autoSave={true}
+            autoSaveInterval={2000} // Local auto-save interval
+            placeholder="Start writing your PRD document..."
+          />
+        </div>
+
+        {/* Analysis Panel */}
+        {showAnalysisPanel && (
+          <div className="analysis-panel-container">
+            <PRDAnalysisPanel
+              content={currentContent}
+              isVisible={analysisPanelVisible}
+              compact={compactAnalysisPanel}
+              onAnalysisComplete={handleAnalysisComplete}
+              onTaskSelect={onTaskSelect}
+              onDependencySelect={onDependencySelect}
+              onVisibilityChange={handleAnalysisPanelVisibilityChange}
+            />
+          </div>
+        )}
       </div>
 
       {/* Error Display */}
@@ -374,10 +398,21 @@ export const PRDDocumentManager: React.FC<PRDDocumentManagerProps> = ({
           align-items: center;
         }
 
-        .toolbar-analysis {
+        .analysis-toggle {
           margin-left: 8px;
           padding-left: 8px;
           border-left: 1px solid #e9ecef;
+        }
+
+        .analysis-toggle.active {
+          background: #007bff;
+          color: white;
+          border-color: #007bff;
+        }
+
+        .analysis-toggle.active:hover {
+          background: #0056b3;
+          border-color: #0056b3;
         }
 
         .toolbar-button {
@@ -547,9 +582,23 @@ export const PRDDocumentManager: React.FC<PRDDocumentManagerProps> = ({
           opacity: 1;
         }
 
+        .main-content {
+          flex: 1;
+          display: flex;
+          overflow: hidden;
+        }
+
         .editor-container {
           flex: 1;
           padding: 16px;
+          overflow: hidden;
+          min-width: 0;
+        }
+
+        .analysis-panel-container {
+          width: 400px;
+          border-left: 1px solid #e9ecef;
+          background: #f8f9fa;
           overflow: hidden;
         }
 
@@ -592,8 +641,19 @@ export const PRDDocumentManager: React.FC<PRDDocumentManagerProps> = ({
             width: auto;
           }
 
+          .main-content {
+            flex-direction: column;
+          }
+
           .editor-container {
             padding: 8px;
+          }
+
+          .analysis-panel-container {
+            width: 100%;
+            border-left: none;
+            border-top: 1px solid #e9ecef;
+            max-height: 400px;
           }
         }
       `}</style>

@@ -89,6 +89,176 @@
   left: 0;
 }
 
+/* Repository List Styles */
+.repositories-list {
+  width: 100%;
+}
+
+.repositories-list h2 {
+  color: var(--text-primary, #2c3e50);
+  margin: 0 0 20px 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.repositories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 20px;
+}
+
+/* Repository Card Styles */
+.repository-card {
+  background: white;
+  border: 2px solid #e1e8ed;
+  border-radius: 8px;
+  padding: 20px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.repository-card:hover {
+  border-color: #3498db;
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.1);
+  transform: translateY(-2px);
+}
+
+.repository-card.selected {
+  border-color: #3498db;
+  background: #f8fbff;
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.15);
+}
+
+.repository-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 15px;
+}
+
+.repository-name {
+  color: #2c3e50;
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  word-break: break-word;
+}
+
+.repository-status {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-badge.git {
+  background-color: #e8f5e8;
+  color: #2d5a2d;
+  border: 1px solid #c3e6c3;
+}
+
+.status-badge.taskmaster {
+  background-color: #e8f0ff;
+  color: #1a365d;
+  border: 1px solid #bee3f8;
+}
+
+.repository-details {
+  margin-bottom: 15px;
+}
+
+.repository-path {
+  color: #7f8c8d;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+  font-size: 0.85rem;
+  margin: 0 0 8px 0;
+  word-break: break-all;
+  background: #f8f9fa;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #e9ecef;
+}
+
+.repository-branch,
+.repository-connected {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+  margin: 0 0 4px 0;
+}
+
+.repository-branch strong,
+.repository-connected strong {
+  color: #2c3e50;
+}
+
+.repository-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.select-button,
+.disconnect-button {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.select-button {
+  background-color: #3498db;
+  color: white;
+  border-color: #3498db;
+}
+
+.select-button:hover:not(:disabled) {
+  background-color: #2980b9;
+  border-color: #2980b9;
+}
+
+.select-button:disabled {
+  background-color: #bdc3c7;
+  border-color: #bdc3c7;
+  cursor: not-allowed;
+}
+
+.disconnect-button {
+  background-color: transparent;
+  color: #e74c3c;
+  border-color: #e74c3c;
+}
+
+.disconnect-button:hover:not(:disabled) {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.disconnect-button:disabled {
+  color: #bdc3c7;
+  border-color: #bdc3c7;
+  cursor: not-allowed;
+}
+
+/* Empty State for Repository List */
+.repositories-list .placeholder-message {
+  text-align: center;
+  padding: 40px;
+  background: #f8f9fa;
+  border: 2px dashed #dee2e6;
+  border-radius: 8px;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .view-header h1 {
@@ -106,6 +276,36 @@
   
   .placeholder-message h2 {
     font-size: 1.25rem;
+  }
+
+  .repositories-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .repository-card {
+    padding: 16px;
+  }
+
+  .repository-header {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .repository-status {
+    align-self: flex-end;
+  }
+
+  .repository-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .select-button,
+  .disconnect-button {
+    width: 100%;
+    justify-content: center;
   }
 }
 

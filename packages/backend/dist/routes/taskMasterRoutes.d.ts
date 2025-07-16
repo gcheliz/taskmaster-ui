@@ -187,6 +187,6 @@ export declare class TaskMasterRouteFactory {
     private validateRepositoryAccess;
     private asyncHandler;
 }
-export declare function createTaskMasterRoutes(taskMasterService?: TaskMasterService, webSocketService?: WebSocketService): Router;
+export declare function createTaskMasterRoutes(taskMasterServiceInstance?: TaskMasterService, webSocketService?: WebSocketService): Router;
 export { schemas as taskMasterApiSchemas };
 //# sourceMappingURL=taskMasterRoutes.d.ts.map

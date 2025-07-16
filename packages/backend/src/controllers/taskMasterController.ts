@@ -589,7 +589,7 @@ export class TaskMasterController implements ITaskMasterController {
 
   private emitWebSocketEvent(event: string, data: any): void {
     if (this.webSocketService) {
-      this.webSocketService.broadcast(event, data);
+      this.webSocketService.broadcast({ event, data });
     }
   }
 

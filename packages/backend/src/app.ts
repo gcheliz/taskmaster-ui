@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import healthRoutes from './routes/healthRoutes';
 import { createRepositoryRoutes } from './routes/repositoryRoutes';
+import projectRoutes from './routes/projectRoutes';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 import DatabaseService from './services/database';
 
@@ -35,6 +36,7 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use('/', healthRoutes);
 app.use('/api/repositories', createRepositoryRoutes());
+app.use('/api/projects', projectRoutes);
 
 // Error handling middleware
 app.use(notFoundHandler);

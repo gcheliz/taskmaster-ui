@@ -4,12 +4,16 @@
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { RepositoryValidationService } from '../repositoryValidationService';
+import { exec } from 'child_process';
+import { promisify } from 'util';
 
 // Mock dependencies
 jest.mock('fs/promises');
 jest.mock('child_process', () => ({
   exec: jest.fn()
 }));
+
+const execAsync = promisify(exec);
 
 const mockFs = fs as jest.Mocked<typeof fs>;
 

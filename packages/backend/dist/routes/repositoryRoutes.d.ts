@@ -127,6 +127,7 @@ export declare class RepositoryRouteFactory {
     createRouter(): Router;
     private addValidationRoutes;
     private addInfoRoutes;
+    private addDetailsRoutes;
     private addHealthRoutes;
     private asyncHandler;
 }

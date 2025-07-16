@@ -37,11 +37,14 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs = __importStar(require("fs/promises"));
 const repositoryValidationService_1 = require("../repositoryValidationService");
+const child_process_1 = require("child_process");
+const util_1 = require("util");
 // Mock dependencies
 jest.mock('fs/promises');
 jest.mock('child_process', () => ({
     exec: jest.fn()
 }));
+const execAsync = (0, util_1.promisify)(child_process_1.exec);
 const mockFs = fs;
 // Create a manual mock for execAsync
 const mockExecAsync = jest.fn();

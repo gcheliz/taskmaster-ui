@@ -108,7 +108,7 @@ class OptimizedTaskMasterService {
      * Memory-optimized bulk operations
      */
     async processBulkTasks(operations) {
-        return index_1.performanceUtils.measureAsync('processBulkTasks', async () => {
+        const measureResult = await index_1.performanceUtils.measureAsync('processBulkTasks', async () => {
             // Check memory pressure before processing
             const memoryCheck = this.memoryManager.checkMemoryPressure();
             if (memoryCheck.level === 'critical') {
@@ -124,6 +124,7 @@ class OptimizedTaskMasterService {
             }
             return results;
         });
+        return measureResult.result;
     }
     /**
      * Intelligent cache invalidation

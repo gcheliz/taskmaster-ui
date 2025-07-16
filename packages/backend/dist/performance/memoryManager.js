@@ -271,7 +271,7 @@ class AdvancedMemoryManager extends events_1.EventEmitter {
         // Hook into GC events if available
         if (process.env.NODE_ENV === 'development' && global.gc) {
             const originalGC = global.gc;
-            global.gc = () => {
+            global.gc = async () => {
                 this.gcStartTime = performance.now();
                 const result = originalGC();
                 const gcTime = performance.now() - this.gcStartTime;

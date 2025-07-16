@@ -68,7 +68,7 @@ export const requestIdMiddleware: MiddlewareFactory = () => {
     
     // Set response headers
     res.setHeader('X-Request-ID', req.requestId);
-    res.setHeader('X-Correlation-ID', req.correlationId);
+    res.setHeader('X-Correlation-ID', req.correlationId || req.requestId);
     
     // Create request context
     RequestContext.create(req);
@@ -223,7 +223,7 @@ export const rateLimitMiddleware: MiddlewareFactory<RateLimitOptions> = (options
   const requests = new Map<string, { count: number; resetTime: number }>();
 
   return (req: EnhancedRequest, res: EnhancedResponse, next: NextFunction) => {
-    const key = options.keyGenerator?.(req) || req.ip;
+    const key = options.keyGenerator?.(req) || req.ip || req.socket.remoteAddress || 'unknown';
     const now = Date.now();
     const windowStart = now - options.windowMs;
 
@@ -242,7 +242,7 @@ export const rateLimitMiddleware: MiddlewareFactory<RateLimitOptions> = (options
     }
 
     current.count++;
-    requests.set(key, current);
+    requests.set(key as string, current);
 
     // Set rate limit headers
     res.setHeader('X-RateLimit-Limit', options.maxRequests);

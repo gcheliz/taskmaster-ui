@@ -1,7 +1,7 @@
 // Advanced Router with OpenAPI Integration and Route Composition
 // Demonstrates: Route composition, OpenAPI integration, advanced routing patterns
 
-import { Router } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import { TaskMasterController } from '../controllers/taskMasterController';
 import { TaskMasterService, taskMasterService } from '../services/taskMasterService';
 import { WebSocketService } from '../services/websocket';
@@ -144,7 +144,7 @@ export class TaskMasterRouteFactory {
       })
     );
 
-    router.use(globalMiddleware);
+    router.use(globalMiddleware as any);
 
     // Health Check Endpoint
     router.get('/health', this.createHealthEndpoint());
@@ -208,7 +208,7 @@ export class TaskMasterRouteFactory {
           this.validateCliOperation,
           this.validateRepositoryAccess
         ]
-      }),
+      }) as any,
       this.asyncHandler(this.controller.executeCommand.bind(this.controller))
     );
   }
@@ -250,7 +250,7 @@ export class TaskMasterRouteFactory {
         querySchema: {
           required: ['repositoryPath']
         }
-      }),
+      }) as any,
       this.asyncHandler(this.controller.getProjectStatus.bind(this.controller))
     );
 
@@ -268,8 +268,8 @@ export class TaskMasterRouteFactory {
         bodySchema: {
           required: ['repositoryPath']
         }
-      }),
-      this.asyncHandler(async (req: EnhancedRequest, res: EnhancedResponse) => {
+      }) as any,
+      this.asyncHandler(async (req: any, res: any) => {
         // Delegate to execute command with 'init' operation
         req.validatedBody = {
           ...req.validatedBody,
@@ -295,7 +295,7 @@ export class TaskMasterRouteFactory {
         querySchema: {
           required: ['repositoryPath']
         }
-      }),
+      }) as any,
       this.asyncHandler(this.controller.listTasks.bind(this.controller))
     );
 
@@ -320,7 +320,7 @@ export class TaskMasterRouteFactory {
         querySchema: {
           required: ['repositoryPath']
         }
-      }),
+      }) as any,
       this.asyncHandler(this.controller.getTask.bind(this.controller))
     );
 
@@ -338,7 +338,7 @@ export class TaskMasterRouteFactory {
         bodySchema: {
           required: ['repositoryPath', 'updates']
         }
-      }),
+      }) as any,
       this.asyncHandler(this.controller.updateTask.bind(this.controller))
     );
 
@@ -356,7 +356,7 @@ export class TaskMasterRouteFactory {
         bodySchema: {
           required: ['repositoryPath']
         }
-      }),
+      }) as any,
       this.asyncHandler(this.controller.expandTask.bind(this.controller))
     );
 
@@ -374,8 +374,8 @@ export class TaskMasterRouteFactory {
         querySchema: {
           required: ['repositoryPath']
         }
-      }),
-      this.asyncHandler(async (req: EnhancedRequest, res: EnhancedResponse) => {
+      }) as any,
+      this.asyncHandler(async (req: any, res: any) => {
         req.validatedBody = {
           repositoryPath: req.query.repositoryPath,
           operation: 'next'
@@ -400,7 +400,7 @@ export class TaskMasterRouteFactory {
         bodySchema: {
           required: ['repositoryPath']
         }
-      }),
+      }) as any,
       this.asyncHandler(this.controller.analyzeComplexity.bind(this.controller))
     );
 
@@ -418,8 +418,8 @@ export class TaskMasterRouteFactory {
         querySchema: {
           required: ['repositoryPath']
         }
-      }),
-      this.asyncHandler(async (req: EnhancedRequest, res: EnhancedResponse) => {
+      }) as any,
+      this.asyncHandler(async (req: any, res: any) => {
         req.validatedBody = {
           repositoryPath: req.query.repositoryPath,
           operation: 'validate-dependencies'
@@ -444,7 +444,7 @@ export class TaskMasterRouteFactory {
         querySchema: {
           required: ['repositoryPath', 'operation']
         }
-      }),
+      }) as any,
       this.asyncHandler(this.controller.streamCommand.bind(this.controller))
     );
   }
@@ -452,7 +452,7 @@ export class TaskMasterRouteFactory {
   // Helper Methods and Middleware
 
   private createHealthEndpoint() {
-    return (req: EnhancedRequest, res: EnhancedResponse) => {
+    return (req: any, res: any) => {
       const healthInfo = {
         status: 'healthy',
         timestamp: new Date().toISOString(),
@@ -468,7 +468,7 @@ export class TaskMasterRouteFactory {
   }
 
   private createDocsEndpoint() {
-    return (req: EnhancedRequest, res: EnhancedResponse) => {
+    return (req: any, res: any) => {
       const apiDocs = {
         openapi: '3.0.0',
         info: {
@@ -579,8 +579,8 @@ export class TaskMasterRouteFactory {
     return errors;
   };
 
-  private asyncHandler = (fn: Function) => {
-    return (req: EnhancedRequest, res: EnhancedResponse, next: Function) => {
+  private asyncHandler = (fn: any) => {
+    return (req: any, res: any, next: any) => {
       Promise.resolve(fn(req, res, next)).catch(next);
     };
   };
@@ -588,10 +588,10 @@ export class TaskMasterRouteFactory {
 
 // Factory function for creating routes
 export function createTaskMasterRoutes(
-  taskMasterService: TaskMasterService = taskMasterService,
+  taskMasterServiceInstance: TaskMasterService = taskMasterService,
   webSocketService?: WebSocketService
 ): Router {
-  const factory = new TaskMasterRouteFactory(taskMasterService, webSocketService);
+  const factory = new TaskMasterRouteFactory(taskMasterServiceInstance, webSocketService);
   return factory.createRouter();
 }
 

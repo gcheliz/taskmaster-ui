@@ -6,6 +6,7 @@ exports.taskMasterApiSchemas = exports.TaskMasterRouteFactory = void 0;
 exports.createTaskMasterRoutes = createTaskMasterRoutes;
 const express_1 = require("express");
 const taskMasterController_1 = require("../controllers/taskMasterController");
+const taskMasterService_1 = require("../services/taskMasterService");
 const middleware_1 = require("../middleware");
 // OpenAPI Schema Definitions
 const schemas = {
@@ -492,8 +493,8 @@ class TaskMasterRouteFactory {
 }
 exports.TaskMasterRouteFactory = TaskMasterRouteFactory;
 // Factory function for creating routes
-function createTaskMasterRoutes(taskMasterService = taskMasterService, webSocketService) {
-    const factory = new TaskMasterRouteFactory(taskMasterService, webSocketService);
+function createTaskMasterRoutes(taskMasterServiceInstance = taskMasterService_1.taskMasterService, webSocketService) {
+    const factory = new TaskMasterRouteFactory(taskMasterServiceInstance, webSocketService);
     return factory.createRouter();
 }
 //# sourceMappingURL=taskMasterRoutes.js.map

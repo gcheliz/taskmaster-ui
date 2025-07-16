@@ -114,6 +114,8 @@ class RepositoryRouteFactory {
         this.addValidationRoutes(router);
         // Repository information routes
         this.addInfoRoutes(router);
+        // Repository details routes
+        this.addDetailsRoutes(router);
         // Health check route
         this.addHealthRoutes(router);
         return router;
@@ -252,6 +254,157 @@ class RepositoryRouteFactory {
          *         description: Internal server error
          */
         router.get('/info', this.asyncHandler(this.controller.getRepositoryInfo.bind(this.controller)));
+    }
+    addDetailsRoutes(router) {
+        /**
+         * @openapi
+         * /api/repositories/details:
+         *   get:
+         *     tags:
+         *       - Repository Management
+         *     summary: Get comprehensive repository details
+         *     description: |
+         *       Retrieve comprehensive repository metadata including current branch,
+         *       last commit details, working directory status, branch list, and remote information.
+         *       This endpoint provides all data needed for repository and branch information display.
+         *     parameters:
+         *       - in: query
+         *         name: repositoryPath
+         *         required: true
+         *         schema:
+         *           type: string
+         *         description: Absolute path to the repository directory
+         *         example: "/Users/john/projects/my-app"
+         *     responses:
+         *       200:
+         *         description: Repository details retrieved successfully
+         *         content:
+         *           application/json:
+         *             schema:
+         *               type: object
+         *               properties:
+         *                 success:
+         *                   type: boolean
+         *                   example: true
+         *                 data:
+         *                   type: object
+         *                   properties:
+         *                     name:
+         *                       type: string
+         *                       description: Repository name
+         *                       example: "my-app"
+         *                     path:
+         *                       type: string
+         *                       description: Repository absolute path
+         *                       example: "/Users/john/projects/my-app"
+         *                     currentBranch:
+         *                       type: string
+         *                       description: Current active branch
+         *                       example: "main"
+         *                     lastCommit:
+         *                       type: object
+         *                       properties:
+         *                         hash:
+         *                           type: string
+         *                           example: "abc123def456"
+         *                         date:
+         *                           type: string
+         *                           example: "2023-01-15T10:30:00.000Z"
+         *                         message:
+         *                           type: string
+         *                           example: "Add new feature"
+         *                         author:
+         *                           type: object
+         *                           properties:
+         *                             name:
+         *                               type: string
+         *                               example: "John Doe"
+         *                             email:
+         *                               type: string
+         *                               example: "john@example.com"
+         *                     status:
+         *                       type: object
+         *                       properties:
+         *                         isClean:
+         *                           type: boolean
+         *                           description: Whether working directory is clean
+         *                           example: true
+         *                         staged:
+         *                           type: number
+         *                           description: Number of staged files
+         *                           example: 0
+         *                         unstaged:
+         *                           type: number
+         *                           description: Number of unstaged files
+         *                           example: 0
+         *                         untracked:
+         *                           type: number
+         *                           description: Number of untracked files
+         *                           example: 0
+         *                         conflicted:
+         *                           type: number
+         *                           description: Number of conflicted files
+         *                           example: 0
+         *                         ahead:
+         *                           type: number
+         *                           description: Commits ahead of tracking branch
+         *                           example: 0
+         *                         behind:
+         *                           type: number
+         *                           description: Commits behind tracking branch
+         *                           example: 0
+         *                     branches:
+         *                       type: array
+         *                       items:
+         *                         type: object
+         *                         properties:
+         *                           name:
+         *                             type: string
+         *                             example: "main"
+         *                           type:
+         *                             type: string
+         *                             enum: ["local", "remote"]
+         *                             example: "local"
+         *                           current:
+         *                             type: boolean
+         *                             example: true
+         *                           tracking:
+         *                             type: string
+         *                             example: "origin/main"
+         *                           ahead:
+         *                             type: number
+         *                             example: 0
+         *                           behind:
+         *                             type: number
+         *                             example: 0
+         *                     remotes:
+         *                       type: array
+         *                       items:
+         *                         type: string
+         *                       example: ["origin: https://github.com/user/repo.git"]
+         *       400:
+         *         description: Missing or invalid repository path
+         *         content:
+         *           application/json:
+         *             schema:
+         *               type: object
+         *               properties:
+         *                 success:
+         *                   type: boolean
+         *                   example: false
+         *                 error:
+         *                   type: object
+         *                   properties:
+         *                     code:
+         *                       type: string
+         *                       example: "MISSING_PARAMETER"
+         *                     message:
+         *                       type: string
+         *                       example: "repositoryPath query parameter is required"
+         *       500:
+         *         description: Internal server error
+         */
+        router.get('/details', this.asyncHandler(this.controller.getRepositoryDetails.bind(this.controller)));
     }
     addHealthRoutes(router) {
         /**

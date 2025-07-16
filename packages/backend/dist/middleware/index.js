@@ -37,7 +37,7 @@ const requestIdMiddleware = () => {
         req.correlationId = req.headers['x-correlation-id'] || (0, uuid_1.v4)();
         // Set response headers
         res.setHeader('X-Request-ID', req.requestId);
-        res.setHeader('X-Correlation-ID', req.correlationId);
+        res.setHeader('X-Correlation-ID', req.correlationId || req.requestId);
         // Create request context
         RequestContext.create(req);
         // Cleanup on response finish
@@ -159,7 +159,7 @@ const rateLimitMiddleware = (options = {
 }) => {
     const requests = new Map();
     return (req, res, next) => {
-        const key = options.keyGenerator?.(req) || req.ip;
+        const key = options.keyGenerator?.(req) || req.ip || req.socket.remoteAddress || 'unknown';
         const now = Date.now();
         const windowStart = now - options.windowMs;
         // Cleanup old entries

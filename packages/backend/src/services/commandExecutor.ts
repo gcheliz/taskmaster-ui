@@ -205,11 +205,14 @@ export class CommandExecutor extends EventEmitter {
       process.kill('SIGTERM');
       
       // Force kill after grace period
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         if (!process.killed) {
           process.kill('SIGKILL');
         }
-      }, 5000);
+      }, 1000); // Reduced from 5000ms to 1000ms for tests
+      
+      // Don't let this timer keep the process alive
+      timer.unref();
     }
     
     this.activeProcesses.clear();

@@ -273,14 +273,24 @@ export async function shutdownPerformanceOptimizations(): Promise<void> {
   console.log('🛑 Shutting down performance optimizations...');
 
   try {
-    await Promise.all([
-      taskMasterPool.shutdown(),
-      taskMasterBatchProcessor.shutdown(),
-      memoryManager.shutdown()
-    ]);
-
-    globalCache.dispose();
-    commandCache.dispose();
+    // Shutdown any global instances if they exist
+    try {
+      const { globalCache } = await import('./cacheManager');
+      if (globalCache) {
+        globalCache.dispose();
+      }
+    } catch (error) {
+      console.warn('Error disposing globalCache:', error);
+    }
+    
+    try {
+      const { commandCache } = await import('./cacheManager');
+      if (commandCache) {
+        commandCache.dispose();
+      }
+    } catch (error) {
+      console.warn('Error disposing commandCache:', error);
+    }
 
     console.log('✅ All performance optimizations shut down gracefully');
 

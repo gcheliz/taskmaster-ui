@@ -149,7 +149,7 @@ export class OptimizedTaskMasterService {
     operation: string;
     arguments: any;
   }>): Promise<any[]> {
-    return performanceUtils.measureAsync('processBulkTasks', async () => {
+    const measureResult = await performanceUtils.measureAsync('processBulkTasks', async () => {
       // Check memory pressure before processing
       const memoryCheck = this.memoryManager.checkMemoryPressure();
       
@@ -171,6 +171,8 @@ export class OptimizedTaskMasterService {
 
       return results;
     });
+    
+    return measureResult.result;
   }
 
   /**

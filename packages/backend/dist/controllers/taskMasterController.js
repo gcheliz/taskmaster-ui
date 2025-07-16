@@ -469,7 +469,7 @@ class TaskMasterController {
     }
     emitWebSocketEvent(event, data) {
         if (this.webSocketService) {
-            this.webSocketService.broadcast(event, data);
+            this.webSocketService.broadcast({ event, data });
         }
     }
     sendSSE(res, type, data) {

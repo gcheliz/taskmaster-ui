@@ -43,4 +43,25 @@ export const migrations: Migration[] = [
       DROP TABLE IF EXISTS tasks;
     `,
   },
+  {
+    version: 3,
+    description: 'Create repositories table',
+    up: `
+      CREATE TABLE IF NOT EXISTS repositories (
+        id TEXT PRIMARY KEY,
+        path TEXT NOT NULL UNIQUE,
+        name TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      );
+      
+      CREATE INDEX IF NOT EXISTS idx_repositories_path ON repositories(path);
+      CREATE INDEX IF NOT EXISTS idx_repositories_name ON repositories(name);
+    `,
+    down: `
+      DROP INDEX IF EXISTS idx_repositories_name;
+      DROP INDEX IF EXISTS idx_repositories_path;
+      DROP TABLE IF EXISTS repositories;
+    `,
+  },
 ];

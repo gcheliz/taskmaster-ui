@@ -14,5 +14,10 @@ export declare class RepositoryController {
      * GET /api/repositories/health
      */
     healthCheck(req: any, res: any): Promise<void>;
+    /**
+     * Get detailed repository metadata, branches, and status
+     * GET /api/repositories/details?repositoryPath=<path>
+     */
+    getRepositoryDetails(req: any, res: any): Promise<void>;
 }
 //# sourceMappingURL=repositoryController.d.ts.map

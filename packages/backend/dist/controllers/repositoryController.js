@@ -4,6 +4,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RepositoryController = void 0;
 const repositoryValidationService_1 = require("../services/repositoryValidationService");
+const gitDataService_1 = require("../services/gitDataService");
 const logger_1 = require("../utils/logger");
 const errorHandler_1 = require("../utils/errorHandler");
 class RepositoryController {
@@ -209,6 +210,95 @@ class RepositoryController {
                 }
             };
             res.status(500).json(response);
+        }
+    }
+    /**
+     * Get detailed repository metadata, branches, and status
+     * GET /api/repositories/details?repositoryPath=<path>
+     */
+    async getRepositoryDetails(req, res) {
+        const startTime = Date.now();
+        const requestId = req.requestId || 'unknown';
+        const repositoryPath = req.query.repositoryPath;
+        const context = {
+            requestId,
+            operation: 'get-repository-details',
+            path: repositoryPath
+        };
+        try {
+            logger_1.logger.logApiRequest(req.method, req.path, context);
+            if (!repositoryPath) {
+                res.status(400).json({
+                    success: false,
+                    error: {
+                        code: 'MISSING_PARAMETER',
+                        message: 'repositoryPath query parameter is required',
+                        correlationId: requestId
+                    },
+                    metadata: {
+                        timestamp: new Date().toISOString(),
+                        requestId,
+                        duration: Date.now() - startTime,
+                        version: '1.0.0'
+                    }
+                });
+                return;
+            }
+            logger_1.logger.info('Getting repository details', { ...context, repositoryPath }, 'repository-controller');
+            // Get comprehensive repository metadata
+            const repositoryMetadata = await gitDataService_1.gitDataService.getRepositoryMetadata(repositoryPath);
+            // Add remote information
+            const remotes = await gitDataService_1.gitDataService.getRemotes(repositoryPath);
+            const detailedData = {
+                ...repositoryMetadata,
+                remotes
+            };
+            const duration = Date.now() - startTime;
+            const response = {
+                success: true,
+                data: detailedData,
+                metadata: {
+                    timestamp: new Date().toISOString(),
+                    requestId,
+                    duration,
+                    version: '1.0.0'
+                }
+            };
+            logger_1.logger.logApiResponse(req.method, req.path, 200, duration, context);
+            logger_1.logger.info('Repository details retrieved successfully', {
+                ...context,
+                branchCount: repositoryMetadata.branches.length,
+                currentBranch: repositoryMetadata.currentBranch,
+                isClean: repositoryMetadata.status.isClean
+            }, 'repository-controller');
+            res.status(200).json(response);
+        }
+        catch (error) {
+            const duration = Date.now() - startTime;
+            const taskMasterError = errorHandler_1.errorHandler.normalizeError(error, context);
+            logger_1.logger.logApiResponse(req.method, req.path, 500, duration, context);
+            logger_1.logger.error('Get repository details failed', context, taskMasterError, 'repository-controller');
+            const statusCode = errorHandler_1.errorHandler.getHttpStatusCode(taskMasterError);
+            const errorResponse = {
+                success: false,
+                error: {
+                    code: taskMasterError.code,
+                    message: taskMasterError.userMessage,
+                    details: {
+                        type: taskMasterError.type,
+                        severity: taskMasterError.severity,
+                        suggestions: taskMasterError.suggestions
+                    },
+                    correlationId: requestId
+                },
+                metadata: {
+                    timestamp: new Date().toISOString(),
+                    requestId,
+                    duration,
+                    version: '1.0.0'
+                }
+            };
+            res.status(statusCode).json(errorResponse);
         }
     }
 }

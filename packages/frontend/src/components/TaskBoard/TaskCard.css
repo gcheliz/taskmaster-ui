@@ -28,6 +28,29 @@
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
+/* Draggable States */
+.task-card.draggable {
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.task-card.dragging {
+  cursor: grabbing;
+  opacity: 0.5;
+  transform: rotate(5deg);
+  z-index: 1000;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.task-card.draggable:hover {
+  cursor: grab;
+}
+
+.task-card.dragging:hover {
+  cursor: grabbing;
+}
+
 /* Priority Border Indicators */
 .task-card::before {
   content: '';

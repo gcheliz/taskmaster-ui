@@ -1,5 +1,8 @@
 import React from 'react';
+import { useDraggable } from '@dnd-kit/core';
+import { CSS } from '@dnd-kit/utilities';
 import type { Task } from '../../types/task';
+import type { DragData } from './DragAndDropProvider';
 import './TaskCard.css';
 
 export interface TaskCardProps {
@@ -13,6 +16,8 @@ export interface TaskCardProps {
   compact?: boolean;
   /** Whether to show all task details */
   showFullDetails?: boolean;
+  /** Whether the card is draggable */
+  isDraggable?: boolean;
 }
 
 /**
@@ -26,10 +31,36 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   onTaskClick,
   className = '',
   compact = false,
-  showFullDetails = true
+  showFullDetails = true,
+  isDraggable = true
 }) => {
+  // Configure draggable behavior
+  const dragData: DragData = {
+    type: 'task',
+    taskId: task.id,
+    status: task.status
+  };
+
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    isDragging
+  } = useDraggable({
+    id: `task-${task.id}`,
+    data: dragData,
+    disabled: !isDraggable
+  });
+
+  const style = {
+    transform: CSS.Translate.toString(transform),
+    opacity: isDragging ? 0.5 : 1,
+    cursor: isDragging ? 'grabbing' : isDraggable ? 'grab' : 'default'
+  };
+
   const handleTaskClick = () => {
-    if (onTaskClick) {
+    if (onTaskClick && !isDragging) {
       onTaskClick(task.id);
     }
   };
@@ -96,19 +127,27 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
   return (
     <div
+      ref={setNodeRef}
       className={`
         task-card 
         ${task.priority}-priority 
         ${compact ? 'compact' : ''} 
         ${isOverdue ? 'overdue' : ''} 
         ${isDueSoon ? 'due-soon' : ''}
+        ${isDragging ? 'dragging' : ''}
+        ${isDraggable ? 'draggable' : ''}
         ${className}
       `.trim()}
       onClick={handleTaskClick}
       role="button"
       tabIndex={0}
       onKeyDown={handleKeyDown}
-      style={{ '--priority-color': getPriorityColor(task.priority) } as React.CSSProperties}
+      style={{ 
+        '--priority-color': getPriorityColor(task.priority),
+        ...style
+      } as React.CSSProperties}
+      {...attributes}
+      {...listeners}
     >
       <div className="task-card__header">
         <div className="task-title-section">

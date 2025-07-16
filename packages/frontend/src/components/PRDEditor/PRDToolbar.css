@@ -1,0 +1,264 @@
+/* PRD Toolbar Component Styles */
+.prd-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  border-top: 1px solid #e9ecef;
+  min-height: 48px;
+  flex-wrap: wrap;
+}
+
+.prd-toolbar.disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Toolbar Groups */
+.toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 24px;
+  background-color: #dee2e6;
+  margin: 0 4px;
+}
+
+.toolbar-spacer {
+  flex: 1;
+}
+
+/* Toolbar Buttons */
+.toolbar-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 8px;
+  min-width: 32px;
+  height: 32px;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  background-color: #ffffff;
+  color: #495057;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  user-select: none;
+}
+
+.toolbar-button:hover:not(.disabled) {
+  background-color: #e9ecef;
+  border-color: #adb5bd;
+}
+
+.toolbar-button:active:not(.disabled) {
+  background-color: #dee2e6;
+  border-color: #6c757d;
+  transform: translateY(1px);
+}
+
+.toolbar-button.active {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: #ffffff;
+}
+
+.toolbar-button.active:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
+
+.toolbar-button.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #f8f9fa;
+  border-color: #e9ecef;
+  color: #6c757d;
+}
+
+.toolbar-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+/* Heading Select */
+.heading-select {
+  padding: 6px 8px;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  background-color: #ffffff;
+  color: #495057;
+  font-size: 14px;
+  cursor: pointer;
+  transition: border-color 0.15s ease-in-out;
+  min-width: 120px;
+}
+
+.heading-select:hover {
+  border-color: #adb5bd;
+}
+
+.heading-select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.heading-select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #f8f9fa;
+  border-color: #e9ecef;
+  color: #6c757d;
+}
+
+/* Toolbar Stats */
+.toolbar-stats {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  color: #6c757d;
+  padding: 0 8px;
+}
+
+.char-count {
+  font-weight: 500;
+}
+
+/* Special Button Styles */
+.toolbar-button strong {
+  font-weight: 700;
+}
+
+.toolbar-button em {
+  font-style: italic;
+}
+
+.toolbar-button u {
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .prd-toolbar {
+    padding: 6px 12px;
+    gap: 6px;
+  }
+  
+  .toolbar-button {
+    min-width: 28px;
+    height: 28px;
+    padding: 4px 6px;
+    font-size: 12px;
+  }
+  
+  .toolbar-divider {
+    height: 20px;
+    margin: 0 2px;
+  }
+  
+  .heading-select {
+    min-width: 100px;
+    font-size: 12px;
+    padding: 4px 6px;
+  }
+  
+  .toolbar-stats {
+    font-size: 11px;
+    padding: 0 4px;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .prd-toolbar {
+    background-color: #343a40;
+    border-color: #495057;
+  }
+  
+  .toolbar-button {
+    background-color: #495057;
+    border-color: #6c757d;
+    color: #f8f9fa;
+  }
+  
+  .toolbar-button:hover:not(.disabled) {
+    background-color: #6c757d;
+    border-color: #adb5bd;
+  }
+  
+  .toolbar-button:active:not(.disabled) {
+    background-color: #5a6268;
+    border-color: #868e96;
+  }
+  
+  .toolbar-button.disabled {
+    background-color: #343a40;
+    border-color: #495057;
+    color: #6c757d;
+  }
+  
+  .toolbar-divider {
+    background-color: #495057;
+  }
+  
+  .heading-select {
+    background-color: #495057;
+    border-color: #6c757d;
+    color: #f8f9fa;
+  }
+  
+  .heading-select:hover {
+    border-color: #adb5bd;
+  }
+  
+  .heading-select:disabled {
+    background-color: #343a40;
+    border-color: #495057;
+    color: #6c757d;
+  }
+  
+  .toolbar-stats {
+    color: #adb5bd;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .toolbar-button {
+    border-width: 2px;
+  }
+  
+  .toolbar-button.active {
+    background-color: #000000;
+    border-color: #000000;
+    color: #ffffff;
+  }
+  
+  .toolbar-divider {
+    background-color: #000000;
+    width: 2px;
+  }
+  
+  .heading-select {
+    border-width: 2px;
+  }
+}
+
+/* Animation for loading states */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.toolbar-button.loading {
+  animation: pulse 1.5s ease-in-out infinite;
+}

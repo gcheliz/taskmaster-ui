@@ -1,7 +1,9 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { TaskBoard } from './TaskBoard';
-import type { TaskStatus, TaskFilters, TaskSortOptions } from '../../types/task';
-import { useTaskData } from '../../hooks/useTaskData';
+import type { Task, TaskStatus, TaskFilters, TaskSortOptions, TaskBoardData } from '../../types/task';
+import { useRealtimeTaskData } from '../../hooks/useRealtimeTaskData';
+import { useTaskUpdates } from '../../hooks/useTaskUpdates';
+import { useNotification } from '../../contexts/NotificationContext';
 import './TaskBoardManager.css';
 
 export interface TaskBoardManagerProps {
@@ -23,6 +25,10 @@ export interface TaskBoardManagerProps {
   showFilters?: boolean;
   /** Whether to show sorting controls */
   showSorting?: boolean;
+  /** Whether to enable real-time WebSocket updates */
+  enableRealtime?: boolean;
+  /** Whether to show notifications for real-time updates */
+  showRealtimeNotifications?: boolean;
   /** Callback when a task is clicked */
   onTaskClick?: (taskId: number) => void;
   /** Callback when a task is moved between columns */
@@ -35,7 +41,7 @@ export interface TaskBoardManagerProps {
  * TaskBoard Manager Component
  * 
  * Enhanced wrapper for TaskBoard with additional features like filtering,
- * sorting, and data source management.
+ * sorting, data source management, and real-time WebSocket updates.
  */
 export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
   repositoryPath,
@@ -47,6 +53,8 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
   showDevTools = false,
   showFilters = false,
   showSorting = false,
+  enableRealtime = true,
+  showRealtimeNotifications = true,
   onTaskClick,
   onTaskMove,
   onCreateTask
@@ -56,11 +64,18 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
     field: 'createdAt',
     direction: 'desc'
   });
+  const [localTaskBoardData, setLocalTaskBoardData] = useState<TaskBoardData | null>(null);
+
+  const { showSuccess, showError } = useNotification();
 
   const {
     taskBoardData,
     isLoading,
     error,
+    isRealtimeActive,
+    connectionState,
+    lastUpdateTime,
+    updateCount,
     refresh,
     loadFromRepository,
     loadFromFile,
@@ -68,8 +83,10 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
     loadSampleTasks,
     updateFilters,
     updateSortOptions,
-    clear
-  } = useTaskData({
+    clear,
+    requestRealtimeRefresh,
+    toggleRealtime
+  } = useRealtimeTaskData({
     repositoryPath,
     projectTag,
     projectId,
@@ -77,8 +94,42 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
     autoLoad: true,
     pollingInterval: refreshInterval,
     filters,
-    sortOptions
+    sortOptions,
+    enableRealtime,
+    showUpdateNotifications: showRealtimeNotifications
   });
+
+  const {
+    isUpdating,
+    updateError,
+    updateTaskStatus,
+    clearUpdateError
+  } = useTaskUpdates({
+    projectId,
+    onUpdateSuccess: (task) => {
+      showSuccess(`Task "${task.title}" updated successfully`);
+      // Refresh data to sync with server
+      refresh();
+    },
+    onUpdateError: (error) => {
+      showError(`Failed to update task: ${error}`);
+    },
+    optimisticUpdates: true
+  });
+
+  // Sync local data with remote data
+  useEffect(() => {
+    if (taskBoardData) {
+      setLocalTaskBoardData(taskBoardData);
+      // Clear any previous update errors when new data is loaded
+      if (updateError) {
+        clearUpdateError();
+      }
+    }
+  }, [taskBoardData, updateError, clearUpdateError]);
+
+  // Display current data (local if available, otherwise remote)
+  const currentTaskBoardData = localTaskBoardData || taskBoardData;
 
   const handleTaskClick = useCallback((taskId: number) => {
     if (onTaskClick) {
@@ -88,13 +139,30 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
     }
   }, [onTaskClick]);
 
-  const handleTaskMove = useCallback((taskId: number, fromStatus: TaskStatus, toStatus: TaskStatus) => {
+  const handleTaskMove = useCallback(async (taskId: number, fromStatus: TaskStatus, toStatus: TaskStatus) => {
     if (onTaskMove) {
       onTaskMove(taskId, fromStatus, toStatus);
-    } else {
-      console.log('Task moved:', { taskId, fromStatus, toStatus });
+      return;
     }
-  }, [onTaskMove]);
+
+    if (!currentTaskBoardData) {
+      console.error('No task board data available for task move');
+      return;
+    }
+
+    console.log('Task moved:', { taskId, fromStatus, toStatus });
+    
+    try {
+      // Update task status with optimistic update
+      const updatedBoardData = await updateTaskStatus(taskId, toStatus, currentTaskBoardData);
+      
+      if (updatedBoardData) {
+        setLocalTaskBoardData(updatedBoardData);
+      }
+    } catch (error) {
+      console.error('Failed to move task:', error);
+    }
+  }, [onTaskMove, currentTaskBoardData, updateTaskStatus]);
 
   const handleCreateTask = useCallback((status: TaskStatus) => {
     if (onCreateTask) {
@@ -210,7 +278,7 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
                 <label>Field:</label>
                 <select 
                   value={sortOptions.field}
-                  onChange={(e) => handleSortChange({ ...sortOptions, field: e.target.value as keyof TaskStatus })}
+                  onChange={(e) => handleSortChange({ ...sortOptions, field: e.target.value as keyof Task })}
                 >
                   <option value="createdAt">Created Date</option>
                   <option value="updatedAt">Updated Date</option>
@@ -238,9 +306,9 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
 
       {/* Task Board */}
       <TaskBoard
-        data={taskBoardData || undefined}
-        isLoading={isLoading}
-        error={error}
+        data={currentTaskBoardData || undefined}
+        isLoading={isLoading || isUpdating}
+        error={error || updateError}
         onTaskClick={handleTaskClick}
         onTaskMove={handleTaskMove}
         onCreateTask={handleCreateTask}
@@ -306,6 +374,22 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
             >
               Clear
             </button>
+            
+            <button 
+              onClick={toggleRealtime}
+              disabled={isLoading}
+              className={`dev-tool-button realtime ${isRealtimeActive ? 'active' : ''}`}
+            >
+              {isRealtimeActive ? 'Disable' : 'Enable'} Real-time
+            </button>
+            
+            <button 
+              onClick={requestRealtimeRefresh}
+              disabled={isLoading || !isRealtimeActive}
+              className="dev-tool-button realtime-refresh"
+            >
+              Request RT Refresh
+            </button>
           </div>
           
           <div className="dev-tools-info">
@@ -318,6 +402,24 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
               projectId ? 'Project' : 
               'Sample'
             }</p>
+            <p><strong>Real-time:</strong> {isRealtimeActive ? 'Active' : 'Inactive'}</p>
+            <p><strong>WebSocket:</strong> {connectionState}</p>
+            <p><strong>Updates:</strong> {updateCount}</p>
+            <p><strong>Task Updates:</strong> {isUpdating ? 'In Progress' : 'Ready'}</p>
+            {lastUpdateTime && (
+              <p><strong>Last Update:</strong> {new Date(lastUpdateTime).toLocaleTimeString()}</p>
+            )}
+            {updateError && (
+              <div className="dev-tools-error">
+                <p><strong>Update Error:</strong> {updateError}</p>
+                <button 
+                  onClick={clearUpdateError}
+                  className="dev-tool-button clear-error"
+                >
+                  Clear Error
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

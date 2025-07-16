@@ -1,6 +1,8 @@
 import React from 'react';
+import { useDroppable } from '@dnd-kit/core';
 import type { TaskColumn as TaskColumnType, TaskStatus } from '../../types/task';
 import { TaskCard } from './TaskCard';
+import type { DropData } from './DragAndDropProvider';
 import './TaskColumn.css';
 
 export interface TaskColumnProps {
@@ -36,6 +38,20 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
   const taskCount = tasks.length;
   const isOverLimit = limit && taskCount > limit;
 
+  // Configure droppable behavior
+  const dropData: DropData = {
+    type: 'column',
+    status: status
+  };
+
+  const {
+    isOver,
+    setNodeRef
+  } = useDroppable({
+    id: `column-${status}`,
+    data: dropData
+  });
+
   const handleTaskClick = (taskId: number) => {
     if (onTaskClick) {
       onTaskClick(taskId);
@@ -70,7 +86,8 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
 
   return (
     <div 
-      className={`task-column ${className}`}
+      ref={setNodeRef}
+      className={`task-column ${isOver ? 'drag-over' : ''} ${className}`}
       style={{ '--column-color': color } as React.CSSProperties}
     >
       <div className="task-column__header">

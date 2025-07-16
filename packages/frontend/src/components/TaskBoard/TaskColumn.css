@@ -11,6 +11,22 @@
   border: 1px solid var(--border-color, #e2e8f0);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+/* Drag over state */
+.task-column.drag-over {
+  border-color: var(--primary-color, #3b82f6);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+  background-color: rgba(59, 130, 246, 0.02);
+}
+
+.task-column.drag-over .task-column__header {
+  background-color: rgba(59, 130, 246, 0.05);
+}
+
+.task-column.drag-over .task-column__content {
+  background-color: rgba(59, 130, 246, 0.02);
 }
 
 .task-column__header {

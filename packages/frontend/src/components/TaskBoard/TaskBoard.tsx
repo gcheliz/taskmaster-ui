@@ -1,6 +1,7 @@
 import React from 'react';
 import type { TaskBoardData, TaskStatus } from '../../types/task';
 import { TaskColumn } from './TaskColumn';
+import { DragAndDropProvider } from './DragAndDropProvider';
 import './TaskBoard.css';
 
 export interface TaskBoardProps {
@@ -120,74 +121,79 @@ export const TaskBoard: React.FC<TaskBoardProps> = ({
   const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
   return (
-    <div className={`task-board ${className}`}>
-      <div className="task-board__header">
-        <div className="header-main">
-          <h2 className="task-board__title">
-            Task Board
-            {metadata?.projectName && (
-              <span className="project-name"> - {metadata.projectName}</span>
-            )}
-          </h2>
-          <div className="task-board__stats">
-            <div className="stat-item">
-              <span className="stat-icon">📊</span>
-              <span className="stat-value">{totalTasks}</span>
-              <span className="stat-label">total tasks</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-icon">🔄</span>
-              <span className="stat-value">{inProgressTasks}</span>
-              <span className="stat-label">in progress</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-icon">✅</span>
-              <span className="stat-value">{completedTasks}</span>
-              <span className="stat-label">completed</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-icon">📈</span>
-              <span className="stat-value">{completionRate}%</span>
-              <span className="stat-label">completion</span>
+    <DragAndDropProvider
+      onTaskMove={onTaskMove}
+      className={className}
+    >
+      <div className={`task-board ${className}`}>
+        <div className="task-board__header">
+          <div className="header-main">
+            <h2 className="task-board__title">
+              Task Board
+              {metadata?.projectName && (
+                <span className="project-name"> - {metadata.projectName}</span>
+              )}
+            </h2>
+            <div className="task-board__stats">
+              <div className="stat-item">
+                <span className="stat-icon">📊</span>
+                <span className="stat-value">{totalTasks}</span>
+                <span className="stat-label">total tasks</span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-icon">🔄</span>
+                <span className="stat-value">{inProgressTasks}</span>
+                <span className="stat-label">in progress</span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-icon">✅</span>
+                <span className="stat-value">{completedTasks}</span>
+                <span className="stat-label">completed</span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-icon">📈</span>
+                <span className="stat-value">{completionRate}%</span>
+                <span className="stat-label">completion</span>
+              </div>
             </div>
           </div>
+          
+          {showCreateButton && (
+            <div className="header-actions">
+              <button 
+                className="create-task-button"
+                onClick={() => onCreateTask?.('pending')}
+                title="Create new task"
+              >
+                <span className="button-icon">➕</span>
+                New Task
+              </button>
+            </div>
+          )}
         </div>
-        
-        {showCreateButton && (
-          <div className="header-actions">
-            <button 
-              className="create-task-button"
-              onClick={() => onCreateTask?.('pending')}
-              title="Create new task"
-            >
-              <span className="button-icon">➕</span>
-              New Task
-            </button>
+
+        <div className="task-board__columns">
+          {columns.map((column) => (
+            <TaskColumn
+              key={column.id}
+              column={column}
+              onTaskClick={onTaskClick}
+              onTaskMove={onTaskMove}
+              showCreateButton={showCreateButton}
+              onCreateTask={onCreateTask}
+            />
+          ))}
+        </div>
+
+        {metadata?.updated && (
+          <div className="task-board__footer">
+            <span className="last-updated">
+              Last updated: {new Date(metadata.updated).toLocaleString()}
+            </span>
           </div>
         )}
       </div>
-
-      <div className="task-board__columns">
-        {columns.map((column) => (
-          <TaskColumn
-            key={column.id}
-            column={column}
-            onTaskClick={onTaskClick}
-            onTaskMove={onTaskMove}
-            showCreateButton={showCreateButton}
-            onCreateTask={onCreateTask}
-          />
-        ))}
-      </div>
-
-      {metadata?.updated && (
-        <div className="task-board__footer">
-          <span className="last-updated">
-            Last updated: {new Date(metadata.updated).toLocaleString()}
-          </span>
-        </div>
-      )}
-    </div>
+    </DragAndDropProvider>
   );
 };
 

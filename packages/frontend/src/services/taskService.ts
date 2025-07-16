@@ -9,7 +9,8 @@ import type {
   TaskColumn, 
   TaskStats,
   TaskFilters,
-  TaskSortOptions
+  TaskSortOptions,
+  TaskStatus
 } from '../types/task';
 import {
   DEFAULT_COLUMNS,
@@ -90,6 +91,102 @@ export class TaskService {
       throw new ApiError(
         'NETWORK_ERROR',
         'Failed to load tasks from server',
+        500
+      );
+    }
+  }
+
+  /**
+   * Update a task's status
+   */
+  async updateTaskStatus(taskId: number, newStatus: TaskStatus, projectId?: string): Promise<Task> {
+    const cacheKey = `tasks-${projectId || 'default'}`;
+    
+    try {
+      const response = await fetch(`${this.config.apiBaseUrl}/tasks/${taskId}/status`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          status: newStatus,
+          projectId: projectId || this.config.projectId
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new ApiError(
+          'UPDATE_TASK_ERROR',
+          `Failed to update task status: ${response.status} ${response.statusText}`,
+          response.status
+        );
+      }
+
+      const updatedTask: Task = await response.json();
+      
+      // Clear cache to force reload
+      if (this.config.enableCache) {
+        this.cache.delete(cacheKey);
+      }
+
+      return updatedTask;
+      
+    } catch (error) {
+      if (error instanceof ApiError) {
+        throw error;
+      }
+      
+      throw new ApiError(
+        'NETWORK_ERROR',
+        'Failed to update task status',
+        500
+      );
+    }
+  }
+
+  /**
+   * Update a task
+   */
+  async updateTask(taskId: number, updates: Partial<Task>, projectId?: string): Promise<Task> {
+    const cacheKey = `tasks-${projectId || 'default'}`;
+    
+    try {
+      const response = await fetch(`${this.config.apiBaseUrl}/tasks/${taskId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...updates,
+          projectId: projectId || this.config.projectId
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new ApiError(
+          'UPDATE_TASK_ERROR',
+          `Failed to update task: ${response.status} ${response.statusText}`,
+          response.status
+        );
+      }
+
+      const updatedTask: Task = await response.json();
+      
+      // Clear cache to force reload
+      if (this.config.enableCache) {
+        this.cache.delete(cacheKey);
+      }
+
+      return updatedTask;
+      
+    } catch (error) {
+      if (error instanceof ApiError) {
+        throw error;
+      }
+      
+      throw new ApiError(
+        'NETWORK_ERROR',
+        'Failed to update task',
         500
       );
     }

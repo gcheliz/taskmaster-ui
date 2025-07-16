@@ -139,8 +139,6 @@ export const TaskCard: React.FC<TaskCardProps> = ({
         ${className}
       `.trim()}
       onClick={handleTaskClick}
-      role="button"
-      tabIndex={0}
       onKeyDown={handleKeyDown}
       style={{ 
         '--priority-color': getPriorityColor(task.priority),

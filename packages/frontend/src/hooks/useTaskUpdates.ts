@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import type { Task, TaskStatus, TaskBoardData, TaskColumn } from '../types/task';
+import type { Task, TaskStatus, TaskBoardData } from '../types/task';
 import { taskService } from '../services/taskService';
 import { ApiError } from '../services/api';
 
@@ -110,9 +110,7 @@ export function useTaskUpdates(options: UseTaskUpdatesOptions = {}): UseTaskUpda
    * Revert optimistic update in case of error
    */
   const revertOptimisticUpdate = useCallback((
-    originalBoardData: TaskBoardData,
-    taskId: number,
-    failedUpdates: Partial<Task>
+    originalBoardData: TaskBoardData
   ): TaskBoardData => {
     // For now, just return the original data
     // In a more sophisticated implementation, we could store the previous state
@@ -160,7 +158,7 @@ export function useTaskUpdates(options: UseTaskUpdatesOptions = {}): UseTaskUpda
       
       // Revert optimistic update on error
       if (optimisticUpdates) {
-        return revertOptimisticUpdate(originalBoardData, taskId, { status: newStatus });
+        return revertOptimisticUpdate(originalBoardData);
       }
       
       return null;
@@ -208,7 +206,7 @@ export function useTaskUpdates(options: UseTaskUpdatesOptions = {}): UseTaskUpda
       
       // Revert optimistic update on error
       if (optimisticUpdates) {
-        return revertOptimisticUpdate(originalBoardData, taskId, updates);
+        return revertOptimisticUpdate(originalBoardData);
       }
       
       return null;

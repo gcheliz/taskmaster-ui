@@ -1,0 +1,60 @@
+/* Sidebar Component Styles */
+.app-sidebar {
+  grid-area: sidebar;
+  background-color: #34495e;
+  color: white;
+  padding: 20px 0;
+  border-right: 1px solid #2c3e50;
+}
+
+.sidebar-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-nav li {
+  margin-bottom: 10px;
+}
+
+.sidebar-nav a {
+  color: white;
+  text-decoration: none;
+  padding: 12px 20px;
+  display: block;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  font-size: 0.95rem;
+}
+
+.sidebar-nav a:hover {
+  background-color: #2c3e50;
+}
+
+.sidebar-nav a:focus {
+  outline: 2px solid #3498db;
+  outline-offset: 2px;
+}
+
+/* Active/Current state styling */
+.sidebar-nav a.active {
+  background-color: #3498db;
+}
+
+.sidebar-nav a.active:hover {
+  background-color: #2980b9;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .app-sidebar {
+    display: none;
+  }
+}
+
+/* Accessible focus styles */
+@media (prefers-reduced-motion: reduce) {
+  .sidebar-nav a {
+    transition: none;
+  }
+}

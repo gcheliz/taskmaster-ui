@@ -7,6 +7,7 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const healthRoutes_1 = __importDefault(require("./routes/healthRoutes"));
+const repositoryRoutes_1 = require("./routes/repositoryRoutes");
 const errorHandler_1 = require("./middleware/errorHandler");
 const database_1 = __importDefault(require("./services/database"));
 dotenv_1.default.config();
@@ -33,6 +34,7 @@ app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 // Routes
 app.use('/', healthRoutes_1.default);
+app.use('/api/repositories', (0, repositoryRoutes_1.createRepositoryRoutes)());
 // Error handling middleware
 app.use(errorHandler_1.notFoundHandler);
 app.use(errorHandler_1.errorHandler);

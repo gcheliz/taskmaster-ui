@@ -1,34 +1,48 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { AppLayout } from './components/Layout'
 import './App.css'
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <AppLayout>
+      <div className="dashboard">
+        <h1>Welcome to TaskMaster UI</h1>
+        <div className="dashboard-content">
+          <div className="card">
+            <h2>Dashboard Overview</h2>
+            <p>This is the main dashboard where you can manage your tasks and repositories.</p>
+            
+            <div className="demo-section">
+              <h3>Demo Counter</h3>
+              <button onClick={() => setCount((count) => count + 1)}>
+                count is {count}
+              </button>
+              <p>This demonstrates React state management in the new layout.</p>
+            </div>
+          </div>
+          
+          <div className="card">
+            <h2>Quick Stats</h2>
+            <div className="stats-grid">
+              <div className="stat-item">
+                <h4>Active Tasks</h4>
+                <span className="stat-number">0</span>
+              </div>
+              <div className="stat-item">
+                <h4>Repositories</h4>
+                <span className="stat-number">0</span>
+              </div>
+              <div className="stat-item">
+                <h4>Completed Today</h4>
+                <span className="stat-number">2</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </AppLayout>
   )
 }
 

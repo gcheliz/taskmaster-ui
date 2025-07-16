@@ -1,0 +1,122 @@
+/* Task Board View Styles */
+.task-board-view {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.view-header {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #ecf0f1;
+}
+
+.view-header h1 {
+  color: #2c3e50;
+  margin: 0 0 10px 0;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.view-description {
+  color: #7f8c8d;
+  font-size: 1.1rem;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.view-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.placeholder-message {
+  text-align: center;
+  background: white;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e1e8ed;
+  max-width: 500px;
+}
+
+.placeholder-message h2 {
+  color: #e67e22;
+  margin: 0 0 15px 0;
+  font-size: 1.5rem;
+}
+
+.placeholder-message p {
+  color: #7f8c8d;
+  margin: 0 0 20px 0;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.feature-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+}
+
+.feature-list li {
+  color: #34495e;
+  padding: 8px 0;
+  border-bottom: 1px solid #ecf0f1;
+  position: relative;
+  padding-left: 20px;
+}
+
+.feature-list li:last-child {
+  border-bottom: none;
+}
+
+.feature-list li::before {
+  content: "•";
+  color: #e67e22;
+  font-weight: bold;
+  position: absolute;
+  left: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .view-header h1 {
+    font-size: 1.75rem;
+  }
+  
+  .view-description {
+    font-size: 1rem;
+  }
+  
+  .placeholder-message {
+    padding: 30px 20px;
+    margin: 0 20px;
+  }
+  
+  .placeholder-message h2 {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .view-header {
+    margin-bottom: 20px;
+  }
+  
+  .view-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .view-content {
+    min-height: 300px;
+  }
+  
+  .placeholder-message {
+    padding: 20px 15px;
+  }
+}

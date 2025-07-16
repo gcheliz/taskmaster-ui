@@ -28,9 +28,51 @@
 
 .view-content {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+  gap: 20px;
   min-height: 400px;
+}
+
+/* View Toggle Styles */
+.view-toggle {
+  display: flex;
+  justify-content: center;
+  padding: 16px 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.toggle-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: #f8f9fa;
+  border: 2px solid #dee2e6;
+  border-radius: 8px;
+  color: #495057;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.toggle-button:hover {
+  background: #e9ecef;
+  border-color: #adb5bd;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.toggle-button.active {
+  background: #007bff;
+  border-color: #0056b3;
+  color: white;
+}
+
+.toggle-button.active:hover {
+  background: #0056b3;
+  border-color: #004085;
 }
 
 .placeholder-message {
@@ -101,6 +143,15 @@
   .placeholder-message h2 {
     font-size: 1.25rem;
   }
+  
+  .view-toggle {
+    padding: 12px 0;
+  }
+  
+  .toggle-button {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -118,5 +169,15 @@
   
   .placeholder-message {
     padding: 20px 15px;
+  }
+  
+  .view-toggle {
+    padding: 8px 0;
+  }
+  
+  .toggle-button {
+    padding: 6px 12px;
+    font-size: 12px;
+    gap: 6px;
   }
 }

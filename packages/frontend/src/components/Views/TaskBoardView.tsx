@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TaskBoard } from '../TaskBoard';
+import { TaskBoardWithFilters } from '../TaskBoard/TaskBoardWithFilters';
 import type { TaskStatus } from '../../types/task';
 import { useTaskData } from '../../hooks/useTaskData';
 import './TaskBoardView.css';
@@ -16,6 +17,8 @@ export interface TaskBoardViewProps {
   filePath?: string;
   /** Auto-refresh interval (in ms) */
   refreshInterval?: number;
+  /** Enable filtering and sorting features */
+  enableFiltering?: boolean;
 }
 
 export const TaskBoardView: React.FC<TaskBoardViewProps> = ({ 
@@ -24,8 +27,13 @@ export const TaskBoardView: React.FC<TaskBoardViewProps> = ({
   projectTag,
   projectId,
   filePath,
-  refreshInterval = 30000 // 30 seconds default
+  refreshInterval = 30000, // 30 seconds default
+  enableFiltering = true
 }) => {
+  const [showFilters, setShowFilters] = useState(enableFiltering);
+  const [filteredTasks, setFilteredTasks] = useState<any[]>([]);
+  const [isFilterLoading, setIsFilterLoading] = useState(false);
+  const [filterError, setFilterError] = useState<Error | null>(null);
   const {
     taskBoardData,
     isLoading,
@@ -63,15 +71,39 @@ export const TaskBoardView: React.FC<TaskBoardViewProps> = ({
   return (
     <div className={`task-board-view ${className}`.trim()}>
       <div className="view-content">
-        <TaskBoard
-          data={taskBoardData || undefined}
-          isLoading={isLoading}
-          error={error}
-          onTaskClick={handleTaskClick}
-          onTaskMove={handleTaskMove}
-          onCreateTask={handleCreateTask}
-          showCreateButton={true}
-        />
+        {/* Toggle between filtered and original view */}
+        {enableFiltering && (
+          <div className="view-toggle">
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className={`toggle-button ${showFilters ? 'active' : ''}`}
+            >
+              {showFilters ? '📋 Board View' : '🔍 Filtered View'}
+            </button>
+          </div>
+        )}
+
+        {showFilters && repositoryPath ? (
+          /* Filtered Task Board with search and sorting */
+          <TaskBoardWithFilters
+            repositoryPath={repositoryPath}
+            onTasksChange={setFilteredTasks}
+            onLoadingChange={setIsFilterLoading}
+            onErrorChange={setFilterError}
+            className="filtered-task-board"
+          />
+        ) : (
+          /* Original Task Board */
+          <TaskBoard
+            data={taskBoardData || undefined}
+            isLoading={isLoading}
+            error={error}
+            onTaskClick={handleTaskClick}
+            onTaskMove={handleTaskMove}
+            onCreateTask={handleCreateTask}
+            showCreateButton={true}
+          />
+        )}
         
         {/* Development Tools */}
         <div className="task-board-dev-tools" style={{ 
@@ -84,31 +116,31 @@ export const TaskBoardView: React.FC<TaskBoardViewProps> = ({
         }}>
           <button 
             onClick={handleRefresh}
-            disabled={isLoading}
+            disabled={isLoading || isFilterLoading}
             style={{
               padding: '8px 16px',
               backgroundColor: '#3b82f6',
               color: 'white',
               border: 'none',
               borderRadius: '4px',
-              cursor: isLoading ? 'not-allowed' : 'pointer',
-              opacity: isLoading ? 0.6 : 1
+              cursor: (isLoading || isFilterLoading) ? 'not-allowed' : 'pointer',
+              opacity: (isLoading || isFilterLoading) ? 0.6 : 1
             }}
           >
-            {isLoading ? 'Loading...' : 'Refresh'}
+            {(isLoading || isFilterLoading) ? 'Loading...' : 'Refresh'}
           </button>
           
           <button 
             onClick={() => loadSampleTasks()}
-            disabled={isLoading}
+            disabled={isLoading || isFilterLoading}
             style={{
               padding: '8px 16px',
               backgroundColor: '#10b981',
               color: 'white',
               border: 'none',
               borderRadius: '4px',
-              cursor: isLoading ? 'not-allowed' : 'pointer',
-              opacity: isLoading ? 0.6 : 1
+              cursor: (isLoading || isFilterLoading) ? 'not-allowed' : 'pointer',
+              opacity: (isLoading || isFilterLoading) ? 0.6 : 1
             }}
           >
             Load Sample

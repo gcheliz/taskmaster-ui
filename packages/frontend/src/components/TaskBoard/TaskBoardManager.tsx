@@ -1,9 +1,11 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { TaskBoard } from './TaskBoard';
+import { TaskModal, type TaskModalMode } from './TaskModal';
 import type { Task, TaskStatus, TaskFilters, TaskSortOptions, TaskBoardData } from '../../types/task';
 import { useRealtimeTaskData } from '../../hooks/useRealtimeTaskData';
 import { useTaskUpdates } from '../../hooks/useTaskUpdates';
 import { useNotification } from '../../contexts/NotificationContext';
+import { taskService } from '../../services/taskService';
 import './TaskBoardManager.css';
 
 export interface TaskBoardManagerProps {
@@ -65,6 +67,11 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
     direction: 'desc'
   });
   const [localTaskBoardData, setLocalTaskBoardData] = useState<TaskBoardData | null>(null);
+  
+  // Modal state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState<TaskModalMode>('create');
+  const [selectedTask, setSelectedTask] = useState<Task | undefined>(undefined);
 
   const { showSuccess, showError } = useNotification();
 
@@ -135,9 +142,15 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
     if (onTaskClick) {
       onTaskClick(taskId);
     } else {
-      console.log('Task clicked:', taskId);
+      // Open task modal in view mode
+      const task = currentTaskBoardData?.tasks.find(t => t.id === taskId);
+      if (task) {
+        setSelectedTask(task);
+        setModalMode('view');
+        setIsModalOpen(true);
+      }
     }
-  }, [onTaskClick]);
+  }, [onTaskClick, currentTaskBoardData]);
 
   const handleTaskMove = useCallback(async (taskId: number, fromStatus: TaskStatus, toStatus: TaskStatus) => {
     if (onTaskMove) {
@@ -168,7 +181,10 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
     if (onCreateTask) {
       onCreateTask(status);
     } else {
-      console.log('Create task with status:', status);
+      // Open task modal in create mode
+      setSelectedTask(undefined);
+      setModalMode('create');
+      setIsModalOpen(true);
     }
   }, [onCreateTask]);
 
@@ -207,6 +223,59 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
   const handleClear = useCallback(() => {
     clear();
   }, [clear]);
+
+  // Modal handlers
+  const handleCloseModal = useCallback(() => {
+    setIsModalOpen(false);
+    setSelectedTask(undefined);
+    setModalMode('create');
+  }, []);
+
+  const handleSaveTask = useCallback(async (taskData: Partial<Task>) => {
+    try {
+      if (modalMode === 'create') {
+        // Create new task
+        const newTask = await taskService.createTask(taskData, projectId);
+        showSuccess(`Task "${newTask.title}" created successfully`);
+        
+        // Refresh data to sync with server
+        await refresh();
+      } else if (modalMode === 'edit' && selectedTask) {
+        // Update existing task
+        const updatedTask = await taskService.updateTask(selectedTask.id, taskData, projectId);
+        showSuccess(`Task "${updatedTask.title}" updated successfully`);
+        
+        // Refresh data to sync with server
+        await refresh();
+      }
+      
+      handleCloseModal();
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to save task';
+      showError(errorMessage);
+      throw error; // Re-throw to let the modal handle the error state
+    }
+  }, [modalMode, selectedTask, projectId, refresh, showSuccess, showError, handleCloseModal]);
+
+  const handleDeleteTask = useCallback(async (taskId: number) => {
+    try {
+      await taskService.deleteTask(taskId, projectId);
+      showSuccess('Task deleted successfully');
+      
+      // Refresh data to sync with server
+      await refresh();
+      handleCloseModal();
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to delete task';
+      showError(errorMessage);
+      throw error; // Re-throw to let the modal handle the error state
+    }
+  }, [projectId, refresh, showSuccess, showError, handleCloseModal]);
+
+  const handleEditTask = useCallback(() => {
+    // Switch from view mode to edit mode
+    setModalMode('edit');
+  }, []);
 
   return (
     <div className={`task-board-manager ${className}`}>
@@ -423,6 +492,18 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
           </div>
         </div>
       )}
+
+      {/* Task Modal */}
+      <TaskModal
+        isOpen={isModalOpen}
+        mode={modalMode}
+        task={selectedTask}
+        availableTasks={currentTaskBoardData?.tasks || []}
+        onClose={handleCloseModal}
+        onSave={handleSaveTask}
+        onDelete={modalMode === 'edit' ? handleDeleteTask : undefined}
+        onEdit={modalMode === 'view' ? handleEditTask : undefined}
+      />
     </div>
   );
 };

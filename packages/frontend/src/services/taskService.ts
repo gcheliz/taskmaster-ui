@@ -145,6 +145,54 @@ export class TaskService {
   }
 
   /**
+   * Create a new task
+   */
+  async createTask(taskData: Partial<Task>, projectId?: string): Promise<Task> {
+    const cacheKey = `tasks-${projectId || 'default'}`;
+    
+    try {
+      const response = await fetch(`${this.config.apiBaseUrl}/tasks`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...taskData,
+          projectId: projectId || this.config.projectId
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new ApiError(
+          'CREATE_TASK_ERROR',
+          `Failed to create task: ${response.status} ${response.statusText}`,
+          response.status
+        );
+      }
+
+      const createdTask: Task = await response.json();
+      
+      // Clear cache to force reload
+      if (this.config.enableCache) {
+        this.cache.delete(cacheKey);
+      }
+
+      return createdTask;
+      
+    } catch (error) {
+      if (error instanceof ApiError) {
+        throw error;
+      }
+      
+      throw new ApiError(
+        'NETWORK_ERROR',
+        'Failed to create task',
+        500
+      );
+    }
+  }
+
+  /**
    * Update a task
    */
   async updateTask(taskId: number, updates: Partial<Task>, projectId?: string): Promise<Task> {
@@ -187,6 +235,49 @@ export class TaskService {
       throw new ApiError(
         'NETWORK_ERROR',
         'Failed to update task',
+        500
+      );
+    }
+  }
+
+  /**
+   * Delete a task
+   */
+  async deleteTask(taskId: number, projectId?: string): Promise<void> {
+    const cacheKey = `tasks-${projectId || 'default'}`;
+    
+    try {
+      const response = await fetch(`${this.config.apiBaseUrl}/tasks/${taskId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          projectId: projectId || this.config.projectId
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new ApiError(
+          'DELETE_TASK_ERROR',
+          `Failed to delete task: ${response.status} ${response.statusText}`,
+          response.status
+        );
+      }
+
+      // Clear cache to force reload
+      if (this.config.enableCache) {
+        this.cache.delete(cacheKey);
+      }
+      
+    } catch (error) {
+      if (error instanceof ApiError) {
+        throw error;
+      }
+      
+      throw new ApiError(
+        'NETWORK_ERROR',
+        'Failed to delete task',
         500
       );
     }

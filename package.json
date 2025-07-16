@@ -14,6 +14,10 @@
     "dev:frontend": "npm run dev --workspace=frontend\"",
     "build": "npm run build --workspace=backend && npm run build --workspace=frontend",
     "test": "npm run test --workspace=backend && npm run test --workspace=frontend",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:debug": "playwright test --debug",
     "lint": "npm run lint --workspace=backend && npm run lint --workspace=frontend",
     "format": "npm run format --workspace=backend && npm run format --workspace=frontend"
   },
@@ -21,7 +25,12 @@
     "type": "git",
     "url": "git+https://github.com/gcheliz/taskmaster-ui.git"
   },
-  "keywords": ["taskmaster", "ui", "task-management", "ci-cd"],
+  "keywords": [
+    "taskmaster",
+    "ui",
+    "task-management",
+    "ci-cd"
+  ],
   "author": "",
   "license": "ISC",
   "bugs": {
@@ -29,10 +38,12 @@
   },
   "homepage": "https://github.com/gcheliz/taskmaster-ui#readme",
   "devDependencies": {
-    "concurrently": "^8.2.2",
-    "eslint": "^8.56.0",
+    "@playwright/test": "^1.54.1",
     "@typescript-eslint/eslint-plugin": "^6.15.0",
     "@typescript-eslint/parser": "^6.15.0",
+    "concurrently": "^8.2.2",
+    "eslint": "^8.56.0",
+    "playwright": "^1.54.1",
     "prettier": "^3.1.1"
   }
 }

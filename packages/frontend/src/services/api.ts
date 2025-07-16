@@ -47,6 +47,33 @@ export interface RepositoryValidateRequest {
   validateTaskMaster?: boolean;
 }
 
+export interface CreateProjectRequest {
+  repositoryId: string;
+  projectName: string;
+}
+
+export interface ProjectResponse {
+  id: string;
+  name: string;
+  repositoryId: string;
+  repositoryPath: string;
+  createdAt: string;
+  status: 'initializing' | 'active' | 'error';
+  tasksPath?: string;
+}
+
+export interface TaskMasterInfo {
+  taskCount: number;
+  initOutput: string;
+  duration: number;
+}
+
+export interface CreateProjectResponse {
+  project: ProjectResponse;
+  message: string;
+  taskMasterInfo?: TaskMasterInfo;
+}
+
 export class ApiError extends Error {
   public code: string;
   public status?: number;
@@ -153,6 +180,46 @@ export class ApiService {
 
   async getRepositoryHealth(): Promise<any> {
     return this.request('/repositories/health');
+  }
+
+  // Project Management API
+  async createProject(request: CreateProjectRequest): Promise<CreateProjectResponse> {
+    return this.request<CreateProjectResponse>('/projects', {
+      method: 'POST',
+      body: JSON.stringify(request),
+    });
+  }
+
+  async getProjects(): Promise<{ projects: ProjectResponse[]; count: number }> {
+    return this.request<{ projects: ProjectResponse[]; count: number }>('/projects');
+  }
+
+  async getProject(id: string): Promise<ProjectResponse> {
+    return this.request<ProjectResponse>(`/projects/${id}`);
+  }
+
+  async deleteProject(id: string): Promise<{ message: string }> {
+    return this.request<{ message: string }>(`/projects/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  // Task Management API
+  async getProjectTasks(projectId: string): Promise<any> {
+    return this.request<any>(`/projects/${projectId}/tasks`);
+  }
+
+  async getTasksFromFile(filePath: string): Promise<any> {
+    const params = new URLSearchParams({ filePath });
+    return this.request<any>(`/tasks/file?${params}`);
+  }
+
+  async getTasksFromRepository(repositoryPath: string, projectTag?: string): Promise<any> {
+    const params = new URLSearchParams({ repositoryPath });
+    if (projectTag) {
+      params.append('projectTag', projectTag);
+    }
+    return this.request<any>(`/tasks/repository?${params}`);
   }
 }
 

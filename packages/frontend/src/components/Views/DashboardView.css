@@ -375,6 +375,15 @@
   width: 100%;
 }
 
+/* Widget Container */
+.widget-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 24px;
+}
+
 /* Status Breakdown */
 .status-breakdown {
   background: white;

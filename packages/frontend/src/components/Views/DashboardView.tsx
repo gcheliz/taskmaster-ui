@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDashboard } from '../../hooks/useDashboard';
-import { TaskCompletionChart } from '../Widgets';
+import { TaskCompletionChart, ProgressVisualizationWidget } from '../Widgets';
 import './DashboardView.css';
 
 export interface DashboardViewProps {
@@ -329,6 +329,19 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
         {activeTab === 'analytics' && (
           <div className="analytics-content">
+            {/* Progress Visualization Widget */}
+            <div className="widget-container">
+              <ProgressVisualizationWidget
+                data={data.chartData.taskCompletionTrend}
+                chartType="line"
+                showVelocity={true}
+                showTrendLine={true}
+                timeRange="30d"
+                width={800}
+                height={400}
+              />
+            </div>
+
             {/* Priority Distribution */}
             <div className="chart-section">
               <h3>Priority Distribution</h3>

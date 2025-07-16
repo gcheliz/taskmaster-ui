@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDashboard } from '../../hooks/useDashboard';
-import { TaskCompletionChart, ProgressVisualizationWidget } from '../Widgets';
+import { TaskCompletionChart, ProgressVisualizationWidget, RecentActivityFeedWidget } from '../Widgets';
 import './DashboardView.css';
 
 export interface DashboardViewProps {
@@ -427,36 +427,16 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
         {activeTab === 'activity' && (
           <div className="activity-content">
-            <h3>Recent Activity</h3>
-            {data.recentActivity.length === 0 ? (
-              <div className="no-activity">
-                <div className="no-activity-icon">📝</div>
-                <p>No recent activity to display</p>
-              </div>
-            ) : (
-              <div className="activity-feed">
-                {data.recentActivity.map((activity) => (
-                  <div key={activity.id} className="activity-item">
-                    <div className="activity-icon">
-                      {activity.type === 'commit' ? '💾' : 
-                       activity.type === 'task_update' ? '✅' : '🔄'}
-                    </div>
-                    <div className="activity-content">
-                      <div className="activity-message">{activity.message}</div>
-                      <div className="activity-meta">
-                        <span className="activity-time">
-                          {formatTime(activity.timestamp)}
-                        </span>
-                        {activity.author && (
-                          <span className="activity-author">by {activity.author}</span>
-                        )}
-                        <span className="activity-type">{activity.type}</span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+            <div className="widget-container">
+              <RecentActivityFeedWidget
+                activities={data.recentActivity}
+                maxItems={15}
+                showFilters={true}
+                showAvatar={true}
+                showTimestamp={true}
+                groupByDate={true}
+              />
+            </div>
           </div>
         )}
       </div>

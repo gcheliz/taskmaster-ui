@@ -1,14 +1,17 @@
 import { useState } from 'react'
 import { AppLayout } from './components/Layout'
 import { RepositoryProvider } from './contexts/RepositoryContext'
+import { NotificationProvider } from './contexts/NotificationContext'
+import { NotificationContainer } from './components/Notifications'
 import './App.css'
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <RepositoryProvider>
-      <AppLayout>
+    <NotificationProvider>
+      <RepositoryProvider>
+        <AppLayout>
       <div className="dashboard">
         <h1>Welcome to TaskMaster UI</h1>
         <div className="dashboard-content">
@@ -44,8 +47,10 @@ function App() {
           </div>
         </div>
       </div>
-      </AppLayout>
-    </RepositoryProvider>
+        </AppLayout>
+        <NotificationContainer position="top-right" />
+      </RepositoryProvider>
+    </NotificationProvider>
   )
 }
 

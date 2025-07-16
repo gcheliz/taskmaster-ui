@@ -1,0 +1,193 @@
+/* Notification Card Styles */
+
+.notification-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-color, #e1e5e9);
+  padding: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  pointer-events: auto;
+  cursor: default;
+  transition: all 0.3s ease;
+  transform: translateX(100%);
+  opacity: 0;
+  max-width: 100%;
+  word-wrap: break-word;
+}
+
+.notification-card.visible {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.notification-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Type-specific styles */
+.notification-card.success {
+  border-left: 4px solid var(--success-color, #10b981);
+}
+
+.notification-card.error {
+  border-left: 4px solid var(--error-color, #ef4444);
+}
+
+.notification-card.warning {
+  border-left: 4px solid var(--warning-color, #f59e0b);
+}
+
+.notification-card.info {
+  border-left: 4px solid var(--info-color, #3b82f6);
+}
+
+/* Icon styles */
+.notification-icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+}
+
+.notification-card.success .notification-icon {
+  background-color: var(--success-color, #10b981);
+}
+
+.notification-card.error .notification-icon {
+  background-color: var(--error-color, #ef4444);
+}
+
+.notification-card.warning .notification-icon {
+  background-color: var(--warning-color, #f59e0b);
+}
+
+.notification-card.info .notification-icon {
+  background-color: var(--info-color, #3b82f6);
+}
+
+/* Content styles */
+.notification-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.notification-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text-primary, #1a1a1a);
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+
+.notification-message {
+  font-size: 0.9rem;
+  color: var(--text-secondary, #64748b);
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+
+.notification-action {
+  background: none;
+  border: 1px solid var(--primary-color, #3b82f6);
+  color: var(--primary-color, #3b82f6);
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.notification-action:hover {
+  background-color: var(--primary-color, #3b82f6);
+  color: white;
+}
+
+/* Dismiss button */
+.notification-dismiss {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  color: var(--text-secondary, #64748b);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.notification-dismiss:hover {
+  background-color: var(--background-hover, #f1f3f4);
+  color: var(--text-primary, #1a1a1a);
+}
+
+/* Animation variants for different positions */
+.notification-container.top-left .notification-card,
+.notification-container.bottom-left .notification-card {
+  transform: translateX(-100%);
+}
+
+.notification-container.top-left .notification-card.visible,
+.notification-container.bottom-left .notification-card.visible {
+  transform: translateX(0);
+}
+
+.notification-container.top-center .notification-card,
+.notification-container.bottom-center .notification-card {
+  transform: translateY(-100%);
+}
+
+.notification-container.top-center .notification-card.visible,
+.notification-container.bottom-center .notification-card.visible {
+  transform: translateY(0);
+}
+
+.notification-container.bottom-center .notification-card {
+  transform: translateY(100%);
+}
+
+/* Dark theme support */
+@media (prefers-color-scheme: dark) {
+  .notification-card {
+    --background-primary: #1a1a1a;
+    --background-hover: #3a3a3a;
+    --text-primary: #ffffff;
+    --text-secondary: #a0a0a0;
+    --border-color: #404040;
+    
+    background: var(--background-primary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .notification-card {
+    padding: 14px;
+    gap: 10px;
+  }
+
+  .notification-title {
+    font-size: 0.9rem;
+  }
+
+  .notification-message {
+    font-size: 0.85rem;
+  }
+}

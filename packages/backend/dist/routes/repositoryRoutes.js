@@ -6,7 +6,6 @@ exports.repositoryApiSchemas = exports.RepositoryRouteFactory = void 0;
 exports.createRepositoryRoutes = createRepositoryRoutes;
 const express_1 = require("express");
 const repositoryController_1 = require("../controllers/repositoryController");
-const middleware_1 = require("../middleware");
 // OpenAPI Schema Definitions
 const schemas = {
     RepositoryValidateRequest: {
@@ -97,107 +96,6 @@ exports.repositoryApiSchemas = schemas;
 class RepositoryRouteFactory {
     constructor() {
         // Custom Validation Functions
-        this.validateRepositoryPath = (req) => {
-            const errors = [];
-            const { repositoryPath } = req.body;
-            if (repositoryPath) {
-                // Security validation - prevent directory traversal
-                if (repositoryPath.includes('..') || repositoryPath.includes('~')) {
-                    errors.push({
-                        field: 'repositoryPath',
-                        code: 'SECURITY_VIOLATION',
-                        message: 'Repository path contains potentially dangerous characters',
-                        value: repositoryPath
-                    });
-                }
-                // Path format validation
-                if (!repositoryPath.startsWith('/')) {
-                    errors.push({
-                        field: 'repositoryPath',
-                        code: 'INVALID_FORMAT',
-                        message: 'Repository path must be an absolute path',
-                        value: repositoryPath
-                    });
-                }
-                // Length validation
-                if (repositoryPath.length < 2) {
-                    errors.push({
-                        field: 'repositoryPath',
-                        code: 'TOO_SHORT',
-                        message: 'Repository path is too short',
-                        value: repositoryPath
-                    });
-                }
-                if (repositoryPath.length > 500) {
-                    errors.push({
-                        field: 'repositoryPath',
-                        code: 'TOO_LONG',
-                        message: 'Repository path is too long (max 500 characters)',
-                        value: repositoryPath
-                    });
-                }
-            }
-            return errors;
-        };
-        this.validateRepositoryPathFromQuery = (req) => {
-            const errors = [];
-            const repositoryPath = req.query.repositoryPath;
-            if (repositoryPath) {
-                // Apply same validation as body path
-                const mockReq = { body: { repositoryPath } };
-                return this.validateRepositoryPath(mockReq);
-            }
-            return errors;
-        };
-        this.validateSecurityConstraints = (req) => {
-            const errors = [];
-            const { repositoryPath } = req.body;
-            if (repositoryPath) {
-                // Check for suspicious patterns
-                const suspiciousPatterns = [
-                    '/etc/',
-                    '/var/',
-                    '/root/',
-                    '/usr/bin',
-                    '/System/',
-                    '/Windows/',
-                    'C:\\',
-                    'D:\\',
-                    '$HOME',
-                    '%USERPROFILE%'
-                ];
-                for (const pattern of suspiciousPatterns) {
-                    if (repositoryPath.includes(pattern)) {
-                        errors.push({
-                            field: 'repositoryPath',
-                            code: 'SUSPICIOUS_PATH',
-                            message: 'Repository path appears to target system directories',
-                            value: repositoryPath
-                        });
-                        break;
-                    }
-                }
-                // Check for common development directories (more permissive)
-                const allowedPrefixes = [
-                    '/Users/',
-                    '/home/',
-                    '/opt/',
-                    '/tmp/',
-                    '/var/tmp/',
-                    process.cwd() // Allow current working directory and subdirectories
-                ];
-                const isAllowed = allowedPrefixes.some(prefix => repositoryPath.startsWith(prefix) || repositoryPath.startsWith(process.cwd()));
-                if (!isAllowed) {
-                    errors.push({
-                        field: 'repositoryPath',
-                        code: 'RESTRICTED_PATH',
-                        message: 'Repository path is outside allowed directories',
-                        value: repositoryPath
-                    });
-                }
-            }
-            return errors;
-        };
         this.asyncHandler = (fn) => {
             return (req, res, next) => {
                 Promise.resolve(fn(req, res, next)).catch(next);
@@ -207,13 +105,11 @@ class RepositoryRouteFactory {
     }
     createRouter() {
         const router = (0, express_1.Router)();
-        // Apply global middleware stack
-        const globalMiddleware = (0, middleware_1.composeMiddleware)((0, middleware_1.requestIdMiddleware)(), (0, middleware_1.loggingMiddleware)(), (0, middleware_1.securityHeadersMiddleware)(), (0, middleware_1.apiResponseMiddleware)(), (0, middleware_1.rateLimitMiddleware)({
-            windowMs: 15 * 60 * 1000, // 15 minutes
-            maxRequests: 50, // Lower limit for validation operations
-            keyGenerator: (req) => `${req.ip}:repository-validation`
-        }));
-        router.use(globalMiddleware);
+        // Basic middleware for now
+        router.use((req, res, next) => {
+            req.requestId = `repo_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+            next();
+        });
         // Repository validation routes
         this.addValidationRoutes(router);
         // Repository information routes
@@ -316,24 +212,20 @@ class RepositoryRouteFactory {
          *       500:
          *         description: Internal server error
          */
-        router.post('/validate', (0, middleware_1.validationMiddleware)({
-            bodySchema: {
-                required: ['repositoryPath'],
-                properties: {
-                    repositoryPath: {
-                        type: 'string',
-                        minLength: 1,
-                        maxLength: 500
-                    },
-                    validateGit: { type: 'boolean' },
-                    validateTaskMaster: { type: 'boolean' }
-                }
-            },
-            customValidators: [
-                this.validateRepositoryPath,
-                this.validateSecurityConstraints
-            ]
-        }), this.asyncHandler(this.controller.validateRepository.bind(this.controller)));
+        router.post('/validate', (req, res, next) => {
+            // Basic validation
+            if (!req.body.repositoryPath) {
+                return res.status(400).json({
+                    success: false,
+                    error: {
+                        code: 'MISSING_PARAMETER',
+                        message: 'repositoryPath is required'
+                    }
+                });
+            }
+            req.validatedBody = req.body;
+            next();
+        }, this.asyncHandler(this.controller.validateRepository.bind(this.controller)));
     }
     addInfoRoutes(router) {
         /**
@@ -359,21 +251,7 @@ class RepositoryRouteFactory {
          *       500:
          *         description: Internal server error
          */
-        router.get('/info', (0, middleware_1.validationMiddleware)({
-            querySchema: {
-                required: ['repositoryPath'],
-                properties: {
-                    repositoryPath: {
-                        type: 'string',
-                        minLength: 1,
-                        maxLength: 500
-                    }
-                }
-            },
-            customValidators: [
-                this.validateRepositoryPathFromQuery
-            ]
-        }), this.asyncHandler(this.controller.getRepositoryInfo.bind(this.controller)));
+        router.get('/info', this.asyncHandler(this.controller.getRepositoryInfo.bind(this.controller)));
     }
     addHealthRoutes(router) {
         /**

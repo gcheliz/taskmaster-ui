@@ -119,6 +119,7 @@ describe('AddRepository', () => {
   });
 
   it('accepts valid Unix absolute paths', async () => {
+    mockOnRepositoryAdd.mockResolvedValue(undefined);
     render(<AddRepository onRepositoryAdd={mockOnRepositoryAdd} />);
     
     const input = screen.getByLabelText('Repository Path');
@@ -135,6 +136,7 @@ describe('AddRepository', () => {
   });
 
   it('accepts valid Windows absolute paths', async () => {
+    mockOnRepositoryAdd.mockResolvedValue(undefined);
     render(<AddRepository onRepositoryAdd={mockOnRepositoryAdd} />);
     
     const input = screen.getByLabelText('Repository Path');
@@ -242,6 +244,7 @@ describe('AddRepository', () => {
   });
 
   it('trims whitespace from submitted path', async () => {
+    mockOnRepositoryAdd.mockResolvedValue(undefined);
     render(<AddRepository onRepositoryAdd={mockOnRepositoryAdd} />);
     
     const input = screen.getByLabelText('Repository Path');
@@ -253,5 +256,72 @@ describe('AddRepository', () => {
     await waitFor(() => {
       expect(mockOnRepositoryAdd).toHaveBeenCalledWith('/Users/john/repo');
     });
+  });
+
+  it('clears form on successful submission by default', async () => {
+    mockOnRepositoryAdd.mockResolvedValue(undefined);
+    render(<AddRepository onRepositoryAdd={mockOnRepositoryAdd} />);
+    
+    const input = screen.getByLabelText('Repository Path');
+    const submitButton = screen.getByRole('button', { name: 'Connect Repository' });
+    
+    fireEvent.change(input, { target: { value: '/Users/john/repo' } });
+    expect(input).toHaveValue('/Users/john/repo');
+    
+    fireEvent.click(submitButton);
+    
+    await waitFor(() => {
+      expect(mockOnRepositoryAdd).toHaveBeenCalledWith('/Users/john/repo');
+    });
+
+    // Form should be cleared after successful submission
+    await waitFor(() => {
+      expect(input).toHaveValue('');
+    });
+  });
+
+  it('does not clear form when clearOnSuccess is false', async () => {
+    mockOnRepositoryAdd.mockResolvedValue(undefined);
+    render(<AddRepository onRepositoryAdd={mockOnRepositoryAdd} clearOnSuccess={false} />);
+    
+    const input = screen.getByLabelText('Repository Path');
+    const submitButton = screen.getByRole('button', { name: 'Connect Repository' });
+    
+    fireEvent.change(input, { target: { value: '/Users/john/repo' } });
+    expect(input).toHaveValue('/Users/john/repo');
+    
+    fireEvent.click(submitButton);
+    
+    await waitFor(() => {
+      expect(mockOnRepositoryAdd).toHaveBeenCalledWith('/Users/john/repo');
+    });
+
+    // Form should not be cleared
+    expect(input).toHaveValue('/Users/john/repo');
+  });
+
+  it('handles async errors from onRepositoryAdd', async () => {
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    mockOnRepositoryAdd.mockRejectedValue(new Error('Connection failed'));
+    
+    render(<AddRepository onRepositoryAdd={mockOnRepositoryAdd} />);
+    
+    const input = screen.getByLabelText('Repository Path');
+    const submitButton = screen.getByRole('button', { name: 'Connect Repository' });
+    
+    fireEvent.change(input, { target: { value: '/Users/john/repo' } });
+    fireEvent.click(submitButton);
+    
+    await waitFor(() => {
+      expect(mockOnRepositoryAdd).toHaveBeenCalledWith('/Users/john/repo');
+    });
+
+    // Form should not be cleared on error
+    expect(input).toHaveValue('/Users/john/repo');
+    
+    // Error should be logged
+    expect(consoleErrorSpy).toHaveBeenCalledWith('Repository add failed:', expect.any(Error));
+    
+    consoleErrorSpy.mockRestore();
   });
 });

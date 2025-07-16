@@ -1,0 +1,65 @@
+/* Notification Container Styles */
+
+.notification-container {
+  position: fixed;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 400px;
+  width: 100%;
+  padding: 16px;
+  pointer-events: none;
+}
+
+/* Position variants */
+.notification-container.top-right {
+  top: 0;
+  right: 0;
+}
+
+.notification-container.top-left {
+  top: 0;
+  left: 0;
+}
+
+.notification-container.bottom-right {
+  bottom: 0;
+  right: 0;
+  flex-direction: column-reverse;
+}
+
+.notification-container.bottom-left {
+  bottom: 0;
+  left: 0;
+  flex-direction: column-reverse;
+}
+
+.notification-container.top-center {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.notification-container.bottom-center {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  flex-direction: column-reverse;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .notification-container {
+    max-width: calc(100vw - 32px);
+    padding: 16px;
+  }
+
+  .notification-container.top-center,
+  .notification-container.bottom-center {
+    left: 16px;
+    right: 16px;
+    transform: none;
+    max-width: none;
+  }
+}

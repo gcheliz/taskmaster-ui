@@ -2,17 +2,19 @@ import React, { useState } from 'react';
 import './AddRepository.css';
 
 export interface AddRepositoryProps {
-  onRepositoryAdd?: (repositoryPath: string) => void;
+  onRepositoryAdd?: (repositoryPath: string) => Promise<void>;
   isLoading?: boolean;
   error?: string | null;
   className?: string;
+  clearOnSuccess?: boolean;
 }
 
 export const AddRepository: React.FC<AddRepositoryProps> = ({
   onRepositoryAdd,
   isLoading = false,
   error = null,
-  className = ''
+  className = '',
+  clearOnSuccess = true
 }) => {
   const [repositoryPath, setRepositoryPath] = useState('');
   const [validationError, setValidationError] = useState<string | null>(null);
@@ -48,7 +50,7 @@ export const AddRepository: React.FC<AddRepositoryProps> = ({
     }
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     
     const pathError = validatePath(repositoryPath);
@@ -59,7 +61,18 @@ export const AddRepository: React.FC<AddRepositoryProps> = ({
     
     // Clear any validation errors and call the callback
     setValidationError(null);
-    onRepositoryAdd?.(repositoryPath.trim());
+    
+    try {
+      await onRepositoryAdd?.(repositoryPath.trim());
+      
+      // Clear form on successful submission if clearOnSuccess is enabled
+      if (clearOnSuccess) {
+        setRepositoryPath('');
+      }
+    } catch (error) {
+      // Error is handled by the parent component
+      console.error('Repository add failed:', error);
+    }
   };
 
   const handleClear = () => {

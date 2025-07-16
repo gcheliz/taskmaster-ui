@@ -3,6 +3,7 @@ import './RepositoryManagementView.css';
 import { AddRepository } from '../Repository';
 import { useRepositoryOperations } from '../../hooks/useRepositoryOperations';
 import { useRepository } from '../../contexts/RepositoryContext';
+import { useNotification } from '../../contexts/NotificationContext';
 
 export interface RepositoryManagementViewProps {
   className?: string;
@@ -13,30 +14,56 @@ export const RepositoryManagementView: React.FC<RepositoryManagementViewProps> =
 }) => {
   const { connectRepository, disconnectRepository, isLoading, error } = useRepositoryOperations();
   const { state, selectRepository } = useRepository();
+  const { showSuccess, showError } = useNotification();
 
   const handleRepositoryAdd = async (repositoryPath: string) => {
     try {
-      await connectRepository(repositoryPath, {
+      const repository = await connectRepository(repositoryPath, {
         validateGit: true,
         validateTaskMaster: true,
         selectAfterConnect: true,
       });
       
-      // Success - the repository has been added to the global state
-      console.log('Repository connected successfully:', repositoryPath);
+      // Show success notification
+      showSuccess(
+        'Repository Connected',
+        `Successfully connected "${repository.name}" repository`,
+        {
+          action: {
+            label: 'View Details',
+            onClick: () => selectRepository(repository)
+          }
+        }
+      );
       
     } catch (err) {
-      // Error handling is managed by the useRepositoryOperations hook
-      console.error('Failed to connect repository:', err);
+      // Show error notification with specific error message
+      const errorMessage = err instanceof Error ? err.message : 'Failed to connect repository';
+      showError(
+        'Connection Failed',
+        errorMessage
+      );
     }
   };
 
   const handleRepositoryDisconnect = async (repositoryId: string) => {
     try {
+      const repository = state.repositories.find(repo => repo.id === repositoryId);
       await disconnectRepository(repositoryId);
-      console.log('Repository disconnected successfully');
+      
+      // Show success notification
+      showSuccess(
+        'Repository Disconnected',
+        repository ? `Disconnected "${repository.name}" repository` : 'Repository has been disconnected'
+      );
+      
     } catch (err) {
-      console.error('Failed to disconnect repository:', err);
+      // Show error notification
+      const errorMessage = err instanceof Error ? err.message : 'Failed to disconnect repository';
+      showError(
+        'Disconnect Failed',
+        errorMessage
+      );
     }
   };
 

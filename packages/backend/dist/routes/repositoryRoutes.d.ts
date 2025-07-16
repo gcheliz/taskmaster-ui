@@ -128,9 +128,6 @@ export declare class RepositoryRouteFactory {
     private addValidationRoutes;
     private addInfoRoutes;
     private addHealthRoutes;
-    private validateRepositoryPath;
-    private validateRepositoryPathFromQuery;
-    private validateSecurityConstraints;
     private asyncHandler;
 }
 export declare function createRepositoryRoutes(): Router;

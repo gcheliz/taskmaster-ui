@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import healthRoutes from './routes/healthRoutes';
 import { createRepositoryRoutes } from './routes/repositoryRoutes';
 import projectRoutes from './routes/projectRoutes';
+import realtimeRoutes from './routes/realtimeRoutes';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 import DatabaseService from './services/database';
 
@@ -37,6 +38,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/', healthRoutes);
 app.use('/api/repositories', createRepositoryRoutes());
 app.use('/api/projects', projectRoutes);
+app.use('/api/realtime', realtimeRoutes);
 
 // Error handling middleware
 app.use(notFoundHandler);

@@ -182,10 +182,31 @@ class TaskMasterController {
             if (filters.priority && filters.priority.length > 0) {
                 filteredTasks = filteredTasks.filter(task => filters.priority.includes(task.priority));
             }
+            if (filters.complexity && filters.complexity.length > 0) {
+                filteredTasks = filteredTasks.filter(task => {
+                    const taskComplexity = this.getTaskComplexityLevel(task.complexity || 1);
+                    return filters.complexity.includes(taskComplexity);
+                });
+            }
+            if (filters.assignee && filters.assignee.length > 0) {
+                filteredTasks = filteredTasks.filter(task => {
+                    // For now, we'll treat all tasks as unassigned since assignee is not in TaskInfo
+                    const taskAssignee = task.assignee || 'unassigned';
+                    return filters.assignee.includes(taskAssignee);
+                });
+            }
+            if (filters.complexityRange && filters.complexityRange.length === 2) {
+                const [minComplexity, maxComplexity] = filters.complexityRange;
+                filteredTasks = filteredTasks.filter(task => {
+                    const complexity = task.complexity || 1;
+                    return complexity >= minComplexity && complexity <= maxComplexity;
+                });
+            }
             if (filters.search) {
                 const searchTerm = filters.search.toLowerCase();
                 filteredTasks = filteredTasks.filter(task => task.title.toLowerCase().includes(searchTerm) ||
-                    task.description?.toLowerCase().includes(searchTerm));
+                    task.description?.toLowerCase().includes(searchTerm) ||
+                    task.details?.toLowerCase().includes(searchTerm));
             }
             // Apply sorting
             if (sorting) {
@@ -499,15 +520,37 @@ class TaskMasterController {
     }
     sortTasks(tasks, sorting) {
         return tasks.sort((a, b) => {
-            const aValue = a[sorting.field];
-            const bValue = b[sorting.field];
+            let aValue = a[sorting.field];
+            let bValue = b[sorting.field];
+            // Handle special sorting cases
+            if (sorting.field === 'priority') {
+                const priorityOrder = { 'high': 3, 'medium': 2, 'low': 1 };
+                aValue = priorityOrder[aValue] || 0;
+                bValue = priorityOrder[bValue] || 0;
+            }
+            if (sorting.field === 'status') {
+                const statusOrder = { 'pending': 1, 'in-progress': 2, 'done': 3, 'blocked': 4, 'deferred': 5 };
+                aValue = statusOrder[aValue] || 0;
+                bValue = statusOrder[bValue] || 0;
+            }
+            if (sorting.field === 'created' || sorting.field === 'updated') {
+                aValue = new Date(aValue).getTime();
+                bValue = new Date(bValue).getTime();
+            }
             if (sorting.direction === 'asc') {
-                return aValue > bValue ? 1 : -1;
+                return aValue > bValue ? 1 : aValue < bValue ? -1 : 0;
             }
             else {
-                return aValue < bValue ? 1 : -1;
+                return aValue < bValue ? 1 : aValue > bValue ? -1 : 0;
             }
         });
+    }
+    getTaskComplexityLevel(complexity) {
+        if (complexity >= 7)
+            return 'high';
+        if (complexity >= 4)
+            return 'medium';
+        return 'low';
     }
 }
 exports.TaskMasterController = TaskMasterController;

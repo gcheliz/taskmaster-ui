@@ -71,6 +71,8 @@ export interface TaskFilters {
     status?: string[];
     priority?: string[];
     complexityRange?: [number, number];
+    complexity?: string[];
+    assignee?: string[];
     dependencies?: string[];
     search?: string;
 }

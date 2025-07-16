@@ -63,5 +63,6 @@ export declare class TaskMasterController implements ITaskMasterController {
     private extractTagFromPath;
     private calculateProjectStats;
     private sortTasks;
+    private getTaskComplexityLevel;
 }
 //# sourceMappingURL=taskMasterController.d.ts.map

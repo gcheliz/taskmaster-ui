@@ -1,0 +1,268 @@
+/* Theme Toggle Component Styles */
+
+.theme-toggle {
+  position: relative;
+  display: inline-block;
+}
+
+/* Button Styles */
+.theme-toggle__button {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2) var(--spacing-3);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: var(--transition-colors);
+  outline: none;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.theme-toggle__button:hover {
+  background-color: var(--color-surface-secondary);
+  border-color: var(--color-border-secondary);
+}
+
+.theme-toggle__button:focus {
+  border-color: var(--color-border-focus);
+  box-shadow: var(--shadow-focus);
+}
+
+.theme-toggle__button:active {
+  transform: translateY(1px);
+}
+
+/* Icon Styles */
+.theme-toggle__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-base);
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* Label Styles */
+.theme-toggle__label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  line-height: 1;
+}
+
+/* Arrow for dropdown */
+.theme-toggle__arrow {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  transition: var(--transition-transform);
+  margin-left: var(--spacing-1);
+}
+
+.theme-toggle--dropdown .theme-toggle__button[aria-expanded="true"] .theme-toggle__arrow {
+  transform: rotate(180deg);
+}
+
+/* Size Variants */
+.theme-toggle--sm .theme-toggle__button {
+  padding: var(--spacing-1) var(--spacing-2);
+  font-size: var(--font-size-xs);
+}
+
+.theme-toggle--sm .theme-toggle__icon {
+  font-size: var(--font-size-sm);
+}
+
+.theme-toggle--sm .theme-toggle__label {
+  font-size: var(--font-size-xs);
+}
+
+.theme-toggle--lg .theme-toggle__button {
+  padding: var(--spacing-3) var(--spacing-4);
+  font-size: var(--font-size-base);
+}
+
+.theme-toggle--lg .theme-toggle__icon {
+  font-size: var(--font-size-lg);
+}
+
+.theme-toggle--lg .theme-toggle__label {
+  font-size: var(--font-size-base);
+}
+
+/* Dropdown Styles */
+.theme-toggle__dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: var(--spacing-1);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-md);
+  z-index: var(--z-index-dropdown);
+  overflow: hidden;
+  min-width: 120px;
+}
+
+.theme-toggle__option {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  width: 100%;
+  padding: var(--spacing-2) var(--spacing-3);
+  background-color: transparent;
+  border: none;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-normal);
+  cursor: pointer;
+  transition: var(--transition-colors);
+  text-align: left;
+  outline: none;
+}
+
+.theme-toggle__option:hover {
+  background-color: var(--color-surface-secondary);
+}
+
+.theme-toggle__option:focus {
+  background-color: var(--color-surface-secondary);
+  box-shadow: inset 0 0 0 2px var(--color-primary);
+}
+
+.theme-toggle__option--active {
+  background-color: var(--color-primary);
+  color: white;
+  font-weight: var(--font-weight-medium);
+}
+
+.theme-toggle__option--active:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.theme-toggle__option-icon {
+  font-size: var(--font-size-base);
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.theme-toggle__option-label {
+  flex: 1;
+  line-height: 1;
+}
+
+.theme-toggle__check {
+  font-size: var(--font-size-sm);
+  color: white;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* Button-only variant adjustments */
+.theme-toggle--button {
+  /* Button-specific styles if needed */
+}
+
+.theme-toggle--button .theme-toggle__button {
+  /* Additional button variant styles */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .theme-toggle--dropdown {
+    min-width: 100px;
+  }
+  
+  .theme-toggle__dropdown {
+    left: auto;
+    right: 0;
+    min-width: 100px;
+  }
+  
+  .theme-toggle__option {
+    padding: var(--spacing-2);
+  }
+  
+  .theme-toggle__option-label {
+    font-size: var(--font-size-xs);
+  }
+}
+
+@media (max-width: 480px) {
+  .theme-toggle--sm .theme-toggle__button {
+    padding: var(--spacing-1);
+  }
+  
+  .theme-toggle--sm .theme-toggle__label {
+    display: none;
+  }
+  
+  .theme-toggle--md .theme-toggle__button {
+    padding: var(--spacing-2);
+  }
+  
+  .theme-toggle--md .theme-toggle__label {
+    font-size: var(--font-size-xs);
+  }
+}
+
+/* Dark theme specific adjustments */
+[data-theme="dark"] .theme-toggle__dropdown {
+  box-shadow: var(--shadow-lg);
+}
+
+[data-theme="dark"] .theme-toggle__option--active {
+  background-color: var(--color-primary);
+}
+
+[data-theme="dark"] .theme-toggle__option--active:hover {
+  background-color: var(--color-primary-hover);
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .theme-toggle__button {
+    border-width: 2px;
+  }
+  
+  .theme-toggle__button:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+  
+  .theme-toggle__dropdown {
+    border-width: 2px;
+  }
+  
+  .theme-toggle__option:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: -2px;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle__button,
+  .theme-toggle__option,
+  .theme-toggle__arrow {
+    transition: none;
+  }
+  
+  .theme-toggle__button:active {
+    transform: none;
+  }
+}
+
+/* Print styles */
+@media print {
+  .theme-toggle {
+    display: none;
+  }
+}

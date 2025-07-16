@@ -31,9 +31,9 @@ export const TaskBoardView: React.FC<TaskBoardViewProps> = ({
   enableFiltering = true
 }) => {
   const [showFilters, setShowFilters] = useState(enableFiltering);
-  const [filteredTasks, setFilteredTasks] = useState<any[]>([]);
+  const [, setFilteredTasks] = useState<any[]>([]);
   const [isFilterLoading, setIsFilterLoading] = useState(false);
-  const [filterError, setFilterError] = useState<Error | null>(null);
+  const [, setFilterError] = useState<Error | null>(null);
   const {
     taskBoardData,
     isLoading,

@@ -1,4 +1,5 @@
 import React from 'react';
+import { ThemeToggle } from '../UI/ThemeToggle';
 import './Header.css';
 
 export interface HeaderProps {
@@ -13,6 +14,9 @@ export const Header: React.FC<HeaderProps> = ({ className = '' }) => {
           <h1>TaskMaster UI</h1>
         </div>
         <div className="user-section">
+          <div className="theme-toggle-wrapper">
+            <ThemeToggle variant="dropdown" size="sm" showLabel={false} />
+          </div>
           <span>User Profile</span>
         </div>
       </div>

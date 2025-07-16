@@ -1,58 +1,87 @@
 /* Header Component Styles */
 .app-header {
   grid-area: header;
-  background-color: #2c3e50;
-  color: white;
-  border-bottom: 1px solid #34495e;
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  border-bottom: 1px solid var(--color-border);
   z-index: 1000;
+  box-shadow: var(--shadow-sm);
 }
 
 .header-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 20px;
+  padding: 0 var(--spacing-5);
   height: 100%;
 }
 
 .logo-section h1 {
   margin: 0;
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: white;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
 }
 
 .user-section {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--spacing-3);
+}
+
+.theme-toggle-wrapper {
+  display: flex;
+  align-items: center;
 }
 
 .user-section span {
-  color: white;
-  font-size: 0.9rem;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
   cursor: pointer;
-  padding: 8px 12px;
-  border-radius: 4px;
-  transition: background-color 0.2s;
+  padding: var(--spacing-2) var(--spacing-3);
+  border-radius: var(--border-radius-md);
+  transition: var(--transition-colors);
+  background-color: transparent;
+  border: 1px solid transparent;
 }
 
 .user-section span:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: var(--color-surface-secondary);
+  border-color: var(--color-border);
+}
+
+.user-section span:focus {
+  outline: none;
+  border-color: var(--color-border-focus);
+  box-shadow: var(--shadow-focus);
 }
 
 /* Responsive adjustments */
+@media (max-width: 768px) {
+  .header-content {
+    padding: 0 var(--spacing-4);
+  }
+  
+  .user-section {
+    gap: var(--spacing-2);
+  }
+}
+
 @media (max-width: 480px) {
   .header-content {
-    padding: 0 10px;
+    padding: 0 var(--spacing-3);
   }
   
   .logo-section h1 {
-    font-size: 1.2rem;
+    font-size: var(--font-size-lg);
   }
   
   .user-section span {
-    font-size: 0.8rem;
-    padding: 6px 8px;
+    font-size: var(--font-size-xs);
+    padding: var(--spacing-1) var(--spacing-2);
+  }
+  
+  .user-section {
+    gap: var(--spacing-1);
   }
 }

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { AppLayout } from './components/Layout'
 import { RepositoryProvider } from './contexts/RepositoryContext'
 import { NotificationProvider } from './contexts/NotificationContext'
+import { WebSocketProvider } from './contexts/WebSocketContext'
 import { NotificationContainer } from './components/Notifications'
 import './App.css'
 
@@ -10,8 +11,9 @@ function App() {
 
   return (
     <NotificationProvider>
-      <RepositoryProvider>
-        <AppLayout>
+      <WebSocketProvider config={{ autoConnect: true }}>
+        <RepositoryProvider>
+          <AppLayout>
       <div className="dashboard">
         <h1>Welcome to TaskMaster UI</h1>
         <div className="dashboard-content">
@@ -47,9 +49,10 @@ function App() {
           </div>
         </div>
       </div>
-        </AppLayout>
-        <NotificationContainer position="top-right" />
-      </RepositoryProvider>
+          </AppLayout>
+          <NotificationContainer position="top-right" />
+        </RepositoryProvider>
+      </WebSocketProvider>
     </NotificationProvider>
   )
 }

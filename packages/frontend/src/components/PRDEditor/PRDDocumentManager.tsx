@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { PRDEditorWithToolbar } from './PRDEditorWithToolbar';
+import { PRDAnalysisButton } from './PRDAnalysisButton';
 import { usePRDDocument } from './hooks/usePRDDocument';
 import type { PRDDocument } from './services/prdApi';
+import type { PRDAnalysisResult } from '../../services/api';
 
 export interface PRDDocumentManagerProps {
   /** Initial document ID to load */
@@ -14,6 +16,10 @@ export interface PRDDocumentManagerProps {
   className?: string;
   /** Callback when document operations complete */
   onOperationComplete?: (operation: string, success: boolean, data?: any) => void;
+  /** Callback when PRD analysis completes */
+  onAnalysisComplete?: (result: PRDAnalysisResult) => void;
+  /** Whether to show analysis button */
+  showAnalysisButton?: boolean;
 }
 
 /**
@@ -31,7 +37,9 @@ export const PRDDocumentManager: React.FC<PRDDocumentManagerProps> = ({
   enableBackendAutoSave = true,
   autoSaveInterval = 5000,
   className = '',
-  onOperationComplete
+  onOperationComplete,
+  onAnalysisComplete,
+  showAnalysisButton = true
 }) => {
   const [showDocumentList, setShowDocumentList] = useState(false);
   const [currentContent, setCurrentContent] = useState('');
@@ -53,9 +61,9 @@ export const PRDDocumentManager: React.FC<PRDDocumentManagerProps> = ({
     listDocuments,
     clearDocument,
     clearError,
-    checkHealth,
+    // checkHealth,
     startAutoSave,
-    stopAutoSave,
+    // stopAutoSave,
     saveNow,
   } = usePRDDocument({
     autoSaveInterval,
@@ -174,6 +182,32 @@ export const PRDDocumentManager: React.FC<PRDDocumentManagerProps> = ({
     }
   };
 
+  // Analysis handlers
+  const handleAnalysisComplete = (result: PRDAnalysisResult) => {
+    setNotification({
+      type: 'success',
+      message: `Analysis complete! Found ${result.analysis.taskCount} tasks with ${result.analysis.complexityScore}% complexity.`
+    });
+    setTimeout(() => setNotification(null), 5000);
+    onAnalysisComplete?.(result);
+  };
+
+  const handleAnalysisError = (error: Error) => {
+    setNotification({
+      type: 'error',
+      message: `Analysis failed: ${error.message}`
+    });
+    setTimeout(() => setNotification(null), 5000);
+  };
+
+  const handleAnalysisStart = () => {
+    setNotification({
+      type: 'success',
+      message: 'Starting PRD analysis...'
+    });
+    setTimeout(() => setNotification(null), 3000);
+  };
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString();
   };
@@ -208,6 +242,15 @@ export const PRDDocumentManager: React.FC<PRDDocumentManagerProps> = ({
           >
             💾 {saving ? 'Saving...' : 'Save'}
           </button>
+          {showAnalysisButton && (
+            <PRDAnalysisButton
+              content={currentContent}
+              onAnalysisComplete={handleAnalysisComplete}
+              onAnalysisError={handleAnalysisError}
+              onAnalysisStart={handleAnalysisStart}
+              className="toolbar-analysis"
+            />
+          )}
         </div>
         
         <div className="toolbar-right">
@@ -307,7 +350,7 @@ export const PRDDocumentManager: React.FC<PRDDocumentManagerProps> = ({
         </div>
       )}
 
-      <style jsx>{`
+      <style>{`
         .prd-document-manager {
           display: flex;
           flex-direction: column;
@@ -328,6 +371,13 @@ export const PRDDocumentManager: React.FC<PRDDocumentManagerProps> = ({
         .toolbar-left {
           display: flex;
           gap: 8px;
+          align-items: center;
+        }
+
+        .toolbar-analysis {
+          margin-left: 8px;
+          padding-left: 8px;
+          border-left: 1px solid #e9ecef;
         }
 
         .toolbar-button {

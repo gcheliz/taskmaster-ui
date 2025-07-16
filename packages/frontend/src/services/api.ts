@@ -68,6 +68,41 @@ export interface TaskMasterInfo {
   duration: number;
 }
 
+export interface PRDAnalysisRequest {
+  content: string;
+  analysisType?: 'basic' | 'detailed';
+  options?: {
+    includeComplexity?: boolean;
+    includeEstimation?: boolean;
+    includeDependencies?: boolean;
+  };
+}
+
+export interface PRDAnalysisResult {
+  success: boolean;
+  analysis: {
+    taskCount: number;
+    complexityScore: number;
+    estimatedHours: number;
+    extractedTasks: Array<{
+      title: string;
+      description: string;
+      priority: 'high' | 'medium' | 'low';
+      complexity: number;
+      estimatedHours: number;
+    }>;
+    dependencies: Array<{
+      from: string;
+      to: string;
+      type: 'blocks' | 'requires' | 'depends_on';
+    }>;
+    recommendations: string[];
+    parsedContent: string;
+  };
+  executionTime: number;
+  timestamp: string;
+}
+
 export interface CreateProjectResponse {
   project: ProjectResponse;
   message: string;
@@ -220,6 +255,55 @@ export class ApiService {
       params.append('projectTag', projectTag);
     }
     return this.request<any>(`/tasks/repository?${params}`);
+  }
+
+  // Task Update API
+  async updateTaskStatus(taskId: number, status: string, projectId?: string): Promise<any> {
+    return this.request<any>(`/tasks/${taskId}/status`, {
+      method: 'PUT',
+      body: JSON.stringify({ status, projectId }),
+    });
+  }
+
+  async updateTask(taskId: number, updates: any, projectId?: string): Promise<any> {
+    return this.request<any>(`/tasks/${taskId}`, {
+      method: 'PUT',
+      body: JSON.stringify({ ...updates, projectId }),
+    });
+  }
+
+  async createTask(taskData: any, projectId?: string): Promise<any> {
+    return this.request<any>('/tasks', {
+      method: 'POST',
+      body: JSON.stringify({ ...taskData, projectId }),
+    });
+  }
+
+  async deleteTask(taskId: number, projectId?: string): Promise<void> {
+    return this.request<void>(`/tasks/${taskId}`, {
+      method: 'DELETE',
+      body: JSON.stringify({ projectId }),
+    });
+  }
+
+  // PRD Analysis API
+  async analyzePRD(request: PRDAnalysisRequest): Promise<PRDAnalysisResult> {
+    return this.request<PRDAnalysisResult>('/prd/analyze', {
+      method: 'POST',
+      body: JSON.stringify(request),
+    });
+  }
+
+  async getPRDAnalysisHistory(limit?: number): Promise<{ analyses: PRDAnalysisResult[]; count: number }> {
+    const params = new URLSearchParams();
+    if (limit) {
+      params.append('limit', limit.toString());
+    }
+    return this.request<{ analyses: PRDAnalysisResult[]; count: number }>(`/prd/analyses?${params}`);
+  }
+
+  async getPRDAnalysis(analysisId: string): Promise<PRDAnalysisResult> {
+    return this.request<PRDAnalysisResult>(`/prd/analyses/${analysisId}`);
   }
 }
 

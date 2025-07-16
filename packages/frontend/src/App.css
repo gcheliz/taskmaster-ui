@@ -1,88 +1,105 @@
-/* Dashboard specific styles */
+/* Dashboard specific styles using design tokens */
 .dashboard {
   padding: 0;
 }
 
 .dashboard h1 {
-  color: #2c3e50;
-  margin-bottom: 20px;
-  font-size: 2rem;
-  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-5);
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-semibold);
 }
 
 .dashboard-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin-top: 20px;
+  gap: var(--spacing-5);
+  margin-top: var(--spacing-5);
 }
 
 .card {
-  background: white;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  border: 1px solid #e1e8ed;
+  background: var(--color-surface);
+  border-radius: var(--card-border-radius);
+  padding: var(--card-padding-base);
+  box-shadow: var(--card-shadow);
+  border: 1px solid var(--color-border);
+  transition: var(--transition-all);
+}
+
+.card:hover {
+  box-shadow: var(--card-shadow-hover);
 }
 
 .card h2 {
-  color: #2c3e50;
+  color: var(--color-text-primary);
   margin-top: 0;
-  margin-bottom: 15px;
-  font-size: 1.25rem;
+  margin-bottom: var(--spacing-4);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
 }
 
 .card h3 {
-  color: #34495e;
-  margin-bottom: 10px;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-3);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
 }
 
 .demo-section {
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 1px solid #ecf0f1;
+  margin-top: var(--spacing-5);
+  padding-top: var(--spacing-5);
+  border-top: 1px solid var(--color-border);
 }
 
 .demo-section button {
-  background: #3498db;
+  background: var(--color-primary);
   color: white;
   border: none;
-  padding: 10px 20px;
-  border-radius: 4px;
+  padding: var(--spacing-3) var(--spacing-5);
+  border-radius: var(--border-radius-md);
   cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.2s;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  transition: var(--transition-colors);
 }
 
 .demo-section button:hover {
-  background: #2980b9;
+  background: var(--color-primary-hover);
+}
+
+.demo-section button:focus {
+  outline: none;
+  box-shadow: var(--shadow-focus);
 }
 
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
-  margin-top: 15px;
+  gap: var(--spacing-4);
+  margin-top: var(--spacing-4);
 }
 
 .stat-item {
   text-align: center;
-  padding: 15px;
-  background: #f8f9fa;
-  border-radius: 4px;
+  padding: var(--spacing-4);
+  background: var(--color-surface-secondary);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--color-border);
 }
 
 .stat-item h4 {
-  margin: 0 0 10px 0;
-  color: #7f8c8d;
-  font-size: 0.9rem;
-  font-weight: normal;
+  margin: 0 0 var(--spacing-3) 0;
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wide);
 }
 
 .stat-number {
-  font-size: 2rem;
-  font-weight: bold;
-  color: #2c3e50;
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
 }
 
 /* Responsive adjustments */
@@ -98,10 +115,14 @@
 
 @media (max-width: 480px) {
   .dashboard h1 {
-    font-size: 1.5rem;
+    font-size: var(--font-size-2xl);
   }
   
   .card {
-    padding: 15px;
+    padding: var(--card-padding-sm);
+  }
+  
+  .stat-number {
+    font-size: var(--font-size-2xl);
   }
 }

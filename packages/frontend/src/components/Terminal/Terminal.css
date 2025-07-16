@@ -1,0 +1,341 @@
+/* Terminal Component Styles */
+.terminal-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  background-color: #1a1a1a;
+  color: #ffffff;
+  font-family: 'Courier New', monospace;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.terminal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  background-color: #2a2a2a;
+  border-bottom: 1px solid #444;
+  min-height: 40px;
+}
+
+.terminal-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #ccc;
+  margin: 0;
+}
+
+.terminal-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.terminal-button {
+  padding: 4px 8px;
+  font-size: 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.terminal-button:hover {
+  background-color: #444;
+}
+
+.terminal-button--clear {
+  background-color: #555;
+  color: #fff;
+}
+
+.terminal-button--kill {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.terminal-button--close {
+  background-color: #6c757d;
+  color: #fff;
+}
+
+.terminal-session-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #888;
+}
+
+.terminal-session-badge {
+  padding: 2px 6px;
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.terminal-working-directory {
+  font-size: 11px;
+  color: #aaa;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.terminal-content {
+  flex: 1;
+  padding: 8px;
+  overflow: hidden;
+  background-color: #1a1a1a;
+}
+
+.terminal-xterm {
+  height: 100%;
+  width: 100%;
+}
+
+.terminal-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #888;
+  font-size: 14px;
+}
+
+.terminal-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #dc3545;
+  font-size: 14px;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.terminal-error-message {
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.terminal-error-retry {
+  padding: 6px 12px;
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.terminal-error-retry:hover {
+  background-color: #c82333;
+}
+
+.terminal-status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 16px;
+  background-color: #2a2a2a;
+  border-top: 1px solid #444;
+  font-size: 11px;
+  color: #888;
+  min-height: 24px;
+}
+
+.terminal-status-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.terminal-status-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.terminal-connection-status {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.terminal-connection-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #28a745;
+}
+
+.terminal-connection-indicator--disconnected {
+  background-color: #dc3545;
+}
+
+.terminal-connection-indicator--connecting {
+  background-color: #ffc107;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+.terminal-resize-handle {
+  width: 100%;
+  height: 4px;
+  background-color: #444;
+  cursor: ns-resize;
+  border-bottom: 1px solid #555;
+}
+
+.terminal-resize-handle:hover {
+  background-color: #555;
+}
+
+/* Terminal container variations */
+.terminal-container--fullscreen {
+  height: 100vh;
+  width: 100vw;
+  border-radius: 0;
+}
+
+.terminal-container--embedded {
+  height: 400px;
+  min-height: 300px;
+  max-height: 80vh;
+}
+
+.terminal-container--popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80vw;
+  height: 60vh;
+  min-width: 600px;
+  min-height: 400px;
+  z-index: 1000;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* Dark theme customizations */
+.terminal-container {
+  --terminal-bg: #1a1a1a;
+  --terminal-fg: #ffffff;
+  --terminal-header-bg: #2a2a2a;
+  --terminal-border: #444;
+  --terminal-button-bg: #555;
+  --terminal-button-hover: #666;
+  --terminal-status-bg: #2a2a2a;
+  --terminal-status-fg: #888;
+}
+
+/* Light theme (optional) */
+.terminal-container--light {
+  --terminal-bg: #ffffff;
+  --terminal-fg: #000000;
+  --terminal-header-bg: #f8f9fa;
+  --terminal-border: #dee2e6;
+  --terminal-button-bg: #e9ecef;
+  --terminal-button-hover: #dee2e6;
+  --terminal-status-bg: #f8f9fa;
+  --terminal-status-fg: #6c757d;
+}
+
+.terminal-container--light .terminal-container,
+.terminal-container--light .terminal-content {
+  background-color: var(--terminal-bg);
+  color: var(--terminal-fg);
+}
+
+.terminal-container--light .terminal-header,
+.terminal-container--light .terminal-status-bar {
+  background-color: var(--terminal-header-bg);
+  border-color: var(--terminal-border);
+}
+
+.terminal-container--light .terminal-button {
+  background-color: var(--terminal-button-bg);
+  color: var(--terminal-fg);
+}
+
+.terminal-container--light .terminal-button:hover {
+  background-color: var(--terminal-button-hover);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .terminal-container--popup {
+    width: 95vw;
+    height: 70vh;
+    min-width: 300px;
+  }
+
+  .terminal-header {
+    padding: 6px 12px;
+  }
+
+  .terminal-title {
+    font-size: 12px;
+  }
+
+  .terminal-button {
+    padding: 3px 6px;
+    font-size: 11px;
+  }
+
+  .terminal-working-directory {
+    max-width: 120px;
+  }
+
+  .terminal-status-bar {
+    padding: 3px 12px;
+    font-size: 10px;
+  }
+}
+
+/* Animation for terminal opening */
+@keyframes terminal-open {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.terminal-container--opening {
+  animation: terminal-open 0.2s ease-out;
+}
+
+/* Custom scrollbar for terminal content */
+.terminal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.terminal-content::-webkit-scrollbar-track {
+  background: #2a2a2a;
+}
+
+.terminal-content::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 4px;
+}
+
+.terminal-content::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}

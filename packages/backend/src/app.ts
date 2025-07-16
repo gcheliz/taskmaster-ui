@@ -7,6 +7,7 @@ import projectRoutes from './routes/projectRoutes';
 import realtimeRoutes from './routes/realtimeRoutes';
 import terminalRoutes from './routes/terminalRoutes';
 import prdRoutes from './routes/prdRoutes';
+import dashboardRoutes from './routes/dashboardRoutes';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 import DatabaseService from './services/database';
 
@@ -43,6 +44,7 @@ app.use('/api/projects', projectRoutes);
 app.use('/api/realtime', realtimeRoutes);
 app.use('/api/terminal', terminalRoutes);
 app.use('/api/prd', prdRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 // Error handling middleware
 app.use(notFoundHandler);

@@ -17,4 +17,18 @@ module.exports = {
     node: true,
     es2021: true,
   },
+  globals: {
+    NodeJS: 'readonly',
+  },
+  overrides: [
+    {
+      files: ['**/__tests__/**/*', '**/*.test.*', '**/*.spec.*'],
+      env: {
+        jest: true,
+      },
+      rules: {
+        'no-console': 'off',
+      },
+    },
+  ],
 };

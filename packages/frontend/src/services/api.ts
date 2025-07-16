@@ -103,6 +103,74 @@ export interface PRDAnalysisResult {
   timestamp: string;
 }
 
+export interface DashboardData {
+  project: {
+    id: string;
+    name: string;
+    path: string;
+    lastUpdated: string;
+  };
+  taskMetrics: {
+    total: number;
+    completed: number;
+    inProgress: number;
+    pending: number;
+    blocked: number;
+    deferred: number;
+    cancelled: number;
+    completionRate: number;
+    statusBreakdown: Record<string, number>;
+    priorityBreakdown: Record<string, number>;
+    complexityDistribution: Record<string, number>;
+  };
+  subtaskMetrics: {
+    total: number;
+    completed: number;
+    inProgress: number;
+    pending: number;
+    completionRate: number;
+  };
+  recentActivity: Array<{
+    id: string;
+    type: 'commit' | 'task_update' | 'project_update';
+    timestamp: string;
+    message: string;
+    author?: string;
+    details?: any;
+  }>;
+  chartData: {
+    taskCompletionTrend: Array<{
+      date: string;
+      completed: number;
+      total: number;
+      completionRate: number;
+    }>;
+    priorityDistribution: Array<{
+      priority: string;
+      count: number;
+      percentage: number;
+    }>;
+    complexityBreakdown: Array<{
+      complexity: string;
+      count: number;
+      averageTime: number;
+    }>;
+  };
+  insights: {
+    totalEstimatedHours: number;
+    averageTaskComplexity: number;
+    productivityScore: number;
+    recommendations: string[];
+  };
+}
+
+export interface ProjectHealthData {
+  score: number;
+  status: 'excellent' | 'good' | 'fair' | 'needs-attention';
+  metrics: DashboardData['taskMetrics'];
+  timestamp: string;
+}
+
 export interface CreateProjectResponse {
   project: ProjectResponse;
   message: string;
@@ -304,6 +372,31 @@ export class ApiService {
 
   async getPRDAnalysis(analysisId: string): Promise<PRDAnalysisResult> {
     return this.request<PRDAnalysisResult>(`/prd/analyses/${analysisId}`);
+  }
+
+  // Dashboard API
+  async getDashboardData(projectId: string, projectTag?: string): Promise<DashboardData> {
+    const params = new URLSearchParams();
+    if (projectTag) {
+      params.append('tag', projectTag);
+    }
+    return this.request<DashboardData>(`/dashboard/projects/${projectId}?${params}`);
+  }
+
+  async getProjectHealth(projectId: string, projectTag?: string): Promise<ProjectHealthData> {
+    const params = new URLSearchParams();
+    if (projectTag) {
+      params.append('tag', projectTag);
+    }
+    return this.request<ProjectHealthData>(`/dashboard/projects/${projectId}/health?${params}`);
+  }
+
+  async getDashboardMetrics(projectId: string, projectTag?: string): Promise<DashboardData> {
+    const params = new URLSearchParams();
+    if (projectTag) {
+      params.append('tag', projectTag);
+    }
+    return this.request<DashboardData>(`/dashboard/projects/${projectId}/metrics?${params}`);
   }
 }
 

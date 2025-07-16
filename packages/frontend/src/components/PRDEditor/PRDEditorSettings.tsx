@@ -109,7 +109,7 @@ export const PRDEditorSettings: React.FC<PRDEditorSettingsProps> = ({
               <p className="no-history">No auto-save history found.</p>
             ) : (
               <div className="history-list">
-                {autosaveHistory.map((item, index) => (
+                {autosaveHistory.map((item) => (
                   <div 
                     key={item.timestamp} 
                     className={`history-item ${selectedHistoryItem === item.timestamp ? 'selected' : ''}`}
@@ -163,7 +163,7 @@ export const PRDEditorSettings: React.FC<PRDEditorSettingsProps> = ({
         </div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         .prd-editor-settings {
           position: fixed;
           top: 0;

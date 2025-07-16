@@ -103,26 +103,11 @@ export class TaskService {
     const cacheKey = `tasks-${projectId || 'default'}`;
     
     try {
-      const response = await fetch(`${this.config.apiBaseUrl}/tasks/${taskId}/status`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          status: newStatus,
-          projectId: projectId || this.config.projectId
-        }),
-      });
-      
-      if (!response.ok) {
-        throw new ApiError(
-          'UPDATE_TASK_ERROR',
-          `Failed to update task status: ${response.status} ${response.statusText}`,
-          response.status
-        );
-      }
-
-      const updatedTask: Task = await response.json();
+      const updatedTask = await apiService.updateTaskStatus(
+        taskId, 
+        newStatus, 
+        projectId || this.config.projectId
+      );
       
       // Clear cache to force reload
       if (this.config.enableCache) {
@@ -151,26 +136,10 @@ export class TaskService {
     const cacheKey = `tasks-${projectId || 'default'}`;
     
     try {
-      const response = await fetch(`${this.config.apiBaseUrl}/tasks`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...taskData,
-          projectId: projectId || this.config.projectId
-        }),
-      });
-      
-      if (!response.ok) {
-        throw new ApiError(
-          'CREATE_TASK_ERROR',
-          `Failed to create task: ${response.status} ${response.statusText}`,
-          response.status
-        );
-      }
-
-      const createdTask: Task = await response.json();
+      const createdTask = await apiService.createTask(
+        taskData,
+        projectId || this.config.projectId
+      );
       
       // Clear cache to force reload
       if (this.config.enableCache) {
@@ -199,26 +168,11 @@ export class TaskService {
     const cacheKey = `tasks-${projectId || 'default'}`;
     
     try {
-      const response = await fetch(`${this.config.apiBaseUrl}/tasks/${taskId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...updates,
-          projectId: projectId || this.config.projectId
-        }),
-      });
-      
-      if (!response.ok) {
-        throw new ApiError(
-          'UPDATE_TASK_ERROR',
-          `Failed to update task: ${response.status} ${response.statusText}`,
-          response.status
-        );
-      }
-
-      const updatedTask: Task = await response.json();
+      const updatedTask = await apiService.updateTask(
+        taskId,
+        updates,
+        projectId || this.config.projectId
+      );
       
       // Clear cache to force reload
       if (this.config.enableCache) {
@@ -247,23 +201,10 @@ export class TaskService {
     const cacheKey = `tasks-${projectId || 'default'}`;
     
     try {
-      const response = await fetch(`${this.config.apiBaseUrl}/tasks/${taskId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          projectId: projectId || this.config.projectId
-        }),
-      });
-      
-      if (!response.ok) {
-        throw new ApiError(
-          'DELETE_TASK_ERROR',
-          `Failed to delete task: ${response.status} ${response.statusText}`,
-          response.status
-        );
-      }
+      await apiService.deleteTask(
+        taskId,
+        projectId || this.config.projectId
+      );
 
       // Clear cache to force reload
       if (this.config.enableCache) {

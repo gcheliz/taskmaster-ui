@@ -1,0 +1,393 @@
+/* Terminal View Styles */
+.terminal-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  background-color: #f8f9fa;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.terminal-view__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e9ecef;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.terminal-view__title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #212529;
+  margin: 0;
+}
+
+.terminal-view__controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.repository-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.repository-selector label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #495057;
+  white-space: nowrap;
+}
+
+.repository-selector select {
+  padding: 6px 12px;
+  font-size: 14px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  background-color: #ffffff;
+  color: #495057;
+  min-width: 200px;
+  cursor: pointer;
+}
+
+.repository-selector select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.repository-selector select:disabled {
+  background-color: #f8f9fa;
+  cursor: not-allowed;
+}
+
+.create-session-button {
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #ffffff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.create-session-button:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+.create-session-button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.terminal-view__tabs {
+  display: flex;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e9ecef;
+  overflow-x: auto;
+  padding: 0 24px;
+}
+
+.terminal-tab {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-bottom: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-right: 2px;
+  min-width: 200px;
+  position: relative;
+}
+
+.terminal-tab:hover {
+  background-color: #e9ecef;
+}
+
+.terminal-tab--active {
+  background-color: #ffffff;
+  border-bottom: 2px solid #007bff;
+}
+
+.terminal-tab__title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #495057;
+  flex: 1;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.terminal-tab--active .terminal-tab__title {
+  color: #007bff;
+}
+
+.terminal-tab__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background-color: transparent;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+  color: #6c757d;
+  margin-left: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.terminal-tab__close:hover {
+  background-color: #dc3545;
+  color: #ffffff;
+}
+
+.terminal-view__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: #1a1a1a;
+}
+
+.terminal-view__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background-color: #f8f9fa;
+}
+
+.empty-state {
+  text-align: center;
+  max-width: 400px;
+  padding: 48px 24px;
+}
+
+.empty-state__icon {
+  font-size: 64px;
+  margin-bottom: 24px;
+}
+
+.empty-state__title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #212529;
+  margin: 0 0 16px 0;
+}
+
+.empty-state__description {
+  font-size: 16px;
+  color: #6c757d;
+  line-height: 1.5;
+  margin: 0 0 24px 0;
+}
+
+.empty-state__button {
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #ffffff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.empty-state__button:hover {
+  background-color: #0056b3;
+}
+
+/* Dark theme support */
+.terminal-view--dark {
+  background-color: #2a2a2a;
+  color: #ffffff;
+}
+
+.terminal-view--dark .terminal-view__header {
+  background-color: #1a1a1a;
+  border-bottom-color: #444;
+}
+
+.terminal-view--dark .terminal-view__title {
+  color: #ffffff;
+}
+
+.terminal-view--dark .repository-selector label {
+  color: #ccc;
+}
+
+.terminal-view--dark .repository-selector select {
+  background-color: #2a2a2a;
+  border-color: #444;
+  color: #ffffff;
+}
+
+.terminal-view--dark .terminal-view__tabs {
+  background-color: #1a1a1a;
+  border-bottom-color: #444;
+}
+
+.terminal-view--dark .terminal-tab {
+  background-color: #2a2a2a;
+  border-color: #444;
+}
+
+.terminal-view--dark .terminal-tab:hover {
+  background-color: #333;
+}
+
+.terminal-view--dark .terminal-tab--active {
+  background-color: #1a1a1a;
+}
+
+.terminal-view--dark .terminal-tab__title {
+  color: #ccc;
+}
+
+.terminal-view--dark .terminal-tab--active .terminal-tab__title {
+  color: #007bff;
+}
+
+.terminal-view--dark .terminal-view__empty {
+  background-color: #2a2a2a;
+}
+
+.terminal-view--dark .empty-state__title {
+  color: #ffffff;
+}
+
+.terminal-view--dark .empty-state__description {
+  color: #ccc;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .terminal-view__header {
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+  }
+
+  .terminal-view__controls {
+    width: 100%;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .repository-selector {
+    width: 100%;
+  }
+
+  .repository-selector select {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .create-session-button {
+    width: 100%;
+  }
+
+  .terminal-view__tabs {
+    padding: 0 16px;
+  }
+
+  .terminal-tab {
+    min-width: 150px;
+  }
+
+  .empty-state {
+    padding: 32px 16px;
+  }
+
+  .empty-state__icon {
+    font-size: 48px;
+  }
+
+  .empty-state__title {
+    font-size: 20px;
+  }
+
+  .empty-state__description {
+    font-size: 14px;
+  }
+}
+
+/* Terminal content animations */
+.terminal-view__content {
+  transition: all 0.3s ease;
+}
+
+.terminal-tab {
+  transition: all 0.2s ease;
+}
+
+.terminal-tab--active {
+  animation: tabActivate 0.2s ease;
+}
+
+@keyframes tabActivate {
+  from {
+    transform: translateY(-2px);
+    opacity: 0.8;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Loading state */
+.terminal-view--loading .repository-selector select {
+  background-image: url("data:image/svg+xml,%3csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M10 2a8 8 0 100 16 8 8 0 000-16zm0 2a6 6 0 110 12 6 6 0 010-12z' fill='%23999'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 36px;
+}
+
+/* Error state */
+.terminal-view__error {
+  padding: 16px 24px;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  color: #721c24;
+  margin: 16px 24px;
+}
+
+.terminal-view__error--dark {
+  background-color: #2d1b1f;
+  border-color: #842029;
+  color: #f8d7da;
+}
+
+/* Scrollbar styling for tabs */
+.terminal-view__tabs::-webkit-scrollbar {
+  height: 6px;
+}
+
+.terminal-view__tabs::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.terminal-view__tabs::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.terminal-view__tabs::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}

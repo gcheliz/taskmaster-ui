@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const app_1 = __importDefault(require("./app"));
 const websocket_1 = require("./services/websocket");
 const realtimeTaskSyncService_1 = require("./services/realtimeTaskSyncService");
+const terminalWebSocketService_1 = require("./services/terminalWebSocketService");
+const terminalService_1 = require("./services/terminalService");
 const PORT = process.env.PORT || 3001;
 // Only start the server if this file is run directly
 if (require.main === module) {
@@ -15,6 +17,8 @@ if (require.main === module) {
     // Initialize WebSocket server
     const wsService = new websocket_1.WebSocketService();
     wsService.initialize(server);
+    // Initialize Terminal WebSocket service
+    const terminalWsService = new terminalWebSocketService_1.TerminalWebSocketService(server);
     // Initialize real-time task sync service
     const realtimeSyncService = (0, realtimeTaskSyncService_1.createRealtimeTaskSyncService)(wsService, {
         enabled: true,
@@ -29,6 +33,8 @@ if (require.main === module) {
         console.log(`\n🛑 Received ${signal}, starting graceful shutdown...`);
         try {
             await realtimeSyncService.shutdown();
+            terminalService_1.terminalService.destroy();
+            terminalWsService.destroy();
             wsService.close();
             server.close(() => {
                 console.log('✅ Server shut down gracefully');

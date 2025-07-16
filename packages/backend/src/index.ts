@@ -1,6 +1,8 @@
 import app from './app';
 import { WebSocketService } from './services/websocket';
 import { createRealtimeTaskSyncService } from './services/realtimeTaskSyncService';
+import { TerminalWebSocketService, terminalWebSocketService } from './services/terminalWebSocketService';
+import { terminalService } from './services/terminalService';
 
 const PORT = process.env.PORT || 3001;
 
@@ -13,6 +15,9 @@ if (require.main === module) {
   // Initialize WebSocket server
   const wsService = new WebSocketService();
   wsService.initialize(server);
+
+  // Initialize Terminal WebSocket service
+  const terminalWsService = new TerminalWebSocketService(server);
 
   // Initialize real-time task sync service
   const realtimeSyncService = createRealtimeTaskSyncService(wsService, {
@@ -31,6 +36,8 @@ if (require.main === module) {
     
     try {
       await realtimeSyncService.shutdown();
+      terminalService.destroy();
+      terminalWsService.destroy();
       wsService.close();
       server.close(() => {
         console.log('✅ Server shut down gracefully');

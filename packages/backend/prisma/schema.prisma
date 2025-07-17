@@ -32,8 +32,8 @@ model Project {
 model Repository {
   id        String   @id @default(cuid())
   name      String
-  url       String
-  path      String
+  url       String?
+  path      String   @unique
   branch    String   @default("main")
   projectId String
   createdAt DateTime @default(now())

@@ -1,66 +1,8 @@
-import sqlite3 from 'sqlite3';
-import path from 'path';
-import fs from 'fs';
-// Forward declaration to avoid circular dependency
-export class MigrationService {
-  private dbService: DatabaseService;
-
-  constructor(dbService: DatabaseService) {
-    this.dbService = dbService;
-  }
-
-  async getCurrentVersion(): Promise<number> {
-    try {
-      const result = await this.dbService.get(
-        'SELECT version FROM schema_version ORDER BY version DESC LIMIT 1'
-      );
-      return result ? result.version : 0;
-    } catch (error) {
-      // Table doesn't exist yet, start from version 0
-      return 0;
-    }
-  }
-
-  async runMigrations(): Promise<void> {
-    // Import migrations here to avoid circular dependency
-    const { migrations } = await import('./migrations');
-    
-    const currentVersion = await this.getCurrentVersion();
-    const pendingMigrations = migrations.filter(
-      (m) => m.version > currentVersion
-    );
-
-    if (pendingMigrations.length === 0) {
-      console.log('No pending migrations');
-      return;
-    }
-
-    console.log(`Running ${pendingMigrations.length} migrations...`);
-
-    for (const migration of pendingMigrations) {
-      console.log(`Applying migration ${migration.version}: ${migration.description}`);
-      
-      try {
-        await this.dbService.run(migration.up);
-        await this.dbService.run(
-          'INSERT INTO schema_version (version, description) VALUES (?, ?)',
-          [migration.version, migration.description]
-        );
-        console.log(`Migration ${migration.version} applied successfully`);
-      } catch (error) {
-        console.error(`Failed to apply migration ${migration.version}:`, error);
-        throw error;
-      }
-    }
-
-    console.log('All migrations completed successfully');
-  }
-}
+import { PrismaClient } from '../generated/prisma';
 
 export class DatabaseService {
   private static instance: DatabaseService;
-  private db: sqlite3.Database | null = null;
-  private migrationService: MigrationService | null = null;
+  private prisma: PrismaClient | null = null;
 
   private constructor() {}
 
@@ -72,126 +14,112 @@ export class DatabaseService {
   }
 
   public async connect(): Promise<void> {
-    if (this.db) {
+    if (this.prisma) {
       return;
     }
 
-    let dbPath: string;
-    
-    // Use in-memory database for tests
-    if (process.env.NODE_ENV === 'test') {
-      dbPath = ':memory:';
-    } else {
-      const dataDir = path.join(process.cwd(), 'data');
-      dbPath = path.join(dataDir, 'taskmaster.db');
-      
-      // Ensure data directory exists
-      if (!fs.existsSync(dataDir)) {
-        fs.mkdirSync(dataDir, { recursive: true });
-      }
-    }
-    
-    return new Promise((resolve, reject) => {
-      this.db = new sqlite3.Database(dbPath, (err) => {
-        if (err) {
-          console.error('Error opening database:', err);
-          reject(err);
-        } else {
-          console.log('Connected to SQLite database');
-          this.migrationService = new MigrationService(this);
-          resolve();
-        }
+    try {
+      this.prisma = new PrismaClient({
+        log: process.env.NODE_ENV === 'development' ? ['query', 'info', 'warn', 'error'] : ['error'],
       });
-    });
+      
+      // Test the connection
+      await this.prisma.$connect();
+      console.log('Connected to PostgreSQL database via Prisma');
+      
+    } catch (error) {
+      console.error('Error connecting to database:', error);
+      throw error;
+    }
   }
 
   public async disconnect(): Promise<void> {
-    if (!this.db) {
+    if (!this.prisma) {
       return;
     }
 
-    return new Promise((resolve, reject) => {
-      this.db!.close((err) => {
-        if (err) {
-          console.error('Error closing database:', err);
-          reject(err);
-        } else {
-          console.log('Disconnected from SQLite database');
-          this.db = null;
-          resolve();
-        }
-      });
-    });
+    try {
+      await this.prisma.$disconnect();
+      console.log('Disconnected from PostgreSQL database');
+      this.prisma = null;
+    } catch (error) {
+      console.error('Error disconnecting from database:', error);
+      throw error;
+    }
   }
 
-  public getDb(): sqlite3.Database {
-    if (!this.db) {
+  public getPrisma(): PrismaClient {
+    if (!this.prisma) {
       throw new Error('Database not connected. Call connect() first.');
     }
-    return this.db;
+    return this.prisma;
   }
 
-  public async run(sql: string, params: any[] = []): Promise<sqlite3.RunResult> {
-    if (!this.db) {
-      throw new Error('Database not connected. Call connect() first.');
+  public async healthCheck(): Promise<boolean> {
+    try {
+      if (!this.prisma) {
+        return false;
+      }
+      
+      // Simple query to test database connectivity
+      await this.prisma.$queryRaw`SELECT 1`;
+      return true;
+    } catch (error) {
+      console.error('Database health check failed:', error);
+      return false;
     }
-
-    return new Promise((resolve, reject) => {
-      this.db!.run(sql, params, function (err) {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(this);
-        }
-      });
-    });
   }
 
-  public async get(sql: string, params: any[] = []): Promise<any> {
-    if (!this.db) {
-      throw new Error('Database not connected. Call connect() first.');
-    }
-
-    return new Promise((resolve, reject) => {
-      this.db!.get(sql, params, (err, row) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(row);
-        }
-      });
-    });
-  }
-
-  public async all(sql: string, params: any[] = []): Promise<any[]> {
-    if (!this.db) {
+  public async getStats(): Promise<{
+    projectCount: number;
+    repositoryCount: number;
+    taskCount: number;
+    commitCount: number;
+  }> {
+    if (!this.prisma) {
       throw new Error('Database not connected. Call connect() first.');
     }
 
-    return new Promise((resolve, reject) => {
-      this.db!.all(sql, params, (err, rows) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(rows);
-        }
-      });
-    });
+    try {
+      const [projectCount, repositoryCount, taskCount, commitCount] = await Promise.all([
+        this.prisma.project.count(),
+        this.prisma.repository.count(),
+        this.prisma.task.count(),
+        this.prisma.commit.count(),
+      ]);
+
+      return {
+        projectCount,
+        repositoryCount,
+        taskCount,
+        commitCount,
+      };
+    } catch (error) {
+      console.error('Error getting database stats:', error);
+      throw error;
+    }
   }
 
+  /**
+   * Transaction wrapper for complex operations
+   */
+  public async transaction<T>(
+    fn: (prisma: Omit<PrismaClient, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'>) => Promise<T>
+  ): Promise<T> {
+    if (!this.prisma) {
+      throw new Error('Database not connected. Call connect() first.');
+    }
+
+    return this.prisma.$transaction(fn);
+  }
+
+  /**
+   * Initialize database schema using Prisma migrations
+   * This should be called during application startup
+   */
   public async initializeSchema(): Promise<void> {
-    if (!this.migrationService) {
-      throw new Error('Database not connected. Call connect() first.');
-    }
-    
-    await this.migrationService.runMigrations();
-  }
-
-  public getMigrationService(): MigrationService {
-    if (!this.migrationService) {
-      throw new Error('Database not connected. Call connect() first.');
-    }
-    return this.migrationService;
+    console.log('Schema initialization is handled by Prisma migrations');
+    console.log('Use "prisma migrate deploy" in production or "prisma migrate dev" in development');
   }
 }
 

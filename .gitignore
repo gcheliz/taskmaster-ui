@@ -97,3 +97,7 @@ benchmarks/
 # tasks.json
 # tasks/ 
 !/CLAUDE.md
+
+database/data/*
+**/*/data
+**/*/generated

@@ -242,11 +242,20 @@
   --shadow-2xl: 0 50px 100px -20px rgba(0, 0, 0, 0.25);
   --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
   
-  /* Focus shadows */
-  --shadow-focus: 0 0 0 3px rgba(59, 130, 246, 0.1);
-  --shadow-focus-error: 0 0 0 3px rgba(239, 68, 68, 0.1);
-  --shadow-focus-success: 0 0 0 3px rgba(34, 197, 94, 0.1);
-  --shadow-focus-warning: 0 0 0 3px rgba(245, 158, 11, 0.1);
+  /* Focus shadows - WCAG compliant focus indicators */
+  --shadow-focus: 0 0 0 3px rgba(59, 130, 246, 0.5);
+  --shadow-focus-error: 0 0 0 3px rgba(239, 68, 68, 0.5);
+  --shadow-focus-success: 0 0 0 3px rgba(34, 197, 94, 0.5);
+  --shadow-focus-warning: 0 0 0 3px rgba(245, 158, 11, 0.5);
+  
+  /* Alternative focus styles for high contrast */
+  --focus-ring-width: 3px;
+  --focus-ring-offset: 2px;
+  --focus-ring-color: var(--primary-600);
+  
+  /* Enhanced focus rings for better visibility */
+  --focus-ring-color-light: var(--primary-600);
+  --focus-ring-color-dark: var(--primary-400);
   
   /* === TRANSITIONS === */
   
@@ -341,6 +350,9 @@
   
   --color-border: var(--neutral-700);
   --color-border-secondary: var(--neutral-600);
+  
+  /* Enhanced focus ring for dark theme */
+  --focus-ring-color: var(--focus-ring-color-dark);
   
   /* Adjust shadows for dark theme */
   --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.3);

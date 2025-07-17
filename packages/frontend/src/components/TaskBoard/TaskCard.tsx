@@ -125,6 +125,15 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   const isDueSoon = task.dueDate && !isOverdue && 
     new Date(task.dueDate) <= new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
+  // Merge accessibility attributes with DnD attributes
+  const mergedAttributes = {
+    ...attributes,
+    role: "button",
+    tabIndex: 0,
+    'aria-label': `Task ${task.title}, priority ${task.priority}, status ${task.status}. Press Enter or Space to open details.`,
+    'aria-describedby': task.description ? `task-${task.id}-description` : undefined
+  };
+
   return (
     <div
       ref={setNodeRef}
@@ -144,7 +153,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
         '--priority-color': getPriorityColor(task.priority),
         ...style
       } as React.CSSProperties}
-      {...attributes}
+      {...mergedAttributes}
       {...listeners}
     >
       <div className="task-card__header">
@@ -170,7 +179,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
       {showFullDetails && task.description && (
         <div className="task-card__description">
-          <p className="task-description">{task.description}</p>
+          <p id={`task-${task.id}-description`} className="task-description">{task.description}</p>
         </div>
       )}
 

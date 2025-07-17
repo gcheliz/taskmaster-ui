@@ -19,7 +19,13 @@ export const NotificationContainer: React.FC<NotificationContainerProps> = ({
   }
 
   return (
-    <div className={`notification-container ${position} ${className}`.trim()}>
+    <div 
+      className={`notification-container ${position} ${className}`.trim()}
+      role="region"
+      aria-label="Notifications"
+      aria-live="polite"
+      aria-atomic="false"
+    >
       {state.notifications.map((notification) => (
         <NotificationCard
           key={notification.id}

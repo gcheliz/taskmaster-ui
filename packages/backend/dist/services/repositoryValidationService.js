@@ -282,14 +282,18 @@ class RepositoryValidationService {
                 await fs.access(tasksFile);
                 hasTasksFile = true;
             }
-            catch { }
+            catch {
+                // File doesn't exist, hasTasksFile stays false
+            }
             // Check if config.json exists
             let hasConfigFile = false;
             try {
                 await fs.access(configFile);
                 hasConfigFile = true;
             }
-            catch { }
+            catch {
+                // File doesn't exist, hasConfigFile stays false
+            }
             if (hasTasksFile || hasConfigFile) {
                 return {
                     type: 'taskmaster',

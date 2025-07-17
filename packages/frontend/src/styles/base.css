@@ -565,15 +565,79 @@ button:disabled {
 
 /* === FOCUS MANAGEMENT === */
 
-/* Focus styles for keyboard navigation */
+/* Enhanced focus styles for keyboard navigation */
+*:focus {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* Focus-visible polyfill for better focus management */
 .focus-visible:focus {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
 }
 
 /* Hide focus outline for mouse users */
 .focus-visible:focus:not(:focus-visible) {
   outline: none;
+}
+
+/* Skip link for keyboard navigation */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: var(--spacing-2);
+  background: var(--color-primary);
+  color: white;
+  padding: var(--spacing-3) var(--spacing-5);
+  text-decoration: none;
+  border-radius: var(--border-radius-md);
+  z-index: var(--z-index-modal);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base);
+  border: 2px solid transparent;
+  transition: var(--transition-all);
+}
+
+.skip-link:focus {
+  top: var(--spacing-2);
+  outline: none;
+  border-color: white;
+  box-shadow: var(--shadow-lg);
+}
+
+.skip-link:hover {
+  background: var(--color-primary-hover);
+}
+
+/* Focus trap helpers */
+.focus-trap {
+  /* Used for modal focus management */
+}
+
+/* Enhanced focus for interactive elements */
+button:focus,
+a:focus,
+input:focus,
+textarea:focus,
+select:focus,
+[role="button"]:focus,
+[role="link"]:focus,
+[tabindex]:focus {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+  z-index: 1;
+}
+
+/* Enhanced focus for custom components */
+[role="tab"]:focus,
+[role="menuitem"]:focus,
+[role="option"]:focus,
+[role="listbox"]:focus,
+[role="combobox"]:focus {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+  z-index: 1;
 }
 
 /* === PRINT STYLES === */

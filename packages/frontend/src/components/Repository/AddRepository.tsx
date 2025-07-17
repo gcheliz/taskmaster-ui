@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { validateRepositoryPath } from '../../utils/security';
 import './AddRepository.css';
 
 export interface AddRepositoryProps {
@@ -20,24 +21,8 @@ export const AddRepository: React.FC<AddRepositoryProps> = ({
   const [validationError, setValidationError] = useState<string | null>(null);
 
   const validatePath = (path: string): string | null => {
-    if (!path.trim()) {
-      return 'Repository path is required';
-    }
-    
-    if (path.length < 2) {
-      return 'Path is too short';
-    }
-    
-    if (path.length > 500) {
-      return 'Path is too long (max 500 characters)';
-    }
-    
-    // Basic validation for absolute path
-    if (!path.startsWith('/') && !(/^[A-Za-z]:[\\\/]/.test(path))) {
-      return 'Please provide an absolute path (e.g., /Users/john/my-repo or C:\\Users\\john\\my-repo)';
-    }
-    
-    return null;
+    const result = validateRepositoryPath(path);
+    return result.isValid ? null : result.error || 'Invalid repository path';
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,7 +48,11 @@ export const AddRepository: React.FC<AddRepositoryProps> = ({
     setValidationError(null);
     
     try {
-      await onRepositoryAdd?.(repositoryPath.trim());
+      // Get the sanitized path from validation
+      const validationResult = validateRepositoryPath(repositoryPath);
+      const sanitizedPath = validationResult.sanitizedValue || repositoryPath.trim();
+      
+      await onRepositoryAdd?.(sanitizedPath);
       
       // Clear form on successful submission if clearOnSuccess is enabled
       if (clearOnSuccess) {

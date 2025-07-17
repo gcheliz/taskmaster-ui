@@ -501,7 +501,6 @@ export class TaskMasterRouteFactory {
     // Operation-specific validation
     switch (operation) {
       case 'show':
-      case 'set-status':
         if (!args?.id) {
           errors.push({
             field: 'arguments.id',
@@ -513,6 +512,14 @@ export class TaskMasterRouteFactory {
         break;
 
       case 'set-status':
+        if (!args?.id) {
+          errors.push({
+            field: 'arguments.id',
+            code: 'REQUIRED',
+            message: `Task ID is required for ${operation} operation`,
+            value: args?.id
+          });
+        }
         if (!args?.status) {
           errors.push({
             field: 'arguments.status',

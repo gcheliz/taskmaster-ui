@@ -60,7 +60,7 @@ class FileWatcherService extends events_1.EventEmitter {
         console.log(`🔍 Starting to watch tasks file: ${tasksFilePath}`);
         // Create watcher
         const watcher = chokidar_1.default.watch(tasksFilePath, {
-            ignored: /(^|[\/\\])\../, // ignore dotfiles
+            ignored: /(^|[/\\])\../, // ignore dotfiles
             ignoreInitial: this.config.ignoreInitial,
             persistent: this.config.persistent,
             usePolling: this.config.usePolling,

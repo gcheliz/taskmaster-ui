@@ -1,14 +1,20 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { AppLayout } from './components/Layout'
 import { RepositoryProvider } from './contexts/RepositoryContext'
 import { NotificationProvider } from './contexts/NotificationContext'
 import { WebSocketProvider } from './contexts/WebSocketContext'
 import { ThemeProvider } from './contexts/ThemeContext'
 import { NotificationContainer } from './components/Notifications'
+import { initializeKeyboardDetection } from './utils/keyboard'
 import './App.css'
 
 function App() {
   const [count, setCount] = useState(0)
+
+  // Initialize keyboard navigation detection
+  useEffect(() => {
+    initializeKeyboardDetection();
+  }, []);
 
   return (
     <ThemeProvider>

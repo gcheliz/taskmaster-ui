@@ -16,6 +16,7 @@ import type {
 } from '@dnd-kit/core';
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import type { TaskStatus } from '../../types/task';
+import { announceToScreenReader } from '../../utils/keyboard';
 
 export interface DragAndDropProviderProps {
   /** Children components to wrap with drag and drop context */
@@ -80,7 +81,14 @@ export const DragAndDropProvider: React.FC<DragAndDropProviderProps> = ({
     // Add visual feedback
     document.body.style.cursor = 'grabbing';
     
-    // Optional: Add custom drag start logic
+    const activeData = active.data.current as DragData;
+    if (activeData && activeData.type === 'task') {
+      announceToScreenReader(
+        `Started moving task ${activeData.taskId} from ${activeData.status}`,
+        'polite'
+      );
+    }
+    
     console.log('Drag started:', active.id);
   }, []);
 
@@ -105,6 +113,7 @@ export const DragAndDropProvider: React.FC<DragAndDropProviderProps> = ({
     document.body.style.cursor = '';
     
     if (!over) {
+      announceToScreenReader('Task move cancelled', 'polite');
       console.log('Drag ended without drop target');
       return;
     }
@@ -114,12 +123,14 @@ export const DragAndDropProvider: React.FC<DragAndDropProviderProps> = ({
     
     // Validate drag data
     if (!activeData || activeData.type !== 'task') {
+      announceToScreenReader('Invalid task move attempted', 'assertive');
       console.error('Invalid drag data:', activeData);
       return;
     }
     
     // Validate drop data
     if (!overData || overData.type !== 'column') {
+      announceToScreenReader('Invalid drop target', 'assertive');
       console.error('Invalid drop data:', overData);
       return;
     }
@@ -129,9 +140,16 @@ export const DragAndDropProvider: React.FC<DragAndDropProviderProps> = ({
     
     // Don't move if status is the same
     if (fromStatus === toStatus) {
+      announceToScreenReader(`Task ${taskId} is already in ${fromStatus}`, 'polite');
       console.log('Task already in the same column');
       return;
     }
+    
+    // Announce successful move
+    announceToScreenReader(
+      `Task ${taskId} moved from ${fromStatus} to ${toStatus}`,
+      'polite'
+    );
     
     // Call the onTaskMove callback
     if (onTaskMove) {
@@ -144,6 +162,7 @@ export const DragAndDropProvider: React.FC<DragAndDropProviderProps> = ({
   const handleDragCancel = useCallback(() => {
     setActiveId(null);
     document.body.style.cursor = '';
+    announceToScreenReader('Task move cancelled', 'polite');
     console.log('Drag cancelled');
   }, []);
 

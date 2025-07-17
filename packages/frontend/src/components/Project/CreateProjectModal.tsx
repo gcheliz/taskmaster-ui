@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { RepositoryService } from '../../services/repositoryService';
+import { validateProjectName } from '../../utils/security';
 import './CreateProjectModal.css';
 
 export interface Repository {
@@ -42,6 +43,11 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
     projectName?: string;
   }>({});
 
+  // Refs for focus management
+  const modalRef = useRef<HTMLDivElement>(null);
+  const firstFocusableRef = useRef<HTMLButtonElement>(null);
+  const lastFocusableRef = useRef<HTMLButtonElement>(null);
+
   // Fetch repositories when modal opens
   useEffect(() => {
     if (isOpen) {
@@ -51,8 +57,50 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
       setProjectName('');
       setError(null);
       setValidationErrors({});
+      
+      // Focus management
+      setTimeout(() => {
+        if (firstFocusableRef.current) {
+          firstFocusableRef.current.focus();
+        }
+      }, 0);
     }
   }, [isOpen]);
+
+  // Keyboard event handler for focus trapping
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (!isOpen) return;
+
+    if (e.key === 'Escape') {
+      handleClose();
+      return;
+    }
+
+    if (e.key === 'Tab') {
+      const focusableElements = modalRef.current?.querySelectorAll(
+        'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"]):not([disabled])'
+      );
+
+      if (!focusableElements || focusableElements.length === 0) return;
+
+      const firstElement = focusableElements[0] as HTMLElement;
+      const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+      if (e.shiftKey) {
+        // Shift + Tab (backward)
+        if (document.activeElement === firstElement) {
+          e.preventDefault();
+          lastElement.focus();
+        }
+      } else {
+        // Tab (forward)
+        if (document.activeElement === lastElement) {
+          e.preventDefault();
+          firstElement.focus();
+        }
+      }
+    }
+  };
 
   const loadRepositories = async () => {
     setIsLoading(true);
@@ -80,15 +128,10 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
       errors.repositoryId = 'Please select a repository';
     }
 
-    // Validate project name
-    if (!projectName.trim()) {
-      errors.projectName = 'Project name is required';
-    } else if (projectName.trim().length < 2) {
-      errors.projectName = 'Project name must be at least 2 characters long';
-    } else if (projectName.trim().length > 50) {
-      errors.projectName = 'Project name must be less than 50 characters';
-    } else if (!/^[a-zA-Z0-9\-_\s]+$/.test(projectName.trim())) {
-      errors.projectName = 'Project name can only contain letters, numbers, spaces, hyphens, and underscores';
+    // Validate project name using security utility
+    const nameValidation = validateProjectName(projectName);
+    if (!nameValidation.isValid) {
+      errors.projectName = nameValidation.error || 'Invalid project name';
     }
 
     setValidationErrors(errors);
@@ -106,7 +149,11 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
     setError(null);
 
     try {
-      await onCreateProject(selectedRepositoryId, projectName.trim());
+      // Get sanitized project name
+      const nameValidation = validateProjectName(projectName);
+      const sanitizedProjectName = nameValidation.sanitizedValue || projectName.trim();
+      
+      await onCreateProject(selectedRepositoryId, sanitizedProjectName);
       // Close modal on success - parent component will handle success feedback
       onClose();
     } catch (err) {
@@ -137,11 +184,19 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
   }
 
   return (
-    <div className={`create-project-modal ${className}`} onClick={handleBackdropClick}>
-      <div className="create-project-modal__content">
+    <div 
+      className={`create-project-modal ${className}`} 
+      onClick={handleBackdropClick}
+      onKeyDown={handleKeyDown}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+    >
+      <div className="create-project-modal__content" ref={modalRef}>
         <div className="create-project-modal__header">
-          <h2 className="modal-title">Create New Project</h2>
+          <h2 id="modal-title" className="modal-title">Create New Project</h2>
           <button
+            ref={firstFocusableRef}
             className="modal-close-button"
             onClick={handleClose}
             disabled={isCreating}
@@ -275,6 +330,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
             Cancel
           </button>
           <button
+            ref={lastFocusableRef}
             type="submit"
             className="button button--primary"
             onClick={handleSubmit}

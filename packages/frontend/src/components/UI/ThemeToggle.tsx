@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useTheme, type ThemeMode } from '../../contexts/ThemeContext';
 import './ThemeToggle.css';
 
@@ -17,6 +17,8 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
 }) => {
   const { theme, resolvedTheme, setTheme } = useTheme();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   const themeOptions: { value: ThemeMode; label: string; icon: string }[] = [
     { value: 'light', label: 'Light', icon: '☀️' },
@@ -29,19 +31,92 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
   const handleThemeChange = (newTheme: ThemeMode) => {
     setTheme(newTheme);
     setIsDropdownOpen(false);
+    buttonRef.current?.focus();
   };
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (variant === 'dropdown' && isDropdownOpen) {
+      switch (e.key) {
+        case 'Escape':
+          e.preventDefault();
+          setIsDropdownOpen(false);
+          buttonRef.current?.focus();
+          break;
+        case 'ArrowDown':
+          e.preventDefault();
+          const nextOption = dropdownRef.current?.querySelector('[role="menuitem"]:not([aria-pressed="true"])') as HTMLButtonElement;
+          nextOption?.focus();
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          const options = dropdownRef.current?.querySelectorAll('[role="menuitem"]');
+          const lastOption = options?.[options.length - 1] as HTMLButtonElement;
+          lastOption?.focus();
+          break;
+      }
+    }
+  };
+
+  const handleOptionKeyDown = (e: React.KeyboardEvent, option: { value: ThemeMode; label: string; icon: string }) => {
+    switch (e.key) {
+      case 'Enter':
+      case ' ':
+        e.preventDefault();
+        handleThemeChange(option.value);
+        break;
+      case 'Escape':
+        e.preventDefault();
+        setIsDropdownOpen(false);
+        buttonRef.current?.focus();
+        break;
+      case 'ArrowDown':
+        e.preventDefault();
+        const currentIndex = themeOptions.findIndex(opt => opt.value === option.value);
+        const nextIndex = (currentIndex + 1) % themeOptions.length;
+        const nextButton = dropdownRef.current?.querySelector(`[data-option="${themeOptions[nextIndex].value}"]`) as HTMLButtonElement;
+        nextButton?.focus();
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        const currentIndexUp = themeOptions.findIndex(opt => opt.value === option.value);
+        const prevIndex = currentIndexUp === 0 ? themeOptions.length - 1 : currentIndexUp - 1;
+        const prevButton = dropdownRef.current?.querySelector(`[data-option="${themeOptions[prevIndex].value}"]`) as HTMLButtonElement;
+        prevButton?.focus();
+        break;
+    }
+  };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    if (isDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [isDropdownOpen]);
+
   if (variant === 'dropdown') {
     return (
-      <div className={`theme-toggle theme-toggle--dropdown theme-toggle--${size} ${className}`}>
+      <div 
+        ref={dropdownRef}
+        className={`theme-toggle theme-toggle--dropdown theme-toggle--${size} ${className}`}
+        onKeyDown={handleKeyDown}
+      >
         <button
+          ref={buttonRef}
           type="button"
           className="theme-toggle__button"
           onClick={toggleDropdown}
+          onKeyDown={handleKeyDown}
           aria-label={`Current theme: ${currentThemeOption.label}. Click to change theme.`}
           aria-expanded={isDropdownOpen}
           aria-haspopup="menu"
@@ -69,8 +144,11 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
                   theme === option.value ? 'theme-toggle__option--active' : ''
                 }`}
                 onClick={() => handleThemeChange(option.value)}
+                onKeyDown={(e) => handleOptionKeyDown(e, option)}
                 role="menuitem"
                 aria-pressed={theme === option.value}
+                data-option={option.value}
+                tabIndex={-1}
               >
                 <span className="theme-toggle__option-icon" aria-hidden="true">
                   {option.icon}
@@ -104,10 +182,11 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
 
   return (
     <button
+      ref={buttonRef}
       type="button"
       className={`theme-toggle theme-toggle--button theme-toggle--${size} ${className}`}
       onClick={() => handleThemeChange(nextTheme)}
-      aria-label={`Switch to ${nextThemeOption.label.toLowerCase()} theme`}
+      aria-label={`Switch to ${nextThemeOption.label.toLowerCase()} theme. Current theme is ${currentThemeOption.label.toLowerCase()}.`}
       title={`Switch to ${nextThemeOption.label.toLowerCase()} theme`}
     >
       <span className="theme-toggle__icon" aria-hidden="true">

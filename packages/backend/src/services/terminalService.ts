@@ -303,7 +303,7 @@ export class TerminalService extends EventEmitter {
         }
         break;
 
-      case 'pwd':
+      case 'pwd': {
         const output: TerminalOutput = {
           type: 'stdout',
           data: `${session.workingDirectory}\\n`,
@@ -312,8 +312,9 @@ export class TerminalService extends EventEmitter {
         };
         this.emit('output', output);
         break;
+      }
 
-      case 'clear':
+      case 'clear': {
         const clearOutput: TerminalOutput = {
           type: 'stdout',
           data: '\\x1b[2J\\x1b[H',
@@ -322,6 +323,7 @@ export class TerminalService extends EventEmitter {
         };
         this.emit('output', clearOutput);
         break;
+      }
 
       case 'exit':
         this.closeSession(sessionId);

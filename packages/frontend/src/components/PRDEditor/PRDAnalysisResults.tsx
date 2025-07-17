@@ -52,9 +52,10 @@ export const PRDAnalysisResults: React.FC<PRDAnalysisResultsProps> = ({
     // Sort tasks
     return filtered.sort((a, b) => {
       switch (sortBy) {
-        case 'priority':
+        case 'priority': {
           const priorityOrder = { high: 3, medium: 2, low: 1 };
           return priorityOrder[b.priority] - priorityOrder[a.priority];
+        }
         case 'complexity':
           return b.complexity - a.complexity;
         case 'hours':

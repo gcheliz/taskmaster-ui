@@ -59,12 +59,12 @@ export class QueryAnalyzer {
   /**
    * Create enhanced Prisma client with query logging
    */
-  public createEnhancedPrismaClient(): PrismaClient {
+  public createEnhancedPrismaClient(config?: any): PrismaClient {
     const logLevels = this.isEnabled 
       ? ['query', 'info', 'warn', 'error'] as const
       : ['error'] as const;
 
-    const prisma = new PrismaClient({
+    const prismaConfig: any = {
       log: logLevels.map(level => ({
         level,
         emit: 'event'
@@ -75,7 +75,14 @@ export class QueryAnalyzer {
           url: this.enhanceConnectionString(process.env.DATABASE_URL || '')
         }
       }
-    });
+    };
+
+    // Apply any additional configuration (like SSL settings)
+    if (config) {
+      Object.assign(prismaConfig, config);
+    }
+
+    const prisma = new PrismaClient(prismaConfig);
 
     if (this.isEnabled) {
       this.setupQueryLogging(prisma);

@@ -34,6 +34,9 @@
     "db:pull": "prisma db pull",
     "performance:test": "ts-node scripts/performance-test.ts",
     "performance:test:verbose": "ts-node scripts/performance-test.ts --verbose",
+    "env:validate": "node scripts/validate-environment.js",
+    "env:check": "node scripts/validate-environment.js",
+    "secrets:test": "ts-node scripts/test-secrets-manager.ts",
     "clean": "rimraf dist src/generated",
     "postinstall": "pnpm db:generate"
   },
@@ -55,7 +58,8 @@
     "prisma": "^6.12.0",
     "simple-git": "^3.28.0",
     "uuid": "^11.1.0",
-    "ws": "^8.14.2"
+    "ws": "^8.14.2",
+    "zod": "^4.0.5"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",

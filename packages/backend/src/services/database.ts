@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import queryAnalyzer from './queryAnalyzer';
+import { getDatabaseConfig, env } from '../config/environment';
 
 export class DatabaseService {
   private static instance: DatabaseService;
@@ -20,12 +21,19 @@ export class DatabaseService {
     }
 
     try {
-      // Use enhanced Prisma client with query analysis
-      this.prisma = queryAnalyzer.createEnhancedPrismaClient();
+      // Get database configuration with SSL support
+      const dbConfig = getDatabaseConfig();
+      
+      // Use enhanced Prisma client with query analysis and SSL configuration
+      this.prisma = queryAnalyzer.createEnhancedPrismaClient(dbConfig);
       
       // Test the connection
       await this.prisma.$connect();
       console.log('Connected to PostgreSQL database via Prisma');
+      
+      if (env.DATABASE_SSL === 'true') {
+        console.log('🔒 SSL/TLS encryption enabled for database connection');
+      }
       
       if (queryAnalyzer.getEnabled()) {
         console.log('🔍 Query performance analysis enabled');
@@ -101,10 +109,11 @@ export class DatabaseService {
           SELECT 
             application_name,
             state,
-            count(*) as connection_count
+            count(*) as connection_count,
+            ssl
           FROM pg_stat_activity 
           WHERE application_name = 'taskmaster-ui-backend'
-          GROUP BY application_name, state
+          GROUP BY application_name, state, ssl
         `;
         connectionInfo = poolStats;
       } catch (poolError) {
@@ -144,6 +153,11 @@ export class DatabaseService {
   public async initializeSchema(): Promise<void> {
     console.log('Schema initialization is handled by Prisma migrations');
     console.log('Use "prisma migrate deploy" in production or "prisma migrate dev" in development');
+    
+    // Validate database connection security in production
+    if (env.NODE_ENV === 'production' && env.DATABASE_SSL !== 'true') {
+      console.warn('⚠️  Database SSL is disabled in production environment');
+    }
   }
 
   /**

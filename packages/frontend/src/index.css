@@ -1,6 +1,12 @@
 /* TaskMaster UI - Main Styles */
+
 /* Import the design system */
 @import './styles/base.css';
+
+/* Tailwind CSS directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 /* App-specific overrides */
 body {

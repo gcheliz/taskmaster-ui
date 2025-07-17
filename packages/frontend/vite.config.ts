@@ -38,6 +38,17 @@ export default defineConfig({
     },
     // Source maps for debugging (disable in production if needed)
     sourcemap: process.env.NODE_ENV === 'development',
+    // CSS optimization
+    cssMinify: true,
+    cssCodeSplit: false, // Bundle CSS into a single file for better caching
+  },
+  css: {
+    // CSS optimization configuration
+    postcss: {
+      plugins: [
+        // Additional PostCSS plugins can be added here
+      ],
+    },
   },
   define: {
     // Remove process.env access in production

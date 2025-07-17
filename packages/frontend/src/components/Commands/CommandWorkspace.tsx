@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { CommandPanel } from './CommandPanel';
 import { CommandOutputDisplay } from './CommandOutputDisplay';
 import { useCommandExecution } from '../../hooks/useCommandExecution';

@@ -227,7 +227,7 @@ const DropdownTrigger = React.forwardRef<HTMLButtonElement, DropdownTriggerProps
     return (
       <Button
         ref={ref || triggerRef}
-        variant={variant === 'default' ? 'primary' : variant}
+        variant={variant === 'default' ? 'primary' : variant === 'outline' ? 'outline' : variant === 'ghost' ? 'ghost' : 'primary'}
         size={size}
         className={cn(dropdownTriggerVariants({ variant, className }))}
         onClick={handleClick}

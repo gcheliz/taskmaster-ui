@@ -58,9 +58,11 @@ const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
       <span
         className={cn(badgeVariants({ variant, size, className }))}
         ref={ref}
+        role="status"
+        aria-label={`Status: ${children}`}
         {...props}
       >
-        {icon && <span className="mr-1 flex items-center">{icon}</span>}
+        {icon && <span className="mr-1 flex items-center" aria-hidden="true">{icon}</span>}
         {children}
       </span>
     );

@@ -86,13 +86,26 @@ export interface CardProps
 }
 
 const Card = React.forwardRef<HTMLDivElement, CardProps>(
-  ({ className, variant, size, interactive, ...props }, ref) => (
-    <div
-      ref={ref}
-      className={cn(cardVariants({ variant, size, interactive, className }))}
-      {...props}
-    />
-  )
+  ({ className, variant, size, interactive, onClick, ...props }, ref) => {
+    const handleKeyDown = (event: React.KeyboardEvent) => {
+      if (interactive && onClick && (event.key === 'Enter' || event.key === ' ')) {
+        event.preventDefault();
+        onClick(event as any);
+      }
+    };
+
+    return (
+      <div
+        ref={ref}
+        className={cn(cardVariants({ variant, size, interactive, className }))}
+        role={interactive ? 'button' : 'region'}
+        tabIndex={interactive ? 0 : undefined}
+        onClick={onClick}
+        onKeyDown={handleKeyDown}
+        {...props}
+      />
+    );
+  }
 );
 Card.displayName = 'Card';
 

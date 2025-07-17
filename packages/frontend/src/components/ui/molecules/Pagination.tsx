@@ -1,7 +1,7 @@
 import React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '../../../utils/cn';
-import { Button } from '../atoms/Button';
+// import { Button } from '../atoms/Button';
 import { Icon, ChevronDownIcon } from '../atoms/Icon';
 
 const paginationVariants = cva(

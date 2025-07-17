@@ -101,11 +101,38 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
     const { variant: contextVariant } = useTabsContext();
     const variant = propVariant || contextVariant;
     
+    const handleKeyDown = (event: React.KeyboardEvent) => {
+      const tablist = event.currentTarget;
+      const tabs = Array.from(tablist.querySelectorAll('[role="tab"]')) as HTMLElement[];
+      const currentIndex = tabs.findIndex(tab => tab === document.activeElement);
+      
+      if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+        event.preventDefault();
+        const nextIndex = (currentIndex + 1) % tabs.length;
+        tabs[nextIndex]?.focus();
+        tabs[nextIndex]?.click();
+      } else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        const prevIndex = currentIndex === 0 ? tabs.length - 1 : currentIndex - 1;
+        tabs[prevIndex]?.focus();
+        tabs[prevIndex]?.click();
+      } else if (event.key === 'Home') {
+        event.preventDefault();
+        tabs[0]?.focus();
+        tabs[0]?.click();
+      } else if (event.key === 'End') {
+        event.preventDefault();
+        tabs[tabs.length - 1]?.focus();
+        tabs[tabs.length - 1]?.click();
+      }
+    };
+    
     return (
       <div
         ref={ref}
         role="tablist"
         className={cn(tabsListVariants({ variant, className }))}
+        onKeyDown={handleKeyDown}
         {...props}
       />
     );

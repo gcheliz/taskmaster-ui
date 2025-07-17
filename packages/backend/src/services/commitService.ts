@@ -1,5 +1,5 @@
 import { DatabaseService } from './database';
-import { Commit } from '../generated/prisma';
+import { Commit } from '@prisma/client';
 
 export interface CommitWithRepository extends Commit {
   repository?: {

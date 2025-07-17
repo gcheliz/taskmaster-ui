@@ -1,0 +1,156 @@
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: taskmaster-postgres
+    environment:
+      POSTGRES_DB: taskmaster_dev
+      POSTGRES_USER: taskmaster
+      POSTGRES_PASSWORD: password
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U taskmaster -d taskmaster_dev"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - taskmaster-network
+
+  # Backend API Service
+  backend:
+    container_name: taskmaster-backend
+    build:
+      context: .
+      dockerfile: packages/backend/Dockerfile
+      target: development
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://taskmaster:password@postgres:5432/taskmaster_dev
+      - PORT=3001
+      - PRISMA_STUDIO_PORT=5555
+    ports:
+      - "3001:3001"
+      - "5555:5555"  # Prisma Studio
+    volumes:
+      - ./packages/backend/src:/app/packages/backend/src:ro
+      - ./packages/backend/prisma:/app/packages/backend/prisma:ro
+      - ./packages/backend/package.json:/app/packages/backend/package.json:ro
+      - ./packages/backend/tsconfig.json:/app/packages/backend/tsconfig.json:ro
+      - ./packages/backend/nodemon.json:/app/packages/backend/nodemon.json:ro
+      - backend_node_modules:/app/packages/backend/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3001/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    networks:
+      - taskmaster-network
+    develop:
+      watch:
+        - action: sync
+          path: ./packages/backend/src
+          target: /app/packages/backend/src
+          ignore:
+            - "**/*.test.ts"
+            - "**/*.spec.ts"
+        - action: sync
+          path: ./packages/backend/prisma
+          target: /app/packages/backend/prisma
+        - action: rebuild
+          path: ./packages/backend/package.json
+        - action: rebuild
+          path: ./packages/backend/Dockerfile
+
+  # Frontend Web Application
+  frontend:
+    container_name: taskmaster-frontend
+    build:
+      context: .
+      dockerfile: packages/frontend/Dockerfile
+      target: development
+    environment:
+      - VITE_API_URL=http://localhost:3001
+      - VITE_WS_URL=ws://localhost:3001
+      - VITE_NODE_ENV=development
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./packages/frontend/src:/app/packages/frontend/src:ro
+      - ./packages/frontend/public:/app/packages/frontend/public:ro
+      - ./packages/frontend/package.json:/app/packages/frontend/package.json:ro
+      - ./packages/frontend/vite.config.ts:/app/packages/frontend/vite.config.ts:ro
+      - ./packages/frontend/tsconfig.json:/app/packages/frontend/tsconfig.json:ro
+      - ./packages/frontend/index.html:/app/packages/frontend/index.html:ro
+      - frontend_node_modules:/app/packages/frontend/node_modules
+    depends_on:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5173 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+    networks:
+      - taskmaster-network
+    develop:
+      watch:
+        - action: sync
+          path: ./packages/frontend/src
+          target: /app/packages/frontend/src
+        - action: sync
+          path: ./packages/frontend/public
+          target: /app/packages/frontend/public
+        - action: rebuild
+          path: ./packages/frontend/package.json
+        - action: rebuild
+          path: ./packages/frontend/vite.config.ts
+        - action: rebuild
+          path: ./packages/frontend/Dockerfile
+
+  # Nginx Reverse Proxy (Production-like setup)
+  nginx:
+    image: nginx:alpine
+    container_name: taskmaster-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+    depends_on:
+      - backend
+      - frontend
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - taskmaster-network
+    profiles:
+      - production
+
+volumes:
+  postgres_data:
+    driver: local
+  backend_node_modules:
+    driver: local
+  frontend_node_modules:
+    driver: local
+
+networks:
+  taskmaster-network:
+    driver: bridge
+    name: taskmaster-network

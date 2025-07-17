@@ -1,5 +1,5 @@
 import { DatabaseService } from './database';
-import { Task, Priority, TaskStatus } from '../generated/prisma';
+import { Task, Priority, TaskStatus } from '@prisma/client';
 
 export interface TaskWithProject extends Task {
   project?: {

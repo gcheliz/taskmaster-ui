@@ -1,5 +1,5 @@
 import { DatabaseService } from './database';
-import { Repository } from '../generated/prisma';
+import { Repository } from '@prisma/client';
 
 /**
  * Repository Service

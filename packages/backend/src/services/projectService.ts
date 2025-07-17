@@ -1,5 +1,5 @@
 import { DatabaseService } from './database';
-import { Project, Repository, Task } from '../generated/prisma';
+import { Project, Repository, Task } from '@prisma/client';
 
 export interface ProjectWithDetails extends Project {
   repositories?: Repository[];

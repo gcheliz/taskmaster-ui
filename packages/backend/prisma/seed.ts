@@ -1,4 +1,4 @@
-import { PrismaClient, Priority, TaskStatus } from '../src/generated/prisma'
+import { PrismaClient, Priority, TaskStatus } from '@prisma/client'
 
 const prisma = new PrismaClient()
 

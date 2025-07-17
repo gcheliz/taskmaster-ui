@@ -1,0 +1,46 @@
+# Development overrides for docker-compose.yml
+# Use with: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+services:
+  postgres:
+    environment:
+      POSTGRES_LOG_STATEMENT: all
+      POSTGRES_LOG_MIN_DURATION_STATEMENT: 0
+    command: postgres -c log_statement=all -c log_min_duration_statement=0
+
+  backend:
+    environment:
+      - NODE_ENV=development
+      - DEBUG=taskmaster:*
+    volumes:
+      # Additional development volumes
+      - ./packages/backend/.env:/app/packages/backend/.env:ro
+      - ./packages/backend/jest.config.js:/app/packages/backend/jest.config.js:ro
+    command: ["pnpm", "dev:watch"]
+
+  frontend:
+    environment:
+      - VITE_NODE_ENV=development
+      - VITE_DEBUG=true
+    volumes:
+      # Additional development volumes
+      - ./packages/frontend/.env.local:/app/packages/frontend/.env.local:ro
+      - ./packages/frontend/tailwind.config.js:/app/packages/frontend/tailwind.config.js:ro
+      - ./packages/frontend/postcss.config.js:/app/packages/frontend/postcss.config.js:ro
+
+  # Development database viewer
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: taskmaster-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@taskmaster.local
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "8080:80"
+    depends_on:
+      - postgres
+    networks:
+      - taskmaster-network
+    profiles:
+      - debug

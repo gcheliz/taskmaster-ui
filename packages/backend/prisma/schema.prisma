@@ -1,0 +1,97 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Core Models
+model Project {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  path        String   @unique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  repositories Repository[]
+  tasks        Task[]
+  
+  @@map("projects")
+}
+
+model Repository {
+  id        String   @id @default(cuid())
+  name      String
+  url       String
+  path      String
+  branch    String   @default("main")
+  projectId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  commits Commit[]
+  
+  @@unique([projectId, name])
+  @@map("repositories")
+}
+
+model Task {
+  id          String     @id @default(cuid())
+  title       String
+  description String?
+  status      TaskStatus @default(PENDING)
+  priority    Priority   @default(MEDIUM)
+  projectId   String
+  parentId    String?
+  order       Int        @default(0)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  dueDate     DateTime?
+  
+  project  Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  parent   Task?   @relation("TaskHierarchy", fields: [parentId], references: [id])
+  children Task[]  @relation("TaskHierarchy")
+  
+  @@map("tasks")
+}
+
+model Commit {
+  id           String   @id @default(cuid())
+  hash         String   @unique
+  message      String
+  author       String
+  timestamp    DateTime
+  repositoryId String
+  createdAt    DateTime @default(now())
+  
+  repository Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+  
+  @@map("commits")
+}
+
+// Enums
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  BLOCKED
+  CANCELLED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}

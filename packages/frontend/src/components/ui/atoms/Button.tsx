@@ -33,9 +33,29 @@ const buttonVariants = cva(
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
+  /**
+   * Shows loading spinner and disables the button
+   * @default false
+   */
   loading?: boolean;
+  /**
+   * Icon to display on the left side of the button text
+   */
   leftIcon?: React.ReactNode;
+  /**
+   * Icon to display on the right side of the button text
+   */
   rightIcon?: React.ReactNode;
+  /**
+   * The visual style variant of the button
+   * @default 'primary'
+   */
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'link' | 'destructive';
+  /**
+   * The size of the button
+   * @default 'md'
+   */
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'icon';
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(

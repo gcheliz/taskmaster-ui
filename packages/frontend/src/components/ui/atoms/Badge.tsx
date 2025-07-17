@@ -36,7 +36,20 @@ const badgeVariants = cva(
 export interface BadgeProps
   extends React.HTMLAttributes<HTMLSpanElement>,
     VariantProps<typeof badgeVariants> {
+  /**
+   * Optional icon to display before the badge text
+   */
   icon?: React.ReactNode;
+  /**
+   * The visual style variant of the badge
+   * @default 'default'
+   */
+  variant?: 'default' | 'secondary' | 'success' | 'warning' | 'error' | 'outline' | 'pending' | 'in-progress' | 'done' | 'blocked' | 'deferred';
+  /**
+   * The size of the badge
+   * @default 'md'
+   */
+  size?: 'sm' | 'md' | 'lg';
 }
 
 const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(

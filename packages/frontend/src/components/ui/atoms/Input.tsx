@@ -28,10 +28,34 @@ const inputVariants = cva(
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement>,
     VariantProps<typeof inputVariants> {
+  /**
+   * Shows error state styling
+   * @default false
+   */
   error?: boolean;
+  /**
+   * Shows success state styling
+   * @default false
+   */
   success?: boolean;
+  /**
+   * Icon to display on the left side of the input
+   */
   leftIcon?: React.ReactNode;
+  /**
+   * Icon to display on the right side of the input
+   */
   rightIcon?: React.ReactNode;
+  /**
+   * The visual style variant of the input
+   * @default 'default'
+   */
+  variant?: 'default' | 'error' | 'success';
+  /**
+   * The size of the input
+   * @default 'md'
+   */
+  inputSize?: 'sm' | 'md' | 'lg';
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(

@@ -27,8 +27,26 @@ const radioVariants = cva(
 export interface RadioProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>,
     VariantProps<typeof radioVariants> {
+  /**
+   * Shows error state styling
+   * @default false
+   */
   error?: boolean;
+  /**
+   * Shows success state styling
+   * @default false
+   */
   success?: boolean;
+  /**
+   * Size of the radio button
+   * @default 'md'
+   */
+  size?: 'sm' | 'md' | 'lg';
+  /**
+   * Visual style variant of the radio button
+   * @default 'default'
+   */
+  variant?: 'default' | 'error' | 'success';
 }
 
 const Radio = React.forwardRef<HTMLInputElement, RadioProps>(

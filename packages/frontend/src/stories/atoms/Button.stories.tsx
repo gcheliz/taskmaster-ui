@@ -15,27 +15,12 @@ const meta: Meta<typeof Button> = {
   },
   tags: ['autodocs'],
   argTypes: {
-    variant: {
-      control: { type: 'select' },
-      options: ['primary', 'secondary', 'outline', 'ghost', 'link', 'destructive'],
-      description: 'The visual style variant of the button',
-    },
-    size: {
-      control: { type: 'select' },
-      options: ['sm', 'md', 'lg', 'xl', 'icon'],
-      description: 'The size of the button',
-    },
-    loading: {
-      control: { type: 'boolean' },
-      description: 'Shows loading spinner and disables button',
-    },
-    disabled: {
-      control: { type: 'boolean' },
-      description: 'Disables the button',
-    },
     children: {
       control: { type: 'text' },
       description: 'Button content',
+    },
+    onClick: {
+      action: 'clicked',
     },
   },
 };

@@ -43,10 +43,35 @@ const toggleThumbVariants = cva(
 export interface ToggleProps
   extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'size'>,
     VariantProps<typeof toggleVariants> {
+  /**
+   * Whether the toggle is checked
+   * @default false
+   */
   checked?: boolean;
+  /**
+   * Callback function when the toggle state changes
+   */
   onCheckedChange?: (checked: boolean) => void;
+  /**
+   * Shows error state styling
+   * @default false
+   */
   error?: boolean;
+  /**
+   * Shows success state styling
+   * @default false
+   */
   success?: boolean;
+  /**
+   * Size of the toggle switch
+   * @default 'md'
+   */
+  size?: 'sm' | 'md' | 'lg';
+  /**
+   * Visual style variant of the toggle
+   * @default 'default'
+   */
+  variant?: 'default' | 'error' | 'success';
 }
 
 const Toggle = React.forwardRef<HTMLButtonElement, ToggleProps>(

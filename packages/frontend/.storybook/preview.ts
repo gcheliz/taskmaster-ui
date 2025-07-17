@@ -8,6 +8,21 @@ const preview: Preview = {
        color: /(background|color)$/i,
        date: /Date$/i,
       },
+      expanded: true,
+      sort: 'alpha',
+    },
+    docs: {
+      autodocs: 'tag',
+      toc: {
+        contentsSelector: '.sbdocs-content',
+        headingSelector: 'h1, h2, h3',
+        ignoreSelector: '.sbdocs-title',
+        title: 'Table of Contents',
+        disable: false,
+        unsafeTocbotOptions: {
+          orderedList: false,
+        },
+      },
     },
     backgrounds: {
       default: 'light',

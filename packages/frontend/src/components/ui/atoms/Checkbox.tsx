@@ -28,9 +28,31 @@ const checkboxVariants = cva(
 export interface CheckboxProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>,
     VariantProps<typeof checkboxVariants> {
+  /**
+   * Shows error state styling
+   * @default false
+   */
   error?: boolean;
+  /**
+   * Shows success state styling
+   * @default false
+   */
   success?: boolean;
+  /**
+   * Shows indeterminate state (partially checked)
+   * @default false
+   */
   indeterminate?: boolean;
+  /**
+   * Size of the checkbox
+   * @default 'md'
+   */
+  size?: 'sm' | 'md' | 'lg';
+  /**
+   * Visual style variant of the checkbox
+   * @default 'default'
+   */
+  variant?: 'default' | 'error' | 'success';
 }
 
 const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(

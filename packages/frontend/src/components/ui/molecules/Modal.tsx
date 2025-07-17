@@ -48,16 +48,36 @@ const modalFooterVariants = cva(
 );
 
 export interface ModalProps {
+  /**
+   * Whether the modal is open
+   */
   open: boolean;
+  /**
+   * Callback when the modal open state changes
+   */
   onOpenChange: (open: boolean) => void;
+  /**
+   * Modal content
+   */
   children: React.ReactNode;
 }
 
 export interface ModalContentProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof modalContentVariants> {
+  /**
+   * Callback when Escape key is pressed
+   */
   onEscapeKeyDown?: (event: KeyboardEvent) => void;
+  /**
+   * Callback when clicking outside the modal
+   */
   onPointerDownOutside?: (event: PointerEvent) => void;
+  /**
+   * Size of the modal
+   * @default 'md'
+   */
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
 }
 
 export interface ModalHeaderProps

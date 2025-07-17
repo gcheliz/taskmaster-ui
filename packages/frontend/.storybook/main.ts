@@ -25,6 +25,23 @@ const config: StorybookConfig = {
   "framework": {
     "name": getAbsolutePath('@storybook/react-vite'),
     "options": {}
+  },
+  "typescript": {
+    "check": false,
+    "reactDocgen": "react-docgen-typescript",
+    "reactDocgenTypescriptOptions": {
+      "shouldExtractLiteralValuesFromEnum": true,
+      "shouldRemoveUndefinedFromOptional": true,
+      "savePropValueAsString": true,
+      "propFilter": (prop) => {
+        // Filter out props that are not relevant for documentation
+        if (prop.name === 'children' && prop.type.name === 'ReactNode') {
+          return false;
+        }
+        // Include all other props
+        return true;
+      }
+    }
   }
 };
 export default config;

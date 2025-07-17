@@ -33,10 +33,39 @@ const labelVariants = cva(
 export interface LabelProps
   extends React.LabelHTMLAttributes<HTMLLabelElement>,
     VariantProps<typeof labelVariants> {
+  /**
+   * Shows error state styling
+   * @default false
+   */
   error?: boolean;
+  /**
+   * Shows success state styling
+   * @default false
+   */
   success?: boolean;
+  /**
+   * Description text displayed below the label
+   */
   description?: string;
+  /**
+   * Help text displayed below the description
+   */
   helpText?: string;
+  /**
+   * Visual style variant of the label
+   * @default 'default'
+   */
+  variant?: 'default' | 'error' | 'success' | 'muted';
+  /**
+   * Size of the label text
+   * @default 'md'
+   */
+  size?: 'sm' | 'md' | 'lg';
+  /**
+   * Shows required indicator (asterisk)
+   * @default false
+   */
+  required?: boolean;
 }
 
 const Label = React.forwardRef<HTMLLabelElement, LabelProps>(

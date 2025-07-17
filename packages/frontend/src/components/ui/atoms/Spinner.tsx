@@ -34,7 +34,21 @@ const spinnerVariants = cva(
 export interface SpinnerProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, 'color'>,
     VariantProps<typeof spinnerVariants> {
+  /**
+   * Accessible label for the spinner
+   * @default 'Loading'
+   */
   'aria-label'?: string;
+  /**
+   * Size of the spinner
+   * @default 'md'
+   */
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  /**
+   * Color of the spinner
+   * @default 'current'
+   */
+  spinnerColor?: 'current' | 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'white' | 'muted';
 }
 
 const Spinner = React.forwardRef<HTMLDivElement, SpinnerProps>(

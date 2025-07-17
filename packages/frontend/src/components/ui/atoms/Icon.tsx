@@ -156,8 +156,24 @@ export const LoadingIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
 export interface IconProps
   extends Omit<React.HTMLAttributes<HTMLSpanElement>, 'color'>,
     VariantProps<typeof iconVariants> {
+  /**
+   * The icon component to render (e.g., CheckIcon, PlusIcon)
+   */
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  /**
+   * Accessible label for the icon
+   */
   'aria-label'?: string;
+  /**
+   * Size of the icon
+   * @default 'md'
+   */
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+  /**
+   * Color variant of the icon
+   * @default 'current'
+   */
+  color?: 'current' | 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'muted';
 }
 
 const Icon = React.forwardRef<HTMLSpanElement, IconProps>(

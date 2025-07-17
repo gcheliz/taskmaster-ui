@@ -1,0 +1,195 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Introduction/Documentation" />
+
+# TaskMaster UI Component Library
+
+Welcome to the TaskMaster UI component library documentation! This comprehensive guide will help you understand, use, and contribute to our design system.
+
+## 🎯 Overview
+
+The TaskMaster UI component library is built with:
+
+- **React 19** with TypeScript for type safety
+- **Tailwind CSS v4** for utility-first styling
+- **Storybook 9** for component documentation
+- **Atomic Design** methodology for scalable architecture
+- **Accessibility-first** approach following WCAG 2.1 guidelines
+
+## 📋 Quick Navigation
+
+### Component Categories
+
+- **[Atoms](/?path=/docs/atoms-button--docs)** - Basic building blocks (Button, Input, Icon, etc.)
+- **[Molecules](/?path=/docs/molecules-formfield--docs)** - Simple combinations (FormField, Card, Modal, etc.)
+- **Organisms** - Complex UI sections (to be added as needed)
+
+### Documentation
+
+- **[Component Guide](/?path=/docs/introduction-welcome--component-guide)** - Comprehensive usage and contribution guidelines
+- **[Welcome](/?path=/docs/welcome-getting-started--docs)** - Interactive examples and overview
+
+## 🚀 Getting Started
+
+### Installation
+
+```bash
+# Install dependencies
+pnpm install
+
+# Start Storybook
+pnpm run storybook
+
+# Build for production
+pnpm run build-storybook
+```
+
+### Basic Usage
+
+```tsx
+import { Button, Input, FormField } from '@/components/ui';
+
+function MyComponent() {
+  return (
+    <div>
+      <Button variant="primary" size="md">
+        Click me
+      </Button>
+      
+      <FormField
+        label="Email"
+        type="email"
+        placeholder="Enter your email"
+        required
+      />
+    </div>
+  );
+}
+```
+
+## 🎨 Design System Features
+
+### Color Palette
+
+Our design system uses a semantic color system:
+
+- **Primary**: Brand colors for main actions
+- **Secondary**: Neutral colors for text and backgrounds
+- **Success**: Green for positive actions and states
+- **Warning**: Yellow for caution and attention
+- **Error**: Red for errors and destructive actions
+
+### Typography
+
+Consistent typography scale with semantic naming:
+
+- **Display**: For large headings and hero text
+- **Headline**: For section headings
+- **Body**: For regular text content
+- **Caption**: For small text and labels
+
+### Spacing & Layout
+
+- Consistent spacing scale (4px base unit)
+- Responsive breakpoints
+- Flexbox and Grid utilities
+- Container and layout components
+
+## 🔧 Component Features
+
+### Auto-Generated Props
+
+All components include:
+
+- **TypeScript interfaces** with comprehensive prop definitions
+- **JSDoc comments** for detailed descriptions
+- **Auto-generated prop tables** in Storybook
+- **Default values** and required indicators
+
+### Accessibility
+
+Built-in accessibility features:
+
+- **ARIA attributes** for screen readers
+- **Keyboard navigation** support
+- **Focus management** and visual indicators
+- **Color contrast** compliance
+- **Semantic HTML** structure
+
+### Responsive Design
+
+- **Mobile-first** approach
+- **Responsive variants** for different screen sizes
+- **Adaptive components** that work across devices
+- **Touch-friendly** interactions
+
+## 📚 Using This Documentation
+
+### Interactive Examples
+
+Each component includes:
+
+- **Live examples** you can interact with
+- **Controls panel** to modify props in real-time
+- **Code snippets** you can copy and paste
+- **Multiple stories** showing different use cases
+
+### Prop Tables
+
+Auto-generated tables show:
+
+- **Prop names** and types
+- **Default values** when applicable
+- **Required indicators** for mandatory props
+- **Descriptions** from JSDoc comments
+
+### Accessibility Information
+
+Look for accessibility details including:
+
+- **ARIA patterns** used
+- **Keyboard shortcuts** available
+- **Screen reader** considerations
+- **Focus behavior** descriptions
+
+## 🤝 Contributing
+
+### Development Workflow
+
+1. **Browse components** in the sidebar
+2. **Read the documentation** for each component
+3. **Check existing patterns** before creating new ones
+4. **Follow our guidelines** in the Component Guide
+
+### Code Standards
+
+- **TypeScript** for all components
+- **JSDoc comments** for all props
+- **Accessibility compliance** required
+- **Responsive design** considerations
+- **Performance optimization** best practices
+
+### Testing
+
+- **Unit tests** for component logic
+- **Accessibility tests** with automated tools
+- **Visual regression** testing
+- **Cross-browser** compatibility
+
+## 📖 Additional Resources
+
+- **[React Documentation](https://react.dev/)**
+- **[Tailwind CSS Documentation](https://tailwindcss.com/docs)**
+- **[Storybook Documentation](https://storybook.js.org/docs)**
+- **[Accessibility Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)**
+
+## 🎯 Next Steps
+
+1. **Explore components** in the sidebar navigation
+2. **Try the interactive examples** in each story
+3. **Read the Component Guide** for detailed usage instructions
+4. **Check out the Welcome page** for visual examples
+
+---
+
+*This documentation is automatically generated from TypeScript interfaces and JSDoc comments. For the most up-to-date information, always refer to the live Storybook documentation.*

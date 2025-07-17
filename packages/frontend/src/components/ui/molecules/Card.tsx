@@ -67,7 +67,23 @@ const cardFooterVariants = cva(
 
 export interface CardProps
   extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof cardVariants> {}
+    VariantProps<typeof cardVariants> {
+  /**
+   * Visual style variant of the card
+   * @default 'default'
+   */
+  variant?: 'default' | 'outline' | 'elevated' | 'ghost';
+  /**
+   * Size/padding of the card
+   * @default 'md'
+   */
+  size?: 'sm' | 'md' | 'lg';
+  /**
+   * Whether the card is interactive (clickable)
+   * @default false
+   */
+  interactive?: boolean;
+}
 
 const Card = React.forwardRef<HTMLDivElement, CardProps>(
   ({ className, variant, size, interactive, ...props }, ref) => (

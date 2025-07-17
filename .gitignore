@@ -98,6 +98,6 @@ benchmarks/
 # tasks/ 
 !/CLAUDE.md
 
-database/data/*
+**/data
 **/*/data
-**/*/generated
+test-results/

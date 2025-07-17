@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { logger } from '../utils/logger';
 import { repositoryService } from '../services/repositoryService';
+import { projectService } from '../services/projectService';
 import { taskMasterService } from '../services/taskMasterService';
 
 export interface CreateProjectRequest {
@@ -185,13 +186,27 @@ export class ProjectController {
           taskCount: initResult.data?.taskCount || 0
         });
 
+        // Create project in database
+        const project = await projectService.findOrCreateProject({
+          name: projectNameTrimmed,
+          path: repository.path,
+          description: `TaskMaster project for ${repository.name}`
+        });
+
+        // Update repository to link to the project if not already linked
+        if (repository.projectId !== project.id) {
+          await repositoryService.updateRepository(repositoryId, {
+            // Note: This will require updating the repository to include projectId
+          });
+        }
+
         // Create project response with 'active' status after successful initialization
         const projectResponse: ProjectResponse = {
-          id: projectId,
-          name: projectNameTrimmed,
+          id: project.id,
+          name: project.name,
           repositoryId: repositoryId,
           repositoryPath: repository.path,
-          createdAt: new Date().toISOString(),
+          createdAt: project.createdAt.toISOString(),
           status: 'active',
           tasksPath: `${repository.path}/.taskmaster/tasks/tasks.json`
         };
@@ -262,9 +277,19 @@ export class ProjectController {
         timestamp: new Date().toISOString()
       });
 
-      // For now, return empty array as we haven't implemented project storage yet
-      // This will be enhanced in future tasks
-      const projects: ProjectResponse[] = [];
+      // Get all projects from database
+      const projectsData = await projectService.getAllProjects();
+      
+      // Transform to response format
+      const projects: ProjectResponse[] = projectsData.map(project => ({
+        id: project.id,
+        name: project.name,
+        repositoryId: project.repositories?.[0]?.id || '',
+        repositoryPath: project.path,
+        createdAt: project.createdAt.toISOString(),
+        status: 'active' as const,
+        tasksPath: `${project.path}/.taskmaster/tasks/tasks.json`
+      }));
 
       logger.info('Projects listed successfully', {
         requestId,
@@ -273,7 +298,12 @@ export class ProjectController {
 
       res.status(200).json({
         projects,
-        count: projects.length
+        count: projects.length,
+        metadata: {
+          totalProjects: projectsData.length,
+          totalRepositories: projectsData.reduce((sum, p) => sum + (p._count?.repositories || 0), 0),
+          totalTasks: projectsData.reduce((sum, p) => sum + (p._count?.tasks || 0), 0)
+        }
       });
 
     } catch (error) {
@@ -314,16 +344,59 @@ export class ProjectController {
         return;
       }
 
-      // For now, return 404 as we haven't implemented project storage yet
-      // This will be enhanced in future tasks
-      logger.warn('Project not found', {
+      // Get project from database
+      const project = await projectService.getProjectById(projectId);
+      
+      if (!project) {
+        logger.warn('Project not found', {
+          requestId,
+          projectId
+        });
+
+        res.status(404).json({
+          error: 'Project not found',
+          code: 'PROJECT_NOT_FOUND'
+        });
+        return;
+      }
+
+      // Transform to response format
+      const projectResponse: ProjectResponse = {
+        id: project.id,
+        name: project.name,
+        repositoryId: project.repositories?.[0]?.id || '',
+        repositoryPath: project.path,
+        createdAt: project.createdAt.toISOString(),
+        status: 'active',
+        tasksPath: `${project.path}/.taskmaster/tasks/tasks.json`
+      };
+
+      logger.info('Project retrieved successfully', {
         requestId,
-        projectId
+        projectId,
+        projectName: project.name
       });
 
-      res.status(404).json({
-        error: 'Project not found',
-        code: 'PROJECT_NOT_FOUND'
+      res.status(200).json({
+        project: projectResponse,
+        details: {
+          description: project.description,
+          repositoryCount: project._count?.repositories || 0,
+          taskCount: project._count?.tasks || 0,
+          repositories: project.repositories?.map(repo => ({
+            id: repo.id,
+            name: repo.name,
+            url: repo.url,
+            branch: repo.branch
+          })),
+          recentTasks: project.tasks?.slice(0, 5).map(task => ({
+            id: task.id,
+            title: task.title,
+            status: task.status,
+            priority: task.priority,
+            createdAt: task.createdAt.toISOString()
+          }))
+        }
       });
 
     } catch (error) {
@@ -365,16 +438,30 @@ export class ProjectController {
         return;
       }
 
-      // For now, return 404 as we haven't implemented project storage yet
-      // This will be enhanced in future tasks
-      logger.warn('Project not found for deletion', {
+      // Delete project from database
+      const deleted = await projectService.deleteProject(projectId);
+      
+      if (!deleted) {
+        logger.warn('Project not found for deletion', {
+          requestId,
+          projectId
+        });
+
+        res.status(404).json({
+          error: 'Project not found',
+          code: 'PROJECT_NOT_FOUND'
+        });
+        return;
+      }
+
+      logger.info('Project deleted successfully', {
         requestId,
         projectId
       });
 
-      res.status(404).json({
-        error: 'Project not found',
-        code: 'PROJECT_NOT_FOUND'
+      res.status(200).json({
+        message: 'Project deleted successfully',
+        projectId
       });
 
     } catch (error) {

@@ -1,0 +1,84 @@
+{
+  "timestamp": "2025-07-17T15:40:35.167Z",
+  "loadTestResults": [
+    {
+      "testName": "Simple SELECT Queries",
+      "totalRequests": 100,
+      "duration": 62,
+      "averageResponseTime": 0.61,
+      "percentile95": 1,
+      "percentile99": 9,
+      "minResponseTime": 0,
+      "maxResponseTime": 9,
+      "requestsPerSecond": 1612.9032258064517,
+      "failureCount": 0,
+      "successRate": 100
+    },
+    {
+      "testName": "Task Queries",
+      "totalRequests": 50,
+      "duration": 47,
+      "averageResponseTime": 0.94,
+      "percentile95": 2,
+      "percentile99": 7,
+      "minResponseTime": 0,
+      "maxResponseTime": 7,
+      "requestsPerSecond": 1063.8297872340424,
+      "failureCount": 0,
+      "successRate": 100
+    },
+    {
+      "testName": "Project Queries",
+      "totalRequests": 30,
+      "duration": 21,
+      "averageResponseTime": 0.7,
+      "percentile95": 1,
+      "percentile99": 2,
+      "minResponseTime": 0,
+      "maxResponseTime": 2,
+      "requestsPerSecond": 1428.5714285714284,
+      "failureCount": 0,
+      "successRate": 100
+    },
+    {
+      "testName": "Complex JOIN Queries",
+      "totalRequests": 20,
+      "duration": 18,
+      "averageResponseTime": 0.9,
+      "percentile95": 2,
+      "percentile99": 2,
+      "minResponseTime": 0,
+      "maxResponseTime": 2,
+      "requestsPerSecond": 1111.111111111111,
+      "failureCount": 0,
+      "successRate": 100
+    },
+    {
+      "testName": "Concurrent Operations",
+      "totalRequests": 50,
+      "duration": 50,
+      "averageResponseTime": 8.7,
+      "percentile95": 31,
+      "percentile99": 32,
+      "minResponseTime": 2,
+      "maxResponseTime": 32,
+      "requestsPerSecond": 1000,
+      "failureCount": 0,
+      "successRate": 100
+    }
+  ],
+  "explainResults": [],
+  "summary": {
+    "totalTests": 5,
+    "passedTests": 5,
+    "testPassRate": 100,
+    "overallSuccessRate": 100,
+    "averagePercentile95": 7.4,
+    "meetsPerformanceTarget": true,
+    "explainSummary": {
+      "totalQueries": 0,
+      "queriesUsingIndexes": 0,
+      "queriesWithSeqScan": 0
+    }
+  }
+}

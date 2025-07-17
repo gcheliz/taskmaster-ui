@@ -35,8 +35,9 @@ RUN pnpm build
 # Production stage
 FROM node:20-alpine AS production
 
-# Install pnpm
-RUN npm install -g pnpm
+# Install pnpm and curl for health checks
+RUN npm install -g pnpm && \
+    apk add --no-cache curl
 
 WORKDIR /app
 
@@ -46,6 +47,10 @@ COPY --from=build /app/packages/backend/package.json ./
 COPY --from=build /app/packages/backend/prisma ./prisma
 COPY --from=build /app/packages/backend/node_modules ./node_modules
 
+# Copy migration startup script
+COPY packages/backend/scripts/docker-start.sh ./scripts/
+RUN chmod +x ./scripts/docker-start.sh
+
 # Expose port
 EXPOSE 3001
 
@@ -53,8 +58,8 @@ EXPOSE 3001
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD curl -f http://localhost:3001/health || exit 1
 
-# Start the application
-CMD ["pnpm", "start"]
+# Start the application with migration script
+CMD ["./scripts/docker-start.sh"]
 
 # Development stage
 FROM base AS development

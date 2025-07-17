@@ -34,6 +34,8 @@ services:
       - DATABASE_URL=postgresql://taskmaster:password@postgres:5432/taskmaster_dev
       - PORT=3001
       - PRISMA_STUDIO_PORT=5555
+      - ENABLE_QUERY_ANALYSIS=true
+      - SEED_DATABASE=false
     ports:
       - "3001:3001"
       - "5555:5555"  # Prisma Studio
@@ -43,7 +45,9 @@ services:
       - ./packages/backend/package.json:/app/packages/backend/package.json:ro
       - ./packages/backend/tsconfig.json:/app/packages/backend/tsconfig.json:ro
       - ./packages/backend/nodemon.json:/app/packages/backend/nodemon.json:ro
+      - ./packages/backend/scripts:/app/packages/backend/scripts:ro
       - backend_node_modules:/app/packages/backend/node_modules
+      - backend_logs:/app/logs
     depends_on:
       postgres:
         condition: service_healthy
@@ -125,20 +129,28 @@ services:
     container_name: taskmaster-nginx
     ports:
       - "80:80"
+      - "443:443"  # For future SSL support
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - nginx_cache:/var/cache/nginx
+      - nginx_logs:/var/log/nginx
     depends_on:
-      - backend
-      - frontend
+      backend:
+        condition: service_healthy
+      frontend:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:80/health"]
       interval: 30s
       timeout: 10s
       retries: 3
+      start_period: 10s
     restart: unless-stopped
     networks:
       - taskmaster-network
+    environment:
+      - NGINX_ENTRYPOINT_QUIET_LOGS=1
     profiles:
       - production
 
@@ -148,6 +160,12 @@ volumes:
   backend_node_modules:
     driver: local
   frontend_node_modules:
+    driver: local
+  nginx_cache:
+    driver: local
+  nginx_logs:
+    driver: local
+  backend_logs:
     driver: local
 
 networks:

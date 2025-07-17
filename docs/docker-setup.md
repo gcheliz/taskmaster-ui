@@ -2,7 +2,27 @@
 
 ## Overview
 
-TaskMaster UI provides a complete Docker Compose setup with automatic file watching and hot-reloading for efficient development. The setup includes PostgreSQL, backend API, and frontend services with production-ready configurations.
+TaskMaster UI provides comprehensive Docker containerization with development and production configurations. The setup includes automatic database migrations, reverse proxy routing, performance optimizations, and complete inter-service networking.
+
+## Architecture
+
+```mermaid
+graph TB
+    subgraph "Docker Network"
+        N[Nginx Reverse Proxy<br/>:80] --> F[Frontend Container<br/>React + Vite]
+        N --> B[Backend Container<br/>Node.js + Express]
+        B --> D[PostgreSQL Database<br/>:5432]
+        B --> R[Redis Cache<br/>:6379]
+    end
+    
+    U[User] --> N
+    
+    subgraph "Development Access"
+        U --> |Dev Mode| F2[Frontend :5173]
+        U --> |Dev Mode| B2[Backend :3001]
+        U --> |Dev Mode| PS[Prisma Studio :5555]
+    end
+```
 
 ## Prerequisites
 

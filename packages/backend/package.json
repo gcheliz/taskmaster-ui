@@ -32,6 +32,8 @@
     "db:watch": "chokidar \"prisma/schema.prisma\" -c \"pnpm db:generate\"",
     "db:push": "prisma db push",
     "db:pull": "prisma db pull",
+    "performance:test": "ts-node scripts/performance-test.ts",
+    "performance:test:verbose": "ts-node scripts/performance-test.ts --verbose",
     "clean": "rimraf dist src/generated",
     "postinstall": "pnpm db:generate"
   },

@@ -9,6 +9,7 @@ import terminalRoutes from './routes/terminalRoutes';
 import commandRoutes from './routes/commandRoutes';
 import prdRoutes from './routes/prdRoutes';
 import dashboardRoutes from './routes/dashboardRoutes';
+import performanceRoutes from './routes/performanceRoutes';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 import DatabaseService from './services/database';
 
@@ -47,6 +48,7 @@ app.use('/api/terminal', terminalRoutes);
 app.use('/api/commands', commandRoutes);
 app.use('/api/prd', prdRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/performance', performanceRoutes);
 
 // Error handling middleware
 app.use(notFoundHandler);

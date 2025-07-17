@@ -85,11 +85,19 @@ pnpm dev
 
 | Command | Description |
 |---------|-------------|
+| `pnpm db:reset` | Complete database reset with enhanced features |
+| `pnpm db:status` | Show database configuration and record counts |
+| `pnpm db:verify` | Verify database integrity and data consistency |
+| `pnpm db:test` | Test database connection |
 | `pnpm db:studio` | Launch Prisma Studio (database GUI) |
 | `pnpm db:migrate` | Create and apply new migration |
 | `pnpm db:migrate:deploy` | Apply migrations in production |
 | `pnpm db:seed` | Seed database with sample data |
-| `pnpm db:reset` | Reset database and reseed |
+| `pnpm db:seed:minimal` | Seed with minimal sample data |
+| `pnpm db:seed:verbose` | Seed with detailed progress output |
+| `pnpm db:reset:quick` | Quick reset using legacy method |
+| `pnpm db:reset:no-seed` | Reset without seeding |
+| `pnpm db:reset:force` | Force reset (skip connection test) |
 | `pnpm db:generate` | Regenerate Prisma client |
 | `pnpm db:push` | Push schema changes without migrations |
 | `pnpm db:pull` | Pull schema from database |

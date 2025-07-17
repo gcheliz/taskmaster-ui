@@ -1,0 +1,15 @@
+# pnpm workspace and performance settings
+auto-install-peers=true
+link-workspace-packages=true
+prefer-workspace-packages=true
+save-exact=false
+store-dir=~/.pnpm-store
+
+# Registry and resolution
+registry=https://registry.npmjs.org/
+resolution-mode=highest
+
+# Performance optimizations
+network-concurrency=16
+fetch-retries=3
+fetch-retry-maxtimeout=60000

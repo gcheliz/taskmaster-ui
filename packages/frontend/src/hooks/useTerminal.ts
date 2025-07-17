@@ -188,7 +188,7 @@ export function useTerminal(options: UseTerminalOptions = {}): UseTerminalReturn
               }
               break;
 
-            case 'error':
+            case 'error': {
               const errorMsg = message.data?.message || 'Terminal error occurred';
               setError(errorMsg);
               setIsCommandRunning(false);
@@ -196,6 +196,7 @@ export function useTerminal(options: UseTerminalOptions = {}): UseTerminalReturn
                 showError('Terminal Error', errorMsg);
               }
               break;
+            }
           }
         } catch (error) {
           console.error('Failed to parse WebSocket message:', error);
@@ -306,12 +307,8 @@ export function useTerminal(options: UseTerminalOptions = {}): UseTerminalReturn
       throw new Error('No active terminal session');
     }
 
-    try {
-      await terminalService.changeDirectory(session.id, { directory });
-      setCurrentDirectory(directory);
-    } catch (error) {
-      throw error;
-    }
+    await terminalService.changeDirectory(session.id, { directory });
+    setCurrentDirectory(directory);
   }, [session]);
 
   // Clear terminal

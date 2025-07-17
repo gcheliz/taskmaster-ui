@@ -11,6 +11,7 @@ const repositoryRoutes_1 = require("./routes/repositoryRoutes");
 const projectRoutes_1 = __importDefault(require("./routes/projectRoutes"));
 const realtimeRoutes_1 = __importDefault(require("./routes/realtimeRoutes"));
 const terminalRoutes_1 = __importDefault(require("./routes/terminalRoutes"));
+const commandRoutes_1 = __importDefault(require("./routes/commandRoutes"));
 const prdRoutes_1 = __importDefault(require("./routes/prdRoutes"));
 const dashboardRoutes_1 = __importDefault(require("./routes/dashboardRoutes"));
 const errorHandler_1 = require("./middleware/errorHandler");
@@ -43,6 +44,7 @@ app.use('/api/repositories', (0, repositoryRoutes_1.createRepositoryRoutes)());
 app.use('/api/projects', projectRoutes_1.default);
 app.use('/api/realtime', realtimeRoutes_1.default);
 app.use('/api/terminal', terminalRoutes_1.default);
+app.use('/api/commands', commandRoutes_1.default);
 app.use('/api/prd', prdRoutes_1.default);
 app.use('/api/dashboard', dashboardRoutes_1.default);
 // Error handling middleware

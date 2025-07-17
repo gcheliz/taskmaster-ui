@@ -163,23 +163,27 @@ export const usePRDAnalysisResults = (
         let aValue: any, bValue: any;
         
         switch (filters.sortBy) {
-          case 'priority':
+          case 'priority': {
             const priorityOrder = { high: 3, medium: 2, low: 1 };
             aValue = priorityOrder[a.priority as keyof typeof priorityOrder];
             bValue = priorityOrder[b.priority as keyof typeof priorityOrder];
             break;
-          case 'complexity':
+          }
+          case 'complexity': {
             aValue = a.complexity;
             bValue = b.complexity;
             break;
-          case 'hours':
+          }
+          case 'hours': {
             aValue = a.estimatedHours;
             bValue = b.estimatedHours;
             break;
-          case 'title':
+          }
+          case 'title': {
             aValue = a.title.toLowerCase();
             bValue = b.title.toLowerCase();
             break;
+          }
           default:
             return 0;
         }

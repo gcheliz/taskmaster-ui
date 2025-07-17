@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { TerminalContainer } from '../Terminal/TerminalContainer';
+import { CommandWorkspace } from '../Commands/CommandWorkspace';
 import { useRepository } from '../../contexts/RepositoryContext';
 import { useNotification } from '../../contexts/NotificationContext';
 import './TerminalView.css';
@@ -37,6 +38,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({
     isActive: boolean;
   }>>([]);
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
+  const [activeView, setActiveView] = useState<'terminal' | 'commands'>('terminal');
 
   const { state } = useRepository();
   const { repositories, isLoading: isLoadingRepositories } = state;
@@ -86,7 +88,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({
   return (
     <div className={`terminal-view ${className}`}>
       <div className="terminal-view__header">
-        <h2 className="terminal-view__title">Terminal</h2>
+        <h2 className="terminal-view__title">Terminal & Commands</h2>
         
         <div className="terminal-view__controls">
           <div className="repository-selector">
@@ -106,18 +108,35 @@ export const TerminalView: React.FC<TerminalViewProps> = ({
             </select>
           </div>
 
-          <button 
-            className="create-session-button"
-            onClick={handleCreateSession}
-            disabled={!selectedRepository || isLoadingRepositories}
-          >
-            New Terminal
-          </button>
+          <div className="view-switcher">
+            <button 
+              className={`view-button ${activeView === 'terminal' ? 'view-button--active' : ''}`}
+              onClick={() => setActiveView('terminal')}
+            >
+              Terminal
+            </button>
+            <button 
+              className={`view-button ${activeView === 'commands' ? 'view-button--active' : ''}`}
+              onClick={() => setActiveView('commands')}
+            >
+              Quick Commands
+            </button>
+          </div>
+
+          {activeView === 'terminal' && (
+            <button 
+              className="create-session-button"
+              onClick={handleCreateSession}
+              disabled={!selectedRepository || isLoadingRepositories}
+            >
+              New Terminal
+            </button>
+          )}
         </div>
       </div>
 
-      {/* Terminal Session Tabs */}
-      {terminalSessions.length > 0 && (
+      {/* Terminal Session Tabs - only show when terminal view is active */}
+      {activeView === 'terminal' && terminalSessions.length > 0 && (
         <div className="terminal-view__tabs">
           {terminalSessions.map((session) => (
             <div
@@ -140,40 +159,58 @@ export const TerminalView: React.FC<TerminalViewProps> = ({
         </div>
       )}
 
-      {/* Terminal Content */}
+      {/* Content Area */}
       <div className="terminal-view__content">
-        {activeSession ? (
-          <TerminalContainer
-            key={activeSession.id}
-            workingDirectory={activeSession.workingDirectory}
-            repositoryPath={activeSession.repositoryPath}
-            title={activeSession.title}
-            theme={theme}
-            mode={mode}
-            showHeader={false} // We have our own header
-            showStatusBar={true}
-            onClose={() => handleCloseSession(activeSession.id)}
-            autoCreate={true}
-            autoConnect={true}
-            showNotifications={true}
-          />
-        ) : (
-          <div className="terminal-view__empty">
-            <div className="empty-state">
-              <div className="empty-state__icon">🖥️</div>
-              <h3 className="empty-state__title">No Terminal Sessions</h3>
-              <p className="empty-state__description">
-                Select a repository and create a new terminal session to get started.
-              </p>
-              {selectedRepository && (
-                <button 
-                  className="empty-state__button"
-                  onClick={handleCreateSession}
-                >
-                  Create Terminal Session
-                </button>
-              )}
+        {activeView === 'terminal' ? (
+          // Terminal Content
+          activeSession ? (
+            <TerminalContainer
+              key={activeSession.id}
+              workingDirectory={activeSession.workingDirectory}
+              repositoryPath={activeSession.repositoryPath}
+              title={activeSession.title}
+              theme={theme}
+              mode={mode}
+              showHeader={false} // We have our own header
+              showStatusBar={true}
+              onClose={() => handleCloseSession(activeSession.id)}
+              autoCreate={true}
+              autoConnect={true}
+              showNotifications={true}
+            />
+          ) : (
+            <div className="terminal-view__empty">
+              <div className="empty-state">
+                <div className="empty-state__icon">🖥️</div>
+                <h3 className="empty-state__title">No Terminal Sessions</h3>
+                <p className="empty-state__description">
+                  Select a repository and create a new terminal session to get started.
+                </p>
+                {selectedRepository && (
+                  <button 
+                    className="empty-state__button"
+                    onClick={handleCreateSession}
+                  >
+                    Create Terminal Session
+                  </button>
+                )}
+              </div>
             </div>
+          )
+        ) : (
+          // Command Workspace Content
+          <div className="command-workspace-container">
+            <CommandWorkspace
+              repositoryPath={selectedRepository || undefined}
+              workingDirectory={selectedRepository || undefined}
+              hasActiveTerminal={activeSession !== undefined}
+              onExecuteInTerminal={(command) => {
+                // Switch to terminal view and execute command
+                setActiveView('terminal');
+                // In a real implementation, this would send the command to the active terminal
+                console.log('Execute in terminal:', command);
+              }}
+            />
           </div>
         )}
       </div>

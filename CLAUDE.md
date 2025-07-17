@@ -81,7 +81,12 @@ project/
 ### Critical Development Guidelines
 
 - **CRITICAL**: Never finish a task or subtask if the complete tests and checks passing successful (Allow warnings).
-- **IMPORTANT** Use always npx commands instead the node npm ones to improve the performance
+- **CRITICAL** This project uses PNPM exclusively. NEVER use npm commands. Always use pnpm commands instead:
+  - Use `pnpm install` instead of `npm install`
+  - Use `pnpm add` instead of `npm add`
+  - Use `pnpm run` instead of `npm run`
+  - Use `pnpm exec` instead of `npx`
+  - All package management must be done through pnpm to avoid dependency conflicts and warnings
 - **CRITICAL** Do not use the cd command to execute node commands. Place a common package.json into the root project folder to map all node actions into the multiple workspace project. Keep the monorepo workspace config execution through the main package.json file into the root folder.
 - **CRITICAL** Perform the subtask expansion always in batches, try generating 5 in parallel.
 

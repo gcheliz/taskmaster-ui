@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Application } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import healthRoutes from './routes/healthRoutes';
@@ -6,6 +6,7 @@ import { createRepositoryRoutes } from './routes/repositoryRoutes';
 import projectRoutes from './routes/projectRoutes';
 import realtimeRoutes from './routes/realtimeRoutes';
 import terminalRoutes from './routes/terminalRoutes';
+import commandRoutes from './routes/commandRoutes';
 import prdRoutes from './routes/prdRoutes';
 import dashboardRoutes from './routes/dashboardRoutes';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
@@ -13,7 +14,7 @@ import DatabaseService from './services/database';
 
 dotenv.config();
 
-const app = express();
+const app: Application = express();
 
 // Initialize database on startup
 const initializeDatabase = async () => {
@@ -43,6 +44,7 @@ app.use('/api/repositories', createRepositoryRoutes());
 app.use('/api/projects', projectRoutes);
 app.use('/api/realtime', realtimeRoutes);
 app.use('/api/terminal', terminalRoutes);
+app.use('/api/commands', commandRoutes);
 app.use('/api/prd', prdRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 

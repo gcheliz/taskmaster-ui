@@ -50,7 +50,7 @@ function repositoryReducer(state: RepositoryState, action: RepositoryAction): Re
         isLoading: false,
       };
 
-    case 'ADD_REPOSITORY':
+    case 'ADD_REPOSITORY': {
       // Check if repository already exists
       const existingIndex = state.repositories.findIndex(
         repo => repo.path === action.payload.path
@@ -75,7 +75,8 @@ function repositoryReducer(state: RepositoryState, action: RepositoryAction): Re
         error: null,
         isLoading: false,
       };
-
+    }
+    
     case 'REMOVE_REPOSITORY':
       return {
         ...state,

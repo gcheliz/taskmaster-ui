@@ -179,7 +179,7 @@ export class SecurityEnforcer {
     if (securityConfig.environment.isDevelopment) return;
     
     // Detect dev tools
-    let devtools = {
+    const devtools = {
       open: false,
       orientation: null as string | null
     };

@@ -391,3 +391,86 @@
 .terminal-view__tabs::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
 }
+
+/* View Switcher */
+.view-switcher {
+  display: flex;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.view-button {
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  background-color: #f8f9fa;
+  border: none;
+  color: #495057;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-right: 1px solid #e9ecef;
+}
+
+.view-button:last-child {
+  border-right: none;
+}
+
+.view-button:hover:not(.view-button--active) {
+  background-color: #e9ecef;
+  color: #212529;
+}
+
+.view-button--active {
+  background-color: #007bff;
+  color: #ffffff;
+}
+
+/* Command Workspace Container */
+.command-workspace-container {
+  flex: 1;
+  padding: 24px;
+  background-color: #f8f9fa;
+  overflow-y: auto;
+}
+
+/* Dark theme for new elements */
+.terminal-view--dark .view-switcher {
+  border-color: #444;
+}
+
+.terminal-view--dark .view-button {
+  background-color: #2a2a2a;
+  border-color: #444;
+  color: #ccc;
+}
+
+.terminal-view--dark .view-button:hover:not(.view-button--active) {
+  background-color: #333;
+  color: #ffffff;
+}
+
+.terminal-view--dark .view-button--active {
+  background-color: #007bff;
+  color: #ffffff;
+}
+
+.terminal-view--dark .command-workspace-container {
+  background-color: #2a2a2a;
+}
+
+/* Responsive adjustments for view switcher */
+@media (max-width: 768px) {
+  .view-switcher {
+    width: 100%;
+  }
+  
+  .view-button {
+    flex: 1;
+    text-align: center;
+  }
+  
+  .command-workspace-container {
+    padding: 16px;
+  }
+}

@@ -7,7 +7,7 @@
 
 import { validateRepositoryPath, validateProjectName, validateTaskId } from './security';
 import { config } from '../config/environment';
-import { useSecurityPolicy } from '../config/security';
+import { SecurityEnforcer } from '../config/security';
 
 /**
  * Secure API request configuration
@@ -94,8 +94,8 @@ export class SecureApiClient {
 
     // Check rate limiting
     if (rateLimitKey) {
-      const { checkRateLimit, recordAttempt } = useSecurityPolicy();
-      if (checkRateLimit('api')) {
+      const clientId = SecurityEnforcer.getClientId();
+      if (SecurityEnforcer.checkRateLimit('api', clientId)) {
         return {
           success: false,
           error: 'Rate limit exceeded. Please try again later.',
@@ -103,7 +103,7 @@ export class SecureApiClient {
           headers: new Headers()
         };
       }
-      recordAttempt('api');
+      SecurityEnforcer.recordAttempt('api', clientId);
     }
 
     const requestId = this.generateRequestId();

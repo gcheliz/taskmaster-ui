@@ -1,0 +1,344 @@
+import React, { useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from '../../../utils/cn';
+import { Button } from '../atoms/Button';
+import { Icon, XMarkIcon } from '../atoms/Icon';
+
+const modalOverlayVariants = cva(
+  'fixed inset-0 z-50 bg-black/50 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0'
+);
+
+const modalContentVariants = cva(
+  'fixed left-1/2 top-1/2 z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border border-secondary-200 bg-white p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg',
+  {
+    variants: {
+      size: {
+        sm: 'max-w-md',
+        md: 'max-w-lg',
+        lg: 'max-w-2xl',
+        xl: 'max-w-4xl',
+        full: 'max-w-[95vw] max-h-[95vh]',
+      },
+    },
+    defaultVariants: {
+      size: 'md',
+    },
+  }
+);
+
+const modalHeaderVariants = cva(
+  'flex flex-col space-y-1.5 text-center sm:text-left'
+);
+
+const modalTitleVariants = cva(
+  'text-lg font-semibold leading-none tracking-tight'
+);
+
+const modalDescriptionVariants = cva(
+  'text-sm text-secondary-600'
+);
+
+const modalBodyVariants = cva(
+  'flex-1 overflow-y-auto'
+);
+
+const modalFooterVariants = cva(
+  'flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2'
+);
+
+export interface ModalProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  children: React.ReactNode;
+}
+
+export interface ModalContentProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof modalContentVariants> {
+  onEscapeKeyDown?: (event: KeyboardEvent) => void;
+  onPointerDownOutside?: (event: PointerEvent) => void;
+}
+
+export interface ModalHeaderProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof modalHeaderVariants> {}
+
+export interface ModalTitleProps
+  extends React.HTMLAttributes<HTMLHeadingElement>,
+    VariantProps<typeof modalTitleVariants> {}
+
+export interface ModalDescriptionProps
+  extends React.HTMLAttributes<HTMLParagraphElement>,
+    VariantProps<typeof modalDescriptionVariants> {}
+
+export interface ModalBodyProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof modalBodyVariants> {}
+
+export interface ModalFooterProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof modalFooterVariants> {}
+
+// Context for managing modal state
+const ModalContext = React.createContext<{
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+} | null>(null);
+
+const useModalContext = () => {
+  const context = React.useContext(ModalContext);
+  if (!context) {
+    throw new Error('Modal components must be used within a Modal');
+  }
+  return context;
+};
+
+const Modal: React.FC<ModalProps> = ({ open, onOpenChange, children }) => {
+  return (
+    <ModalContext.Provider value={{ open, onOpenChange }}>
+      {children}
+    </ModalContext.Provider>
+  );
+};
+
+export interface ModalTriggerProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'link' | 'destructive';
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'icon';
+}
+
+const ModalTrigger = React.forwardRef<
+  HTMLButtonElement,
+  ModalTriggerProps
+>(({ children, onClick, variant, size, ...props }, ref) => {
+  const { onOpenChange } = useModalContext();
+
+  return (
+    <Button
+      ref={ref}
+      variant={variant}
+      size={size}
+      onClick={(event) => {
+        onOpenChange(true);
+        onClick?.(event);
+      }}
+      {...props}
+    >
+      {children}
+    </Button>
+  );
+});
+ModalTrigger.displayName = 'ModalTrigger';
+
+const ModalContent = React.forwardRef<HTMLDivElement, ModalContentProps>(
+  ({ className, size, onEscapeKeyDown, onPointerDownOutside, children, ...props }, ref) => {
+    const { open, onOpenChange } = useModalContext();
+    const contentRef = useRef<HTMLDivElement>(null);
+    const overlayRef = useRef<HTMLDivElement>(null);
+
+    // Focus management
+    useEffect(() => {
+      if (!open) return;
+
+      const handleKeyDown = (event: KeyboardEvent) => {
+        if (event.key === 'Escape') {
+          event.preventDefault();
+          onEscapeKeyDown?.(event);
+          onOpenChange(false);
+        }
+      };
+
+      const handleTabKey = (event: KeyboardEvent) => {
+        if (event.key !== 'Tab') return;
+
+        const focusableElements = contentRef.current?.querySelectorAll(
+          'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"]):not([disabled]), details:not([disabled]), summary:not(:disabled)'
+        );
+
+        if (!focusableElements || focusableElements.length === 0) return;
+
+        const firstElement = focusableElements[0] as HTMLElement;
+        const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+        if (event.shiftKey) {
+          if (document.activeElement === firstElement) {
+            event.preventDefault();
+            lastElement.focus();
+          }
+        } else {
+          if (document.activeElement === lastElement) {
+            event.preventDefault();
+            firstElement.focus();
+          }
+        }
+      };
+
+      document.addEventListener('keydown', handleKeyDown);
+      document.addEventListener('keydown', handleTabKey);
+
+      // Focus the first focusable element when modal opens
+      const focusableElements = contentRef.current?.querySelectorAll(
+        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"]):not([disabled]), details:not([disabled]), summary:not(:disabled)'
+      );
+
+      if (focusableElements && focusableElements.length > 0) {
+        (focusableElements[0] as HTMLElement).focus();
+      }
+
+      return () => {
+        document.removeEventListener('keydown', handleKeyDown);
+        document.removeEventListener('keydown', handleTabKey);
+      };
+    }, [open, onEscapeKeyDown, onOpenChange]);
+
+    // Prevent body scroll when modal is open
+    useEffect(() => {
+      if (open) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = 'unset';
+      }
+
+      return () => {
+        document.body.style.overflow = 'unset';
+      };
+    }, [open]);
+
+    if (!open) return null;
+
+    const handleOverlayClick = (event: React.MouseEvent) => {
+      if (event.target === overlayRef.current) {
+        const pointerEvent = new PointerEvent('pointerdown', {
+          bubbles: true,
+          cancelable: true,
+        });
+        onPointerDownOutside?.(pointerEvent);
+        onOpenChange(false);
+      }
+    };
+
+    const modalElement = (
+      <div
+        ref={overlayRef}
+        className={modalOverlayVariants()}
+        data-state={open ? 'open' : 'closed'}
+        onClick={handleOverlayClick}
+      >
+        <div
+          ref={ref || contentRef}
+          role="dialog"
+          aria-modal="true"
+          data-state={open ? 'open' : 'closed'}
+          className={cn(modalContentVariants({ size, className }))}
+          onClick={(e) => e.stopPropagation()}
+          {...props}
+        >
+          {children}
+        </div>
+      </div>
+    );
+
+    return createPortal(modalElement, document.body);
+  }
+);
+ModalContent.displayName = 'ModalContent';
+
+const ModalHeader = React.forwardRef<HTMLDivElement, ModalHeaderProps>(
+  ({ className, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={cn(modalHeaderVariants({ className }))}
+      {...props}
+    />
+  )
+);
+ModalHeader.displayName = 'ModalHeader';
+
+const ModalTitle = React.forwardRef<HTMLHeadingElement, ModalTitleProps>(
+  ({ className, ...props }, ref) => (
+    <h3
+      ref={ref}
+      className={cn(modalTitleVariants({ className }))}
+      {...props}
+    />
+  )
+);
+ModalTitle.displayName = 'ModalTitle';
+
+const ModalDescription = React.forwardRef<HTMLParagraphElement, ModalDescriptionProps>(
+  ({ className, ...props }, ref) => (
+    <p
+      ref={ref}
+      className={cn(modalDescriptionVariants({ className }))}
+      {...props}
+    />
+  )
+);
+ModalDescription.displayName = 'ModalDescription';
+
+const ModalBody = React.forwardRef<HTMLDivElement, ModalBodyProps>(
+  ({ className, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={cn(modalBodyVariants({ className }))}
+      {...props}
+    />
+  )
+);
+ModalBody.displayName = 'ModalBody';
+
+const ModalFooter = React.forwardRef<HTMLDivElement, ModalFooterProps>(
+  ({ className, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={cn(modalFooterVariants({ className }))}
+      {...props}
+    />
+  )
+);
+ModalFooter.displayName = 'ModalFooter';
+
+const ModalClose = React.forwardRef<
+  HTMLButtonElement,
+  React.ButtonHTMLAttributes<HTMLButtonElement>
+>(({ children, onClick, ...props }, ref) => {
+  const { onOpenChange } = useModalContext();
+
+  return (
+    <Button
+      ref={ref}
+      variant="ghost"
+      size="sm"
+      className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
+      onClick={(event) => {
+        onOpenChange(false);
+        onClick?.(event);
+      }}
+      {...props}
+    >
+      {children || <Icon icon={XMarkIcon} size="sm" />}
+      <span className="sr-only">Close</span>
+    </Button>
+  );
+});
+ModalClose.displayName = 'ModalClose';
+
+export {
+  Modal,
+  ModalTrigger,
+  ModalContent,
+  ModalHeader,
+  ModalTitle,
+  ModalDescription,
+  ModalBody,
+  ModalFooter,
+  ModalClose,
+  modalOverlayVariants,
+  modalContentVariants,
+  modalHeaderVariants,
+  modalTitleVariants,
+  modalDescriptionVariants,
+  modalBodyVariants,
+  modalFooterVariants,
+};

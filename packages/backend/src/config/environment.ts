@@ -80,12 +80,18 @@ export const getDatabaseConfig = () => {
 
   // Add SSL configuration if enabled
   if (env.DATABASE_SSL === 'true') {
-    config.ssl = {
-      rejectUnauthorized: env.NODE_ENV === 'production',
-      ca: env.SSL_CA_PATH ? require('fs').readFileSync(env.SSL_CA_PATH, 'utf8') : undefined,
-      cert: env.SSL_CERT_PATH ? require('fs').readFileSync(env.SSL_CERT_PATH, 'utf8') : undefined,
-      key: env.SSL_KEY_PATH ? require('fs').readFileSync(env.SSL_KEY_PATH, 'utf8') : undefined,
-    };
+    // Import SSL validator to enforce SSL configuration
+    const { enforceSSLConfiguration } = require('./ssl-validator');
+    const sslConfig = enforceSSLConfiguration();
+    
+    if (sslConfig.enabled) {
+      config.ssl = {
+        rejectUnauthorized: sslConfig.rejectUnauthorized,
+        ca: sslConfig.ca,
+        cert: sslConfig.cert,
+        key: sslConfig.key,
+      };
+    }
   }
 
   return config;

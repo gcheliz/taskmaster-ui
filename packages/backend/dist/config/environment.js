@@ -75,12 +75,17 @@ const getDatabaseConfig = () => {
     };
     // Add SSL configuration if enabled
     if (exports.env.DATABASE_SSL === 'true') {
-        config.ssl = {
-            rejectUnauthorized: exports.env.NODE_ENV === 'production',
-            ca: exports.env.SSL_CA_PATH ? require('fs').readFileSync(exports.env.SSL_CA_PATH, 'utf8') : undefined,
-            cert: exports.env.SSL_CERT_PATH ? require('fs').readFileSync(exports.env.SSL_CERT_PATH, 'utf8') : undefined,
-            key: exports.env.SSL_KEY_PATH ? require('fs').readFileSync(exports.env.SSL_KEY_PATH, 'utf8') : undefined,
-        };
+        // Import SSL validator to enforce SSL configuration
+        const { enforceSSLConfiguration } = require('./ssl-validator');
+        const sslConfig = enforceSSLConfiguration();
+        if (sslConfig.enabled) {
+            config.ssl = {
+                rejectUnauthorized: sslConfig.rejectUnauthorized,
+                ca: sslConfig.ca,
+                cert: sslConfig.cert,
+                key: sslConfig.key,
+            };
+        }
     }
     return config;
 };

@@ -37,6 +37,7 @@
     "env:validate": "node scripts/validate-environment.js",
     "env:check": "node scripts/validate-environment.js",
     "secrets:test": "ts-node scripts/test-secrets-manager.ts",
+    "ssl:test": "ts-node scripts/test-ssl-connection.ts",
     "clean": "rimraf dist src/generated",
     "postinstall": "pnpm db:generate"
   },

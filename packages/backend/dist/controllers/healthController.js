@@ -3,9 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSystemHealth = exports.getSecretsHealth = exports.getApiHealth = exports.getHealth = void 0;
+exports.getSystemHealth = exports.getSSLHealth = exports.getSecretsHealth = exports.getApiHealth = exports.getHealth = void 0;
 const secrets_manager_1 = require("../config/secrets-manager");
 const database_1 = __importDefault(require("../services/database"));
+const ssl_validator_1 = require("../config/ssl-validator");
 const getHealth = (req, res) => {
     const response = {
         status: 'OK',
@@ -54,6 +55,39 @@ const getSecretsHealth = async (req, res) => {
     }
 };
 exports.getSecretsHealth = getSecretsHealth;
+const getSSLHealth = async (req, res) => {
+    try {
+        const validation = (0, ssl_validator_1.validateSSLConfiguration)();
+        const certInfo = (0, ssl_validator_1.getSSLCertificateInfo)();
+        const expirationInfo = (0, ssl_validator_1.checkSSLCertificateExpiration)();
+        const response = {
+            status: validation.valid ? 'OK' : 'DEGRADED',
+            timestamp: new Date().toISOString(),
+            service: 'ssl-validator',
+            ssl: {
+                enabled: validation.configuration.enabled,
+                valid: validation.valid,
+                errors: validation.errors,
+                warnings: validation.warnings,
+            },
+            certificate: {
+                expiring: expirationInfo.expiring,
+                daysUntilExpiration: expirationInfo.daysUntilExpiration,
+                files: certInfo.files,
+            },
+        };
+        res.status(validation.valid ? 200 : 503).json(response);
+    }
+    catch (error) {
+        res.status(500).json({
+            status: 'ERROR',
+            timestamp: new Date().toISOString(),
+            service: 'ssl-validator',
+            error: error.message,
+        });
+    }
+};
+exports.getSSLHealth = getSSLHealth;
 const getSystemHealth = async (req, res) => {
     try {
         const secretsManager = (0, secrets_manager_1.getSecretsManager)();
@@ -71,7 +105,10 @@ const getSystemHealth = async (req, res) => {
         catch (error) {
             secretsValid = false;
         }
-        const allHealthy = dbHealth && secretsHealth && secretsValid;
+        // Check SSL configuration
+        const sslValidation = (0, ssl_validator_1.validateSSLConfiguration)();
+        const sslValid = sslValidation.valid;
+        const allHealthy = dbHealth && secretsHealth && secretsValid && sslValid;
         const response = {
             status: allHealthy ? 'OK' : 'DEGRADED',
             timestamp: new Date().toISOString(),
@@ -80,6 +117,7 @@ const getSystemHealth = async (req, res) => {
                 database: dbHealth ? 'OK' : 'DEGRADED',
                 secrets: secretsHealth ? 'OK' : 'DEGRADED',
                 secretsValid: secretsValid ? 'OK' : 'ERROR',
+                ssl: sslValid ? 'OK' : 'DEGRADED',
             },
         };
         res.status(allHealthy ? 200 : 503).json(response);

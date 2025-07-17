@@ -1,5 +1,17 @@
 {
-  "watch": ["src"],
-  "ext": "ts",
-  "exec": "ts-node src/index.ts"
+  "watch": ["src", "prisma/schema.prisma"],
+  "ext": "ts,prisma",
+  "ignore": ["src/**/*.test.ts", "src/**/*.spec.ts", "node_modules", "dist", "src/generated"],
+  "exec": "ts-node src/index.ts",
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "delay": 1000,
+  "verbose": true,
+  "events": {
+    "start": "echo '🚀 Starting TaskMaster Backend Server...'",
+    "restart": "echo '🔄 Restarting due to file changes...'",
+    "crash": "echo '💥 Server crashed! Waiting for changes...'",
+    "exit": "echo '✅ Server stopped gracefully'"
+  }
 }

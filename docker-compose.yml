@@ -148,6 +148,9 @@ services:
       - ./packages/frontend/tsconfig.app.json:/app/packages/frontend/tsconfig.app.json:ro
       - ./packages/frontend/tsconfig.node.json:/app/packages/frontend/tsconfig.node.json:ro
       - ./packages/frontend/index.html:/app/packages/frontend/index.html:ro
+      - ./package.json:/app/package.json:ro
+      - ./pnpm-lock.yaml:/app/pnpm-lock.yaml:ro
+      - ./pnpm-workspace.yaml:/app/pnpm-workspace.yaml:ro
       - frontend_node_modules:/app/packages/frontend/node_modules
     working_dir: /app/packages/frontend
     command: pnpm storybook --host 0.0.0.0 --port 6006 --ci

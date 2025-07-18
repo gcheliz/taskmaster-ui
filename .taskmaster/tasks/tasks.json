@@ -87,7 +87,7 @@
             "id": 3,
             "title": "Develop Interactive Dark Theme Card with Drag-and-Drop and Icon Components",
             "description": "Create a responsive dark theme Card component with support for drag-and-drop functionality. Integrate and style Heroicons for dark mode. Document both in Storybook.",
-            "status": "pending",
+            "status": "done",
             "dependencies": [],
             "details": "Design and build a flexible, responsive Card component with dark theme styles. Implement drag-and-drop functionality for use in board layouts, including visual states for dragging and dropping. Add subtle animations for hover and selection. Integrate the Heroicons library, ensuring icons are correctly styled for the dark theme. Document card layouts, drag-and-drop usage, and icon integration in Storybook.",
             "testStrategy": "Visual regression testing for the Card component across different breakpoints and states (default, hover, dragging). Unit tests for drag-and-drop event handlers and Icon props. End-to-end tests in Storybook to verify drag-and-drop interactions. Manually verify accessibility of draggable elements."
@@ -796,7 +796,7 @@
     ],
     "metadata": {
       "created": "2025-07-15T21:22:03.992Z",
-      "updated": "2025-07-18T18:40:37.586Z",
+      "updated": "2025-07-18T18:51:11.348Z",
       "description": "Tasks for taskmaster-ui context"
     }
   }

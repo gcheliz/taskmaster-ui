@@ -1,6 +1,39 @@
 import React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '../../../utils/cn';
+// Heroicons imports
+import {
+  CheckIcon as HeroCheckIcon,
+  XMarkIcon as HeroXMarkIcon,
+  PlusIcon as HeroPlusIcon,
+  PencilIcon as HeroPencilIcon,
+  TrashIcon as HeroTrashIcon,
+  EyeIcon as HeroEyeIcon,
+  ChevronDownIcon as HeroChevronDownIcon,
+  ArrowPathIcon as HeroArrowPathIcon,
+  // Task Management Icons
+  ClipboardDocumentListIcon,
+  CheckCircleIcon,
+  ExclamationTriangleIcon,
+  ClockIcon,
+  UserIcon,
+  CalendarIcon,
+  TagIcon,
+  // Navigation Icons
+  HomeIcon,
+  Cog6ToothIcon,
+  BellIcon,
+  // Action Icons
+  DocumentDuplicateIcon,
+  ArchiveBoxIcon,
+  ShareIcon,
+  HeartIcon,
+  StarIcon,
+  // Drag & Drop Icons
+  Bars3Icon,
+  ArrowsPointingOutIcon,
+  CursorArrowRaysIcon,
+} from '@heroicons/react/24/outline';
 
 const iconVariants = cva('inline-flex items-center justify-center', {
   variants: {
@@ -14,12 +47,12 @@ const iconVariants = cva('inline-flex items-center justify-center', {
     },
     color: {
       current: 'text-current',
-      primary: 'text-primary-600',
-      secondary: 'text-secondary-600',
-      success: 'text-success-600',
-      warning: 'text-warning-600',
-      error: 'text-error-600',
-      muted: 'text-secondary-400',
+      primary: 'text-primary-600 dark:text-primary-400',
+      secondary: 'text-secondary-600 dark:text-secondary-400',
+      success: 'text-success-600 dark:text-success-400',
+      warning: 'text-warning-600 dark:text-warning-400',
+      error: 'text-error-600 dark:text-error-400',
+      muted: 'text-secondary-400 dark:text-secondary-500',
     },
   },
   defaultVariants: {
@@ -156,28 +189,28 @@ export const ChevronDownIcon: React.FC<
 );
 
 export const LoadingIcon: React.FC<React.SVGProps<SVGSVGElement>> = props => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    className="animate-spin"
-    {...props}
-  >
-    <circle
-      className="opacity-25"
-      cx="12"
-      cy="12"
-      r="10"
-      stroke="currentColor"
-      strokeWidth="4"
-    />
-    <path
-      className="opacity-75"
-      fill="currentColor"
-      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-    />
-  </svg>
+  <HeroArrowPathIcon className="animate-spin" {...props} />
 );
+
+// Export Heroicons with dark theme support
+export const TaskIcon = ClipboardDocumentListIcon;
+export const CompleteIcon = CheckCircleIcon;
+export const WarningIcon = ExclamationTriangleIcon;
+export const TimeIcon = ClockIcon;
+export const UserCircleIcon = UserIcon;
+export const CalendarDaysIcon = CalendarIcon;
+export const TaggedIcon = TagIcon;
+export const HomeFilledIcon = HomeIcon;
+export const SettingsIcon = Cog6ToothIcon;
+export const NotificationIcon = BellIcon;
+export const DuplicateIcon = DocumentDuplicateIcon;
+export const ArchiveIcon = ArchiveBoxIcon;
+export const ShareSocialIcon = ShareIcon;
+export const FavoriteIcon = HeartIcon;
+export const StarFilledIcon = StarIcon;
+export const DragHandleIcon = Bars3Icon;
+export const ExpandIcon = ArrowsPointingOutIcon;
+export const CursorIcon = CursorArrowRaysIcon;
 
 export interface IconProps
   extends Omit<React.HTMLAttributes<HTMLSpanElement>, 'color'>,

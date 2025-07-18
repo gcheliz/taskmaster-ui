@@ -316,12 +316,62 @@ Add screenshots here
 
 ## 🛡️ Security
 
+### Security Requirements
+
+All contributions must follow security best practices:
+
+#### Code Security
+- **No hardcoded secrets**: Use environment variables or secrets management
+- **Input validation**: Validate all user inputs on both client and server
+- **SQL injection prevention**: Use parameterized queries and ORM
+- **XSS prevention**: Sanitize output and use CSP headers
+- **Authentication**: Implement proper JWT token handling
+- **Authorization**: Check permissions on every request
+
+#### Development Security
+```bash
+# Security checks before submitting
+pnpm audit --fix                    # Fix dependency vulnerabilities
+pnpm run security:check              # Run security linting
+pnpm run test:security               # Run security tests
+
+# SSL/TLS development
+./scripts/generate-ssl-certs.sh      # Generate development certificates
+./scripts/setup-secrets.sh           # Setup development secrets
+```
+
+#### Security Testing
+- **Unit tests**: Test security validations
+- **Integration tests**: Test authentication flows
+- **Security headers**: Verify CSP and security headers
+- **SSL/TLS**: Test certificate configuration
+
+#### Common Security Patterns
+```typescript
+// Input validation with Zod
+const userSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+});
+
+// SQL injection prevention
+const user = await prisma.user.findUnique({
+  where: { email: validatedEmail },
+});
+
+// XSS prevention
+const sanitizedInput = DOMPurify.sanitize(userInput);
+```
+
+### Security Vulnerability Disclosure
+
 If you discover a security vulnerability:
 
 1. **Do NOT** create a public issue
 2. Email security concerns to: security@taskmaster-ui.com
 3. Include detailed information about the vulnerability
 4. Wait for a response before disclosing publicly
+5. Follow responsible disclosure practices
 
 ## 📚 Documentation
 

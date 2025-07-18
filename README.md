@@ -32,6 +32,8 @@ pnpm run dev
 
 - **[Development Guide](./docs/development.md)** - Setup, commands, and development workflow
 - **[Architecture](./docs/architecture.md)** - System design and technical overview
+- **[Docker Setup](./docs/docker-setup.md)** - Docker deployment and containerization
+- **[Production Secrets](./docs/production-secrets.md)** - Security and secrets management
 - **[Project Status](./docs/project-status.md)** - Current progress and roadmap
 - **[User Guide](./docs/user-guide/README.md)** - End-user documentation
 - **[Contributing](./CONTRIBUTING.md)** - How to contribute to the project
@@ -45,6 +47,7 @@ pnpm run dev
 - **💻 Embedded Terminal** - xterm.js integration with repository scoping
 - **📝 PRD Editor** - Rich text editing for Product Requirements Documents
 - **🔍 AI Analysis** - TaskMaster CLI integration for task parsing
+- **🔐 Enterprise Security** - SSL/TLS, secrets management, secure authentication
 
 ### 🎨 User Experience
 - **🏗️ Modern Architecture** - React + TypeScript with monorepo structure
@@ -65,16 +68,28 @@ pnpm run build            # Build both packages
 pnpm run test             # Run all tests
 pnpm run lint             # Lint all packages
 pnpm run format           # Format all packages
+
+# Docker Development
+pnpm run docker:dev       # Start development environment
+pnpm run docker:logs      # View container logs
+pnpm run docker:down      # Stop all containers
+
+# Production Deployment
+./scripts/generate-ssl-certs.sh    # Generate SSL certificates
+./scripts/setup-secrets.sh         # Setup production secrets
+pnpm run docker:prod               # Start production environment
 ```
 
 ## 🛠️ Tech Stack
 
 **Frontend**: React 18 + TypeScript + Vite  
 **Backend**: Node.js + Express + TypeScript  
-**Database**: SQLite (dev) / PostgreSQL (prod)  
+**Database**: PostgreSQL with SSL/TLS encryption  
 **Real-time**: WebSockets  
 **Testing**: Jest + Vitest + Playwright  
-**Package Manager**: pnpm
+**Package Manager**: pnpm  
+**Security**: Docker Secrets, JWT, SSL certificates  
+**Infrastructure**: Docker + Docker Compose
 
 ## 🤝 Contributing
 

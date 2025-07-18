@@ -28,6 +28,7 @@ pnpm run dev
 - **Frontend**: http://localhost:5173
 - **Backend**: http://localhost:3001
 - **API Health**: http://localhost:3001/api/health
+- **Storybook**: http://localhost:6006 (when using Docker with development profile)
 
 ## Project Structure
 
@@ -72,6 +73,7 @@ taskmaster-ui/
 pnpm run dev              # Start both frontend and backend
 pnpm run dev:backend      # Start backend only
 pnpm run dev:frontend     # Start frontend only
+pnpm run storybook        # Start Storybook component library
 
 # Building
 pnpm run build            # Build both packages
@@ -273,3 +275,33 @@ pnpm audit
 # Fix vulnerabilities
 pnpm audit --fix
 ```
+
+## Docker Development with Storybook
+
+To run the complete development environment including Storybook using Docker:
+
+```bash
+# Start all services including Storybook
+COMPOSE_PROFILES=development docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+# Or start in detached mode
+COMPOSE_PROFILES=development docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+
+# View logs for all services
+docker-compose logs -f
+
+# View logs for specific services
+docker-compose logs -f backend
+docker-compose logs -f frontend
+docker-compose logs -f storybook
+
+# Stop all services
+docker-compose down
+```
+
+### Available Services in Docker:
+- **PostgreSQL**: Database on port 5432
+- **Backend**: API server on port 3001
+- **Frontend**: React app on port 5173
+- **Storybook**: Component library on port 6006 (development profile only)
+- **PgAdmin**: Database admin interface on port 8080 (debug profile only)

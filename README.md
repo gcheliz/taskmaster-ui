@@ -27,6 +27,7 @@ pnpm run dev
 - **Frontend**: http://localhost:5173
 - **Backend**: http://localhost:3001
 - **API Health**: http://localhost:3001/api/health
+- **Storybook**: http://localhost:6006
 
 ## 📚 Documentation
 
@@ -62,6 +63,7 @@ pnpm run dev
 pnpm run dev              # Start both frontend and backend
 pnpm run dev:backend      # Start backend only
 pnpm run dev:frontend     # Start frontend only
+pnpm run storybook        # Start Storybook component library
 
 # Building
 pnpm run build            # Build both packages
@@ -71,7 +73,9 @@ pnpm run format           # Format all packages
 
 # Docker Development
 pnpm run docker:dev       # Start development environment
+COMPOSE_PROFILES=development docker-compose -f docker-compose.yml -f docker-compose.dev.yml up  # Start with Storybook
 pnpm run docker:logs      # View container logs
+pnpm run docker:logs:storybook  # View Storybook logs
 pnpm run docker:down      # Stop all containers
 
 # Production Deployment

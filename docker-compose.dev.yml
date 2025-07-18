@@ -28,6 +28,20 @@ services:
       - ./packages/frontend/tailwind.config.js:/app/packages/frontend/tailwind.config.js:ro
       - ./packages/frontend/postcss.config.js:/app/packages/frontend/postcss.config.js:ro
 
+  # Storybook for Component Development
+  storybook:
+    profiles: []  # Remove profile requirement for development
+    environment:
+      - NODE_ENV=development
+      - DOCKER_ENV=true
+      - STORYBOOK_DISABLE_TELEMETRY=1
+    volumes:
+      # Additional development volumes
+      - ./packages/frontend/.storybook:/app/packages/frontend/.storybook:ro
+      - ./packages/frontend/tailwind.config.js:/app/packages/frontend/tailwind.config.js:ro
+      - ./packages/frontend/postcss.config.js:/app/packages/frontend/postcss.config.js:ro
+    command: pnpm storybook --host 0.0.0.0 --port 6006 --ci --no-open
+
   # Development database viewer
   pgadmin:
     image: dpage/pgadmin4:latest

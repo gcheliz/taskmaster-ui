@@ -126,6 +126,54 @@ services:
         - action: rebuild
           path: ./packages/frontend/Dockerfile
 
+  # Storybook Development Server
+  storybook:
+    container_name: taskmaster-storybook
+    build:
+      context: .
+      dockerfile: packages/frontend/Dockerfile
+      target: development
+    environment:
+      - NODE_ENV=development
+      - DOCKER_ENV=true
+    ports:
+      - "6006:6006"
+    volumes:
+      - ./packages/frontend/src:/app/packages/frontend/src:ro
+      - ./packages/frontend/public:/app/packages/frontend/public:ro
+      - ./packages/frontend/.storybook:/app/packages/frontend/.storybook:ro
+      - ./packages/frontend/package.json:/app/packages/frontend/package.json:ro
+      - ./packages/frontend/vite.config.ts:/app/packages/frontend/vite.config.ts:ro
+      - ./packages/frontend/tsconfig.json:/app/packages/frontend/tsconfig.json:ro
+      - ./packages/frontend/tsconfig.app.json:/app/packages/frontend/tsconfig.app.json:ro
+      - ./packages/frontend/tsconfig.node.json:/app/packages/frontend/tsconfig.node.json:ro
+      - ./packages/frontend/index.html:/app/packages/frontend/index.html:ro
+      - frontend_node_modules:/app/packages/frontend/node_modules
+    working_dir: /app/packages/frontend
+    command: pnpm storybook --host 0.0.0.0 --port 6006 --ci
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:6006 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+    networks:
+      - taskmaster-network
+    develop:
+      watch:
+        - action: sync
+          path: ./packages/frontend/src
+          target: /app/packages/frontend/src
+        - action: sync
+          path: ./packages/frontend/.storybook
+          target: /app/packages/frontend/.storybook
+        - action: rebuild
+          path: ./packages/frontend/package.json
+    profiles:
+      - development
+      - storybook
+
   # Nginx Reverse Proxy (Production-like setup)
   nginx:
     image: nginx:alpine

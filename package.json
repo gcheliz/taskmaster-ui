@@ -64,8 +64,11 @@
     "docker:logs": "docker-compose logs -f",
     "docker:logs:backend": "docker-compose logs -f backend",
     "docker:logs:frontend": "docker-compose logs -f frontend",
+    "docker:logs:storybook": "docker-compose logs -f storybook",
     "docker:clean": "docker-compose down -v --remove-orphans && docker system prune -f",
-    "docker:reset": "pnpm run docker:clean && pnpm run docker:build"
+    "docker:reset": "pnpm run docker:clean && pnpm run docker:build",
+    "storybook": "pnpm --filter=frontend run storybook",
+    "storybook:build": "pnpm --filter=frontend run build-storybook"
   },
   "repository": {
     "type": "git",

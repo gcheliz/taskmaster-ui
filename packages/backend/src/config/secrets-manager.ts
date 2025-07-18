@@ -66,7 +66,10 @@ class FileSecretsProvider {
   }
 
   async getSecret(key: string): Promise<SecretValue> {
-    const secretPath = path.join(this.secretsPath, key.toLowerCase());
+    // For .pem files, use the key as-is; for others, convert to lowercase
+    const secretPath = key.endsWith('.pem') ? 
+      path.join(this.secretsPath, key) : 
+      path.join(this.secretsPath, key.toLowerCase());
     
     try {
       const value = await fs.readFile(secretPath, 'utf8');
@@ -286,6 +289,11 @@ export async function getApplicationSecrets(): Promise<{
   githubToken?: string;
   slackToken?: string;
   anthropicKey?: string;
+  sslConfig?: {
+    ca: string;
+    cert: string;
+    key: string;
+  };
 }> {
   const secretsManager = getSecretsManager();
   
@@ -296,10 +304,26 @@ export async function getApplicationSecrets(): Promise<{
   if (!databaseUrl && secretsManager['config'].provider === 'file') {
     try {
       const dbPassword = await secretsManager.getSecret('db_password');
-      databaseUrl = `postgresql://taskmaster:${dbPassword}@postgres:5432/taskmaster_prod`;
+      databaseUrl = `postgresql://taskmaster:${dbPassword}@postgres:5432/taskmaster_prod?sslmode=require`;
     } catch (error) {
       // Fallback to environment variable or empty string
       databaseUrl = await secretsManager.getSecret('DATABASE_URL').catch(() => '');
+    }
+  }
+  
+  // Get SSL configuration if using file-based secrets
+  let sslConfig: { ca: string; cert: string; key: string } | undefined;
+  if (secretsManager['config'].provider === 'file') {
+    try {
+      const [ca, cert, key] = await Promise.all([
+        secretsManager.getSecret('ssl_ca_cert.pem'),
+        secretsManager.getSecret('ssl_client_cert.pem'),
+        secretsManager.getSecret('ssl_client_key.pem'),
+      ]);
+      sslConfig = { ca, cert, key };
+    } catch (error) {
+      // SSL certificates not available, continue without SSL
+      console.warn('SSL certificates not available for database connection');
     }
   }
   
@@ -310,6 +334,7 @@ export async function getApplicationSecrets(): Promise<{
     githubToken: env.GITHUB_TOKEN || await secretsManager.getSecret('github_token').catch(() => undefined),
     slackToken: env.SLACK_BOT_TOKEN || await secretsManager.getSecret('slack_bot_token').catch(() => undefined),
     anthropicKey: env.ANTHROPIC_API_KEY || await secretsManager.getSecret('anthropic_api_key').catch(() => undefined),
+    sslConfig,
   };
   
   return secrets;

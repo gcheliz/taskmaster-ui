@@ -102,3 +102,5 @@ benchmarks/
 **/*/data
 test-results/
 **/*/generated
+/ssl-certs/
+/secrets/

@@ -11,6 +11,15 @@ services:
       POSTGRES_HOST_AUTH_METHOD: md5
     secrets:
       - db_password
+      - source: ssl_ca_cert
+        target: ssl_ca_cert.pem
+        mode: 0444
+      - source: ssl_server_cert
+        target: ssl_server_cert.pem
+        mode: 0444
+      - source: ssl_server_key
+        target: ssl_server_key.pem
+        mode: 0400
     volumes:
       - postgres_prod_data:/var/lib/postgresql/data
       - ./database/backup:/backup:ro
@@ -27,6 +36,12 @@ services:
       -c default_statistics_target=100
       -c random_page_cost=1.1
       -c effective_io_concurrency=200
+      -c ssl=on
+      -c ssl_ca_file=/run/secrets/ssl_ca_cert.pem
+      -c ssl_cert_file=/run/secrets/ssl_server_cert.pem
+      -c ssl_key_file=/run/secrets/ssl_server_key.pem
+      -c ssl_ciphers='HIGH:MEDIUM:+3DES:!aNULL'
+      -c ssl_prefer_server_ciphers=on
     restart: always
 
   # Backend API Service (Production)
@@ -52,6 +67,15 @@ services:
         mode: 0400
       - source: anthropic_api_key
         target: anthropic_api_key
+        mode: 0400
+      - source: ssl_ca_cert
+        target: ssl_ca_cert.pem
+        mode: 0444
+      - source: ssl_client_cert
+        target: ssl_client_cert.pem
+        mode: 0444
+      - source: ssl_client_key
+        target: ssl_client_key.pem
         mode: 0400
     ports: []  # Remove direct port access in production
     volumes:
@@ -203,3 +227,15 @@ secrets:
   # Monitoring secrets
   grafana_password:
     file: ./secrets/grafana_password.txt
+  
+  # SSL certificates
+  ssl_ca_cert:
+    file: ./secrets/ssl_ca_cert.pem
+  ssl_client_cert:
+    file: ./secrets/ssl_client_cert.pem
+  ssl_client_key:
+    file: ./secrets/ssl_client_key.pem
+  ssl_server_cert:
+    file: ./ssl-certs/server-cert.pem
+  ssl_server_key:
+    file: ./ssl-certs/server-key.pem

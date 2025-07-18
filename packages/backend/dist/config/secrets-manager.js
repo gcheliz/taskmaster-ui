@@ -57,7 +57,10 @@ class FileSecretsProvider {
         return 'File-based Secrets (Docker)';
     }
     async getSecret(key) {
-        const secretPath = path_1.default.join(this.secretsPath, key.toLowerCase());
+        // For .pem files, use the key as-is; for others, convert to lowercase
+        const secretPath = key.endsWith('.pem') ?
+            path_1.default.join(this.secretsPath, key) :
+            path_1.default.join(this.secretsPath, key.toLowerCase());
         try {
             const value = await fs_1.promises.readFile(secretPath, 'utf8');
             return {
@@ -245,11 +248,27 @@ async function getApplicationSecrets() {
     if (!databaseUrl && secretsManager['config'].provider === 'file') {
         try {
             const dbPassword = await secretsManager.getSecret('db_password');
-            databaseUrl = `postgresql://taskmaster:${dbPassword}@postgres:5432/taskmaster_prod`;
+            databaseUrl = `postgresql://taskmaster:${dbPassword}@postgres:5432/taskmaster_prod?sslmode=require`;
         }
         catch (error) {
             // Fallback to environment variable or empty string
             databaseUrl = await secretsManager.getSecret('DATABASE_URL').catch(() => '');
+        }
+    }
+    // Get SSL configuration if using file-based secrets
+    let sslConfig;
+    if (secretsManager['config'].provider === 'file') {
+        try {
+            const [ca, cert, key] = await Promise.all([
+                secretsManager.getSecret('ssl_ca_cert.pem'),
+                secretsManager.getSecret('ssl_client_cert.pem'),
+                secretsManager.getSecret('ssl_client_key.pem'),
+            ]);
+            sslConfig = { ca, cert, key };
+        }
+        catch (error) {
+            // SSL certificates not available, continue without SSL
+            console.warn('SSL certificates not available for database connection');
         }
     }
     const secrets = {
@@ -259,6 +278,7 @@ async function getApplicationSecrets() {
         githubToken: environment_1.env.GITHUB_TOKEN || await secretsManager.getSecret('github_token').catch(() => undefined),
         slackToken: environment_1.env.SLACK_BOT_TOKEN || await secretsManager.getSecret('slack_bot_token').catch(() => undefined),
         anthropicKey: environment_1.env.ANTHROPIC_API_KEY || await secretsManager.getSecret('anthropic_api_key').catch(() => undefined),
+        sslConfig,
     };
     return secrets;
 }

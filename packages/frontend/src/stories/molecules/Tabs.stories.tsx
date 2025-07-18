@@ -479,21 +479,21 @@ export const ControlledTabs: Story = {
   },
 };
 
-export const DarkThemeShowcase: Story = {
+export const WithIconsAndBadges: Story = {
   parameters: {
-    backgrounds: { default: 'dark' },
+    backgrounds: { default: 'light' },
   },
   render: () => (
-    <div className="dark">
+    <div className="bg-white">
       <div className="p-6 space-y-8">
-        <h3 className="text-lg font-semibold text-secondary-100">
-          Dark Theme Navigation Tabs
+        <h3 className="text-lg font-semibold text-slate-900">
+          Navigation Tabs with Icons
         </h3>
         
         <div className="space-y-8">
           <div>
-            <h4 className="text-sm font-medium text-secondary-300 mb-4">
-              Enhanced Dark Theme with Icons and Badges
+            <h4 className="text-sm font-medium text-slate-700 mb-4">
+              Enhanced Tabs with Icons and Badges
             </h4>
             <Tabs defaultValue="dashboard" className="w-[500px]">
               <TabsList>
@@ -516,7 +516,7 @@ export const DarkThemeShowcase: Story = {
                     <CardTitle>Dashboard</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p>Dark theme dashboard with enhanced visibility and contrast.</p>
+                    <p>Dashboard with enhanced visibility and contrast.</p>
                   </CardContent>
                 </Card>
               </TabsContent>
@@ -526,7 +526,7 @@ export const DarkThemeShowcase: Story = {
                     <CardTitle>Tasks</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p>Task management interface optimized for dark mode.</p>
+                    <p>Task management interface with clean design.</p>
                   </CardContent>
                 </Card>
               </TabsContent>
@@ -536,7 +536,7 @@ export const DarkThemeShowcase: Story = {
                     <CardTitle>Team</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p>Team collaboration features with dark theme support.</p>
+                    <p>Team collaboration features with modern design.</p>
                   </CardContent>
                 </Card>
               </TabsContent>
@@ -546,7 +546,7 @@ export const DarkThemeShowcase: Story = {
                     <CardTitle>Settings</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p>Application settings with dark mode preferences.</p>
+                    <p>Application settings and preferences.</p>
                   </CardContent>
                 </Card>
               </TabsContent>
@@ -554,8 +554,8 @@ export const DarkThemeShowcase: Story = {
           </div>
           
           <div>
-            <h4 className="text-sm font-medium text-secondary-300 mb-4">
-              Line Variant Dark Theme
+            <h4 className="text-sm font-medium text-slate-700 mb-4">
+              Line Variant
             </h4>
             <Tabs defaultValue="overview" variant="line" className="w-[500px]">
               <TabsList>
@@ -569,7 +569,7 @@ export const DarkThemeShowcase: Story = {
                     <CardTitle>Overview</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p>Line variant tabs with clean dark theme styling.</p>
+                    <p>Line variant tabs with clean styling.</p>
                   </CardContent>
                 </Card>
               </TabsContent>
@@ -579,7 +579,7 @@ export const DarkThemeShowcase: Story = {
                     <CardTitle>Analytics</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p>Analytics dashboard with dark theme optimizations.</p>
+                    <p>Analytics dashboard with optimized layout.</p>
                   </CardContent>
                 </Card>
               </TabsContent>
@@ -589,7 +589,7 @@ export const DarkThemeShowcase: Story = {
                     <CardTitle>Reports</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p>Reporting interface designed for dark mode usage.</p>
+                    <p>Reporting interface with clean design.</p>
                   </CardContent>
                 </Card>
               </TabsContent>

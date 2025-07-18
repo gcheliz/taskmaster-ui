@@ -15,10 +15,10 @@ const meta: Meta<typeof CollaborativeTaskBoard> = {
       },
     },
     backgrounds: {
-      default: 'dark',
+      default: 'light',
       values: [
-        { name: 'dark', value: '#020617' },
-        { name: 'slate-900', value: '#0f172a' },
+        { name: 'light', value: '#ffffff' },
+        { name: 'TaskMaster', value: '#f8fafc' },
       ],
     },
   },
@@ -35,7 +35,7 @@ const meta: Meta<typeof CollaborativeTaskBoard> = {
           color: '#3B82F6',
         }}
       >
-        <div className="dark min-h-screen bg-slate-950 p-6">
+        <div className="min-h-screen bg-white p-6">
           <Story />
         </div>
       </WebSocketProvider>

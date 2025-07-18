@@ -320,27 +320,27 @@ export const FormExample: Story = {
 // Dark theme specific stories
 export const DarkThemeVariants: Story = {
   parameters: {
-    backgrounds: { default: 'dark' },
+    backgrounds: { default: 'light' },
   },
   render: () => (
-    <div className="dark">
-      <div className="bg-surface-900 p-6 rounded-lg space-y-4">
-        <h3 className="text-surface-100 text-lg font-semibold mb-4">Dark Theme Form Elements</h3>
+    <div className="">
+      <div className="bg-white p-6 rounded-lg space-y-4">
+        <h3 className="text-slate-900 text-lg font-semibold mb-4">Dark Theme Form Elements</h3>
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label className="text-surface-100">Default Input</Label>
+            <Label className="text-slate-900">Default Input</Label>
             <Input placeholder="Enter text..." />
           </div>
           <div className="space-y-2">
-            <Label className="text-surface-100">Error State</Label>
+            <Label className="text-slate-900">Error State</Label>
             <Input placeholder="Invalid input..." error />
           </div>
           <div className="space-y-2">
-            <Label className="text-surface-100">Success State</Label>
+            <Label className="text-slate-900">Success State</Label>
             <Input placeholder="Valid input..." success />
           </div>
           <div className="space-y-2">
-            <Label className="text-surface-100">With Icons</Label>
+            <Label className="text-slate-900">With Icons</Label>
             <Input
               placeholder="Search..."
               leftIcon={<Icon icon={EyeIcon} size="sm" />}

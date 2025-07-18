@@ -19,14 +19,11 @@ const meta: Meta<typeof Badge> = {
           'A badge component for status indicators, labels, and notifications. Features enhanced dark theme support, micro-interactions, and WCAG 2.1 AA compliance. Includes TaskMaster-specific status variants.',
       },
     },
-    // Dark theme testing - matches mockup backgrounds
     backgrounds: {
-      default: 'dark',
+      default: 'light',
       values: [
         { name: 'light', value: '#ffffff' },
-        { name: 'dark', value: '#020617' }, // slate-950 from mockups
-        { name: 'slate-900', value: '#0f172a' }, // slate-900 from mockups
-        { name: 'slate-800', value: '#1e293b' }, // slate-800 from mockups
+        { name: 'TaskMaster', value: '#f8fafc' },
       ],
     },
   },
@@ -301,14 +298,11 @@ export const InContext: Story = {
 };
 
 export const TeamMemberBadges: Story = {
-  parameters: {
-    backgrounds: { default: 'dark' },
-  },
   render: () => (
-    <div className="dark bg-slate-950 p-6 rounded-lg">
+    <div className="bg-white p-6 rounded-lg border border-slate-200">
       <div className="space-y-6">
         <div>
-          <h3 className="text-sm font-medium text-slate-200 mb-3">
+          <h3 className="text-sm font-medium text-slate-700 mb-3">
             Team Roles
           </h3>
           <div className="flex flex-wrap gap-2">
@@ -320,7 +314,7 @@ export const TeamMemberBadges: Story = {
         </div>
 
         <div>
-          <h3 className="text-sm font-medium text-slate-200 mb-3">
+          <h3 className="text-sm font-medium text-slate-700 mb-3">
             Status Indicators
           </h3>
           <div className="flex flex-wrap gap-2">
@@ -337,38 +331,35 @@ export const TeamMemberBadges: Story = {
   ),
 };
 
-// Mockup Recreation - matches the screenshot exactly
-export const MockupRecreation: Story = {
-  parameters: {
-    backgrounds: { default: 'dark' },
-  },
+// TaskMaster Recreation - clean light theme design
+export const TaskMasterRecreation: Story = {
   render: () => (
-    <div className="dark min-h-screen bg-slate-950 p-8">
+    <div className="min-h-screen bg-slate-50 p-8">
       <div className="max-w-6xl mx-auto">
-        {/* Header matching mockup */}
-        <div className="bg-slate-900 border-b border-slate-800 px-6 py-4 rounded-t-lg">
+        {/* Header */}
+        <div className="bg-white border-b border-slate-200 px-6 py-4 rounded-t-lg shadow-sm">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-accent-primary rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                   <Icon icon={CheckIcon} size="sm" className="text-white" />
                 </div>
-                <h1 className="text-xl font-bold text-white">TaskMaster UI</h1>
+                <h1 className="text-xl font-bold text-slate-900">TaskMaster UI</h1>
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <div className="w-8 h-8 bg-accent-primary rounded-full flex items-center justify-center">
+              <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
                 <span className="text-sm font-medium text-white">GZ</span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Content area matching mockup */}
-        <div className="bg-slate-900 rounded-b-lg p-8">
+        {/* Content area */}
+        <div className="bg-white rounded-b-lg p-8 shadow-sm">
           <div className="text-center mb-8">
             <div className="w-24 h-24 mx-auto mb-4 flex items-center justify-center">
-              <svg className="w-20 h-20 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-20 h-20 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
@@ -376,7 +367,7 @@ export const MockupRecreation: Story = {
 
           <div className="space-y-6">
             <div>
-              <h3 className="text-lg font-semibold text-slate-200 mb-4">
+              <h3 className="text-lg font-semibold text-slate-700 mb-4">
                 Team Roles
               </h3>
               <div className="flex flex-wrap gap-3 justify-center">
@@ -388,7 +379,7 @@ export const MockupRecreation: Story = {
             </div>
 
             <div>
-              <h3 className="text-lg font-semibold text-slate-200 mb-4">
+              <h3 className="text-lg font-semibold text-slate-700 mb-4">
                 Status Indicators
               </h3>
               <div className="flex flex-wrap gap-3 justify-center">
@@ -407,42 +398,6 @@ export const MockupRecreation: Story = {
   ),
 };
 
-// Dark theme specific stories
-export const DarkThemeVariants: Story = {
-  parameters: {
-    backgrounds: { default: 'dark' },
-  },
-  render: () => (
-    <div className="dark">
-      <div className="bg-surface-900 p-6 rounded-lg space-y-4">
-        <h3 className="text-surface-100 text-lg font-semibold mb-4">Dark Theme Variants</h3>
-        <div className="space-y-3">
-          <div>
-            <h4 className="text-surface-200 text-sm font-medium mb-2">Standard Variants</h4>
-            <div className="flex flex-wrap gap-2">
-              <Badge variant="default">Default</Badge>
-              <Badge variant="secondary">Secondary</Badge>
-              <Badge variant="success">Success</Badge>
-              <Badge variant="warning">Warning</Badge>
-              <Badge variant="error">Error</Badge>
-              <Badge variant="outline">Outline</Badge>
-            </div>
-          </div>
-          <div>
-            <h4 className="text-surface-200 text-sm font-medium mb-2">TaskMaster Status</h4>
-            <div className="flex flex-wrap gap-2">
-              <Badge variant="pending">Pending</Badge>
-              <Badge variant="in-progress">In Progress</Badge>
-              <Badge variant="done">Done</Badge>
-              <Badge variant="blocked">Blocked</Badge>
-              <Badge variant="deferred">Deferred</Badge>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  ),
-};
 
 // Accessibility testing story
 export const AccessibilityTest: Story = {

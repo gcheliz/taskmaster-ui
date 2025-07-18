@@ -299,11 +299,11 @@ export const DarkTheme: Story = {
     onRefresh: () => console.log('Refresh clicked'),
   },
   parameters: {
-    backgrounds: { default: 'dark' },
+    backgrounds: { default: 'light' },
   },
   render: (args) => (
-    <div className="dark">
-      <div className="p-8 min-h-screen bg-surface-950">
+    <div className="">
+      <div className="p-8 min-h-screen bg-white">
         <ResponsiveStatsGrid {...args} />
       </div>
     </div>

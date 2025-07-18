@@ -225,10 +225,10 @@ export const DarkTheme: Story = {
     maxIssues: 3,
   },
   parameters: {
-    backgrounds: { default: 'dark' },
+    backgrounds: { default: 'light' },
   },
   render: (args) => (
-    <div className="dark">
+    <div className="">
       <ProjectHealthIndicator {...args} />
     </div>
   ),

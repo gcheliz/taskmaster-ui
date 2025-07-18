@@ -197,12 +197,12 @@ export const InteractiveStates: Story = {
 // Dark theme specific stories
 export const DarkThemeVariants: Story = {
   parameters: {
-    backgrounds: { default: 'dark' },
+    backgrounds: { default: 'light' },
   },
   render: () => (
-    <div className="dark">
-      <div className="bg-surface-900 p-6 rounded-lg space-y-4">
-        <h3 className="text-surface-100 text-lg font-semibold mb-4">Dark Theme Variants</h3>
+    <div className="">
+      <div className="bg-white p-6 rounded-lg space-y-4">
+        <h3 className="text-slate-900 text-lg font-semibold mb-4">Dark Theme Variants</h3>
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
           <Button variant="primary">Primary</Button>
           <Button variant="secondary">Secondary</Button>

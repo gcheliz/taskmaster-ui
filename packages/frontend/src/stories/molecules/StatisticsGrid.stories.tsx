@@ -199,10 +199,10 @@ export const DarkTheme: Story = {
     showProgressBars: true,
   },
   parameters: {
-    backgrounds: { default: 'dark' },
+    backgrounds: { default: 'light' },
   },
   render: (args) => (
-    <div className="dark">
+    <div className="">
       <StatisticsGrid {...args} />
     </div>
   ),

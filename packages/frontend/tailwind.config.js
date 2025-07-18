@@ -4,12 +4,12 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
-  darkMode: 'class', // Enable class-based dark mode
+  // Dark mode disabled for consistent light theme
   theme: {
     extend: {
-      // Dark theme color palette - primary colors
+      // Light theme color palette
       colors: {
-        // Slate palette for dark theme backgrounds and surfaces (from mockups)
+        // Standard Tailwind slate palette
         slate: {
           50: '#f8fafc',
           100: '#f1f5f9',
@@ -24,10 +24,10 @@ export default {
           950: '#020617',
         },
         
-        // Accent colors for dark theme (from mockups)
-        'accent-primary': '#3B82F6',   // Blue - primary actions, links
-        'accent-success': '#10B981',   // Green - success states, completed tasks
-        'accent-warning': '#F59E0B',   // Orange - warnings, pending actions
+        // Simplified accent colors
+        'accent-primary': '#3B82F6',   // Blue - primary actions
+        'accent-success': '#10B981',   // Green - success states
+        'accent-warning': '#F59E0B',   // Orange - warnings
         'accent-error': '#EF4444',     // Red - error states, critical actions
         'accent-info': '#06B6D4',      // Cyan - info states
         'accent-secondary': '#8B5CF6', // Violet - secondary actions

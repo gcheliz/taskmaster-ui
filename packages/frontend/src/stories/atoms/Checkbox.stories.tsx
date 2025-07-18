@@ -259,40 +259,40 @@ export const FormExample: Story = {
 // Dark theme specific stories
 export const DarkThemeVariants: Story = {
   parameters: {
-    backgrounds: { default: 'dark' },
+    backgrounds: { default: 'light' },
   },
   render: () => (
-    <div className="dark">
-      <div className="bg-surface-900 p-6 rounded-lg space-y-4">
-        <h3 className="text-surface-100 text-lg font-semibold mb-4">Dark Theme Checkboxes</h3>
+    <div className="">
+      <div className="bg-white p-6 rounded-lg space-y-4">
+        <h3 className="text-slate-900 text-lg font-semibold mb-4">Dark Theme Checkboxes</h3>
         <div className="space-y-4">
           <div className="flex items-center space-x-3">
             <Checkbox id="dark-checkbox-1" />
-            <Label htmlFor="dark-checkbox-1" className="text-surface-100 cursor-pointer">
+            <Label htmlFor="dark-checkbox-1" className="text-slate-900 cursor-pointer">
               Unchecked
             </Label>
           </div>
           <div className="flex items-center space-x-3">
             <Checkbox id="dark-checkbox-2" checked />
-            <Label htmlFor="dark-checkbox-2" className="text-surface-100 cursor-pointer">
+            <Label htmlFor="dark-checkbox-2" className="text-slate-900 cursor-pointer">
               Checked
             </Label>
           </div>
           <div className="flex items-center space-x-3">
             <Checkbox id="dark-checkbox-3" indeterminate />
-            <Label htmlFor="dark-checkbox-3" className="text-surface-100 cursor-pointer">
+            <Label htmlFor="dark-checkbox-3" className="text-slate-900 cursor-pointer">
               Indeterminate
             </Label>
           </div>
           <div className="flex items-center space-x-3">
             <Checkbox id="dark-checkbox-4" error checked />
-            <Label htmlFor="dark-checkbox-4" className="text-surface-100 cursor-pointer">
+            <Label htmlFor="dark-checkbox-4" className="text-slate-900 cursor-pointer">
               Error State
             </Label>
           </div>
           <div className="flex items-center space-x-3">
             <Checkbox id="dark-checkbox-5" success checked />
-            <Label htmlFor="dark-checkbox-5" className="text-surface-100 cursor-pointer">
+            <Label htmlFor="dark-checkbox-5" className="text-slate-900 cursor-pointer">
               Success State
             </Label>
           </div>

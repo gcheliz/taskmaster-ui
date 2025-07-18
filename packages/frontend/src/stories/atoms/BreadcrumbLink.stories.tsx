@@ -282,7 +282,7 @@ export const TaskManagementBreadcrumb: Story = {
 export const ResponsiveBreadcrumb: Story = {
   render: () => (
     <div className="w-full max-w-4xl mx-auto">
-      <div className="p-4 bg-white border border-secondary-200 rounded-lg dark:bg-surface-900 dark:border-surface-700">
+      <div className="p-4 bg-white border border-secondary-200 rounded-lg dark:bg-white dark:border-surface-700">
         <Breadcrumb responsive>
           <BreadcrumbLink href="#" icon={HomeFilledIcon}>
             Home
@@ -311,10 +311,10 @@ export const ResponsiveBreadcrumb: Story = {
 
 export const DarkThemeShowcase: Story = {
   parameters: {
-    backgrounds: { default: 'dark' },
+    backgrounds: { default: 'light' },
   },
   render: () => (
-    <div className="dark">
+    <div className="">
       <div className="p-6 space-y-6">
         <h3 className="text-lg font-semibold text-secondary-100">
           Dark Theme Breadcrumbs

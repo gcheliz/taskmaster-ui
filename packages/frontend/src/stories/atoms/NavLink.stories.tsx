@@ -205,7 +205,7 @@ export const WithIcons: Story = {
 
 export const NavigationMenu: Story = {
   render: () => (
-    <nav className="w-64 p-4 bg-white border-r border-secondary-200 dark:bg-surface-900 dark:border-surface-700">
+    <nav className="w-64 p-4 bg-white border-r border-secondary-200 dark:bg-white dark:border-surface-700">
       <div className="space-y-2">
         <NavLink 
           variant="default" 
@@ -247,7 +247,7 @@ export const NavigationMenu: Story = {
 
 export const HorizontalNavigation: Story = {
   render: () => (
-    <nav className="w-full p-4 bg-white border-b border-secondary-200 dark:bg-surface-900 dark:border-surface-700">
+    <nav className="w-full p-4 bg-white border-b border-secondary-200 dark:bg-white dark:border-surface-700">
       <div className="flex space-x-6 overflow-x-auto">
         <NavLink variant="underline" href="#" isActive>
           Overview
@@ -271,10 +271,10 @@ export const HorizontalNavigation: Story = {
 
 export const DarkThemeShowcase: Story = {
   parameters: {
-    backgrounds: { default: 'dark' },
+    backgrounds: { default: 'light' },
   },
   render: () => (
-    <div className="dark">
+    <div className="">
       <div className="p-6 space-y-6">
         <h3 className="text-lg font-semibold text-secondary-100">
           Dark Theme Navigation
@@ -308,7 +308,7 @@ export const DarkThemeShowcase: Story = {
 export const ResponsiveNavigation: Story = {
   render: () => (
     <div className="w-full max-w-4xl mx-auto">
-      <nav className="w-full p-4 bg-white border-b border-secondary-200 dark:bg-surface-900 dark:border-surface-700">
+      <nav className="w-full p-4 bg-white border-b border-secondary-200 dark:bg-white dark:border-surface-700">
         <div className="flex flex-col sm:flex-row sm:space-x-6 space-y-2 sm:space-y-0">
           <NavLink variant="underline" href="#" isActive className="sm:whitespace-nowrap">
             Dashboard

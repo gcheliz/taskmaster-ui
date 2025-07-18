@@ -285,15 +285,15 @@ export const FormExample: Story = {
 // Dark theme specific stories
 export const DarkThemeVariants: Story = {
   parameters: {
-    backgrounds: { default: 'dark' },
+    backgrounds: { default: 'light' },
   },
   render: () => (
-    <div className="dark">
-      <div className="bg-surface-900 p-6 rounded-lg space-y-4">
-        <h3 className="text-surface-100 text-lg font-semibold mb-4">Dark Theme Select</h3>
+    <div className="">
+      <div className="bg-white p-6 rounded-lg space-y-4">
+        <h3 className="text-slate-900 text-lg font-semibold mb-4">Dark Theme Select</h3>
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label className="text-surface-100">Default Select</Label>
+            <Label className="text-slate-900">Default Select</Label>
             <Select>
               <option value="">Select option...</option>
               <option value="option1">Option 1</option>
@@ -301,7 +301,7 @@ export const DarkThemeVariants: Story = {
             </Select>
           </div>
           <div className="space-y-2">
-            <Label className="text-surface-100">Error State</Label>
+            <Label className="text-slate-900">Error State</Label>
             <Select error>
               <option value="">Invalid selection...</option>
               <option value="option1">Option 1</option>
@@ -309,7 +309,7 @@ export const DarkThemeVariants: Story = {
             </Select>
           </div>
           <div className="space-y-2">
-            <Label className="text-surface-100">Success State</Label>
+            <Label className="text-slate-900">Success State</Label>
             <Select success value="option1">
               <option value="">Select option...</option>
               <option value="option1">Selected Option</option>

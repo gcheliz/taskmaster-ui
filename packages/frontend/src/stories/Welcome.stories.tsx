@@ -113,7 +113,7 @@ export const Default: Story = {};
 
 export const DarkTheme: Story = {
   parameters: {
-    backgrounds: { default: 'dark' },
+    backgrounds: { default: 'light' },
   },
 };
 

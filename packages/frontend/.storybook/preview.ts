@@ -32,10 +32,6 @@ const preview: Preview = {
           value: '#ffffff',
         },
         {
-          name: 'dark',
-          value: '#1a1a1a',
-        },
-        {
           name: 'TaskMaster',
           value: '#f8fafc',
         },
@@ -78,18 +74,6 @@ const preview: Preview = {
       options: {
         checks: { 'color-contrast': { options: { noScroll: true } } },
         restoreScroll: true,
-      },
-    },
-  },
-  globalTypes: {
-    theme: {
-      description: 'Global theme for components',
-      defaultValue: 'light',
-      toolbar: {
-        title: 'Theme',
-        icon: 'mirror',
-        items: ['light', 'dark'],
-        dynamicTitle: true,
       },
     },
   },

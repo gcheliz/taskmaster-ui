@@ -135,10 +135,10 @@ export const DarkTheme: Story = {
     projectTag: 'frontend',
   },
   parameters: {
-    backgrounds: { default: 'dark' },
+    backgrounds: { default: 'light' },
   },
   render: (args) => (
-    <div className="dark">
+    <div className="">
       <div className="min-h-screen">
         <ModernDashboardView {...args} />
       </div>

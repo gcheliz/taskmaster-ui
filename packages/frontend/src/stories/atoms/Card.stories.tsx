@@ -304,10 +304,10 @@ export const DragAndDropExample: Story = {
 
 export const DarkThemeShowcase: Story = {
   parameters: {
-    backgrounds: { default: 'dark' },
+    backgrounds: { default: 'light' },
   },
   render: () => (
-    <div className="dark">
+    <div className="">
       <div className="p-4 space-y-4">
         <h3 className="text-lg font-semibold mb-4 text-secondary-100">
           Dark Theme Cards

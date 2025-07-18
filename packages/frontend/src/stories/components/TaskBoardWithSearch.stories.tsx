@@ -152,10 +152,10 @@ const meta: Meta<typeof TaskBoardWithSearch> = {
   parameters: {
     layout: 'fullscreen',
     backgrounds: {
-      default: 'dark',
+      default: 'light',
       values: [
         { name: 'light', value: '#ffffff' },
-        { name: 'dark', value: '#020617' },
+        { name: 'TaskMaster', value: '#f8fafc' },
       ],
     },
   },
@@ -288,13 +288,13 @@ export const JohnDoeTasks: Story = {
 
 export const InteractiveDemo: Story = {
   render: (args) => (
-    <div className="min-h-screen bg-slate-950 p-6">
+    <div className="min-h-screen bg-white p-6">
       <div className="max-w-7xl mx-auto space-y-6">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-white mb-2">
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">
             TaskBoard with Search & Filter
           </h1>
-          <p className="text-slate-400">
+          <p className="text-slate-600">
             Try searching for tasks or applying filters to see the board update in real-time
           </p>
         </div>
@@ -305,12 +305,12 @@ export const InteractiveDemo: Story = {
   args: {},
 };
 
-export const DarkTheme: Story = {
+export const LightTheme: Story = {
   parameters: {
-    backgrounds: { default: 'dark' },
+    backgrounds: { default: 'light' },
   },
   render: (args) => (
-    <div className="min-h-screen bg-slate-950 p-6">
+    <div className="min-h-screen bg-white p-6">
       <TaskBoardWithSearch {...args} />
     </div>
   ),

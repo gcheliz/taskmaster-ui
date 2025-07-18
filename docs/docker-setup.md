@@ -269,27 +269,64 @@ VITE_NODE_ENV=development
 
 ## Production Deployment
 
+### Production Secrets Management
+
+TaskMaster UI uses Docker Secrets for secure production deployment:
+
+```bash
+# Setup production secrets
+./scripts/setup-secrets.sh
+
+# Validate secrets before deployment
+./scripts/setup-secrets.sh validate
+```
+
+#### Required Secrets
+
+The following secrets must be configured:
+
+| Secret | File | Purpose |
+|--------|------|---------|
+| `db_password` | `secrets/db_password.txt` | PostgreSQL database password |
+| `jwt_secret` | `secrets/jwt_secret.txt` | JWT token signing secret |
+| `encryption_key` | `secrets/encryption_key.txt` | Application encryption key |
+| `github_token` | `secrets/github_token.txt` | GitHub API integration |
+| `slack_bot_token` | `secrets/slack_bot_token.txt` | Slack notifications |
+| `anthropic_api_key` | `secrets/anthropic_api_key.txt` | AI service integration |
+| `grafana_password` | `secrets/grafana_password.txt` | Grafana admin password |
+
+#### Security Requirements
+
+- Secrets are mounted as read-only files in containers
+- File permissions are restricted (600/700)
+- Never commit actual secrets to version control
+- Use different secrets for each environment
+
 ### Building Production Images
 
 ```bash
+# Setup secrets first
+./scripts/setup-secrets.sh
+
 # Build production images
-docker-compose -f docker-compose.yml build --target production
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml build
 
 # Start with production configuration
-docker-compose -f docker-compose.yml --profile production up
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up
 ```
 
 ### Production Environment Variables
 
-```bash
-# Backend (.env.production)
-DATABASE_URL=postgresql://user:password@production-host:5432/taskmaster_prod
-NODE_ENV=production
-PORT=3001
+Production uses Docker Secrets instead of environment variables:
 
-# Frontend build-time variables
-VITE_API_URL=https://api.taskmaster.com
-VITE_WS_URL=wss://api.taskmaster.com
+```bash
+# Backend configuration (docker-compose.prod.yml)
+NODE_ENV=production
+DOCKER_SECRETS=true
+SECRETS_PROVIDER=file
+
+# Secrets are loaded from /run/secrets/ in containers
+# No need to set secret values in environment variables
 ```
 
 ## Troubleshooting

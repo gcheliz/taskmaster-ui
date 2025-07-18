@@ -7,21 +7,24 @@
 
 import { z } from 'zod';
 import { env } from './environment';
+import { promises as fs } from 'fs';
+import path from 'path';
 
 // Secret value with metadata
 export interface SecretValue {
   value: string;
   version?: string;
   lastUpdated?: Date;
-  source: 'env' | 'aws' | 'gcp' | 'vault' | 'k8s';
+  source: 'env' | 'file' | 'aws' | 'gcp' | 'vault' | 'k8s';
 }
 
 // Secrets manager configuration schema
 const secretsManagerConfigSchema = z.object({
-  provider: z.enum(['env', 'aws', 'gcp', 'vault', 'k8s']).default('env'),
+  provider: z.enum(['env', 'file', 'aws', 'gcp', 'vault', 'k8s']).default('env'),
   timeout: z.number().default(5000),
   retries: z.number().default(3),
   cacheTtl: z.number().default(300000), // 5 minutes
+  secretsPath: z.string().default('/run/secrets'), // Docker secrets mount path
 });
 
 export type SecretsManagerConfig = z.infer<typeof secretsManagerConfigSchema>;
@@ -54,15 +57,67 @@ class EnvironmentProvider {
   }
 }
 
+// File-based secrets provider (for Docker secrets)
+class FileSecretsProvider {
+  constructor(private secretsPath: string = '/run/secrets') {}
+
+  getName(): string {
+    return 'File-based Secrets (Docker)';
+  }
+
+  async getSecret(key: string): Promise<SecretValue> {
+    const secretPath = path.join(this.secretsPath, key.toLowerCase());
+    
+    try {
+      const value = await fs.readFile(secretPath, 'utf8');
+      return {
+        value: value.trim(), // Remove whitespace/newlines
+        source: 'file',
+        lastUpdated: new Date(),
+      };
+    } catch (error) {
+      throw new Error(`Secret file ${key} not found at ${secretPath}`);
+    }
+  }
+
+  async listSecrets(): Promise<string[]> {
+    try {
+      const files = await fs.readdir(this.secretsPath);
+      return files.filter(file => !file.startsWith('.'));
+    } catch (error) {
+      return [];
+    }
+  }
+
+  async isAvailable(): Promise<boolean> {
+    try {
+      await fs.access(this.secretsPath);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+}
+
 // Main secrets manager class
 export class SecretsManager {
   private cache: Map<string, { value: SecretValue; expiry: number }> = new Map();
   private config: SecretsManagerConfig;
-  private provider: EnvironmentProvider;
+  private provider: EnvironmentProvider | FileSecretsProvider;
 
   constructor(config: Partial<SecretsManagerConfig> = {}) {
     this.config = secretsManagerConfigSchema.parse(config);
-    this.provider = new EnvironmentProvider();
+    
+    // Choose provider based on configuration
+    switch (this.config.provider) {
+      case 'file':
+        this.provider = new FileSecretsProvider(this.config.secretsPath);
+        break;
+      case 'env':
+      default:
+        this.provider = new EnvironmentProvider();
+        break;
+    }
   }
 
   /**
@@ -194,11 +249,25 @@ let defaultSecretsManager: SecretsManager;
  */
 export function getSecretsManager(): SecretsManager {
   if (!defaultSecretsManager) {
+    // Auto-detect provider based on environment
+    let provider = process.env.SECRETS_PROVIDER as any;
+    
+    // If no provider specified, auto-detect
+    if (!provider) {
+      // In production Docker environments, prefer file-based secrets
+      if (process.env.NODE_ENV === 'production' && process.env.DOCKER_SECRETS === 'true') {
+        provider = 'file';
+      } else {
+        provider = 'env';
+      }
+    }
+    
     const config: Partial<SecretsManagerConfig> = {
-      provider: (process.env.SECRETS_PROVIDER as any) || 'env',
+      provider,
       timeout: parseInt(process.env.SECRETS_TIMEOUT || '5000'),
       retries: parseInt(process.env.SECRETS_RETRIES || '3'),
       cacheTtl: parseInt(process.env.SECRETS_CACHE_TTL || '300000'),
+      secretsPath: process.env.SECRETS_PATH || '/run/secrets',
     };
     
     defaultSecretsManager = new SecretsManager(config);
@@ -220,13 +289,27 @@ export async function getApplicationSecrets(): Promise<{
 }> {
   const secretsManager = getSecretsManager();
   
+  // For file-based secrets, try to get secrets individually
+  let databaseUrl = env.DATABASE_URL;
+  
+  // If using file-based secrets and no DATABASE_URL is set, construct it from individual secrets
+  if (!databaseUrl && secretsManager['config'].provider === 'file') {
+    try {
+      const dbPassword = await secretsManager.getSecret('db_password');
+      databaseUrl = `postgresql://taskmaster:${dbPassword}@postgres:5432/taskmaster_prod`;
+    } catch (error) {
+      // Fallback to environment variable or empty string
+      databaseUrl = await secretsManager.getSecret('DATABASE_URL').catch(() => '');
+    }
+  }
+  
   const secrets = {
-    jwtSecret: env.JWT_SECRET || await secretsManager.getSecret('JWT_SECRET').catch(() => ''),
-    encryptionKey: env.ENCRYPTION_KEY || await secretsManager.getSecret('ENCRYPTION_KEY').catch(() => ''),
-    databaseUrl: env.DATABASE_URL || await secretsManager.getSecret('DATABASE_URL').catch(() => ''),
-    githubToken: env.GITHUB_TOKEN || await secretsManager.getSecret('GITHUB_TOKEN').catch(() => undefined),
-    slackToken: env.SLACK_BOT_TOKEN || await secretsManager.getSecret('SLACK_BOT_TOKEN').catch(() => undefined),
-    anthropicKey: env.ANTHROPIC_API_KEY || await secretsManager.getSecret('ANTHROPIC_API_KEY').catch(() => undefined),
+    jwtSecret: env.JWT_SECRET || await secretsManager.getSecret('jwt_secret').catch(() => ''),
+    encryptionKey: env.ENCRYPTION_KEY || await secretsManager.getSecret('encryption_key').catch(() => ''),
+    databaseUrl: databaseUrl || await secretsManager.getSecret('DATABASE_URL').catch(() => ''),
+    githubToken: env.GITHUB_TOKEN || await secretsManager.getSecret('github_token').catch(() => undefined),
+    slackToken: env.SLACK_BOT_TOKEN || await secretsManager.getSecret('slack_bot_token').catch(() => undefined),
+    anthropicKey: env.ANTHROPIC_API_KEY || await secretsManager.getSecret('anthropic_api_key').catch(() => undefined),
   };
   
   return secrets;

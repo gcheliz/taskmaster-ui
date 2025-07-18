@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { useState } from 'react';
+// import { useState } from 'react';
 import { ModernDashboardView } from '../../components/Views/ModernDashboardView';
 import { DashboardDemo } from '../../components/Views/DashboardDemo';
 
@@ -112,10 +112,10 @@ const mockUseDashboard = () => ({
 });
 
 // Override the hook for stories
-const originalHook = require('../../hooks/useDashboard');
-beforeEach(() => {
-  originalHook.useDashboard = mockUseDashboard;
-});
+// const originalHook = require('../../hooks/useDashboard');
+// beforeEach(() => {
+//   originalHook.useDashboard = mockUseDashboard;
+// });
 
 export const Default: Story = {
   args: {
@@ -166,7 +166,7 @@ export const LoadingState: Story = {
       retryCount: 0,
     });
 
-    originalHook.useDashboard = mockUseDashboardLoading;
+    // originalHook.useDashboard = mockUseDashboardLoading;
 
     return (
       <div className="min-h-screen">
@@ -196,7 +196,7 @@ export const ErrorState: Story = {
       retryCount: 2,
     });
 
-    originalHook.useDashboard = mockUseDashboardError;
+    // originalHook.useDashboard = mockUseDashboardError;
 
     return (
       <div className="min-h-screen">
@@ -226,7 +226,7 @@ export const EmptyState: Story = {
       retryCount: 0,
     });
 
-    originalHook.useDashboard = mockUseDashboardEmpty;
+    // originalHook.useDashboard = mockUseDashboardEmpty;
 
     return (
       <div className="min-h-screen">
@@ -287,7 +287,7 @@ export const HighActivityProject: Story = {
       retryCount: 0,
     });
 
-    originalHook.useDashboard = mockUseDashboardHighActivity;
+    // originalHook.useDashboard = mockUseDashboardHighActivity;
 
     return (
       <div className="min-h-screen">

@@ -54,6 +54,7 @@ export interface BadgeProps
    */
   variant?:
     | 'default'
+    | 'primary'
     | 'secondary'
     | 'success'
     | 'warning'

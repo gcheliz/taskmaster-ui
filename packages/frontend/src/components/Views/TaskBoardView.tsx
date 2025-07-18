@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TaskBoard } from '../TaskBoard';
 import { TaskBoardWithFilters } from '../TaskBoard/TaskBoardWithFilters';
+import { KanbanBoard } from '../ui/organisms/KanbanBoard';
 import type { TaskStatus } from '../../types/task';
 import { useTaskData } from '../../hooks/useTaskData';
 import './TaskBoardView.css';
@@ -19,6 +20,8 @@ export interface TaskBoardViewProps {
   refreshInterval?: number;
   /** Enable filtering and sorting features */
   enableFiltering?: boolean;
+  /** Use new Kanban board layout */
+  useKanbanLayout?: boolean;
 }
 
 export const TaskBoardView: React.FC<TaskBoardViewProps> = ({
@@ -29,9 +32,10 @@ export const TaskBoardView: React.FC<TaskBoardViewProps> = ({
   filePath,
   refreshInterval = 30000, // 30 seconds default
   enableFiltering = true,
+  useKanbanLayout = true,
 }) => {
   const [showFilters, setShowFilters] = useState(enableFiltering);
-  const [, setFilteredTasks] = useState<any[]>([]);
+  const [, setFilteredTasks] = useState<unknown[]>([]);
   const [isFilterLoading, setIsFilterLoading] = useState(false);
   const [, setFilterError] = useState<Error | null>(null);
   const { taskBoardData, isLoading, error, refresh, loadSampleTasks } =
@@ -90,6 +94,19 @@ export const TaskBoardView: React.FC<TaskBoardViewProps> = ({
             onLoadingChange={setIsFilterLoading}
             onErrorChange={setFilterError}
             className="filtered-task-board"
+          />
+        ) : useKanbanLayout ? (
+          /* New Kanban Board Layout */
+          <KanbanBoard
+            tasks={taskBoardData?.tasks || []}
+            loading={isLoading}
+            error={error || undefined}
+            onTaskClick={handleTaskClick}
+            onAddTask={handleCreateTask}
+            onRefresh={handleRefresh}
+            showSearch={true}
+            showFilters={true}
+            className="kanban-board-view"
           />
         ) : (
           /* Original Task Board */

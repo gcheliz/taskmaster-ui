@@ -4,8 +4,7 @@ import {
   Card, 
   CardHeader, 
   CardTitle, 
-  CardContent, 
-  CardFooter 
+  CardContent
 } from '../ui/atoms/Card';
 import { Button } from '../ui/atoms/Button';
 import { Badge } from '../ui/atoms/Badge';
@@ -28,7 +27,8 @@ import {
   NotificationIcon,
   SettingsIcon,
   DuplicateIcon,
-  ArchiveIcon
+  ArchiveIcon,
+  PlusIcon
 } from '../ui/atoms/Icon';
 import { Spinner } from '../ui/atoms/Spinner';
 import { 
@@ -36,6 +36,9 @@ import {
   BreadcrumbLink, 
   BreadcrumbSeparator 
 } from '../ui/atoms/BreadcrumbLink';
+import { ActivityTimeline } from '../ui/organisms/ActivityTimeline';
+import { QuickActionsGrid } from '../ui/organisms/QuickActionsGrid';
+import type { QuickAction } from '../ui/organisms/QuickActionsGrid';
 
 export interface ModernDashboardViewProps {
   projectId: string;
@@ -294,73 +297,6 @@ const StatisticsGrid: React.FC<StatisticsGridProps> = ({
   );
 };
 
-interface QuickActionsProps {
-  onCreateTask: () => void;
-  onViewReports: () => void;
-  onManageTeam: () => void;
-  onExportData: () => void;
-}
-
-const QuickActions: React.FC<QuickActionsProps> = ({
-  onCreateTask,
-  onViewReports,
-  onManageTeam,
-  onExportData
-}) => {
-  return (
-    <Card variant="elevated" className="mb-8">
-      <CardHeader>
-        <CardTitle className="flex items-center space-x-2">
-          <Icon icon={StarFilledIcon} size="md" color="primary" />
-          <span>Quick Actions</span>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Button 
-            variant="primary" 
-            size="md" 
-            onClick={onCreateTask}
-            className="flex items-center justify-center space-x-2 h-16"
-          >
-            <Icon icon={TaskIcon} size="md" />
-            <span>Create Task</span>
-          </Button>
-          
-          <Button 
-            variant="outline" 
-            size="md" 
-            onClick={onViewReports}
-            className="flex items-center justify-center space-x-2 h-16"
-          >
-            <Icon icon={NotificationIcon} size="md" />
-            <span>View Reports</span>
-          </Button>
-          
-          <Button 
-            variant="outline" 
-            size="md" 
-            onClick={onManageTeam}
-            className="flex items-center justify-center space-x-2 h-16"
-          >
-            <Icon icon={UserCircleIcon} size="md" />
-            <span>Manage Team</span>
-          </Button>
-          
-          <Button 
-            variant="outline" 
-            size="md" 
-            onClick={onExportData}
-            className="flex items-center justify-center space-x-2 h-16"
-          >
-            <Icon icon={DuplicateIcon} size="md" />
-            <span>Export Data</span>
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
-  );
-};
 
 /**
  * Modern Dashboard View Component
@@ -411,22 +347,116 @@ export const ModernDashboardView: React.FC<ModernDashboardViewProps> = ({
   const handleCreateTask = () => {
     // TODO: Implement create task functionality
     console.log('Create task action triggered');
+    // Navigate to task creation page or open modal
   };
 
   const handleViewReports = () => {
     // TODO: Implement view reports functionality
     console.log('View reports action triggered');
+    // Navigate to reports dashboard
   };
 
   const handleManageTeam = () => {
     // TODO: Implement manage team functionality
     console.log('Manage team action triggered');
+    // Navigate to team management page
   };
 
   const handleExportData = () => {
     // TODO: Implement export data functionality
     console.log('Export data action triggered');
+    // Trigger export process
   };
+
+  const handleAddMember = () => {
+    // TODO: Implement add member functionality
+    console.log('Add member action triggered');
+    // Open add member modal
+  };
+
+  const handleProjectSettings = () => {
+    // TODO: Implement project settings functionality
+    console.log('Project settings action triggered');
+    // Navigate to project settings page
+  };
+
+  // const handleArchiveProject = () => {
+  //   // TODO: Implement archive project functionality
+  //   console.log('Archive project action triggered');
+  //   // Show confirmation dialog and archive
+  // };
+
+  // Define quick actions with proper handlers
+  const quickActions: QuickAction[] = [
+    {
+      id: 'create-task',
+      title: 'Create Task',
+      description: 'Add a new task to your project',
+      icon: TaskIcon,
+      iconColor: 'primary',
+      variant: 'primary',
+      shortcut: 'Ctrl+N',
+      category: 'task',
+      onClick: handleCreateTask
+    },
+    {
+      id: 'view-reports',
+      title: 'View Reports',
+      description: 'Access project analytics and reports',
+      icon: NotificationIcon,
+      iconColor: 'success',
+      variant: 'outline',
+      shortcut: 'Ctrl+R',
+      category: 'project',
+      onClick: handleViewReports
+    },
+    {
+      id: 'manage-team',
+      title: 'Manage Team',
+      description: 'Add or remove team members',
+      icon: UserCircleIcon,
+      iconColor: 'warning',
+      variant: 'outline',
+      badge: {
+        text: 'Admin',
+        variant: 'warning'
+      },
+      shortcut: 'Ctrl+T',
+      category: 'team',
+      onClick: handleManageTeam
+    },
+    {
+      id: 'export-data',
+      title: 'Export Data',
+      description: 'Download project data in various formats',
+      icon: DuplicateIcon,
+      iconColor: 'secondary',
+      variant: 'outline',
+      shortcut: 'Ctrl+E',
+      category: 'system',
+      onClick: handleExportData
+    },
+    {
+      id: 'add-member',
+      title: 'Add Member',
+      description: 'Invite new team members to the project',
+      icon: PlusIcon,
+      iconColor: 'success',
+      variant: 'outline',
+      category: 'team',
+      onClick: handleAddMember
+    },
+    {
+      id: 'project-settings',
+      title: 'Project Settings',
+      description: 'Configure project preferences and settings',
+      icon: SettingsIcon,
+      iconColor: 'muted',
+      variant: 'outline',
+      category: 'system',
+      onClick: handleProjectSettings
+    }
+  ];
 
   // Loading State
   if (loading && !data) {
@@ -514,12 +544,14 @@ export const ModernDashboardView: React.FC<ModernDashboardViewProps> = ({
           health={health || undefined}
         />
 
-        {/* Quick Actions */}
-        <QuickActions
-          onCreateTask={handleCreateTask}
-          onViewReports={handleViewReports}
-          onManageTeam={handleManageTeam}
-          onExportData={handleExportData}
+        {/* Quick Actions Grid */}
+        <QuickActionsGrid
+          actions={quickActions}
+          title="Quick Actions"
+          description="Perform common tasks quickly and efficiently"
+          columns={4}
+          showCategories={false}
+          className="mb-8"
         />
 
         {/* Main Content Tabs */}
@@ -651,41 +683,19 @@ export const ModernDashboardView: React.FC<ModernDashboardViewProps> = ({
 
               <TabsContent value="activity">
                 <div className="space-y-6">
-                  {/* Recent Activity */}
-                  <Card variant="outline">
-                    <CardHeader>
-                      <CardTitle>Recent Activity</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      {data.recentActivity && data.recentActivity.length > 0 ? (
-                        <div className="space-y-4">
-                          {data.recentActivity.slice(0, 10).map((activity, index) => (
-                            <div key={index} className="flex items-start space-x-3 p-3 bg-surface-50 dark:bg-surface-800 rounded-lg">
-                              <Icon icon={TimeIcon} size="sm" color="muted" className="mt-0.5" />
-                              <div className="flex-1">
-                                <p className="text-sm text-secondary-900 dark:text-secondary-100 font-medium">
-                                  {activity.message || 'Activity update'}
-                                </p>
-                                <p className="text-xs text-secondary-600 dark:text-secondary-400 mt-1">
-                                  {new Date(activity.timestamp || Date.now()).toLocaleString()}
-                                </p>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="text-center py-12">
-                          <Icon icon={TimeIcon} size="2xl" color="muted" className="mx-auto mb-4" />
-                          <h3 className="text-lg font-semibold text-secondary-900 dark:text-secondary-100 mb-2">
-                            No Recent Activity
-                          </h3>
-                          <p className="text-secondary-600 dark:text-secondary-400">
-                            Activity updates will appear here when available.
-                          </p>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
+                  {/* Recent Activity Timeline */}
+                  <ActivityTimeline
+                    activities={data.recentActivity || []}
+                    loading={loading}
+                    error={error?.message}
+                    maxItems={10}
+                    showFilters={true}
+                    showAvatar={true}
+                    showTimestamp={true}
+                    groupByDate={false}
+                    onRefresh={handleRefresh}
+                    onViewAll={() => console.log('View all activities')}
+                  />
                 </div>
               </TabsContent>
             </CardContent>

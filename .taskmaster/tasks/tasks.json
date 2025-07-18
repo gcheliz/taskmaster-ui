@@ -115,7 +115,7 @@
         "dependencies": [
           52
         ],
-        "status": "in-progress",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -134,7 +134,7 @@
               1
             ],
             "details": "Implement the responsive statistics grid that displays key metrics, adapting its column count across breakpoints (1-2-4 columns). Create the project health indicators, each with a title, value, and a progress bar component. Connect both components to the relevant API endpoints to fetch and display live data.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Write integration tests to mock and verify data fetching and display for both stats and health indicators. Use visual regression testing to validate the grid's responsiveness across all defined breakpoints."
           },
           {
@@ -145,7 +145,7 @@
               1
             ],
             "details": "Build the timeline component using molecular components for each activity item (e.g., icon, text, timestamp). Integrate with the activity feed API to fetch the latest 5-10 events. Ensure the component is styled according to the dark theme specifications.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Integration test the component to ensure it correctly fetches and renders a list of activities from the API. Unit test the individual timeline item component to verify its states and props."
           },
           {
@@ -156,7 +156,7 @@
               1
             ],
             "details": "Develop a grid of 'quick action' cards, each containing an icon and a label (e.g., 'New Task', 'Add Member'). Utilize the pre-built card and icon atomic components. Wire up the functionality for each card to navigate to the appropriate page or trigger a specific action.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Write end-to-end tests that simulate a user clicking on each quick action card and verify that the correct navigation or action is triggered."
           }
         ]
@@ -165,7 +165,7 @@
         "id": 54,
         "title": "Page Migration: Implement Kanban Task Board",
         "description": "Transform the current task list into an advanced Kanban board with 5 columns (To Do, In Progress, Review, Testing, Done), advanced drag-and-drop, and rich metadata display on task cards.",
-        "status": "pending",
+        "status": "in-progress",
         "dependencies": [
           52
         ],
@@ -177,7 +177,7 @@
             "id": 1,
             "title": "Create Kanban Board Layout and Static Task Cards",
             "description": "Develop the foundational UI for the Kanban board, including the 5-column layout with horizontal scrolling and static task cards displaying all required metadata.",
-            "status": "pending",
+            "status": "done",
             "dependencies": [],
             "details": "Implement the 5-column structure for the Kanban board: 'To Do', 'In Progress', 'Review', 'Testing', and 'Done', ensuring the layout supports horizontal scrolling. Create the React component for task cards, ensuring it correctly displays static data for priority (as a colored border), complexity indicators, assigned user avatars, and progress tracking. This subtask focuses on the visual structure before interactivity is added.",
             "testStrategy": "Component-level unit tests for the task card to ensure all metadata props are rendered correctly. Visual regression tests for the overall board layout, horizontal scrolling, and card appearance (including priority borders and progress indicators)."
@@ -796,7 +796,7 @@
     ],
     "metadata": {
       "created": "2025-07-15T21:22:03.992Z",
-      "updated": "2025-07-18T19:13:17.061Z",
+      "updated": "2025-07-18T20:03:19.021Z",
       "description": "Tasks for taskmaster-ui context"
     }
   }

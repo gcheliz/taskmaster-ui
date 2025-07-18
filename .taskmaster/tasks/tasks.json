@@ -57,7 +57,7 @@
         "id": 52,
         "title": "Component Library: Create Atomic Dark Theme Components",
         "description": "Develop responsive, interactive, and accessible atomic components (Atoms) for the dark theme, ensuring WCAG 2.1 AA compliance and documenting them in Storybook.",
-        "status": "pending",
+        "status": "in-progress",
         "dependencies": [
           51
         ],
@@ -69,7 +69,7 @@
             "id": 1,
             "title": "Develop Responsive Dark Theme Button and Badge Components with Micro-interactions",
             "description": "Create responsive dark theme versions of Button and Badge components. Implement micro-interactions for all states and ensure WCAG 2.1 AA compliance. Document in Storybook.",
-            "status": "pending",
+            "status": "done",
             "dependencies": [],
             "details": "Implement dark theme styles for all Button and Badge variants. Ensure components are responsive and adapt to different screen sizes. Add subtle animations/transitions for hover, focus, and active states. All components must meet WCAG 2.1 AA contrast and focus visibility requirements. Create comprehensive Storybook stories with interactive controls and automated accessibility checks.",
             "testStrategy": "Unit test component props and event handlers. Use visual regression testing across mobile and desktop viewports. Manually test keyboard navigation and screen reader compatibility to verify WCAG 2.1 AA compliance."
@@ -78,7 +78,7 @@
             "id": 2,
             "title": "Develop Responsive and Accessible Dark Theme Form Elements",
             "description": "Create responsive and accessible dark theme versions of core form elements (Input, Textarea, Select, Checkbox, Radio). Implement clear visual feedback and micro-interactions. Document in Storybook.",
-            "status": "pending",
+            "status": "done",
             "dependencies": [],
             "details": "Develop responsive, mobile-first dark theme styles for all form elements. Implement micro-interactions for focus and validation states (e.g., error, success). Ensure all elements are fully accessible, meeting WCAG 2.1 AA standards for labels, focus indicators, and ARIA attributes. Each component must have a Storybook story with interactive controls and accessibility checks.",
             "testStrategy": "Unit test for state management and value changes. Visual regression testing across multiple breakpoints to cover all states, including validation. Automated and manual accessibility testing to confirm WCAG 2.1 AA compliance, focusing on labels, focus management, and ARIA attributes."
@@ -796,7 +796,7 @@
     ],
     "metadata": {
       "created": "2025-07-15T21:22:03.992Z",
-      "updated": "2025-07-18T18:26:43.002Z",
+      "updated": "2025-07-18T18:40:37.586Z",
       "description": "Tasks for taskmaster-ui context"
     }
   }

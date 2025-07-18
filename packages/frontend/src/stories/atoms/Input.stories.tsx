@@ -11,8 +11,16 @@ const meta: Meta<typeof Input> = {
     docs: {
       description: {
         component:
-          'A flexible input component with variants, sizes, and icon support. Built with proper accessibility and form integration.',
+          'A flexible input component with variants, sizes, and icon support. Features enhanced dark theme support, micro-interactions, and WCAG 2.1 AA compliance. Built with proper accessibility and form integration.',
       },
+    },
+    // Dark theme testing
+    backgrounds: {
+      default: 'light',
+      values: [
+        { name: 'light', value: '#ffffff' },
+        { name: 'dark', value: '#1a1a1a' },
+      ],
     },
   },
   tags: ['autodocs'],
@@ -34,6 +42,14 @@ const meta: Meta<typeof Input> = {
     placeholder: {
       control: { type: 'text' },
       description: 'Placeholder text',
+    },
+    error: {
+      control: { type: 'boolean' },
+      description: 'Shows error state',
+    },
+    success: {
+      control: { type: 'boolean' },
+      description: 'Shows success state',
     },
   },
   decorators: [
@@ -298,5 +314,140 @@ export const FormExample: Story = {
         />
       </div>
     </form>
+  ),
+};
+
+// Dark theme specific stories
+export const DarkThemeVariants: Story = {
+  parameters: {
+    backgrounds: { default: 'dark' },
+  },
+  render: () => (
+    <div className="dark">
+      <div className="bg-surface-900 p-6 rounded-lg space-y-4">
+        <h3 className="text-surface-100 text-lg font-semibold mb-4">Dark Theme Form Elements</h3>
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label className="text-surface-100">Default Input</Label>
+            <Input placeholder="Enter text..." />
+          </div>
+          <div className="space-y-2">
+            <Label className="text-surface-100">Error State</Label>
+            <Input placeholder="Invalid input..." error />
+          </div>
+          <div className="space-y-2">
+            <Label className="text-surface-100">Success State</Label>
+            <Input placeholder="Valid input..." success />
+          </div>
+          <div className="space-y-2">
+            <Label className="text-surface-100">With Icons</Label>
+            <Input
+              placeholder="Search..."
+              leftIcon={<Icon icon={EyeIcon} size="sm" />}
+              rightIcon={<Icon icon={CheckIcon} size="sm" />}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  ),
+};
+
+// Accessibility testing story
+export const AccessibilityTest: Story = {
+  render: () => (
+    <div className="space-y-6">
+      <div className="space-y-2">
+        <h3 className="text-lg font-semibold">Keyboard Navigation</h3>
+        <p className="text-sm text-secondary-600">Use Tab to navigate, Enter to submit</p>
+        <div className="space-y-2">
+          <Label htmlFor="accessible-input-1">First Input</Label>
+          <Input id="accessible-input-1" placeholder="Tab to next input" />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="accessible-input-2">Second Input</Label>
+          <Input id="accessible-input-2" placeholder="Continue navigation" />
+        </div>
+      </div>
+      <div className="space-y-2">
+        <h3 className="text-lg font-semibold">Screen Reader Labels</h3>
+        <div className="space-y-2">
+          <Label htmlFor="sr-input" required description="This field is required for form submission">
+            Required Field
+          </Label>
+          <Input
+            id="sr-input"
+            placeholder="Enter required information"
+            aria-describedby="sr-input-description"
+          />
+          <p id="sr-input-description" className="text-sm text-secondary-600">
+            This description provides additional context for screen readers
+          </p>
+        </div>
+      </div>
+      <div className="space-y-2">
+        <h3 className="text-lg font-semibold">Focus Indicators</h3>
+        <div className="space-y-2">
+          <Label htmlFor="focus-input">Focus Test</Label>
+          <Input
+            id="focus-input"
+            placeholder="Click or tab to focus"
+            className="focus-visible:ring-4 focus-visible:ring-primary-500"
+          />
+        </div>
+      </div>
+    </div>
+  ),
+};
+
+// Micro-interactions showcase
+export const MicroInteractions: Story = {
+  render: () => (
+    <div className="space-y-6">
+      <div className="space-y-2">
+        <h3 className="text-lg font-semibold">Hover Effects</h3>
+        <div className="space-y-2">
+          <Label>Hover for Border & Shadow</Label>
+          <Input placeholder="Hover over this input" />
+        </div>
+      </div>
+      <div className="space-y-2">
+        <h3 className="text-lg font-semibold">Focus Animations</h3>
+        <div className="space-y-2">
+          <Label>Focus for Scale & Ring</Label>
+          <Input placeholder="Click to focus" />
+        </div>
+      </div>
+      <div className="space-y-2">
+        <h3 className="text-lg font-semibold">State Transitions</h3>
+        <div className="space-y-2">
+          <Label>Error State Animation</Label>
+          <Input placeholder="Smooth error transition" error />
+        </div>
+      </div>
+    </div>
+  ),
+};
+
+// Responsive design showcase
+export const ResponsiveDesign: Story = {
+  render: () => (
+    <div className="space-y-6">
+      <div className="space-y-2">
+        <h3 className="text-lg font-semibold">Mobile First Design</h3>
+        <p className="text-sm text-secondary-600">Inputs are optimized for mobile touch targets</p>
+        <div className="space-y-2">
+          <Label>Mobile Friendly Input</Label>
+          <Input placeholder="Easy to tap and type" inputSize="lg" />
+        </div>
+      </div>
+      <div className="space-y-2">
+        <h3 className="text-lg font-semibold">Flexible Width</h3>
+        <div className="space-y-2">
+          <Label>Full Width</Label>
+          <Input placeholder="Takes full container width" className="w-full" />
+        </div>
+      </div>
+    </div>
   ),
 };

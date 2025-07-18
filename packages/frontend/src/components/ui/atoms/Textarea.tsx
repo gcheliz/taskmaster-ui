@@ -2,9 +2,9 @@ import React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '../../../utils/cn';
 
-const inputVariants = cva(
+const textareaVariants = cva(
   // Base styles with enhanced dark theme support and micro-interactions
-  'input-base flex w-full transition-all duration-200 ease-in-out file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-secondary-500 dark:placeholder:text-secondary-400 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 focus-visible:ring-offset-surface-100 dark:focus-visible:ring-offset-surface-900 hover:shadow-sm focus-visible:shadow-md transform-gpu focus-visible:scale-[1.02] focus-visible:z-10',
+  'flex min-h-[80px] w-full rounded-md border px-3 py-2 text-sm transition-all duration-200 ease-in-out placeholder:text-secondary-500 dark:placeholder:text-secondary-400 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 resize-vertical focus-visible:ring-offset-surface-100 dark:focus-visible:ring-offset-surface-900 hover:shadow-sm focus-visible:shadow-md transform-gpu focus-visible:scale-[1.02] focus-visible:z-10',
   {
     variants: {
       variant: {
@@ -15,22 +15,22 @@ const inputVariants = cva(
         success:
           'border-success-500 focus-visible:border-success-500 focus-visible:ring-2 focus-visible:ring-success-500 focus-visible:ring-offset-2 dark:border-success-600 dark:focus-visible:border-success-400 dark:focus-visible:ring-success-400 hover:border-success-600 dark:hover:border-success-500 hover:shadow-success-500/25 dark:hover:shadow-success-400/25',
       },
-      inputSize: {
-        sm: 'h-8 px-3 py-1 text-sm min-h-[2rem]',
-        md: 'h-10 px-3 py-2 min-h-[2.5rem]',
-        lg: 'h-12 px-4 py-3 text-lg min-h-[3rem]',
+      textareaSize: {
+        sm: 'min-h-[60px] px-2 py-1 text-sm',
+        md: 'min-h-[80px] px-3 py-2',
+        lg: 'min-h-[100px] px-4 py-3 text-lg',
       },
     },
     defaultVariants: {
       variant: 'default',
-      inputSize: 'md',
+      textareaSize: 'md',
     },
   }
 );
 
-export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement>,
-    VariantProps<typeof inputVariants> {
+export interface TextareaProps
+  extends React.TextareaHTMLAttributes<HTMLTextAreaElement>,
+    VariantProps<typeof textareaVariants> {
   /**
    * Shows error state styling
    * @default false
@@ -42,36 +42,25 @@ export interface InputProps
    */
   success?: boolean;
   /**
-   * Icon to display on the left side of the input
-   */
-  leftIcon?: React.ReactNode;
-  /**
-   * Icon to display on the right side of the input
-   */
-  rightIcon?: React.ReactNode;
-  /**
-   * The visual style variant of the input
+   * The visual style variant of the textarea
    * @default 'default'
    */
   variant?: 'default' | 'error' | 'success';
   /**
-   * The size of the input
+   * The size of the textarea
    * @default 'md'
    */
-  inputSize?: 'sm' | 'md' | 'lg';
+  textareaSize?: 'sm' | 'md' | 'lg';
 }
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>(
+const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
   (
     {
       className,
       variant,
-      inputSize,
+      textareaSize,
       error,
       success,
-      leftIcon,
-      rightIcon,
-      type,
       ...props
     },
     ref
@@ -79,41 +68,18 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     // Determine variant based on state
     const computedVariant = error ? 'error' : success ? 'success' : variant;
 
-    const inputElement = (
-      <input
-        type={type}
+    return (
+      <textarea
         className={cn(
-          inputVariants({ variant: computedVariant, inputSize, className }),
-          leftIcon && 'pl-10',
-          rightIcon && 'pr-10'
+          textareaVariants({ variant: computedVariant, textareaSize, className })
         )}
         ref={ref}
         {...props}
       />
     );
-
-    if (leftIcon || rightIcon) {
-      return (
-        <div className="relative">
-          {leftIcon && (
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary-500">
-              {leftIcon}
-            </div>
-          )}
-          {inputElement}
-          {rightIcon && (
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-secondary-500">
-              {rightIcon}
-            </div>
-          )}
-        </div>
-      );
-    }
-
-    return inputElement;
   }
 );
 
-Input.displayName = 'Input';
+Textarea.displayName = 'Textarea';
 
-export { Input, inputVariants };
+export { Textarea, textareaVariants };

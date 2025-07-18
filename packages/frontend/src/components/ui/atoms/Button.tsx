@@ -3,29 +3,29 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '../../../utils/cn';
 
 const buttonVariants = cva(
-  // Base styles
-  'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+  // Base styles with enhanced dark theme support and micro-interactions
+  'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-all duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 transform-gpu active:scale-95 hover:shadow-lg focus-visible:ring-offset-surface-100 dark:focus-visible:ring-offset-surface-900',
   {
     variants: {
       variant: {
         primary:
-          'btn-primary hover:bg-primary-600 focus-visible:ring-primary-500',
+          'btn-primary hover:bg-primary-600 focus-visible:ring-primary-500 dark:hover:bg-primary-400 dark:focus-visible:ring-primary-400 hover:shadow-primary-500/25 dark:hover:shadow-primary-400/25',
         secondary:
-          'btn-secondary hover:bg-secondary-100 focus-visible:ring-secondary-500',
+          'btn-secondary hover:bg-secondary-100 focus-visible:ring-secondary-500 dark:hover:bg-secondary-700 dark:focus-visible:ring-secondary-400 hover:shadow-secondary-500/25 dark:hover:shadow-secondary-400/25',
         outline:
-          'border border-secondary-300 bg-transparent hover:bg-secondary-50 focus-visible:ring-secondary-500',
+          'border border-secondary-300 bg-transparent hover:bg-secondary-50 focus-visible:ring-secondary-500 dark:border-secondary-600 dark:hover:bg-secondary-800 dark:focus-visible:ring-secondary-400 hover:shadow-secondary-500/25 dark:hover:shadow-secondary-400/25',
         ghost:
-          'hover:bg-secondary-100 hover:text-secondary-900 focus-visible:ring-secondary-500',
-        link: 'text-primary-600 underline-offset-4 hover:underline focus-visible:ring-primary-500',
+          'hover:bg-secondary-100 hover:text-secondary-900 focus-visible:ring-secondary-500 dark:hover:bg-secondary-800 dark:hover:text-secondary-100 dark:focus-visible:ring-secondary-400 hover:shadow-secondary-500/25 dark:hover:shadow-secondary-400/25',
+        link: 'text-primary-600 underline-offset-4 hover:underline focus-visible:ring-primary-500 dark:text-primary-400 dark:focus-visible:ring-primary-400 hover:text-primary-700 dark:hover:text-primary-300',
         destructive:
-          'bg-error-600 text-white hover:bg-error-700 focus-visible:ring-error-500',
+          'bg-error-600 text-white hover:bg-error-700 focus-visible:ring-error-500 dark:bg-error-700 dark:hover:bg-error-600 dark:focus-visible:ring-error-400 hover:shadow-error-500/25 dark:hover:shadow-error-400/25',
       },
       size: {
-        sm: 'h-8 rounded-md px-3 text-xs',
-        md: 'h-10 px-4 py-2',
-        lg: 'h-11 rounded-md px-8',
-        xl: 'h-12 rounded-md px-10 text-base',
-        icon: 'h-10 w-10',
+        sm: 'h-8 rounded-md px-3 text-xs min-w-[2rem]',
+        md: 'h-10 px-4 py-2 min-w-[2.5rem]',
+        lg: 'h-11 rounded-md px-8 min-w-[3rem]',
+        xl: 'h-12 rounded-md px-10 text-base min-w-[3.5rem]',
+        icon: 'h-10 w-10 min-w-[2.5rem]',
       },
     },
     defaultVariants: {

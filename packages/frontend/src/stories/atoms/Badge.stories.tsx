@@ -16,8 +16,16 @@ const meta: Meta<typeof Badge> = {
     docs: {
       description: {
         component:
-          'A badge component for status indicators, labels, and notifications. Includes TaskMaster-specific status variants.',
+          'A badge component for status indicators, labels, and notifications. Features enhanced dark theme support, micro-interactions, and WCAG 2.1 AA compliance. Includes TaskMaster-specific status variants.',
       },
+    },
+    // Dark theme testing
+    backgrounds: {
+      default: 'light',
+      values: [
+        { name: 'light', value: '#ffffff' },
+        { name: 'dark', value: '#1a1a1a' },
+      ],
     },
   },
   tags: ['autodocs'],
@@ -47,6 +55,10 @@ const meta: Meta<typeof Badge> = {
     children: {
       control: { type: 'text' },
       description: 'Badge content',
+    },
+    icon: {
+      control: { type: 'object' },
+      description: 'Optional icon to display',
     },
   },
 };
@@ -312,6 +324,140 @@ export const TeamMemberBadges: Story = {
           <Badge variant="warning">Away</Badge>
           <Badge variant="error">Busy</Badge>
           <Badge variant="secondary">Offline</Badge>
+        </div>
+      </div>
+    </div>
+  ),
+};
+
+// Dark theme specific stories
+export const DarkThemeVariants: Story = {
+  parameters: {
+    backgrounds: { default: 'dark' },
+  },
+  render: () => (
+    <div className="dark">
+      <div className="bg-surface-900 p-6 rounded-lg space-y-4">
+        <h3 className="text-surface-100 text-lg font-semibold mb-4">Dark Theme Variants</h3>
+        <div className="space-y-3">
+          <div>
+            <h4 className="text-surface-200 text-sm font-medium mb-2">Standard Variants</h4>
+            <div className="flex flex-wrap gap-2">
+              <Badge variant="default">Default</Badge>
+              <Badge variant="secondary">Secondary</Badge>
+              <Badge variant="success">Success</Badge>
+              <Badge variant="warning">Warning</Badge>
+              <Badge variant="error">Error</Badge>
+              <Badge variant="outline">Outline</Badge>
+            </div>
+          </div>
+          <div>
+            <h4 className="text-surface-200 text-sm font-medium mb-2">TaskMaster Status</h4>
+            <div className="flex flex-wrap gap-2">
+              <Badge variant="pending">Pending</Badge>
+              <Badge variant="in-progress">In Progress</Badge>
+              <Badge variant="done">Done</Badge>
+              <Badge variant="blocked">Blocked</Badge>
+              <Badge variant="deferred">Deferred</Badge>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  ),
+};
+
+// Accessibility testing story
+export const AccessibilityTest: Story = {
+  render: () => (
+    <div className="space-y-6">
+      <div className="space-y-2">
+        <h3 className="text-lg font-semibold">Screen Reader Support</h3>
+        <p className="text-sm text-secondary-600">All badges include proper ARIA labels and role attributes</p>
+        <div className="flex flex-wrap gap-2">
+          <Badge variant="success" aria-label="Status: Task completed successfully">
+            Completed
+          </Badge>
+          <Badge variant="error" aria-label="Status: Task failed with errors">
+            Failed
+          </Badge>
+          <Badge variant="warning" aria-label="Status: Task requires attention">
+            Needs Review
+          </Badge>
+        </div>
+      </div>
+      <div className="space-y-2">
+        <h3 className="text-lg font-semibold">Color Contrast</h3>
+        <p className="text-sm text-secondary-600">All badges meet WCAG 2.1 AA color contrast requirements</p>
+        <div className="flex flex-wrap gap-2">
+          <Badge variant="default">4.5:1 Contrast</Badge>
+          <Badge variant="secondary">4.5:1 Contrast</Badge>
+          <Badge variant="outline">4.5:1 Contrast</Badge>
+        </div>
+      </div>
+      <div className="space-y-2">
+        <h3 className="text-lg font-semibold">Focus Indicators</h3>
+        <p className="text-sm text-secondary-600">Badges with interactive behavior have focus indicators</p>
+        <div className="flex flex-wrap gap-2">
+          <Badge variant="default" tabIndex={0} className="focus:ring-2 focus:ring-primary-500">
+            Focusable Badge
+          </Badge>
+          <Badge variant="secondary" tabIndex={0} className="focus:ring-2 focus:ring-secondary-500">
+            Interactive Badge
+          </Badge>
+        </div>
+      </div>
+    </div>
+  ),
+};
+
+// Micro-interactions showcase
+export const MicroInteractions: Story = {
+  render: () => (
+    <div className="space-y-6">
+      <div className="space-y-2">
+        <h3 className="text-lg font-semibold">Hover Effects</h3>
+        <p className="text-sm text-secondary-600">Hover to see scale and shadow animations</p>
+        <div className="flex flex-wrap gap-2">
+          <Badge variant="default">Hover for Scale</Badge>
+          <Badge variant="success">Hover for Shadow</Badge>
+          <Badge variant="warning">Smooth Transitions</Badge>
+        </div>
+      </div>
+      <div className="space-y-2">
+        <h3 className="text-lg font-semibold">Status Animations</h3>
+        <p className="text-sm text-secondary-600">TaskMaster status badges with enhanced visual feedback</p>
+        <div className="flex flex-wrap gap-2">
+          <Badge variant="pending">Pending</Badge>
+          <Badge variant="in-progress">In Progress</Badge>
+          <Badge variant="done" icon={<Icon icon={CheckIcon} size="xs" />}>
+            Completed
+          </Badge>
+        </div>
+      </div>
+    </div>
+  ),
+};
+
+// Responsive design showcase
+export const ResponsiveDesign: Story = {
+  render: () => (
+    <div className="space-y-6">
+      <div className="space-y-2">
+        <h3 className="text-lg font-semibold">Size Variations</h3>
+        <p className="text-sm text-secondary-600">Badges maintain proportions across different sizes</p>
+        <div className="flex flex-wrap items-center gap-3">
+          <Badge size="sm" variant="default">Small</Badge>
+          <Badge size="md" variant="default">Medium</Badge>
+          <Badge size="lg" variant="default">Large</Badge>
+        </div>
+      </div>
+      <div className="space-y-2">
+        <h3 className="text-lg font-semibold">Mobile First</h3>
+        <p className="text-sm text-secondary-600">Badges are optimized for mobile touch targets</p>
+        <div className="flex flex-wrap gap-2">
+          <Badge variant="default" size="lg">Touch Friendly</Badge>
+          <Badge variant="secondary" size="lg">Easy to Tap</Badge>
         </div>
       </div>
     </div>

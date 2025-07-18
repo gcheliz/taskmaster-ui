@@ -333,39 +333,60 @@
   --breakpoint-2xl: 1536px;
 }
 
-/* Dark theme overrides */
+/* Dark theme overrides - TaskMaster UI Dark Theme */
 [data-theme="dark"] {
-  --color-background: var(--neutral-900);
-  --color-background-secondary: var(--neutral-800);
-  --color-background-tertiary: var(--neutral-700);
+  /* Primary background colors using slate palette */
+  --color-background: #020617;          /* slate-950 - Primary background */
+  --color-background-secondary: #0f172a; /* slate-900 - Secondary background */
+  --color-background-tertiary: #1e293b;  /* slate-800 - Tertiary background */
   
-  --color-surface: var(--neutral-800);
-  --color-surface-secondary: var(--neutral-700);
-  --color-surface-tertiary: var(--neutral-600);
+  /* Surface colors for cards and components */
+  --color-surface: #0f172a;              /* slate-900 - Cards and panels */
+  --color-surface-secondary: #1e293b;    /* slate-800 - Elevated surfaces */
+  --color-surface-tertiary: #334155;     /* slate-700 - Higher elevation */
   
-  --color-text-primary: var(--neutral-50);
-  --color-text-secondary: var(--neutral-300);
-  --color-text-tertiary: var(--neutral-400);
-  --color-text-disabled: var(--neutral-500);
+  /* Text colors for dark theme */
+  --color-text-primary: #f8fafc;         /* slate-50 - Primary text */
+  --color-text-secondary: #94a3b8;       /* slate-400 - Secondary text */
+  --color-text-tertiary: #64748b;        /* slate-500 - Tertiary text */
+  --color-text-disabled: #475569;        /* slate-600 - Disabled text */
   
-  --color-border: var(--neutral-700);
-  --color-border-secondary: var(--neutral-600);
+  /* Border colors for dark theme */
+  --color-border: #1e293b;               /* slate-800 - Primary borders */
+  --color-border-secondary: #334155;     /* slate-700 - Secondary borders */
+  
+  /* Accent colors for dark theme */
+  --color-accent-primary: #3B82F6;       /* Blue - primary actions, links */
+  --color-accent-success: #10B981;       /* Green - success states, completed tasks */
+  --color-accent-warning: #F59E0B;       /* Orange - warnings, pending actions */
+  --color-accent-error: #EF4444;         /* Red - error states, critical actions */
   
   /* Enhanced focus ring for dark theme */
   --focus-ring-color: var(--focus-ring-color-dark);
   
-  /* Adjust shadows for dark theme */
-  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-  --shadow-base: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
-  --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-  --shadow-2xl: 0 50px 100px -20px rgba(0, 0, 0, 0.5);
-  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.3);
+  /* Adjust shadows for dark theme - enhanced for better visibility */
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.5), 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+  --shadow-base: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+  --shadow-2xl: 0 50px 100px -20px rgba(0, 0, 0, 0.6);
+  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.4);
   
   /* Modal backdrop for dark theme */
-  --modal-backdrop-color: rgba(0, 0, 0, 0.8);
+  --modal-backdrop-color: rgba(2, 6, 23, 0.8); /* slate-950 with opacity */
+  
+  /* TaskMaster-specific dark theme colors */
+  --color-header-bg: #0f172a;            /* slate-900 - Header background */
+  --color-sidebar-bg: #0f172a;           /* slate-900 - Sidebar background */
+  --color-card-bg: #1e293b;              /* slate-800 - Card background */
+  --color-input-bg: #1e293b;             /* slate-800 - Input background */
+  --color-hover-bg: #334155;             /* slate-700 - Hover background */
+  
+  /* Glass effect for dark theme */
+  --glass-bg: rgba(15, 23, 42, 0.8);     /* slate-900 with opacity */
+  --glass-border: rgba(148, 163, 184, 0.1); /* slate-400 with low opacity */
 }
 
 /* High contrast mode */

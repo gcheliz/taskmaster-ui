@@ -9,7 +9,7 @@
         "testStrategy": "Verify Tailwind config by applying new color classes to basic elements. Use Storybook to visually confirm font loading and text scales. Unit test the theme context provider to ensure it provides the correct theme values.",
         "priority": "high",
         "dependencies": [],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -17,7 +17,7 @@
             "description": "Integrate the specified slate and accent color palettes into the Tailwind CSS configuration file to make them available as utility classes for the dark theme.",
             "dependencies": [],
             "details": "Extend the `theme.colors` object in the `tailwind.config.js` file. Add the full slate palette and the defined accent colors, ensuring they are correctly named and accessible for use throughout the application.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Apply new color utility classes (e.g., `bg-slate-900`, `text-accent-400`) to basic HTML elements in a test page or Storybook. Verify in the browser that the correct colors are rendered."
           },
           {
@@ -26,7 +26,7 @@
             "description": "Configure the project to use the Inter and JetBrains Mono fonts and define the typographic scale in the Tailwind CSS configuration.",
             "dependencies": [],
             "details": "Add the Inter (sans-serif) and JetBrains Mono (monospace) font files to the project or link them via a font service in the main HTML file. Update `tailwind.config.js` to define `fontFamily` for 'sans' and 'mono' stacks. Configure the `fontSize` theme object with the required text scales (e.g., sm, base, lg, xl).",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Use Storybook to create stories for typography. Visually confirm that text elements render with the correct Inter and JetBrains Mono fonts. Check the browser's developer tools to ensure the font files are loaded successfully and the CSS `font-size` properties match the defined scales."
           },
           {
@@ -37,7 +37,7 @@
               1
             ],
             "details": "In a global CSS file, define a `:root` or `[data-theme='dark']` selector. Inside this selector, map the newly configured Tailwind colors to semantic CSS variables (e.g., `--color-background: theme('colors.slate.900');`, `--color-text-primary: theme('colors.slate.100');`, `--color-accent: theme('colors.accent.500');`).",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Inspect the application's root element in the browser's developer tools to confirm that the CSS custom properties are defined and have the correct values. Manually apply a variable (e.g., `background-color: var(--color-background)`) to an element to verify it works."
           },
           {
@@ -48,7 +48,7 @@
               3
             ],
             "details": "Develop a `ThemeContext` and `ThemeProvider` component. The provider will manage the current theme state (e.g., 'dark') and apply a `data-theme='dark'` attribute to the `<html>` or `<body>` element. This will activate the CSS Custom Properties defined in the previous subtask.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Write unit tests for the `ThemeContext` provider using a testing library. Verify that it provides the correct initial theme value. Wrap a sample page in the provider and confirm the `data-theme` attribute is correctly applied to the DOM, activating the dark theme styles."
           }
         ]
@@ -56,52 +56,52 @@
       {
         "id": 52,
         "title": "Component Library: Create Atomic Dark Theme Components",
-        "description": "Develop the base atomic components (Atoms) for the dark theme and document them in Storybook.",
-        "details": "Create dark-theme versions of Buttons, Cards, Form Elements, Navigation, Icons (Heroicons), and Badges. Ensure all variants, states (hover, focus, active), and accessibility requirements are met. For each component, create a Storybook story with interactive controls and accessibility checks.",
-        "testStrategy": "Unit tests for each component's props and states. Visual regression testing via Storybook. Manual accessibility testing using keyboard navigation and screen readers on Storybook examples.",
-        "priority": "high",
+        "description": "Develop responsive, interactive, and accessible atomic components (Atoms) for the dark theme, ensuring WCAG 2.1 AA compliance and documenting them in Storybook.",
+        "status": "pending",
         "dependencies": [
           51
         ],
-        "status": "pending",
+        "priority": "high",
+        "details": "Create dark-theme versions of Buttons, Cards, Form Elements, Navigation, Icons (Heroicons), and Badges. All components must be fully responsive using a mobile-first approach. Implement subtle micro-interactions and animations for state changes (e.g., hover, focus, active). Ensure all components meet WCAG 2.1 AA accessibility standards. For each component, create a Storybook story with interactive controls and accessibility checks.",
+        "testStrategy": "Unit tests for each component's props and states. Visual regression testing via Storybook across multiple breakpoints (mobile, tablet, desktop). Automated accessibility testing (e.g., axe-core) in Storybook and manual testing (keyboard navigation, screen readers) to ensure WCAG 2.1 AA compliance. Test animations and interactions for performance and clarity.",
         "subtasks": [
           {
             "id": 1,
-            "title": "Develop Dark Theme Button and Badge Components",
-            "description": "Create the dark theme versions of the atomic Button and Badge components, including all variants and states, and document them in Storybook.",
-            "dependencies": [],
-            "details": "Implement dark theme styles for all Button variants (e.g., primary, secondary, tertiary, destructive) and Badge variants (e.g., info, success, warning, error). Ensure hover, focus, active, and disabled states are clearly defined and accessible. Create comprehensive Storybook stories with interactive controls for all props and accessibility checks.",
+            "title": "Develop Responsive Dark Theme Button and Badge Components with Micro-interactions",
+            "description": "Create responsive dark theme versions of Button and Badge components. Implement micro-interactions for all states and ensure WCAG 2.1 AA compliance. Document in Storybook.",
             "status": "pending",
-            "testStrategy": "Unit test component props and event handlers. Use visual regression testing for all variants and states. Manually test keyboard navigation and screen reader compatibility in Storybook."
+            "dependencies": [],
+            "details": "Implement dark theme styles for all Button and Badge variants. Ensure components are responsive and adapt to different screen sizes. Add subtle animations/transitions for hover, focus, and active states. All components must meet WCAG 2.1 AA contrast and focus visibility requirements. Create comprehensive Storybook stories with interactive controls and automated accessibility checks.",
+            "testStrategy": "Unit test component props and event handlers. Use visual regression testing across mobile and desktop viewports. Manually test keyboard navigation and screen reader compatibility to verify WCAG 2.1 AA compliance."
           },
           {
             "id": 2,
-            "title": "Develop Dark Theme Form Element Components",
-            "description": "Create the dark theme versions of core form elements (Input, Textarea, Select, Checkbox, Radio) and document them in Storybook.",
-            "dependencies": [],
-            "details": "Develop dark theme styles for all specified form elements. This includes styling for labels, placeholder text, and states such as focus, disabled, and validation (e.g., error, success). Each component must have a Storybook story with interactive controls for its props and states, along with accessibility addon checks.",
+            "title": "Develop Responsive and Accessible Dark Theme Form Elements",
+            "description": "Create responsive and accessible dark theme versions of core form elements (Input, Textarea, Select, Checkbox, Radio). Implement clear visual feedback and micro-interactions. Document in Storybook.",
             "status": "pending",
-            "testStrategy": "Unit test for state management and value changes. Visual regression testing to cover all states, including validation. Manual accessibility testing focusing on labels, focus indicators, and ARIA attributes."
+            "dependencies": [],
+            "details": "Develop responsive, mobile-first dark theme styles for all form elements. Implement micro-interactions for focus and validation states (e.g., error, success). Ensure all elements are fully accessible, meeting WCAG 2.1 AA standards for labels, focus indicators, and ARIA attributes. Each component must have a Storybook story with interactive controls and accessibility checks.",
+            "testStrategy": "Unit test for state management and value changes. Visual regression testing across multiple breakpoints to cover all states, including validation. Automated and manual accessibility testing to confirm WCAG 2.1 AA compliance, focusing on labels, focus management, and ARIA attributes."
           },
           {
             "id": 3,
-            "title": "Develop Dark Theme Card and Icon Components",
-            "description": "Create the dark theme version of the Card component and integrate and style Heroicons for dark mode, documenting both in Storybook.",
-            "dependencies": [],
-            "details": "Design and build a flexible Card component with appropriate dark theme background, border, and shadow styles. Integrate the Heroicons library and create a wrapper or utility to ensure icons correctly inherit color and size within the dark theme. Document card layouts and icon usage in Storybook.",
+            "title": "Develop Interactive Dark Theme Card with Drag-and-Drop and Icon Components",
+            "description": "Create a responsive dark theme Card component with support for drag-and-drop functionality. Integrate and style Heroicons for dark mode. Document both in Storybook.",
             "status": "pending",
-            "testStrategy": "Visual regression testing for the Card component's structure and appearance. Unit tests for the Icon component's props (e.g., icon name, size). Manually verify icons render correctly inside other components like Buttons and Cards."
+            "dependencies": [],
+            "details": "Design and build a flexible, responsive Card component with dark theme styles. Implement drag-and-drop functionality for use in board layouts, including visual states for dragging and dropping. Add subtle animations for hover and selection. Integrate the Heroicons library, ensuring icons are correctly styled for the dark theme. Document card layouts, drag-and-drop usage, and icon integration in Storybook.",
+            "testStrategy": "Visual regression testing for the Card component across different breakpoints and states (default, hover, dragging). Unit tests for drag-and-drop event handlers and Icon props. End-to-end tests in Storybook to verify drag-and-drop interactions. Manually verify accessibility of draggable elements."
           },
           {
             "id": 4,
-            "title": "Develop Dark Theme Navigation Components",
-            "description": "Create the dark theme versions of atomic navigation components like links, tabs, or breadcrumb items, and document them in Storybook.",
+            "title": "Develop Responsive and Animated Dark Theme Navigation Components",
+            "description": "Create responsive dark theme versions of atomic navigation components (e.g., NavLink, Tab, BreadcrumbLink) with smooth transitions and animations. Document in Storybook.",
+            "status": "pending",
             "dependencies": [
               3
             ],
-            "details": "Develop dark theme styles for base navigation elements (e.g., NavLink, Tab, BreadcrumbLink). Ensure all interactive states (hover, focus, active/current) are implemented and meet accessibility contrast requirements. Navigation components may utilize the Icon component. Create Storybook stories demonstrating common navigation patterns and states.",
-            "status": "pending",
-            "testStrategy": "Visual regression testing for all component states. Manual testing of keyboard navigation (Tab, Shift+Tab, Enter) to ensure full operability. Verify ARIA roles and properties for accessibility."
+            "details": "Develop responsive, mobile-first dark theme styles for navigation elements. Implement micro-interactions and smooth animations for state changes (hover, focus, active/current). Ensure all components meet WCAG 2.1 AA contrast and keyboard navigation requirements. Create Storybook stories demonstrating responsive patterns (e.g., tabs collapsing into a dropdown on mobile) and states.",
+            "testStrategy": "Visual regression testing across multiple breakpoints for all component states. Manual and automated testing of keyboard navigation (Tab, Shift+Tab, Enter, Arrow keys for tabs) to ensure full operability and WCAG 2.1 AA compliance. Verify ARIA roles and properties are correctly implemented for dynamic states."
           }
         ]
       },
@@ -164,55 +164,55 @@
       {
         "id": 54,
         "title": "Page Migration: Implement Kanban Task Board",
-        "description": "Transform the current task list into an advanced Kanban board with drag-and-drop functionality and rich metadata display.",
-        "details": "Implement a 5-column Kanban layout. Develop draggable task cards displaying priority, complexity, user avatars, and status badges. Add search and filter functionality. Ensure real-time collaboration updates and full keyboard accessibility for drag-and-drop.",
-        "testStrategy": "Unit test the drag-and-drop logic. Integration tests for state updates after a drop. End-to-end tests simulating a user organizing tasks on the board. Manual keyboard accessibility testing for all interactions.",
-        "priority": "high",
+        "description": "Transform the current task list into an advanced Kanban board with 5 columns (To Do, In Progress, Review, Testing, Done), advanced drag-and-drop, and rich metadata display on task cards.",
+        "status": "pending",
         "dependencies": [
           52
         ],
-        "status": "pending",
+        "priority": "high",
+        "details": "Implement a 5-column Kanban layout (To Do, In Progress, Review, Testing, Done) with horizontal scrolling. Develop draggable task cards with visual feedback during drag operations. Cards must display priority borders, complexity indicators, user assignment avatars, and progress tracking. Implement search and filter functionality. Ensure real-time collaboration updates and full keyboard accessibility for drag-and-drop.",
+        "testStrategy": "Unit test the drag-and-drop logic. Integration tests for state updates. End-to-end tests simulating a user organizing tasks. Manual keyboard accessibility testing. Visual regression tests for card metadata display and board layout.",
         "subtasks": [
           {
             "id": 1,
-            "title": "Create Kanban Board Layout and Static Task Card Components",
-            "description": "Develop the foundational UI for the Kanban board, including the 5-column layout and the static task card components displaying all required metadata.",
-            "dependencies": [],
-            "details": "Implement the 5-column structure for the Kanban board (e.g., 'To Do', 'In Progress', 'Review', 'Blocked', 'Done'). Create the React component for task cards, ensuring it correctly displays static data for priority, complexity, assigned user avatars, and status badges. This subtask focuses on the visual structure before interactivity is added.",
+            "title": "Create Kanban Board Layout and Static Task Cards",
+            "description": "Develop the foundational UI for the Kanban board, including the 5-column layout with horizontal scrolling and static task cards displaying all required metadata.",
             "status": "pending",
-            "testStrategy": "Component-level unit tests for the task card to ensure all metadata props are rendered correctly. Visual regression tests for the overall board layout and card appearance across different viewports."
+            "dependencies": [],
+            "details": "Implement the 5-column structure for the Kanban board: 'To Do', 'In Progress', 'Review', 'Testing', and 'Done', ensuring the layout supports horizontal scrolling. Create the React component for task cards, ensuring it correctly displays static data for priority (as a colored border), complexity indicators, assigned user avatars, and progress tracking. This subtask focuses on the visual structure before interactivity is added.",
+            "testStrategy": "Component-level unit tests for the task card to ensure all metadata props are rendered correctly. Visual regression tests for the overall board layout, horizontal scrolling, and card appearance (including priority borders and progress indicators)."
           },
           {
             "id": 2,
-            "title": "Implement Drag-and-Drop and Keyboard Accessibility",
-            "description": "Enable users to move task cards between columns using both mouse-based drag-and-drop and full keyboard controls, updating the application's local state.",
+            "title": "Implement Advanced Drag-and-Drop with Visual Feedback and Keyboard Accessibility",
+            "description": "Enable users to move task cards between columns using both mouse-based drag-and-drop and full keyboard controls, providing clear visual feedback during the interaction.",
+            "status": "pending",
             "dependencies": [
               1
             ],
-            "details": "Integrate a drag-and-drop library (e.g., dnd-kit) to handle card movement. Implement the logic to update the task's status and position in the local state upon a successful drop. Crucially, ensure full keyboard accessibility for these interactions (e.g., using Tab to focus, Spacebar to lift/drop, and Arrow Keys to move between columns).",
-            "status": "pending",
+            "details": "Integrate a drag-and-drop library (e.g., dnd-kit) to handle card movement. Implement visual feedback, such as a ghost element or placeholder, during the drag operation. Update the task's status and position in the local state upon a successful drop. Ensure full keyboard accessibility for these interactions (e.g., using Tab to focus, Spacebar to lift/drop, and Arrow Keys to move between columns).",
             "testStrategy": "Unit test the drag-and-drop state management logic. Conduct thorough manual and automated accessibility testing for all keyboard interactions to ensure compliance with WCAG standards."
           },
           {
             "id": 3,
             "title": "Integrate Real-Time Collaboration via WebSockets",
             "description": "Implement real-time synchronization to ensure that all changes made to the Kanban board are instantly reflected for all concurrently active users.",
+            "status": "pending",
             "dependencies": [
               2
             ],
             "details": "Establish a WebSocket connection to the backend. When a user moves a task, an event containing the task ID and new status/column will be emitted to the server. The client will listen for broadcasted events from the server and update the UI dynamically to reflect changes made by other users without a page refresh.",
-            "status": "pending",
             "testStrategy": "Integration tests using a mock WebSocket server to verify that the client-side state updates correctly upon receiving messages. End-to-end tests with multiple simulated users to confirm real-time synchronization works as expected."
           },
           {
             "id": 4,
             "title": "Develop Search and Filter Functionality",
             "description": "Implement UI controls to allow users to search for specific tasks and filter the displayed cards based on metadata like priority, assignee, or complexity.",
+            "status": "pending",
             "dependencies": [
               1
             ],
             "details": "Add a text input field for real-time searching of task titles and descriptions. Implement a set of filter controls (e.g., dropdowns or multi-selects) for filtering by priority, complexity, and assigned user. The board view must dynamically update to show only the tasks that match the active search and filter criteria.",
-            "status": "pending",
             "testStrategy": "Unit tests for the filtering and search logic to ensure correctness. End-to-end tests simulating a user applying various filter combinations and search queries to verify the displayed tasks are accurate."
           }
         ]
@@ -557,11 +557,246 @@
             "testStrategy": "Run `docker-compose up`. Once the application is running, modify a source file (e.g., change text in a UI component). Observe the terminal output and the running application to confirm that the change is reflected automatically without a manual restart."
           }
         ]
+      },
+      {
+        "id": 61,
+        "title": "Page Implementation: Repository Management Interface",
+        "description": "Create a comprehensive Git repository management interface featuring a repository overview, connection status, detailed Git statistics, branch status indicators, health monitoring, and quick actions for common Git operations.",
+        "details": "Implement the repository management page based on the provided HTML mockups. The page will display a collection of 'Repository Cards', each representing a connected Git repository. \n\n1.  **Component Development:** Utilize the atomic components from Task #52 to construct the page. The primary component will be a 'RepositoryCard' molecule/organism.\n2.  **Repository Card Structure:**\n    *   **Header:** Display the repository name and a connection status badge ('Connected', 'Error', 'Syncing').\n    *   **Git Statistics:** Fetch and display key metrics like total commits, number of branches, and open pull requests, using icons for visual clarity.\n    *   **Branch Status:** List primary branches (e.g., main, develop) with color-coded status indicators (e.g., green for up-to-date, yellow for ahead/behind, red for conflict).\n    *   **Repository Health:** Implement a visual health score/indicator based on metrics like branch staleness, PR age, and commit frequency.\n    *   **Quick Actions:** Include a button group for 'Sync', 'New Branch' (triggering a modal), and 'View Commits'.\n3.  **API Integration:** Connect the frontend to the Git API endpoints established in Task #55. Use a data-fetching library like SWR or React Query to handle asynchronous operations, caching, and real-time updates (via polling or re-fetch on focus).\n4.  **State Management:** Employ a centralized state management solution (e.g., Zustand, Redux Toolkit) to manage the list of repositories, their individual states (loading, error, data), and the UI state for modals and forms.",
+        "testStrategy": "1.  **Unit Tests (Jest/Vitest + React Testing Library):**\n    *   Test the `RepositoryCard` component with mocked props for all possible states (e.g., different connection statuses, branch health indicators) to verify correct rendering.\n    *   Unit test the logic for determining branch status colors and repository health scores.\n    *   Test form validation and submission logic within the 'New Branch' modal.\n2.  **Integration Tests (Mock Service Worker):**\n    *   Mock the Git API to simulate various scenarios, including successful data fetching, API errors, and empty states.\n    *   Verify that the page correctly renders a list of repositories from the mocked API.\n    *   Test that clicking 'Sync' or other quick actions triggers the correct API requests with appropriate payloads.\n3.  **End-to-End Tests (Cypress/Playwright):**\n    *   Create a test workflow that navigates to the page, asserts that repository cards are visible and contain data.\n    *   Simulate user interaction with quick actions, such as filling out and submitting the 'New Branch' form, and verify the UI updates accordingly.\n4.  **Visual Regression Testing (Chromatic/Percy):**\n    *   Capture and approve snapshots of the `RepositoryCard` component and the full page layout in various states to prevent unintended UI changes.",
+        "status": "pending",
+        "dependencies": [
+          52,
+          55,
+          60
+        ],
+        "priority": "medium",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Build Static Repository Page and Card Component",
+            "description": "Construct the static UI for the repository management page, including the main layout and the 'RepositoryCard' component. The component will be built using atomic elements from Task #52 and populated with mocked data to represent all specified visual states (e.g., connection status, branch status).",
+            "dependencies": [],
+            "details": "Develop the main page grid layout and the `RepositoryCard` organism. The card must include placeholders and styled elements for the header (name, status badge), Git statistics (commits, branches, PRs with icons), a list of primary branches, a repository health indicator, and a non-functional 'Quick Actions' button group.",
+            "status": "pending",
+            "testStrategy": "Unit test the `RepositoryCard` component using Jest/Vitest and React Testing Library with a variety of mocked props to verify correct rendering for all states (Connected, Error, Syncing). Use Storybook to visually inspect the component's responsiveness and appearance."
+          },
+          {
+            "id": 2,
+            "title": "API Integration for Core Repository Data",
+            "description": "Integrate the static components with the Git API endpoints from Task #55. Use a data-fetching library like SWR or React Query to fetch and display core repository information, including connection status, commit counts, branch counts, and open pull requests.",
+            "dependencies": [
+              1
+            ],
+            "details": "Set up and configure the chosen data-fetching library (e.g., React Query) with hooks to fetch the list of repositories. Connect these hooks to the `RepositoryCard` components to replace mocked data with live data. Implement loading states (e.g., skeleton loaders) and error states (e.g., error messages within the card) for a robust user experience. Configure data-fetching to poll or re-fetch on window focus for real-time updates.",
+            "status": "pending",
+            "testStrategy": "Write integration tests mocking the Git API to ensure the `RepositoryCard` correctly displays data from a successful response and handles API errors gracefully. Unit test the data-fetching hooks to verify their state transitions (loading, success, error)."
+          },
+          {
+            "id": 3,
+            "title": "Implement Branch Status and Repository Health Logic",
+            "description": "Develop the client-side logic and UI for the detailed branch status indicators and the repository health score. This involves processing API data to determine status and calculating a health metric based on predefined rules.",
+            "dependencies": [
+              2
+            ],
+            "details": "Fetch detailed data for primary branches (e.g., main, develop). Implement the logic to compare local/remote branch states to assign a status (e.g., up-to-date, ahead/behind, conflict) and apply the corresponding color-coded UI indicator. Define and implement the algorithm for the repository health score, which will be calculated from metrics like branch staleness, PR age, and commit frequency. Display this score using a visual indicator on the card.",
+            "status": "pending",
+            "testStrategy": "Unit test the pure functions responsible for calculating branch status and repository health scores with various data inputs to ensure correctness. Test the related UI components to verify they render the correct colors and visuals based on the calculated data."
+          },
+          {
+            "id": 4,
+            "title": "Implement Quick Actions and Centralized State Management",
+            "description": "Wire up the functionality for the 'Quick Actions' button group ('Sync', 'New Branch', 'View Commits') and manage shared UI state using a centralized solution like Zustand or Redux Toolkit.",
+            "dependencies": [
+              2
+            ],
+            "details": "Implement the 'Sync' button to trigger a manual data re-fetch for a specific repository. Create and integrate a 'New Branch' modal, managing its visibility and form state with the chosen state management library. Implement the API call for creating a new branch on form submission. Connect the 'View Commits' button to navigate to a commit history page. Centralize the repository list and their individual states (e.g., syncing, error) in the global store.",
+            "status": "pending",
+            "testStrategy": "Use React Testing Library to test user interactions, such as clicking the 'New Branch' button to verify the modal opens. Mock API calls to test that 'Sync' and 'New Branch' actions trigger the correct network requests and that the application state is updated accordingly."
+          }
+        ]
+      },
+      {
+        "id": 62,
+        "title": "Page Implementation: Terminal Interface",
+        "description": "Create an embedded terminal interface that integrates with the TaskMaster CLI, providing authentic terminal aesthetics, command history, shortcuts, and real-time command execution based on the provided mockups.",
+        "details": "Implement the embedded terminal page using `xterm.js` for core terminal emulation and WebSockets for real-time communication with the backend TaskMaster CLI process.\n\n1.  **Technology Selection:**\n    *   Utilize `xterm.js` as the core library for rendering the terminal UI.\n    *   Use the `xterm-addon-fit` to make the terminal responsive to its container size.\n    *   Implement a WebSocket connection (`ws` or `socket.io`) to handle the real-time, bidirectional communication between the client and the server-side CLI process.\n\n2.  **Component Development:**\n    *   Create a `Terminal` organism component that encapsulates the `xterm.js` instance and its lifecycle (initialization, connection, disposal).\n    *   This component will manage the WebSocket connection, sending user input and receiving command output.\n    *   Use atomic components from Task #52 for any surrounding UI elements like session tabs or control buttons.\n\n3.  **Feature Implementation:**\n    *   **Authentic Aesthetics:** Configure `xterm.js` with a custom theme (colors, font, font size) to match the project's dark theme (Task #52) and the HTML mockups. Implement a blinking block cursor for an authentic feel.\n    *   **CLI Integration:** On component mount, establish a WebSocket connection. User input (ending with the Enter key) is sent over the socket. Data received from the socket is written directly to the `xterm.js` instance.\n    *   **Command History:** Implement a client-side buffer to store a history of executed commands. Handle the Up and Down arrow key presses to navigate this history and populate the input line.\n    *   **Quick Command Shortcuts:** Implement key bindings for common actions. Use `xterm.js`'s `onKey` event handler to capture key presses for shortcuts like `Ctrl+L` (clear screen) and `Ctrl+C` (send interrupt signal over WebSocket).\n    *   **Session Management:** The parent component should manage an array of active terminal sessions. Each session will have its own `Terminal` component instance and a corresponding WebSocket connection. Implement a tabbed interface to switch between sessions.",
+        "testStrategy": "1.  **Unit Tests (Jest/Vitest + React Testing Library):**\n    *   Test the `Terminal` component by mocking the `xterm.js` library and the WebSocket API.\n    *   Verify that the component correctly initializes `xterm.js` on mount.\n    *   Simulate user key presses and assert that commands are sent through the mocked WebSocket.\n    *   Simulate receiving messages from the mocked WebSocket and assert that the `xterm.write` method is called with the correct data.\n    *   Unit test the command history logic: adding new commands, preventing duplicates, and navigating with arrow keys.\n\n2.  **Integration Tests (Cypress/Playwright):**\n    *   Create tests against a mocked WebSocket server that echoes commands or returns predefined responses.\n    *   Write a test that types a command, presses Enter, and verifies that the expected response from the mock server is rendered in the terminal.\n    *   Test keyboard shortcuts like `Ctrl+L` to ensure the terminal view is cleared.\n\n3.  **End-to-End Tests:**\n    *   Run a test against a live development server. Execute a simple, non-destructive CLI command (e.g., `help`, `--version`) and validate that the output is correct and properly formatted.\n\n4.  **Visual Regression Testing:**\n    *   Create a Storybook story for the `Terminal` component. Use Chromatic or a similar tool to capture snapshots and prevent unintended visual changes to the terminal's theme, cursor, and font.",
+        "status": "pending",
+        "dependencies": [
+          52,
+          58,
+          60
+        ],
+        "priority": "medium",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Terminal Component Scaffolding and WebSocket Connection",
+            "description": "Create the foundational `Terminal` organism component. This subtask focuses on initializing an `xterm.js` instance and establishing a stable WebSocket connection to the backend TaskMaster CLI process for basic, real-time data exchange.",
+            "dependencies": [],
+            "details": "Implement a React component that encapsulates an `xterm.js` instance using a `ref`. On component mount, initialize the terminal and establish a WebSocket connection. Implement the core data flow: `term.onData` will send user keystrokes to the socket, and `socket.onmessage` will write received data from the backend to the terminal. Handle WebSocket lifecycle events (open, close, error) to ensure connection stability.",
+            "status": "pending",
+            "testStrategy": "Unit test the `Terminal` component by mocking `xterm.js` and the WebSocket API. Verify that the component initializes the terminal on mount, attempts to connect via WebSocket, and correctly handles sending and receiving basic messages."
+          },
+          {
+            "id": 2,
+            "title": "Implement Terminal Aesthetics and Responsive Layout",
+            "description": "Configure the visual appearance of the `xterm.js` terminal to match the project's dark theme and mockups. This includes setting custom colors, fonts, and cursor styles, and ensuring the terminal is fully responsive to its container size.",
+            "dependencies": [
+              1
+            ],
+            "details": "Define and apply a custom theme object to the `xterm.js` instance with colors for background, foreground, cursor, and selection, aligning with Task #52. Set the font family, font size, and a blinking block cursor style. Integrate and configure the `xterm-addon-fit` to make the terminal automatically resize. Use a `ResizeObserver` on the terminal's parent container to call the `fit()` method on dimension changes.",
+            "status": "pending",
+            "testStrategy": "Use visual regression testing in Storybook to confirm the theme and font are applied correctly. Unit test to ensure the `fit` addon is loaded and its `fit()` method is called when the container resizes."
+          },
+          {
+            "id": 3,
+            "title": "Implement Command History and Keyboard Shortcuts",
+            "description": "Enhance the user experience by implementing client-side command history navigation and common keyboard shortcuts. This allows users to cycle through previous commands with arrow keys and perform actions like clearing the screen.",
+            "dependencies": [
+              1
+            ],
+            "details": "Implement a client-side buffer (array) to store a history of commands submitted with the Enter key. Use the `xterm.js` `onKey` event handler to capture Up and Down arrow key presses, navigate the history buffer, and update the current input line. Also in `onKey`, implement shortcuts like `Ctrl+L` to call `term.clear()` and `Ctrl+C` to send a special interrupt signal over the WebSocket.",
+            "status": "pending",
+            "testStrategy": "Unit test the `onKey` event handler logic. Simulate key press events (Up Arrow, Down Arrow, Ctrl+L, Ctrl+C) and assert that the correct actions are performed, such as history navigation, calling `term.clear()`, or sending an interrupt message via the mocked WebSocket."
+          },
+          {
+            "id": 4,
+            "title": "Develop Multi-Session Tabbed Interface",
+            "description": "Create a higher-level component to manage multiple, independent terminal sessions. This involves building a tabbed interface where users can create, switch between, and close different terminal instances.",
+            "dependencies": [
+              1
+            ],
+            "details": "Develop a `TerminalManager` parent component that manages an array of active sessions in its state. Utilize the atomic tab components from Task #52 for the UI. Each tab will correspond to a unique `Terminal` component instance, each with its own WebSocket connection. Implement logic to add new tabs (creating a new session), switch between tabs (showing/hiding the correct terminal), and close tabs (disposing of the `xterm.js` instance and closing its WebSocket).",
+            "status": "pending",
+            "testStrategy": "Using React Testing Library, test the `TerminalManager` component. Verify that adding a tab creates a new `Terminal` instance. Simulate tab clicks and assert that the correct terminal content is displayed. Test that closing a tab correctly removes it and triggers cleanup."
+          }
+        ]
+      },
+      {
+        "id": 63,
+        "title": "Page Implementation: Authentication System",
+        "description": "Create a modern authentication interface with tabbed login/registration, social authentication (GitHub, Google), role-based registration, password strength indicators, terms of service agreements, and animated background effects with glassmorphism design.",
+        "details": "Implement the authentication page based on the provided HTML mockups, incorporating a tabbed interface and modern security features. The implementation will be broken down into several key areas:\n\n1.  **UI & Component Structure:**\n    *   Use atomic components from Task #58 to build the page.\n    *   Create a main `AuthPage` organism containing a tab component to switch between 'Login' and 'Registration' forms.\n    *   Implement the glassmorphism effect using CSS `backdrop-filter: blur()` and a semi-transparent background. The animated background can be achieved with a lightweight library like `particles.js` or custom CSS animations.\n\n2.  **Form Handling & Validation:**\n    *   Utilize a robust form management library like `React Hook Form` paired with `Zod` for schema-based validation to handle form state, validation, and submission efficiently.\n    *   Implement real-time, client-side validation for fields like email format and password requirements.\n\n3.  **Social Authentication (OAuth 2.0):**\n    *   Integrate 'Login with Google' and 'Login with GitHub' buttons.\n    *   On click, redirect the user to the respective provider's OAuth consent screen.\n    *   Create a callback route in the application (e.g., `/auth/callback`) to handle the redirect from the provider, capture the authorization code, and send it to the backend API for token exchange and session creation.\n\n4.  **Registration Features:**\n    *   **Password Strength:** Integrate a library like `zxcvbn` to analyze password strength in real-time. Display feedback to the user via a multi-colored progress bar and textual hints (e.g., 'Weak', 'Good', 'Strong').\n    *   **Role Selection:** Include a dropdown or radio button group in the registration form for users to select their role (e.g., 'Developer', 'Project Manager').\n    *   **Terms of Service:** Add a mandatory checkbox with a link to the Terms of Service. The 'Register' button should remain disabled until this box is checked.",
+        "testStrategy": "1.  **Unit Tests (Jest/Vitest + React Testing Library):**\n    *   Test the `AuthPage` tab component to ensure correct content is rendered on tab switch.\n    *   Unit test form input components, mocking user input to verify validation logic (e.g., invalid email format, password mismatch) and error message display.\n    *   Mock the `zxcvbn` library to test the `PasswordStrengthIndicator` component, asserting that it displays the correct visual state for different password inputs.\n    *   Verify that the registration form's submit button is disabled/enabled based on the 'Terms of Service' checkbox state.\n\n2.  **Integration Tests (using Mock Service Worker - MSW):**\n    *   Mock the backend authentication API endpoints (`/login`, `/register`, `/oauth/callback`).\n    *   Test the full user flow for both email/password login and registration, asserting that correct data is sent to the mock API and the UI reacts appropriately to success or error responses.\n    *   Test the OAuth flow by mocking the window.location redirect and simulating the provider's callback with a dummy authorization code, ensuring the code is correctly sent to the backend.\n\n3.  **End-to-End Tests (Cypress/Playwright):**\n    *   Write a test script that simulates a new user registering via the form, including role selection and ToS agreement.\n    *   Write a test script for a user logging in with valid and invalid credentials.\n    *   Visually test the animated background and glassmorphism effects using visual regression testing to prevent unintended style changes.\n    *   Verify the social login buttons redirect to the correct external URLs.",
+        "status": "pending",
+        "dependencies": [
+          57,
+          58,
+          60
+        ],
+        "priority": "medium",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement Auth Page UI with Tabbed Forms and Glassmorphism",
+            "description": "Create the foundational UI for the authentication page, including the main component, a tabbed interface to switch between login and registration, and the specified visual effects like glassmorphism and an animated background.",
+            "dependencies": [],
+            "details": "Construct the main `AuthPage` organism using atomic components from Task #58. Implement a tab component that toggles the display of Login and Registration form containers. Apply the glassmorphism effect using CSS `backdrop-filter: blur()` and a semi-transparent background. Integrate a lightweight library like `particles.js` or use custom CSS animations for the background effect.",
+            "status": "pending",
+            "testStrategy": "Unit test the tab component with React Testing Library to ensure it correctly renders and switches content on user interaction. Manually verify or use visual regression testing to confirm the glassmorphism and animated background effects are implemented correctly across supported browsers."
+          },
+          {
+            "id": 2,
+            "title": "Develop Login and Registration Forms with Client-Side Validation",
+            "description": "Build the login and registration forms using a robust form management library and schema-based validation to handle form state, user input, and real-time error feedback.",
+            "dependencies": [
+              1
+            ],
+            "details": "Utilize `React Hook Form` for efficient form state management and `Zod` to define validation schemas for both forms. Implement real-time, client-side validation for fields such as email format, password requirements, and required fields. Display clear error messages to the user upon validation failure. The submission logic should be prepared for future API integration.",
+            "status": "pending",
+            "testStrategy": "Write unit tests for the form components, mocking user input to verify that validation rules (e.g., invalid email, empty password) trigger the expected error messages. Test that the `onSubmit` handler is only called when the form data is valid."
+          },
+          {
+            "id": 3,
+            "title": "Integrate Advanced Registration Features",
+            "description": "Enhance the registration form by adding a real-time password strength indicator, a role selection mechanism, and a mandatory Terms of Service agreement checkbox.",
+            "dependencies": [
+              2
+            ],
+            "details": "Integrate a library like `zxcvbn` to analyze password strength as the user types, providing visual feedback via a multi-colored progress bar and text hints. Add a dropdown or radio button group for users to select their role (e.g., 'Developer', 'Project Manager'). Implement a mandatory 'Terms of Service' checkbox that must be checked to enable the 'Register' button.",
+            "status": "pending",
+            "testStrategy": "Unit test the password strength component by providing various password inputs and asserting the correct visual and textual feedback. Test the conditional logic for the 'Register' button, ensuring it is disabled until the ToS checkbox is checked and the form is valid. Verify role selection is captured in the form state."
+          },
+          {
+            "id": 4,
+            "title": "Implement Social Authentication (OAuth 2.0) Flow",
+            "description": "Integrate 'Login with Google' and 'Login with GitHub' buttons and implement the client-side logic for the OAuth 2.0 redirection and callback handling.",
+            "dependencies": [
+              1
+            ],
+            "details": "Add 'Login with Google' and 'Login with GitHub' buttons to the UI. Configure the `onClick` events to redirect the user to the respective provider's OAuth consent screen. Create a dedicated callback route (e.g., `/auth/callback`) in the application to handle the redirect from the provider, capture the authorization code from the URL parameters, and prepare to send it to the backend API for token exchange.",
+            "status": "pending",
+            "testStrategy": "Unit test the social login buttons to confirm they redirect to the correct provider URLs. Use integration tests with mocked providers (e.g., using `msw`) to simulate the full OAuth callback flow, verifying that the application correctly handles the redirect and extracts the authorization code."
+          }
+        ]
+      },
+      {
+        "id": 64,
+        "title": "Enhancement: Mobile-First Responsive Design Implementation",
+        "description": "Ensure all pages and components adapt perfectly to mobile, tablet, and desktop viewports with proper navigation patterns, collapsible sidebars, touch-friendly interactions, and optimized layouts as shown in the HTML mockups.",
+        "details": "Implement a comprehensive mobile-first responsive strategy across the entire application. \n1. **Breakpoint Configuration:** Define and centralize responsive breakpoints (e.g., sm, md, lg, xl) in the global theme or CSS configuration (e.g., tailwind.config.js). \n2. **Layout Adaptation:** Refactor main application layouts using CSS Grid and Flexbox to ensure fluid and logical content reflow. The primary content area and sidebars must adjust their dimensions and positions correctly across all breakpoints. \n3. **Responsive Navigation:** The main navigation bar must transform into a hamburger menu on mobile and tablet viewports. The sidebar should be fully collapsible on desktop and implemented as an off-canvas drawer on smaller screens. \n4. **Component Responsiveness:** Review and apply responsive styles to all atomic components (Task #52) and page-level organisms (Tasks #57, #61, #62, #63). This includes stacking card layouts, adjusting form element sizes, and ensuring data tables are horizontally scrollable or reflowed on small screens. \n5. **Touch-Friendly UI:** Increase the size of tap targets for all interactive elements like buttons, links, and form controls to improve usability on touch devices. Replace hover-dependent interactions with click/tap alternatives where necessary.",
+        "testStrategy": "1. **Visual Regression Testing:** Use a tool like Percy or Chromatic integrated with Storybook to automatically capture and compare component and page snapshots across all defined breakpoints (e.g., 375px, 768px, 1280px). This will be the primary method for catching unintended UI changes. \n2. **Manual Cross-Device Testing:** Perform manual testing on a range of physical devices and emulators (iOS/Android) to verify touch interactions, gesture support, and proper rendering. Pay close attention to the navigation hamburger menu, collapsible sidebar functionality, and form usability. \n3. **Automated End-to-End (E2E) Testing:** Update E2E tests (e.g., using Playwright or Cypress) to run against multiple viewport configurations. Add assertions to verify the visibility and state of responsive elements, such as checking for the hamburger menu's presence on mobile and its absence on desktop. \n4. **Accessibility Audit:** Run automated accessibility checks (e.g., axe-core) on each breakpoint to ensure that responsive changes do not introduce accessibility issues, such as elements becoming non-focusable or having incorrect ARIA attributes.",
+        "status": "pending",
+        "dependencies": [
+          52,
+          57,
+          61,
+          62,
+          63
+        ],
+        "priority": "medium",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Foundational Responsive Setup and Core Layout Adaptation",
+            "description": "Establish the core responsive framework by defining global breakpoints and refactoring the main application shell to be fluid using CSS Grid and Flexbox, setting the stage for all subsequent responsive work.",
+            "dependencies": [],
+            "details": "Define and centralize responsive breakpoints (sm, md, lg, xl) in the global theme or CSS configuration (e.g., tailwind.config.js). Refactor the primary application layout components to ensure the main content area and sidebars adjust their dimensions and positions correctly across all defined breakpoints.",
+            "status": "pending",
+            "testStrategy": "Use visual regression testing on the main application shell/layout component in Storybook across all breakpoints (e.g., 375px, 768px, 1280px) to ensure it reflows correctly without content."
+          },
+          {
+            "id": 2,
+            "title": "Implement Responsive Navigation Patterns",
+            "description": "Adapt the primary navigation bar and sidebar for mobile, tablet, and desktop viewports, implementing a hamburger menu and an off-canvas drawer for smaller screens.",
+            "dependencies": [
+              1
+            ],
+            "details": "Convert the main navigation bar into a collapsible hamburger menu on mobile and tablet viewports. Implement the main sidebar as a fully collapsible element on desktop and as an off-canvas drawer, triggered by the hamburger menu, on smaller screens. This will require both CSS for styling and JavaScript for state management of open/closed states.",
+            "status": "pending",
+            "testStrategy": "Create Storybook stories for the navigation bar and sidebar in their different states (e.g., mobile/open, desktop/collapsed) and apply visual regression tests. Manually test the navigation and sidebar functionality on various device emulators."
+          },
+          {
+            "id": 3,
+            "title": "Apply Responsive Styles to Pages and Components",
+            "description": "Systematically review and apply responsive styles to all existing components (Task #52) and pages (Tasks #57, #61, #62), ensuring they adapt correctly to different screen sizes.",
+            "dependencies": [
+              1,
+              2
+            ],
+            "details": "Audit and refactor all atomic components and page-level organisms. Implement responsive patterns such as stacking card layouts on mobile, adjusting form element sizes for readability, and making data tables horizontally scrollable or reflowing their content on small screens as specified in the mockups.",
+            "status": "pending",
+            "testStrategy": "Leverage the existing Storybook setup for all components and pages. Run visual regression tests (e.g., Percy, Chromatic) against all stories across all defined breakpoints to catch styling issues and unintended layout shifts."
+          },
+          {
+            "id": 4,
+            "title": "Optimize for Touch Interactions and Final Review",
+            "description": "Enhance usability on touch devices by increasing tap target sizes and replacing hover-dependent interactions, followed by a final cross-device review to ensure a polished mobile experience.",
+            "dependencies": [
+              3
+            ],
+            "details": "Review all interactive elements (buttons, links, form controls, icons) and ensure their tap targets meet accessibility guidelines (e.g., at least 44x44px). Identify and replace UI interactions that rely solely on hover (e.g., tooltips, dropdowns) with click/tap-friendly alternatives. Conduct a final end-to-end review of the entire application on real mobile and tablet devices.",
+            "status": "pending",
+            "testStrategy": "Manual testing on physical touch devices (iOS, Android) is critical. Automated end-to-end tests should be run using a mobile viewport to verify that click/tap events on key interactive elements function as expected."
+          }
+        ]
       }
     ],
     "metadata": {
       "created": "2025-07-15T21:22:03.992Z",
-      "updated": "2025-07-18T17:25:12.828Z",
+      "updated": "2025-07-18T18:02:40.912Z",
       "description": "Tasks for taskmaster-ui context"
     }
   }

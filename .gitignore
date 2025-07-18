@@ -83,8 +83,7 @@ node_modules/
 *.sw?
 # OS specific
 
-.taskmaster/
-CLAUDE.md
+.taskmaster/docs/
 /scripts/
 taskmapper.db
 tools/taskmapper/taskmapper
@@ -95,8 +94,7 @@ benchmarks/
 
 # Task files
 # tasks.json
-# tasks/ 
-!/CLAUDE.md
+# tasks/
 
 **/data
 **/*/data

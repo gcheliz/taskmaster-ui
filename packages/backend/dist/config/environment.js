@@ -69,7 +69,11 @@ exports.env = validateEnvironment();
 // Database configuration with SSL support
 const getDatabaseConfig = () => {
     const config = {
-        url: exports.env.DATABASE_URL,
+        datasources: {
+            db: {
+                url: exports.env.DATABASE_URL,
+            },
+        },
         log: exports.env.LOG_LEVEL === 'debug' ? ['query', 'info', 'warn', 'error'] : ['warn', 'error'],
         errorFormat: 'pretty',
     };

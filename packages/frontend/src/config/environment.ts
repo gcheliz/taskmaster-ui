@@ -115,7 +115,7 @@ class EnvironmentManager {
       // Optional Analytics
       analyticsId: this.getOptionalString('VITE_TASKMASTER_ANALYTICS_ID'),
       sentryDsn: this.getOptionalString('VITE_TASKMASTER_SENTRY_DSN'),
-      logLevel: this.getOptionalString('VITE_TASKMASTER_LOG_LEVEL') || (isDev ? 'debug' : 'info') as 'debug' | 'info' | 'warn' | 'error'
+      logLevel: (this.getOptionalString('VITE_TASKMASTER_LOG_LEVEL') || (isDev ? 'debug' : 'info')) as 'debug' | 'info' | 'warn' | 'error'
     };
   }
   

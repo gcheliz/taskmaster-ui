@@ -4,10 +4,33 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  darkMode: 'class', // Enable class-based dark mode
   theme: {
     extend: {
-      // Core brand colors for TaskMaster
+      // Dark theme color palette - primary colors
       colors: {
+        // Slate palette for dark theme backgrounds and surfaces
+        slate: {
+          50: '#f8fafc',
+          100: '#f1f5f9',
+          200: '#e2e8f0',
+          300: '#cbd5e1',
+          400: '#94a3b8',
+          500: '#64748b',
+          600: '#475569',
+          700: '#334155',
+          800: '#1e293b',
+          900: '#0f172a',
+          950: '#020617',
+        },
+        
+        // Accent colors for dark theme
+        'accent-primary': '#3B82F6',   // Blue - primary actions, links
+        'accent-success': '#10B981',   // Green - success states, completed tasks
+        'accent-warning': '#F59E0B',   // Orange - warnings, pending actions
+        'accent-error': '#EF4444',     // Red - error states, critical actions
+        
+        // Legacy color system (keeping for backwards compatibility)
         primary: {
           50: '#eff6ff',
           100: '#dbeafe',

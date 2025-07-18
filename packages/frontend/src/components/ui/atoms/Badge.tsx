@@ -3,30 +3,30 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '../../../utils/cn';
 
 const badgeVariants = cva(
-  'inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-surface-100 dark:focus:ring-offset-surface-900 transform-gpu hover:scale-105 active:scale-95',
+  'inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-50 dark:focus:ring-offset-slate-900 transform-gpu hover:scale-105 active:scale-95',
   {
     variants: {
       variant: {
         default:
-          'border-transparent bg-primary-100 text-primary-800 hover:bg-primary-200 dark:bg-primary-900 dark:text-primary-100 dark:hover:bg-primary-800 hover:shadow-md hover:shadow-primary-500/25 dark:hover:shadow-primary-400/25',
+          'border-transparent bg-accent-primary text-white hover:bg-accent-primary/90 dark:bg-accent-primary dark:text-white dark:hover:bg-accent-primary/90 hover:shadow-md hover:shadow-accent-primary/25',
         primary:
-          'border-transparent bg-primary-100 text-primary-800 hover:bg-primary-200 dark:bg-primary-900 dark:text-primary-100 dark:hover:bg-primary-800 hover:shadow-md hover:shadow-primary-500/25 dark:hover:shadow-primary-400/25',
+          'border-transparent bg-accent-primary text-white hover:bg-accent-primary/90 dark:bg-accent-primary dark:text-white dark:hover:bg-accent-primary/90 hover:shadow-md hover:shadow-accent-primary/25',
         secondary:
-          'border-transparent bg-secondary-100 text-secondary-800 hover:bg-secondary-200 dark:bg-secondary-800 dark:text-secondary-100 dark:hover:bg-secondary-700 hover:shadow-md hover:shadow-secondary-500/25 dark:hover:shadow-secondary-400/25',
+          'border-transparent bg-slate-600 text-white hover:bg-slate-700 dark:bg-slate-600 dark:text-white dark:hover:bg-slate-700 hover:shadow-md hover:shadow-slate-500/25',
         success:
-          'border-transparent bg-success-100 text-success-800 hover:bg-success-200 dark:bg-success-900 dark:text-success-100 dark:hover:bg-success-800 hover:shadow-md hover:shadow-success-500/25 dark:hover:shadow-success-400/25',
+          'border-transparent bg-accent-success text-white hover:bg-accent-success/90 dark:bg-accent-success dark:text-white dark:hover:bg-accent-success/90 hover:shadow-md hover:shadow-accent-success/25',
         warning:
-          'border-transparent bg-warning-100 text-warning-800 hover:bg-warning-200 dark:bg-warning-900 dark:text-warning-100 dark:hover:bg-warning-800 hover:shadow-md hover:shadow-warning-500/25 dark:hover:shadow-warning-400/25',
+          'border-transparent bg-accent-warning text-white hover:bg-accent-warning/90 dark:bg-accent-warning dark:text-white dark:hover:bg-accent-warning/90 hover:shadow-md hover:shadow-accent-warning/25',
         error:
-          'border-transparent bg-error-100 text-error-800 hover:bg-error-200 dark:bg-error-900 dark:text-error-100 dark:hover:bg-error-800 hover:shadow-md hover:shadow-error-500/25 dark:hover:shadow-error-400/25',
+          'border-transparent bg-accent-error text-white hover:bg-accent-error/90 dark:bg-accent-error dark:text-white dark:hover:bg-accent-error/90 hover:shadow-md hover:shadow-accent-error/25',
         outline:
-          'border-secondary-300 text-secondary-700 hover:bg-secondary-50 dark:border-secondary-600 dark:text-secondary-300 dark:hover:bg-secondary-800 hover:shadow-md hover:shadow-secondary-500/25 dark:hover:shadow-secondary-400/25',
-        // TaskMaster specific status badges with enhanced dark theme
-        pending: 'status-pending text-white hover:shadow-md hover:shadow-yellow-500/25 dark:hover:shadow-yellow-400/25',
-        'in-progress': 'status-in-progress text-white hover:shadow-md hover:shadow-blue-500/25 dark:hover:shadow-blue-400/25',
-        done: 'status-done text-white hover:shadow-md hover:shadow-green-500/25 dark:hover:shadow-green-400/25',
-        blocked: 'status-blocked text-white hover:shadow-md hover:shadow-red-500/25 dark:hover:shadow-red-400/25',
-        deferred: 'status-deferred text-white hover:shadow-md hover:shadow-gray-500/25 dark:hover:shadow-gray-400/25',
+          'border-slate-300 text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-800 hover:shadow-md hover:shadow-slate-500/25',
+        // TaskMaster specific status badges with mockup colors
+        pending: 'border-transparent bg-accent-warning text-white hover:bg-accent-warning/90 hover:shadow-md hover:shadow-accent-warning/25',
+        'in-progress': 'border-transparent bg-accent-primary text-white hover:bg-accent-primary/90 hover:shadow-md hover:shadow-accent-primary/25',
+        done: 'border-transparent bg-accent-success text-white hover:bg-accent-success/90 hover:shadow-md hover:shadow-accent-success/25',
+        blocked: 'border-transparent bg-accent-error text-white hover:bg-accent-error/90 hover:shadow-md hover:shadow-accent-error/25',
+        deferred: 'border-transparent bg-slate-500 text-white hover:bg-slate-600 hover:shadow-md hover:shadow-slate-500/25',
       },
       size: {
         sm: 'px-2 py-0.5 text-xs min-w-[1.5rem] min-h-[1.25rem]',

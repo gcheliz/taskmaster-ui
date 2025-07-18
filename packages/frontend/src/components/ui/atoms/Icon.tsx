@@ -47,16 +47,17 @@ const iconVariants = cva('inline-flex items-center justify-center', {
     },
     color: {
       current: 'text-current',
-      primary: 'text-primary-600 dark:text-primary-400',
-      secondary: 'text-secondary-600 dark:text-secondary-400',
-      success: 'text-success-600 dark:text-success-400',
-      warning: 'text-warning-600 dark:text-warning-400',
-      error: 'text-error-600 dark:text-error-400',
-      muted: 'text-secondary-400 dark:text-secondary-500',
+      primary: 'text-accent-primary',
+      secondary: 'text-slate-400 dark:text-slate-300',
+      success: 'text-accent-success',
+      warning: 'text-accent-warning',
+      error: 'text-accent-error',
+      muted: 'text-slate-500 dark:text-slate-400',
+      white: 'text-white',
     },
   },
   defaultVariants: {
-    size: 'md',
+    size: 'sm',
     color: 'current',
   },
 });
@@ -225,7 +226,7 @@ export interface IconProps
   'aria-label'?: string;
   /**
    * Size of the icon
-   * @default 'md'
+   * @default 'sm'
    */
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
   /**
@@ -239,7 +240,8 @@ export interface IconProps
     | 'success'
     | 'warning'
     | 'error'
-    | 'muted';
+    | 'muted'
+    | 'white';
 }
 
 const Icon = React.forwardRef<HTMLSpanElement, IconProps>(

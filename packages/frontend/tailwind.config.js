@@ -9,7 +9,7 @@ export default {
     extend: {
       // Dark theme color palette - primary colors
       colors: {
-        // Slate palette for dark theme backgrounds and surfaces
+        // Slate palette for dark theme backgrounds and surfaces (from mockups)
         slate: {
           50: '#f8fafc',
           100: '#f1f5f9',
@@ -24,11 +24,13 @@ export default {
           950: '#020617',
         },
         
-        // Accent colors for dark theme
+        // Accent colors for dark theme (from mockups)
         'accent-primary': '#3B82F6',   // Blue - primary actions, links
         'accent-success': '#10B981',   // Green - success states, completed tasks
         'accent-warning': '#F59E0B',   // Orange - warnings, pending actions
         'accent-error': '#EF4444',     // Red - error states, critical actions
+        'accent-info': '#06B6D4',      // Cyan - info states
+        'accent-secondary': '#8B5CF6', // Violet - secondary actions
         
         // Legacy color system (keeping for backwards compatibility)
         primary: {

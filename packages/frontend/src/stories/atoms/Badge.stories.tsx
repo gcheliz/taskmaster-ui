@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { Badge } from '../../components/ui/atoms/Badge';
 import {
   Icon,
@@ -19,12 +19,14 @@ const meta: Meta<typeof Badge> = {
           'A badge component for status indicators, labels, and notifications. Features enhanced dark theme support, micro-interactions, and WCAG 2.1 AA compliance. Includes TaskMaster-specific status variants.',
       },
     },
-    // Dark theme testing
+    // Dark theme testing - matches mockup backgrounds
     backgrounds: {
-      default: 'light',
+      default: 'dark',
       values: [
         { name: 'light', value: '#ffffff' },
-        { name: 'dark', value: '#1a1a1a' },
+        { name: 'dark', value: '#020617' }, // slate-950 from mockups
+        { name: 'slate-900', value: '#0f172a' }, // slate-900 from mockups
+        { name: 'slate-800', value: '#1e293b' }, // slate-800 from mockups
       ],
     },
   },
@@ -299,31 +301,106 @@ export const InContext: Story = {
 };
 
 export const TeamMemberBadges: Story = {
+  parameters: {
+    backgrounds: { default: 'dark' },
+  },
   render: () => (
-    <div className="space-y-4">
-      <div>
-        <h3 className="text-sm font-medium text-secondary-900 mb-3">
-          Team Roles
-        </h3>
-        <div className="flex flex-wrap gap-2">
-          <Badge variant="default">Admin</Badge>
-          <Badge variant="secondary">Developer</Badge>
-          <Badge variant="success">Reviewer</Badge>
-          <Badge variant="warning">Guest</Badge>
+    <div className="dark bg-slate-950 p-6 rounded-lg">
+      <div className="space-y-6">
+        <div>
+          <h3 className="text-sm font-medium text-slate-200 mb-3">
+            Team Roles
+          </h3>
+          <div className="flex flex-wrap gap-2">
+            <Badge variant="default">Admin</Badge>
+            <Badge variant="secondary">Developer</Badge>
+            <Badge variant="success">Reviewer</Badge>
+            <Badge variant="warning">Guest</Badge>
+          </div>
+        </div>
+
+        <div>
+          <h3 className="text-sm font-medium text-slate-200 mb-3">
+            Status Indicators
+          </h3>
+          <div className="flex flex-wrap gap-2">
+            <Badge variant="success" icon={<Icon icon={CheckIcon} size="xs" />}>
+              Online
+            </Badge>
+            <Badge variant="warning">Away</Badge>
+            <Badge variant="error">Busy</Badge>
+            <Badge variant="secondary">Offline</Badge>
+          </div>
         </div>
       </div>
+    </div>
+  ),
+};
 
-      <div>
-        <h3 className="text-sm font-medium text-secondary-900 mb-3">
-          Status Indicators
-        </h3>
-        <div className="flex flex-wrap gap-2">
-          <Badge variant="success" icon={<Icon icon={CheckIcon} size="xs" />}>
-            Online
-          </Badge>
-          <Badge variant="warning">Away</Badge>
-          <Badge variant="error">Busy</Badge>
-          <Badge variant="secondary">Offline</Badge>
+// Mockup Recreation - matches the screenshot exactly
+export const MockupRecreation: Story = {
+  parameters: {
+    backgrounds: { default: 'dark' },
+  },
+  render: () => (
+    <div className="dark min-h-screen bg-slate-950 p-8">
+      <div className="max-w-6xl mx-auto">
+        {/* Header matching mockup */}
+        <div className="bg-slate-900 border-b border-slate-800 px-6 py-4 rounded-t-lg">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2">
+                <div className="w-8 h-8 bg-accent-primary rounded-lg flex items-center justify-center">
+                  <Icon icon={CheckIcon} size="sm" className="text-white" />
+                </div>
+                <h1 className="text-xl font-bold text-white">TaskMaster UI</h1>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="w-8 h-8 bg-accent-primary rounded-full flex items-center justify-center">
+                <span className="text-sm font-medium text-white">GZ</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Content area matching mockup */}
+        <div className="bg-slate-900 rounded-b-lg p-8">
+          <div className="text-center mb-8">
+            <div className="w-24 h-24 mx-auto mb-4 flex items-center justify-center">
+              <svg className="w-20 h-20 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <div>
+              <h3 className="text-lg font-semibold text-slate-200 mb-4">
+                Team Roles
+              </h3>
+              <div className="flex flex-wrap gap-3 justify-center">
+                <Badge variant="default" size="md">Admin</Badge>
+                <Badge variant="secondary" size="md">Developer</Badge>
+                <Badge variant="success" size="md">Reviewer</Badge>
+                <Badge variant="warning" size="md">Guest</Badge>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-semibold text-slate-200 mb-4">
+                Status Indicators
+              </h3>
+              <div className="flex flex-wrap gap-3 justify-center">
+                <Badge variant="success" size="md" icon={<Icon icon={CheckIcon} size="xs" />}>
+                  Online
+                </Badge>
+                <Badge variant="warning" size="md">Away</Badge>
+                <Badge variant="error" size="md">Busy</Badge>
+                <Badge variant="secondary" size="md">Offline</Badge>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

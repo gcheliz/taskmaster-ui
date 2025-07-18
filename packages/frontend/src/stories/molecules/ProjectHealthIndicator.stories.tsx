@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { ProjectHealthIndicator } from '../../components/ui/molecules/ProjectHealthIndicator';
 
 const meta = {

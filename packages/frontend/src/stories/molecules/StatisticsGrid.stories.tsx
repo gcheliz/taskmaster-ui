@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { StatisticsGrid } from '../../components/ui/molecules/StatisticsGrid';
 
 const meta = {

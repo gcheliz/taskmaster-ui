@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { QuickActionCard } from '../../components/ui/molecules/QuickActionCard';
 import { TaskIcon, NotificationIcon, UserCircleIcon, DuplicateIcon, PlusIcon, SettingsIcon, ArchiveIcon } from '../../components/ui/atoms/Icon';
 

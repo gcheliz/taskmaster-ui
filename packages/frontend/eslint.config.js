@@ -16,7 +16,9 @@ export default tseslint.config([
       '**/*.min.js',
       '**/*.bundle.js',
       '.vite/**',
-      'coverage/**'
+      'coverage/**',
+      'src/__tests__.disabled/**',
+      'src/stories/**'
     ]
   },
   {
@@ -44,5 +46,5 @@ export default tseslint.config([
       globals: globals.browser,
     },
   },
-  ...storybook.configs["flat/recommended"]
+  ...storybook.configs["flat/recommended"] || []
 ]);

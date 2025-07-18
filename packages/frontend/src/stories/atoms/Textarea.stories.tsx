@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { Textarea } from '../../components/ui/atoms/Textarea';
 import { Label } from '../../components/ui/atoms/Label';
 

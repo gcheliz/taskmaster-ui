@@ -2,32 +2,51 @@ import React from 'react';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { Footer } from './Footer';
-import './AppLayout.css';
+import { cn } from '../../utils/cn';
 
 interface AppLayoutProps {
   children: React.ReactNode;
+  className?: string;
 }
 
-export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
+export const AppLayout: React.FC<AppLayoutProps> = ({ children, className }) => {
   return (
     <div
-      className="app-layout"
+      className={cn(
+        'dark min-h-screen bg-slate-950 text-slate-50',
+        className
+      )}
       role="application"
       aria-label="TaskMaster UI Application"
     >
       {/* Skip navigation for keyboard users */}
-      <div className="skip-nav">
-        <a href="#main-content">Skip to main content</a>
-        <a href="#sidebar-nav">Skip to navigation</a>
+      <div className="sr-only">
+        <a 
+          href="#main-content"
+          className="focus:not-sr-only focus:absolute focus:top-4 focus:left-4 z-50 bg-accent-primary text-white px-4 py-2 rounded-md"
+        >
+          Skip to main content
+        </a>
+        <a 
+          href="#sidebar-nav"
+          className="focus:not-sr-only focus:absolute focus:top-4 focus:left-32 z-50 bg-accent-primary text-white px-4 py-2 rounded-md"
+        >
+          Skip to navigation
+        </a>
       </div>
 
       <Header />
 
-      <div className="app-body">
+      <div className="flex min-h-screen">
         <Sidebar />
 
-        <main id="main-content" className="app-main" tabIndex={-1} role="main">
-          <div className="main-content">{children}</div>
+        <main 
+          id="main-content" 
+          className="flex-1 bg-slate-950 overflow-auto" 
+          tabIndex={-1} 
+          role="main"
+        >
+          <div className="p-6">{children}</div>
         </main>
       </div>
 

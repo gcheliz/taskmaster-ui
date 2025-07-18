@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { KanbanBoard } from '../../components/ui/organisms/KanbanBoard';
 
 const meta: Meta<typeof KanbanBoard> = {

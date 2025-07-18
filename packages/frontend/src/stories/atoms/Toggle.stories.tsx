@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { Toggle } from '../../components/ui/atoms/Toggle';
 import { Label } from '../../components/ui/atoms/Label';
 import { useState } from 'react';

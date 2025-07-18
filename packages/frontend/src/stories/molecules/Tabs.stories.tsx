@@ -15,6 +15,12 @@ import {
 } from '../../components/ui/molecules/Card';
 import { Badge } from '../../components/ui/atoms/Badge';
 import { Button } from '../../components/ui/atoms/Button';
+import { 
+  HomeFilledIcon, 
+  TaskIcon,
+  UserCircleIcon,
+  SettingsIcon
+} from '../../components/ui/atoms/Icon';
 
 const meta: Meta<typeof Tabs> = {
   title: 'Molecules/Tabs',
@@ -471,4 +477,126 @@ export const ControlledTabs: Story = {
       </div>
     );
   },
+};
+
+export const DarkThemeShowcase: Story = {
+  parameters: {
+    backgrounds: { default: 'dark' },
+  },
+  render: () => (
+    <div className="dark">
+      <div className="p-6 space-y-8">
+        <h3 className="text-lg font-semibold text-secondary-100">
+          Dark Theme Navigation Tabs
+        </h3>
+        
+        <div className="space-y-8">
+          <div>
+            <h4 className="text-sm font-medium text-secondary-300 mb-4">
+              Enhanced Dark Theme with Icons and Badges
+            </h4>
+            <Tabs defaultValue="dashboard" className="w-[500px]">
+              <TabsList>
+                <TabsTrigger value="dashboard" icon={HomeFilledIcon}>
+                  Dashboard
+                </TabsTrigger>
+                <TabsTrigger value="tasks" icon={TaskIcon} badge="12">
+                  Tasks
+                </TabsTrigger>
+                <TabsTrigger value="team" icon={UserCircleIcon}>
+                  Team
+                </TabsTrigger>
+                <TabsTrigger value="settings" icon={SettingsIcon}>
+                  Settings
+                </TabsTrigger>
+              </TabsList>
+              <TabsContent value="dashboard">
+                <Card variant="default">
+                  <CardHeader>
+                    <CardTitle>Dashboard</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p>Dark theme dashboard with enhanced visibility and contrast.</p>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              <TabsContent value="tasks">
+                <Card variant="default">
+                  <CardHeader>
+                    <CardTitle>Tasks</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p>Task management interface optimized for dark mode.</p>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              <TabsContent value="team">
+                <Card variant="default">
+                  <CardHeader>
+                    <CardTitle>Team</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p>Team collaboration features with dark theme support.</p>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              <TabsContent value="settings">
+                <Card variant="default">
+                  <CardHeader>
+                    <CardTitle>Settings</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p>Application settings with dark mode preferences.</p>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
+          </div>
+          
+          <div>
+            <h4 className="text-sm font-medium text-secondary-300 mb-4">
+              Line Variant Dark Theme
+            </h4>
+            <Tabs defaultValue="overview" variant="line" className="w-[500px]">
+              <TabsList>
+                <TabsTrigger value="overview">Overview</TabsTrigger>
+                <TabsTrigger value="analytics">Analytics</TabsTrigger>
+                <TabsTrigger value="reports">Reports</TabsTrigger>
+              </TabsList>
+              <TabsContent value="overview">
+                <Card variant="default">
+                  <CardHeader>
+                    <CardTitle>Overview</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p>Line variant tabs with clean dark theme styling.</p>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              <TabsContent value="analytics">
+                <Card variant="default">
+                  <CardHeader>
+                    <CardTitle>Analytics</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p>Analytics dashboard with dark theme optimizations.</p>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              <TabsContent value="reports">
+                <Card variant="default">
+                  <CardHeader>
+                    <CardTitle>Reports</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p>Reporting interface designed for dark mode usage.</p>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
+          </div>
+        </div>
+      </div>
+    </div>
+  ),
 };

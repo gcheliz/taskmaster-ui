@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 import './Sidebar.css';
 
 export interface SidebarProps {
@@ -15,37 +16,49 @@ export const Sidebar: React.FC<SidebarProps> = ({ className = '' }) => {
       <nav id="sidebar-nav" className="sidebar-nav">
         <ul role="list">
           <li>
-            <a 
-              href="#dashboard"
-              aria-current="page"
+            <NavLink 
+              to="/dashboard"
+              className={({ isActive }) => isActive ? 'active' : ''}
               tabIndex={0}
             >
               Dashboard
-            </a>
+            </NavLink>
           </li>
           <li>
-            <a 
-              href="#repository-management"
+            <NavLink 
+              to="/repository-management"
+              className={({ isActive }) => isActive ? 'active' : ''}
               tabIndex={0}
             >
               Repository Management
-            </a>
+            </NavLink>
           </li>
           <li>
-            <a 
-              href="#task-board"
+            <NavLink 
+              to="/task-board"
+              className={({ isActive }) => isActive ? 'active' : ''}
               tabIndex={0}
             >
               Task Board
-            </a>
+            </NavLink>
           </li>
           <li>
-            <a 
-              href="#settings"
+            <NavLink 
+              to="/terminal"
+              className={({ isActive }) => isActive ? 'active' : ''}
+              tabIndex={0}
+            >
+              Terminal
+            </NavLink>
+          </li>
+          <li>
+            <NavLink 
+              to="/settings"
+              className={({ isActive }) => isActive ? 'active' : ''}
               tabIndex={0}
             >
               Settings
-            </a>
+            </NavLink>
           </li>
         </ul>
       </nav>

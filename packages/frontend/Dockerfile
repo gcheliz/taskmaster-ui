@@ -22,6 +22,8 @@ COPY packages/frontend/public ./packages/frontend/public
 COPY packages/frontend/index.html ./packages/frontend/
 COPY packages/frontend/vite.config.ts ./packages/frontend/
 COPY packages/frontend/tsconfig.json ./packages/frontend/
+COPY packages/frontend/tsconfig.app.json ./packages/frontend/
+COPY packages/frontend/tsconfig.node.json ./packages/frontend/
 COPY packages/frontend/tailwind.config.js ./packages/frontend/
 COPY packages/frontend/postcss.config.js ./packages/frontend/
 

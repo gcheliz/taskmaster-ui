@@ -113,9 +113,9 @@ class EnvironmentManager {
       allowedFileTypes: this.getStringArray('VITE_TASKMASTER_ALLOWED_FILE_TYPES', ['txt', 'md', 'json']),
       
       // Optional Analytics
-      analyticsId: this.getString('VITE_TASKMASTER_ANALYTICS_ID', undefined),
-      sentryDsn: this.getString('VITE_TASKMASTER_SENTRY_DSN', undefined),
-      logLevel: this.getString('VITE_TASKMASTER_LOG_LEVEL', isDev ? 'debug' : 'info') as 'debug' | 'info' | 'warn' | 'error'
+      analyticsId: this.getOptionalString('VITE_TASKMASTER_ANALYTICS_ID'),
+      sentryDsn: this.getOptionalString('VITE_TASKMASTER_SENTRY_DSN'),
+      logLevel: this.getOptionalString('VITE_TASKMASTER_LOG_LEVEL') || (isDev ? 'debug' : 'info') as 'debug' | 'info' | 'warn' | 'error'
     };
   }
   
@@ -130,6 +130,19 @@ class EnvironmentManager {
         return defaultValue;
       }
       throw new Error(`Environment variable ${key} is required but not provided`);
+    }
+    
+    return String(value);
+  }
+  
+  /**
+   * Get optional string environment variable
+   */
+  private getOptionalString(key: string): string | undefined {
+    const value = import.meta.env[key];
+    
+    if (value === undefined || value === null || value === '') {
+      return undefined;
     }
     
     return String(value);

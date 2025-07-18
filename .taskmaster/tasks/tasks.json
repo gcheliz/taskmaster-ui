@@ -57,7 +57,7 @@
         "id": 52,
         "title": "Component Library: Create Atomic Dark Theme Components",
         "description": "Develop responsive, interactive, and accessible atomic components (Atoms) for the dark theme, ensuring WCAG 2.1 AA compliance and documenting them in Storybook.",
-        "status": "in-progress",
+        "status": "done",
         "dependencies": [
           51
         ],
@@ -115,7 +115,7 @@
         "dependencies": [
           52
         ],
-        "status": "pending",
+        "status": "in-progress",
         "subtasks": [
           {
             "id": 1,
@@ -123,7 +123,7 @@
             "description": "Establish the foundational grid structure for the new dashboard page and implement the personalized welcome header component using the dark theme.",
             "dependencies": [],
             "details": "Create the main dashboard page container with a responsive grid system to house all widgets. Implement the welcome header component, which should display a greeting, user's name, and profile picture. Ensure all elements adhere to the new dark theme design tokens and utilize existing atomic components.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Unit test the welcome header for correct data display. Perform a visual review to confirm the page layout is correctly implemented and ready for widget integration."
           },
           {
@@ -796,7 +796,7 @@
     ],
     "metadata": {
       "created": "2025-07-15T21:22:03.992Z",
-      "updated": "2025-07-18T19:05:52.613Z",
+      "updated": "2025-07-18T19:13:17.061Z",
       "description": "Tasks for taskmaster-ui context"
     }
   }

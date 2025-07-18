@@ -14,7 +14,7 @@ export interface TaskBoardWithFiltersProps {
 
 /**
  * Task Board with integrated filtering and sorting controls
- * 
+ *
  * This component combines the FilterSortControls with the backend API integration,
  * providing a complete filtering and sorting solution for the task board.
  */
@@ -23,23 +23,23 @@ export const TaskBoardWithFilters: React.FC<TaskBoardWithFiltersProps> = ({
   onTasksChange,
   onLoadingChange,
   onErrorChange,
-  className = ''
+  className = '',
 }) => {
   const [, setLastError] = useState<Error | null>(null);
 
   const integration = useTaskFiltersIntegration({
     repositoryPath,
     onTasksChange,
-    onFilterChange: (filters) => {
+    onFilterChange: filters => {
       console.log('Filters changed:', filters);
     },
-    onSortChange: (sorting) => {
+    onSortChange: sorting => {
       console.log('Sorting changed:', sorting);
     },
-    onError: (error) => {
+    onError: error => {
       setLastError(error);
       onErrorChange?.(error);
-    }
+    },
   });
 
   const {
@@ -56,7 +56,7 @@ export const TaskBoardWithFilters: React.FC<TaskBoardWithFiltersProps> = ({
     clearFilters,
     refetchTasks,
     hasActiveFilters,
-    hasActiveSort
+    hasActiveSort,
   } = integration;
 
   // Notify parent of loading state changes
@@ -70,22 +70,28 @@ export const TaskBoardWithFilters: React.FC<TaskBoardWithFiltersProps> = ({
   }, [error, onErrorChange]);
 
   // Handle filter changes
-  const handleFilterChange = useCallback((newFilters: FilterOptions) => {
-    Object.entries(newFilters).forEach(([key, value]) => {
-      if (filters[key as keyof FilterOptions] !== value) {
-        updateFilter(key as keyof FilterOptions, value);
-      }
-    });
-  }, [filters, updateFilter]);
+  const handleFilterChange = useCallback(
+    (newFilters: FilterOptions) => {
+      Object.entries(newFilters).forEach(([key, value]) => {
+        if (filters[key as keyof FilterOptions] !== value) {
+          updateFilter(key as keyof FilterOptions, value);
+        }
+      });
+    },
+    [filters, updateFilter]
+  );
 
   // Handle sort changes
-  const handleSortChange = useCallback((newSorting: SortOptions) => {
-    Object.entries(newSorting).forEach(([key, value]) => {
-      if (sorting[key as keyof SortOptions] !== value) {
-        updateSort(key as keyof SortOptions, value);
-      }
-    });
-  }, [sorting, updateSort]);
+  const handleSortChange = useCallback(
+    (newSorting: SortOptions) => {
+      Object.entries(newSorting).forEach(([key, value]) => {
+        if (sorting[key as keyof SortOptions] !== value) {
+          updateSort(key as keyof SortOptions, value);
+        }
+      });
+    },
+    [sorting, updateSort]
+  );
 
   // Handle clear filters
   const handleClearFilters = useCallback(() => {
@@ -98,7 +104,8 @@ export const TaskBoardWithFilters: React.FC<TaskBoardWithFiltersProps> = ({
     try {
       await refetchTasks();
     } catch (err) {
-      const error = err instanceof Error ? err : new Error('Failed to refetch tasks');
+      const error =
+        err instanceof Error ? err : new Error('Failed to refetch tasks');
       setLastError(error);
       onErrorChange?.(error);
     }
@@ -138,11 +145,11 @@ export const TaskBoardWithFilters: React.FC<TaskBoardWithFiltersProps> = ({
               <button onClick={handleRetry} className="retry-button">
                 Retry
               </button>
-              <button 
+              <button
                 onClick={() => {
                   setLastError(null);
                   onErrorChange?.(null);
-                }} 
+                }}
                 className="dismiss-button"
               >
                 Dismiss
@@ -160,21 +167,20 @@ export const TaskBoardWithFilters: React.FC<TaskBoardWithFiltersProps> = ({
               {filteredCount} of {totalCount} tasks
             </span>
             {hasActiveFilters && (
-              <span className="active-filters-indicator">
-                Filtered
-              </span>
+              <span className="active-filters-indicator">Filtered</span>
             )}
             {hasActiveSort && (
-              <span className="active-sort-indicator">
-                Sorted
-              </span>
+              <span className="active-sort-indicator">Sorted</span>
             )}
           </div>
-          
+
           {tasks.length === 0 && totalCount > 0 && (
             <div className="no-results">
               <p>No tasks match the current filters.</p>
-              <button onClick={handleClearFilters} className="clear-filters-button">
+              <button
+                onClick={handleClearFilters}
+                className="clear-filters-button"
+              >
                 Clear Filters
               </button>
             </div>
@@ -186,7 +192,7 @@ export const TaskBoardWithFilters: React.FC<TaskBoardWithFiltersProps> = ({
       <div className="task-list-container">
         {!loading && !error && tasks.length > 0 && (
           <div className="task-list">
-            {tasks.map((task) => (
+            {tasks.map(task => (
               <div key={task.id} className="task-item">
                 <div className="task-header">
                   <h4 className="task-title">{task.title}</h4>
@@ -205,9 +211,7 @@ export const TaskBoardWithFilters: React.FC<TaskBoardWithFiltersProps> = ({
                 <div className="task-meta">
                   <span className="task-id">#{task.id}</span>
                   {task.assignee && (
-                    <span className="task-assignee">
-                      👤 {task.assignee}
-                    </span>
+                    <span className="task-assignee">👤 {task.assignee}</span>
                   )}
                   {task.complexity && (
                     <span className="task-complexity">

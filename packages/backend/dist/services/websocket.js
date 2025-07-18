@@ -19,7 +19,7 @@ class WebSocketService {
                 timestamp: new Date().toISOString(),
             }));
             // Handle incoming messages
-            ws.on('message', (data) => {
+            ws.on('message', data => {
                 try {
                     const message = JSON.parse(data.toString());
                     console.log('Received message:', message);
@@ -45,7 +45,7 @@ class WebSocketService {
                 this.clients.delete(ws);
             });
             // Handle errors
-            ws.on('error', (error) => {
+            ws.on('error', error => {
                 console.error('WebSocket error:', error);
                 this.clients.delete(ws);
             });
@@ -62,7 +62,7 @@ class WebSocketService {
             data: message,
             timestamp: new Date().toISOString(),
         });
-        this.clients.forEach((client) => {
+        this.clients.forEach(client => {
             if (client.readyState === ws_1.WebSocket.OPEN) {
                 client.send(data);
             }

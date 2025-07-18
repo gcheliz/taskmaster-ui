@@ -36,12 +36,12 @@ export class CommandExecutor extends EventEmitter {
   ): Promise<CommandResult> {
     const startTime = Date.now();
     const processId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    
+
     const {
       cwd = process.cwd(),
       timeout = 30000, // 30 seconds default
       env = {},
-      shell = false
+      shell = false,
     } = options;
 
     // Merge environment variables
@@ -55,7 +55,7 @@ export class CommandExecutor extends EventEmitter {
     return new Promise((resolve, reject) => {
       // Emit starting event
       this.emit('progress', processId, {
-        stage: 'starting'
+        stage: 'starting',
       } as CommandProgress);
 
       // Spawn the process
@@ -63,7 +63,7 @@ export class CommandExecutor extends EventEmitter {
         cwd,
         env: processEnv,
         shell,
-        stdio: ['pipe', 'pipe', 'pipe']
+        stdio: ['pipe', 'pipe', 'pipe'],
       });
 
       // Track active process
@@ -72,11 +72,11 @@ export class CommandExecutor extends EventEmitter {
       // Set up timeout
       const timeoutHandle = setTimeout(() => {
         this.emit('progress', processId, {
-          stage: 'timeout'
+          stage: 'timeout',
         } as CommandProgress);
-        
+
         childProcess.kill('SIGTERM');
-        
+
         // Force kill after additional grace period
         setTimeout(() => {
           if (!childProcess.killed) {
@@ -89,10 +89,10 @@ export class CommandExecutor extends EventEmitter {
       childProcess.stdout?.on('data', (data: Buffer) => {
         const chunk = data.toString();
         stdout += chunk;
-        
+
         this.emit('progress', processId, {
           stdout: chunk,
-          stage: 'running'
+          stage: 'running',
         } as CommandProgress);
       });
 
@@ -100,10 +100,10 @@ export class CommandExecutor extends EventEmitter {
       childProcess.stderr?.on('data', (data: Buffer) => {
         const chunk = data.toString();
         stderr += chunk;
-        
+
         this.emit('progress', processId, {
           stderr: chunk,
-          stage: 'running'
+          stage: 'running',
         } as CommandProgress);
       });
 
@@ -111,60 +111,64 @@ export class CommandExecutor extends EventEmitter {
       childProcess.on('close', (code, killSignal) => {
         clearTimeout(timeoutHandle);
         this.activeProcesses.delete(processId);
-        
+
         exitCode = code;
         signal = killSignal;
-        
+
         const duration = Date.now() - startTime;
         const success = code === 0;
-        
+
         const result: CommandResult = {
           stdout: stdout.trim(),
           stderr: stderr.trim(),
           exitCode,
           signal,
           success,
-          duration
+          duration,
         };
 
         this.emit('progress', processId, {
-          stage: success ? 'completed' : 'failed'
+          stage: success ? 'completed' : 'failed',
         } as CommandProgress);
 
         if (success) {
           resolve(result);
         } else {
-          reject(new CommandExecutionError(
-            `Command failed: ${command} ${args.join(' ')}`,
-            result
-          ));
+          reject(
+            new CommandExecutionError(
+              `Command failed: ${command} ${args.join(' ')}`,
+              result
+            )
+          );
         }
       });
 
       // Handle process errors
-      childProcess.on('error', (error) => {
+      childProcess.on('error', error => {
         clearTimeout(timeoutHandle);
         this.activeProcesses.delete(processId);
-        
+
         const duration = Date.now() - startTime;
-        
+
         const result: CommandResult = {
           stdout: stdout.trim(),
           stderr: stderr.trim() + `\nProcess Error: ${error.message}`,
           exitCode: null,
           signal: null,
           success: false,
-          duration
+          duration,
         };
 
         this.emit('progress', processId, {
-          stage: 'failed'
+          stage: 'failed',
         } as CommandProgress);
 
-        reject(new CommandExecutionError(
-          `Command execution error: ${error.message}`,
-          result
-        ));
+        reject(
+          new CommandExecutionError(
+            `Command execution error: ${error.message}`,
+            result
+          )
+        );
       });
     });
   }
@@ -173,10 +177,14 @@ export class CommandExecutor extends EventEmitter {
    * Execute multiple commands in sequence
    */
   async executeSequence(
-    commands: Array<{ command: string; args?: string[]; options?: CommandOptions }>
+    commands: Array<{
+      command: string;
+      args?: string[];
+      options?: CommandOptions;
+    }>
   ): Promise<CommandResult[]> {
     const results: CommandResult[] = [];
-    
+
     for (const cmd of commands) {
       try {
         const result = await this.executeCommand(
@@ -193,7 +201,7 @@ export class CommandExecutor extends EventEmitter {
         throw error; // Re-throw to stop sequence
       }
     }
-    
+
     return results;
   }
 
@@ -203,18 +211,18 @@ export class CommandExecutor extends EventEmitter {
   killAllProcesses(): void {
     for (const [processId, process] of this.activeProcesses) {
       process.kill('SIGTERM');
-      
+
       // Force kill after grace period
       const timer = setTimeout(() => {
         if (!process.killed) {
           process.kill('SIGKILL');
         }
       }, 1000); // Reduced from 5000ms to 1000ms for tests
-      
+
       // Don't let this timer keep the process alive
       timer.unref();
     }
-    
+
     this.activeProcesses.clear();
   }
 

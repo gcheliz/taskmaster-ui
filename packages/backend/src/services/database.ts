@@ -23,22 +23,21 @@ export class DatabaseService {
     try {
       // Get database configuration with SSL support
       const dbConfig = getDatabaseConfig();
-      
+
       // Use enhanced Prisma client with query analysis and SSL configuration
       this.prisma = queryAnalyzer.createEnhancedPrismaClient(dbConfig);
-      
+
       // Test the connection
       await this.prisma.$connect();
       console.log('Connected to PostgreSQL database via Prisma');
-      
+
       if (env.DATABASE_SSL === 'true') {
         console.log('🔒 SSL/TLS encryption enabled for database connection');
       }
-      
+
       if (queryAnalyzer.getEnabled()) {
         console.log('🔍 Query performance analysis enabled');
       }
-      
     } catch (error) {
       console.error('Error connecting to database:', error);
       throw error;
@@ -72,7 +71,7 @@ export class DatabaseService {
       if (!this.prisma) {
         return false;
       }
-      
+
       // Simple query to test database connectivity
       await this.prisma.$queryRaw`SELECT 1`;
       return true;
@@ -94,12 +93,13 @@ export class DatabaseService {
     }
 
     try {
-      const [projectCount, repositoryCount, taskCount, commitCount] = await Promise.all([
-        this.prisma.project.count(),
-        this.prisma.repository.count(),
-        this.prisma.task.count(),
-        this.prisma.commit.count(),
-      ]);
+      const [projectCount, repositoryCount, taskCount, commitCount] =
+        await Promise.all([
+          this.prisma.project.count(),
+          this.prisma.repository.count(),
+          this.prisma.task.count(),
+          this.prisma.commit.count(),
+        ]);
 
       // Get connection pool information
       let connectionInfo = null;
@@ -137,7 +137,17 @@ export class DatabaseService {
    * Transaction wrapper for complex operations
    */
   public async transaction<T>(
-    fn: (prisma: Omit<PrismaClient, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'>) => Promise<T>
+    fn: (
+      prisma: Omit<
+        PrismaClient,
+        | '$connect'
+        | '$disconnect'
+        | '$on'
+        | '$transaction'
+        | '$use'
+        | '$extends'
+      >
+    ) => Promise<T>
   ): Promise<T> {
     if (!this.prisma) {
       throw new Error('Database not connected. Call connect() first.');
@@ -152,8 +162,10 @@ export class DatabaseService {
    */
   public async initializeSchema(): Promise<void> {
     console.log('Schema initialization is handled by Prisma migrations');
-    console.log('Use "prisma migrate deploy" in production or "prisma migrate dev" in development');
-    
+    console.log(
+      'Use "prisma migrate deploy" in production or "prisma migrate dev" in development'
+    );
+
     // Validate database connection security in production
     if (env.NODE_ENV === 'production' && env.DATABASE_SSL !== 'true') {
       console.warn('⚠️  Database SSL is disabled in production environment');

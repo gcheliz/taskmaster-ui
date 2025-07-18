@@ -33,26 +33,25 @@ export interface CreateProjectResponse {
 
 /**
  * Project Controller
- * 
+ *
  * Handles project-related operations including:
  * - Project creation and initialization
  * - Project listing and management
  * - Integration with TaskMaster CLI
  */
 export class ProjectController {
-
   /**
    * Create a new TaskMaster project
    * POST /api/projects
    */
   async createProject(req: Request, res: Response): Promise<void> {
     const requestId = `proj_create_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    
+
     try {
       logger.info('Starting project creation', {
         requestId,
         operation: 'create-project',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
 
       // Validate request body
@@ -61,11 +60,11 @@ export class ProjectController {
       if (!repositoryId) {
         logger.warn('Project creation failed: missing repositoryId', {
           requestId,
-          validation: { repositoryId: 'required' }
+          validation: { repositoryId: 'required' },
         });
         res.status(400).json({
           error: 'Repository ID is required',
-          code: 'MISSING_REPOSITORY_ID'
+          code: 'MISSING_REPOSITORY_ID',
         });
         return;
       }
@@ -73,11 +72,11 @@ export class ProjectController {
       if (!projectName || typeof projectName !== 'string') {
         logger.warn('Project creation failed: invalid projectName', {
           requestId,
-          validation: { projectName: 'required string' }
+          validation: { projectName: 'required string' },
         });
         res.status(400).json({
           error: 'Project name is required and must be a string',
-          code: 'INVALID_PROJECT_NAME'
+          code: 'INVALID_PROJECT_NAME',
         });
         return;
       }
@@ -88,11 +87,11 @@ export class ProjectController {
         logger.warn('Project creation failed: project name too short', {
           requestId,
           projectName: projectNameTrimmed,
-          validation: { minLength: 2 }
+          validation: { minLength: 2 },
         });
         res.status(400).json({
           error: 'Project name must be at least 2 characters long',
-          code: 'PROJECT_NAME_TOO_SHORT'
+          code: 'PROJECT_NAME_TOO_SHORT',
         });
         return;
       }
@@ -101,11 +100,11 @@ export class ProjectController {
         logger.warn('Project creation failed: project name too long', {
           requestId,
           projectName: projectNameTrimmed,
-          validation: { maxLength: 50 }
+          validation: { maxLength: 50 },
         });
         res.status(400).json({
           error: 'Project name must be less than 50 characters',
-          code: 'PROJECT_NAME_TOO_LONG'
+          code: 'PROJECT_NAME_TOO_LONG',
         });
         return;
       }
@@ -114,25 +113,29 @@ export class ProjectController {
         logger.warn('Project creation failed: invalid project name format', {
           requestId,
           projectName: projectNameTrimmed,
-          validation: { pattern: 'alphanumeric with spaces, hyphens, underscores only' }
+          validation: {
+            pattern: 'alphanumeric with spaces, hyphens, underscores only',
+          },
         });
         res.status(400).json({
-          error: 'Project name can only contain letters, numbers, spaces, hyphens, and underscores',
-          code: 'INVALID_PROJECT_NAME_FORMAT'
+          error:
+            'Project name can only contain letters, numbers, spaces, hyphens, and underscores',
+          code: 'INVALID_PROJECT_NAME_FORMAT',
         });
         return;
       }
 
       // Check if repository exists
-      const repository = await repositoryService.getRepositoryById(repositoryId);
+      const repository =
+        await repositoryService.getRepositoryById(repositoryId);
       if (!repository) {
         logger.warn('Project creation failed: repository not found', {
           requestId,
-          repositoryId
+          repositoryId,
         });
         res.status(404).json({
           error: 'Repository not found',
-          code: 'REPOSITORY_NOT_FOUND'
+          code: 'REPOSITORY_NOT_FOUND',
         });
         return;
       }
@@ -141,7 +144,7 @@ export class ProjectController {
         requestId,
         repositoryId,
         repositoryPath: repository.path,
-        projectName: projectNameTrimmed
+        projectName: projectNameTrimmed,
       });
 
       // Generate project ID
@@ -151,20 +154,20 @@ export class ProjectController {
         requestId,
         projectId,
         projectName: projectNameTrimmed,
-        repositoryPath: repository.path
+        repositoryPath: repository.path,
       });
 
       // Execute TaskMaster CLI initialization
       try {
         const initResult = await taskMasterService.initProject(repository.path);
-        
+
         if (!initResult.success) {
           logger.error('TaskMaster CLI initialization failed', {
             requestId,
             projectId,
             error: initResult.error,
             output: initResult.output,
-            exitCode: initResult.exitCode
+            exitCode: initResult.exitCode,
           });
 
           res.status(500).json({
@@ -173,8 +176,8 @@ export class ProjectController {
             details: {
               output: initResult.output,
               error: initResult.error,
-              exitCode: initResult.exitCode
-            }
+              exitCode: initResult.exitCode,
+            },
           });
           return;
         }
@@ -183,14 +186,14 @@ export class ProjectController {
           requestId,
           projectId,
           duration: initResult.duration,
-          taskCount: initResult.data?.taskCount || 0
+          taskCount: initResult.data?.taskCount || 0,
         });
 
         // Create project in database
         const project = await projectService.findOrCreateProject({
           name: projectNameTrimmed,
           path: repository.path,
-          description: `TaskMaster project for ${repository.name}`
+          description: `TaskMaster project for ${repository.name}`,
         });
 
         // Update repository to link to the project if not already linked
@@ -208,7 +211,7 @@ export class ProjectController {
           repositoryPath: repository.path,
           createdAt: project.createdAt.toISOString(),
           status: 'active',
-          tasksPath: `${repository.path}/.taskmaster/tasks/tasks.json`
+          tasksPath: `${repository.path}/.taskmaster/tasks/tasks.json`,
         };
 
         logger.info('Project creation completed successfully', {
@@ -217,7 +220,7 @@ export class ProjectController {
           projectName: projectNameTrimmed,
           repositoryPath: repository.path,
           status: 'active',
-          initDuration: initResult.duration
+          initDuration: initResult.duration,
         });
 
         // Return 201 Created with project data
@@ -227,38 +230,38 @@ export class ProjectController {
           taskMasterInfo: {
             taskCount: initResult.data?.taskCount || 0,
             initOutput: initResult.output,
-            duration: initResult.duration
-          }
+            duration: initResult.duration,
+          },
         });
-
       } catch (initError) {
         logger.error('TaskMaster CLI initialization failed with error', {
           requestId,
           projectId,
-          error: initError instanceof Error ? initError.message : 'Unknown error',
-          stack: initError instanceof Error ? initError.stack : undefined
+          error:
+            initError instanceof Error ? initError.message : 'Unknown error',
+          stack: initError instanceof Error ? initError.stack : undefined,
         });
 
         res.status(500).json({
           error: 'Failed to initialize TaskMaster project',
           code: 'TASKMASTER_INIT_ERROR',
           details: {
-            message: initError instanceof Error ? initError.message : 'Unknown error'
-          }
+            message:
+              initError instanceof Error ? initError.message : 'Unknown error',
+          },
         });
         return;
       }
-
     } catch (error) {
       logger.error('Project creation failed with unexpected error', {
         requestId,
         error: error instanceof Error ? error.message : 'Unknown error',
-        stack: error instanceof Error ? error.stack : undefined
+        stack: error instanceof Error ? error.stack : undefined,
       });
 
       res.status(500).json({
         error: 'Internal server error during project creation',
-        code: 'PROJECT_CREATION_ERROR'
+        code: 'PROJECT_CREATION_ERROR',
       });
     }
   }
@@ -274,12 +277,12 @@ export class ProjectController {
       logger.info('Listing projects', {
         requestId,
         operation: 'list-projects',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
 
       // Get all projects from database
       const projectsData = await projectService.getAllProjects();
-      
+
       // Transform to response format
       const projects: ProjectResponse[] = projectsData.map(project => ({
         id: project.id,
@@ -288,12 +291,12 @@ export class ProjectController {
         repositoryPath: project.path,
         createdAt: project.createdAt.toISOString(),
         status: 'active' as const,
-        tasksPath: `${project.path}/.taskmaster/tasks/tasks.json`
+        tasksPath: `${project.path}/.taskmaster/tasks/tasks.json`,
       }));
 
       logger.info('Projects listed successfully', {
         requestId,
-        projectCount: projects.length
+        projectCount: projects.length,
       });
 
       res.status(200).json({
@@ -301,21 +304,26 @@ export class ProjectController {
         count: projects.length,
         metadata: {
           totalProjects: projectsData.length,
-          totalRepositories: projectsData.reduce((sum, p) => sum + (p._count?.repositories || 0), 0),
-          totalTasks: projectsData.reduce((sum, p) => sum + (p._count?.tasks || 0), 0)
-        }
+          totalRepositories: projectsData.reduce(
+            (sum, p) => sum + (p._count?.repositories || 0),
+            0
+          ),
+          totalTasks: projectsData.reduce(
+            (sum, p) => sum + (p._count?.tasks || 0),
+            0
+          ),
+        },
       });
-
     } catch (error) {
       logger.error('Failed to list projects', {
         requestId,
         error: error instanceof Error ? error.message : 'Unknown error',
-        stack: error instanceof Error ? error.stack : undefined
+        stack: error instanceof Error ? error.stack : undefined,
       });
 
       res.status(500).json({
         error: 'Internal server error while listing projects',
-        code: 'PROJECT_LIST_ERROR'
+        code: 'PROJECT_LIST_ERROR',
       });
     }
   }
@@ -333,29 +341,29 @@ export class ProjectController {
         requestId,
         projectId,
         operation: 'get-project',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
 
       if (!projectId) {
         res.status(400).json({
           error: 'Project ID is required',
-          code: 'MISSING_PROJECT_ID'
+          code: 'MISSING_PROJECT_ID',
         });
         return;
       }
 
       // Get project from database
       const project = await projectService.getProjectById(projectId);
-      
+
       if (!project) {
         logger.warn('Project not found', {
           requestId,
-          projectId
+          projectId,
         });
 
         res.status(404).json({
           error: 'Project not found',
-          code: 'PROJECT_NOT_FOUND'
+          code: 'PROJECT_NOT_FOUND',
         });
         return;
       }
@@ -368,13 +376,13 @@ export class ProjectController {
         repositoryPath: project.path,
         createdAt: project.createdAt.toISOString(),
         status: 'active',
-        tasksPath: `${project.path}/.taskmaster/tasks/tasks.json`
+        tasksPath: `${project.path}/.taskmaster/tasks/tasks.json`,
       };
 
       logger.info('Project retrieved successfully', {
         requestId,
         projectId,
-        projectName: project.name
+        projectName: project.name,
       });
 
       res.status(200).json({
@@ -387,29 +395,28 @@ export class ProjectController {
             id: repo.id,
             name: repo.name,
             url: repo.url,
-            branch: repo.branch
+            branch: repo.branch,
           })),
           recentTasks: project.tasks?.slice(0, 5).map(task => ({
             id: task.id,
             title: task.title,
             status: task.status,
             priority: task.priority,
-            createdAt: task.createdAt.toISOString()
-          }))
-        }
+            createdAt: task.createdAt.toISOString(),
+          })),
+        },
       });
-
     } catch (error) {
       logger.error('Failed to get project', {
         requestId,
         projectId,
         error: error instanceof Error ? error.message : 'Unknown error',
-        stack: error instanceof Error ? error.stack : undefined
+        stack: error instanceof Error ? error.stack : undefined,
       });
 
       res.status(500).json({
         error: 'Internal server error while getting project',
-        code: 'PROJECT_GET_ERROR'
+        code: 'PROJECT_GET_ERROR',
       });
     }
   }
@@ -427,54 +434,53 @@ export class ProjectController {
         requestId,
         projectId,
         operation: 'delete-project',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
 
       if (!projectId) {
         res.status(400).json({
           error: 'Project ID is required',
-          code: 'MISSING_PROJECT_ID'
+          code: 'MISSING_PROJECT_ID',
         });
         return;
       }
 
       // Delete project from database
       const deleted = await projectService.deleteProject(projectId);
-      
+
       if (!deleted) {
         logger.warn('Project not found for deletion', {
           requestId,
-          projectId
+          projectId,
         });
 
         res.status(404).json({
           error: 'Project not found',
-          code: 'PROJECT_NOT_FOUND'
+          code: 'PROJECT_NOT_FOUND',
         });
         return;
       }
 
       logger.info('Project deleted successfully', {
         requestId,
-        projectId
+        projectId,
       });
 
       res.status(200).json({
         message: 'Project deleted successfully',
-        projectId
+        projectId,
       });
-
     } catch (error) {
       logger.error('Failed to delete project', {
         requestId,
         projectId,
         error: error instanceof Error ? error.message : 'Unknown error',
-        stack: error instanceof Error ? error.stack : undefined
+        stack: error instanceof Error ? error.stack : undefined,
       });
 
       res.status(500).json({
         error: 'Internal server error while deleting project',
-        code: 'PROJECT_DELETE_ERROR'
+        code: 'PROJECT_DELETE_ERROR',
       });
     }
   }

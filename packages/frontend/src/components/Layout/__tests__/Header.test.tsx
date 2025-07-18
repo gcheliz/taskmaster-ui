@@ -14,19 +14,19 @@ describe('Header', () => {
 
   it('has the correct CSS class structure', () => {
     const { container } = render(<Header />);
-    
+
     // Check for main header element
     const headerElement = container.querySelector('.app-header');
     expect(headerElement).toBeInTheDocument();
-    
+
     // Check for header content container
     const headerContent = container.querySelector('.header-content');
     expect(headerContent).toBeInTheDocument();
-    
+
     // Check for logo section
     const logoSection = container.querySelector('.logo-section');
     expect(logoSection).toBeInTheDocument();
-    
+
     // Check for user section
     const userSection = container.querySelector('.user-section');
     expect(userSection).toBeInTheDocument();
@@ -40,11 +40,11 @@ describe('Header', () => {
 
   it('has correct semantic structure', () => {
     render(<Header />);
-    
+
     // Check that the main element is a header tag
     const headerElement = screen.getByRole('banner');
     expect(headerElement).toBeInTheDocument();
-    
+
     // Check for heading element
     const heading = screen.getByRole('heading', { level: 1 });
     expect(heading).toHaveTextContent('TaskMaster UI');

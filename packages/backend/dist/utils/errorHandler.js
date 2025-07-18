@@ -92,11 +92,13 @@ class TaskMasterError extends Error {
             isRetryable: this.isRetryable,
             retryAfter: this.retryAfter,
             stack: this.stack,
-            originalError: this.originalError ? {
-                name: this.originalError.name,
-                message: this.originalError.message,
-                stack: this.originalError.stack
-            } : undefined
+            originalError: this.originalError
+                ? {
+                    name: this.originalError.name,
+                    message: this.originalError.message,
+                    stack: this.originalError.stack,
+                }
+                : undefined,
         };
     }
 }
@@ -127,9 +129,9 @@ class ErrorHandler {
                 suggestions: [
                     'Install TaskMaster CLI using npm: npm install -g task-master-ai',
                     'Verify TaskMaster CLI is in your PATH',
-                    'Check if the CLI is properly configured'
+                    'Check if the CLI is properly configured',
                 ],
-                isRetryable: false
+                isRetryable: false,
             });
         }
         // Check for timeout
@@ -146,10 +148,10 @@ class ErrorHandler {
                 suggestions: [
                     'Try the operation again',
                     'Check if the repository is very large',
-                    'Verify network connectivity if using remote repositories'
+                    'Verify network connectivity if using remote repositories',
                 ],
                 isRetryable: true,
-                retryAfter: 5000
+                retryAfter: 5000,
             });
         }
         // Check for permission errors
@@ -166,9 +168,9 @@ class ErrorHandler {
                 suggestions: [
                     'Check file permissions for the repository',
                     'Ensure you have read/write access to the directory',
-                    'Run with appropriate user permissions'
+                    'Run with appropriate user permissions',
                 ],
-                isRetryable: false
+                isRetryable: false,
             });
         }
         // Generic CLI execution error
@@ -182,9 +184,9 @@ class ErrorHandler {
             suggestions: [
                 'Verify the repository path is correct',
                 'Check if the repository is a valid TaskMaster project',
-                'Try initializing the project with task-master init'
+                'Try initializing the project with task-master init',
             ],
-            isRetryable: true
+            isRetryable: true,
         });
     }
     /**
@@ -201,15 +203,15 @@ class ErrorHandler {
                 ...context,
                 operation,
                 outputLength: rawOutput.length,
-                outputPreview: rawOutput.substring(0, 200)
+                outputPreview: rawOutput.substring(0, 200),
             },
             originalError: error,
             suggestions: [
                 'Try running the command again',
                 'Verify the TaskMaster CLI version is compatible',
-                'Check if the output format has changed'
+                'Check if the output format has changed',
             ],
-            isRetryable: true
+            isRetryable: true,
         });
     }
     /**
@@ -220,7 +222,7 @@ class ErrorHandler {
             ...context,
             field,
             value: typeof value === 'string' ? value.substring(0, 100) : value,
-            reason
+            reason,
         }, 'validation');
         let errorType = ErrorType.INVALID_ARGUMENTS;
         let code = 'VAL_001';
@@ -241,14 +243,14 @@ class ErrorHandler {
                 ...context,
                 field,
                 value,
-                reason
+                reason,
             },
             suggestions: [
                 `Please provide a valid ${field}`,
                 'Check the API documentation for expected format',
-                'Verify all required fields are provided'
+                'Verify all required fields are provided',
             ],
-            isRetryable: false
+            isRetryable: false,
         });
     }
     /**
@@ -257,7 +259,8 @@ class ErrorHandler {
     handleSystemError(error, context) {
         logger_1.logger.error('System error', context, error, 'system');
         // File system errors
-        if (error.message.includes('ENOENT') && !error.message.includes('command not found')) {
+        if (error.message.includes('ENOENT') &&
+            !error.message.includes('command not found')) {
             return new TaskMasterError({
                 type: ErrorType.FILE_SYSTEM_ERROR,
                 severity: ErrorSeverity.MEDIUM,
@@ -268,9 +271,9 @@ class ErrorHandler {
                 suggestions: [
                     'Verify the file path exists',
                     'Check directory permissions',
-                    'Ensure the repository is properly initialized'
+                    'Ensure the repository is properly initialized',
                 ],
-                isRetryable: false
+                isRetryable: false,
             });
         }
         // Network errors
@@ -287,10 +290,10 @@ class ErrorHandler {
                 suggestions: [
                     'Check your internet connection',
                     'Verify DNS settings',
-                    'Try again in a few moments'
+                    'Try again in a few moments',
                 ],
                 isRetryable: true,
-                retryAfter: 10000
+                retryAfter: 10000,
             });
         }
         // Generic system error
@@ -304,9 +307,9 @@ class ErrorHandler {
             suggestions: [
                 'Try the operation again',
                 'Check system resources',
-                'Contact support if the problem persists'
+                'Contact support if the problem persists',
             ],
-            isRetryable: true
+            isRetryable: true,
         });
     }
     /**
@@ -333,10 +336,10 @@ class ErrorHandler {
             suggestions: [
                 'Verify your authentication credentials',
                 'Check if your access token is valid',
-                'Wait before retrying if rate limited'
+                'Wait before retrying if rate limited',
             ],
             isRetryable: errorType === ErrorType.RATE_LIMIT_EXCEEDED,
-            retryAfter: errorType === ErrorType.RATE_LIMIT_EXCEEDED ? 60000 : undefined
+            retryAfter: errorType === ErrorType.RATE_LIMIT_EXCEEDED ? 60000 : undefined,
         });
     }
     /**
@@ -358,7 +361,7 @@ class ErrorHandler {
                 code: 'UNK_001',
                 context,
                 suggestions: ['Try the operation again'],
-                isRetryable: true
+                isRetryable: true,
             });
         }
         // Handle completely unknown errors
@@ -370,9 +373,9 @@ class ErrorHandler {
             context,
             suggestions: [
                 'Try the operation again',
-                'Contact support if the problem persists'
+                'Contact support if the problem persists',
             ],
-            isRetryable: true
+            isRetryable: true,
         });
     }
     /**

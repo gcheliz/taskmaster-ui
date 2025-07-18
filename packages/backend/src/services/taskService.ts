@@ -11,7 +11,7 @@ export interface TaskWithProject extends Task {
 
 /**
  * Task Service
- * 
+ *
  * Handles task data persistence and retrieval from the database.
  * Provides CRUD operations for task management using Prisma.
  */
@@ -44,17 +44,17 @@ export class TaskService {
           priority: data.priority || Priority.MEDIUM,
           order: data.order || 0,
           dueDate: data.dueDate,
-          projectId: data.projectId
+          projectId: data.projectId,
         },
         include: {
           project: {
             select: {
               id: true,
               name: true,
-              path: true
-            }
-          }
-        }
+              path: true,
+            },
+          },
+        },
       });
       return task;
     } catch (error) {
@@ -76,10 +76,10 @@ export class TaskService {
             select: {
               id: true,
               name: true,
-              path: true
-            }
-          }
-        }
+              path: true,
+            },
+          },
+        },
       });
       return task;
     } catch (error) {
@@ -91,17 +91,20 @@ export class TaskService {
   /**
    * Get tasks by project ID
    */
-  async getTasksByProjectId(projectId: string, options?: {
-    status?: TaskStatus;
-    priority?: Priority;
-    limit?: number;
-    offset?: number;
-    orderBy?: 'createdAt' | 'updatedAt' | 'dueDate' | 'order' | 'priority';
-    orderDirection?: 'asc' | 'desc';
-  }): Promise<Task[]> {
+  async getTasksByProjectId(
+    projectId: string,
+    options?: {
+      status?: TaskStatus;
+      priority?: Priority;
+      limit?: number;
+      offset?: number;
+      orderBy?: 'createdAt' | 'updatedAt' | 'dueDate' | 'order' | 'priority';
+      orderDirection?: 'asc' | 'desc';
+    }
+  ): Promise<Task[]> {
     try {
       const prisma = this.dbService.getPrisma();
-      
+
       const where: any = { projectId };
       if (options?.status) {
         where.status = options.status;
@@ -127,10 +130,10 @@ export class TaskService {
             select: {
               id: true,
               name: true,
-              path: true
-            }
-          }
-        }
+              path: true,
+            },
+          },
+        },
       });
       return tasks;
     } catch (error) {
@@ -152,7 +155,7 @@ export class TaskService {
   }): Promise<TaskWithProject[]> {
     try {
       const prisma = this.dbService.getPrisma();
-      
+
       const where: any = {};
       if (options?.status) {
         where.status = options.status;
@@ -178,10 +181,10 @@ export class TaskService {
             select: {
               id: true,
               name: true,
-              path: true
-            }
-          }
-        }
+              path: true,
+            },
+          },
+        },
       });
       return tasks;
     } catch (error) {
@@ -194,7 +197,7 @@ export class TaskService {
    * Update task
    */
   async updateTask(
-    id: string, 
+    id: string,
     updates: {
       title?: string;
       description?: string;
@@ -206,12 +209,12 @@ export class TaskService {
   ): Promise<Task | null> {
     try {
       const prisma = this.dbService.getPrisma();
-      
+
       // Check if task exists
       const existing = await prisma.task.findUnique({
-        where: { id }
+        where: { id },
       });
-      
+
       if (!existing) {
         return null;
       }
@@ -224,12 +227,12 @@ export class TaskService {
             select: {
               id: true,
               name: true,
-              path: true
-            }
-          }
-        }
+              path: true,
+            },
+          },
+        },
       });
-      
+
       return task;
     } catch (error) {
       console.error('Error updating task:', error);
@@ -243,21 +246,21 @@ export class TaskService {
   async deleteTask(id: string): Promise<boolean> {
     try {
       const prisma = this.dbService.getPrisma();
-      
+
       // Check if task exists
       const existing = await prisma.task.findUnique({
-        where: { id }
+        where: { id },
       });
-      
+
       if (!existing) {
         return false;
       }
 
       // Delete task
       await prisma.task.delete({
-        where: { id }
+        where: { id },
       });
-      
+
       return true;
     } catch (error) {
       console.error('Error deleting task:', error);
@@ -278,22 +281,26 @@ export class TaskService {
   }> {
     try {
       const prisma = this.dbService.getPrisma();
-      
-      const [
-        total,
-        pending,
-        inProgress,
-        completed,
-        blocked,
-        cancelled
-      ] = await Promise.all([
-        prisma.task.count({ where: { projectId } }),
-        prisma.task.count({ where: { projectId, status: TaskStatus.PENDING } }),
-        prisma.task.count({ where: { projectId, status: TaskStatus.IN_PROGRESS } }),
-        prisma.task.count({ where: { projectId, status: TaskStatus.COMPLETED } }),
-        prisma.task.count({ where: { projectId, status: TaskStatus.BLOCKED } }),
-        prisma.task.count({ where: { projectId, status: TaskStatus.CANCELLED } })
-      ]);
+
+      const [total, pending, inProgress, completed, blocked, cancelled] =
+        await Promise.all([
+          prisma.task.count({ where: { projectId } }),
+          prisma.task.count({
+            where: { projectId, status: TaskStatus.PENDING },
+          }),
+          prisma.task.count({
+            where: { projectId, status: TaskStatus.IN_PROGRESS },
+          }),
+          prisma.task.count({
+            where: { projectId, status: TaskStatus.COMPLETED },
+          }),
+          prisma.task.count({
+            where: { projectId, status: TaskStatus.BLOCKED },
+          }),
+          prisma.task.count({
+            where: { projectId, status: TaskStatus.CANCELLED },
+          }),
+        ]);
 
       return {
         total,
@@ -301,7 +308,7 @@ export class TaskService {
         inProgress,
         completed,
         blocked,
-        cancelled
+        cancelled,
       };
     } catch (error) {
       console.error('Error getting task counts by status:', error);
@@ -312,37 +319,40 @@ export class TaskService {
   /**
    * Get tasks due soon (within specified days)
    */
-  async getTasksDueSoon(projectId: string, daysAhead: number = 7): Promise<Task[]> {
+  async getTasksDueSoon(
+    projectId: string,
+    daysAhead: number = 7
+  ): Promise<Task[]> {
     try {
       const prisma = this.dbService.getPrisma();
-      
+
       const dueDate = new Date();
       dueDate.setDate(dueDate.getDate() + daysAhead);
-      
+
       const tasks = await prisma.task.findMany({
         where: {
           projectId,
           dueDate: {
-            lte: dueDate
+            lte: dueDate,
           },
           status: {
-            not: TaskStatus.COMPLETED
-          }
+            not: TaskStatus.COMPLETED,
+          },
         },
         orderBy: {
-          dueDate: 'asc'
+          dueDate: 'asc',
         },
         include: {
           project: {
             select: {
               id: true,
               name: true,
-              path: true
-            }
-          }
-        }
+              path: true,
+            },
+          },
+        },
       });
-      
+
       return tasks;
     } catch (error) {
       console.error('Error getting tasks due soon:', error);
@@ -356,33 +366,33 @@ export class TaskService {
   async getOverdueTasks(projectId: string): Promise<Task[]> {
     try {
       const prisma = this.dbService.getPrisma();
-      
+
       const now = new Date();
-      
+
       const tasks = await prisma.task.findMany({
         where: {
           projectId,
           dueDate: {
-            lt: now
+            lt: now,
           },
           status: {
-            not: TaskStatus.COMPLETED
-          }
+            not: TaskStatus.COMPLETED,
+          },
         },
         orderBy: {
-          dueDate: 'asc'
+          dueDate: 'asc',
         },
         include: {
           project: {
             select: {
               id: true,
               name: true,
-              path: true
-            }
-          }
-        }
+              path: true,
+            },
+          },
+        },
       });
-      
+
       return tasks;
     } catch (error) {
       console.error('Error getting overdue tasks:', error);
@@ -393,7 +403,10 @@ export class TaskService {
   /**
    * Bulk update task statuses
    */
-  async bulkUpdateTaskStatus(taskIds: string[], status: TaskStatus): Promise<number> {
+  async bulkUpdateTaskStatus(
+    taskIds: string[],
+    status: TaskStatus
+  ): Promise<number> {
     try {
       if (!taskIds || taskIds.length === 0) {
         throw new Error('Task IDs are required for bulk update');
@@ -404,19 +417,19 @@ export class TaskService {
       }
 
       const prisma = this.dbService.getPrisma();
-      
+
       const result = await prisma.task.updateMany({
         where: {
           id: {
-            in: taskIds
-          }
+            in: taskIds,
+          },
         },
         data: {
           status,
-          updatedAt: new Date()
-        }
+          updatedAt: new Date(),
+        },
       });
-      
+
       return result.count;
     } catch (error) {
       console.error('Error bulk updating task status:', error);
@@ -430,15 +443,17 @@ export class TaskService {
   /**
    * Create multiple tasks in a transaction
    */
-  async bulkCreateTasks(tasks: Array<{
-    title: string;
-    description?: string;
-    status?: TaskStatus;
-    priority?: Priority;
-    order?: number;
-    dueDate?: Date;
-    projectId: string;
-  }>): Promise<number> {
+  async bulkCreateTasks(
+    tasks: Array<{
+      title: string;
+      description?: string;
+      status?: TaskStatus;
+      priority?: Priority;
+      order?: number;
+      dueDate?: Date;
+      projectId: string;
+    }>
+  ): Promise<number> {
     try {
       if (!tasks || tasks.length === 0) {
         throw new Error('Tasks array is required and cannot be empty');
@@ -455,7 +470,7 @@ export class TaskService {
         }
       }
 
-      return await this.dbService.transaction(async (prisma) => {
+      return await this.dbService.transaction(async prisma => {
         const taskData = tasks.map(task => ({
           title: task.title.trim(),
           description: task.description?.trim(),
@@ -463,11 +478,11 @@ export class TaskService {
           priority: task.priority || Priority.MEDIUM,
           order: task.order || 0,
           dueDate: task.dueDate,
-          projectId: task.projectId
+          projectId: task.projectId,
         }));
 
         const result = await prisma.task.createMany({
-          data: taskData
+          data: taskData,
         });
 
         return result.count;
@@ -484,7 +499,10 @@ export class TaskService {
   /**
    * Move tasks between projects in a transaction
    */
-  async moveTasksToProject(taskIds: string[], targetProjectId: string): Promise<number> {
+  async moveTasksToProject(
+    taskIds: string[],
+    targetProjectId: string
+  ): Promise<number> {
     try {
       if (!taskIds || taskIds.length === 0) {
         throw new Error('Task IDs are required');
@@ -494,10 +512,10 @@ export class TaskService {
         throw new Error('Target project ID is required');
       }
 
-      return await this.dbService.transaction(async (prisma) => {
+      return await this.dbService.transaction(async prisma => {
         // Verify target project exists
         const targetProject = await prisma.project.findUnique({
-          where: { id: targetProjectId }
+          where: { id: targetProjectId },
         });
 
         if (!targetProject) {
@@ -508,13 +526,13 @@ export class TaskService {
         const result = await prisma.task.updateMany({
           where: {
             id: {
-              in: taskIds
-            }
+              in: taskIds,
+            },
           },
           data: {
             projectId: targetProjectId,
-            updatedAt: new Date()
-          }
+            updatedAt: new Date(),
+          },
         });
 
         return result.count;
@@ -555,18 +573,24 @@ export class TaskService {
       const counts = await this.getTaskCountsByStatus(projectId);
       const overdueTasks = await this.getOverdueTasks(projectId);
       const dueSoonTasks = await this.getTasksDueSoon(projectId);
-      
-      const prisma = this.dbService.getPrisma();
-      
-      // Get tasks by priority
-      const [highPriority, mediumPriority, lowPriority, urgentPriority] = await Promise.all([
-        prisma.task.count({ where: { projectId, priority: Priority.HIGH } }),
-        prisma.task.count({ where: { projectId, priority: Priority.MEDIUM } }),
-        prisma.task.count({ where: { projectId, priority: Priority.LOW } }),
-        prisma.task.count({ where: { projectId, priority: Priority.URGENT } })
-      ]);
 
-      const completionRate = counts.total > 0 ? (counts.completed / counts.total) * 100 : 0;
+      const prisma = this.dbService.getPrisma();
+
+      // Get tasks by priority
+      const [highPriority, mediumPriority, lowPriority, urgentPriority] =
+        await Promise.all([
+          prisma.task.count({ where: { projectId, priority: Priority.HIGH } }),
+          prisma.task.count({
+            where: { projectId, priority: Priority.MEDIUM },
+          }),
+          prisma.task.count({ where: { projectId, priority: Priority.LOW } }),
+          prisma.task.count({
+            where: { projectId, priority: Priority.URGENT },
+          }),
+        ]);
+
+      const completionRate =
+        counts.total > 0 ? (counts.completed / counts.total) * 100 : 0;
 
       return {
         totalTasks: counts.total,
@@ -576,17 +600,17 @@ export class TaskService {
           high: highPriority,
           medium: mediumPriority,
           low: lowPriority,
-          urgent: urgentPriority
+          urgent: urgentPriority,
         },
         tasksByStatus: {
           pending: counts.pending,
           inProgress: counts.inProgress,
           completed: counts.completed,
           blocked: counts.blocked,
-          cancelled: counts.cancelled
+          cancelled: counts.cancelled,
         },
         overdueCount: overdueTasks.length,
-        dueSoonCount: dueSoonTasks.length
+        dueSoonCount: dueSoonTasks.length,
       };
     } catch (error) {
       console.error('Error getting task statistics:', error);

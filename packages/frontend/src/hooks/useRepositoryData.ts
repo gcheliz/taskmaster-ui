@@ -1,6 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { RepositoryService } from '../services/repositoryService';
-import type { RepositoryMetadataData, BranchInfo } from '../components/Repository';
+import type {
+  RepositoryMetadataData,
+  BranchInfo,
+} from '../components/Repository';
 
 export interface UseRepositoryDataOptions {
   /** Repository ID to fetch data for */
@@ -32,7 +35,7 @@ export interface UseRepositoryDataReturn {
 
 /**
  * Hook for managing repository data
- * 
+ *
  * Provides automatic data fetching, refresh capabilities, and state management
  * for repository metadata and branch information.
  */
@@ -48,35 +51,42 @@ export const useRepositoryData = ({
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [lastFetch, setLastFetch] = useState<Date | null>(null);
 
-  const fetchData = useCallback(async (isRefresh = false) => {
-    if (isRefresh) {
-      setIsRefreshing(true);
-    } else {
-      setIsLoading(true);
-    }
-    
-    setError(null);
-
-    try {
-      const response = await RepositoryService.getRepositoryDetails(repositoryId);
-      
-      if (response.success && response.data) {
-        const repositoryMetadata = RepositoryService.extractRepositoryMetadata(response.data);
-        const branchInfo = RepositoryService.extractBranchInfo(response.data);
-        
-        setMetadata(repositoryMetadata);
-        setBranches(branchInfo);
-        setLastFetch(new Date());
+  const fetchData = useCallback(
+    async (isRefresh = false) => {
+      if (isRefresh) {
+        setIsRefreshing(true);
       } else {
-        setError(response.error || 'Failed to fetch repository data');
+        setIsLoading(true);
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An unexpected error occurred');
-    } finally {
-      setIsLoading(false);
-      setIsRefreshing(false);
-    }
-  }, [repositoryId]);
+
+      setError(null);
+
+      try {
+        const response =
+          await RepositoryService.getRepositoryDetails(repositoryId);
+
+        if (response.success && response.data) {
+          const repositoryMetadata =
+            RepositoryService.extractRepositoryMetadata(response.data);
+          const branchInfo = RepositoryService.extractBranchInfo(response.data);
+
+          setMetadata(repositoryMetadata);
+          setBranches(branchInfo);
+          setLastFetch(new Date());
+        } else {
+          setError(response.error || 'Failed to fetch repository data');
+        }
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : 'An unexpected error occurred'
+        );
+      } finally {
+        setIsLoading(false);
+        setIsRefreshing(false);
+      }
+    },
+    [repositoryId]
+  );
 
   const refresh = useCallback(async () => {
     await fetchData(true);
@@ -146,7 +156,7 @@ export interface UseRepositoryActionsReturn {
 
 /**
  * Hook for repository actions
- * 
+ *
  * Provides functions for performing Git operations on repositories
  * with loading state management and error handling.
  */
@@ -158,61 +168,88 @@ export const useRepositoryActions = ({
   const [isActionLoading, setIsActionLoading] = useState(false);
   const [currentAction, setCurrentAction] = useState<string | null>(null);
 
-  const executeAction = useCallback(async (
-    actionName: string,
-    action: () => Promise<{ success: boolean; message?: string; error?: string }>
-  ) => {
-    setIsActionLoading(true);
-    setCurrentAction(actionName);
+  const executeAction = useCallback(
+    async (
+      actionName: string,
+      action: () => Promise<{
+        success: boolean;
+        message?: string;
+        error?: string;
+      }>
+    ) => {
+      setIsActionLoading(true);
+      setCurrentAction(actionName);
 
-    try {
-      const result = await action();
-      
-      if (result.success) {
-        onSuccess?.(result.message || `${actionName} completed successfully`);
-      } else {
-        onError?.(result.error || `${actionName} failed`);
+      try {
+        const result = await action();
+
+        if (result.success) {
+          onSuccess?.(result.message || `${actionName} completed successfully`);
+        } else {
+          onError?.(result.error || `${actionName} failed`);
+        }
+      } catch (err) {
+        onError?.(err instanceof Error ? err.message : `${actionName} failed`);
+      } finally {
+        setIsActionLoading(false);
+        setCurrentAction(null);
       }
-    } catch (err) {
-      onError?.(err instanceof Error ? err.message : `${actionName} failed`);
-    } finally {
-      setIsActionLoading(false);
-      setCurrentAction(null);
-    }
-  }, [onSuccess, onError]);
+    },
+    [onSuccess, onError]
+  );
 
-  const checkoutBranch = useCallback(async (branchName: string) => {
-    await executeAction('Checkout branch', async () => {
-      const response = await RepositoryService.checkoutBranch(repositoryId, branchName);
-      return {
-        success: response.success,
-        message: response.data?.message,
-        error: response.error,
-      };
-    });
-  }, [repositoryId, executeAction]);
+  const checkoutBranch = useCallback(
+    async (branchName: string) => {
+      await executeAction('Checkout branch', async () => {
+        const response = await RepositoryService.checkoutBranch(
+          repositoryId,
+          branchName
+        );
+        return {
+          success: response.success,
+          message: response.data?.message,
+          error: response.error,
+        };
+      });
+    },
+    [repositoryId, executeAction]
+  );
 
-  const createBranch = useCallback(async (branchName: string, fromBranch?: string) => {
-    await executeAction('Create branch', async () => {
-      const response = await RepositoryService.createBranch(repositoryId, branchName, fromBranch);
-      return {
-        success: response.success,
-        message: response.data?.message,
-        error: response.error,
-      };
-    });
-  }, [repositoryId, executeAction]);
+  const createBranch = useCallback(
+    async (branchName: string, fromBranch?: string) => {
+      await executeAction('Create branch', async () => {
+        const response = await RepositoryService.createBranch(
+          repositoryId,
+          branchName,
+          fromBranch
+        );
+        return {
+          success: response.success,
+          message: response.data?.message,
+          error: response.error,
+        };
+      });
+    },
+    [repositoryId, executeAction]
+  );
 
-  const deleteBranch = useCallback(async (branchName: string, force: boolean = false) => {
-    await executeAction('Delete branch', async () => {
-      const response = await RepositoryService.deleteBranch(repositoryId, branchName, force);
-      return {
-        success: response.success,
-        message: response.data?.message,
-        error: response.error,
-      };
-    });
-  }, [repositoryId, executeAction]);
+  const deleteBranch = useCallback(
+    async (branchName: string, force: boolean = false) => {
+      await executeAction('Delete branch', async () => {
+        const response = await RepositoryService.deleteBranch(
+          repositoryId,
+          branchName,
+          force
+        );
+        return {
+          success: response.success,
+          message: response.data?.message,
+          error: response.error,
+        };
+      });
+    },
+    [repositoryId, executeAction]
+  );
 
   const fetchRemote = useCallback(async () => {
     await executeAction('Fetch remote', async () => {
@@ -236,16 +273,23 @@ export const useRepositoryActions = ({
     });
   }, [repositoryId, executeAction]);
 
-  const pushToRemote = useCallback(async (branchName?: string, setUpstream: boolean = false) => {
-    await executeAction('Push to remote', async () => {
-      const response = await RepositoryService.pushRepository(repositoryId, branchName, setUpstream);
-      return {
-        success: response.success,
-        message: response.data?.message,
-        error: response.error,
-      };
-    });
-  }, [repositoryId, executeAction]);
+  const pushToRemote = useCallback(
+    async (branchName?: string, setUpstream: boolean = false) => {
+      await executeAction('Push to remote', async () => {
+        const response = await RepositoryService.pushRepository(
+          repositoryId,
+          branchName,
+          setUpstream
+        );
+        return {
+          success: response.success,
+          message: response.data?.message,
+          error: response.error,
+        };
+      });
+    },
+    [repositoryId, executeAction]
+  );
 
   return {
     checkoutBranch,

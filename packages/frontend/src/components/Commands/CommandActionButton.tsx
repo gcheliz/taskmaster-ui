@@ -11,7 +11,13 @@ export interface CommandActionButtonProps {
   label: string;
   description?: string;
   icon?: React.ComponentType<{ className?: string }>;
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'link' | 'destructive';
+  variant?:
+    | 'primary'
+    | 'secondary'
+    | 'outline'
+    | 'ghost'
+    | 'link'
+    | 'destructive';
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'icon';
   workingDirectory?: string;
   repositoryPath?: string;

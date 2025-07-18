@@ -127,7 +127,7 @@
 }
 
 .feature-list li::before {
-  content: "•";
+  content: '•';
   color: var(--color-warning);
   font-weight: var(--font-weight-bold);
   position: absolute;
@@ -139,24 +139,24 @@
   .view-header h1 {
     font-size: var(--font-size-2xl);
   }
-  
+
   .view-description {
     font-size: var(--font-size-base);
   }
-  
+
   .placeholder-message {
     padding: var(--spacing-8) var(--spacing-5);
     margin: 0 var(--spacing-5);
   }
-  
+
   .placeholder-message h2 {
     font-size: var(--font-size-xl);
   }
-  
+
   .view-toggle {
     padding: var(--spacing-3) 0;
   }
-  
+
   .toggle-button {
     padding: var(--spacing-2) var(--spacing-4);
     font-size: var(--font-size-xs);
@@ -167,23 +167,23 @@
   .view-header {
     margin-bottom: var(--spacing-5);
   }
-  
+
   .view-header h1 {
     font-size: var(--font-size-xl);
   }
-  
+
   .view-content {
     min-height: 300px;
   }
-  
+
   .placeholder-message {
     padding: var(--spacing-5) var(--spacing-4);
   }
-  
+
   .view-toggle {
     padding: var(--spacing-2) 0;
   }
-  
+
   .toggle-button {
     padding: var(--spacing-1) var(--spacing-3);
     font-size: var(--font-size-xs);

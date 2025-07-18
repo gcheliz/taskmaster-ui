@@ -35,13 +35,9 @@ const modalTitleVariants = cva(
   'text-lg font-semibold leading-none tracking-tight'
 );
 
-const modalDescriptionVariants = cva(
-  'text-sm text-secondary-600'
-);
+const modalDescriptionVariants = cva('text-sm text-secondary-600');
 
-const modalBodyVariants = cva(
-  'flex-1 overflow-y-auto'
-);
+const modalBodyVariants = cva('flex-1 overflow-y-auto');
 
 const modalFooterVariants = cva(
   'flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2'
@@ -124,35 +120,50 @@ const Modal: React.FC<ModalProps> = ({ open, onOpenChange, children }) => {
 
 export interface ModalTriggerProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'link' | 'destructive';
+  variant?:
+    | 'primary'
+    | 'secondary'
+    | 'outline'
+    | 'ghost'
+    | 'link'
+    | 'destructive';
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'icon';
 }
 
-const ModalTrigger = React.forwardRef<
-  HTMLButtonElement,
-  ModalTriggerProps
->(({ children, onClick, variant, size, ...props }, ref) => {
-  const { onOpenChange } = useModalContext();
+const ModalTrigger = React.forwardRef<HTMLButtonElement, ModalTriggerProps>(
+  ({ children, onClick, variant, size, ...props }, ref) => {
+    const { onOpenChange } = useModalContext();
 
-  return (
-    <Button
-      ref={ref}
-      variant={variant}
-      size={size}
-      onClick={(event) => {
-        onOpenChange(true);
-        onClick?.(event);
-      }}
-      {...props}
-    >
-      {children}
-    </Button>
-  );
-});
+    return (
+      <Button
+        ref={ref}
+        variant={variant}
+        size={size}
+        onClick={event => {
+          onOpenChange(true);
+          onClick?.(event);
+        }}
+        {...props}
+      >
+        {children}
+      </Button>
+    );
+  }
+);
 ModalTrigger.displayName = 'ModalTrigger';
 
 const ModalContent = React.forwardRef<HTMLDivElement, ModalContentProps>(
-  ({ className, size, onEscapeKeyDown, onPointerDownOutside, children, ...props }, ref) => {
+  (
+    {
+      className,
+      size,
+      onEscapeKeyDown,
+      onPointerDownOutside,
+      children,
+      ...props
+    },
+    ref
+  ) => {
     const { open, onOpenChange } = useModalContext();
     const contentRef = useRef<HTMLDivElement>(null);
     const overlayRef = useRef<HTMLDivElement>(null);
@@ -179,7 +190,9 @@ const ModalContent = React.forwardRef<HTMLDivElement, ModalContentProps>(
         if (!focusableElements || focusableElements.length === 0) return;
 
         const firstElement = focusableElements[0] as HTMLElement;
-        const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+        const lastElement = focusableElements[
+          focusableElements.length - 1
+        ] as HTMLElement;
 
         if (event.shiftKey) {
           if (document.activeElement === firstElement) {
@@ -251,7 +264,7 @@ const ModalContent = React.forwardRef<HTMLDivElement, ModalContentProps>(
           aria-modal="true"
           data-state={open ? 'open' : 'closed'}
           className={cn(modalContentVariants({ size, className }))}
-          onClick={(e) => e.stopPropagation()}
+          onClick={e => e.stopPropagation()}
           {...props}
         >
           {children}
@@ -286,15 +299,16 @@ const ModalTitle = React.forwardRef<HTMLHeadingElement, ModalTitleProps>(
 );
 ModalTitle.displayName = 'ModalTitle';
 
-const ModalDescription = React.forwardRef<HTMLParagraphElement, ModalDescriptionProps>(
-  ({ className, ...props }, ref) => (
-    <p
-      ref={ref}
-      className={cn(modalDescriptionVariants({ className }))}
-      {...props}
-    />
-  )
-);
+const ModalDescription = React.forwardRef<
+  HTMLParagraphElement,
+  ModalDescriptionProps
+>(({ className, ...props }, ref) => (
+  <p
+    ref={ref}
+    className={cn(modalDescriptionVariants({ className }))}
+    {...props}
+  />
+));
 ModalDescription.displayName = 'ModalDescription';
 
 const ModalBody = React.forwardRef<HTMLDivElement, ModalBodyProps>(
@@ -331,7 +345,7 @@ const ModalClose = React.forwardRef<
       variant="ghost"
       size="sm"
       className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
-      onClick={(event) => {
+      onClick={event => {
         onOpenChange(false);
         onClick?.(event);
       }}

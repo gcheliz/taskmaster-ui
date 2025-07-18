@@ -16,13 +16,13 @@ class TaskMasterController {
     async executeCommand(req, res) {
         try {
             const request = req.validatedBody;
-            const { repositoryPath, operation, arguments: args = {}, options = {} } = request;
+            const { repositoryPath, operation, arguments: args = {}, options = {}, } = request;
             // Emit WebSocket event for real-time tracking
             this.emitWebSocketEvent('command:start', {
                 requestId: req.requestId,
                 repositoryPath,
                 operation,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
             });
             let result;
             // Route to appropriate service method based on operation
@@ -34,7 +34,7 @@ class TaskMasterController {
                 case 'list':
                     result = await this.taskMasterService.listTasks(repositoryPath, {
                         status: args.status,
-                        tag: options.tag
+                        tag: options.tag,
                     });
                     break;
                 case 'show':
@@ -42,7 +42,7 @@ class TaskMasterController {
                         throw new Error('Task ID is required for show operation');
                     }
                     result = await this.taskMasterService.getTask(repositoryPath, args.id.toString(), {
-                        tag: options.tag
+                        tag: options.tag,
                     });
                     break;
                 case 'set-status':
@@ -53,7 +53,7 @@ class TaskMasterController {
                     break;
                 case 'next':
                     result = await this.taskMasterService.getNextTask(repositoryPath, {
-                        tag: options.tag
+                        tag: options.tag,
                     });
                     break;
                 case 'parse-prd':
@@ -61,7 +61,7 @@ class TaskMasterController {
                         throw new Error('PRD file path is required for parse-prd operation');
                     }
                     result = await this.taskMasterService.parsePRD(repositoryPath, args.file, {
-                        append: args.append
+                        append: args.append,
                     });
                     break;
                 case 'expand':
@@ -71,7 +71,7 @@ class TaskMasterController {
                     result = await this.taskMasterService.expandTask(repositoryPath, args.id?.toString(), {
                         research: args.research,
                         force: args.force,
-                        tag: options.tag
+                        tag: options.tag,
                     });
                     break;
                 case 'analyze-complexity':
@@ -79,12 +79,12 @@ class TaskMasterController {
                         from: args.from,
                         to: args.to,
                         research: args.research,
-                        tag: options.tag
+                        tag: options.tag,
                     });
                     break;
                 case 'validate-dependencies':
                     result = await this.taskMasterService.validateDependencies(repositoryPath, {
-                        tag: options.tag
+                        tag: options.tag,
                     });
                     break;
                 default:
@@ -97,7 +97,7 @@ class TaskMasterController {
                 operation,
                 success: result.success,
                 duration: result.duration,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
             });
             const response = {
                 success: true,
@@ -107,11 +107,11 @@ class TaskMasterController {
                     requestId: req.requestId,
                     duration: Date.now() - req.startTime,
                     version: process.env.API_VERSION || '1.0.0',
-                    rateLimit: req.rateLimit
-                }
+                    rateLimit: req.rateLimit,
+                },
             };
             res.apiSuccess(result, {
-                rateLimit: req.rateLimit
+                rateLimit: req.rateLimit,
             });
         }
         catch (error) {
@@ -144,10 +144,10 @@ class TaskMasterController {
             const responseData = {
                 project: statusResult.data,
                 stats,
-                tasks: tasksData
+                tasks: tasksData,
             };
             res.apiSuccess(responseData, {
-                rateLimit: req.rateLimit
+                rateLimit: req.rateLimit,
             });
         }
         catch (error) {
@@ -161,14 +161,14 @@ class TaskMasterController {
     async listTasks(req, res) {
         try {
             const request = req.query;
-            const { repositoryPath, filters = {}, pagination = { page: 1, limit: 50 }, sorting } = request;
+            const { repositoryPath, filters = {}, pagination = { page: 1, limit: 50 }, sorting, } = request;
             if (!repositoryPath) {
                 throw new Error('Repository path is required');
             }
             // Get tasks from service
             const result = await this.taskMasterService.listTasks(repositoryPath, {
                 status: filters.status?.[0], // Service accepts single status for now
-                tag: this.extractTagFromPath(repositoryPath)
+                tag: this.extractTagFromPath(repositoryPath),
             });
             if (!result.success || !result.data) {
                 throw new Error('Failed to retrieve tasks');
@@ -225,13 +225,13 @@ class TaskMasterController {
                     pageSize: pagination.limit,
                     totalItems: totalCount,
                     hasNext: endIndex < totalCount,
-                    hasPrevious: pagination.page > 1
+                    hasPrevious: pagination.page > 1,
                 },
                 filters,
-                totalCount
+                totalCount,
             };
             res.apiSuccess(responseData, {
-                rateLimit: req.rateLimit
+                rateLimit: req.rateLimit,
             });
         }
         catch (error) {
@@ -252,7 +252,7 @@ class TaskMasterController {
             }
             // Get task details
             const result = await this.taskMasterService.getTask(repositoryPath, taskId, {
-                tag: this.extractTagFromPath(repositoryPath)
+                tag: this.extractTagFromPath(repositoryPath),
             });
             if (!result.success || !result.data) {
                 throw new Error(`Task ${taskId} not found`);
@@ -262,10 +262,10 @@ class TaskMasterController {
                 subtasks: includeSubtasks ? [] : undefined, // Would be implemented with subtask service
                 history: includeHistory ? [] : undefined, // Would be implemented with history service
                 dependencies: [], // Would be populated from dependency analysis
-                dependents: [] // Would be populated from dependency analysis
+                dependents: [], // Would be populated from dependency analysis
             };
             res.apiSuccess(responseData, {
-                rateLimit: req.rateLimit
+                rateLimit: req.rateLimit,
             });
         }
         catch (error) {
@@ -296,10 +296,10 @@ class TaskMasterController {
                     taskId,
                     repositoryPath,
                     updates,
-                    timestamp: new Date().toISOString()
+                    timestamp: new Date().toISOString(),
                 });
                 res.apiSuccess(result.data, {
-                    rateLimit: req.rateLimit
+                    rateLimit: req.rateLimit,
                 });
             }
             else {
@@ -310,7 +310,7 @@ class TaskMasterController {
                 }
                 // In a real implementation, you'd update other fields here
                 res.apiSuccess(taskResult.data, {
-                    rateLimit: req.rateLimit
+                    rateLimit: req.rateLimit,
                 });
             }
         }
@@ -330,7 +330,7 @@ class TaskMasterController {
             const result = await this.taskMasterService.expandTask(repositoryPath, taskId, {
                 research: options.research,
                 force: options.force,
-                tag: this.extractTagFromPath(repositoryPath)
+                tag: this.extractTagFromPath(repositoryPath),
             });
             // Create expansion result
             const responseData = {
@@ -340,8 +340,8 @@ class TaskMasterController {
                     totalSubtasksCreated: 0, // Would be calculated from actual expansion
                     averageExpansionRatio: 0,
                     estimatedTimeToComplete: '1 hour',
-                    researchUsed: options.research || false
-                }
+                    researchUsed: options.research || false,
+                },
             };
             // Emit WebSocket notification
             this.emitWebSocketEvent('task:expanded', {
@@ -349,10 +349,10 @@ class TaskMasterController {
                 repositoryPath,
                 options,
                 result: responseData,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
             });
             res.apiSuccess(responseData, {
-                rateLimit: req.rateLimit
+                rateLimit: req.rateLimit,
             });
         }
         catch (error) {
@@ -371,7 +371,7 @@ class TaskMasterController {
                 from: range?.from,
                 to: range?.to,
                 research: options.research,
-                tag: this.extractTagFromPath(repositoryPath)
+                tag: this.extractTagFromPath(repositoryPath),
             });
             // Create complexity analysis result
             const responseData = {
@@ -382,11 +382,11 @@ class TaskMasterController {
                     analysisTime: result.duration,
                     algorithmsUsed: ['dependency-analysis', 'complexity-heuristics'],
                     confidenceScore: 0.85,
-                    lastUpdate: new Date().toISOString()
-                }
+                    lastUpdate: new Date().toISOString(),
+                },
             };
             res.apiSuccess(responseData, {
-                rateLimit: req.rateLimit
+                rateLimit: req.rateLimit,
             });
         }
         catch (error) {
@@ -407,15 +407,15 @@ class TaskMasterController {
             res.writeHead(200, {
                 'Content-Type': 'text/event-stream',
                 'Cache-Control': 'no-cache',
-                'Connection': 'keep-alive',
+                Connection: 'keep-alive',
                 'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Headers': 'Cache-Control'
+                'Access-Control-Allow-Headers': 'Cache-Control',
             });
             // Send initial event
             this.sendSSE(res, 'start', {
                 requestId: req.requestId,
                 operation,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
             });
             // Set up periodic heartbeat
             const heartbeat = setInterval(() => {
@@ -436,7 +436,7 @@ class TaskMasterController {
                 this.sendSSE(res, 'complete', {
                     success: true,
                     duration: 3000,
-                    timestamp: new Date().toISOString()
+                    timestamp: new Date().toISOString(),
                 });
                 clearInterval(heartbeat);
                 res.end();
@@ -454,16 +454,18 @@ class TaskMasterController {
             requestId: req.requestId,
             operation,
             error: error.message,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
         });
         const apiError = {
             code: this.getErrorCode(error),
             message: error.message,
-            details: process.env.NODE_ENV === 'development' ? {
-                stack: error.stack,
-                operation
-            } : undefined,
-            correlationId: req.correlationId
+            details: process.env.NODE_ENV === 'development'
+                ? {
+                    stack: error.stack,
+                    operation,
+                }
+                : undefined,
+            correlationId: req.correlationId,
         };
         res.apiError(apiError, this.getStatusCode(error));
     }
@@ -481,11 +483,16 @@ class TaskMasterController {
     getStatusCode(error) {
         const code = this.getErrorCode(error);
         switch (code) {
-            case 'NOT_FOUND': return 404;
-            case 'VALIDATION_ERROR': return 400;
-            case 'PERMISSION_DENIED': return 403;
-            case 'TIMEOUT': return 408;
-            default: return 500;
+            case 'NOT_FOUND':
+                return 404;
+            case 'VALIDATION_ERROR':
+                return 400;
+            case 'PERMISSION_DENIED':
+                return 403;
+            case 'TIMEOUT':
+                return 408;
+            default:
+                return 500;
         }
     }
     emitWebSocketEvent(event, data) {
@@ -515,7 +522,7 @@ class TaskMasterController {
             blockedTasks,
             averageComplexity: 5.5, // Would be calculated from actual complexity data
             estimatedCompletion: '2 weeks',
-            lastActivity: new Date().toISOString()
+            lastActivity: new Date().toISOString(),
         };
     }
     sortTasks(tasks, sorting) {
@@ -524,12 +531,18 @@ class TaskMasterController {
             let bValue = b[sorting.field];
             // Handle special sorting cases
             if (sorting.field === 'priority') {
-                const priorityOrder = { 'high': 3, 'medium': 2, 'low': 1 };
+                const priorityOrder = { high: 3, medium: 2, low: 1 };
                 aValue = priorityOrder[aValue] || 0;
                 bValue = priorityOrder[bValue] || 0;
             }
             if (sorting.field === 'status') {
-                const statusOrder = { 'pending': 1, 'in-progress': 2, 'done': 3, 'blocked': 4, 'deferred': 5 };
+                const statusOrder = {
+                    pending: 1,
+                    'in-progress': 2,
+                    done: 3,
+                    blocked: 4,
+                    deferred: 5,
+                };
                 aValue = statusOrder[aValue] || 0;
                 bValue = statusOrder[bValue] || 0;
             }

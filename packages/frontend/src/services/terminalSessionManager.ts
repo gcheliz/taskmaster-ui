@@ -27,7 +27,10 @@ export interface TerminalSessionManager {
   /** Update session activity */
   updateSessionActivity(sessionId: string): void;
   /** Update session settings */
-  updateSessionSettings(sessionId: string, settings: Partial<PersistedTerminalSession['settings']>): void;
+  updateSessionSettings(
+    sessionId: string,
+    settings: Partial<PersistedTerminalSession['settings']>
+  ): void;
   /** Clear all persisted sessions */
   clearAllSessions(): void;
   /** Restore active sessions */
@@ -36,7 +39,9 @@ export interface TerminalSessionManager {
   cleanupOldSessions(maxAge: number): void;
 }
 
-export class LocalStorageTerminalSessionManager implements TerminalSessionManager {
+export class LocalStorageTerminalSessionManager
+  implements TerminalSessionManager
+{
   private readonly storageKey = 'taskmaster-terminal-sessions';
   private readonly maxSessions = 10;
   private readonly defaultSettings = {
@@ -44,17 +49,19 @@ export class LocalStorageTerminalSessionManager implements TerminalSessionManage
     fontSize: 14,
     fontFamily: 'Courier New, monospace',
     cols: 80,
-    rows: 24
+    rows: 24,
   };
 
   getPersistedSessions(): PersistedTerminalSession[] {
     try {
       const stored = localStorage.getItem(this.storageKey);
       if (!stored) return [];
-      
+
       const sessions: PersistedTerminalSession[] = JSON.parse(stored);
-      return sessions.sort((a, b) => 
-        new Date(b.lastActivity).getTime() - new Date(a.lastActivity).getTime()
+      return sessions.sort(
+        (a, b) =>
+          new Date(b.lastActivity).getTime() -
+          new Date(a.lastActivity).getTime()
       );
     } catch (error) {
       console.error('Failed to load persisted sessions:', error);
@@ -66,18 +73,18 @@ export class LocalStorageTerminalSessionManager implements TerminalSessionManage
     try {
       const sessions = this.getPersistedSessions();
       const existingIndex = sessions.findIndex(s => s.id === session.id);
-      
+
       if (existingIndex >= 0) {
         sessions[existingIndex] = session;
       } else {
         sessions.unshift(session);
       }
-      
+
       // Limit number of sessions
       if (sessions.length > this.maxSessions) {
         sessions.splice(this.maxSessions);
       }
-      
+
       localStorage.setItem(this.storageKey, JSON.stringify(sessions));
     } catch (error) {
       console.error('Failed to save session:', error);
@@ -98,7 +105,7 @@ export class LocalStorageTerminalSessionManager implements TerminalSessionManage
     try {
       const sessions = this.getPersistedSessions();
       const session = sessions.find(s => s.id === sessionId);
-      
+
       if (session) {
         session.lastActivity = new Date().toISOString();
         this.saveSession(session);
@@ -108,11 +115,14 @@ export class LocalStorageTerminalSessionManager implements TerminalSessionManage
     }
   }
 
-  updateSessionSettings(sessionId: string, settings: Partial<PersistedTerminalSession['settings']>): void {
+  updateSessionSettings(
+    sessionId: string,
+    settings: Partial<PersistedTerminalSession['settings']>
+  ): void {
     try {
       const sessions = this.getPersistedSessions();
       const session = sessions.find(s => s.id === sessionId);
-      
+
       if (session) {
         session.settings = { ...session.settings, ...settings };
         this.saveSession(session);
@@ -134,34 +144,38 @@ export class LocalStorageTerminalSessionManager implements TerminalSessionManage
     try {
       const persistedSessions = this.getPersistedSessions();
       const activeSessions = persistedSessions.filter(s => s.isActive);
-      
+
       // Try to restore sessions on the backend
       const restoredSessions: TerminalSession[] = [];
-      
+
       for (const persistedSession of activeSessions) {
         try {
           // Check if session still exists on backend
-          const backendSession = await terminalService.getSession(persistedSession.id);
+          const backendSession = await terminalService.getSession(
+            persistedSession.id
+          );
           restoredSessions.push(backendSession);
         } catch (error) {
           // Session doesn't exist on backend, create a new one
           try {
             const newSession = await terminalService.createSession({
               workingDirectory: persistedSession.workingDirectory,
-              repositoryPath: persistedSession.repositoryPath
+              repositoryPath: persistedSession.repositoryPath,
             });
-            
+
             // Update persisted session with new ID
             const updatedSession: PersistedTerminalSession = {
               ...persistedSession,
               id: newSession.sessionId,
-              lastActivity: new Date().toISOString()
+              lastActivity: new Date().toISOString(),
             };
-            
+
             this.saveSession(updatedSession);
-            
+
             // Get the actual session details
-            const actualSession = await terminalService.getSession(newSession.sessionId);
+            const actualSession = await terminalService.getSession(
+              newSession.sessionId
+            );
             restoredSessions.push(actualSession);
           } catch (createError) {
             console.error('Failed to restore session:', createError);
@@ -169,13 +183,13 @@ export class LocalStorageTerminalSessionManager implements TerminalSessionManage
             const inactiveSession: PersistedTerminalSession = {
               ...persistedSession,
               isActive: false,
-              lastActivity: new Date().toISOString()
+              lastActivity: new Date().toISOString(),
             };
             this.saveSession(inactiveSession);
           }
         }
       }
-      
+
       return restoredSessions;
     } catch (error) {
       console.error('Failed to restore active sessions:', error);
@@ -187,12 +201,12 @@ export class LocalStorageTerminalSessionManager implements TerminalSessionManage
     try {
       const sessions = this.getPersistedSessions();
       const now = Date.now();
-      
+
       const recentSessions = sessions.filter(session => {
         const lastActivity = new Date(session.lastActivity).getTime();
-        return (now - lastActivity) < maxAge;
+        return now - lastActivity < maxAge;
       });
-      
+
       localStorage.setItem(this.storageKey, JSON.stringify(recentSessions));
     } catch (error) {
       console.error('Failed to cleanup old sessions:', error);
@@ -207,7 +221,7 @@ export class LocalStorageTerminalSessionManager implements TerminalSessionManage
     settings?: Partial<PersistedTerminalSession['settings']>
   ): PersistedTerminalSession {
     const now = new Date().toISOString();
-    
+
     return {
       id: sessionId,
       repositoryPath,
@@ -216,11 +230,13 @@ export class LocalStorageTerminalSessionManager implements TerminalSessionManage
       createdAt: now,
       lastActivity: now,
       isActive: true,
-      settings: { ...this.defaultSettings, ...settings }
+      settings: { ...this.defaultSettings, ...settings },
     };
   }
 
-  getSessionSettings(sessionId: string): PersistedTerminalSession['settings'] | null {
+  getSessionSettings(
+    sessionId: string
+  ): PersistedTerminalSession['settings'] | null {
     const sessions = this.getPersistedSessions();
     const session = sessions.find(s => s.id === sessionId);
     return session?.settings || null;
@@ -239,7 +255,7 @@ export class LocalStorageTerminalSessionManager implements TerminalSessionManage
   markSessionAsActive(sessionId: string): void {
     const sessions = this.getPersistedSessions();
     const session = sessions.find(s => s.id === sessionId);
-    
+
     if (session) {
       session.isActive = true;
       session.lastActivity = new Date().toISOString();
@@ -250,7 +266,7 @@ export class LocalStorageTerminalSessionManager implements TerminalSessionManage
   markSessionAsInactive(sessionId: string): void {
     const sessions = this.getPersistedSessions();
     const session = sessions.find(s => s.id === sessionId);
-    
+
     if (session) {
       session.isActive = false;
       session.lastActivity = new Date().toISOString();
@@ -268,14 +284,15 @@ export class LocalStorageTerminalSessionManager implements TerminalSessionManage
   } {
     const sessions = this.getPersistedSessions();
     const repositories = [...new Set(sessions.map(s => s.repositoryPath))];
-    
+
     return {
       total: sessions.length,
       active: sessions.filter(s => s.isActive).length,
       inactive: sessions.filter(s => !s.isActive).length,
       repositories,
-      oldestSession: sessions.length > 0 ? sessions[sessions.length - 1].id : null,
-      newestSession: sessions.length > 0 ? sessions[0].id : null
+      oldestSession:
+        sessions.length > 0 ? sessions[sessions.length - 1].id : null,
+      newestSession: sessions.length > 0 ? sessions[0].id : null,
     };
   }
 }

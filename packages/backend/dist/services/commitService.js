@@ -24,7 +24,7 @@ class CommitService {
                     message: data.message,
                     author: data.author,
                     timestamp: data.timestamp,
-                    repositoryId: data.repositoryId
+                    repositoryId: data.repositoryId,
                 },
                 include: {
                     repository: {
@@ -32,12 +32,12 @@ class CommitService {
                             project: {
                                 select: {
                                     id: true,
-                                    name: true
-                                }
-                            }
-                        }
-                    }
-                }
+                                    name: true,
+                                },
+                            },
+                        },
+                    },
+                },
             });
             return commit;
         }
@@ -60,12 +60,12 @@ class CommitService {
                             project: {
                                 select: {
                                     id: true,
-                                    name: true
-                                }
-                            }
-                        }
-                    }
-                }
+                                    name: true,
+                                },
+                            },
+                        },
+                    },
+                },
             });
             return commit;
         }
@@ -93,13 +93,13 @@ class CommitService {
             if (options?.author) {
                 where.author = {
                     contains: options.author,
-                    mode: 'insensitive'
+                    mode: 'insensitive',
                 };
             }
             const commits = await prisma.commit.findMany({
                 where,
                 orderBy: {
-                    timestamp: 'desc'
+                    timestamp: 'desc',
                 },
                 take: options?.limit,
                 skip: options?.offset,
@@ -109,12 +109,12 @@ class CommitService {
                             project: {
                                 select: {
                                     id: true,
-                                    name: true
-                                }
-                            }
-                        }
-                    }
-                }
+                                    name: true,
+                                },
+                            },
+                        },
+                    },
+                },
             });
             return commits;
         }
@@ -131,8 +131,8 @@ class CommitService {
             const prisma = this.dbService.getPrisma();
             const where = {
                 repository: {
-                    projectId
-                }
+                    projectId,
+                },
             };
             if (options?.since || options?.until) {
                 where.timestamp = {};
@@ -146,13 +146,13 @@ class CommitService {
             if (options?.author) {
                 where.author = {
                     contains: options.author,
-                    mode: 'insensitive'
+                    mode: 'insensitive',
                 };
             }
             const commits = await prisma.commit.findMany({
                 where,
                 orderBy: {
-                    timestamp: 'desc'
+                    timestamp: 'desc',
                 },
                 take: options?.limit,
                 skip: options?.offset,
@@ -162,12 +162,12 @@ class CommitService {
                             project: {
                                 select: {
                                     id: true,
-                                    name: true
-                                }
-                            }
-                        }
-                    }
-                }
+                                    name: true,
+                                },
+                            },
+                        },
+                    },
+                },
             });
             return commits;
         }
@@ -185,7 +185,7 @@ class CommitService {
             const commit = await prisma.commit.findFirst({
                 where: { repositoryId },
                 orderBy: {
-                    timestamp: 'desc'
+                    timestamp: 'desc',
                 },
                 include: {
                     repository: {
@@ -193,12 +193,12 @@ class CommitService {
                             project: {
                                 select: {
                                     id: true,
-                                    name: true
-                                }
-                            }
-                        }
-                    }
-                }
+                                    name: true,
+                                },
+                            },
+                        },
+                    },
+                },
             });
             return commit;
         }
@@ -215,7 +215,7 @@ class CommitService {
             const prisma = this.dbService.getPrisma();
             // Check if commit exists
             const existing = await prisma.commit.findUnique({
-                where: { hash }
+                where: { hash },
             });
             if (!existing) {
                 return null;
@@ -229,12 +229,12 @@ class CommitService {
                             project: {
                                 select: {
                                     id: true,
-                                    name: true
-                                }
-                            }
-                        }
-                    }
-                }
+                                    name: true,
+                                },
+                            },
+                        },
+                    },
+                },
             });
             return commit;
         }
@@ -251,13 +251,13 @@ class CommitService {
             const prisma = this.dbService.getPrisma();
             // Check if commit exists
             const existing = await prisma.commit.findUnique({
-                where: { hash }
+                where: { hash },
             });
             if (!existing) {
                 return false;
             }
             await prisma.commit.delete({
-                where: { hash }
+                where: { hash },
             });
             return true;
         }
@@ -276,24 +276,24 @@ class CommitService {
             since.setDate(since.getDate() - days);
             const [totalCommits, commitsInPeriod, commitsWithAuthors] = await Promise.all([
                 prisma.commit.count({
-                    where: { repositoryId }
+                    where: { repositoryId },
                 }),
                 prisma.commit.count({
                     where: {
                         repositoryId,
-                        timestamp: { gte: since }
-                    }
+                        timestamp: { gte: since },
+                    },
                 }),
                 prisma.commit.findMany({
                     where: {
                         repositoryId,
-                        timestamp: { gte: since }
+                        timestamp: { gte: since },
                     },
                     select: {
                         author: true,
-                        timestamp: true
-                    }
-                })
+                        timestamp: true,
+                    },
+                }),
             ]);
             // Calculate unique authors
             const uniqueAuthors = new Set(commitsWithAuthors.map(c => c.author)).size;
@@ -322,7 +322,7 @@ class CommitService {
                 uniqueAuthors,
                 averageCommitsPerDay: Math.round(averageCommitsPerDay * 100) / 100,
                 commitsByAuthor,
-                commitsByDay
+                commitsByDay,
             };
         }
         catch (error) {
@@ -339,7 +339,7 @@ class CommitService {
             // Use createMany for efficient bulk insert
             const result = await prisma.commit.createMany({
                 data: commits,
-                skipDuplicates: true // Skip commits that already exist
+                skipDuplicates: true, // Skip commits that already exist
             });
             return result.count;
         }

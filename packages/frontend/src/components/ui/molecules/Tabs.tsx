@@ -25,9 +25,11 @@ const tabsTriggerVariants = cva(
   {
     variants: {
       variant: {
-        default: 'data-[state=active]:bg-white data-[state=active]:text-secondary-950 data-[state=active]:shadow-sm',
+        default:
+          'data-[state=active]:bg-white data-[state=active]:text-secondary-950 data-[state=active]:shadow-sm',
         line: 'border-b-2 border-transparent rounded-none data-[state=active]:border-primary-500 data-[state=active]:text-primary-600',
-        pills: 'data-[state=active]:bg-white data-[state=active]:text-secondary-950 data-[state=active]:shadow-sm',
+        pills:
+          'data-[state=active]:bg-white data-[state=active]:text-secondary-950 data-[state=active]:shadow-sm',
       },
     },
     defaultVariants: {
@@ -66,7 +68,18 @@ export interface TabsProps
 }
 
 const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(
-  ({ className, defaultValue, value, onValueChange, variant = 'default', children, ...props }, ref) => {
+  (
+    {
+      className,
+      defaultValue,
+      value,
+      onValueChange,
+      variant = 'default',
+      children,
+      ...props
+    },
+    ref
+  ) => {
     const [internalValue, setInternalValue] = useState(defaultValue || '');
     const activeTab = value !== undefined ? value : internalValue;
 
@@ -78,12 +91,10 @@ const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(
     };
 
     return (
-      <TabsContext.Provider value={{ activeTab, setActiveTab: handleTabChange, variant }}>
-        <div
-          ref={ref}
-          className={cn(tabsVariants({ className }))}
-          {...props}
-        >
+      <TabsContext.Provider
+        value={{ activeTab, setActiveTab: handleTabChange, variant }}
+      >
+        <div ref={ref} className={cn(tabsVariants({ className }))} {...props}>
           {children}
         </div>
       </TabsContext.Provider>
@@ -100,12 +111,16 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
   ({ className, variant: propVariant, ...props }, ref) => {
     const { variant: contextVariant } = useTabsContext();
     const variant = propVariant || contextVariant;
-    
+
     const handleKeyDown = (event: React.KeyboardEvent) => {
       const tablist = event.currentTarget;
-      const tabs = Array.from(tablist.querySelectorAll('[role="tab"]')) as HTMLElement[];
-      const currentIndex = tabs.findIndex(tab => tab === document.activeElement);
-      
+      const tabs = Array.from(
+        tablist.querySelectorAll('[role="tab"]')
+      ) as HTMLElement[];
+      const currentIndex = tabs.findIndex(
+        tab => tab === document.activeElement
+      );
+
       if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
         event.preventDefault();
         const nextIndex = (currentIndex + 1) % tabs.length;
@@ -113,7 +128,8 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
         tabs[nextIndex]?.click();
       } else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
         event.preventDefault();
-        const prevIndex = currentIndex === 0 ? tabs.length - 1 : currentIndex - 1;
+        const prevIndex =
+          currentIndex === 0 ? tabs.length - 1 : currentIndex - 1;
         tabs[prevIndex]?.focus();
         tabs[prevIndex]?.click();
       } else if (event.key === 'Home') {
@@ -126,7 +142,7 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
         tabs[tabs.length - 1]?.click();
       }
     };
-    
+
     return (
       <div
         ref={ref}
@@ -148,7 +164,11 @@ export interface TabsTriggerProps
 
 const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
   ({ className, variant: propVariant, value, children, ...props }, ref) => {
-    const { activeTab, setActiveTab, variant: contextVariant } = useTabsContext();
+    const {
+      activeTab,
+      setActiveTab,
+      variant: contextVariant,
+    } = useTabsContext();
     const variant = propVariant || contextVariant;
     const isActive = activeTab === value;
 

@@ -13,7 +13,7 @@ export class RateLimiter {
     return rateLimitMiddleware({
       windowMs: 15 * 60 * 1000, // 15 minutes default
       maxRequests: 100, // 100 requests per window default
-      ...options
+      ...options,
     });
   }
 
@@ -29,7 +29,7 @@ export class RateLimiter {
         const ip = req.ip || req.socket.remoteAddress || 'unknown';
         const userAgent = req.get('User-Agent') || 'unknown';
         return `${ip}:${userAgent}`;
-      }
+      },
     });
   }
 

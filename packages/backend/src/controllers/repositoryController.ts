@@ -1,10 +1,10 @@
 // Repository Management Controller
 // Handles repository validation and management operations
 
-import { 
+import {
   RepositoryValidateRequest,
   RepositoryValidateResponse,
-  ApiResponse 
+  ApiResponse,
 } from '../types/api';
 import { Request, Response } from 'express';
 import { repositoryValidationService } from '../services/repositoryValidationService';
@@ -20,37 +20,43 @@ export class RepositoryController {
   async validateRepository(req: any, res: any): Promise<void> {
     const startTime = Date.now();
     const requestId = req.requestId || 'unknown';
-    const context = { 
-      requestId, 
+    const context = {
+      requestId,
       operation: 'validate-repository',
-      path: req.body?.repositoryPath 
+      path: req.body?.repositoryPath,
     };
 
     try {
       logger.logApiRequest(req.method, req.path, context);
 
       const validateRequest: RepositoryValidateRequest = req.validatedBody;
-      const { repositoryPath, validateGit = true, validateTaskMaster = true } = validateRequest;
-
-      logger.info('Validating repository', { 
-        ...context, 
+      const {
         repositoryPath,
-        validateGit,
-        validateTaskMaster 
-      }, 'repository-controller');
+        validateGit = true,
+        validateTaskMaster = true,
+      } = validateRequest;
 
-      // Perform validation
-      const validationResult = await repositoryValidationService.validateRepository(
-        repositoryPath,
+      logger.info(
+        'Validating repository',
         {
+          ...context,
+          repositoryPath,
           validateGit,
           validateTaskMaster,
-          checkPermissions: true
-        }
+        },
+        'repository-controller'
       );
 
+      // Perform validation
+      const validationResult =
+        await repositoryValidationService.validateRepository(repositoryPath, {
+          validateGit,
+          validateTaskMaster,
+          checkPermissions: true,
+        });
+
       const duration = Date.now() - startTime;
-      
+
       const response: RepositoryValidateResponse = {
         success: true,
         data: validationResult,
@@ -58,28 +64,36 @@ export class RepositoryController {
           timestamp: new Date().toISOString(),
           requestId,
           duration,
-          version: '1.0.0'
-        }
+          version: '1.0.0',
+        },
       };
 
       logger.logApiResponse(req.method, req.path, 200, duration, context);
-      logger.info('Repository validation completed', { 
-        ...context, 
-        isValid: validationResult.isValid,
-        validationCount: validationResult.validations.length
-      }, 'repository-controller');
+      logger.info(
+        'Repository validation completed',
+        {
+          ...context,
+          isValid: validationResult.isValid,
+          validationCount: validationResult.validations.length,
+        },
+        'repository-controller'
+      );
 
       res.status(200).json(response);
-
     } catch (error) {
       const duration = Date.now() - startTime;
       const taskMasterError = errorHandler.normalizeError(error, context);
-      
+
       logger.logApiResponse(req.method, req.path, 500, duration, context);
-      logger.error('Repository validation failed', context, taskMasterError, 'repository-controller');
+      logger.error(
+        'Repository validation failed',
+        context,
+        taskMasterError,
+        'repository-controller'
+      );
 
       const statusCode = errorHandler.getHttpStatusCode(taskMasterError);
-      
+
       const errorResponse: ApiResponse = {
         success: false,
         error: {
@@ -88,16 +102,16 @@ export class RepositoryController {
           details: {
             type: taskMasterError.type,
             severity: taskMasterError.severity,
-            suggestions: taskMasterError.suggestions
+            suggestions: taskMasterError.suggestions,
           },
-          correlationId: requestId
+          correlationId: requestId,
         },
         metadata: {
           timestamp: new Date().toISOString(),
           requestId,
           duration,
-          version: '1.0.0'
-        }
+          version: '1.0.0',
+        },
       };
 
       res.status(statusCode).json(errorResponse);
@@ -112,10 +126,10 @@ export class RepositoryController {
     const startTime = Date.now();
     const requestId = req.requestId || 'unknown';
     const repositoryPath = req.query.repositoryPath as string;
-    const context = { 
-      requestId, 
+    const context = {
+      requestId,
       operation: 'get-repository-info',
-      path: repositoryPath 
+      path: repositoryPath,
     };
 
     try {
@@ -126,32 +140,34 @@ export class RepositoryController {
           success: false,
           error: {
             code: 'MISSING_PARAMETER',
-            message: 'repositoryPath query parameter is required'
+            message: 'repositoryPath query parameter is required',
           },
           metadata: {
             timestamp: new Date().toISOString(),
             requestId,
             duration: Date.now() - startTime,
-            version: '1.0.0'
-          }
+            version: '1.0.0',
+          },
         });
         return;
       }
 
-      logger.info('Getting repository info', { ...context, repositoryPath }, 'repository-controller');
-
-      // Get repository information through validation
-      const validationResult = await repositoryValidationService.validateRepository(
-        repositoryPath,
-        {
-          validateGit: true,
-          validateTaskMaster: true,
-          checkPermissions: false // Just get info, don't check permissions
-        }
+      logger.info(
+        'Getting repository info',
+        { ...context, repositoryPath },
+        'repository-controller'
       );
 
+      // Get repository information through validation
+      const validationResult =
+        await repositoryValidationService.validateRepository(repositoryPath, {
+          validateGit: true,
+          validateTaskMaster: true,
+          checkPermissions: false, // Just get info, don't check permissions
+        });
+
       const duration = Date.now() - startTime;
-      
+
       const response: ApiResponse = {
         success: true,
         data: validationResult.repositoryInfo,
@@ -159,35 +175,39 @@ export class RepositoryController {
           timestamp: new Date().toISOString(),
           requestId,
           duration,
-          version: '1.0.0'
-        }
+          version: '1.0.0',
+        },
       };
 
       logger.logApiResponse(req.method, req.path, 200, duration, context);
       res.status(200).json(response);
-
     } catch (error) {
       const duration = Date.now() - startTime;
       const taskMasterError = errorHandler.normalizeError(error, context);
-      
+
       logger.logApiResponse(req.method, req.path, 500, duration, context);
-      logger.error('Get repository info failed', context, taskMasterError, 'repository-controller');
+      logger.error(
+        'Get repository info failed',
+        context,
+        taskMasterError,
+        'repository-controller'
+      );
 
       const statusCode = errorHandler.getHttpStatusCode(taskMasterError);
-      
+
       const errorResponse: ApiResponse = {
         success: false,
         error: {
           code: taskMasterError.code,
           message: taskMasterError.userMessage,
-          correlationId: requestId
+          correlationId: requestId,
         },
         metadata: {
           timestamp: new Date().toISOString(),
           requestId,
           duration,
-          version: '1.0.0'
-        }
+          version: '1.0.0',
+        },
       };
 
       res.status(statusCode).json(errorResponse);
@@ -211,9 +231,9 @@ export class RepositoryController {
           service: 'ok',
           dependencies: {
             filesystem: 'ok',
-            git: 'ok'
-          }
-        }
+            git: 'ok',
+          },
+        },
       };
 
       const response: ApiResponse = {
@@ -223,31 +243,30 @@ export class RepositoryController {
           timestamp: new Date().toISOString(),
           requestId,
           duration: Date.now() - startTime,
-          version: '1.0.0'
-        }
+          version: '1.0.0',
+        },
       };
 
       res.status(200).json(response);
-
     } catch (error) {
-      const taskMasterError = errorHandler.normalizeError(error, { 
-        requestId, 
-        operation: 'repository-health-check' 
+      const taskMasterError = errorHandler.normalizeError(error, {
+        requestId,
+        operation: 'repository-health-check',
       });
-      
+
       const response: ApiResponse = {
         success: false,
         error: {
           code: taskMasterError.code,
           message: taskMasterError.userMessage,
-          correlationId: requestId
+          correlationId: requestId,
         },
         metadata: {
           timestamp: new Date().toISOString(),
           requestId,
           duration: Date.now() - startTime,
-          version: '1.0.0'
-        }
+          version: '1.0.0',
+        },
       };
 
       res.status(500).json(response);
@@ -262,10 +281,10 @@ export class RepositoryController {
     const startTime = Date.now();
     const requestId = req.requestId || 'unknown';
     const repositoryPath = req.query.repositoryPath as string;
-    const context = { 
-      requestId, 
+    const context = {
+      requestId,
       operation: 'get-repository-details',
-      path: repositoryPath 
+      path: repositoryPath,
     };
 
     try {
@@ -277,33 +296,38 @@ export class RepositoryController {
           error: {
             code: 'MISSING_PARAMETER',
             message: 'repositoryPath query parameter is required',
-            correlationId: requestId
+            correlationId: requestId,
           },
           metadata: {
             timestamp: new Date().toISOString(),
             requestId,
             duration: Date.now() - startTime,
-            version: '1.0.0'
-          }
+            version: '1.0.0',
+          },
         });
         return;
       }
 
-      logger.info('Getting repository details', { ...context, repositoryPath }, 'repository-controller');
+      logger.info(
+        'Getting repository details',
+        { ...context, repositoryPath },
+        'repository-controller'
+      );
 
       // Get comprehensive repository metadata
-      const repositoryMetadata = await gitDataService.getRepositoryMetadata(repositoryPath);
+      const repositoryMetadata =
+        await gitDataService.getRepositoryMetadata(repositoryPath);
 
       // Add remote information
       const remotes = await gitDataService.getRemotes(repositoryPath);
 
       const detailedData = {
         ...repositoryMetadata,
-        remotes
+        remotes,
       };
 
       const duration = Date.now() - startTime;
-      
+
       const response: ApiResponse = {
         success: true,
         data: detailedData,
@@ -311,29 +335,37 @@ export class RepositoryController {
           timestamp: new Date().toISOString(),
           requestId,
           duration,
-          version: '1.0.0'
-        }
+          version: '1.0.0',
+        },
       };
 
       logger.logApiResponse(req.method, req.path, 200, duration, context);
-      logger.info('Repository details retrieved successfully', { 
-        ...context, 
-        branchCount: repositoryMetadata.branches.length,
-        currentBranch: repositoryMetadata.currentBranch,
-        isClean: repositoryMetadata.status.isClean
-      }, 'repository-controller');
+      logger.info(
+        'Repository details retrieved successfully',
+        {
+          ...context,
+          branchCount: repositoryMetadata.branches.length,
+          currentBranch: repositoryMetadata.currentBranch,
+          isClean: repositoryMetadata.status.isClean,
+        },
+        'repository-controller'
+      );
 
       res.status(200).json(response);
-
     } catch (error) {
       const duration = Date.now() - startTime;
       const taskMasterError = errorHandler.normalizeError(error, context);
-      
+
       logger.logApiResponse(req.method, req.path, 500, duration, context);
-      logger.error('Get repository details failed', context, taskMasterError, 'repository-controller');
+      logger.error(
+        'Get repository details failed',
+        context,
+        taskMasterError,
+        'repository-controller'
+      );
 
       const statusCode = errorHandler.getHttpStatusCode(taskMasterError);
-      
+
       const errorResponse: ApiResponse = {
         success: false,
         error: {
@@ -342,16 +374,16 @@ export class RepositoryController {
           details: {
             type: taskMasterError.type,
             severity: taskMasterError.severity,
-            suggestions: taskMasterError.suggestions
+            suggestions: taskMasterError.suggestions,
           },
-          correlationId: requestId
+          correlationId: requestId,
         },
         metadata: {
           timestamp: new Date().toISOString(),
           requestId,
           duration,
-          version: '1.0.0'
-        }
+          version: '1.0.0',
+        },
       };
 
       res.status(statusCode).json(errorResponse);

@@ -4,20 +4,17 @@ import { cn } from '../../../utils/cn';
 import { Label } from '../atoms/Label';
 import { Input } from '../atoms/Input';
 
-const formFieldVariants = cva(
-  'space-y-2',
-  {
-    variants: {
-      variant: {
-        default: '',
-        inline: 'flex items-center space-x-3 space-y-0',
-      },
+const formFieldVariants = cva('space-y-2', {
+  variants: {
+    variant: {
+      default: '',
+      inline: 'flex items-center space-x-3 space-y-0',
     },
-    defaultVariants: {
-      variant: 'default',
-    },
-  }
-);
+  },
+  defaultVariants: {
+    variant: 'default',
+  },
+});
 
 export interface FormFieldProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>,
@@ -68,21 +65,24 @@ export interface FormFieldProps
 }
 
 const FormField = React.forwardRef<HTMLInputElement, FormFieldProps>(
-  ({ 
-    className, 
-    variant, 
-    label, 
-    description, 
-    helpText, 
-    error, 
-    success, 
-    required, 
-    leftIcon, 
-    rightIcon, 
-    inputSize,
-    id,
-    ...props 
-  }, ref) => {
+  (
+    {
+      className,
+      variant,
+      label,
+      description,
+      helpText,
+      error,
+      success,
+      required,
+      leftIcon,
+      rightIcon,
+      inputSize,
+      id,
+      ...props
+    },
+    ref
+  ) => {
     const fieldId = id || `field-${Math.random().toString(36).substr(2, 9)}`;
     const hasError = Boolean(error);
     const hasSuccess = Boolean(success);

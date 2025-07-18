@@ -10,7 +10,11 @@ interface AppLayoutProps {
 
 export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   return (
-    <div className="app-layout" role="application" aria-label="TaskMaster UI Application">
+    <div
+      className="app-layout"
+      role="application"
+      aria-label="TaskMaster UI Application"
+    >
       {/* Skip navigation for keyboard users */}
       <div className="skip-nav">
         <a href="#main-content">Skip to main content</a>
@@ -23,16 +27,14 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         <Sidebar />
 
         <main id="main-content" className="app-main" tabIndex={-1} role="main">
-          <div className="main-content">
-            {children}
-          </div>
+          <div className="main-content">{children}</div>
         </main>
       </div>
 
       <Footer />
-      
+
       {/* Global live region for application-wide announcements */}
-      <div 
+      <div
         id="global-announcements"
         className="sr-only"
         role="status"

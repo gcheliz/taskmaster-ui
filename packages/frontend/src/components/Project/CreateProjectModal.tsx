@@ -22,7 +22,7 @@ export interface CreateProjectModalProps {
 
 /**
  * Create Project Modal Component
- * 
+ *
  * Provides a modal interface for creating new TaskMaster projects.
  * Includes repository selection and project name validation.
  */
@@ -57,7 +57,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
       setProjectName('');
       setError(null);
       setValidationErrors({});
-      
+
       // Focus management
       setTimeout(() => {
         if (firstFocusableRef.current) {
@@ -84,7 +84,9 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
       if (!focusableElements || focusableElements.length === 0) return;
 
       const firstElement = focusableElements[0] as HTMLElement;
-      const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+      const lastElement = focusableElements[
+        focusableElements.length - 1
+      ] as HTMLElement;
 
       if (e.shiftKey) {
         // Shift + Tab (backward)
@@ -114,7 +116,9 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
         setError(response.error || 'Failed to load repositories');
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load repositories');
+      setError(
+        err instanceof Error ? err.message : 'Failed to load repositories'
+      );
     } finally {
       setIsLoading(false);
     }
@@ -151,8 +155,9 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
     try {
       // Get sanitized project name
       const nameValidation = validateProjectName(projectName);
-      const sanitizedProjectName = nameValidation.sanitizedValue || projectName.trim();
-      
+      const sanitizedProjectName =
+        nameValidation.sanitizedValue || projectName.trim();
+
       await onCreateProject(selectedRepositoryId, sanitizedProjectName);
       // Close modal on success - parent component will handle success feedback
       onClose();
@@ -184,8 +189,8 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
   }
 
   return (
-    <div 
-      className={`create-project-modal ${className}`} 
+    <div
+      className={`create-project-modal ${className}`}
       onClick={handleBackdropClick}
       onKeyDown={handleKeyDown}
       role="dialog"
@@ -194,7 +199,9 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
     >
       <div className="create-project-modal__content" ref={modalRef}>
         <div className="create-project-modal__header">
-          <h2 id="modal-title" className="modal-title">Create New Project</h2>
+          <h2 id="modal-title" className="modal-title">
+            Create New Project
+          </h2>
           <button
             ref={firstFocusableRef}
             className="modal-close-button"
@@ -211,7 +218,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
             <div className="error-banner">
               <span className="error-icon">⚠️</span>
               <span className="error-message">{error}</span>
-              <button 
+              <button
                 className="error-dismiss"
                 onClick={() => setError(null)}
                 aria-label="Dismiss error"
@@ -236,8 +243,8 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
                 <div className="repository-empty">
                   <span className="empty-icon">📁</span>
                   <span>No repositories connected</span>
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     className="link-button"
                     onClick={loadRepositories}
                   >
@@ -248,7 +255,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
                 <select
                   id="repository-select"
                   value={selectedRepositoryId}
-                  onChange={(e) => setSelectedRepositoryId(e.target.value)}
+                  onChange={e => setSelectedRepositoryId(e.target.value)}
                   className={`form-select ${validationErrors.repositoryId ? 'error' : ''}`}
                   disabled={isCreating}
                   data-testid="repository-select"
@@ -262,12 +269,16 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
                 </select>
               )}
               {validationErrors.repositoryId && (
-                <span className="form-error">{validationErrors.repositoryId}</span>
+                <span className="form-error">
+                  {validationErrors.repositoryId}
+                </span>
               )}
               {selectedRepositoryId && (
                 <div className="selected-repository-info">
                   <span className="info-icon">📂</span>
-                  <span className="repository-path">{getSelectedRepository()?.path}</span>
+                  <span className="repository-path">
+                    {getSelectedRepository()?.path}
+                  </span>
                 </div>
               )}
             </div>
@@ -281,7 +292,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
                 id="project-name"
                 type="text"
                 value={projectName}
-                onChange={(e) => setProjectName(e.target.value)}
+                onChange={e => setProjectName(e.target.value)}
                 className={`form-input ${validationErrors.projectName ? 'error' : ''}`}
                 placeholder="Enter project name..."
                 disabled={isCreating}
@@ -290,33 +301,44 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
                 data-testid="project-name-input"
               />
               {validationErrors.projectName && (
-                <span className="form-error">{validationErrors.projectName}</span>
+                <span className="form-error">
+                  {validationErrors.projectName}
+                </span>
               )}
               <div className="form-help">
-                Project names can contain letters, numbers, spaces, hyphens, and underscores.
+                Project names can contain letters, numbers, spaces, hyphens, and
+                underscores.
               </div>
             </div>
 
             {/* Preview */}
-            {selectedRepositoryId && projectName.trim() && !validationErrors.projectName && (
-              <div className="project-preview">
-                <h4 className="preview-title">Project Preview</h4>
-                <div className="preview-content">
-                  <div className="preview-item">
-                    <span className="preview-label">Repository:</span>
-                    <span className="preview-value">{getSelectedRepository()?.name}</span>
-                  </div>
-                  <div className="preview-item">
-                    <span className="preview-label">Project Name:</span>
-                    <span className="preview-value">{projectName.trim()}</span>
-                  </div>
-                  <div className="preview-item">
-                    <span className="preview-label">Will create:</span>
-                    <span className="preview-value">{getSelectedRepository()?.path}/.taskmaster/</span>
+            {selectedRepositoryId &&
+              projectName.trim() &&
+              !validationErrors.projectName && (
+                <div className="project-preview">
+                  <h4 className="preview-title">Project Preview</h4>
+                  <div className="preview-content">
+                    <div className="preview-item">
+                      <span className="preview-label">Repository:</span>
+                      <span className="preview-value">
+                        {getSelectedRepository()?.name}
+                      </span>
+                    </div>
+                    <div className="preview-item">
+                      <span className="preview-label">Project Name:</span>
+                      <span className="preview-value">
+                        {projectName.trim()}
+                      </span>
+                    </div>
+                    <div className="preview-item">
+                      <span className="preview-label">Will create:</span>
+                      <span className="preview-value">
+                        {getSelectedRepository()?.path}/.taskmaster/
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
           </form>
         </div>
 
@@ -334,7 +356,12 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
             type="submit"
             className="button button--primary"
             onClick={handleSubmit}
-            disabled={isCreating || repositories.length === 0 || !selectedRepositoryId || !projectName.trim()}
+            disabled={
+              isCreating ||
+              repositories.length === 0 ||
+              !selectedRepositoryId ||
+              !projectName.trim()
+            }
             data-testid="create-project-submit"
           >
             {isCreating ? (

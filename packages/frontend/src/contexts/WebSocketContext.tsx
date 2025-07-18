@@ -1,9 +1,20 @@
-import React, { createContext, useContext, useReducer, useCallback, useEffect, useRef } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useReducer,
+  useCallback,
+  useEffect,
+  useRef,
+} from 'react';
 import type { ReactNode } from 'react';
 
 // Types for WebSocket messages
 export interface TaskSyncMessage {
-  event: 'TASKS_UPDATED' | 'TASKS_ERROR' | 'REPOSITORY_ADDED' | 'REPOSITORY_REMOVED';
+  event:
+    | 'TASKS_UPDATED'
+    | 'TASKS_ERROR'
+    | 'REPOSITORY_ADDED'
+    | 'REPOSITORY_REMOVED';
   repositoryPath: string;
   timestamp: string;
   payload?: any;
@@ -17,7 +28,12 @@ export interface WebSocketMessage {
 }
 
 // WebSocket connection states
-export type ConnectionState = 'disconnected' | 'connecting' | 'connected' | 'reconnecting' | 'error';
+export type ConnectionState =
+  | 'disconnected'
+  | 'connecting'
+  | 'connected'
+  | 'reconnecting'
+  | 'error';
 
 export interface WebSocketState {
   connectionState: ConnectionState;
@@ -57,7 +73,10 @@ const initialState: WebSocketState = {
 };
 
 // Reducer
-function webSocketReducer(state: WebSocketState, action: WebSocketAction): WebSocketState {
+function webSocketReducer(
+  state: WebSocketState,
+  action: WebSocketAction
+): WebSocketState {
   switch (action.type) {
     case 'SET_CONNECTION_STATE':
       return {
@@ -112,26 +131,28 @@ function webSocketReducer(state: WebSocketState, action: WebSocketAction): WebSo
 export interface WebSocketContextType {
   state: WebSocketState;
   dispatch: React.Dispatch<WebSocketAction>;
-  
+
   // Connection methods
   connect: () => void;
   disconnect: () => void;
   reconnect: () => void;
-  
+
   // Message sending
   sendMessage: (message: any) => boolean;
-  
+
   // Event handlers
   onTaskUpdate: (handler: (update: TaskSyncMessage) => void) => () => void;
   onConnectionChange: (handler: (state: ConnectionState) => void) => () => void;
   onError: (handler: (error: string) => void) => () => void;
-  
+
   // Status checks
   isConnected: () => boolean;
   isConnecting: () => boolean;
 }
 
-const WebSocketContext = createContext<WebSocketContextType | undefined>(undefined);
+const WebSocketContext = createContext<WebSocketContextType | undefined>(
+  undefined
+);
 
 // Provider component
 export interface WebSocketProviderProps {
@@ -139,9 +160,9 @@ export interface WebSocketProviderProps {
   config?: WebSocketConfig;
 }
 
-export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ 
-  children, 
-  config = {} 
+export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
+  children,
+  config = {},
 }) => {
   const {
     url = `ws://${window.location.hostname}:3001`,
@@ -152,7 +173,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
   } = config;
 
   const [state, dispatch] = useReducer(webSocketReducer, initialState);
-  
+
   // Refs for managing WebSocket and cleanup
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -193,9 +214,12 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
       ws.onopen = () => {
         console.log('✅ WebSocket connected successfully');
         dispatch({ type: 'SET_CONNECTION_STATE', payload: 'connected' });
-        dispatch({ type: 'SET_CONNECTED_AT', payload: new Date().toISOString() });
+        dispatch({
+          type: 'SET_CONNECTED_AT',
+          payload: new Date().toISOString(),
+        });
         dispatch({ type: 'RESET_RECONNECT_ATTEMPTS' });
-        
+
         // Notify connection change handlers
         eventHandlersRef.current.connectionChange.forEach(handler => {
           try {
@@ -208,25 +232,30 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
         // Start heartbeat
         heartbeatIntervalRef.current = setInterval(() => {
           if (ws.readyState === WebSocket.OPEN) {
-            ws.send(JSON.stringify({ type: 'ping', timestamp: new Date().toISOString() }));
+            ws.send(
+              JSON.stringify({
+                type: 'ping',
+                timestamp: new Date().toISOString(),
+              })
+            );
           }
         }, heartbeatInterval);
       };
 
-      ws.onmessage = (event) => {
+      ws.onmessage = event => {
         try {
           const message: WebSocketMessage = JSON.parse(event.data);
           console.log('📨 WebSocket message received:', message);
-          
+
           dispatch({ type: 'SET_MESSAGE', payload: message });
 
           // Handle task updates specifically
           if (message.type === 'broadcast' && message.data) {
             const taskUpdate = message.data;
             console.log('📋 Task update received:', taskUpdate);
-            
+
             dispatch({ type: 'SET_TASK_UPDATE', payload: taskUpdate });
-            
+
             // Notify task update handlers
             eventHandlersRef.current.taskUpdate.forEach(handler => {
               try {
@@ -238,22 +267,29 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
           }
         } catch (error) {
           console.error('❌ Error parsing WebSocket message:', error);
-          dispatch({ type: 'SET_ERROR', payload: 'Failed to parse incoming message' });
+          dispatch({
+            type: 'SET_ERROR',
+            payload: 'Failed to parse incoming message',
+          });
         }
       };
 
-      ws.onclose = (event) => {
-        console.log('🔌 WebSocket connection closed:', event.code, event.reason);
+      ws.onclose = event => {
+        console.log(
+          '🔌 WebSocket connection closed:',
+          event.code,
+          event.reason
+        );
         clearTimeouts();
         dispatch({ type: 'SET_CONNECTED_AT', payload: null });
-        
+
         if (event.wasClean) {
           dispatch({ type: 'SET_CONNECTION_STATE', payload: 'disconnected' });
         } else {
           // Attempt to reconnect if it wasn't a clean close
           handleReconnect();
         }
-        
+
         // Notify connection change handlers
         eventHandlersRef.current.connectionChange.forEach(handler => {
           try {
@@ -264,11 +300,11 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
         });
       };
 
-      ws.onerror = (error) => {
+      ws.onerror = error => {
         console.error('❌ WebSocket error:', error);
         const errorMessage = 'WebSocket connection error';
         dispatch({ type: 'SET_ERROR', payload: errorMessage });
-        
+
         // Notify error handlers
         eventHandlersRef.current.error.forEach(handler => {
           try {
@@ -278,10 +314,12 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
           }
         });
       };
-
     } catch (error) {
       console.error('❌ Failed to create WebSocket connection:', error);
-      dispatch({ type: 'SET_ERROR', payload: 'Failed to create WebSocket connection' });
+      dispatch({
+        type: 'SET_ERROR',
+        payload: 'Failed to create WebSocket connection',
+      });
       dispatch({ type: 'SET_CONNECTION_STATE', payload: 'error' });
     }
   }, [url, heartbeatInterval]);
@@ -290,12 +328,12 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
   const disconnect = useCallback(() => {
     console.log('🔌 Disconnecting WebSocket...');
     clearTimeouts();
-    
+
     if (wsRef.current) {
       wsRef.current.close(1000, 'Client disconnecting');
       wsRef.current = null;
     }
-    
+
     dispatch({ type: 'SET_CONNECTION_STATE', payload: 'disconnected' });
     dispatch({ type: 'SET_CONNECTED_AT', payload: null });
   }, [clearTimeouts]);
@@ -305,19 +343,29 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
     if (state.reconnectAttempts >= maxReconnectAttempts) {
       console.error('❌ Max reconnection attempts reached');
       dispatch({ type: 'SET_CONNECTION_STATE', payload: 'error' });
-      dispatch({ type: 'SET_ERROR', payload: 'Failed to reconnect after maximum attempts' });
+      dispatch({
+        type: 'SET_ERROR',
+        payload: 'Failed to reconnect after maximum attempts',
+      });
       return;
     }
 
     dispatch({ type: 'SET_CONNECTION_STATE', payload: 'reconnecting' });
     dispatch({ type: 'INCREMENT_RECONNECT_ATTEMPTS' });
 
-    console.log(`🔄 Attempting to reconnect (${state.reconnectAttempts + 1}/${maxReconnectAttempts})...`);
-    
+    console.log(
+      `🔄 Attempting to reconnect (${state.reconnectAttempts + 1}/${maxReconnectAttempts})...`
+    );
+
     reconnectTimeoutRef.current = setTimeout(() => {
       connect();
     }, reconnectInterval);
-  }, [state.reconnectAttempts, maxReconnectAttempts, reconnectInterval, connect]);
+  }, [
+    state.reconnectAttempts,
+    maxReconnectAttempts,
+    reconnectInterval,
+    connect,
+  ]);
 
   // Manual reconnect
   const reconnect = useCallback(() => {
@@ -345,19 +393,25 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
   }, []);
 
   // Event handler registration
-  const onTaskUpdate = useCallback((handler: (update: TaskSyncMessage) => void) => {
-    eventHandlersRef.current.taskUpdate.add(handler);
-    return () => {
-      eventHandlersRef.current.taskUpdate.delete(handler);
-    };
-  }, []);
+  const onTaskUpdate = useCallback(
+    (handler: (update: TaskSyncMessage) => void) => {
+      eventHandlersRef.current.taskUpdate.add(handler);
+      return () => {
+        eventHandlersRef.current.taskUpdate.delete(handler);
+      };
+    },
+    []
+  );
 
-  const onConnectionChange = useCallback((handler: (state: ConnectionState) => void) => {
-    eventHandlersRef.current.connectionChange.add(handler);
-    return () => {
-      eventHandlersRef.current.connectionChange.delete(handler);
-    };
-  }, []);
+  const onConnectionChange = useCallback(
+    (handler: (state: ConnectionState) => void) => {
+      eventHandlersRef.current.connectionChange.add(handler);
+      return () => {
+        eventHandlersRef.current.connectionChange.delete(handler);
+      };
+    },
+    []
+  );
 
   const onError = useCallback((handler: (error: string) => void) => {
     eventHandlersRef.current.error.add(handler);
@@ -372,7 +426,10 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
   }, [state.connectionState]);
 
   const isConnecting = useCallback(() => {
-    return state.connectionState === 'connecting' || state.connectionState === 'reconnecting';
+    return (
+      state.connectionState === 'connecting' ||
+      state.connectionState === 'reconnecting'
+    );
   }, [state.connectionState]);
 
   // Auto-connect on mount

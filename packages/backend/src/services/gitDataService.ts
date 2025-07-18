@@ -1,4 +1,10 @@
-import { simpleGit, SimpleGit, BranchSummary, LogResult, StatusResult } from 'simple-git';
+import {
+  simpleGit,
+  SimpleGit,
+  BranchSummary,
+  LogResult,
+  StatusResult,
+} from 'simple-git';
 import { promises as fs } from 'fs';
 import path from 'path';
 
@@ -57,22 +63,19 @@ export class GitDataService {
   /**
    * Get comprehensive repository metadata
    */
-  async getRepositoryMetadata(repositoryPath: string): Promise<RepositoryMetadata> {
+  async getRepositoryMetadata(
+    repositoryPath: string
+  ): Promise<RepositoryMetadata> {
     await this.validateRepositoryPath(repositoryPath);
-    
+
     const git = this.createGitInstance(repositoryPath);
-    
+
     // Run Git operations in parallel for performance
-    const [
-      currentBranch,
-      lastCommit,
-      status,
-      branches
-    ] = await Promise.all([
+    const [currentBranch, lastCommit, status, branches] = await Promise.all([
       this.getCurrentBranch(git),
       this.getLastCommit(git),
       this.getRepositoryStatus(git),
-      this.getAllBranches(git)
+      this.getAllBranches(git),
     ]);
 
     const repositoryName = this.extractRepositoryName(repositoryPath);
@@ -83,7 +86,7 @@ export class GitDataService {
       currentBranch,
       lastCommit,
       status,
-      branches
+      branches,
     };
   }
 
@@ -111,24 +114,26 @@ export class GitDataService {
   async getLastCommit(git: SimpleGit): Promise<CommitInfo> {
     try {
       const log: LogResult = await git.log(['-1']);
-      
+
       if (!log.latest) {
         throw new Error('No commits found in repository');
       }
 
       const commit = log.latest;
-      
+
       return {
         hash: commit.hash,
         date: commit.date,
         message: commit.message,
         author: {
           name: commit.author_name,
-          email: commit.author_email
-        }
+          email: commit.author_email,
+        },
       };
     } catch (error) {
-      throw new Error(`Failed to get last commit: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to get last commit: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -138,7 +143,7 @@ export class GitDataService {
   async getRepositoryStatus(git: SimpleGit): Promise<GitStatus> {
     try {
       const status: StatusResult = await git.status();
-      
+
       const gitStatus: GitStatus = {
         isClean: status.isClean(),
         staged: status.staged.length,
@@ -146,12 +151,14 @@ export class GitDataService {
         untracked: status.not_added.length,
         conflicted: status.conflicted.length,
         ahead: status.ahead,
-        behind: status.behind
+        behind: status.behind,
       };
 
       return gitStatus;
     } catch (error) {
-      throw new Error(`Failed to get repository status: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to get repository status: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -163,7 +170,7 @@ export class GitDataService {
       // Get local branches with tracking info
       const localBranches = await git.branch(['-vv']);
       const remoteBranches = await git.branch(['-r']);
-      
+
       const branches: BranchInfo[] = [];
 
       // Process local branches
@@ -176,7 +183,7 @@ export class GitDataService {
           current: branch.current,
           tracking: (branch as any).tracking || undefined,
           ahead: (branch as any).ahead || undefined,
-          behind: (branch as any).behind || undefined
+          behind: (branch as any).behind || undefined,
         });
       }
 
@@ -189,13 +196,15 @@ export class GitDataService {
         branches.push({
           name: remoteName,
           type: 'remote',
-          current: false
+          current: false,
         });
       }
 
       return branches;
     } catch (error) {
-      throw new Error(`Failed to get branches: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to get branches: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -213,12 +222,14 @@ export class GitDataService {
    */
   async getRemotes(repositoryPath: string): Promise<string[]> {
     const git = this.createGitInstance(repositoryPath);
-    
+
     try {
       const remotes = await git.getRemotes(true);
       return remotes.map(remote => `${remote.name}: ${remote.refs.fetch}`);
     } catch (error) {
-      throw new Error(`Failed to get remotes: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to get remotes: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -232,7 +243,9 @@ export class GitDataService {
         throw new Error('Path is not a directory');
       }
     } catch (error) {
-      throw new Error(`Invalid repository path: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Invalid repository path: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
 
     // Check if it's a Git repository
@@ -240,7 +253,9 @@ export class GitDataService {
     try {
       await fs.access(gitDir);
     } catch {
-      throw new Error('Directory is not a Git repository (no .git directory found)');
+      throw new Error(
+        'Directory is not a Git repository (no .git directory found)'
+      );
     }
   }
 
@@ -251,9 +266,9 @@ export class GitDataService {
     return simpleGit({
       baseDir: repositoryPath,
       timeout: {
-        block: this.timeout
+        block: this.timeout,
       },
-      config: []
+      config: [],
     });
   }
 

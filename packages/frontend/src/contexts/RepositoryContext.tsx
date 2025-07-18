@@ -1,6 +1,9 @@
 import React, { createContext, useContext, useReducer } from 'react';
 import type { ReactNode } from 'react';
-import type { RepositoryInfo, RepositoryValidationResult } from '../services/api';
+import type {
+  RepositoryInfo,
+  RepositoryValidationResult,
+} from '../services/api';
 
 // Types
 export interface Repository extends RepositoryInfo {
@@ -22,7 +25,10 @@ export type RepositoryAction =
   | { type: 'ADD_REPOSITORY'; payload: Repository }
   | { type: 'REMOVE_REPOSITORY'; payload: string }
   | { type: 'SELECT_REPOSITORY'; payload: Repository | null }
-  | { type: 'UPDATE_REPOSITORY'; payload: { id: string; updates: Partial<Repository> } }
+  | {
+      type: 'UPDATE_REPOSITORY';
+      payload: { id: string; updates: Partial<Repository> };
+    }
   | { type: 'CLEAR_REPOSITORIES' }
   | { type: 'SET_REPOSITORIES'; payload: Repository[] };
 
@@ -35,7 +41,10 @@ const initialState: RepositoryState = {
 };
 
 // Reducer
-function repositoryReducer(state: RepositoryState, action: RepositoryAction): RepositoryState {
+function repositoryReducer(
+  state: RepositoryState,
+  action: RepositoryAction
+): RepositoryState {
   switch (action.type) {
     case 'SET_LOADING':
       return {
@@ -55,7 +64,7 @@ function repositoryReducer(state: RepositoryState, action: RepositoryAction): Re
       const existingIndex = state.repositories.findIndex(
         repo => repo.path === action.payload.path
       );
-      
+
       if (existingIndex >= 0) {
         // Update existing repository
         const updatedRepositories = [...state.repositories];
@@ -67,7 +76,7 @@ function repositoryReducer(state: RepositoryState, action: RepositoryAction): Re
           isLoading: false,
         };
       }
-      
+
       // Add new repository
       return {
         ...state,
@@ -76,14 +85,17 @@ function repositoryReducer(state: RepositoryState, action: RepositoryAction): Re
         isLoading: false,
       };
     }
-    
+
     case 'REMOVE_REPOSITORY':
       return {
         ...state,
-        repositories: state.repositories.filter(repo => repo.id !== action.payload),
-        selectedRepository: state.selectedRepository?.id === action.payload 
-          ? null 
-          : state.selectedRepository,
+        repositories: state.repositories.filter(
+          repo => repo.id !== action.payload
+        ),
+        selectedRepository:
+          state.selectedRepository?.id === action.payload
+            ? null
+            : state.selectedRepository,
       };
 
     case 'SELECT_REPOSITORY':
@@ -100,9 +112,10 @@ function repositoryReducer(state: RepositoryState, action: RepositoryAction): Re
             ? { ...repo, ...action.payload.updates }
             : repo
         ),
-        selectedRepository: state.selectedRepository?.id === action.payload.id
-          ? { ...state.selectedRepository, ...action.payload.updates }
-          : state.selectedRepository,
+        selectedRepository:
+          state.selectedRepository?.id === action.payload.id
+            ? { ...state.selectedRepository, ...action.payload.updates }
+            : state.selectedRepository,
       };
 
     case 'CLEAR_REPOSITORIES':
@@ -139,7 +152,9 @@ export interface RepositoryContextType {
   getRepositoryByPath: (path: string) => Repository | undefined;
 }
 
-const RepositoryContext = createContext<RepositoryContextType | undefined>(undefined);
+const RepositoryContext = createContext<RepositoryContextType | undefined>(
+  undefined
+);
 
 // Provider component
 export interface RepositoryProviderProps {

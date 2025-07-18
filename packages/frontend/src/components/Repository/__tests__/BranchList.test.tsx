@@ -15,14 +15,14 @@ const mockBranches: BranchInfo[] = [
       message: 'Add new feature for user management',
       author: {
         name: 'John Doe',
-        email: 'john@example.com'
-      }
+        email: 'john@example.com',
+      },
     },
     tracking: {
       remote: 'origin/main',
       ahead: 0,
-      behind: 0
-    }
+      behind: 0,
+    },
   },
   {
     name: 'feature/authentication',
@@ -35,14 +35,14 @@ const mockBranches: BranchInfo[] = [
       message: 'Implement JWT authentication system',
       author: {
         name: 'Jane Smith',
-        email: 'jane@example.com'
-      }
+        email: 'jane@example.com',
+      },
     },
     tracking: {
       remote: 'origin/main',
       ahead: 3,
-      behind: 1
-    }
+      behind: 1,
+    },
   },
   {
     name: 'origin/develop',
@@ -55,10 +55,10 @@ const mockBranches: BranchInfo[] = [
       message: 'Update dependencies and fix security vulnerabilities',
       author: {
         name: 'Bob Johnson',
-        email: 'bob@example.com'
-      }
-    }
-  }
+        email: 'bob@example.com',
+      },
+    },
+  },
 ];
 
 describe('BranchList', () => {
@@ -68,7 +68,7 @@ describe('BranchList', () => {
     expect(screen.getByText('Branches (3)')).toBeInTheDocument();
     expect(screen.getByText('🌿 2 local')).toBeInTheDocument();
     expect(screen.getByText('☁️ 1 remote')).toBeInTheDocument();
-    
+
     expect(screen.getByText('main')).toBeInTheDocument();
     expect(screen.getByText('feature/authentication')).toBeInTheDocument();
     expect(screen.getByText('origin/develop')).toBeInTheDocument();
@@ -91,7 +91,9 @@ describe('BranchList', () => {
     expect(mainBranch.querySelector('.branch-icon')).toHaveTextContent('🌟');
 
     // Local branch should have branch icon
-    const featureBranch = screen.getByTitle('Local branch: feature/authentication');
+    const featureBranch = screen.getByTitle(
+      'Local branch: feature/authentication'
+    );
     expect(featureBranch.querySelector('.branch-icon')).toHaveTextContent('🌿');
 
     // Remote branch should have cloud icon
@@ -104,15 +106,21 @@ describe('BranchList', () => {
 
     expect(screen.getByText('↑3')).toBeInTheDocument();
     expect(screen.getByText('↓1')).toBeInTheDocument();
-    expect(screen.getByTitle('3 commits ahead of origin/main')).toBeInTheDocument();
-    expect(screen.getByTitle('1 commits behind origin/main')).toBeInTheDocument();
+    expect(
+      screen.getByTitle('3 commits ahead of origin/main')
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTitle('1 commits behind origin/main')
+    ).toBeInTheDocument();
   });
 
   it('shows commit details when enabled', () => {
     render(<BranchList branches={mockBranches} showCommitDetails={true} />);
 
     expect(screen.getByText('abc123d')).toBeInTheDocument();
-    expect(screen.getByText('Add new feature for user management')).toBeInTheDocument();
+    expect(
+      screen.getByText('Add new feature for user management')
+    ).toBeInTheDocument();
     expect(screen.getByText('by John Doe')).toBeInTheDocument();
     expect(screen.getByTitle('abc123def456789')).toBeInTheDocument();
   });
@@ -121,7 +129,9 @@ describe('BranchList', () => {
     render(<BranchList branches={mockBranches} showCommitDetails={false} />);
 
     expect(screen.queryByText('abc123d')).not.toBeInTheDocument();
-    expect(screen.queryByText('Add new feature for user management')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('Add new feature for user management')
+    ).not.toBeInTheDocument();
     expect(screen.queryByText('by John Doe')).not.toBeInTheDocument();
   });
 
@@ -134,22 +144,32 @@ describe('BranchList', () => {
 
   it('shows checkout button for non-current local branches', () => {
     const mockCheckout = vi.fn();
-    render(<BranchList branches={mockBranches} onCheckoutBranch={mockCheckout} />);
+    render(
+      <BranchList branches={mockBranches} onCheckoutBranch={mockCheckout} />
+    );
 
-    const checkoutButton = screen.getByTitle('Checkout branch: feature/authentication');
+    const checkoutButton = screen.getByTitle(
+      'Checkout branch: feature/authentication'
+    );
     expect(checkoutButton).toBeInTheDocument();
     expect(checkoutButton).toHaveTextContent('Checkout');
 
     // Current branch should not have checkout button
-    expect(screen.queryByTitle('Checkout branch: main')).not.toBeInTheDocument();
-    
+    expect(
+      screen.queryByTitle('Checkout branch: main')
+    ).not.toBeInTheDocument();
+
     // Remote branch should not have checkout button
-    expect(screen.queryByTitle('Checkout branch: origin/develop')).not.toBeInTheDocument();
+    expect(
+      screen.queryByTitle('Checkout branch: origin/develop')
+    ).not.toBeInTheDocument();
   });
 
   it('handles branch click events', () => {
     const mockBranchClick = vi.fn();
-    render(<BranchList branches={mockBranches} onBranchClick={mockBranchClick} />);
+    render(
+      <BranchList branches={mockBranches} onBranchClick={mockBranchClick} />
+    );
 
     const mainBranch = screen.getByText('main').closest('.branch-item');
     expect(mainBranch).toHaveClass('clickable');
@@ -163,16 +183,18 @@ describe('BranchList', () => {
     const mockCheckout = vi.fn();
     const mockBranchClick = vi.fn();
     render(
-      <BranchList 
-        branches={mockBranches} 
+      <BranchList
+        branches={mockBranches}
         onCheckoutBranch={mockCheckout}
         onBranchClick={mockBranchClick}
       />
     );
 
-    const checkoutButton = screen.getByTitle('Checkout branch: feature/authentication');
+    const checkoutButton = screen.getByTitle(
+      'Checkout branch: feature/authentication'
+    );
     fireEvent.click(checkoutButton);
-    
+
     expect(mockCheckout).toHaveBeenCalledTimes(1);
     expect(mockCheckout).toHaveBeenCalledWith('feature/authentication');
     // Should not trigger branch click when checkout button is clicked
@@ -183,8 +205,12 @@ describe('BranchList', () => {
     const { container } = render(<BranchList branches={[]} isLoading={true} />);
 
     expect(screen.getByText('Branches')).toBeInTheDocument();
-    expect(container.querySelector('.branch-list__skeleton')).toBeInTheDocument();
-    expect(container.querySelectorAll('.branch-item__skeleton')).toHaveLength(5);
+    expect(
+      container.querySelector('.branch-list__skeleton')
+    ).toBeInTheDocument();
+    expect(container.querySelectorAll('.branch-item__skeleton')).toHaveLength(
+      5
+    );
   });
 
   it('displays error state correctly', () => {
@@ -214,13 +240,15 @@ describe('BranchList', () => {
   it('formats commit dates correctly', () => {
     // Create a recent date (2 hours ago)
     const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString();
-    const recentBranches = [{
-      ...mockBranches[0],
-      lastCommit: {
-        ...mockBranches[0].lastCommit,
-        date: twoHoursAgo
-      }
-    }];
+    const recentBranches = [
+      {
+        ...mockBranches[0],
+        lastCommit: {
+          ...mockBranches[0].lastCommit,
+          date: twoHoursAgo,
+        },
+      },
+    ];
 
     render(<BranchList branches={recentBranches} />);
     expect(screen.getByText('2h ago')).toBeInTheDocument();
@@ -230,14 +258,14 @@ describe('BranchList', () => {
     const manyBranches = Array.from({ length: 15 }, (_, i) => ({
       ...mockBranches[0],
       name: `branch-${i}`,
-      isCurrent: i === 0
+      isCurrent: i === 0,
     }));
 
     render(<BranchList branches={manyBranches} maxDisplayCount={5} />);
 
     expect(screen.getByText('Branches (15)')).toBeInTheDocument();
     expect(screen.getByText('Load 5 more branches')).toBeInTheDocument();
-    
+
     // Should show only first 5 branches initially
     expect(screen.getByText('branch-0')).toBeInTheDocument();
     expect(screen.getByText('branch-4')).toBeInTheDocument();
@@ -248,7 +276,7 @@ describe('BranchList', () => {
     const manyBranches = Array.from({ length: 15 }, (_, i) => ({
       ...mockBranches[0],
       name: `branch-${i}`,
-      isCurrent: i === 0
+      isCurrent: i === 0,
     }));
 
     render(<BranchList branches={manyBranches} maxDisplayCount={5} />);
@@ -266,13 +294,13 @@ describe('BranchList', () => {
     const unsortedBranches = [
       { ...mockBranches[2] }, // remote
       { ...mockBranches[1] }, // local
-      { ...mockBranches[0] }  // current
+      { ...mockBranches[0] }, // current
     ];
 
     render(<BranchList branches={unsortedBranches} />);
 
-    const branchNames = screen.getAllByText((_, element) => 
-      element?.className === 'branch-name'
+    const branchNames = screen.getAllByText(
+      (_, element) => element?.className === 'branch-name'
     );
 
     // First should be current branch
@@ -289,7 +317,7 @@ describe('BranchList', () => {
     const longNameBranch = {
       ...mockBranches[0],
       name: 'feature/very-long-branch-name-that-should-be-truncated-properly',
-      isCurrent: false
+      isCurrent: false,
     };
 
     render(<BranchList branches={[longNameBranch]} />);
@@ -302,10 +330,12 @@ describe('BranchList', () => {
   it('handles branches without tracking information', () => {
     const branchWithoutTracking = {
       ...mockBranches[0],
-      tracking: undefined
+      tracking: undefined,
     };
 
-    render(<BranchList branches={[branchWithoutTracking]} showTrackingInfo={true} />);
+    render(
+      <BranchList branches={[branchWithoutTracking]} showTrackingInfo={true} />
+    );
 
     expect(screen.queryByText('↑')).not.toBeInTheDocument();
     expect(screen.queryByText('↓')).not.toBeInTheDocument();
@@ -317,12 +347,13 @@ describe('BranchList', () => {
       name: 'feature/mixed',
       isLocal: true,
       isRemote: true,
-      isCurrent: false
+      isCurrent: false,
     };
 
     render(<BranchList branches={[mixedBranch]} />);
 
-    const branchIcon = screen.getByTitle('Local + Remote branch: feature/mixed')
+    const branchIcon = screen
+      .getByTitle('Local + Remote branch: feature/mixed')
       .querySelector('.branch-icon');
     expect(branchIcon).toHaveTextContent('🔗');
   });
@@ -339,8 +370,8 @@ describe('BranchList', () => {
       ...mockBranches[0],
       lastCommit: {
         ...mockBranches[0].lastCommit,
-        date: 'invalid-date'
-      }
+        date: 'invalid-date',
+      },
     };
 
     render(<BranchList branches={[invalidDateBranch]} />);
@@ -350,9 +381,9 @@ describe('BranchList', () => {
 
   it('updates summary counts correctly', () => {
     const branches = [
-      { ...mockBranches[0], isLocal: true, isRemote: false },  // local only
-      { ...mockBranches[1], isLocal: true, isRemote: true },   // both
-      { ...mockBranches[2], isLocal: false, isRemote: true }   // remote only
+      { ...mockBranches[0], isLocal: true, isRemote: false }, // local only
+      { ...mockBranches[1], isLocal: true, isRemote: true }, // both
+      { ...mockBranches[2], isLocal: false, isRemote: true }, // remote only
     ];
 
     render(<BranchList branches={branches} />);

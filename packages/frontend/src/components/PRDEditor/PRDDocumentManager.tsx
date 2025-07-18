@@ -15,7 +15,11 @@ export interface PRDDocumentManagerProps {
   /** Additional CSS class name */
   className?: string;
   /** Callback when document operations complete */
-  onOperationComplete?: (operation: string, success: boolean, data?: any) => void;
+  onOperationComplete?: (
+    operation: string,
+    success: boolean,
+    data?: any
+  ) => void;
   /** Callback when PRD analysis completes */
   onAnalysisComplete?: (result: PRDAnalysisResult) => void;
   /** Whether to show analysis panel */
@@ -32,7 +36,7 @@ export interface PRDDocumentManagerProps {
 
 /**
  * PRD Document Manager Component
- * 
+ *
  * Provides a complete document management interface with:
  * - Document listing and selection
  * - Create, update, delete operations
@@ -51,13 +55,18 @@ export const PRDDocumentManager: React.FC<PRDDocumentManagerProps> = ({
   initialAnalysisPanelVisible = false,
   compactAnalysisPanel = false,
   onTaskSelect,
-  onDependencySelect
+  onDependencySelect,
 }) => {
   const [showDocumentList, setShowDocumentList] = useState(false);
   const [currentContent, setCurrentContent] = useState('');
   const [currentTitle, setCurrentTitle] = useState('');
-  const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
-  const [analysisPanelVisible, setAnalysisPanelVisible] = useState(initialAnalysisPanelVisible);
+  const [notification, setNotification] = useState<{
+    type: 'success' | 'error';
+    message: string;
+  } | null>(null);
+  const [analysisPanelVisible, setAnalysisPanelVisible] = useState(
+    initialAnalysisPanelVisible
+  );
 
   const {
     document,
@@ -83,21 +92,27 @@ export const PRDDocumentManager: React.FC<PRDDocumentManagerProps> = ({
     enableAutoSave: enableBackendAutoSave,
     onOperationComplete: (operation, success, data) => {
       onOperationComplete?.(operation, success, data);
-      
+
       // Show notification
       if (success) {
-        setNotification({ type: 'success', message: `Document ${operation} successful` });
+        setNotification({
+          type: 'success',
+          message: `Document ${operation} successful`,
+        });
       } else {
-        setNotification({ type: 'error', message: `Document ${operation} failed: ${data}` });
+        setNotification({
+          type: 'error',
+          message: `Document ${operation} failed: ${data}`,
+        });
       }
-      
+
       // Clear notification after 3 seconds
       setTimeout(() => setNotification(null), 3000);
     },
-    onError: (error) => {
+    onError: error => {
       setNotification({ type: 'error', message: error });
       setTimeout(() => setNotification(null), 3000);
-    }
+    },
   });
 
   // Load initial document
@@ -125,7 +140,7 @@ export const PRDDocumentManager: React.FC<PRDDocumentManagerProps> = ({
   // Handle content changes
   const handleContentChange = (content: string) => {
     setCurrentContent(content);
-    
+
     if (enableBackendAutoSave && document) {
       // Start auto-save timer for backend
       startAutoSave(content, currentTitle);
@@ -135,7 +150,7 @@ export const PRDDocumentManager: React.FC<PRDDocumentManagerProps> = ({
   // Handle title changes
   const handleTitleChange = (title: string) => {
     setCurrentTitle(title);
-    
+
     if (enableBackendAutoSave && document) {
       // Start auto-save timer for backend
       startAutoSave(currentContent, title);
@@ -148,14 +163,20 @@ export const PRDDocumentManager: React.FC<PRDDocumentManagerProps> = ({
       await updateDocument(document.id, {
         content: currentContent,
         title: currentTitle,
-        wordCount: currentContent.replace(/<[^>]*>/g, '').split(/\s+/).filter(w => w.length > 0).length,
+        wordCount: currentContent
+          .replace(/<[^>]*>/g, '')
+          .split(/\s+/)
+          .filter(w => w.length > 0).length,
         charCount: currentContent.replace(/<[^>]*>/g, '').length,
       });
     } else {
       await saveDocument({
         title: currentTitle || 'Untitled Document',
         content: currentContent,
-        wordCount: currentContent.replace(/<[^>]*>/g, '').split(/\s+/).filter(w => w.length > 0).length,
+        wordCount: currentContent
+          .replace(/<[^>]*>/g, '')
+          .split(/\s+/)
+          .filter(w => w.length > 0).length,
         charCount: currentContent.replace(/<[^>]*>/g, '').length,
       });
     }
@@ -199,7 +220,7 @@ export const PRDDocumentManager: React.FC<PRDDocumentManagerProps> = ({
   const handleAnalysisComplete = (result: PRDAnalysisResult) => {
     setNotification({
       type: 'success',
-      message: `Analysis complete! Found ${result.analysis.taskCount} tasks with ${result.analysis.complexityScore}% complexity.`
+      message: `Analysis complete! Found ${result.analysis.taskCount} tasks with ${result.analysis.complexityScore}% complexity.`,
     });
     setTimeout(() => setNotification(null), 5000);
     onAnalysisComplete?.(result);
@@ -222,24 +243,24 @@ export const PRDDocumentManager: React.FC<PRDDocumentManagerProps> = ({
       {/* Toolbar */}
       <div className="document-toolbar">
         <div className="toolbar-left">
-          <button 
-            type="button" 
+          <button
+            type="button"
             onClick={handleNewDocument}
             className="toolbar-button"
             title="New Document"
           >
             📄 New
           </button>
-          <button 
-            type="button" 
+          <button
+            type="button"
             onClick={() => setShowDocumentList(!showDocumentList)}
             className="toolbar-button"
             title="Open Document"
           >
             📁 Open
           </button>
-          <button 
-            type="button" 
+          <button
+            type="button"
             onClick={handleSave}
             className="toolbar-button"
             disabled={saving}
@@ -252,16 +273,22 @@ export const PRDDocumentManager: React.FC<PRDDocumentManagerProps> = ({
               type="button"
               onClick={handleToggleAnalysisPanel}
               className={`toolbar-button analysis-toggle ${analysisPanelVisible ? 'active' : ''}`}
-              title={analysisPanelVisible ? 'Hide Analysis Panel' : 'Show Analysis Panel'}
+              title={
+                analysisPanelVisible
+                  ? 'Hide Analysis Panel'
+                  : 'Show Analysis Panel'
+              }
             >
               🔍 {analysisPanelVisible ? 'Hide Analysis' : 'Show Analysis'}
             </button>
           )}
         </div>
-        
+
         <div className="toolbar-right">
           <div className="status-indicators">
-            <span className={`api-status ${apiHealthy ? 'healthy' : 'unhealthy'}`}>
+            <span
+              className={`api-status ${apiHealthy ? 'healthy' : 'unhealthy'}`}
+            >
               {apiHealthy ? '🟢 API Connected' : '🔴 API Disconnected'}
             </span>
             {lastSaved && (
@@ -285,15 +312,15 @@ export const PRDDocumentManager: React.FC<PRDDocumentManagerProps> = ({
         <div className="document-list-panel">
           <div className="panel-header">
             <h3>Documents</h3>
-            <button 
-              type="button" 
+            <button
+              type="button"
               onClick={() => setShowDocumentList(false)}
               className="close-button"
             >
               ×
             </button>
           </div>
-          
+
           <div className="panel-content">
             {loading ? (
               <div className="loading">Loading documents...</div>
@@ -301,12 +328,12 @@ export const PRDDocumentManager: React.FC<PRDDocumentManagerProps> = ({
               <div className="empty-state">No documents found</div>
             ) : (
               <div className="document-list">
-                {documents.map((doc) => (
-                  <div 
-                    key={doc.id} 
+                {documents.map(doc => (
+                  <div
+                    key={doc.id}
                     className={`document-item ${document?.id === doc.id ? 'active' : ''}`}
                   >
-                    <div 
+                    <div
                       className="document-info"
                       onClick={() => handleDocumentSelect(doc)}
                     >
@@ -315,9 +342,9 @@ export const PRDDocumentManager: React.FC<PRDDocumentManagerProps> = ({
                         {formatDate(doc.updatedAt)} • {doc.wordCount} words
                       </div>
                     </div>
-                    <button 
+                    <button
                       type="button"
-                      onClick={(e) => {
+                      onClick={e => {
                         e.stopPropagation();
                         handleDeleteDocument(doc.id);
                       }}
@@ -370,7 +397,9 @@ export const PRDDocumentManager: React.FC<PRDDocumentManagerProps> = ({
       {error && (
         <div className="error-banner">
           <span>{error}</span>
-          <button type="button" onClick={clearError}>×</button>
+          <button type="button" onClick={clearError}>
+            ×
+          </button>
         </div>
       )}
 

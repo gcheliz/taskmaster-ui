@@ -185,15 +185,15 @@
     min-width: 100%;
     max-width: none;
   }
-  
+
   .task-column__header {
     padding: 0.75rem;
   }
-  
+
   .task-column__content {
     padding: 0.75rem;
   }
-  
+
   .task-cards {
     gap: 0.5rem;
   }

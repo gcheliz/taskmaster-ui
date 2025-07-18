@@ -13,9 +13,12 @@ const checkboxVariants = cva(
         lg: 'h-5 w-5',
       },
       variant: {
-        default: 'data-[state=checked]:bg-primary-600 data-[state=checked]:border-primary-600',
-        error: 'border-error-500 data-[state=checked]:bg-error-600 data-[state=checked]:border-error-600',
-        success: 'border-success-500 data-[state=checked]:bg-success-600 data-[state=checked]:border-success-600',
+        default:
+          'data-[state=checked]:bg-primary-600 data-[state=checked]:border-primary-600',
+        error:
+          'border-error-500 data-[state=checked]:bg-error-600 data-[state=checked]:border-error-600',
+        success:
+          'border-success-500 data-[state=checked]:bg-success-600 data-[state=checked]:border-success-600',
       },
     },
     defaultVariants: {
@@ -56,16 +59,34 @@ export interface CheckboxProps
 }
 
 const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
-  ({ className, size, variant, error, success, indeterminate, checked, ...props }, ref) => {
+  (
+    {
+      className,
+      size,
+      variant,
+      error,
+      success,
+      indeterminate,
+      checked,
+      ...props
+    },
+    ref
+  ) => {
     const computedVariant = error ? 'error' : success ? 'success' : variant;
     const isChecked = indeterminate ? false : checked;
-    const dataState = indeterminate ? 'indeterminate' : isChecked ? 'checked' : 'unchecked';
+    const dataState = indeterminate
+      ? 'indeterminate'
+      : isChecked
+        ? 'checked'
+        : 'unchecked';
 
     return (
       <div className="relative inline-flex items-center">
         <input
           type="checkbox"
-          className={cn(checkboxVariants({ size, variant: computedVariant, className }))}
+          className={cn(
+            checkboxVariants({ size, variant: computedVariant, className })
+          )}
           ref={ref}
           checked={isChecked}
           data-state={dataState}
@@ -77,9 +98,9 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
             {indeterminate ? (
               <div className="w-2 h-0.5 bg-white rounded-full" />
             ) : (
-              <Icon 
-                icon={CheckIcon} 
-                size={size === 'sm' ? 'xs' : size === 'lg' ? 'sm' : 'xs'} 
+              <Icon
+                icon={CheckIcon}
+                size={size === 'sm' ? 'xs' : size === 'lg' ? 'sm' : 'xs'}
                 color="current"
               />
             )}

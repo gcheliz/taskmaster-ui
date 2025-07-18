@@ -23,7 +23,9 @@ describe('AppLayout', () => {
     expect(screen.getByText('Test Content')).toBeInTheDocument();
 
     // Check for footer
-    expect(screen.getByText('© 2025 TaskMaster UI. All rights reserved.')).toBeInTheDocument();
+    expect(
+      screen.getByText('© 2025 TaskMaster UI. All rights reserved.')
+    ).toBeInTheDocument();
     expect(screen.getByText('Status: Online')).toBeInTheDocument();
     expect(screen.getByText('v1.0.0')).toBeInTheDocument();
   });
@@ -66,9 +68,20 @@ describe('AppLayout', () => {
     );
 
     // Check navigation links
-    expect(screen.getByRole('link', { name: 'Dashboard' })).toHaveAttribute('href', '#dashboard');
-    expect(screen.getByRole('link', { name: 'Repository Management' })).toHaveAttribute('href', '#repository-management');
-    expect(screen.getByRole('link', { name: 'Task Board' })).toHaveAttribute('href', '#task-board');
-    expect(screen.getByRole('link', { name: 'Settings' })).toHaveAttribute('href', '#settings');
+    expect(screen.getByRole('link', { name: 'Dashboard' })).toHaveAttribute(
+      'href',
+      '#dashboard'
+    );
+    expect(
+      screen.getByRole('link', { name: 'Repository Management' })
+    ).toHaveAttribute('href', '#repository-management');
+    expect(screen.getByRole('link', { name: 'Task Board' })).toHaveAttribute(
+      'href',
+      '#task-board'
+    );
+    expect(screen.getByRole('link', { name: 'Settings' })).toHaveAttribute(
+      'href',
+      '#settings'
+    );
   });
 });

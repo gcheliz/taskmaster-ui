@@ -15,7 +15,7 @@ export interface CommitWithRepository extends Commit {
 
 /**
  * Commit Service
- * 
+ *
  * Handles commit data persistence and retrieval from the database.
  * Provides CRUD operations for Git commit tracking using Prisma.
  */
@@ -44,7 +44,7 @@ export class CommitService {
           message: data.message,
           author: data.author,
           timestamp: data.timestamp,
-          repositoryId: data.repositoryId
+          repositoryId: data.repositoryId,
         },
         include: {
           repository: {
@@ -52,12 +52,12 @@ export class CommitService {
               project: {
                 select: {
                   id: true,
-                  name: true
-                }
-              }
-            }
-          }
-        }
+                  name: true,
+                },
+              },
+            },
+          },
+        },
       });
       return commit;
     } catch (error) {
@@ -80,12 +80,12 @@ export class CommitService {
               project: {
                 select: {
                   id: true,
-                  name: true
-                }
-              }
-            }
-          }
-        }
+                  name: true,
+                },
+              },
+            },
+          },
+        },
       });
       return commit;
     } catch (error) {
@@ -109,9 +109,9 @@ export class CommitService {
   ): Promise<Commit[]> {
     try {
       const prisma = this.dbService.getPrisma();
-      
+
       const where: any = { repositoryId };
-      
+
       if (options?.since || options?.until) {
         where.timestamp = {};
         if (options.since) {
@@ -121,18 +121,18 @@ export class CommitService {
           where.timestamp.lte = options.until;
         }
       }
-      
+
       if (options?.author) {
         where.author = {
           contains: options.author,
-          mode: 'insensitive'
+          mode: 'insensitive',
         };
       }
 
       const commits = await prisma.commit.findMany({
         where,
         orderBy: {
-          timestamp: 'desc'
+          timestamp: 'desc',
         },
         take: options?.limit,
         skip: options?.offset,
@@ -142,12 +142,12 @@ export class CommitService {
               project: {
                 select: {
                   id: true,
-                  name: true
-                }
-              }
-            }
-          }
-        }
+                  name: true,
+                },
+              },
+            },
+          },
+        },
       });
       return commits;
     } catch (error) {
@@ -171,13 +171,13 @@ export class CommitService {
   ): Promise<CommitWithRepository[]> {
     try {
       const prisma = this.dbService.getPrisma();
-      
+
       const where: any = {
         repository: {
-          projectId
-        }
+          projectId,
+        },
       };
-      
+
       if (options?.since || options?.until) {
         where.timestamp = {};
         if (options.since) {
@@ -187,18 +187,18 @@ export class CommitService {
           where.timestamp.lte = options.until;
         }
       }
-      
+
       if (options?.author) {
         where.author = {
           contains: options.author,
-          mode: 'insensitive'
+          mode: 'insensitive',
         };
       }
 
       const commits = await prisma.commit.findMany({
         where,
         orderBy: {
-          timestamp: 'desc'
+          timestamp: 'desc',
         },
         take: options?.limit,
         skip: options?.offset,
@@ -208,12 +208,12 @@ export class CommitService {
               project: {
                 select: {
                   id: true,
-                  name: true
-                }
-              }
-            }
-          }
-        }
+                  name: true,
+                },
+              },
+            },
+          },
+        },
       });
       return commits;
     } catch (error) {
@@ -231,7 +231,7 @@ export class CommitService {
       const commit = await prisma.commit.findFirst({
         where: { repositoryId },
         orderBy: {
-          timestamp: 'desc'
+          timestamp: 'desc',
         },
         include: {
           repository: {
@@ -239,12 +239,12 @@ export class CommitService {
               project: {
                 select: {
                   id: true,
-                  name: true
-                }
-              }
-            }
-          }
-        }
+                  name: true,
+                },
+              },
+            },
+          },
+        },
       });
       return commit;
     } catch (error) {
@@ -266,12 +266,12 @@ export class CommitService {
   ): Promise<Commit | null> {
     try {
       const prisma = this.dbService.getPrisma();
-      
+
       // Check if commit exists
       const existing = await prisma.commit.findUnique({
-        where: { hash }
+        where: { hash },
       });
-      
+
       if (!existing) {
         return null;
       }
@@ -285,14 +285,14 @@ export class CommitService {
               project: {
                 select: {
                   id: true,
-                  name: true
-                }
-              }
-            }
-          }
-        }
+                  name: true,
+                },
+              },
+            },
+          },
+        },
       });
-      
+
       return commit;
     } catch (error) {
       console.error('Error updating commit:', error);
@@ -306,20 +306,20 @@ export class CommitService {
   async deleteCommit(hash: string): Promise<boolean> {
     try {
       const prisma = this.dbService.getPrisma();
-      
+
       // Check if commit exists
       const existing = await prisma.commit.findUnique({
-        where: { hash }
+        where: { hash },
       });
-      
+
       if (!existing) {
         return false;
       }
 
       await prisma.commit.delete({
-        where: { hash }
+        where: { hash },
       });
-      
+
       return true;
     } catch (error) {
       console.error('Error deleting commit:', error);
@@ -330,7 +330,10 @@ export class CommitService {
   /**
    * Get commit statistics for a repository
    */
-  async getCommitStatistics(repositoryId: string, days: number = 30): Promise<{
+  async getCommitStatistics(
+    repositoryId: string,
+    days: number = 30
+  ): Promise<{
     totalCommits: number;
     commitsInPeriod: number;
     uniqueAuthors: number;
@@ -340,55 +343,62 @@ export class CommitService {
   }> {
     try {
       const prisma = this.dbService.getPrisma();
-      
+
       const since = new Date();
       since.setDate(since.getDate() - days);
-      
-      const [totalCommits, commitsInPeriod, commitsWithAuthors] = await Promise.all([
-        prisma.commit.count({
-          where: { repositoryId }
-        }),
-        prisma.commit.count({
-          where: {
-            repositoryId,
-            timestamp: { gte: since }
-          }
-        }),
-        prisma.commit.findMany({
-          where: {
-            repositoryId,
-            timestamp: { gte: since }
-          },
-          select: {
-            author: true,
-            timestamp: true
-          }
-        })
-      ]);
+
+      const [totalCommits, commitsInPeriod, commitsWithAuthors] =
+        await Promise.all([
+          prisma.commit.count({
+            where: { repositoryId },
+          }),
+          prisma.commit.count({
+            where: {
+              repositoryId,
+              timestamp: { gte: since },
+            },
+          }),
+          prisma.commit.findMany({
+            where: {
+              repositoryId,
+              timestamp: { gte: since },
+            },
+            select: {
+              author: true,
+              timestamp: true,
+            },
+          }),
+        ]);
 
       // Calculate unique authors
       const uniqueAuthors = new Set(commitsWithAuthors.map(c => c.author)).size;
-      
+
       // Calculate average commits per day
       const averageCommitsPerDay = commitsInPeriod / days;
-      
+
       // Group commits by author
-      const authorCounts = commitsWithAuthors.reduce((acc, commit) => {
-        acc[commit.author] = (acc[commit.author] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>);
-      
+      const authorCounts = commitsWithAuthors.reduce(
+        (acc, commit) => {
+          acc[commit.author] = (acc[commit.author] || 0) + 1;
+          return acc;
+        },
+        {} as Record<string, number>
+      );
+
       const commitsByAuthor = Object.entries(authorCounts)
         .map(([author, count]) => ({ author, count }))
         .sort((a, b) => b.count - a.count);
 
       // Group commits by day
-      const dayCounts = commitsWithAuthors.reduce((acc, commit) => {
-        const date = commit.timestamp.toISOString().split('T')[0];
-        acc[date] = (acc[date] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>);
-      
+      const dayCounts = commitsWithAuthors.reduce(
+        (acc, commit) => {
+          const date = commit.timestamp.toISOString().split('T')[0];
+          acc[date] = (acc[date] || 0) + 1;
+          return acc;
+        },
+        {} as Record<string, number>
+      );
+
       const commitsByDay = Object.entries(dayCounts)
         .map(([date, count]) => ({ date, count }))
         .sort((a, b) => a.date.localeCompare(b.date));
@@ -399,7 +409,7 @@ export class CommitService {
         uniqueAuthors,
         averageCommitsPerDay: Math.round(averageCommitsPerDay * 100) / 100,
         commitsByAuthor,
-        commitsByDay
+        commitsByDay,
       };
     } catch (error) {
       console.error('Error getting commit statistics:', error);
@@ -410,22 +420,24 @@ export class CommitService {
   /**
    * Bulk create commits (useful for importing Git history)
    */
-  async bulkCreateCommits(commits: Array<{
-    hash: string;
-    message: string;
-    author: string;
-    timestamp: Date;
-    repositoryId: string;
-  }>): Promise<number> {
+  async bulkCreateCommits(
+    commits: Array<{
+      hash: string;
+      message: string;
+      author: string;
+      timestamp: Date;
+      repositoryId: string;
+    }>
+  ): Promise<number> {
     try {
       const prisma = this.dbService.getPrisma();
-      
+
       // Use createMany for efficient bulk insert
       const result = await prisma.commit.createMany({
         data: commits,
-        skipDuplicates: true // Skip commits that already exist
+        skipDuplicates: true, // Skip commits that already exist
       });
-      
+
       return result.count;
     } catch (error) {
       console.error('Error bulk creating commits:', error);

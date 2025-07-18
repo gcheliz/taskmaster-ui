@@ -1,6 +1,6 @@
 /**
  * Keyboard Navigation Utilities
- * 
+ *
  * Provides utilities for keyboard navigation detection and management
  * to improve accessibility throughout the application.
  */
@@ -14,9 +14,9 @@ let hasInitialized = false;
  */
 export const initializeKeyboardDetection = (): void => {
   if (hasInitialized) return;
-  
+
   hasInitialized = true;
-  
+
   // Detect keyboard usage
   const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === 'Tab') {
@@ -32,7 +32,7 @@ export const initializeKeyboardDetection = (): void => {
   // Listen for keyboard navigation
   document.addEventListener('keydown', handleKeyDown);
   document.addEventListener('mousedown', handleMouseDown);
-  
+
   // Set initial class based on preference
   updateBodyClass();
 };
@@ -94,12 +94,12 @@ export class FocusTrap {
       'input[type="checkbox"]:not([disabled])',
       'select:not([disabled])',
       '[tabindex]:not([tabindex="-1"])',
-      '[contenteditable="true"]'
+      '[contenteditable="true"]',
     ].join(',');
 
     this.focusableElements = Array.from(
       this.element.querySelectorAll(focusableSelectors)
-    ).filter((el) => {
+    ).filter(el => {
       const element = el as HTMLElement;
       return (
         element.offsetWidth > 0 &&
@@ -110,7 +110,7 @@ export class FocusTrap {
     }) as HTMLElement[];
 
     this.firstFocusableElement = this.focusableElements[0] || null;
-    this.lastFocusableElement = 
+    this.lastFocusableElement =
       this.focusableElements[this.focusableElements.length - 1] || null;
   }
 
@@ -119,7 +119,7 @@ export class FocusTrap {
    */
   activate(): void {
     this.previousActiveElement = document.activeElement;
-    
+
     // Focus the first element or the container
     if (this.firstFocusableElement) {
       this.firstFocusableElement.focus();
@@ -136,7 +136,7 @@ export class FocusTrap {
    */
   deactivate(): void {
     document.removeEventListener('keydown', this.handleKeyDown);
-    
+
     // Return focus to previous element
     if (this.previousActiveElement instanceof HTMLElement) {
       this.previousActiveElement.focus();
@@ -193,7 +193,7 @@ export class RovingTabIndex {
     this.items = Array.from(
       this.container.querySelectorAll(itemSelector)
     ) as HTMLElement[];
-    
+
     this.items.forEach((item, index) => {
       item.tabIndex = index === this.currentIndex ? 0 : -1;
     });
@@ -204,7 +204,7 @@ export class RovingTabIndex {
    */
   focusItem(index: number): void {
     if (index < 0 || index >= this.items.length) return;
-    
+
     this.items[this.currentIndex].tabIndex = -1;
     this.currentIndex = index;
     this.items[this.currentIndex].tabIndex = 0;
@@ -216,7 +216,7 @@ export class RovingTabIndex {
    */
   private setupEventListeners(): void {
     this.container.addEventListener('keydown', this.handleKeyDown);
-    
+
     this.items.forEach((item, index) => {
       item.addEventListener('focus', () => {
         this.currentIndex = index;
@@ -249,9 +249,10 @@ export class RovingTabIndex {
       case 'ArrowLeft':
       case 'ArrowUp':
         e.preventDefault();
-        newIndex = this.currentIndex === 0 
-          ? this.items.length - 1 
-          : this.currentIndex - 1;
+        newIndex =
+          this.currentIndex === 0
+            ? this.items.length - 1
+            : this.currentIndex - 1;
         break;
       case 'Home':
         e.preventDefault();
@@ -288,9 +289,9 @@ export const announceToScreenReader = (
   liveRegion.setAttribute('aria-atomic', 'true');
   liveRegion.className = 'sr-only';
   liveRegion.textContent = message;
-  
+
   document.body.appendChild(liveRegion);
-  
+
   // Remove after announcement
   setTimeout(() => {
     document.body.removeChild(liveRegion);
@@ -316,12 +317,12 @@ export const isFocusable = (element: HTMLElement): boolean => {
   if (element.hasAttribute('disabled')) return false;
   if (element.hasAttribute('hidden')) return false;
   if (element.getAttribute('aria-hidden') === 'true') return false;
-  
+
   const style = getComputedStyle(element);
   if (style.display === 'none') return false;
   if (style.visibility === 'hidden') return false;
   if (parseFloat(style.opacity) === 0) return false;
-  
+
   return true;
 };
 
@@ -336,10 +337,10 @@ export const getNextFocusableElement = (
   const focusableElements = root.querySelectorAll(
     'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
   );
-  
+
   const currentIndex = Array.from(focusableElements).indexOf(currentElement);
   const nextElement = focusableElements[currentIndex + 1] as HTMLElement;
-  
+
   return nextElement && isFocusable(nextElement) ? nextElement : null;
 };
 
@@ -354,9 +355,11 @@ export const getPreviousFocusableElement = (
   const focusableElements = root.querySelectorAll(
     'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
   );
-  
+
   const currentIndex = Array.from(focusableElements).indexOf(currentElement);
   const previousElement = focusableElements[currentIndex - 1] as HTMLElement;
-  
-  return previousElement && isFocusable(previousElement) ? previousElement : null;
+
+  return previousElement && isFocusable(previousElement)
+    ? previousElement
+    : null;
 };

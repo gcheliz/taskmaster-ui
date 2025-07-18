@@ -1,14 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
-import { 
-  Pagination, 
-  PaginationContent, 
-  PaginationItem, 
-  PaginationLink, 
-  PaginationNext, 
-  PaginationPrevious, 
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
   PaginationEllipsis,
-  CompletePagination 
+  CompletePagination,
 } from '../../components/ui/molecules/Pagination';
 
 const meta: Meta<typeof Pagination> = {
@@ -18,7 +18,8 @@ const meta: Meta<typeof Pagination> = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'Pagination component for navigating through multiple pages of content. Includes complete pagination with ellipsis support.',
+        component:
+          'Pagination component for navigating through multiple pages of content. Includes complete pagination with ellipsis support.',
       },
     },
   },
@@ -31,7 +32,7 @@ const meta: Meta<typeof Pagination> = {
     },
   },
   decorators: [
-    (Story) => (
+    Story => (
       <div className="w-full max-w-2xl">
         <Story />
       </div>
@@ -46,7 +47,7 @@ export const Default: Story = {
   args: {
     size: 'md',
   },
-  render: (args) => (
+  render: args => (
     <Pagination {...args}>
       <PaginationContent>
         <PaginationItem>
@@ -119,7 +120,9 @@ export const Sizes: Story = {
               <PaginationLink size="sm">1</PaginationLink>
             </PaginationItem>
             <PaginationItem>
-              <PaginationLink size="sm" isActive>2</PaginationLink>
+              <PaginationLink size="sm" isActive>
+                2
+              </PaginationLink>
             </PaginationItem>
             <PaginationItem>
               <PaginationLink size="sm">3</PaginationLink>
@@ -142,7 +145,9 @@ export const Sizes: Story = {
               <PaginationLink size="md">1</PaginationLink>
             </PaginationItem>
             <PaginationItem>
-              <PaginationLink size="md" isActive>2</PaginationLink>
+              <PaginationLink size="md" isActive>
+                2
+              </PaginationLink>
             </PaginationItem>
             <PaginationItem>
               <PaginationLink size="md">3</PaginationLink>
@@ -165,7 +170,9 @@ export const Sizes: Story = {
               <PaginationLink size="lg">1</PaginationLink>
             </PaginationItem>
             <PaginationItem>
-              <PaginationLink size="lg" isActive>2</PaginationLink>
+              <PaginationLink size="lg" isActive>
+                2
+              </PaginationLink>
             </PaginationItem>
             <PaginationItem>
               <PaginationLink size="lg">3</PaginationLink>
@@ -194,7 +201,9 @@ export const Variants: Story = {
               <PaginationLink variant="default">1</PaginationLink>
             </PaginationItem>
             <PaginationItem>
-              <PaginationLink variant="default" isActive>2</PaginationLink>
+              <PaginationLink variant="default" isActive>
+                2
+              </PaginationLink>
             </PaginationItem>
             <PaginationItem>
               <PaginationLink variant="default">3</PaginationLink>
@@ -217,7 +226,9 @@ export const Variants: Story = {
               <PaginationLink variant="outline">1</PaginationLink>
             </PaginationItem>
             <PaginationItem>
-              <PaginationLink variant="outline" isActive>2</PaginationLink>
+              <PaginationLink variant="outline" isActive>
+                2
+              </PaginationLink>
             </PaginationItem>
             <PaginationItem>
               <PaginationLink variant="outline">3</PaginationLink>
@@ -244,17 +255,18 @@ export const CompletePaginationExample: Story = {
             Page {currentPage} of {totalPages}
           </p>
         </div>
-        
+
         <CompletePagination
           currentPage={currentPage}
           totalPages={totalPages}
           onPageChange={setCurrentPage}
           maxVisiblePages={5}
         />
-        
+
         <div className="text-center">
           <p className="text-xs text-secondary-500">
-            Click on page numbers to navigate. This example shows ellipsis when there are many pages.
+            Click on page numbers to navigate. This example shows ellipsis when
+            there are many pages.
           </p>
         </div>
       </div>
@@ -326,26 +338,34 @@ export const TaskListPagination: Story = {
               Showing {startTask}-{endTask} of {totalTasks} tasks
             </p>
           </div>
-          
+
           <div className="divide-y divide-secondary-200">
-            {Array.from({ length: Math.min(tasksPerPage, totalTasks - startTask + 1) }, (_, i) => {
-              const taskNumber = startTask + i;
-              return (
-                <div key={taskNumber} className="p-4 flex items-center justify-between">
-                  <div>
-                    <h4 className="font-medium">Task #{taskNumber}</h4>
-                    <p className="text-sm text-secondary-600">Sample task description</p>
+            {Array.from(
+              { length: Math.min(tasksPerPage, totalTasks - startTask + 1) },
+              (_, i) => {
+                const taskNumber = startTask + i;
+                return (
+                  <div
+                    key={taskNumber}
+                    className="p-4 flex items-center justify-between"
+                  >
+                    <div>
+                      <h4 className="font-medium">Task #{taskNumber}</h4>
+                      <p className="text-sm text-secondary-600">
+                        Sample task description
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="status-in-progress px-2 py-1 rounded text-xs">
+                        In Progress
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="status-in-progress px-2 py-1 rounded text-xs">
-                      In Progress
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
+                );
+              }
+            )}
           </div>
-          
+
           <div className="p-4 border-t border-secondary-200">
             <CompletePagination
               currentPage={currentPage}
@@ -371,7 +391,7 @@ export const MinimalPagination: Story = {
           <h3 className="font-medium mb-2">Minimal Pagination</h3>
           <p className="text-sm text-secondary-600">For small page counts</p>
         </div>
-        
+
         <CompletePagination
           currentPage={currentPage}
           totalPages={totalPages}
@@ -393,9 +413,11 @@ export const WithoutPreviousNext: Story = {
       <div className="space-y-6">
         <div className="text-center">
           <h3 className="font-medium mb-2">Numbers Only</h3>
-          <p className="text-sm text-secondary-600">Without Previous/Next buttons</p>
+          <p className="text-sm text-secondary-600">
+            Without Previous/Next buttons
+          </p>
         </div>
-        
+
         <CompletePagination
           currentPage={currentPage}
           totalPages={totalPages}

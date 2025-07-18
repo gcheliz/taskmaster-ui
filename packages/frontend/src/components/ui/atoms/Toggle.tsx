@@ -75,17 +75,20 @@ export interface ToggleProps
 }
 
 const Toggle = React.forwardRef<HTMLButtonElement, ToggleProps>(
-  ({ 
-    className, 
-    size, 
-    variant, 
-    checked = false, 
-    onCheckedChange, 
-    error, 
-    success, 
-    disabled,
-    ...props 
-  }, ref) => {
+  (
+    {
+      className,
+      size,
+      variant,
+      checked = false,
+      onCheckedChange,
+      error,
+      success,
+      disabled,
+      ...props
+    },
+    ref
+  ) => {
     const computedVariant = error ? 'error' : success ? 'success' : variant;
     const dataState = checked ? 'checked' : 'unchecked';
 
@@ -101,7 +104,9 @@ const Toggle = React.forwardRef<HTMLButtonElement, ToggleProps>(
         role="switch"
         aria-checked={checked}
         data-state={dataState}
-        className={cn(toggleVariants({ size, variant: computedVariant, className }))}
+        className={cn(
+          toggleVariants({ size, variant: computedVariant, className })
+        )}
         onClick={handleClick}
         disabled={disabled}
         ref={ref}

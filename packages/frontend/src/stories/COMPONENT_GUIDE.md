@@ -127,12 +127,12 @@ export interface ComponentProps {
    * @default 'defaultValue'
    */
   propName?: string;
-  
+
   /**
    * Required prop description
    */
   requiredProp: string;
-  
+
   /**
    * Enum-like prop with options
    */
@@ -275,13 +275,31 @@ describe('Component', () => {
 
 ```css
 /* Text sizes */
-.text-body-small { font-size: 0.875rem; line-height: 1.25rem; }
-.text-body-medium { font-size: 1rem; line-height: 1.5rem; }
-.text-body-large { font-size: 1.125rem; line-height: 1.75rem; }
+.text-body-small {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+.text-body-medium {
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+.text-body-large {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
 
-.text-headline-small { font-size: 1.25rem; line-height: 1.75rem; }
-.text-headline-medium { font-size: 1.5rem; line-height: 2rem; }
-.text-headline-large { font-size: 1.875rem; line-height: 2.25rem; }
+.text-headline-small {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+.text-headline-medium {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+.text-headline-large {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
 ```
 
 ## Performance Guidelines
@@ -330,16 +348,19 @@ describe('Component', () => {
 ### Common Issues
 
 **Component not rendering:**
+
 - Check if component is properly exported
 - Verify import path is correct
 - Ensure all required props are provided
 
 **Styling issues:**
+
 - Check Tailwind CSS purge settings
 - Verify design tokens are being used
 - Test in different browsers
 
 **TypeScript errors:**
+
 - Ensure proper interface inheritance
 - Check forwardRef generic types
 - Verify variant prop types match

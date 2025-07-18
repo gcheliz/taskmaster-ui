@@ -18,12 +18,12 @@ export interface UseDashboardReturn {
   loading: boolean;
   error: Error | null;
   lastUpdated: Date | null;
-  
+
   // Actions
   refresh: () => Promise<void>;
   refreshHealth: () => Promise<void>;
   clearError: () => void;
-  
+
   // Utilities
   isStale: boolean;
   retryCount: number;
@@ -31,18 +31,20 @@ export interface UseDashboardReturn {
 
 /**
  * Custom hook for dashboard data management
- * 
+ *
  * Provides comprehensive dashboard data fetching, caching, and state management
  * with automatic refresh capabilities and error handling.
  */
-export const useDashboard = (options: UseDashboardOptions): UseDashboardReturn => {
+export const useDashboard = (
+  options: UseDashboardOptions
+): UseDashboardReturn => {
   const {
     projectId,
     projectTag,
     refreshInterval = 30000, // 30 seconds
     autoRefresh = true,
     onError,
-    onDataUpdate
+    onDataUpdate,
   } = options;
 
   const [data, setData] = useState<DashboardData | null>(null);
@@ -53,23 +55,31 @@ export const useDashboard = (options: UseDashboardOptions): UseDashboardReturn =
   const [retryCount, setRetryCount] = useState(0);
 
   // Calculate if data is stale
-  const isStale = lastUpdated ? Date.now() - lastUpdated.getTime() > refreshInterval : true;
+  const isStale = lastUpdated
+    ? Date.now() - lastUpdated.getTime() > refreshInterval
+    : true;
 
   // Fetch dashboard data
   const fetchDashboardData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
-      
-      const dashboardData = await apiService.getDashboardData(projectId, projectTag);
-      
+
+      const dashboardData = await apiService.getDashboardData(
+        projectId,
+        projectTag
+      );
+
       setData(dashboardData);
       setLastUpdated(new Date());
       setRetryCount(0);
-      
+
       onDataUpdate?.(dashboardData);
     } catch (err) {
-      const error = err instanceof Error ? err : new Error('Failed to fetch dashboard data');
+      const error =
+        err instanceof Error
+          ? err
+          : new Error('Failed to fetch dashboard data');
       setError(error);
       setRetryCount(prev => prev + 1);
       onError?.(error);
@@ -81,7 +91,10 @@ export const useDashboard = (options: UseDashboardOptions): UseDashboardReturn =
   // Fetch health data
   const fetchHealthData = useCallback(async () => {
     try {
-      const healthData = await apiService.getProjectHealth(projectId, projectTag);
+      const healthData = await apiService.getProjectHealth(
+        projectId,
+        projectTag
+      );
       setHealth(healthData);
     } catch (err) {
       console.warn('Failed to fetch health data:', err);
@@ -91,10 +104,7 @@ export const useDashboard = (options: UseDashboardOptions): UseDashboardReturn =
 
   // Refresh all data
   const refresh = useCallback(async () => {
-    await Promise.allSettled([
-      fetchDashboardData(),
-      fetchHealthData()
-    ]);
+    await Promise.allSettled([fetchDashboardData(), fetchHealthData()]);
   }, [fetchDashboardData, fetchHealthData]);
 
   // Refresh only health data
@@ -131,9 +141,12 @@ export const useDashboard = (options: UseDashboardOptions): UseDashboardReturn =
   // Retry logic for failed requests
   useEffect(() => {
     if (error && retryCount < 3) {
-      const retryTimeout = setTimeout(() => {
-        refresh();
-      }, Math.min(1000 * Math.pow(2, retryCount), 10000)); // Exponential backoff, max 10s
+      const retryTimeout = setTimeout(
+        () => {
+          refresh();
+        },
+        Math.min(1000 * Math.pow(2, retryCount), 10000)
+      ); // Exponential backoff, max 10s
 
       return () => clearTimeout(retryTimeout);
     }
@@ -156,14 +169,14 @@ export const useDashboard = (options: UseDashboardOptions): UseDashboardReturn =
     loading,
     error,
     lastUpdated,
-    
+
     // Actions
     refresh,
     refreshHealth,
     clearError,
-    
+
     // Utilities
     isStale,
-    retryCount
+    retryCount,
   };
 };

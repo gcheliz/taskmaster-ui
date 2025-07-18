@@ -1,6 +1,6 @@
 /**
  * Security Configuration for TaskMaster UI
- * 
+ *
  * Centralizes security settings and provides runtime security enforcement
  * for the TaskMaster UI application.
  */
@@ -15,14 +15,14 @@ export interface SecurityConfig {
     reportOnly: boolean;
     policy: string;
   };
-  
+
   // Rate limiting
   rateLimiting: {
     enabled: boolean;
     maxAttempts: number;
     windowMs: number;
   };
-  
+
   // Security headers
   headers: {
     enableXSSProtection: boolean;
@@ -30,7 +30,7 @@ export interface SecurityConfig {
     enableFrameOptions: boolean;
     enableReferrerPolicy: boolean;
   };
-  
+
   // Environment-specific settings
   environment: {
     isDevelopment: boolean;
@@ -38,7 +38,7 @@ export interface SecurityConfig {
     allowDebugMode: boolean;
     enableSourceMaps: boolean;
   };
-  
+
   // API security
   api: {
     baseUrl: string;
@@ -64,37 +64,38 @@ const createSecurityConfig = (): SecurityConfig => {
         "connect-src 'self' ws: wss:",
         "frame-ancestors 'none'",
         "object-src 'none'",
-        "base-uri 'self'"
-      ].join('; ')
+        "base-uri 'self'",
+      ].join('; '),
     },
-    
+
     rateLimiting: {
       enabled: config.enableRateLimiting,
       maxAttempts: config.rateLimitMaxAttempts,
-      windowMs: config.rateLimitWindowMs
+      windowMs: config.rateLimitWindowMs,
     },
-    
+
     headers: {
       enableXSSProtection: true,
       enableContentTypeOptions: true,
       enableFrameOptions: true,
-      enableReferrerPolicy: true
+      enableReferrerPolicy: true,
     },
-    
+
     environment: {
       isDevelopment: config.nodeEnv === 'development',
       isProduction: config.nodeEnv === 'production',
       allowDebugMode: config.enableDebug,
-      enableSourceMaps: config.enableSourceMaps
+      enableSourceMaps: config.enableSourceMaps,
     },
-    
+
     api: {
       baseUrl: config.apiBaseUrl,
       timeout: config.apiTimeout,
-      allowedOrigins: config.nodeEnv === 'development' 
-        ? ['http://localhost:3000', 'http://localhost:3001']
-        : []
-    }
+      allowedOrigins:
+        config.nodeEnv === 'development'
+          ? ['http://localhost:3000', 'http://localhost:3001']
+          : [],
+    },
   };
 };
 
@@ -109,24 +110,24 @@ export const rateLimiters = {
     securityConfig.rateLimiting.maxAttempts,
     securityConfig.rateLimiting.windowMs
   ),
-  
+
   // Project operations
   project: new RateLimiter(
     securityConfig.rateLimiting.maxAttempts,
     securityConfig.rateLimiting.windowMs
   ),
-  
+
   // Task operations
   task: new RateLimiter(
     securityConfig.rateLimiting.maxAttempts * 2, // More lenient for task operations
     securityConfig.rateLimiting.windowMs
   ),
-  
+
   // General API calls
   api: new RateLimiter(
     securityConfig.rateLimiting.maxAttempts * 5, // Most lenient for general API
     securityConfig.rateLimiting.windowMs
-  )
+  ),
 };
 
 /**
@@ -142,58 +143,64 @@ export class SecurityEnforcer {
     this.preventDevTools();
     this.enforceSecureConnection();
   }
-  
+
   /**
    * Enforce Content Security Policy if not already set
    */
   private static enforceContentSecurityPolicy(): void {
     if (!securityConfig.csp.enabled) return;
-    
+
     // Check if CSP is already set in HTML
-    const existingCSP = document.querySelector('meta[http-equiv="Content-Security-Policy"]');
+    const existingCSP = document.querySelector(
+      'meta[http-equiv="Content-Security-Policy"]'
+    );
     if (existingCSP) return;
-    
+
     // Add CSP meta tag dynamically
     const cspMeta = document.createElement('meta');
     cspMeta.setAttribute('http-equiv', 'Content-Security-Policy');
     cspMeta.setAttribute('content', securityConfig.csp.policy);
     document.head.appendChild(cspMeta);
   }
-  
+
   /**
    * Prevent right-click context menu in production
    */
   private static preventRightClick(): void {
     if (securityConfig.environment.isDevelopment) return;
-    
-    document.addEventListener('contextmenu', (e) => {
+
+    document.addEventListener('contextmenu', e => {
       e.preventDefault();
       return false;
     });
   }
-  
+
   /**
    * Prevent dev tools access in production
    */
   private static preventDevTools(): void {
     if (securityConfig.environment.isDevelopment) return;
-    
+
     // Detect dev tools
     const devtools = {
       open: false,
-      orientation: null as string | null
+      orientation: null as string | null,
     };
-    
+
     const threshold = 160;
-    
+
     setInterval(() => {
-      if (window.outerHeight - window.innerHeight > threshold || 
-          window.outerWidth - window.innerWidth > threshold) {
+      if (
+        window.outerHeight - window.innerHeight > threshold ||
+        window.outerWidth - window.innerWidth > threshold
+      ) {
         if (!devtools.open) {
           devtools.open = true;
           console.clear();
-          console.warn('Developer tools detected. Please close them for security reasons.');
-          
+          console.warn(
+            'Developer tools detected. Please close them for security reasons.'
+          );
+
           // Optional: Redirect or take action
           // window.location.href = '/';
         }
@@ -202,40 +209,48 @@ export class SecurityEnforcer {
       }
     }, 500);
   }
-  
+
   /**
    * Enforce secure connection in production
    */
   private static enforceSecureConnection(): void {
     if (securityConfig.environment.isDevelopment) return;
-    
+
     if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
-      location.replace(`https:${location.href.substring(location.protocol.length)}`);
+      location.replace(
+        `https:${location.href.substring(location.protocol.length)}`
+      );
     }
   }
-  
+
   /**
    * Check if an operation is rate limited
    */
-  static checkRateLimit(operation: keyof typeof rateLimiters, identifier: string): boolean {
+  static checkRateLimit(
+    operation: keyof typeof rateLimiters,
+    identifier: string
+  ): boolean {
     const limiter = rateLimiters[operation];
     return limiter.isLimited(identifier);
   }
-  
+
   /**
    * Record an operation attempt
    */
-  static recordAttempt(operation: keyof typeof rateLimiters, identifier: string): void {
+  static recordAttempt(
+    operation: keyof typeof rateLimiters,
+    identifier: string
+  ): void {
     const limiter = rateLimiters[operation];
     limiter.recordAttempt(identifier);
   }
-  
+
   /**
    * Generate client session ID for rate limiting
    */
   static getClientId(): string {
     let clientId = sessionStorage.getItem('taskmaster-client-id');
-    
+
     if (!clientId) {
       // Generate a simple client ID based on browser fingerprint
       const canvas = document.createElement('canvas');
@@ -243,30 +258,30 @@ export class SecurityEnforcer {
       ctx!.textBaseline = 'top';
       ctx!.font = '14px Arial';
       ctx!.fillText('TaskMaster UI', 2, 2);
-      
+
       const fingerprint = [
         navigator.userAgent,
         navigator.language,
         screen.width + 'x' + screen.height,
         new Date().getTimezoneOffset(),
-        canvas.toDataURL()
+        canvas.toDataURL(),
       ].join('|');
-      
+
       // Simple hash
       let hash = 0;
       for (let i = 0; i < fingerprint.length; i++) {
         const char = fingerprint.charCodeAt(i);
-        hash = ((hash << 5) - hash) + char;
+        hash = (hash << 5) - hash + char;
         hash = hash & hash;
       }
-      
+
       clientId = Math.abs(hash).toString(36);
       sessionStorage.setItem('taskmaster-client-id', clientId);
     }
-    
+
     return clientId;
   }
-  
+
   /**
    * Log security events
    */
@@ -274,7 +289,7 @@ export class SecurityEnforcer {
     if (securityConfig.environment.isDevelopment) {
       console.warn(`[Security] ${event}`, details);
     }
-    
+
     // In production, this could send to a logging service
     // Example: sendToSecurityLog({ event, details, timestamp: new Date(), clientId: this.getClientId() });
   }
@@ -294,7 +309,7 @@ export const useSecurityPolicy = () => {
       const clientId = SecurityEnforcer.getClientId();
       SecurityEnforcer.recordAttempt(operation, clientId);
     },
-    logEvent: SecurityEnforcer.logSecurityEvent
+    logEvent: SecurityEnforcer.logSecurityEvent,
   };
 };
 

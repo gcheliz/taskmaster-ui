@@ -35,10 +35,7 @@ export const CommandOutputDisplay: React.FC<CommandOutputDisplayProps> = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <CardTitle>Command Output</CardTitle>
-            <Badge 
-              variant={result.success ? 'success' : 'error'}
-              size="sm"
-            >
+            <Badge variant={result.success ? 'success' : 'error'} size="sm">
               {result.success ? 'Success' : 'Failed'}
             </Badge>
             {result.exitCode !== null && (
@@ -54,9 +51,7 @@ export const CommandOutputDisplay: React.FC<CommandOutputDisplayProps> = ({
           )}
         </div>
         {command && (
-          <p className="text-sm text-secondary-600 font-mono">
-            {command}
-          </p>
+          <p className="text-sm text-secondary-600 font-mono">{command}</p>
         )}
         <div className="flex items-center gap-4 text-xs text-secondary-500">
           <span>Duration: {formatDuration(result.duration)}</span>
@@ -71,7 +66,9 @@ export const CommandOutputDisplay: React.FC<CommandOutputDisplayProps> = ({
               Standard Output
             </h4>
             <div className="bg-secondary-50 rounded-md p-3 font-mono text-sm overflow-x-auto">
-              <pre className="whitespace-pre-wrap">{formatOutput(result.stdout)}</pre>
+              <pre className="whitespace-pre-wrap">
+                {formatOutput(result.stdout)}
+              </pre>
             </div>
           </div>
         )}
@@ -83,7 +80,9 @@ export const CommandOutputDisplay: React.FC<CommandOutputDisplayProps> = ({
               Standard Error
             </h4>
             <div className="bg-error-50 border border-error-200 rounded-md p-3 font-mono text-sm overflow-x-auto">
-              <pre className="whitespace-pre-wrap text-error-800">{formatOutput(result.stderr)}</pre>
+              <pre className="whitespace-pre-wrap text-error-800">
+                {formatOutput(result.stderr)}
+              </pre>
             </div>
           </div>
         )}

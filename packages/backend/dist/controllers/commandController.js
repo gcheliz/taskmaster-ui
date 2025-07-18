@@ -11,21 +11,39 @@ const fs_1 = __importDefault(require("fs"));
 // Define allowed commands for security
 const ALLOWED_COMMANDS = {
     git: {
-        commands: ['pull', 'push', 'status', 'fetch', 'checkout', 'branch', 'log', 'diff', 'stash'],
-        requiresRepo: true
+        commands: [
+            'pull',
+            'push',
+            'status',
+            'fetch',
+            'checkout',
+            'branch',
+            'log',
+            'diff',
+            'stash',
+        ],
+        requiresRepo: true,
     },
     'task-master': {
-        commands: ['expand', 'list', 'next', 'show', 'set-status', 'analyze-complexity', 'generate'],
-        requiresRepo: false
+        commands: [
+            'expand',
+            'list',
+            'next',
+            'show',
+            'set-status',
+            'analyze-complexity',
+            'generate',
+        ],
+        requiresRepo: false,
     },
     pnpm: {
         commands: ['install', 'build', 'test', 'lint', 'dev', 'start'],
-        requiresRepo: false
+        requiresRepo: false,
     },
     npm: {
         commands: ['install', 'build', 'test', 'run'],
-        requiresRepo: false
-    }
+        requiresRepo: false,
+    },
 };
 class CommandController {
     /**
@@ -33,7 +51,7 @@ class CommandController {
      */
     async executeCommand(req, res) {
         try {
-            const { command, args = [], workingDirectory, repositoryPath, timeout } = req.body;
+            const { command, args = [], workingDirectory, repositoryPath, timeout, } = req.body;
             // Validate command
             const validationResult = this.validateCommand(command, args);
             if (!validationResult.isValid) {
@@ -41,8 +59,8 @@ class CommandController {
                     success: false,
                     error: {
                         code: 'INVALID_COMMAND',
-                        message: validationResult.message
-                    }
+                        message: validationResult.message,
+                    },
                 });
                 return;
             }
@@ -53,8 +71,8 @@ class CommandController {
                     success: false,
                     error: {
                         code: 'INVALID_DIRECTORY',
-                        message: 'Invalid or inaccessible working directory'
-                    }
+                        message: 'Invalid or inaccessible working directory',
+                    },
                 });
                 return;
             }
@@ -67,8 +85,8 @@ class CommandController {
                         success: false,
                         error: {
                             code: 'REPOSITORY_REQUIRED',
-                            message: 'This command requires a Git repository'
-                        }
+                            message: 'This command requires a Git repository',
+                        },
                     });
                     return;
                 }
@@ -78,22 +96,22 @@ class CommandController {
             const options = {
                 cwd,
                 timeout: timeout || 60000, // 1 minute default
-                shell: true
+                shell: true,
             };
             logger_1.logger.info('Executing command', {
                 executionId,
                 command,
                 args,
                 cwd,
-                timeout
+                timeout,
             });
             const result = await commandExecutor_1.commandExecutor.executeCommand(command, args, options);
             res.json({
                 success: true,
                 data: {
                     result,
-                    executionId
-                }
+                    executionId,
+                },
             });
         }
         catch (error) {
@@ -103,8 +121,8 @@ class CommandController {
                 error: {
                     code: 'EXECUTION_ERROR',
                     message: error instanceof Error ? error.message : 'Command execution failed',
-                    details: error
-                }
+                    details: error,
+                },
             });
         }
     }
@@ -118,13 +136,13 @@ class CommandController {
                 command: cmd,
                 subcommands: config.commands,
                 requiresRepository: config.requiresRepo,
-                available: !config.requiresRepo || Boolean(repositoryPath)
+                available: !config.requiresRepo || Boolean(repositoryPath),
             }));
             res.json({
                 success: true,
                 data: {
-                    commands
-                }
+                    commands,
+                },
             });
         }
         catch (error) {
@@ -133,8 +151,8 @@ class CommandController {
                 success: false,
                 error: {
                     code: 'COMMANDS_ERROR',
-                    message: 'Failed to retrieve available commands'
-                }
+                    message: 'Failed to retrieve available commands',
+                },
             });
         }
     }
@@ -143,14 +161,14 @@ class CommandController {
      */
     async executeSequence(req, res) {
         try {
-            const { commands, workingDirectory, repositoryPath } = req.body;
+            const { commands, workingDirectory, repositoryPath, } = req.body;
             if (!Array.isArray(commands) || commands.length === 0) {
                 res.status(400).json({
                     success: false,
                     error: {
                         code: 'INVALID_SEQUENCE',
-                        message: 'Commands array is required and must not be empty'
-                    }
+                        message: 'Commands array is required and must not be empty',
+                    },
                 });
                 return;
             }
@@ -162,8 +180,8 @@ class CommandController {
                         success: false,
                         error: {
                             code: 'INVALID_COMMAND_SEQUENCE',
-                            message: `Invalid command in sequence: ${validationResult.message}`
-                        }
+                            message: `Invalid command in sequence: ${validationResult.message}`,
+                        },
                     });
                     return;
                 }
@@ -175,8 +193,8 @@ class CommandController {
                     success: false,
                     error: {
                         code: 'INVALID_DIRECTORY',
-                        message: 'Invalid or inaccessible working directory'
-                    }
+                        message: 'Invalid or inaccessible working directory',
+                    },
                 });
                 return;
             }
@@ -184,20 +202,20 @@ class CommandController {
             logger_1.logger.info('Executing command sequence', {
                 executionId,
                 commands,
-                cwd
+                cwd,
             });
             // Execute commands in sequence
             const results = await commandExecutor_1.commandExecutor.executeSequence(commands.map(cmd => ({
                 command: cmd.command,
                 args: cmd.args || [],
-                options: { cwd, shell: true }
+                options: { cwd, shell: true },
             })));
             res.json({
                 success: true,
                 data: {
                     results,
-                    executionId
-                }
+                    executionId,
+                },
             });
         }
         catch (error) {
@@ -206,9 +224,11 @@ class CommandController {
                 success: false,
                 error: {
                     code: 'SEQUENCE_EXECUTION_ERROR',
-                    message: error instanceof Error ? error.message : 'Command sequence execution failed',
-                    details: error
-                }
+                    message: error instanceof Error
+                        ? error.message
+                        : 'Command sequence execution failed',
+                    details: error,
+                },
             });
         }
     }
@@ -223,40 +243,40 @@ class CommandController {
                     description: 'Pull latest changes from remote',
                     commands: [
                         { command: 'git', args: ['fetch'] },
-                        { command: 'git', args: ['pull'] }
+                        { command: 'git', args: ['pull'] },
                     ],
-                    requiresRepository: true
+                    requiresRepository: true,
                 },
                 {
                     name: 'Task Expand All',
                     description: 'Expand all pending tasks with research',
                     commands: [
-                        { command: 'task-master', args: ['expand', '--all', '--research'] }
+                        { command: 'task-master', args: ['expand', '--all', '--research'] },
                     ],
-                    requiresRepository: false
+                    requiresRepository: false,
                 },
                 {
                     name: 'Build Project',
                     description: 'Install dependencies and build project',
                     commands: [
                         { command: 'pnpm', args: ['install'] },
-                        { command: 'pnpm', args: ['build'] }
+                        { command: 'pnpm', args: ['build'] },
                     ],
-                    requiresRepository: false
+                    requiresRepository: false,
                 },
                 {
                     name: 'Run Tests',
                     description: 'Run all tests and linting',
                     commands: [
                         { command: 'pnpm', args: ['test'] },
-                        { command: 'pnpm', args: ['lint'] }
+                        { command: 'pnpm', args: ['lint'] },
                     ],
-                    requiresRepository: false
-                }
+                    requiresRepository: false,
+                },
             ];
             res.json({
                 success: true,
-                data: { presets }
+                data: { presets },
             });
         }
         catch (error) {
@@ -265,8 +285,8 @@ class CommandController {
                 success: false,
                 error: {
                     code: 'PRESETS_ERROR',
-                    message: 'Failed to retrieve command presets'
-                }
+                    message: 'Failed to retrieve command presets',
+                },
             });
         }
     }
@@ -275,14 +295,17 @@ class CommandController {
      */
     validateCommand(command, args) {
         if (!command || typeof command !== 'string') {
-            return { isValid: false, message: 'Command is required and must be a string' };
+            return {
+                isValid: false,
+                message: 'Command is required and must be a string',
+            };
         }
         // Check if command is in allowed list
         const allowedCommand = ALLOWED_COMMANDS[command];
         if (!allowedCommand) {
             return {
                 isValid: false,
-                message: `Command '${command}' is not allowed. Allowed commands: ${Object.keys(ALLOWED_COMMANDS).join(', ')}`
+                message: `Command '${command}' is not allowed. Allowed commands: ${Object.keys(ALLOWED_COMMANDS).join(', ')}`,
             };
         }
         // Check if subcommand is valid (for commands that have subcommands)
@@ -291,7 +314,7 @@ class CommandController {
             if (!allowedCommand.commands.includes(subcommand)) {
                 return {
                     isValid: false,
-                    message: `Subcommand '${subcommand}' is not allowed for '${command}'. Allowed: ${allowedCommand.commands.join(', ')}`
+                    message: `Subcommand '${subcommand}' is not allowed for '${command}'. Allowed: ${allowedCommand.commands.join(', ')}`,
                 };
             }
         }
@@ -316,7 +339,11 @@ class CommandController {
             return resolvedPath;
         }
         catch (error) {
-            logger_1.logger.warn('Invalid working directory:', { workingDirectory, repositoryPath, error });
+            logger_1.logger.warn('Invalid working directory:', {
+                workingDirectory,
+                repositoryPath,
+                error,
+            });
             return null;
         }
     }

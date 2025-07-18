@@ -1,95 +1,108 @@
-import { TaskMasterCommand, ITaskMasterCommandBuilder } from '../types/taskMaster';
+import {
+  TaskMasterCommand,
+  ITaskMasterCommandBuilder,
+} from '../types/taskMaster';
 
 /**
  * Command Builder Pattern Implementation
  * Demonstrates: Fluent interface, command construction, validation
  */
 export class TaskMasterCommandBuilder implements ITaskMasterCommandBuilder {
-  private static readonly COMMANDS_REGISTRY: Record<string, Omit<TaskMasterCommand, 'args'>> = {
-    'init': {
+  private static readonly COMMANDS_REGISTRY: Record<
+    string,
+    Omit<TaskMasterCommand, 'args'>
+  > = {
+    init: {
       command: 'task-master',
       description: 'Initialize a new TaskMaster project',
-      requiresRepository: true
+      requiresRepository: true,
     },
-    'list': {
+    list: {
       command: 'task-master',
       description: 'List tasks in the project',
-      requiresRepository: true
+      requiresRepository: true,
     },
-    'show': {
+    show: {
       command: 'task-master',
       description: 'Show detailed task information',
-      requiresRepository: true
+      requiresRepository: true,
     },
-    'next': {
+    next: {
       command: 'task-master',
       description: 'Get the next available task',
-      requiresRepository: true
+      requiresRepository: true,
     },
     'set-status': {
       command: 'task-master',
       description: 'Update task status',
-      requiresRepository: true
+      requiresRepository: true,
     },
     'parse-prd': {
       command: 'task-master',
       description: 'Parse PRD document and generate tasks',
-      requiresRepository: true
+      requiresRepository: true,
     },
-    'expand': {
+    expand: {
       command: 'task-master',
       description: 'Expand a task into subtasks',
-      requiresRepository: true
+      requiresRepository: true,
     },
     'analyze-complexity': {
       command: 'task-master',
       description: 'Analyze project complexity',
-      requiresRepository: true
+      requiresRepository: true,
     },
     'complexity-report': {
       command: 'task-master',
       description: 'Generate complexity report',
-      requiresRepository: true
+      requiresRepository: true,
     },
     'validate-dependencies': {
       command: 'task-master',
       description: 'Validate task dependencies',
-      requiresRepository: true
+      requiresRepository: true,
     },
     'update-task': {
       command: 'task-master',
       description: 'Update task details',
-      requiresRepository: true
+      requiresRepository: true,
     },
     'update-subtask': {
       command: 'task-master',
       description: 'Update subtask details',
-      requiresRepository: true
-    }
+      requiresRepository: true,
+    },
   };
 
   /**
    * Build a TaskMaster command with fluent interface
    */
-  buildCommand(operation: string, args: Record<string, any> = {}): TaskMasterCommand {
-    const commandTemplate = TaskMasterCommandBuilder.COMMANDS_REGISTRY[operation];
-    
+  buildCommand(
+    operation: string,
+    args: Record<string, any> = {}
+  ): TaskMasterCommand {
+    const commandTemplate =
+      TaskMasterCommandBuilder.COMMANDS_REGISTRY[operation];
+
     if (!commandTemplate) {
       throw new Error(`Unknown TaskMaster operation: ${operation}`);
     }
 
     const commandArgs = this.buildArgumentsForOperation(operation, args);
-    
+
     return {
       ...commandTemplate,
-      args: commandArgs
+      args: commandArgs,
     };
   }
 
   /**
    * Build arguments for specific operations with validation
    */
-  private buildArgumentsForOperation(operation: string, args: Record<string, any>): string[] {
+  private buildArgumentsForOperation(
+    operation: string,
+    args: Record<string, any>
+  ): string[] {
     const commandArgs: string[] = [operation];
 
     switch (operation) {
@@ -150,9 +163,11 @@ export class TaskMasterCommandBuilder implements ITaskMasterCommandBuilder {
         } else if (args.all) {
           commandArgs.push('--all');
         } else {
-          throw new Error('Either task ID or --all flag is required for expand command');
+          throw new Error(
+            'Either task ID or --all flag is required for expand command'
+          );
         }
-        
+
         if (args.research) {
           commandArgs.push('--research');
         }
@@ -239,8 +254,9 @@ export class TaskMasterCommandBuilder implements ITaskMasterCommandBuilder {
 
     // Check if command exists in registry
     const operation = command.args[0];
-    const commandTemplate = TaskMasterCommandBuilder.COMMANDS_REGISTRY[operation];
-    
+    const commandTemplate =
+      TaskMasterCommandBuilder.COMMANDS_REGISTRY[operation];
+
     if (!commandTemplate) {
       return false;
     }
@@ -252,7 +268,10 @@ export class TaskMasterCommandBuilder implements ITaskMasterCommandBuilder {
   /**
    * Validate arguments for specific operations
    */
-  private validateOperationArguments(operation: string, args: string[]): boolean {
+  private validateOperationArguments(
+    operation: string,
+    args: string[]
+  ): boolean {
     switch (operation) {
       case 'show':
       case 'set-status':
@@ -274,10 +293,12 @@ export class TaskMasterCommandBuilder implements ITaskMasterCommandBuilder {
    * Get all available commands
    */
   getAvailableCommands(): TaskMasterCommand[] {
-    return Object.entries(TaskMasterCommandBuilder.COMMANDS_REGISTRY).map(([operation, template]) => ({
-      ...template,
-      args: [operation] // Base args with just the operation
-    }));
+    return Object.entries(TaskMasterCommandBuilder.COMMANDS_REGISTRY).map(
+      ([operation, template]) => ({
+        ...template,
+        args: [operation], // Base args with just the operation
+      })
+    );
   }
 
   /**

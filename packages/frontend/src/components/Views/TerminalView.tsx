@@ -18,27 +18,31 @@ export interface TerminalViewProps {
 
 /**
  * Terminal View Component
- * 
+ *
  * Provides a terminal interface with repository selection and scoped sessions.
  */
 export const TerminalView: React.FC<TerminalViewProps> = ({
   className = '',
   defaultRepositoryPath,
   theme = 'dark',
-  mode = 'embedded'
+  mode = 'embedded',
 }) => {
   const [selectedRepository, setSelectedRepository] = useState<string | null>(
     defaultRepositoryPath || null
   );
-  const [terminalSessions, setTerminalSessions] = useState<Array<{
-    id: string;
-    repositoryPath: string;
-    workingDirectory: string;
-    title: string;
-    isActive: boolean;
-  }>>([]);
+  const [terminalSessions, setTerminalSessions] = useState<
+    Array<{
+      id: string;
+      repositoryPath: string;
+      workingDirectory: string;
+      title: string;
+      isActive: boolean;
+    }>
+  >([]);
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
-  const [activeView, setActiveView] = useState<'terminal' | 'commands'>('terminal');
+  const [activeView, setActiveView] = useState<'terminal' | 'commands'>(
+    'terminal'
+  );
 
   const { state } = useRepository();
   const { repositories, isLoading: isLoadingRepositories } = state;
@@ -50,7 +54,10 @@ export const TerminalView: React.FC<TerminalViewProps> = ({
 
   const handleCreateSession = useCallback(() => {
     if (!selectedRepository) {
-      showError('Repository Required', 'Please select a repository before creating a terminal session');
+      showError(
+        'Repository Required',
+        'Please select a repository before creating a terminal session'
+      );
       return;
     }
 
@@ -60,47 +67,61 @@ export const TerminalView: React.FC<TerminalViewProps> = ({
       repositoryPath: selectedRepository,
       workingDirectory: selectedRepository,
       title: `Terminal - ${selectedRepository.split('/').pop()}`,
-      isActive: true
+      isActive: true,
     };
 
     setTerminalSessions(prev => [...prev, newSession]);
     setActiveSessionId(sessionId);
-    
-    showSuccess('Terminal Session Created', `Created terminal session for ${selectedRepository}`);
+
+    showSuccess(
+      'Terminal Session Created',
+      `Created terminal session for ${selectedRepository}`
+    );
   }, [selectedRepository, showSuccess, showError]);
 
-  const handleCloseSession = useCallback((sessionId: string) => {
-    setTerminalSessions(prev => prev.filter(session => session.id !== sessionId));
-    
-    if (activeSessionId === sessionId) {
-      // Switch to another session if available
-      const remainingSessions = terminalSessions.filter(session => session.id !== sessionId);
-      setActiveSessionId(remainingSessions.length > 0 ? remainingSessions[0].id : null);
-    }
-  }, [activeSessionId, terminalSessions]);
+  const handleCloseSession = useCallback(
+    (sessionId: string) => {
+      setTerminalSessions(prev =>
+        prev.filter(session => session.id !== sessionId)
+      );
+
+      if (activeSessionId === sessionId) {
+        // Switch to another session if available
+        const remainingSessions = terminalSessions.filter(
+          session => session.id !== sessionId
+        );
+        setActiveSessionId(
+          remainingSessions.length > 0 ? remainingSessions[0].id : null
+        );
+      }
+    },
+    [activeSessionId, terminalSessions]
+  );
 
   const handleSwitchSession = useCallback((sessionId: string) => {
     setActiveSessionId(sessionId);
   }, []);
 
-  const activeSession = terminalSessions.find(session => session.id === activeSessionId);
+  const activeSession = terminalSessions.find(
+    session => session.id === activeSessionId
+  );
 
   return (
     <div className={`terminal-view ${className}`}>
       <div className="terminal-view__header">
         <h2 className="terminal-view__title">Terminal & Commands</h2>
-        
+
         <div className="terminal-view__controls">
           <div className="repository-selector">
             <label htmlFor="repository-select">Repository:</label>
-            <select 
+            <select
               id="repository-select"
               value={selectedRepository || ''}
-              onChange={(e) => handleRepositorySelect(e.target.value)}
+              onChange={e => handleRepositorySelect(e.target.value)}
               disabled={isLoadingRepositories}
             >
               <option value="">Select a repository...</option>
-              {repositories.map((repo) => (
+              {repositories.map(repo => (
                 <option key={repo.path} value={repo.path}>
                   {repo.name} ({repo.path})
                 </option>
@@ -109,13 +130,13 @@ export const TerminalView: React.FC<TerminalViewProps> = ({
           </div>
 
           <div className="view-switcher">
-            <button 
+            <button
               className={`view-button ${activeView === 'terminal' ? 'view-button--active' : ''}`}
               onClick={() => setActiveView('terminal')}
             >
               Terminal
             </button>
-            <button 
+            <button
               className={`view-button ${activeView === 'commands' ? 'view-button--active' : ''}`}
               onClick={() => setActiveView('commands')}
             >
@@ -124,7 +145,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({
           </div>
 
           {activeView === 'terminal' && (
-            <button 
+            <button
               className="create-session-button"
               onClick={handleCreateSession}
               disabled={!selectedRepository || isLoadingRepositories}
@@ -138,7 +159,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({
       {/* Terminal Session Tabs - only show when terminal view is active */}
       {activeView === 'terminal' && terminalSessions.length > 0 && (
         <div className="terminal-view__tabs">
-          {terminalSessions.map((session) => (
+          {terminalSessions.map(session => (
             <div
               key={session.id}
               className={`terminal-tab ${session.id === activeSessionId ? 'terminal-tab--active' : ''}`}
@@ -147,7 +168,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({
               <span className="terminal-tab__title">{session.title}</span>
               <button
                 className="terminal-tab__close"
-                onClick={(e) => {
+                onClick={e => {
                   e.stopPropagation();
                   handleCloseSession(session.id);
                 }}
@@ -184,10 +205,11 @@ export const TerminalView: React.FC<TerminalViewProps> = ({
                 <div className="empty-state__icon">🖥️</div>
                 <h3 className="empty-state__title">No Terminal Sessions</h3>
                 <p className="empty-state__description">
-                  Select a repository and create a new terminal session to get started.
+                  Select a repository and create a new terminal session to get
+                  started.
                 </p>
                 {selectedRepository && (
-                  <button 
+                  <button
                     className="empty-state__button"
                     onClick={handleCreateSession}
                   >
@@ -204,7 +226,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({
               repositoryPath={selectedRepository || undefined}
               workingDirectory={selectedRepository || undefined}
               hasActiveTerminal={activeSession !== undefined}
-              onExecuteInTerminal={(command) => {
+              onExecuteInTerminal={command => {
                 // Switch to terminal view and execute command
                 setActiveView('terminal');
                 // In a real implementation, this would send the command to the active terminal

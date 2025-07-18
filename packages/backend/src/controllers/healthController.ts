@@ -2,7 +2,11 @@ import { Request, Response } from 'express';
 import { HealthResponse } from '../types';
 import { getSecretsManager } from '../config/secrets-manager';
 import DatabaseService from '../services/database';
-import { validateSSLConfiguration, getSSLCertificateInfo, checkSSLCertificateExpiration } from '../config/ssl-validator';
+import {
+  validateSSLConfiguration,
+  getSSLCertificateInfo,
+  checkSSLCertificateExpiration,
+} from '../config/ssl-validator';
 
 export const getHealth = (req: Request, res: Response): void => {
   const response: HealthResponse = {
@@ -10,7 +14,7 @@ export const getHealth = (req: Request, res: Response): void => {
     timestamp: new Date().toISOString(),
     service: 'taskmaster-ui-backend',
   };
-  
+
   res.status(200).json(response);
 };
 
@@ -21,19 +25,22 @@ export const getApiHealth = (req: Request, res: Response): void => {
     timestamp: new Date().toISOString(),
     service: 'taskmaster-ui-backend',
   };
-  
+
   res.status(200).json(response);
 };
 
-export const getSecretsHealth = async (req: Request, res: Response): Promise<void> => {
+export const getSecretsHealth = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const secretsManager = getSecretsManager();
     const statusMap = await secretsManager.getProviderStatus();
     const cacheStats = secretsManager.getCacheStats();
-    
+
     const providerStatus = Object.fromEntries(statusMap);
     const activeProviderAvailable = await secretsManager.isProviderAvailable();
-    
+
     const response = {
       status: activeProviderAvailable ? 'OK' : 'DEGRADED',
       timestamp: new Date().toISOString(),
@@ -44,7 +51,7 @@ export const getSecretsHealth = async (req: Request, res: Response): Promise<voi
         entries: cacheStats.entries.length,
       },
     };
-    
+
     res.status(activeProviderAvailable ? 200 : 503).json(response);
   } catch (error: any) {
     res.status(500).json({
@@ -56,12 +63,15 @@ export const getSecretsHealth = async (req: Request, res: Response): Promise<voi
   }
 };
 
-export const getSSLHealth = async (req: Request, res: Response): Promise<void> => {
+export const getSSLHealth = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const validation = validateSSLConfiguration();
     const certInfo = getSSLCertificateInfo();
     const expirationInfo = checkSSLCertificateExpiration();
-    
+
     const response = {
       status: validation.valid ? 'OK' : 'DEGRADED',
       timestamp: new Date().toISOString(),
@@ -78,7 +88,7 @@ export const getSSLHealth = async (req: Request, res: Response): Promise<void> =
         files: certInfo.files,
       },
     };
-    
+
     res.status(validation.valid ? 200 : 503).json(response);
   } catch (error: any) {
     res.status(500).json({
@@ -90,17 +100,20 @@ export const getSSLHealth = async (req: Request, res: Response): Promise<void> =
   }
 };
 
-export const getSystemHealth = async (req: Request, res: Response): Promise<void> => {
+export const getSystemHealth = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const secretsManager = getSecretsManager();
     const dbService = DatabaseService;
-    
+
     // Check database health
     const dbHealth = await dbService.healthCheck();
-    
+
     // Check secrets manager health
     const secretsHealth = await secretsManager.isProviderAvailable();
-    
+
     // Check required secrets
     let secretsValid = true;
     try {
@@ -109,13 +122,13 @@ export const getSystemHealth = async (req: Request, res: Response): Promise<void
     } catch (error) {
       secretsValid = false;
     }
-    
+
     // Check SSL configuration
     const sslValidation = validateSSLConfiguration();
     const sslValid = sslValidation.valid;
-    
+
     const allHealthy = dbHealth && secretsHealth && secretsValid && sslValid;
-    
+
     const response = {
       status: allHealthy ? 'OK' : 'DEGRADED',
       timestamp: new Date().toISOString(),
@@ -127,7 +140,7 @@ export const getSystemHealth = async (req: Request, res: Response): Promise<void
         ssl: sslValid ? 'OK' : 'DEGRADED',
       },
     };
-    
+
     res.status(allHealthy ? 200 : 503).json(response);
   } catch (error: any) {
     res.status(500).json({

@@ -18,23 +18,23 @@ class RepositoryController {
         const context = {
             requestId,
             operation: 'validate-repository',
-            path: req.body?.repositoryPath
+            path: req.body?.repositoryPath,
         };
         try {
             logger_1.logger.logApiRequest(req.method, req.path, context);
             const validateRequest = req.validatedBody;
-            const { repositoryPath, validateGit = true, validateTaskMaster = true } = validateRequest;
+            const { repositoryPath, validateGit = true, validateTaskMaster = true, } = validateRequest;
             logger_1.logger.info('Validating repository', {
                 ...context,
                 repositoryPath,
                 validateGit,
-                validateTaskMaster
+                validateTaskMaster,
             }, 'repository-controller');
             // Perform validation
             const validationResult = await repositoryValidationService_1.repositoryValidationService.validateRepository(repositoryPath, {
                 validateGit,
                 validateTaskMaster,
-                checkPermissions: true
+                checkPermissions: true,
             });
             const duration = Date.now() - startTime;
             const response = {
@@ -44,14 +44,14 @@ class RepositoryController {
                     timestamp: new Date().toISOString(),
                     requestId,
                     duration,
-                    version: '1.0.0'
-                }
+                    version: '1.0.0',
+                },
             };
             logger_1.logger.logApiResponse(req.method, req.path, 200, duration, context);
             logger_1.logger.info('Repository validation completed', {
                 ...context,
                 isValid: validationResult.isValid,
-                validationCount: validationResult.validations.length
+                validationCount: validationResult.validations.length,
             }, 'repository-controller');
             res.status(200).json(response);
         }
@@ -69,16 +69,16 @@ class RepositoryController {
                     details: {
                         type: taskMasterError.type,
                         severity: taskMasterError.severity,
-                        suggestions: taskMasterError.suggestions
+                        suggestions: taskMasterError.suggestions,
                     },
-                    correlationId: requestId
+                    correlationId: requestId,
                 },
                 metadata: {
                     timestamp: new Date().toISOString(),
                     requestId,
                     duration,
-                    version: '1.0.0'
-                }
+                    version: '1.0.0',
+                },
             };
             res.status(statusCode).json(errorResponse);
         }
@@ -94,7 +94,7 @@ class RepositoryController {
         const context = {
             requestId,
             operation: 'get-repository-info',
-            path: repositoryPath
+            path: repositoryPath,
         };
         try {
             logger_1.logger.logApiRequest(req.method, req.path, context);
@@ -103,14 +103,14 @@ class RepositoryController {
                     success: false,
                     error: {
                         code: 'MISSING_PARAMETER',
-                        message: 'repositoryPath query parameter is required'
+                        message: 'repositoryPath query parameter is required',
                     },
                     metadata: {
                         timestamp: new Date().toISOString(),
                         requestId,
                         duration: Date.now() - startTime,
-                        version: '1.0.0'
-                    }
+                        version: '1.0.0',
+                    },
                 });
                 return;
             }
@@ -119,7 +119,7 @@ class RepositoryController {
             const validationResult = await repositoryValidationService_1.repositoryValidationService.validateRepository(repositoryPath, {
                 validateGit: true,
                 validateTaskMaster: true,
-                checkPermissions: false // Just get info, don't check permissions
+                checkPermissions: false, // Just get info, don't check permissions
             });
             const duration = Date.now() - startTime;
             const response = {
@@ -129,8 +129,8 @@ class RepositoryController {
                     timestamp: new Date().toISOString(),
                     requestId,
                     duration,
-                    version: '1.0.0'
-                }
+                    version: '1.0.0',
+                },
             };
             logger_1.logger.logApiResponse(req.method, req.path, 200, duration, context);
             res.status(200).json(response);
@@ -146,14 +146,14 @@ class RepositoryController {
                 error: {
                     code: taskMasterError.code,
                     message: taskMasterError.userMessage,
-                    correlationId: requestId
+                    correlationId: requestId,
                 },
                 metadata: {
                     timestamp: new Date().toISOString(),
                     requestId,
                     duration,
-                    version: '1.0.0'
-                }
+                    version: '1.0.0',
+                },
             };
             res.status(statusCode).json(errorResponse);
         }
@@ -174,9 +174,9 @@ class RepositoryController {
                     service: 'ok',
                     dependencies: {
                         filesystem: 'ok',
-                        git: 'ok'
-                    }
-                }
+                        git: 'ok',
+                    },
+                },
             };
             const response = {
                 success: true,
@@ -185,29 +185,29 @@ class RepositoryController {
                     timestamp: new Date().toISOString(),
                     requestId,
                     duration: Date.now() - startTime,
-                    version: '1.0.0'
-                }
+                    version: '1.0.0',
+                },
             };
             res.status(200).json(response);
         }
         catch (error) {
             const taskMasterError = errorHandler_1.errorHandler.normalizeError(error, {
                 requestId,
-                operation: 'repository-health-check'
+                operation: 'repository-health-check',
             });
             const response = {
                 success: false,
                 error: {
                     code: taskMasterError.code,
                     message: taskMasterError.userMessage,
-                    correlationId: requestId
+                    correlationId: requestId,
                 },
                 metadata: {
                     timestamp: new Date().toISOString(),
                     requestId,
                     duration: Date.now() - startTime,
-                    version: '1.0.0'
-                }
+                    version: '1.0.0',
+                },
             };
             res.status(500).json(response);
         }
@@ -223,7 +223,7 @@ class RepositoryController {
         const context = {
             requestId,
             operation: 'get-repository-details',
-            path: repositoryPath
+            path: repositoryPath,
         };
         try {
             logger_1.logger.logApiRequest(req.method, req.path, context);
@@ -233,14 +233,14 @@ class RepositoryController {
                     error: {
                         code: 'MISSING_PARAMETER',
                         message: 'repositoryPath query parameter is required',
-                        correlationId: requestId
+                        correlationId: requestId,
                     },
                     metadata: {
                         timestamp: new Date().toISOString(),
                         requestId,
                         duration: Date.now() - startTime,
-                        version: '1.0.0'
-                    }
+                        version: '1.0.0',
+                    },
                 });
                 return;
             }
@@ -251,7 +251,7 @@ class RepositoryController {
             const remotes = await gitDataService_1.gitDataService.getRemotes(repositoryPath);
             const detailedData = {
                 ...repositoryMetadata,
-                remotes
+                remotes,
             };
             const duration = Date.now() - startTime;
             const response = {
@@ -261,15 +261,15 @@ class RepositoryController {
                     timestamp: new Date().toISOString(),
                     requestId,
                     duration,
-                    version: '1.0.0'
-                }
+                    version: '1.0.0',
+                },
             };
             logger_1.logger.logApiResponse(req.method, req.path, 200, duration, context);
             logger_1.logger.info('Repository details retrieved successfully', {
                 ...context,
                 branchCount: repositoryMetadata.branches.length,
                 currentBranch: repositoryMetadata.currentBranch,
-                isClean: repositoryMetadata.status.isClean
+                isClean: repositoryMetadata.status.isClean,
             }, 'repository-controller');
             res.status(200).json(response);
         }
@@ -287,16 +287,16 @@ class RepositoryController {
                     details: {
                         type: taskMasterError.type,
                         severity: taskMasterError.severity,
-                        suggestions: taskMasterError.suggestions
+                        suggestions: taskMasterError.suggestions,
                     },
-                    correlationId: requestId
+                    correlationId: requestId,
                 },
                 metadata: {
                     timestamp: new Date().toISOString(),
                     requestId,
                     duration,
-                    version: '1.0.0'
-                }
+                    version: '1.0.0',
+                },
             };
             res.status(statusCode).json(errorResponse);
         }

@@ -510,7 +510,7 @@
         "testStrategy": "Confirm `pnpm-lock.yaml` exists and scripts use pnpm. Start the dev environment via Docker Compose and verify that code changes trigger hot reloading. Run linting and type-checking scripts to ensure they pass.",
         "priority": "high",
         "dependencies": [],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -518,7 +518,7 @@
             "description": "Establish pnpm as the official package manager for the project, ensuring all configurations and lockfiles are correctly set up.",
             "dependencies": [],
             "details": "Initialize the project with a `package.json`. Ensure a `pnpm-lock.yaml` is generated and committed. Convert any existing npm or yarn scripts to use pnpm commands. Add a `.npmrc` file if specific hoisting strategies are required.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Run `pnpm install` successfully. Verify the presence and correctness of `pnpm-lock.yaml`. Confirm that scripts defined in `package.json` execute correctly using the `pnpm run <script>` command."
           },
           {
@@ -529,7 +529,7 @@
               1
             ],
             "details": "Install ESLint, Prettier, and necessary plugins (e.g., `eslint-config-prettier`) using pnpm. Create `.eslintrc.json` and `.prettierrc` configuration files. Add `lint` and `format` scripts to `package.json` to run the tools across the codebase.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Execute the `lint` and `format` scripts. Confirm that they run without errors and correctly identify or fix code that violates the defined rules."
           },
           {
@@ -540,7 +540,7 @@
               1
             ],
             "details": "Install TypeScript as a dev dependency using pnpm. Create a `tsconfig.json` file in the project root. Enable strict mode by setting `\"strict\": true` within the `compilerOptions`. Configure the `include` and `exclude` properties to target the correct source files.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Add a `type-check` script to `package.json` (e.g., `tsc --noEmit`). Run the script and verify that it completes without any type errors on the existing codebase."
           },
           {
@@ -553,7 +553,7 @@
               3
             ],
             "details": "Create a `Dockerfile.dev` that installs dependencies via `pnpm install` and exposes the necessary port. Write a `docker-compose.yml` file defining the application service. Mount the project's source code as a volume and configure the `watch` property to monitor file changes and trigger an automatic action, such as rebuilding or restarting the service.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Run `docker-compose up`. Once the application is running, modify a source file (e.g., change text in a UI component). Observe the terminal output and the running application to confirm that the change is reflected automatically without a manual restart."
           }
         ]
@@ -796,7 +796,7 @@
     ],
     "metadata": {
       "created": "2025-07-15T21:22:03.992Z",
-      "updated": "2025-07-18T18:02:40.912Z",
+      "updated": "2025-07-18T18:26:43.002Z",
       "description": "Tasks for taskmaster-ui context"
     }
   }

@@ -11,14 +11,18 @@ export interface PRDAnalysisResultsProps {
   /** Callback when task is selected */
   onTaskSelect?: (taskIndex: number) => void;
   /** Callback when dependency is selected */
-  onDependencySelect?: (dependency: { from: string; to: string; type: string }) => void;
+  onDependencySelect?: (dependency: {
+    from: string;
+    to: string;
+    type: string;
+  }) => void;
   /** Whether to show export options */
   showExportOptions?: boolean;
 }
 
 /**
  * PRD Analysis Results Component
- * 
+ *
  * Displays comprehensive analysis results including:
  * - Task breakdown with priorities and complexity
  * - Dependency visualization
@@ -33,9 +37,15 @@ export const PRDAnalysisResults: React.FC<PRDAnalysisResultsProps> = ({
   onDependencySelect,
   showExportOptions = true,
 }) => {
-  const [activeTab, setActiveTab] = useState<'tasks' | 'dependencies' | 'summary' | 'recommendations'>('summary');
-  const [sortBy, setSortBy] = useState<'priority' | 'complexity' | 'hours' | 'title'>('priority');
-  const [filterPriority, setFilterPriority] = useState<'all' | 'high' | 'medium' | 'low'>('all');
+  const [activeTab, setActiveTab] = useState<
+    'tasks' | 'dependencies' | 'summary' | 'recommendations'
+  >('summary');
+  const [sortBy, setSortBy] = useState<
+    'priority' | 'complexity' | 'hours' | 'title'
+  >('priority');
+  const [filterPriority, setFilterPriority] = useState<
+    'all' | 'high' | 'medium' | 'low'
+  >('all');
   const [showExportModal, setShowExportModal] = useState(false);
 
   const { analysis } = result;
@@ -43,12 +53,12 @@ export const PRDAnalysisResults: React.FC<PRDAnalysisResultsProps> = ({
   // Sort and filter tasks
   const sortedTasks = useMemo(() => {
     let filtered = analysis.extractedTasks;
-    
+
     // Filter by priority
     if (filterPriority !== 'all') {
       filtered = filtered.filter(task => task.priority === filterPriority);
     }
-    
+
     // Sort tasks
     return filtered.sort((a, b) => {
       switch (sortBy) {
@@ -72,15 +82,22 @@ export const PRDAnalysisResults: React.FC<PRDAnalysisResultsProps> = ({
   const stats = useMemo(() => {
     const tasks = analysis.extractedTasks;
     const totalTasks = tasks.length;
-    const totalHours = tasks.reduce((sum, task) => sum + task.estimatedHours, 0);
-    const priorityBreakdown = tasks.reduce((acc, task) => {
-      acc[task.priority] = (acc[task.priority] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
-    
-    const avgComplexity = tasks.length > 0 
-      ? tasks.reduce((sum, task) => sum + task.complexity, 0) / tasks.length 
-      : 0;
+    const totalHours = tasks.reduce(
+      (sum, task) => sum + task.estimatedHours,
+      0
+    );
+    const priorityBreakdown = tasks.reduce(
+      (acc, task) => {
+        acc[task.priority] = (acc[task.priority] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
+
+    const avgComplexity =
+      tasks.length > 0
+        ? tasks.reduce((sum, task) => sum + task.complexity, 0) / tasks.length
+        : 0;
 
     return {
       totalTasks,
@@ -93,9 +110,10 @@ export const PRDAnalysisResults: React.FC<PRDAnalysisResultsProps> = ({
 
   const handleExportJSON = () => {
     const dataStr = JSON.stringify(result, null, 2);
-    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    const dataUri =
+      'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
     const exportFileDefaultName = `prd-analysis-${new Date().toISOString().split('T')[0]}.json`;
-    
+
     const linkElement = document.createElement('a');
     linkElement.setAttribute('href', dataUri);
     linkElement.setAttribute('download', exportFileDefaultName);
@@ -103,21 +121,30 @@ export const PRDAnalysisResults: React.FC<PRDAnalysisResultsProps> = ({
   };
 
   const handleExportCSV = () => {
-    const headers = ['Title', 'Description', 'Priority', 'Complexity', 'Estimated Hours'];
+    const headers = [
+      'Title',
+      'Description',
+      'Priority',
+      'Complexity',
+      'Estimated Hours',
+    ];
     const csvContent = [
       headers.join(','),
-      ...analysis.extractedTasks.map(task => [
-        `"${task.title.replace(/"/g, '""')}"`,
-        `"${task.description.replace(/"/g, '""')}"`,
-        task.priority,
-        task.complexity,
-        task.estimatedHours
-      ].join(','))
+      ...analysis.extractedTasks.map(task =>
+        [
+          `"${task.title.replace(/"/g, '""')}"`,
+          `"${task.description.replace(/"/g, '""')}"`,
+          task.priority,
+          task.complexity,
+          task.estimatedHours,
+        ].join(',')
+      ),
     ].join('\n');
-    
-    const dataUri = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csvContent);
+
+    const dataUri =
+      'data:text/csv;charset=utf-8,' + encodeURIComponent(csvContent);
     const exportFileDefaultName = `prd-analysis-tasks-${new Date().toISOString().split('T')[0]}.csv`;
-    
+
     const linkElement = document.createElement('a');
     linkElement.setAttribute('href', dataUri);
     linkElement.setAttribute('download', exportFileDefaultName);
@@ -126,10 +153,14 @@ export const PRDAnalysisResults: React.FC<PRDAnalysisResultsProps> = ({
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'high': return '#dc3545';
-      case 'medium': return '#ffc107';
-      case 'low': return '#28a745';
-      default: return '#6c757d';
+      case 'high':
+        return '#dc3545';
+      case 'medium':
+        return '#ffc107';
+      case 'low':
+        return '#28a745';
+      default:
+        return '#6c757d';
     }
   };
 
@@ -170,9 +201,7 @@ export const PRDAnalysisResults: React.FC<PRDAnalysisResultsProps> = ({
           <span className="timestamp">
             Analyzed on {new Date(result.timestamp).toLocaleString()}
           </span>
-          <span className="execution-time">
-            ({result.executionTime}ms)
-          </span>
+          <span className="execution-time">({result.executionTime}ms)</span>
         </div>
         {showExportOptions && (
           <div className="header-actions">
@@ -238,7 +267,9 @@ export const PRDAnalysisResults: React.FC<PRDAnalysisResultsProps> = ({
               </div>
               <div className="stat-card">
                 <h4>📈 Avg Complexity</h4>
-                <div className="stat-value">{stats.avgComplexity.toFixed(1)}/10</div>
+                <div className="stat-value">
+                  {stats.avgComplexity.toFixed(1)}/10
+                </div>
               </div>
             </div>
 
@@ -248,7 +279,10 @@ export const PRDAnalysisResults: React.FC<PRDAnalysisResultsProps> = ({
                 {(['high', 'medium', 'low'] as const).map(priority => (
                   <div key={priority} className="priority-bar">
                     <div className="priority-label">
-                      <span className="priority-name" style={{ color: getPriorityColor(priority) }}>
+                      <span
+                        className="priority-name"
+                        style={{ color: getPriorityColor(priority) }}
+                      >
                         {priority.charAt(0).toUpperCase() + priority.slice(1)}
                       </span>
                       <span className="priority-count">
@@ -256,11 +290,11 @@ export const PRDAnalysisResults: React.FC<PRDAnalysisResultsProps> = ({
                       </span>
                     </div>
                     <div className="priority-progress">
-                      <div 
+                      <div
                         className="priority-fill"
-                        style={{ 
+                        style={{
                           width: `${((stats.priorityBreakdown[priority] || 0) / stats.totalTasks) * 100}%`,
-                          backgroundColor: getPriorityColor(priority)
+                          backgroundColor: getPriorityColor(priority),
                         }}
                       />
                     </div>
@@ -276,9 +310,9 @@ export const PRDAnalysisResults: React.FC<PRDAnalysisResultsProps> = ({
             <div className="tasks-controls">
               <div className="control-group">
                 <label>Sort by:</label>
-                <select 
-                  value={sortBy} 
-                  onChange={(e) => setSortBy(e.target.value as any)}
+                <select
+                  value={sortBy}
+                  onChange={e => setSortBy(e.target.value as any)}
                 >
                   <option value="priority">Priority</option>
                   <option value="complexity">Complexity</option>
@@ -288,9 +322,9 @@ export const PRDAnalysisResults: React.FC<PRDAnalysisResultsProps> = ({
               </div>
               <div className="control-group">
                 <label>Filter:</label>
-                <select 
-                  value={filterPriority} 
-                  onChange={(e) => setFilterPriority(e.target.value as any)}
+                <select
+                  value={filterPriority}
+                  onChange={e => setFilterPriority(e.target.value as any)}
                 >
                   <option value="all">All Priorities</option>
                   <option value="high">High Priority</option>
@@ -302,7 +336,7 @@ export const PRDAnalysisResults: React.FC<PRDAnalysisResultsProps> = ({
 
             <div className="tasks-list">
               {sortedTasks.map((task, index) => (
-                <div 
+                <div
                   key={index}
                   className="task-item"
                   onClick={() => onTaskSelect?.(index)}
@@ -310,14 +344,14 @@ export const PRDAnalysisResults: React.FC<PRDAnalysisResultsProps> = ({
                   <div className="task-header">
                     <h5 className="task-title">{task.title}</h5>
                     <div className="task-meta">
-                      <span 
+                      <span
                         className="task-priority"
                         style={{ color: getPriorityColor(task.priority) }}
                       >
                         {task.priority.toUpperCase()}
                       </span>
                       <span className="task-hours">{task.estimatedHours}h</span>
-                      <span 
+                      <span
                         className="task-complexity"
                         style={{ color: getComplexityColor(task.complexity) }}
                       >
@@ -341,7 +375,7 @@ export const PRDAnalysisResults: React.FC<PRDAnalysisResultsProps> = ({
             ) : (
               <div className="dependencies-list">
                 {analysis.dependencies.map((dep, index) => (
-                  <div 
+                  <div
                     key={index}
                     className="dependency-item"
                     onClick={() => onDependencySelect?.(dep)}
@@ -381,8 +415,11 @@ export const PRDAnalysisResults: React.FC<PRDAnalysisResultsProps> = ({
 
       {/* Export Modal */}
       {showExportModal && (
-        <div className="export-modal-overlay" onClick={() => setShowExportModal(false)}>
-          <div className="export-modal" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="export-modal-overlay"
+          onClick={() => setShowExportModal(false)}
+        >
+          <div className="export-modal" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
               <h4>Export Analysis Results</h4>
               <button

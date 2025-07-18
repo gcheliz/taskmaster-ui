@@ -34,7 +34,7 @@ export interface ProjectListProps {
 
 /**
  * Project List Component
- * 
+ *
  * Displays a list of TaskMaster projects with:
  * - Project information and status
  * - Repository association
@@ -49,7 +49,7 @@ export const ProjectList: React.FC<ProjectListProps> = ({
   onProjectClick,
   onCreateProject,
   showCreateButton = true,
-  emptyStateMessage = 'No projects found'
+  emptyStateMessage = 'No projects found',
 }) => {
   const formatDate = (dateString: string): string => {
     try {
@@ -135,10 +135,7 @@ export const ProjectList: React.FC<ProjectListProps> = ({
         <div className="project-list__header">
           <h3 className="project-list__title">Projects</h3>
           {showCreateButton && (
-            <button 
-              className="create-project-button"
-              onClick={onCreateProject}
-            >
+            <button className="create-project-button" onClick={onCreateProject}>
               <span className="button-icon">➕</span>
               New Project
             </button>
@@ -162,16 +159,18 @@ export const ProjectList: React.FC<ProjectListProps> = ({
           {projects.length > 0 && (
             <div className="project-stats">
               <span className="stat-item">
-                {getStatusIcon('active')} {projects.filter(p => p.status === 'active').length} active
+                {getStatusIcon('active')}{' '}
+                {projects.filter(p => p.status === 'active').length} active
               </span>
               <span className="stat-item">
-                📊 {projects.reduce((sum, p) => sum + (p.tasksCount || 0), 0)} total tasks
+                📊 {projects.reduce((sum, p) => sum + (p.tasksCount || 0), 0)}{' '}
+                total tasks
               </span>
             </div>
           )}
         </div>
         {showCreateButton && (
-          <button 
+          <button
             className="create-project-button"
             onClick={onCreateProject}
             title="Create new project"
@@ -188,24 +187,21 @@ export const ProjectList: React.FC<ProjectListProps> = ({
             <div className="empty-icon">📋</div>
             <div className="empty-message">{emptyStateMessage}</div>
             {showCreateButton && (
-              <button 
-                className="empty-create-button"
-                onClick={onCreateProject}
-              >
+              <button className="empty-create-button" onClick={onCreateProject}>
                 Create Your First Project
               </button>
             )}
           </div>
         ) : (
           <div className="project-grid">
-            {projects.map((project) => (
+            {projects.map(project => (
               <div
                 key={project.id}
                 className={`project-item ${onProjectClick ? 'clickable' : ''}`}
                 onClick={() => handleProjectClick(project)}
                 role={onProjectClick ? 'button' : 'article'}
                 tabIndex={onProjectClick ? 0 : undefined}
-                onKeyDown={(e) => {
+                onKeyDown={e => {
                   if (onProjectClick && (e.key === 'Enter' || e.key === ' ')) {
                     e.preventDefault();
                     handleProjectClick(project);
@@ -216,10 +212,15 @@ export const ProjectList: React.FC<ProjectListProps> = ({
                   <div className="project-title-section">
                     <h4 className="project-name">{project.name}</h4>
                     <div className="project-status">
-                      <span className="status-icon" title={getStatusLabel(project.status)}>
+                      <span
+                        className="status-icon"
+                        title={getStatusLabel(project.status)}
+                      >
                         {getStatusIcon(project.status)}
                       </span>
-                      <span className="status-label">{getStatusLabel(project.status)}</span>
+                      <span className="status-label">
+                        {getStatusLabel(project.status)}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -227,8 +228,12 @@ export const ProjectList: React.FC<ProjectListProps> = ({
                 <div className="project-item__repository">
                   <span className="repository-icon">📁</span>
                   <div className="repository-info">
-                    <span className="repository-name">{project.repositoryName}</span>
-                    <span className="repository-path">{project.repositoryPath}</span>
+                    <span className="repository-name">
+                      {project.repositoryName}
+                    </span>
+                    <span className="repository-path">
+                      {project.repositoryPath}
+                    </span>
                   </div>
                 </div>
 
@@ -242,7 +247,9 @@ export const ProjectList: React.FC<ProjectListProps> = ({
                   )}
                   <div className="stat-badge">
                     <span className="stat-icon">📅</span>
-                    <span className="stat-value">{formatDate(project.createdAt)}</span>
+                    <span className="stat-value">
+                      {formatDate(project.createdAt)}
+                    </span>
                     <span className="stat-label">created</span>
                   </div>
                 </div>

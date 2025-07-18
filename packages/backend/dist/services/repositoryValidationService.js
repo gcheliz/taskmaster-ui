@@ -58,7 +58,7 @@ class RepositoryValidationService {
         const context = {
             requestId,
             repositoryPath,
-            operation: 'validate-repository'
+            operation: 'validate-repository',
         };
         logger_1.logger.info('Starting repository validation', context, 'repository-validator');
         const validations = [];
@@ -95,7 +95,7 @@ class RepositoryValidationService {
                 path: repositoryPath,
                 name: path.basename(repositoryPath),
                 isGitRepository: false,
-                isTaskMasterProject: false
+                isTaskMasterProject: false,
             };
             // 4. Git validation (optional)
             if (options.validateGit !== false) {
@@ -124,14 +124,16 @@ class RepositoryValidationService {
                 }
             }
             // Determine overall validity
-            const criticalValidations = validations.filter(v => v.type === 'path' || v.type === 'directory' || v.type === 'permissions');
+            const criticalValidations = validations.filter(v => v.type === 'path' ||
+                v.type === 'directory' ||
+                v.type === 'permissions');
             const isValid = criticalValidations.every(v => v.isValid);
             const result = this.createResult(isValid, validations, repositoryInfo, errors);
             logger_1.logger.info('Repository validation completed', {
                 ...context,
                 isValid,
                 validationCount: validations.length,
-                errorCount: errors.length
+                errorCount: errors.length,
             }, 'repository-validator');
             return result;
         }
@@ -152,7 +154,7 @@ class RepositoryValidationService {
                 type: 'path',
                 isValid: true,
                 message: 'Path exists and is accessible',
-                details: { path: repositoryPath }
+                details: { path: repositoryPath },
             };
         }
         catch (error) {
@@ -160,7 +162,7 @@ class RepositoryValidationService {
                 type: 'path',
                 isValid: false,
                 message: 'Path does not exist or is not accessible',
-                details: { path: repositoryPath, error: error.message }
+                details: { path: repositoryPath, error: error.message },
             };
         }
     }
@@ -178,8 +180,8 @@ class RepositoryValidationService {
                     details: {
                         path: repositoryPath,
                         size: stats.size,
-                        modified: stats.mtime.toISOString()
-                    }
+                        modified: stats.mtime.toISOString(),
+                    },
                 };
             }
             else {
@@ -187,7 +189,10 @@ class RepositoryValidationService {
                     type: 'directory',
                     isValid: false,
                     message: 'Path exists but is not a directory',
-                    details: { path: repositoryPath, type: stats.isFile() ? 'file' : 'other' }
+                    details: {
+                        path: repositoryPath,
+                        type: stats.isFile() ? 'file' : 'other',
+                    },
                 };
             }
         }
@@ -196,7 +201,7 @@ class RepositoryValidationService {
                 type: 'directory',
                 isValid: false,
                 message: 'Unable to check if path is a directory',
-                details: { path: repositoryPath, error: error.message }
+                details: { path: repositoryPath, error: error.message },
             };
         }
     }
@@ -213,7 +218,7 @@ class RepositoryValidationService {
                 type: 'permissions',
                 isValid: true,
                 message: 'Directory has read and write permissions',
-                details: { path: repositoryPath }
+                details: { path: repositoryPath },
             };
         }
         catch (error) {
@@ -221,7 +226,7 @@ class RepositoryValidationService {
                 type: 'permissions',
                 isValid: false,
                 message: 'Insufficient permissions (need read/write access)',
-                details: { path: repositoryPath, error: error.message }
+                details: { path: repositoryPath, error: error.message },
             };
         }
     }
@@ -235,7 +240,7 @@ class RepositoryValidationService {
             // Verify git status works
             const { stdout } = await execAsync('git status --porcelain', {
                 cwd: repositoryPath,
-                timeout: 5000
+                timeout: 5000,
             });
             return {
                 type: 'git',
@@ -244,25 +249,26 @@ class RepositoryValidationService {
                 details: {
                     path: repositoryPath,
                     gitDir,
-                    hasChanges: stdout.trim().length > 0
-                }
+                    hasChanges: stdout.trim().length > 0,
+                },
             };
         }
         catch (error) {
             const errorMessage = error.message;
-            if (errorMessage.includes('ENOENT') || errorMessage.includes('no such file')) {
+            if (errorMessage.includes('ENOENT') ||
+                errorMessage.includes('no such file')) {
                 return {
                     type: 'git',
                     isValid: false,
                     message: 'Not a Git repository (no .git directory found)',
-                    details: { path: repositoryPath }
+                    details: { path: repositoryPath },
                 };
             }
             return {
                 type: 'git',
                 isValid: false,
                 message: 'Git repository validation failed',
-                details: { path: repositoryPath, error: errorMessage }
+                details: { path: repositoryPath, error: errorMessage },
             };
         }
     }
@@ -303,8 +309,8 @@ class RepositoryValidationService {
                         path: repositoryPath,
                         taskMasterDir,
                         hasTasksFile,
-                        hasConfigFile
-                    }
+                        hasConfigFile,
+                    },
                 };
             }
             else {
@@ -315,8 +321,8 @@ class RepositoryValidationService {
                     details: {
                         path: repositoryPath,
                         taskMasterDir,
-                        missingFiles: ['tasks.json', 'config.json']
-                    }
+                        missingFiles: ['tasks.json', 'config.json'],
+                    },
                 };
             }
         }
@@ -325,7 +331,7 @@ class RepositoryValidationService {
                 type: 'taskmaster',
                 isValid: false,
                 message: 'Not a TaskMaster project (no .taskmaster directory found)',
-                details: { path: repositoryPath }
+                details: { path: repositoryPath },
             };
         }
     }
@@ -337,7 +343,7 @@ class RepositoryValidationService {
             // Get current branch
             const { stdout: branchOutput } = await execAsync('git branch --show-current', {
                 cwd: repositoryPath,
-                timeout: 5000
+                timeout: 5000,
             });
             const branch = branchOutput.trim();
             // Get remote URL (if exists)
@@ -345,7 +351,7 @@ class RepositoryValidationService {
             try {
                 const { stdout: remoteOutput } = await execAsync('git remote get-url origin', {
                     cwd: repositoryPath,
-                    timeout: 5000
+                    timeout: 5000,
                 });
                 remoteUrl = remoteOutput.trim();
             }
@@ -404,7 +410,7 @@ class RepositoryValidationService {
                 initialized: true,
                 taskCount,
                 lastUpdated: lastUpdated || new Date().toISOString(),
-                configPath: configFile
+                configPath: configFile,
             };
         }
         catch (error) {
@@ -420,7 +426,7 @@ class RepositoryValidationService {
             isValid,
             validations,
             repositoryInfo,
-            errors: errors && errors.length > 0 ? errors : undefined
+            errors: errors && errors.length > 0 ? errors : undefined,
         };
     }
     /**

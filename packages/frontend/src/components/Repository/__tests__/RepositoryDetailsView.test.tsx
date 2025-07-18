@@ -25,8 +25,8 @@ const mockRepositoryDetails = {
     message: 'Add new feature for user management',
     author: {
       name: 'John Doe',
-      email: 'john@example.com'
-    }
+      email: 'john@example.com',
+    },
   },
   status: {
     isClean: true,
@@ -35,11 +35,9 @@ const mockRepositoryDetails = {
     untracked: 0,
     conflicted: 0,
     ahead: 0,
-    behind: 0
+    behind: 0,
   },
-  remotes: [
-    { name: 'origin', url: 'https://github.com/user/repo.git' }
-  ],
+  remotes: [{ name: 'origin', url: 'https://github.com/user/repo.git' }],
   branches: [
     {
       name: 'main',
@@ -52,14 +50,14 @@ const mockRepositoryDetails = {
         message: 'Add new feature for user management',
         author: {
           name: 'John Doe',
-          email: 'john@example.com'
-        }
+          email: 'john@example.com',
+        },
       },
       tracking: {
         remote: 'origin/main',
         ahead: 0,
-        behind: 0
-      }
+        behind: 0,
+      },
     },
     {
       name: 'feature/auth',
@@ -72,16 +70,16 @@ const mockRepositoryDetails = {
         message: 'Implement authentication',
         author: {
           name: 'Jane Smith',
-          email: 'jane@example.com'
-        }
+          email: 'jane@example.com',
+        },
       },
       tracking: {
         remote: 'origin/main',
         ahead: 2,
-        behind: 0
-      }
-    }
-  ]
+        behind: 0,
+      },
+    },
+  ],
 };
 
 const mockMetadata = {
@@ -97,15 +95,19 @@ const mockBranches = mockRepositoryDetails.branches;
 describe('RepositoryDetailsView', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     // Setup default mocks
     vi.mocked(RepositoryService.getRepositoryDetails).mockResolvedValue({
       success: true,
       data: mockRepositoryDetails,
     });
-    
-    vi.mocked(RepositoryService.extractRepositoryMetadata).mockReturnValue(mockMetadata);
-    vi.mocked(RepositoryService.extractBranchInfo).mockReturnValue(mockBranches);
+
+    vi.mocked(RepositoryService.extractRepositoryMetadata).mockReturnValue(
+      mockMetadata
+    );
+    vi.mocked(RepositoryService.extractBranchInfo).mockReturnValue(
+      mockBranches
+    );
   });
 
   it('renders repository details view correctly', async () => {
@@ -113,9 +115,11 @@ describe('RepositoryDetailsView', () => {
 
     // Wait for data to load
     await waitFor(() => {
-      expect(screen.getByText((_, element) => 
-        element?.textContent === '📁 test-repository'
-      )).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          (_, element) => element?.textContent === '📁 test-repository'
+        )
+      ).toBeInTheDocument();
     });
 
     // Check for header controls
@@ -124,9 +128,9 @@ describe('RepositoryDetailsView', () => {
     expect(screen.getByText('⬇️ Pull')).toBeInTheDocument();
 
     // Check for repository metadata
-    expect(screen.getByText((_, element) => 
-      element?.textContent === '🌿 main'
-    )).toBeInTheDocument();
+    expect(
+      screen.getByText((_, element) => element?.textContent === '🌿 main')
+    ).toBeInTheDocument();
 
     // Check for branch list
     expect(screen.getByText('Branches (2)')).toBeInTheDocument();
@@ -191,7 +195,9 @@ describe('RepositoryDetailsView', () => {
     fireEvent.click(fetchButton);
 
     await waitFor(() => {
-      expect(RepositoryService.fetchRepository).toHaveBeenCalledWith('test-repo-1');
+      expect(RepositoryService.fetchRepository).toHaveBeenCalledWith(
+        'test-repo-1'
+      );
     });
   });
 
@@ -211,7 +217,9 @@ describe('RepositoryDetailsView', () => {
     fireEvent.click(pullButton);
 
     await waitFor(() => {
-      expect(RepositoryService.pullRepository).toHaveBeenCalledWith('test-repo-1');
+      expect(RepositoryService.pullRepository).toHaveBeenCalledWith(
+        'test-repo-1'
+      );
     });
   });
 
@@ -224,14 +232,19 @@ describe('RepositoryDetailsView', () => {
     render(<RepositoryDetailsView repositoryId="test-repo-1" />);
 
     await waitFor(() => {
-      expect(screen.getByTitle('Checkout branch: feature/auth')).toBeInTheDocument();
+      expect(
+        screen.getByTitle('Checkout branch: feature/auth')
+      ).toBeInTheDocument();
     });
 
     const checkoutButton = screen.getByTitle('Checkout branch: feature/auth');
     fireEvent.click(checkoutButton);
 
     await waitFor(() => {
-      expect(RepositoryService.checkoutBranch).toHaveBeenCalledWith('test-repo-1', 'feature/auth');
+      expect(RepositoryService.checkoutBranch).toHaveBeenCalledWith(
+        'test-repo-1',
+        'feature/auth'
+      );
     });
   });
 
@@ -239,14 +252,16 @@ describe('RepositoryDetailsView', () => {
     render(<RepositoryDetailsView repositoryId="test-repo-1" mode="basic" />);
 
     await waitFor(() => {
-      expect(screen.getByText((_, element) => 
-        element?.textContent === '📁 test-repository'
-      )).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          (_, element) => element?.textContent === '📁 test-repository'
+        )
+      ).toBeInTheDocument();
     });
 
     // Should not show branch list in basic mode
     expect(screen.queryByText('Branches (2)')).not.toBeInTheDocument();
-    
+
     // Should show quick stats instead
     expect(screen.getByText('Branches:')).toBeInTheDocument();
     expect(screen.getByText('Local:')).toBeInTheDocument();
@@ -255,22 +270,24 @@ describe('RepositoryDetailsView', () => {
 
   it('calls onRepositoryClick when repository is clicked', async () => {
     const mockRepositoryClick = vi.fn();
-    
+
     render(
-      <RepositoryDetailsView 
-        repositoryId="test-repo-1" 
+      <RepositoryDetailsView
+        repositoryId="test-repo-1"
         onRepositoryClick={mockRepositoryClick}
       />
     );
 
     await waitFor(() => {
-      expect(screen.getByText((_, element) => 
-        element?.textContent === '📁 test-repository'
-      )).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          (_, element) => element?.textContent === '📁 test-repository'
+        )
+      ).toBeInTheDocument();
     });
 
-    const repositoryName = screen.getByText((_, element) => 
-      element?.textContent === '📁 test-repository'
+    const repositoryName = screen.getByText(
+      (_, element) => element?.textContent === '📁 test-repository'
     );
     fireEvent.click(repositoryName);
 
@@ -279,10 +296,10 @@ describe('RepositoryDetailsView', () => {
 
   it('calls onBranchClick when branch is clicked', async () => {
     const mockBranchClick = vi.fn();
-    
+
     render(
-      <RepositoryDetailsView 
-        repositoryId="test-repo-1" 
+      <RepositoryDetailsView
+        repositoryId="test-repo-1"
         onBranchClick={mockBranchClick}
       />
     );
@@ -313,7 +330,9 @@ describe('RepositoryDetailsView', () => {
     fireEvent.click(fetchButton);
 
     await waitFor(() => {
-      expect(screen.getByText('Fetch completed successfully')).toBeInTheDocument();
+      expect(
+        screen.getByText('Fetch completed successfully')
+      ).toBeInTheDocument();
     });
   });
 
@@ -356,7 +375,9 @@ describe('RepositoryDetailsView', () => {
       expect(screen.getByText('Test notification')).toBeInTheDocument();
     });
 
-    const notification = screen.getByText('Test notification').closest('.notification');
+    const notification = screen
+      .getByText('Test notification')
+      .closest('.notification');
     fireEvent.click(notification!);
 
     await waitFor(() => {
@@ -366,10 +387,16 @@ describe('RepositoryDetailsView', () => {
 
   it('applies custom className correctly', () => {
     const { container } = render(
-      <RepositoryDetailsView repositoryId="test-repo-1" className="custom-class" />
+      <RepositoryDetailsView
+        repositoryId="test-repo-1"
+        className="custom-class"
+      />
     );
 
-    expect(container.firstChild).toHaveClass('repository-details-view', 'custom-class');
+    expect(container.firstChild).toHaveClass(
+      'repository-details-view',
+      'custom-class'
+    );
   });
 
   it('disables action buttons during actions', async () => {
@@ -404,7 +431,10 @@ describe('RepositoryDetailsView', () => {
 
   it('handles auto-refresh with custom interval', async () => {
     const { unmount } = render(
-      <RepositoryDetailsView repositoryId="test-repo-1" refreshInterval={1000} />
+      <RepositoryDetailsView
+        repositoryId="test-repo-1"
+        refreshInterval={1000}
+      />
     );
 
     // Wait for initial load
@@ -413,9 +443,12 @@ describe('RepositoryDetailsView', () => {
     });
 
     // Wait for auto-refresh (should happen after 1 second)
-    await waitFor(() => {
-      expect(RepositoryService.getRepositoryDetails).toHaveBeenCalledTimes(2);
-    }, { timeout: 2000 });
+    await waitFor(
+      () => {
+        expect(RepositoryService.getRepositoryDetails).toHaveBeenCalledTimes(2);
+      },
+      { timeout: 2000 }
+    );
 
     unmount();
   });

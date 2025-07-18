@@ -13,12 +13,21 @@ export const Header: React.FC<HeaderProps> = ({ className = '' }) => {
         <div className="logo-section">
           <h1>TaskMaster UI</h1>
         </div>
-        <nav className="user-section" role="navigation" aria-label="User controls">
+        <nav
+          className="user-section"
+          role="navigation"
+          aria-label="User controls"
+        >
           <div className="theme-toggle-wrapper">
             {/* <ThemeToggle variant="dropdown" size="sm" showLabel={false} /> */}
             <span>Theme Toggle</span>
           </div>
-          <div className="user-profile" role="button" tabIndex={0} aria-label="User profile">
+          <div
+            className="user-profile"
+            role="button"
+            tabIndex={0}
+            aria-label="User profile"
+          >
             <span>User Profile</span>
           </div>
         </nav>

@@ -52,7 +52,10 @@ const environment_1 = require("./environment");
  */
 function validateCertificateFile(filePath, type) {
     if (!filePath) {
-        return { valid: false, error: `${type} path is required when SSL is enabled` };
+        return {
+            valid: false,
+            error: `${type} path is required when SSL is enabled`,
+        };
     }
     if (!fs.existsSync(filePath)) {
         return { valid: false, error: `${type} file not found: ${filePath}` };
@@ -61,7 +64,10 @@ function validateCertificateFile(filePath, type) {
         const stats = fs.statSync(filePath);
         // Check file permissions (should not be world-readable for private keys)
         if (type === 'Key' && (stats.mode & 0o044) !== 0) {
-            return { valid: false, error: `${type} file has unsafe permissions: ${filePath}` };
+            return {
+                valid: false,
+                error: `${type} file has unsafe permissions: ${filePath}`,
+            };
         }
         // Check file size (should not be empty)
         if (stats.size === 0) {
@@ -73,19 +79,28 @@ function validateCertificateFile(filePath, type) {
             case 'CA':
             case 'Certificate':
                 if (!content.includes('BEGIN CERTIFICATE')) {
-                    return { valid: false, error: `${type} file does not contain a valid certificate: ${filePath}` };
+                    return {
+                        valid: false,
+                        error: `${type} file does not contain a valid certificate: ${filePath}`,
+                    };
                 }
                 break;
             case 'Key':
                 if (!content.includes('BEGIN') || !content.includes('PRIVATE KEY')) {
-                    return { valid: false, error: `${type} file does not contain a valid private key: ${filePath}` };
+                    return {
+                        valid: false,
+                        error: `${type} file does not contain a valid private key: ${filePath}`,
+                    };
                 }
                 break;
         }
         return { valid: true };
     }
     catch (error) {
-        return { valid: false, error: `Failed to validate ${type} file: ${error.message}` };
+        return {
+            valid: false,
+            error: `Failed to validate ${type} file: ${error.message}`,
+        };
     }
 }
 /**
@@ -118,9 +133,15 @@ function validateSSLConfiguration() {
         };
     }
     // Validate certificate files
-    const certValidation = environment_1.env.SSL_CERT_PATH ? validateCertificateFile(environment_1.env.SSL_CERT_PATH, 'Certificate') : { valid: true };
-    const keyValidation = environment_1.env.SSL_KEY_PATH ? validateCertificateFile(environment_1.env.SSL_KEY_PATH, 'Key') : { valid: true };
-    const caValidation = environment_1.env.SSL_CA_PATH ? validateCertificateFile(environment_1.env.SSL_CA_PATH, 'CA') : { valid: true };
+    const certValidation = environment_1.env.SSL_CERT_PATH
+        ? validateCertificateFile(environment_1.env.SSL_CERT_PATH, 'Certificate')
+        : { valid: true };
+    const keyValidation = environment_1.env.SSL_KEY_PATH
+        ? validateCertificateFile(environment_1.env.SSL_KEY_PATH, 'Key')
+        : { valid: true };
+    const caValidation = environment_1.env.SSL_CA_PATH
+        ? validateCertificateFile(environment_1.env.SSL_CA_PATH, 'CA')
+        : { valid: true };
     if (!certValidation.valid) {
         errors.push(certValidation.error);
     }
@@ -141,8 +162,12 @@ function validateSSLConfiguration() {
         enabled: sslEnabled,
         rejectUnauthorized: isProduction,
         ca: environment_1.env.SSL_CA_PATH ? fs.readFileSync(environment_1.env.SSL_CA_PATH, 'utf8') : undefined,
-        cert: environment_1.env.SSL_CERT_PATH ? fs.readFileSync(environment_1.env.SSL_CERT_PATH, 'utf8') : undefined,
-        key: environment_1.env.SSL_KEY_PATH ? fs.readFileSync(environment_1.env.SSL_KEY_PATH, 'utf8') : undefined,
+        cert: environment_1.env.SSL_CERT_PATH
+            ? fs.readFileSync(environment_1.env.SSL_CERT_PATH, 'utf8')
+            : undefined,
+        key: environment_1.env.SSL_KEY_PATH
+            ? fs.readFileSync(environment_1.env.SSL_KEY_PATH, 'utf8')
+            : undefined,
         checkServerIdentity: isProduction,
     };
     return {
@@ -206,7 +231,7 @@ async function testSSLConnection() {
         const dbUrl = new URL(environment_1.env.DATABASE_URL);
         // Use Node.js TLS module to test SSL connection
         const tls = await Promise.resolve().then(() => __importStar(require('tls')));
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
             const socket = tls.connect({
                 host: dbUrl.hostname,
                 port: parseInt(dbUrl.port) || 5432,
@@ -215,7 +240,7 @@ async function testSSLConnection() {
                 socket.destroy();
                 resolve({ success: true });
             });
-            socket.on('error', (error) => {
+            socket.on('error', error => {
                 socket.destroy();
                 resolve({ success: false, error: error.message });
             });
@@ -250,7 +275,9 @@ function getSSLCertificateInfo() {
     if (validation.configuration.cert) {
         try {
             const crypto = require('crypto');
-            const cert = crypto.X509Certificate ? new crypto.X509Certificate(validation.configuration.cert) : null;
+            const cert = crypto.X509Certificate
+                ? new crypto.X509Certificate(validation.configuration.cert)
+                : null;
             if (cert) {
                 info.certificate = {
                     subject: cert.subject,
@@ -277,7 +304,9 @@ function checkSSLCertificateExpiration() {
     }
     try {
         const crypto = require('crypto');
-        const cert = crypto.X509Certificate ? new crypto.X509Certificate(validation.configuration.cert) : null;
+        const cert = crypto.X509Certificate
+            ? new crypto.X509Certificate(validation.configuration.cert)
+            : null;
         if (!cert) {
             return { expiring: false, error: 'Could not parse certificate' };
         }

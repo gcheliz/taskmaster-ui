@@ -1,19 +1,25 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
-import { 
-  Dropdown, 
-  DropdownTrigger, 
-  DropdownContent, 
-  DropdownItem, 
-  DropdownLabel, 
+import {
+  Dropdown,
+  DropdownTrigger,
+  DropdownContent,
+  DropdownItem,
+  DropdownLabel,
   DropdownSeparator,
   DropdownCheckboxItem,
   DropdownRadioGroup,
-  DropdownRadioItem
+  DropdownRadioItem,
 } from '../../components/ui/molecules/Dropdown';
 import { Button } from '../../components/ui/atoms/Button';
 import { Badge } from '../../components/ui/atoms/Badge';
-import { Icon, PlusIcon, PencilIcon, TrashIcon, EyeIcon } from '../../components/ui/atoms/Icon';
+import {
+  Icon,
+  PlusIcon,
+  PencilIcon,
+  TrashIcon,
+  EyeIcon,
+} from '../../components/ui/atoms/Icon';
 
 const meta: Meta<typeof Dropdown> = {
   title: 'Molecules/Dropdown',
@@ -22,7 +28,8 @@ const meta: Meta<typeof Dropdown> = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'A dropdown menu component that displays a list of options in an overlay. Includes support for keyboard navigation, checkboxes, radio groups, and accessibility features.',
+        component:
+          'A dropdown menu component that displays a list of options in an overlay. Includes support for keyboard navigation, checkboxes, radio groups, and accessibility features.',
       },
     },
   },
@@ -38,7 +45,7 @@ const meta: Meta<typeof Dropdown> = {
     },
   },
   decorators: [
-    (Story) => (
+    Story => (
       <div className="w-full min-h-[300px] flex items-center justify-center">
         <Story />
       </div>
@@ -168,10 +175,7 @@ export const WithCheckboxItems: Story = {
           >
             Marketing emails
           </DropdownCheckboxItem>
-          <DropdownCheckboxItem
-            checked={social}
-            onCheckedChange={setSocial}
-          >
+          <DropdownCheckboxItem checked={social} onCheckedChange={setSocial}>
             Social notifications
           </DropdownCheckboxItem>
           <DropdownSeparator />
@@ -188,9 +192,7 @@ export const WithRadioGroup: Story = {
 
     return (
       <Dropdown>
-        <DropdownTrigger variant="outline">
-          Theme: {theme}
-        </DropdownTrigger>
+        <DropdownTrigger variant="outline">Theme: {theme}</DropdownTrigger>
         <DropdownContent>
           <DropdownLabel>Theme</DropdownLabel>
           <DropdownRadioGroup value={theme} onValueChange={setTheme}>
@@ -243,18 +245,29 @@ export const TaskActionsDropdown: Story = {
                     View Details
                   </DropdownItem>
                   <DropdownSeparator />
-                  
+
                   <DropdownLabel>Change Status</DropdownLabel>
-                  <DropdownRadioGroup value={taskStatus} onValueChange={setTaskStatus}>
-                    <DropdownRadioItem value="pending">Pending</DropdownRadioItem>
-                    <DropdownRadioItem value="in-progress">In Progress</DropdownRadioItem>
-                    <DropdownRadioItem value="review">Under Review</DropdownRadioItem>
-                    <DropdownRadioItem value="done">Completed</DropdownRadioItem>
+                  <DropdownRadioGroup
+                    value={taskStatus}
+                    onValueChange={setTaskStatus}
+                  >
+                    <DropdownRadioItem value="pending">
+                      Pending
+                    </DropdownRadioItem>
+                    <DropdownRadioItem value="in-progress">
+                      In Progress
+                    </DropdownRadioItem>
+                    <DropdownRadioItem value="review">
+                      Under Review
+                    </DropdownRadioItem>
+                    <DropdownRadioItem value="done">
+                      Completed
+                    </DropdownRadioItem>
                   </DropdownRadioGroup>
-                  
+
                   <DropdownSeparator />
-                  <DropdownItem 
-                    variant="destructive" 
+                  <DropdownItem
+                    variant="destructive"
                     onClick={() => handleAction('delete')}
                   >
                     <Icon icon={TrashIcon} size="sm" className="mr-2" />
@@ -305,7 +318,8 @@ export const NestedMenuExample: Story = {
   render: () => (
     <div className="space-y-4">
       <p className="text-sm text-secondary-600">
-        This demonstrates multiple independent dropdown menus that can be open simultaneously.
+        This demonstrates multiple independent dropdown menus that can be open
+        simultaneously.
       </p>
       <div className="flex gap-4">
         <Dropdown>
@@ -353,48 +367,39 @@ export const ControlledDropdown: Story = {
     return (
       <div className="space-y-4">
         <div className="flex gap-2">
-          <Button 
-            size="sm" 
-            variant="outline" 
-            onClick={() => setOpen(!open)}
-          >
+          <Button size="sm" variant="outline" onClick={() => setOpen(!open)}>
             {open ? 'Close' : 'Open'} Dropdown
           </Button>
-          <Button 
-            size="sm" 
-            variant="outline" 
+          <Button
+            size="sm"
+            variant="outline"
             onClick={() => setSelectedItem('')}
           >
             Clear Selection
           </Button>
         </div>
-        
+
         <Dropdown open={open} onOpenChange={setOpen}>
           <DropdownTrigger disabled={open}>
             Select Option: {selectedItem || 'None'}
           </DropdownTrigger>
           <DropdownContent>
             <DropdownLabel>Options</DropdownLabel>
-            <DropdownItem 
-              onSelect={() => setSelectedItem('Option 1')}
-            >
+            <DropdownItem onSelect={() => setSelectedItem('Option 1')}>
               Option 1
             </DropdownItem>
-            <DropdownItem 
-              onSelect={() => setSelectedItem('Option 2')}
-            >
+            <DropdownItem onSelect={() => setSelectedItem('Option 2')}>
               Option 2
             </DropdownItem>
-            <DropdownItem 
-              onSelect={() => setSelectedItem('Option 3')}
-            >
+            <DropdownItem onSelect={() => setSelectedItem('Option 3')}>
               Option 3
             </DropdownItem>
           </DropdownContent>
         </Dropdown>
-        
+
         <div className="text-sm text-secondary-600">
-          Status: {open ? 'Open' : 'Closed'} | Selected: {selectedItem || 'None'}
+          Status: {open ? 'Open' : 'Closed'} | Selected:{' '}
+          {selectedItem || 'None'}
         </div>
       </div>
     );
@@ -425,14 +430,44 @@ export const AccessibilityExample: Story = {
       <div className="text-sm text-secondary-600">
         <h4 className="font-medium mb-2">Keyboard Navigation:</h4>
         <ul className="space-y-1">
-          <li>• <kbd className="px-1 py-0.5 bg-secondary-100 rounded text-xs">Enter/Space</kbd> to open menu</li>
-          <li>• <kbd className="px-1 py-0.5 bg-secondary-100 rounded text-xs">Arrow Keys</kbd> to navigate items</li>
-          <li>• <kbd className="px-1 py-0.5 bg-secondary-100 rounded text-xs">Enter/Space</kbd> to select item</li>
-          <li>• <kbd className="px-1 py-0.5 bg-secondary-100 rounded text-xs">Escape</kbd> to close menu</li>
-          <li>• <kbd className="px-1 py-0.5 bg-secondary-100 rounded text-xs">Home/End</kbd> to jump to first/last item</li>
+          <li>
+            •{' '}
+            <kbd className="px-1 py-0.5 bg-secondary-100 rounded text-xs">
+              Enter/Space
+            </kbd>{' '}
+            to open menu
+          </li>
+          <li>
+            •{' '}
+            <kbd className="px-1 py-0.5 bg-secondary-100 rounded text-xs">
+              Arrow Keys
+            </kbd>{' '}
+            to navigate items
+          </li>
+          <li>
+            •{' '}
+            <kbd className="px-1 py-0.5 bg-secondary-100 rounded text-xs">
+              Enter/Space
+            </kbd>{' '}
+            to select item
+          </li>
+          <li>
+            •{' '}
+            <kbd className="px-1 py-0.5 bg-secondary-100 rounded text-xs">
+              Escape
+            </kbd>{' '}
+            to close menu
+          </li>
+          <li>
+            •{' '}
+            <kbd className="px-1 py-0.5 bg-secondary-100 rounded text-xs">
+              Home/End
+            </kbd>{' '}
+            to jump to first/last item
+          </li>
         </ul>
       </div>
-      
+
       <Dropdown>
         <DropdownTrigger>Accessible Menu</DropdownTrigger>
         <DropdownContent>
@@ -454,7 +489,9 @@ export const AlignmentAndPositioning: Story = {
       <div className="text-center">
         <h4 className="text-sm font-medium mb-2">Align Start</h4>
         <Dropdown>
-          <DropdownTrigger variant="outline" size="sm">Menu</DropdownTrigger>
+          <DropdownTrigger variant="outline" size="sm">
+            Menu
+          </DropdownTrigger>
           <DropdownContent align="start">
             <DropdownItem>Option 1</DropdownItem>
             <DropdownItem>Option 2</DropdownItem>
@@ -462,11 +499,13 @@ export const AlignmentAndPositioning: Story = {
           </DropdownContent>
         </Dropdown>
       </div>
-      
+
       <div className="text-center">
         <h4 className="text-sm font-medium mb-2">Align Center</h4>
         <Dropdown>
-          <DropdownTrigger variant="outline" size="sm">Menu</DropdownTrigger>
+          <DropdownTrigger variant="outline" size="sm">
+            Menu
+          </DropdownTrigger>
           <DropdownContent align="center">
             <DropdownItem>Option 1</DropdownItem>
             <DropdownItem>Option 2</DropdownItem>
@@ -474,11 +513,13 @@ export const AlignmentAndPositioning: Story = {
           </DropdownContent>
         </Dropdown>
       </div>
-      
+
       <div className="text-center">
         <h4 className="text-sm font-medium mb-2">Align End</h4>
         <Dropdown>
-          <DropdownTrigger variant="outline" size="sm">Menu</DropdownTrigger>
+          <DropdownTrigger variant="outline" size="sm">
+            Menu
+          </DropdownTrigger>
           <DropdownContent align="end">
             <DropdownItem>Option 1</DropdownItem>
             <DropdownItem>Option 2</DropdownItem>

@@ -21,7 +21,7 @@ class PerformanceController {
             res.json({
                 success: true,
                 data: analysis,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
             });
         }
         catch (error) {
@@ -29,7 +29,7 @@ class PerformanceController {
             res.status(500).json({
                 success: false,
                 error: 'Failed to get query analysis',
-                message: error.message
+                message: error.message,
             });
         }
     }
@@ -41,7 +41,7 @@ class PerformanceController {
             database_1.DatabaseService.getInstance().clearQueryLogs();
             res.json({
                 success: true,
-                message: 'Query logs cleared successfully'
+                message: 'Query logs cleared successfully',
             });
         }
         catch (error) {
@@ -49,7 +49,7 @@ class PerformanceController {
             res.status(500).json({
                 success: false,
                 error: 'Failed to clear logs',
-                message: error.message
+                message: error.message,
             });
         }
     }
@@ -61,12 +61,12 @@ class PerformanceController {
             const filename = `query-logs-${Date.now()}.json`;
             const outputPath = `/tmp/${filename}`;
             database_1.DatabaseService.getInstance().exportQueryLogs(outputPath);
-            res.download(outputPath, filename, (err) => {
+            res.download(outputPath, filename, err => {
                 if (err) {
                     console.error('Error downloading file:', err);
                     res.status(500).json({
                         success: false,
-                        error: 'Failed to download logs'
+                        error: 'Failed to download logs',
                     });
                 }
             });
@@ -76,7 +76,7 @@ class PerformanceController {
             res.status(500).json({
                 success: false,
                 error: 'Failed to export logs',
-                message: error.message
+                message: error.message,
             });
         }
     }
@@ -98,15 +98,15 @@ class PerformanceController {
                 database: urlObj?.pathname?.slice(1) || 'unknown',
                 connectionPoolSize: urlObj?.searchParams.get('connection_limit') || 'default',
                 poolTimeout: urlObj?.searchParams.get('pool_timeout') || 'default',
-                statementTimeout: urlObj?.searchParams.get('statement_timeout') || 'default'
+                statementTimeout: urlObj?.searchParams.get('statement_timeout') || 'default',
             };
             res.json({
                 success: true,
                 data: {
                     connection: connectionInfo,
                     stats,
-                    queryAnalysisEnabled: queryAnalyzer_1.default.getEnabled()
-                }
+                    queryAnalysisEnabled: queryAnalyzer_1.default.getEnabled(),
+                },
             });
         }
         catch (error) {
@@ -114,7 +114,7 @@ class PerformanceController {
             res.status(500).json({
                 success: false,
                 error: 'Failed to get connection info',
-                message: error.message
+                message: error.message,
             });
         }
     }
@@ -133,67 +133,64 @@ class PerformanceController {
             results.push({
                 test: 'Simple SELECT',
                 duration: Date.now() - simpleStart,
-                status: 'passed'
+                status: 'passed',
             });
             // Test 2: Count queries
             const countStart = Date.now();
             const [projectCount, taskCount] = await Promise.all([
                 prisma.project.count(),
-                prisma.task.count()
+                prisma.task.count(),
             ]);
             results.push({
                 test: 'Count queries',
                 duration: Date.now() - countStart,
                 status: 'passed',
-                results: { projectCount, taskCount }
+                results: { projectCount, taskCount },
             });
             // Test 3: Join query (tasks with projects)
             const joinStart = Date.now();
             const tasksWithProjects = await prisma.task.findMany({
                 take: 10,
                 include: {
-                    project: true
-                }
+                    project: true,
+                },
             });
             results.push({
                 test: 'Join query (tasks with projects)',
                 duration: Date.now() - joinStart,
                 status: 'passed',
-                resultCount: tasksWithProjects.length
+                resultCount: tasksWithProjects.length,
             });
             // Test 4: Complex query with filtering
             const complexStart = Date.now();
             const complexQuery = await prisma.task.findMany({
                 where: {
-                    OR: [
-                        { status: 'IN_PROGRESS' },
-                        { priority: 'HIGH' }
-                    ]
+                    OR: [{ status: 'IN_PROGRESS' }, { priority: 'HIGH' }],
                 },
                 include: {
                     project: {
                         select: {
                             name: true,
-                            description: true
-                        }
-                    }
+                            description: true,
+                        },
+                    },
                 },
                 orderBy: {
-                    createdAt: 'desc'
+                    createdAt: 'desc',
                 },
-                take: 5
+                take: 5,
             });
             results.push({
                 test: 'Complex filtered query',
                 duration: Date.now() - complexStart,
                 status: 'passed',
-                resultCount: complexQuery.length
+                resultCount: complexQuery.length,
             });
             const totalTime = Date.now() - startTime;
             // Record performance metrics
             dbService.recordPerformanceMetric({
                 responseTime: totalTime,
-                queryCount: results.length
+                queryCount: results.length,
             });
             res.json({
                 success: true,
@@ -203,9 +200,9 @@ class PerformanceController {
                     summary: {
                         averageQueryTime: results.reduce((sum, r) => sum + r.duration, 0) / results.length,
                         slowestQuery: results.reduce((slowest, current) => current.duration > slowest.duration ? current : slowest),
-                        fastestQuery: results.reduce((fastest, current) => current.duration < fastest.duration ? current : fastest)
-                    }
-                }
+                        fastestQuery: results.reduce((fastest, current) => current.duration < fastest.duration ? current : fastest),
+                    },
+                },
             });
         }
         catch (error) {
@@ -213,7 +210,7 @@ class PerformanceController {
             res.status(500).json({
                 success: false,
                 error: 'Performance test failed',
-                message: error.message
+                message: error.message,
             });
         }
     }
@@ -241,13 +238,13 @@ class PerformanceController {
         `;
                 explainResults.push({
                     query: 'Tasks with projects (IN_PROGRESS)',
-                    plan: explainPlan
+                    plan: explainPlan,
                 });
             }
             catch (explainError) {
                 explainResults.push({
                     query: 'Tasks with projects (IN_PROGRESS)',
-                    error: explainError.message
+                    error: explainError.message,
                 });
             }
             // EXPLAIN a repository query
@@ -262,13 +259,13 @@ class PerformanceController {
         `;
                 explainResults.push({
                     query: 'Repositories with commit counts',
-                    plan: explainPlan2
+                    plan: explainPlan2,
                 });
             }
             catch (explainError) {
                 explainResults.push({
                     query: 'Repositories with commit counts',
-                    error: explainError.message
+                    error: explainError.message,
                 });
             }
             res.json({
@@ -276,8 +273,8 @@ class PerformanceController {
                 data: {
                     queryAnalysis: analysis,
                     explainPlans: explainResults,
-                    recommendations: this.generateOptimizationRecommendations(analysis, explainResults)
-                }
+                    recommendations: this.generateOptimizationRecommendations(analysis, explainResults),
+                },
             });
         }
         catch (error) {
@@ -285,7 +282,7 @@ class PerformanceController {
             res.status(500).json({
                 success: false,
                 error: 'Failed to analyze slow queries',
-                message: error.message
+                message: error.message,
             });
         }
     }
@@ -340,7 +337,7 @@ class PerformanceController {
                 res.status(400).json({
                     success: false,
                     error: 'Invalid request',
-                    message: 'enabled must be a boolean value'
+                    message: 'enabled must be a boolean value',
                 });
                 return;
             }
@@ -348,7 +345,7 @@ class PerformanceController {
             res.json({
                 success: true,
                 message: `Query analysis ${enabled ? 'enabled' : 'disabled'}`,
-                enabled: queryAnalyzer_1.default.getEnabled()
+                enabled: queryAnalyzer_1.default.getEnabled(),
             });
         }
         catch (error) {
@@ -356,7 +353,7 @@ class PerformanceController {
             res.status(500).json({
                 success: false,
                 error: 'Failed to toggle analysis',
-                message: error.message
+                message: error.message,
             });
         }
     }

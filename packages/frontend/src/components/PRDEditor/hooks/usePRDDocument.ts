@@ -8,7 +8,11 @@ import {
   checkApiHealth,
   PRDAutoSaver,
 } from '../services/prdApi';
-import type { PRDDocument, CreatePRDRequest, UpdatePRDRequest } from '../services/prdApi';
+import type {
+  PRDDocument,
+  CreatePRDRequest,
+  UpdatePRDRequest,
+} from '../services/prdApi';
 
 export interface UsePRDDocumentOptions {
   /** Auto-save interval in milliseconds */
@@ -16,7 +20,11 @@ export interface UsePRDDocumentOptions {
   /** Whether to enable auto-save */
   enableAutoSave?: boolean;
   /** Callback when API operations complete */
-  onOperationComplete?: (operation: string, success: boolean, data?: any) => void;
+  onOperationComplete?: (
+    operation: string,
+    success: boolean,
+    data?: any
+  ) => void;
   /** Callback when errors occur */
   onError?: (error: string) => void;
 }
@@ -42,7 +50,10 @@ export interface UsePRDDocumentActions {
   /** Save a new document */
   saveDocument: (data: CreatePRDRequest) => Promise<PRDDocument | null>;
   /** Update existing document */
-  updateDocument: (id: string, data: UpdatePRDRequest) => Promise<PRDDocument | null>;
+  updateDocument: (
+    id: string,
+    data: UpdatePRDRequest
+  ) => Promise<PRDDocument | null>;
   /** Load document by ID */
   loadDocument: (id: string) => Promise<PRDDocument | null>;
   /** Delete document */
@@ -118,131 +129,148 @@ export const usePRDDocument = (
     setState(prev => ({ ...prev, ...updates }));
   }, []);
 
-  const saveDocument = useCallback(async (data: CreatePRDRequest): Promise<PRDDocument | null> => {
-    updateState({ saving: true, error: null });
-    
-    try {
-      const response = await savePRDDocument(data);
-      
-      if (response.success && response.data) {
-        updateState({
-          document: response.data,
-          saving: false,
-          lastSaved: new Date(),
-        });
-        
-        onOperationComplete?.('save', true, response.data);
-        return response.data;
-      } else {
-        throw new Error(response.error || 'Save failed');
-      }
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Save failed';
-      updateState({ saving: false, error: errorMessage });
-      onError?.(errorMessage);
-      onOperationComplete?.('save', false, errorMessage);
-      return null;
-    }
-  }, [onOperationComplete, onError, updateState]);
+  const saveDocument = useCallback(
+    async (data: CreatePRDRequest): Promise<PRDDocument | null> => {
+      updateState({ saving: true, error: null });
 
-  const updateDocument = useCallback(async (id: string, data: UpdatePRDRequest): Promise<PRDDocument | null> => {
-    updateState({ saving: true, error: null });
-    
-    try {
-      const response = await updatePRDDocument(id, data);
-      
-      if (response.success && response.data) {
-        updateState({
-          document: response.data,
-          saving: false,
-          lastSaved: new Date(),
-        });
-        
-        onOperationComplete?.('update', true, response.data);
-        return response.data;
-      } else {
-        throw new Error(response.error || 'Update failed');
-      }
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Update failed';
-      updateState({ saving: false, error: errorMessage });
-      onError?.(errorMessage);
-      onOperationComplete?.('update', false, errorMessage);
-      return null;
-    }
-  }, [onOperationComplete, onError, updateState]);
+      try {
+        const response = await savePRDDocument(data);
 
-  const loadDocument = useCallback(async (id: string): Promise<PRDDocument | null> => {
-    updateState({ loading: true, error: null });
-    
-    try {
-      const response = await loadPRDDocument(id);
-      
-      if (response.success && response.data) {
-        updateState({
-          document: response.data,
-          loading: false,
-        });
-        
-        onOperationComplete?.('load', true, response.data);
-        return response.data;
-      } else {
-        throw new Error(response.error || 'Load failed');
-      }
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Load failed';
-      updateState({ loading: false, error: errorMessage });
-      onError?.(errorMessage);
-      onOperationComplete?.('load', false, errorMessage);
-      return null;
-    }
-  }, [onOperationComplete, onError, updateState]);
+        if (response.success && response.data) {
+          updateState({
+            document: response.data,
+            saving: false,
+            lastSaved: new Date(),
+          });
 
-  const deleteDocument = useCallback(async (id: string): Promise<boolean> => {
-    updateState({ loading: true, error: null });
-    
-    try {
-      const response = await deletePRDDocument(id);
-      
-      if (response.success) {
-        updateState({
-          document: null,
-          loading: false,
-        });
-        
-        onOperationComplete?.('delete', true);
-        return true;
-      } else {
-        throw new Error(response.error || 'Delete failed');
+          onOperationComplete?.('save', true, response.data);
+          return response.data;
+        } else {
+          throw new Error(response.error || 'Save failed');
+        }
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : 'Save failed';
+        updateState({ saving: false, error: errorMessage });
+        onError?.(errorMessage);
+        onOperationComplete?.('save', false, errorMessage);
+        return null;
       }
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Delete failed';
-      updateState({ loading: false, error: errorMessage });
-      onError?.(errorMessage);
-      onOperationComplete?.('delete', false, errorMessage);
-      return false;
-    }
-  }, [onOperationComplete, onError, updateState]);
+    },
+    [onOperationComplete, onError, updateState]
+  );
+
+  const updateDocument = useCallback(
+    async (id: string, data: UpdatePRDRequest): Promise<PRDDocument | null> => {
+      updateState({ saving: true, error: null });
+
+      try {
+        const response = await updatePRDDocument(id, data);
+
+        if (response.success && response.data) {
+          updateState({
+            document: response.data,
+            saving: false,
+            lastSaved: new Date(),
+          });
+
+          onOperationComplete?.('update', true, response.data);
+          return response.data;
+        } else {
+          throw new Error(response.error || 'Update failed');
+        }
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : 'Update failed';
+        updateState({ saving: false, error: errorMessage });
+        onError?.(errorMessage);
+        onOperationComplete?.('update', false, errorMessage);
+        return null;
+      }
+    },
+    [onOperationComplete, onError, updateState]
+  );
+
+  const loadDocument = useCallback(
+    async (id: string): Promise<PRDDocument | null> => {
+      updateState({ loading: true, error: null });
+
+      try {
+        const response = await loadPRDDocument(id);
+
+        if (response.success && response.data) {
+          updateState({
+            document: response.data,
+            loading: false,
+          });
+
+          onOperationComplete?.('load', true, response.data);
+          return response.data;
+        } else {
+          throw new Error(response.error || 'Load failed');
+        }
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : 'Load failed';
+        updateState({ loading: false, error: errorMessage });
+        onError?.(errorMessage);
+        onOperationComplete?.('load', false, errorMessage);
+        return null;
+      }
+    },
+    [onOperationComplete, onError, updateState]
+  );
+
+  const deleteDocument = useCallback(
+    async (id: string): Promise<boolean> => {
+      updateState({ loading: true, error: null });
+
+      try {
+        const response = await deletePRDDocument(id);
+
+        if (response.success) {
+          updateState({
+            document: null,
+            loading: false,
+          });
+
+          onOperationComplete?.('delete', true);
+          return true;
+        } else {
+          throw new Error(response.error || 'Delete failed');
+        }
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : 'Delete failed';
+        updateState({ loading: false, error: errorMessage });
+        onError?.(errorMessage);
+        onOperationComplete?.('delete', false, errorMessage);
+        return false;
+      }
+    },
+    [onOperationComplete, onError, updateState]
+  );
 
   const listDocuments = useCallback(async (): Promise<PRDDocument[]> => {
     updateState({ loading: true, error: null });
-    
+
     try {
       const response = await listPRDDocuments();
-      
+
       if (response.success && response.data) {
         updateState({
           documents: response.data.documents,
           loading: false,
         });
-        
+
         onOperationComplete?.('list', true, response.data);
         return response.data.documents;
       } else {
         throw new Error(response.error || 'List failed');
       }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'List failed';
+      const errorMessage =
+        error instanceof Error ? error.message : 'List failed';
       updateState({ loading: false, error: errorMessage });
       onError?.(errorMessage);
       onOperationComplete?.('list', false, errorMessage);
@@ -271,11 +299,14 @@ export const usePRDDocument = (
     }
   }, [updateState]);
 
-  const startAutoSave = useCallback((content: string, title: string) => {
-    if (enableAutoSave && autoSaverRef.current) {
-      autoSaverRef.current.start(content, title);
-    }
-  }, [enableAutoSave]);
+  const startAutoSave = useCallback(
+    (content: string, title: string) => {
+      if (enableAutoSave && autoSaverRef.current) {
+        autoSaverRef.current.start(content, title);
+      }
+    },
+    [enableAutoSave]
+  );
 
   const stopAutoSave = useCallback(() => {
     autoSaverRef.current?.stop();

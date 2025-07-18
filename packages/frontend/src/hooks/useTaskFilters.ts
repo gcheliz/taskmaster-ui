@@ -1,5 +1,8 @@
 import { useState, useCallback, useMemo } from 'react';
-import type { FilterOptions, SortOptions } from '../components/TaskBoard/FilterSortControls';
+import type {
+  FilterOptions,
+  SortOptions,
+} from '../components/TaskBoard/FilterSortControls';
 
 export interface TaskFiltersState {
   filters: FilterOptions;
@@ -43,43 +46,48 @@ const defaultFilters: FilterOptions = {
   priority: 'all',
   status: 'all',
   assignee: 'all',
-  complexity: 'all'
+  complexity: 'all',
 };
 
 const defaultSorting: SortOptions = {
   sortBy: 'created',
-  sortOrder: 'desc'
+  sortOrder: 'desc',
 };
 
 const defaultState: TaskFiltersState = {
   filters: defaultFilters,
   sorting: defaultSorting,
-  searchTerm: ''
+  searchTerm: '',
 };
 
 /**
  * Custom hook for managing task filtering and sorting state
- * 
+ *
  * Provides comprehensive state management for task filters, sorting options,
  * and search functionality. Includes utilities for converting to API format
  * and detecting active filters/sorts.
  */
-export const useTaskFilters = (initialState?: Partial<TaskFiltersState>): UseTaskFiltersReturn => {
+export const useTaskFilters = (
+  initialState?: Partial<TaskFiltersState>
+): UseTaskFiltersReturn => {
   const [state, setState] = useState<TaskFiltersState>({
     ...defaultState,
-    ...initialState
+    ...initialState,
   });
 
   // Update individual filter
-  const updateFilter = useCallback((key: keyof FilterOptions, value: string) => {
-    setState(prev => ({
-      ...prev,
-      filters: {
-        ...prev.filters,
-        [key]: value
-      }
-    }));
-  }, []);
+  const updateFilter = useCallback(
+    (key: keyof FilterOptions, value: string) => {
+      setState(prev => ({
+        ...prev,
+        filters: {
+          ...prev.filters,
+          [key]: value,
+        },
+      }));
+    },
+    []
+  );
 
   // Update sorting option
   const updateSort = useCallback((key: keyof SortOptions, value: string) => {
@@ -87,8 +95,8 @@ export const useTaskFilters = (initialState?: Partial<TaskFiltersState>): UseTas
       ...prev,
       sorting: {
         ...prev.sorting,
-        [key]: value
-      }
+        [key]: value,
+      },
     }));
   }, []);
 
@@ -96,7 +104,7 @@ export const useTaskFilters = (initialState?: Partial<TaskFiltersState>): UseTas
   const updateSearchTerm = useCallback((term: string) => {
     setState(prev => ({
       ...prev,
-      searchTerm: term
+      searchTerm: term,
     }));
   }, []);
 
@@ -105,7 +113,7 @@ export const useTaskFilters = (initialState?: Partial<TaskFiltersState>): UseTas
     setState(prev => ({
       ...prev,
       filters: defaultFilters,
-      searchTerm: ''
+      searchTerm: '',
     }));
   }, []);
 
@@ -113,7 +121,7 @@ export const useTaskFilters = (initialState?: Partial<TaskFiltersState>): UseTas
   const clearSort = useCallback(() => {
     setState(prev => ({
       ...prev,
-      sorting: defaultSorting
+      sorting: defaultSorting,
     }));
   }, []);
 
@@ -177,7 +185,7 @@ export const useTaskFilters = (initialState?: Partial<TaskFiltersState>): UseTas
   const getApiSorting = useCallback((): ApiSorting => {
     return {
       field: state.sorting.sortBy,
-      direction: state.sorting.sortOrder
+      direction: state.sorting.sortOrder,
     };
   }, [state.sorting]);
 
@@ -187,7 +195,7 @@ export const useTaskFilters = (initialState?: Partial<TaskFiltersState>): UseTas
     updateSearchTerm,
     clearFilters,
     clearSort,
-    resetAll
+    resetAll,
   };
 
   return {
@@ -197,7 +205,7 @@ export const useTaskFilters = (initialState?: Partial<TaskFiltersState>): UseTas
     hasActiveSort,
     isDefaultState,
     getApiFilters,
-    getApiSorting
+    getApiSorting,
   };
 };
 

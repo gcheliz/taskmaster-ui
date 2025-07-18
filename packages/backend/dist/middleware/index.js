@@ -62,8 +62,8 @@ const apiResponseMiddleware = () => {
                     requestId: req.requestId,
                     duration: context?.getDuration() || 0,
                     version: process.env.API_VERSION || '1.0.0',
-                    ...metadata
-                }
+                    ...metadata,
+                },
             };
             res.status(200).json(response);
         };
@@ -74,14 +74,14 @@ const apiResponseMiddleware = () => {
                 success: false,
                 error: {
                     ...error,
-                    correlationId: req.correlationId
+                    correlationId: req.correlationId,
                 },
                 metadata: {
                     timestamp: new Date().toISOString(),
                     requestId: req.requestId,
                     duration: context?.getDuration() || 0,
-                    version: process.env.API_VERSION || '1.0.0'
-                }
+                    version: process.env.API_VERSION || '1.0.0',
+                },
             };
             res.status(statusCode).json(response);
         };
@@ -136,7 +136,7 @@ const validationMiddleware = (options = {}) => {
                 return res.apiError({
                     code: 'VALIDATION_ERROR',
                     message: 'Request validation failed',
-                    details: { errors, warnings }
+                    details: { errors, warnings },
                 }, 400);
             }
             // Store validated body
@@ -147,7 +147,7 @@ const validationMiddleware = (options = {}) => {
             return res.apiError({
                 code: 'VALIDATION_SYSTEM_ERROR',
                 message: 'Validation system error',
-                details: { error: error.message }
+                details: { error: error.message },
             }, 500);
         }
     };
@@ -155,11 +155,14 @@ const validationMiddleware = (options = {}) => {
 exports.validationMiddleware = validationMiddleware;
 const rateLimitMiddleware = (options = {
     windowMs: 15 * 60 * 1000, // 15 minutes
-    maxRequests: 100
+    maxRequests: 100,
 }) => {
     const requests = new Map();
     return (req, res, next) => {
-        const key = options.keyGenerator?.(req) || req.ip || req.socket.remoteAddress || 'unknown';
+        const key = options.keyGenerator?.(req) ||
+            req.ip ||
+            req.socket.remoteAddress ||
+            'unknown';
         const now = Date.now();
         const windowStart = now - options.windowMs;
         // Cleanup old entries
@@ -168,7 +171,10 @@ const rateLimitMiddleware = (options = {
                 requests.delete(k);
             }
         }
-        const current = requests.get(key) || { count: 0, resetTime: now + options.windowMs };
+        const current = requests.get(key) || {
+            count: 0,
+            resetTime: now + options.windowMs,
+        };
         if (current.resetTime < now) {
             current.count = 0;
             current.resetTime = now + options.windowMs;
@@ -186,14 +192,14 @@ const rateLimitMiddleware = (options = {
                 details: {
                     limit: options.maxRequests,
                     windowMs: options.windowMs,
-                    resetTime: new Date(current.resetTime).toISOString()
-                }
+                    resetTime: new Date(current.resetTime).toISOString(),
+                },
             }, 429);
         }
         req.rateLimit = {
             limit: options.maxRequests,
             remaining: options.maxRequests - current.count,
-            resetTime: new Date(current.resetTime).toISOString()
+            resetTime: new Date(current.resetTime).toISOString(),
         };
         next();
     };
@@ -226,11 +232,13 @@ const errorHandlingMiddleware = (error, req, res, next) => {
         message: process.env.NODE_ENV === 'production'
             ? 'An internal server error occurred'
             : error.message,
-        details: process.env.NODE_ENV === 'development' ? {
-            stack: error.stack,
-            duration: context?.getDuration()
-        } : undefined,
-        correlationId: req.correlationId
+        details: process.env.NODE_ENV === 'development'
+            ? {
+                stack: error.stack,
+                duration: context?.getDuration(),
+            }
+            : undefined,
+        correlationId: req.correlationId,
     }, 500);
 };
 exports.errorHandlingMiddleware = errorHandlingMiddleware;
@@ -258,12 +266,14 @@ function validateWithSchema(data, schema, context) {
     // In production, use libraries like Joi, Yup, or Zod
     if (schema.required) {
         for (const field of schema.required) {
-            if (!(field in data) || data[field] === undefined || data[field] === null) {
+            if (!(field in data) ||
+                data[field] === undefined ||
+                data[field] === null) {
                 errors.push({
                     field: `${context}.${field}`,
                     code: 'REQUIRED',
                     message: `Field '${field}' is required`,
-                    value: data[field]
+                    value: data[field],
                 });
             }
         }
@@ -277,7 +287,7 @@ function validateRepositoryPath(path) {
             field: 'repositoryPath',
             code: 'INVALID_TYPE',
             message: 'Repository path must be a string',
-            value: path
+            value: path,
         });
         return errors;
     }
@@ -286,7 +296,7 @@ function validateRepositoryPath(path) {
             field: 'repositoryPath',
             code: 'EMPTY_PATH',
             message: 'Repository path cannot be empty',
-            value: path
+            value: path,
         });
     }
     if (!path.startsWith('/')) {
@@ -294,7 +304,7 @@ function validateRepositoryPath(path) {
             field: 'repositoryPath',
             code: 'INVALID_PATH',
             message: 'Repository path must be absolute',
-            value: path
+            value: path,
         });
     }
     return errors;

@@ -8,9 +8,12 @@ const inputVariants = cva(
   {
     variants: {
       variant: {
-        default: 'border-secondary-300 focus-visible:border-primary-500 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
-        error: 'border-error-500 focus-visible:border-error-500 focus-visible:ring-2 focus-visible:ring-error-500 focus-visible:ring-offset-2',
-        success: 'border-success-500 focus-visible:border-success-500 focus-visible:ring-2 focus-visible:ring-success-500 focus-visible:ring-offset-2',
+        default:
+          'border-secondary-300 focus-visible:border-primary-500 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
+        error:
+          'border-error-500 focus-visible:border-error-500 focus-visible:ring-2 focus-visible:ring-error-500 focus-visible:ring-offset-2',
+        success:
+          'border-success-500 focus-visible:border-success-500 focus-visible:ring-2 focus-visible:ring-success-500 focus-visible:ring-offset-2',
       },
       inputSize: {
         sm: 'h-8 px-3 py-1 text-sm',
@@ -59,7 +62,20 @@ export interface InputProps
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, variant, inputSize, error, success, leftIcon, rightIcon, type, ...props }, ref) => {
+  (
+    {
+      className,
+      variant,
+      inputSize,
+      error,
+      success,
+      leftIcon,
+      rightIcon,
+      type,
+      ...props
+    },
+    ref
+  ) => {
     // Determine variant based on state
     const computedVariant = error ? 'error' : success ? 'success' : variant;
 

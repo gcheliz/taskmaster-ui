@@ -10,7 +10,8 @@ const meta: Meta<typeof Toggle> = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'A toggle switch component for binary on/off states. Provides smooth animations and proper accessibility support.',
+        component:
+          'A toggle switch component for binary on/off states. Provides smooth animations and proper accessibility support.',
       },
     },
   },
@@ -66,16 +67,16 @@ export const DisabledChecked: Story = {
 };
 
 export const WithLabel: Story = {
-  render: (args) => {
+  render: args => {
     const [checked, setChecked] = useState(args.checked || false);
-    
+
     return (
       <div className="flex items-center space-x-3">
-        <Toggle 
-          id="toggle-with-label" 
+        <Toggle
+          id="toggle-with-label"
           checked={checked}
           onCheckedChange={setChecked}
-          {...args} 
+          {...args}
         />
         <Label htmlFor="toggle-with-label" className="cursor-pointer">
           Enable notifications
@@ -90,28 +91,28 @@ export const Sizes: Story = {
     const [smallChecked, setSmallChecked] = useState(true);
     const [mediumChecked, setMediumChecked] = useState(false);
     const [largeChecked, setLargeChecked] = useState(true);
-    
+
     return (
       <div className="flex items-center space-x-8">
         <div className="flex items-center space-x-2">
-          <Toggle 
-            size="sm" 
+          <Toggle
+            size="sm"
             checked={smallChecked}
             onCheckedChange={setSmallChecked}
           />
           <Label size="sm">Small</Label>
         </div>
         <div className="flex items-center space-x-2">
-          <Toggle 
-            size="md" 
+          <Toggle
+            size="md"
             checked={mediumChecked}
             onCheckedChange={setMediumChecked}
           />
           <Label size="md">Medium</Label>
         </div>
         <div className="flex items-center space-x-2">
-          <Toggle 
-            size="lg" 
+          <Toggle
+            size="lg"
             checked={largeChecked}
             onCheckedChange={setLargeChecked}
           />
@@ -150,28 +151,28 @@ export const Variants: Story = {
     const [defaultChecked, setDefaultChecked] = useState(true);
     const [errorChecked, setErrorChecked] = useState(true);
     const [successChecked, setSuccessChecked] = useState(true);
-    
+
     return (
       <div className="space-y-4">
         <div className="flex items-center space-x-3">
-          <Toggle 
-            variant="default" 
+          <Toggle
+            variant="default"
             checked={defaultChecked}
             onCheckedChange={setDefaultChecked}
           />
           <Label>Default</Label>
         </div>
         <div className="flex items-center space-x-3">
-          <Toggle 
-            variant="error" 
+          <Toggle
+            variant="error"
             checked={errorChecked}
             onCheckedChange={setErrorChecked}
           />
           <Label error>Error State</Label>
         </div>
         <div className="flex items-center space-x-3">
-          <Toggle 
-            variant="success" 
+          <Toggle
+            variant="success"
             checked={successChecked}
             onCheckedChange={setSuccessChecked}
           />
@@ -185,17 +186,12 @@ export const Variants: Story = {
 export const Interactive: Story = {
   render: () => {
     const [isEnabled, setIsEnabled] = useState(false);
-    
+
     return (
       <div className="space-y-4">
         <div className="flex items-center space-x-3">
-          <Toggle 
-            checked={isEnabled}
-            onCheckedChange={setIsEnabled}
-          />
-          <Label>
-            Notifications are {isEnabled ? 'enabled' : 'disabled'}
-          </Label>
+          <Toggle checked={isEnabled} onCheckedChange={setIsEnabled} />
+          <Label>Notifications are {isEnabled ? 'enabled' : 'disabled'}</Label>
         </div>
         <p className="text-sm text-secondary-600">
           Current state: {isEnabled ? 'ON' : 'OFF'}
@@ -212,14 +208,14 @@ export const FormExample: Story = {
     const [smsNotifications, setSmsNotifications] = useState(false);
     const [darkMode, setDarkMode] = useState(false);
     const [autoSave, setAutoSave] = useState(true);
-    
+
     return (
       <form className="space-y-8 max-w-md">
         <fieldset className="space-y-6">
           <legend className="text-base font-medium text-secondary-900">
             Notification Settings
           </legend>
-          
+
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
@@ -228,12 +224,12 @@ export const FormExample: Story = {
                   Receive email updates about your tasks
                 </p>
               </div>
-              <Toggle 
+              <Toggle
                 checked={emailNotifications}
                 onCheckedChange={setEmailNotifications}
               />
             </div>
-            
+
             <div className="flex items-center justify-between">
               <div>
                 <Label className="cursor-pointer">Push Notifications</Label>
@@ -241,12 +237,12 @@ export const FormExample: Story = {
                   Get browser notifications for updates
                 </p>
               </div>
-              <Toggle 
+              <Toggle
                 checked={pushNotifications}
                 onCheckedChange={setPushNotifications}
               />
             </div>
-            
+
             <div className="flex items-center justify-between">
               <div>
                 <Label className="cursor-pointer">SMS Notifications</Label>
@@ -254,7 +250,7 @@ export const FormExample: Story = {
                   Receive text messages for urgent updates
                 </p>
               </div>
-              <Toggle 
+              <Toggle
                 checked={smsNotifications}
                 onCheckedChange={setSmsNotifications}
                 disabled
@@ -262,12 +258,12 @@ export const FormExample: Story = {
             </div>
           </div>
         </fieldset>
-        
+
         <fieldset className="space-y-6">
           <legend className="text-base font-medium text-secondary-900">
             Preferences
           </legend>
-          
+
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
@@ -276,13 +272,13 @@ export const FormExample: Story = {
                   Use dark theme for the interface
                 </p>
               </div>
-              <Toggle 
+              <Toggle
                 checked={darkMode}
                 onCheckedChange={setDarkMode}
                 variant="default"
               />
             </div>
-            
+
             <div className="flex items-center justify-between">
               <div>
                 <Label className="cursor-pointer">Auto-save</Label>
@@ -290,7 +286,7 @@ export const FormExample: Story = {
                   Automatically save your work
                 </p>
               </div>
-              <Toggle 
+              <Toggle
                 checked={autoSave}
                 onCheckedChange={setAutoSave}
                 variant="success"
@@ -306,11 +302,11 @@ export const FormExample: Story = {
 export const AccessibilityExample: Story = {
   render: () => {
     const [isAccessible, setIsAccessible] = useState(true);
-    
+
     return (
       <div className="space-y-4">
         <div className="flex items-center space-x-3">
-          <Toggle 
+          <Toggle
             id="accessibility-toggle"
             checked={isAccessible}
             onCheckedChange={setIsAccessible}
@@ -321,11 +317,13 @@ export const AccessibilityExample: Story = {
             Accessibility Features
           </Label>
         </div>
-        <p id="accessibility-description" className="text-sm text-secondary-600">
-          {isAccessible 
-            ? "Accessibility features are enabled. Screen readers and keyboard navigation are optimized." 
-            : "Accessibility features are disabled. Some users may have difficulty using the interface."
-          }
+        <p
+          id="accessibility-description"
+          className="text-sm text-secondary-600"
+        >
+          {isAccessible
+            ? 'Accessibility features are enabled. Screen readers and keyboard navigation are optimized.'
+            : 'Accessibility features are disabled. Some users may have difficulty using the interface.'}
         </p>
       </div>
     );

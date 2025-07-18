@@ -2,10 +2,7 @@
 // Handles project-related operations including creation, management, and TaskMaster integration
 
 import { apiService, ApiError } from './api';
-import type { 
-  CreateProjectRequest, 
-  ProjectResponse
-} from './api';
+import type { CreateProjectRequest, ProjectResponse } from './api';
 
 export interface ProjectCreationOptions {
   repositoryId: string;
@@ -29,7 +26,7 @@ export interface ProjectCreationResult {
 
 /**
  * Project Service
- * 
+ *
  * Provides high-level project management operations including:
  * - Project creation with TaskMaster initialization
  * - Project listing and retrieval
@@ -37,14 +34,15 @@ export interface ProjectCreationResult {
  * - Error handling and user-friendly messages
  */
 export class ProjectService {
-  
   /**
    * Create a new TaskMaster project
-   * 
+   *
    * @param options Project creation options
    * @returns Project creation result with success/error information
    */
-  async createProject(options: ProjectCreationOptions): Promise<ProjectCreationResult> {
+  async createProject(
+    options: ProjectCreationOptions
+  ): Promise<ProjectCreationResult> {
     try {
       // Validate input
       if (!options.repositoryId || !options.projectName) {
@@ -52,8 +50,8 @@ export class ProjectService {
           success: false,
           error: {
             code: 'INVALID_INPUT',
-            message: 'Repository ID and project name are required'
-          }
+            message: 'Repository ID and project name are required',
+          },
         };
       }
 
@@ -64,8 +62,8 @@ export class ProjectService {
           success: false,
           error: {
             code: 'INVALID_PROJECT_NAME',
-            message: 'Project name must be at least 2 characters long'
-          }
+            message: 'Project name must be at least 2 characters long',
+          },
         };
       }
 
@@ -74,8 +72,8 @@ export class ProjectService {
           success: false,
           error: {
             code: 'INVALID_PROJECT_NAME',
-            message: 'Project name must be less than 50 characters'
-          }
+            message: 'Project name must be less than 50 characters',
+          },
         };
       }
 
@@ -84,15 +82,16 @@ export class ProjectService {
           success: false,
           error: {
             code: 'INVALID_PROJECT_NAME',
-            message: 'Project name can only contain letters, numbers, spaces, hyphens, and underscores'
-          }
+            message:
+              'Project name can only contain letters, numbers, spaces, hyphens, and underscores',
+          },
         };
       }
 
       // Create the project
       const request: CreateProjectRequest = {
         repositoryId: options.repositoryId,
-        projectName: projectName
+        projectName: projectName,
       };
 
       const response = await apiService.createProject(request);
@@ -100,9 +99,8 @@ export class ProjectService {
       return {
         success: true,
         project: response.project,
-        taskMasterInfo: response.taskMasterInfo
+        taskMasterInfo: response.taskMasterInfo,
       };
-
     } catch (error) {
       if (error instanceof ApiError) {
         return {
@@ -110,8 +108,8 @@ export class ProjectService {
           error: {
             code: error.code,
             message: this.getUserFriendlyErrorMessage(error),
-            details: error
-          }
+            details: error,
+          },
         };
       }
 
@@ -119,8 +117,8 @@ export class ProjectService {
         success: false,
         error: {
           code: 'UNKNOWN_ERROR',
-          message: 'An unexpected error occurred while creating the project'
-        }
+          message: 'An unexpected error occurred while creating the project',
+        },
       };
     }
   }
@@ -170,28 +168,31 @@ export class ProjectService {
     switch (error.code) {
       case 'MISSING_REPOSITORY_ID':
         return 'Please select a repository';
-      
+
       case 'INVALID_PROJECT_NAME':
       case 'PROJECT_NAME_TOO_SHORT':
       case 'PROJECT_NAME_TOO_LONG':
       case 'INVALID_PROJECT_NAME_FORMAT':
         return 'Please enter a valid project name (2-50 characters, letters, numbers, spaces, hyphens, and underscores only)';
-      
+
       case 'REPOSITORY_NOT_FOUND':
         return 'The selected repository could not be found. Please select a different repository.';
-      
+
       case 'TASKMASTER_INIT_FAILED':
         return 'Failed to initialize TaskMaster in the repository. Please ensure the repository is a valid Git repository.';
-      
+
       case 'TASKMASTER_INIT_ERROR':
         return 'TaskMaster CLI is not available or encountered an error. Please check your TaskMaster installation.';
-      
+
       case 'NETWORK_ERROR':
         return 'Unable to connect to the server. Please check your connection and try again.';
-      
+
       case 'PROJECT_CREATION_ERROR':
       default:
-        return error.message || 'An error occurred while creating the project. Please try again.';
+        return (
+          error.message ||
+          'An error occurred while creating the project. Please try again.'
+        );
     }
   }
 }

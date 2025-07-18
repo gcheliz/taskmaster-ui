@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useTerminal } from './useTerminal';
-import { 
-  terminalSessionManager, 
-  type PersistedTerminalSession 
+import {
+  terminalSessionManager,
+  type PersistedTerminalSession,
 } from '../services/terminalSessionManager';
 import { useNotification } from '../contexts/NotificationContext';
 
@@ -43,13 +43,20 @@ export interface UseTerminalSessionsReturn {
     repositories: string[];
   };
   /** Create a new terminal session */
-  createSession: (repositoryPath: string, workingDirectory?: string, title?: string) => Promise<string>;
+  createSession: (
+    repositoryPath: string,
+    workingDirectory?: string,
+    title?: string
+  ) => Promise<string>;
   /** Close a terminal session */
   closeSession: (sessionId: string) => Promise<void>;
   /** Switch to a different session */
   switchToSession: (sessionId: string) => void;
   /** Update session settings */
-  updateSessionSettings: (sessionId: string, settings: Partial<PersistedTerminalSession['settings']>) => void;
+  updateSessionSettings: (
+    sessionId: string,
+    settings: Partial<PersistedTerminalSession['settings']>
+  ) => void;
   /** Restore sessions from persistence */
   restoreSessions: () => Promise<void>;
   /** Clear all sessions */
@@ -64,11 +71,13 @@ export interface UseTerminalSessionsReturn {
   getTerminalHook: () => ReturnType<typeof useTerminal> | null;
 }
 
-export function useTerminalSessions(options: UseTerminalSessionsOptions = {}): UseTerminalSessionsReturn {
+export function useTerminalSessions(
+  options: UseTerminalSessionsOptions = {}
+): UseTerminalSessionsReturn {
   const {
     autoRestore = true,
     showNotifications = true,
-    maxSessions = 10
+    maxSessions = 10,
   } = options;
 
   const [sessions, setSessions] = useState<TerminalSessionInfo[]>([]);
@@ -85,29 +94,32 @@ export function useTerminalSessions(options: UseTerminalSessionsOptions = {}): U
     repositoryPath: activeSession?.repositoryPath,
     autoCreate: !!activeSession,
     autoConnect: !!activeSession,
-    showNotifications
+    showNotifications,
   });
 
   // Load sessions from persistence
   const loadSessions = useCallback(() => {
     try {
       const persistedSessions = terminalSessionManager.getPersistedSessions();
-      const sessionInfos: TerminalSessionInfo[] = persistedSessions.map(session => ({
-        id: session.id,
-        title: session.title,
-        repositoryPath: session.repositoryPath,
-        workingDirectory: session.workingDirectory,
-        isActive: session.isActive,
-        createdAt: session.createdAt,
-        lastActivity: session.lastActivity,
-        settings: session.settings
-      }));
-      
+      const sessionInfos: TerminalSessionInfo[] = persistedSessions.map(
+        session => ({
+          id: session.id,
+          title: session.title,
+          repositoryPath: session.repositoryPath,
+          workingDirectory: session.workingDirectory,
+          isActive: session.isActive,
+          createdAt: session.createdAt,
+          lastActivity: session.lastActivity,
+          settings: session.settings,
+        })
+      );
+
       setSessions(sessionInfos);
-      
+
       // Set active session if none is set
       if (!activeSessionId && sessionInfos.length > 0) {
-        const activeSession = sessionInfos.find(s => s.isActive) || sessionInfos[0];
+        const activeSession =
+          sessionInfos.find(s => s.isActive) || sessionInfos[0];
         setActiveSessionId(activeSession.id);
       }
     } catch (error) {
@@ -117,126 +129,148 @@ export function useTerminalSessions(options: UseTerminalSessionsOptions = {}): U
   }, [activeSessionId]);
 
   // Create a new terminal session
-  const createSession = useCallback(async (
-    repositoryPath: string,
-    workingDirectory?: string,
-    title?: string
-  ): Promise<string> => {
-    try {
-      setIsLoading(true);
-      setError(null);
+  const createSession = useCallback(
+    async (
+      repositoryPath: string,
+      workingDirectory?: string,
+      title?: string
+    ): Promise<string> => {
+      try {
+        setIsLoading(true);
+        setError(null);
 
-      // Check session limit
-      if (sessions.length >= maxSessions) {
-        throw new Error(`Maximum of ${maxSessions} sessions allowed`);
+        // Check session limit
+        if (sessions.length >= maxSessions) {
+          throw new Error(`Maximum of ${maxSessions} sessions allowed`);
+        }
+
+        // Generate session ID and create backend session
+        const sessionId = `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        const workingDir = workingDirectory || repositoryPath;
+        const sessionTitle =
+          title || `Terminal - ${repositoryPath.split('/').pop()}`;
+
+        // Create persisted session
+        const persistedSession = terminalSessionManager.createPersistedSession(
+          sessionId,
+          repositoryPath,
+          workingDir,
+          sessionTitle
+        );
+
+        // Save to persistence
+        terminalSessionManager.saveSession(persistedSession);
+
+        // Create session info
+        const sessionInfo: TerminalSessionInfo = {
+          id: sessionId,
+          title: sessionTitle,
+          repositoryPath,
+          workingDirectory: workingDir,
+          isActive: true,
+          createdAt: persistedSession.createdAt,
+          lastActivity: persistedSession.lastActivity,
+          settings: persistedSession.settings,
+        };
+
+        // Update state
+        setSessions(prev => [sessionInfo, ...prev]);
+        setActiveSessionId(sessionId);
+
+        if (showNotifications) {
+          showSuccess(
+            'Terminal Session Created',
+            `Created session for ${repositoryPath}`
+          );
+        }
+
+        return sessionId;
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : 'Failed to create session';
+        setError(errorMessage);
+        if (showNotifications) {
+          showError('Session Creation Failed', errorMessage);
+        }
+        throw error;
+      } finally {
+        setIsLoading(false);
       }
-
-      // Generate session ID and create backend session
-      const sessionId = `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-      const workingDir = workingDirectory || repositoryPath;
-      const sessionTitle = title || `Terminal - ${repositoryPath.split('/').pop()}`;
-
-      // Create persisted session
-      const persistedSession = terminalSessionManager.createPersistedSession(
-        sessionId,
-        repositoryPath,
-        workingDir,
-        sessionTitle
-      );
-
-      // Save to persistence
-      terminalSessionManager.saveSession(persistedSession);
-
-      // Create session info
-      const sessionInfo: TerminalSessionInfo = {
-        id: sessionId,
-        title: sessionTitle,
-        repositoryPath,
-        workingDirectory: workingDir,
-        isActive: true,
-        createdAt: persistedSession.createdAt,
-        lastActivity: persistedSession.lastActivity,
-        settings: persistedSession.settings
-      };
-
-      // Update state
-      setSessions(prev => [sessionInfo, ...prev]);
-      setActiveSessionId(sessionId);
-
-      if (showNotifications) {
-        showSuccess('Terminal Session Created', `Created session for ${repositoryPath}`);
-      }
-
-      return sessionId;
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to create session';
-      setError(errorMessage);
-      if (showNotifications) {
-        showError('Session Creation Failed', errorMessage);
-      }
-      throw error;
-    } finally {
-      setIsLoading(false);
-    }
-  }, [sessions.length, maxSessions, showNotifications, showSuccess, showError]);
+    },
+    [sessions.length, maxSessions, showNotifications, showSuccess, showError]
+  );
 
   // Close a terminal session
-  const closeSession = useCallback(async (sessionId: string): Promise<void> => {
-    try {
-      setIsLoading(true);
-      setError(null);
+  const closeSession = useCallback(
+    async (sessionId: string): Promise<void> => {
+      try {
+        setIsLoading(true);
+        setError(null);
 
-      // Remove from persistence
-      terminalSessionManager.removeSession(sessionId);
+        // Remove from persistence
+        terminalSessionManager.removeSession(sessionId);
 
-      // Update state
-      setSessions(prev => prev.filter(s => s.id !== sessionId));
+        // Update state
+        setSessions(prev => prev.filter(s => s.id !== sessionId));
 
-      // Switch to another session if this was active
-      if (activeSessionId === sessionId) {
-        const remainingSessions = sessions.filter(s => s.id !== sessionId);
-        setActiveSessionId(remainingSessions.length > 0 ? remainingSessions[0].id : null);
+        // Switch to another session if this was active
+        if (activeSessionId === sessionId) {
+          const remainingSessions = sessions.filter(s => s.id !== sessionId);
+          setActiveSessionId(
+            remainingSessions.length > 0 ? remainingSessions[0].id : null
+          );
+        }
+
+        if (showNotifications) {
+          showSuccess('Terminal Session Closed', 'Session closed successfully');
+        }
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : 'Failed to close session';
+        setError(errorMessage);
+        if (showNotifications) {
+          showError('Session Close Failed', errorMessage);
+        }
+        throw error;
+      } finally {
+        setIsLoading(false);
       }
-
-      if (showNotifications) {
-        showSuccess('Terminal Session Closed', 'Session closed successfully');
-      }
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to close session';
-      setError(errorMessage);
-      if (showNotifications) {
-        showError('Session Close Failed', errorMessage);
-      }
-      throw error;
-    } finally {
-      setIsLoading(false);
-    }
-  }, [activeSessionId, sessions, showNotifications, showSuccess, showError]);
+    },
+    [activeSessionId, sessions, showNotifications, showSuccess, showError]
+  );
 
   // Switch to a different session
-  const switchToSession = useCallback((sessionId: string) => {
-    const session = sessions.find(s => s.id === sessionId);
-    if (session) {
-      setActiveSessionId(sessionId);
-      terminalSessionManager.markSessionAsActive(sessionId);
-      terminalSessionManager.updateSessionActivity(sessionId);
-    }
-  }, [sessions]);
+  const switchToSession = useCallback(
+    (sessionId: string) => {
+      const session = sessions.find(s => s.id === sessionId);
+      if (session) {
+        setActiveSessionId(sessionId);
+        terminalSessionManager.markSessionAsActive(sessionId);
+        terminalSessionManager.updateSessionActivity(sessionId);
+      }
+    },
+    [sessions]
+  );
 
   // Update session settings
-  const updateSessionSettings = useCallback((
-    sessionId: string,
-    settings: Partial<PersistedTerminalSession['settings']>
-  ) => {
-    terminalSessionManager.updateSessionSettings(sessionId, settings);
-    
-    // Update local state
-    setSessions(prev => prev.map(session =>
-      session.id === sessionId
-        ? { ...session, settings: { ...session.settings, ...settings } }
-        : session
-    ));
-  }, []);
+  const updateSessionSettings = useCallback(
+    (
+      sessionId: string,
+      settings: Partial<PersistedTerminalSession['settings']>
+    ) => {
+      terminalSessionManager.updateSessionSettings(sessionId, settings);
+
+      // Update local state
+      setSessions(prev =>
+        prev.map(session =>
+          session.id === sessionId
+            ? { ...session, settings: { ...session.settings, ...settings } }
+            : session
+        )
+      );
+    },
+    []
+  );
 
   // Restore sessions from persistence
   const restoreSessions = useCallback(async () => {
@@ -245,16 +279,21 @@ export function useTerminalSessions(options: UseTerminalSessionsOptions = {}): U
       setError(null);
 
       // Restore active sessions from backend
-      const restoredSessions = await terminalSessionManager.restoreActiveSessions();
-      
+      const restoredSessions =
+        await terminalSessionManager.restoreActiveSessions();
+
       // Load all sessions from persistence
       loadSessions();
 
       if (showNotifications && restoredSessions.length > 0) {
-        showSuccess('Sessions Restored', `Restored ${restoredSessions.length} active sessions`);
+        showSuccess(
+          'Sessions Restored',
+          `Restored ${restoredSessions.length} active sessions`
+        );
       }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to restore sessions';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Failed to restore sessions';
       setError(errorMessage);
       if (showNotifications) {
         showError('Session Restore Failed', errorMessage);
@@ -269,9 +308,12 @@ export function useTerminalSessions(options: UseTerminalSessionsOptions = {}): U
     terminalSessionManager.clearAllSessions();
     setSessions([]);
     setActiveSessionId(null);
-    
+
     if (showNotifications) {
-      showSuccess('Sessions Cleared', 'All terminal sessions have been cleared');
+      showSuccess(
+        'Sessions Cleared',
+        'All terminal sessions have been cleared'
+      );
     }
   }, [showNotifications, showSuccess]);
 
@@ -286,13 +328,14 @@ export function useTerminalSessions(options: UseTerminalSessionsOptions = {}): U
       isActive: session.isActive,
       createdAt: session.createdAt,
       lastActivity: session.lastActivity,
-      settings: session.settings
+      settings: session.settings,
     }));
   }, []);
 
   // Get sessions for a specific repository
   const getRepositorySessions = useCallback((repositoryPath: string) => {
-    const persistedSessions = terminalSessionManager.getSessionsByRepository(repositoryPath);
+    const persistedSessions =
+      terminalSessionManager.getSessionsByRepository(repositoryPath);
     return persistedSessions.map(session => ({
       id: session.id,
       title: session.title,
@@ -301,20 +344,22 @@ export function useTerminalSessions(options: UseTerminalSessionsOptions = {}): U
       isActive: session.isActive,
       createdAt: session.createdAt,
       lastActivity: session.lastActivity,
-      settings: session.settings
+      settings: session.settings,
     }));
   }, []);
 
   // Update session activity
   const updateSessionActivity = useCallback((sessionId: string) => {
     terminalSessionManager.updateSessionActivity(sessionId);
-    
+
     // Update local state
-    setSessions(prev => prev.map(session =>
-      session.id === sessionId
-        ? { ...session, lastActivity: new Date().toISOString() }
-        : session
-    ));
+    setSessions(prev =>
+      prev.map(session =>
+        session.id === sessionId
+          ? { ...session, lastActivity: new Date().toISOString() }
+          : session
+      )
+    );
   }, []);
 
   // Get terminal hook for active session
@@ -328,7 +373,7 @@ export function useTerminalSessions(options: UseTerminalSessionsOptions = {}): U
   // Load sessions on mount
   useEffect(() => {
     loadSessions();
-    
+
     // Cleanup old sessions
     terminalSessionManager.cleanupOldSessions();
   }, [loadSessions]);
@@ -355,6 +400,6 @@ export function useTerminalSessions(options: UseTerminalSessionsOptions = {}): U
     getRecentSessions,
     getRepositorySessions,
     updateSessionActivity,
-    getTerminalHook
+    getTerminalHook,
   };
 }

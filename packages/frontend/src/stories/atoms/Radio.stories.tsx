@@ -9,7 +9,8 @@ const meta: Meta<typeof Radio> = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'A radio button component with support for different sizes and states. Designed for single selection from a group of options.',
+        component:
+          'A radio button component with support for different sizes and states. Designed for single selection from a group of options.',
       },
     },
   },
@@ -68,7 +69,7 @@ export const DisabledChecked: Story = {
 };
 
 export const WithLabel: Story = {
-  render: (args) => (
+  render: args => (
     <div className="flex items-center space-x-2">
       <Radio id="radio-with-label" name="radio-label-example" {...args} />
       <Label htmlFor="radio-with-label" className="cursor-pointer">
@@ -157,7 +158,7 @@ export const RadioGroup: Story = {
             </p>
           </div>
         </div>
-        
+
         <div className="flex items-center space-x-3">
           <Radio id="plan-pro" name="plan" value="pro" />
           <div>
@@ -169,7 +170,7 @@ export const RadioGroup: Story = {
             </p>
           </div>
         </div>
-        
+
         <div className="flex items-center space-x-3">
           <Radio id="plan-enterprise" name="plan" value="enterprise" />
           <div>
@@ -194,22 +195,46 @@ export const TaskPriority: Story = {
       </legend>
       <div className="space-y-3">
         <div className="flex items-center space-x-3">
-          <Radio id="priority-low" name="priority" value="low" variant="success" />
-          <Label htmlFor="priority-low" className="cursor-pointer text-success-700">
+          <Radio
+            id="priority-low"
+            name="priority"
+            value="low"
+            variant="success"
+          />
+          <Label
+            htmlFor="priority-low"
+            className="cursor-pointer text-success-700"
+          >
             Low Priority
           </Label>
         </div>
-        
+
         <div className="flex items-center space-x-3">
-          <Radio id="priority-medium" name="priority" value="medium" defaultChecked />
-          <Label htmlFor="priority-medium" className="cursor-pointer text-warning-700">
+          <Radio
+            id="priority-medium"
+            name="priority"
+            value="medium"
+            defaultChecked
+          />
+          <Label
+            htmlFor="priority-medium"
+            className="cursor-pointer text-warning-700"
+          >
             Medium Priority
           </Label>
         </div>
-        
+
         <div className="flex items-center space-x-3">
-          <Radio id="priority-high" name="priority" value="high" variant="error" />
-          <Label htmlFor="priority-high" className="cursor-pointer text-error-700">
+          <Radio
+            id="priority-high"
+            name="priority"
+            value="high"
+            variant="error"
+          />
+          <Label
+            htmlFor="priority-high"
+            className="cursor-pointer text-error-700"
+          >
             High Priority
           </Label>
         </div>
@@ -227,26 +252,31 @@ export const FormExample: Story = {
         </legend>
         <div className="space-y-3">
           <div className="flex items-center space-x-3">
-            <Radio id="freq-immediate" name="frequency" value="immediate" defaultChecked />
+            <Radio
+              id="freq-immediate"
+              name="frequency"
+              value="immediate"
+              defaultChecked
+            />
             <Label htmlFor="freq-immediate" className="cursor-pointer">
               Immediate
             </Label>
           </div>
-          
+
           <div className="flex items-center space-x-3">
             <Radio id="freq-daily" name="frequency" value="daily" />
             <Label htmlFor="freq-daily" className="cursor-pointer">
               Daily Digest
             </Label>
           </div>
-          
+
           <div className="flex items-center space-x-3">
             <Radio id="freq-weekly" name="frequency" value="weekly" />
             <Label htmlFor="freq-weekly" className="cursor-pointer">
               Weekly Summary
             </Label>
           </div>
-          
+
           <div className="flex items-center space-x-3">
             <Radio id="freq-never" name="frequency" value="never" />
             <Label htmlFor="freq-never" className="cursor-pointer">
@@ -255,7 +285,7 @@ export const FormExample: Story = {
           </div>
         </div>
       </fieldset>
-      
+
       <fieldset className="space-y-4">
         <legend className="text-base font-medium text-secondary-900">
           Theme Preference
@@ -267,14 +297,14 @@ export const FormExample: Story = {
               Light Mode
             </Label>
           </div>
-          
+
           <div className="flex items-center space-x-3">
             <Radio id="theme-dark" name="theme" value="dark" />
             <Label htmlFor="theme-dark" className="cursor-pointer">
               Dark Mode
             </Label>
           </div>
-          
+
           <div className="flex items-center space-x-3">
             <Radio id="theme-system" name="theme" value="system" />
             <Label htmlFor="theme-system" className="cursor-pointer">

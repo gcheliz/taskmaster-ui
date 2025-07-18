@@ -21,40 +21,39 @@ export interface TaskBoardViewProps {
   enableFiltering?: boolean;
 }
 
-export const TaskBoardView: React.FC<TaskBoardViewProps> = ({ 
+export const TaskBoardView: React.FC<TaskBoardViewProps> = ({
   className = '',
   repositoryPath,
   projectTag,
   projectId,
   filePath,
   refreshInterval = 30000, // 30 seconds default
-  enableFiltering = true
+  enableFiltering = true,
 }) => {
   const [showFilters, setShowFilters] = useState(enableFiltering);
   const [, setFilteredTasks] = useState<any[]>([]);
   const [isFilterLoading, setIsFilterLoading] = useState(false);
   const [, setFilterError] = useState<Error | null>(null);
-  const {
-    taskBoardData,
-    isLoading,
-    error,
-    refresh,
-    loadSampleTasks
-  } = useTaskData({
-    repositoryPath,
-    projectTag,
-    projectId,
-    filePath,
-    autoLoad: true,
-    pollingInterval: refreshInterval
-  });
+  const { taskBoardData, isLoading, error, refresh, loadSampleTasks } =
+    useTaskData({
+      repositoryPath,
+      projectTag,
+      projectId,
+      filePath,
+      autoLoad: true,
+      pollingInterval: refreshInterval,
+    });
 
   const handleTaskClick = (taskId: number) => {
     // TODO: Implement task details modal
     console.log('Task clicked:', taskId);
   };
 
-  const handleTaskMove = (taskId: number, fromStatus: TaskStatus, toStatus: TaskStatus) => {
+  const handleTaskMove = (
+    taskId: number,
+    fromStatus: TaskStatus,
+    toStatus: TaskStatus
+  ) => {
     // TODO: Implement task status update
     console.log('Task moved:', { taskId, fromStatus, toStatus });
   };
@@ -104,17 +103,20 @@ export const TaskBoardView: React.FC<TaskBoardViewProps> = ({
             showCreateButton={true}
           />
         )}
-        
+
         {/* Development Tools */}
-        <div className="task-board-dev-tools" style={{ 
-          position: 'fixed', 
-          bottom: '20px', 
-          right: '20px', 
-          display: 'flex', 
-          gap: '10px',
-          zIndex: 1000
-        }}>
-          <button 
+        <div
+          className="task-board-dev-tools"
+          style={{
+            position: 'fixed',
+            bottom: '20px',
+            right: '20px',
+            display: 'flex',
+            gap: '10px',
+            zIndex: 1000,
+          }}
+        >
+          <button
             onClick={handleRefresh}
             disabled={isLoading || isFilterLoading}
             style={{
@@ -123,14 +125,14 @@ export const TaskBoardView: React.FC<TaskBoardViewProps> = ({
               color: 'white',
               border: 'none',
               borderRadius: '4px',
-              cursor: (isLoading || isFilterLoading) ? 'not-allowed' : 'pointer',
-              opacity: (isLoading || isFilterLoading) ? 0.6 : 1
+              cursor: isLoading || isFilterLoading ? 'not-allowed' : 'pointer',
+              opacity: isLoading || isFilterLoading ? 0.6 : 1,
             }}
           >
-            {(isLoading || isFilterLoading) ? 'Loading...' : 'Refresh'}
+            {isLoading || isFilterLoading ? 'Loading...' : 'Refresh'}
           </button>
-          
-          <button 
+
+          <button
             onClick={() => loadSampleTasks()}
             disabled={isLoading || isFilterLoading}
             style={{
@@ -139,8 +141,8 @@ export const TaskBoardView: React.FC<TaskBoardViewProps> = ({
               color: 'white',
               border: 'none',
               borderRadius: '4px',
-              cursor: (isLoading || isFilterLoading) ? 'not-allowed' : 'pointer',
-              opacity: (isLoading || isFilterLoading) ? 0.6 : 1
+              cursor: isLoading || isFilterLoading ? 'not-allowed' : 'pointer',
+              opacity: isLoading || isFilterLoading ? 0.6 : 1,
             }}
           >
             Load Sample

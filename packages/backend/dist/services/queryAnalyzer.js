@@ -48,7 +48,9 @@ class QueryAnalyzer {
         this.queryLogs = [];
         this.performanceMetrics = [];
         this.logFile = path.join(process.cwd(), 'logs', 'query-performance.log');
-        this.isEnabled = process.env.NODE_ENV === 'development' || process.env.ENABLE_QUERY_ANALYSIS === 'true';
+        this.isEnabled =
+            process.env.NODE_ENV === 'development' ||
+                process.env.ENABLE_QUERY_ANALYSIS === 'true';
         this.ensureLogDirectory();
     }
     /**
@@ -70,14 +72,14 @@ class QueryAnalyzer {
         const prismaConfig = {
             log: logLevels.map(level => ({
                 level,
-                emit: 'event'
+                emit: 'event',
             })),
             // Connection pooling configuration
             datasources: {
                 db: {
-                    url: this.enhanceConnectionString(process.env.DATABASE_URL || '')
-                }
-            }
+                    url: this.enhanceConnectionString(process.env.DATABASE_URL || ''),
+                },
+            },
         };
         // Apply any additional configuration (like SSL settings)
         if (config) {
@@ -151,7 +153,7 @@ class QueryAnalyzer {
                 params: event.params,
                 duration: event.duration,
                 target: event.target,
-                level: 'query'
+                level: 'query',
             };
             this.recordQuery(queryLog);
         });
@@ -161,7 +163,7 @@ class QueryAnalyzer {
                 timestamp: new Date(),
                 query: event.message,
                 target: event.target,
-                level: 'info'
+                level: 'info',
             };
             this.recordQuery(queryLog);
         });
@@ -171,7 +173,7 @@ class QueryAnalyzer {
                 timestamp: new Date(),
                 query: event.message,
                 target: event.target,
-                level: 'warn'
+                level: 'warn',
             };
             this.recordQuery(queryLog);
             console.warn('Prisma Warning:', event.message);
@@ -182,7 +184,7 @@ class QueryAnalyzer {
                 timestamp: new Date(),
                 query: event.message,
                 target: event.target,
-                level: 'error'
+                level: 'error',
             };
             this.recordQuery(queryLog);
             console.error('Prisma Error:', event.message);
@@ -202,7 +204,8 @@ class QueryAnalyzer {
         // Write to log file
         this.writeToLogFile(queryLog);
         // Alert on slow queries
-        if (queryLog.duration && queryLog.duration > 1000) { // 1 second threshold
+        if (queryLog.duration && queryLog.duration > 1000) {
+            // 1 second threshold
             console.warn(`🐌 Slow query detected (${queryLog.duration}ms):`, queryLog.query);
         }
     }
@@ -217,7 +220,7 @@ class QueryAnalyzer {
                 duration: queryLog.duration,
                 target: queryLog.target,
                 query: queryLog.query,
-                params: queryLog.params
+                params: queryLog.params,
             };
             fs.appendFileSync(this.logFile, JSON.stringify(logEntry) + '\n');
         }
@@ -237,7 +240,7 @@ class QueryAnalyzer {
                 slowestQuery: null,
                 fastestQuery: null,
                 mostFrequentQueries: [],
-                queryTypes: {}
+                queryTypes: {},
             };
         }
         // Calculate basic stats
@@ -245,17 +248,20 @@ class QueryAnalyzer {
         const totalQueries = queryOnlyLogs.length;
         const averageDuration = durations.reduce((sum, duration) => sum + duration, 0) / totalQueries;
         // Find slowest and fastest queries
-        const slowestQuery = queryOnlyLogs.reduce((slowest, current) => (current.duration > (slowest?.duration || 0)) ? current : slowest);
-        const fastestQuery = queryOnlyLogs.reduce((fastest, current) => (current.duration < (fastest?.duration || Infinity)) ? current : fastest);
+        const slowestQuery = queryOnlyLogs.reduce((slowest, current) => current.duration > (slowest?.duration || 0) ? current : slowest);
+        const fastestQuery = queryOnlyLogs.reduce((fastest, current) => current.duration < (fastest?.duration || Infinity) ? current : fastest);
         // Analyze query frequency and performance
         const queryFrequency = new Map();
         queryOnlyLogs.forEach(log => {
             // Normalize query by removing parameter values
             const normalizedQuery = this.normalizeQuery(log.query);
-            const existing = queryFrequency.get(normalizedQuery) || { count: 0, totalDuration: 0 };
+            const existing = queryFrequency.get(normalizedQuery) || {
+                count: 0,
+                totalDuration: 0,
+            };
             queryFrequency.set(normalizedQuery, {
                 count: existing.count + 1,
-                totalDuration: existing.totalDuration + (log.duration || 0)
+                totalDuration: existing.totalDuration + (log.duration || 0),
             });
         });
         // Get most frequent queries
@@ -263,7 +269,7 @@ class QueryAnalyzer {
             .map(([query, stats]) => ({
             query,
             count: stats.count,
-            avgDuration: stats.totalDuration / stats.count
+            avgDuration: stats.totalDuration / stats.count,
         }))
             .sort((a, b) => b.count - a.count)
             .slice(0, 10);
@@ -279,7 +285,7 @@ class QueryAnalyzer {
             slowestQuery,
             fastestQuery,
             mostFrequentQueries,
-            queryTypes
+            queryTypes,
         };
     }
     /**
@@ -323,7 +329,7 @@ class QueryAnalyzer {
         this.performanceMetrics.push({
             ...metric,
             // Add timestamp for metric
-            timestamp: Date.now()
+            timestamp: Date.now(),
         });
         // Keep only last 500 metrics
         if (this.performanceMetrics.length > 500) {
@@ -340,7 +346,7 @@ class QueryAnalyzer {
         return {
             queryStats,
             recentMetrics,
-            recommendations
+            recommendations,
         };
     }
     /**
@@ -393,7 +399,7 @@ class QueryAnalyzer {
                 exportedAt: new Date().toISOString(),
                 queryLogs: this.queryLogs,
                 performanceMetrics: this.performanceMetrics,
-                summary: this.getPerformanceSummary()
+                summary: this.getPerformanceSummary(),
             };
             fs.writeFileSync(outputPath, JSON.stringify(exportData, null, 2));
             console.log(`Query logs exported to: ${outputPath}`);

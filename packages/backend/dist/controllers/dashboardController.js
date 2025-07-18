@@ -27,8 +27,8 @@ class DashboardController {
                     success: false,
                     error: {
                         code: 'MISSING_PROJECT_ID',
-                        message: 'Project ID is required'
-                    }
+                        message: 'Project ID is required',
+                    },
                 });
                 return;
             }
@@ -45,8 +45,8 @@ class DashboardController {
                     success: false,
                     error: {
                         code: 'TASKS_FILE_NOT_FOUND',
-                        message: 'Tasks file not found. Make sure TaskMaster is initialized.'
-                    }
+                        message: 'Tasks file not found. Make sure TaskMaster is initialized.',
+                    },
                 });
                 return;
             }
@@ -63,8 +63,8 @@ class DashboardController {
                     timestamp: new Date().toISOString(),
                     projectId,
                     projectTag,
-                    version: '1.0.0'
-                }
+                    version: '1.0.0',
+                },
             });
         }
         catch (error) {
@@ -74,8 +74,8 @@ class DashboardController {
                 error: {
                     code: 'DASHBOARD_AGGREGATION_ERROR',
                     message: 'Failed to aggregate dashboard data',
-                    details: error instanceof Error ? error.message : 'Unknown error'
-                }
+                    details: error instanceof Error ? error.message : 'Unknown error',
+                },
             });
         }
     }
@@ -96,8 +96,8 @@ class DashboardController {
                 metadata: {
                     timestamp: new Date().toISOString(),
                     projectId,
-                    projectTag
-                }
+                    projectTag,
+                },
             });
         }
         catch (error) {
@@ -106,8 +106,8 @@ class DashboardController {
                 error: {
                     code: 'HEALTH_CALCULATION_ERROR',
                     message: 'Failed to calculate project health',
-                    details: error instanceof Error ? error.message : 'Unknown error'
-                }
+                    details: error instanceof Error ? error.message : 'Unknown error',
+                },
             });
         }
     }
@@ -139,7 +139,8 @@ class DashboardController {
     async getGitActivity(projectPath) {
         try {
             const { stdout } = await execAsync('git log --oneline --format="%H|%an|%ad|%s" --date=iso -20', { cwd: projectPath });
-            return stdout.split('\n')
+            return stdout
+                .split('\n')
                 .filter(line => line.trim())
                 .map(line => {
                 const [hash, author, date, ...messageParts] = line.split('|');
@@ -149,7 +150,7 @@ class DashboardController {
                     timestamp: new Date(date).toISOString(),
                     message: messageParts.join('|'),
                     author,
-                    details: { hash, shortHash: hash.substring(0, 7) }
+                    details: { hash, shortHash: hash.substring(0, 7) },
                 };
             });
         }
@@ -171,8 +172,9 @@ class DashboardController {
         // Combine recent activity
         const recentActivity = [
             ...gitActivity.slice(0, 10), // Latest 10 commits
-            ...this.getRecentTaskUpdates(tasks).slice(0, 10) // Latest 10 task updates
-        ].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+            ...this.getRecentTaskUpdates(tasks).slice(0, 10), // Latest 10 task updates
+        ]
+            .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
             .slice(0, 20);
         // Generate chart data
         const chartData = this.generateChartData(tasks, gitActivity);
@@ -183,13 +185,13 @@ class DashboardController {
                 id: projectId,
                 name: path_1.default.basename(projectPath),
                 path: projectPath,
-                lastUpdated: metadata.updated || new Date().toISOString()
+                lastUpdated: metadata.updated || new Date().toISOString(),
             },
             taskMetrics,
             subtaskMetrics,
             recentActivity,
             chartData,
-            insights
+            insights,
         };
     }
     /**
@@ -223,7 +225,7 @@ class DashboardController {
             completionRate: total > 0 ? (completed / total) * 100 : 0,
             statusBreakdown: statusCounts,
             priorityBreakdown: priorityCounts,
-            complexityDistribution: complexityCounts
+            complexityDistribution: complexityCounts,
         };
     }
     /**
@@ -240,7 +242,7 @@ class DashboardController {
             completed,
             inProgress,
             pending,
-            completionRate: total > 0 ? (completed / total) * 100 : 0
+            completionRate: total > 0 ? (completed / total) * 100 : 0,
         };
     }
     /**
@@ -255,7 +257,7 @@ class DashboardController {
                     type: 'task_update',
                     timestamp: new Date().toISOString(), // Would ideally come from task metadata
                     message: `Completed task: ${task.title}`,
-                    details: { taskId: task.id, status: task.status }
+                    details: { taskId: task.id, status: task.status },
                 });
             }
         });
@@ -271,7 +273,7 @@ class DashboardController {
         }, {})).map(([priority, count]) => ({
             priority,
             count: count,
-            percentage: (count / tasks.length) * 100
+            percentage: (count / tasks.length) * 100,
         }));
         const complexityBreakdown = Object.entries(tasks.reduce((acc, task) => {
             const complexity = task.complexity || 0;
@@ -281,14 +283,14 @@ class DashboardController {
         }, {})).map(([complexity, count]) => ({
             complexity,
             count: count,
-            averageTime: this.getAverageTimeForComplexity(complexity, tasks)
+            averageTime: this.getAverageTimeForComplexity(complexity, tasks),
         }));
         // Generate task completion trend (simplified)
         const taskCompletionTrend = this.generateCompletionTrend(tasks, gitActivity);
         return {
             taskCompletionTrend,
             priorityDistribution,
-            complexityBreakdown
+            complexityBreakdown,
         };
     }
     /**
@@ -306,7 +308,7 @@ class DashboardController {
                 date: date.toISOString().split('T')[0],
                 completed: completedTasks,
                 total: totalTasks,
-                completionRate: totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0
+                completionRate: totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0,
             });
         }
         return trend;
@@ -318,9 +320,9 @@ class DashboardController {
         const complexityMultiplier = {
             low: 2,
             medium: 6,
-            high: 12
+            high: 12,
         };
-        return complexityMultiplier[complexity] || 4;
+        return (complexityMultiplier[complexity] || 4);
     }
     /**
      * Calculate project insights
@@ -328,17 +330,17 @@ class DashboardController {
     calculateInsights(tasks, taskMetrics) {
         const totalEstimatedHours = tasks.reduce((sum, task) => {
             const complexity = task.complexity || 0;
-            return sum + (complexity * 1.5); // Rough estimate
+            return sum + complexity * 1.5; // Rough estimate
         }, 0);
-        const averageTaskComplexity = tasks.reduce((sum, task) => sum + (task.complexity || 0), 0) / tasks.length;
-        const productivityScore = Math.min(100, Math.max(0, (taskMetrics.completionRate * 0.6) +
-            (averageTaskComplexity * 10 * 0.4)));
+        const averageTaskComplexity = tasks.reduce((sum, task) => sum + (task.complexity || 0), 0) /
+            tasks.length;
+        const productivityScore = Math.min(100, Math.max(0, taskMetrics.completionRate * 0.6 + averageTaskComplexity * 10 * 0.4));
         const recommendations = this.generateRecommendations(taskMetrics, averageTaskComplexity);
         return {
             totalEstimatedHours,
             averageTaskComplexity,
             productivityScore,
-            recommendations
+            recommendations,
         };
     }
     /**
@@ -366,14 +368,22 @@ class DashboardController {
     calculateProjectHealth(tasksData) {
         const tasks = tasksData.tasks || [];
         const metrics = this.calculateTaskMetrics(tasks);
-        const healthScore = Math.min(100, Math.max(0, (metrics.completionRate * 0.4) +
-            ((metrics.total - metrics.blocked) / Math.max(1, metrics.total) * 100 * 0.3) +
-            ((metrics.inProgress / Math.max(1, metrics.pending)) * 100 * 0.3)));
+        const healthScore = Math.min(100, Math.max(0, metrics.completionRate * 0.4 +
+            ((metrics.total - metrics.blocked) / Math.max(1, metrics.total)) *
+                100 *
+                0.3 +
+            (metrics.inProgress / Math.max(1, metrics.pending)) * 100 * 0.3));
         return {
             score: healthScore,
-            status: healthScore > 80 ? 'excellent' : healthScore > 60 ? 'good' : healthScore > 40 ? 'fair' : 'needs-attention',
+            status: healthScore > 80
+                ? 'excellent'
+                : healthScore > 60
+                    ? 'good'
+                    : healthScore > 40
+                        ? 'fair'
+                        : 'needs-attention',
             metrics,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
         };
     }
 }

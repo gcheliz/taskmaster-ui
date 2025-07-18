@@ -268,16 +268,16 @@
     flex-direction: column;
     gap: 16px;
   }
-  
+
   .filter-controls,
   .sorting-controls {
     min-width: 100%;
   }
-  
+
   .dev-tools-grid {
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   }
-  
+
   .dev-tools-info {
     grid-template-columns: 1fr;
   }

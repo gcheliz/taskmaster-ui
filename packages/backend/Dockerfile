@@ -15,6 +15,7 @@ COPY packages/backend/package.json ./packages/backend/
 COPY packages/backend/prisma ./packages/backend/prisma/
 
 # Install dependencies
+ENV PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING=1
 RUN pnpm install --frozen-lockfile
 
 # Copy remaining backend source code

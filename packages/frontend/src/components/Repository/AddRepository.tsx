@@ -15,7 +15,7 @@ export const AddRepository: React.FC<AddRepositoryProps> = ({
   isLoading = false,
   error = null,
   className = '',
-  clearOnSuccess = true
+  clearOnSuccess = true,
 }) => {
   const [repositoryPath, setRepositoryPath] = useState('');
   const [validationError, setValidationError] = useState<string | null>(null);
@@ -28,7 +28,7 @@ export const AddRepository: React.FC<AddRepositoryProps> = ({
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newPath = event.target.value;
     setRepositoryPath(newPath);
-    
+
     // Clear validation error when user starts typing
     if (validationError) {
       setValidationError(null);
@@ -37,23 +37,24 @@ export const AddRepository: React.FC<AddRepositoryProps> = ({
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    
+
     const pathError = validatePath(repositoryPath);
     if (pathError) {
       setValidationError(pathError);
       return;
     }
-    
+
     // Clear any validation errors and call the callback
     setValidationError(null);
-    
+
     try {
       // Get the sanitized path from validation
       const validationResult = validateRepositoryPath(repositoryPath);
-      const sanitizedPath = validationResult.sanitizedValue || repositoryPath.trim();
-      
+      const sanitizedPath =
+        validationResult.sanitizedValue || repositoryPath.trim();
+
       await onRepositoryAdd?.(sanitizedPath);
-      
+
       // Clear form on successful submission if clearOnSuccess is enabled
       if (clearOnSuccess) {
         setRepositoryPath('');
@@ -94,7 +95,7 @@ export const AddRepository: React.FC<AddRepositoryProps> = ({
               onChange={handleInputChange}
               placeholder="/Users/john/my-project or C:\Users\john\my-project"
               disabled={isLoading}
-              aria-describedby={currentError ? "path-error" : undefined}
+              aria-describedby={currentError ? 'path-error' : undefined}
               aria-invalid={!!currentError}
             />
             {repositoryPath && (
@@ -109,18 +110,22 @@ export const AddRepository: React.FC<AddRepositoryProps> = ({
               </button>
             )}
           </div>
-          
+
           {currentError && (
             <div id="path-error" className="error-message" role="alert">
               {currentError}
             </div>
           )}
-          
+
           <div className="input-hint">
             <strong>Examples:</strong>
             <ul>
-              <li>macOS/Linux: <code>/Users/john/projects/my-app</code></li>
-              <li>Windows: <code>C:\Users\john\projects\my-app</code></li>
+              <li>
+                macOS/Linux: <code>/Users/john/projects/my-app</code>
+              </li>
+              <li>
+                Windows: <code>C:\Users\john\projects\my-app</code>
+              </li>
             </ul>
           </div>
         </div>
@@ -140,7 +145,7 @@ export const AddRepository: React.FC<AddRepositoryProps> = ({
               'Connect Repository'
             )}
           </button>
-          
+
           <button
             type="button"
             className="clear-form-button secondary-button"

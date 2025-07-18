@@ -5,7 +5,7 @@ const router = Router();
 
 /**
  * Dashboard Routes
- * 
+ *
  * Handles dashboard data aggregation and reporting endpoints
  */
 

@@ -151,7 +151,7 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  
+
   /* Keep focus transitions for accessibility */
   *:focus,
   *:focus-visible {
@@ -171,26 +171,28 @@
   textarea {
     border-width: 2px;
   }
-  
+
   /* Ensure button hover states are visible */
   .button:hover:not(:disabled) {
     border-width: 3px;
   }
-  
+
   /* Enhance focus indicators */
   *:focus,
   *:focus-visible {
     outline-width: 4px;
-    box-shadow: 0 0 0 2px var(--color-surface), 0 0 0 6px var(--focus-ring-color);
+    box-shadow:
+      0 0 0 2px var(--color-surface),
+      0 0 0 6px var(--focus-ring-color);
   }
 }
 
 /* === DARK MODE ACCESSIBILITY === */
 
-[data-theme="dark"] {
+[data-theme='dark'] {
   /* Enhance focus visibility in dark mode */
   --focus-ring-color: var(--primary-400);
-  
+
   /* Adjust shadows for better visibility */
   --shadow-focus: 0 0 0 3px rgba(96, 165, 250, 0.7);
   --shadow-focus-error: 0 0 0 3px rgba(248, 113, 113, 0.7);
@@ -201,20 +203,20 @@
 /* === INTERACTIVE ELEMENT ENHANCEMENTS === */
 
 /* Ensure all interactive elements are keyboard accessible */
-[role="button"]:not(button),
-[role="link"]:not(a),
-[role="tab"],
-[role="menuitem"],
-[role="option"] {
+[role='button']:not(button),
+[role='link']:not(a),
+[role='tab'],
+[role='menuitem'],
+[role='option'] {
   cursor: pointer;
   outline: none;
 }
 
-[role="button"]:not(button):focus,
-[role="link"]:not(a):focus,
-[role="tab"]:focus,
-[role="menuitem"]:focus,
-[role="option"]:focus {
+[role='button']:not(button):focus,
+[role='link']:not(a):focus,
+[role='tab']:focus,
+[role='menuitem']:focus,
+[role='option']:focus {
   outline: var(--focus-ring-width) solid var(--focus-ring-color);
   outline-offset: var(--focus-ring-offset);
 }
@@ -295,14 +297,14 @@
   *:focus {
     outline: 2px solid #000 !important;
   }
-  
+
   /* Show URLs for links */
-  a[href^="http"]:after {
-    content: " (" attr(href) ")";
+  a[href^='http']:after {
+    content: ' (' attr(href) ')';
     font-size: 0.8em;
     color: #666;
   }
-  
+
   /* Hide non-essential interactive elements */
   .skip-nav,
   .modal-backdrop,

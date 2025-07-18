@@ -8,12 +8,17 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: 'btn-primary hover:bg-primary-600 focus-visible:ring-primary-500',
-        secondary: 'btn-secondary hover:bg-secondary-100 focus-visible:ring-secondary-500',
-        outline: 'border border-secondary-300 bg-transparent hover:bg-secondary-50 focus-visible:ring-secondary-500',
-        ghost: 'hover:bg-secondary-100 hover:text-secondary-900 focus-visible:ring-secondary-500',
+        primary:
+          'btn-primary hover:bg-primary-600 focus-visible:ring-primary-500',
+        secondary:
+          'btn-secondary hover:bg-secondary-100 focus-visible:ring-secondary-500',
+        outline:
+          'border border-secondary-300 bg-transparent hover:bg-secondary-50 focus-visible:ring-secondary-500',
+        ghost:
+          'hover:bg-secondary-100 hover:text-secondary-900 focus-visible:ring-secondary-500',
         link: 'text-primary-600 underline-offset-4 hover:underline focus-visible:ring-primary-500',
-        destructive: 'bg-error-600 text-white hover:bg-error-700 focus-visible:ring-error-500',
+        destructive:
+          'bg-error-600 text-white hover:bg-error-700 focus-visible:ring-error-500',
       },
       size: {
         sm: 'h-8 rounded-md px-3 text-xs',
@@ -50,7 +55,13 @@ export interface ButtonProps
    * The visual style variant of the button
    * @default 'primary'
    */
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'link' | 'destructive';
+  variant?:
+    | 'primary'
+    | 'secondary'
+    | 'outline'
+    | 'ghost'
+    | 'link'
+    | 'destructive';
   /**
    * The size of the button
    * @default 'md'
@@ -59,7 +70,20 @@ export interface ButtonProps
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, loading, leftIcon, rightIcon, children, disabled, ...props }, ref) => {
+  (
+    {
+      className,
+      variant,
+      size,
+      loading,
+      leftIcon,
+      rightIcon,
+      children,
+      disabled,
+      ...props
+    },
+    ref
+  ) => {
     const isDisabled = disabled || loading;
 
     return (

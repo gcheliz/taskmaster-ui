@@ -27,17 +27,17 @@ class TaskService {
                     priority: data.priority || client_1.Priority.MEDIUM,
                     order: data.order || 0,
                     dueDate: data.dueDate,
-                    projectId: data.projectId
+                    projectId: data.projectId,
                 },
                 include: {
                     project: {
                         select: {
                             id: true,
                             name: true,
-                            path: true
-                        }
-                    }
-                }
+                            path: true,
+                        },
+                    },
+                },
             });
             return task;
         }
@@ -59,10 +59,10 @@ class TaskService {
                         select: {
                             id: true,
                             name: true,
-                            path: true
-                        }
-                    }
-                }
+                            path: true,
+                        },
+                    },
+                },
             });
             return task;
         }
@@ -101,10 +101,10 @@ class TaskService {
                         select: {
                             id: true,
                             name: true,
-                            path: true
-                        }
-                    }
-                }
+                            path: true,
+                        },
+                    },
+                },
             });
             return tasks;
         }
@@ -143,10 +143,10 @@ class TaskService {
                         select: {
                             id: true,
                             name: true,
-                            path: true
-                        }
-                    }
-                }
+                            path: true,
+                        },
+                    },
+                },
             });
             return tasks;
         }
@@ -163,7 +163,7 @@ class TaskService {
             const prisma = this.dbService.getPrisma();
             // Check if task exists
             const existing = await prisma.task.findUnique({
-                where: { id }
+                where: { id },
             });
             if (!existing) {
                 return null;
@@ -176,10 +176,10 @@ class TaskService {
                         select: {
                             id: true,
                             name: true,
-                            path: true
-                        }
-                    }
-                }
+                            path: true,
+                        },
+                    },
+                },
             });
             return task;
         }
@@ -196,14 +196,14 @@ class TaskService {
             const prisma = this.dbService.getPrisma();
             // Check if task exists
             const existing = await prisma.task.findUnique({
-                where: { id }
+                where: { id },
             });
             if (!existing) {
                 return false;
             }
             // Delete task
             await prisma.task.delete({
-                where: { id }
+                where: { id },
             });
             return true;
         }
@@ -220,11 +220,21 @@ class TaskService {
             const prisma = this.dbService.getPrisma();
             const [total, pending, inProgress, completed, blocked, cancelled] = await Promise.all([
                 prisma.task.count({ where: { projectId } }),
-                prisma.task.count({ where: { projectId, status: client_1.TaskStatus.PENDING } }),
-                prisma.task.count({ where: { projectId, status: client_1.TaskStatus.IN_PROGRESS } }),
-                prisma.task.count({ where: { projectId, status: client_1.TaskStatus.COMPLETED } }),
-                prisma.task.count({ where: { projectId, status: client_1.TaskStatus.BLOCKED } }),
-                prisma.task.count({ where: { projectId, status: client_1.TaskStatus.CANCELLED } })
+                prisma.task.count({
+                    where: { projectId, status: client_1.TaskStatus.PENDING },
+                }),
+                prisma.task.count({
+                    where: { projectId, status: client_1.TaskStatus.IN_PROGRESS },
+                }),
+                prisma.task.count({
+                    where: { projectId, status: client_1.TaskStatus.COMPLETED },
+                }),
+                prisma.task.count({
+                    where: { projectId, status: client_1.TaskStatus.BLOCKED },
+                }),
+                prisma.task.count({
+                    where: { projectId, status: client_1.TaskStatus.CANCELLED },
+                }),
             ]);
             return {
                 total,
@@ -232,7 +242,7 @@ class TaskService {
                 inProgress,
                 completed,
                 blocked,
-                cancelled
+                cancelled,
             };
         }
         catch (error) {
@@ -252,24 +262,24 @@ class TaskService {
                 where: {
                     projectId,
                     dueDate: {
-                        lte: dueDate
+                        lte: dueDate,
                     },
                     status: {
-                        not: client_1.TaskStatus.COMPLETED
-                    }
+                        not: client_1.TaskStatus.COMPLETED,
+                    },
                 },
                 orderBy: {
-                    dueDate: 'asc'
+                    dueDate: 'asc',
                 },
                 include: {
                     project: {
                         select: {
                             id: true,
                             name: true,
-                            path: true
-                        }
-                    }
-                }
+                            path: true,
+                        },
+                    },
+                },
             });
             return tasks;
         }
@@ -289,24 +299,24 @@ class TaskService {
                 where: {
                     projectId,
                     dueDate: {
-                        lt: now
+                        lt: now,
                     },
                     status: {
-                        not: client_1.TaskStatus.COMPLETED
-                    }
+                        not: client_1.TaskStatus.COMPLETED,
+                    },
                 },
                 orderBy: {
-                    dueDate: 'asc'
+                    dueDate: 'asc',
                 },
                 include: {
                     project: {
                         select: {
                             id: true,
                             name: true,
-                            path: true
-                        }
-                    }
-                }
+                            path: true,
+                        },
+                    },
+                },
             });
             return tasks;
         }
@@ -330,13 +340,13 @@ class TaskService {
             const result = await prisma.task.updateMany({
                 where: {
                     id: {
-                        in: taskIds
-                    }
+                        in: taskIds,
+                    },
                 },
                 data: {
                     status,
-                    updatedAt: new Date()
-                }
+                    updatedAt: new Date(),
+                },
             });
             return result.count;
         }
@@ -374,10 +384,10 @@ class TaskService {
                     priority: task.priority || client_1.Priority.MEDIUM,
                     order: task.order || 0,
                     dueDate: task.dueDate,
-                    projectId: task.projectId
+                    projectId: task.projectId,
                 }));
                 const result = await prisma.task.createMany({
-                    data: taskData
+                    data: taskData,
                 });
                 return result.count;
             });
@@ -404,7 +414,7 @@ class TaskService {
             return await this.dbService.transaction(async (prisma) => {
                 // Verify target project exists
                 const targetProject = await prisma.project.findUnique({
-                    where: { id: targetProjectId }
+                    where: { id: targetProjectId },
                 });
                 if (!targetProject) {
                     throw new Error(`Target project not found: ${targetProjectId}`);
@@ -413,13 +423,13 @@ class TaskService {
                 const result = await prisma.task.updateMany({
                     where: {
                         id: {
-                            in: taskIds
-                        }
+                            in: taskIds,
+                        },
                     },
                     data: {
                         projectId: targetProjectId,
-                        updatedAt: new Date()
-                    }
+                        updatedAt: new Date(),
+                    },
                 });
                 return result.count;
             });
@@ -444,9 +454,13 @@ class TaskService {
             // Get tasks by priority
             const [highPriority, mediumPriority, lowPriority, urgentPriority] = await Promise.all([
                 prisma.task.count({ where: { projectId, priority: client_1.Priority.HIGH } }),
-                prisma.task.count({ where: { projectId, priority: client_1.Priority.MEDIUM } }),
+                prisma.task.count({
+                    where: { projectId, priority: client_1.Priority.MEDIUM },
+                }),
                 prisma.task.count({ where: { projectId, priority: client_1.Priority.LOW } }),
-                prisma.task.count({ where: { projectId, priority: client_1.Priority.URGENT } })
+                prisma.task.count({
+                    where: { projectId, priority: client_1.Priority.URGENT },
+                }),
             ]);
             const completionRate = counts.total > 0 ? (counts.completed / counts.total) * 100 : 0;
             return {
@@ -457,17 +471,17 @@ class TaskService {
                     high: highPriority,
                     medium: mediumPriority,
                     low: lowPriority,
-                    urgent: urgentPriority
+                    urgent: urgentPriority,
                 },
                 tasksByStatus: {
                     pending: counts.pending,
                     inProgress: counts.inProgress,
                     completed: counts.completed,
                     blocked: counts.blocked,
-                    cancelled: counts.cancelled
+                    cancelled: counts.cancelled,
                 },
                 overdueCount: overdueTasks.length,
-                dueSoonCount: dueSoonTasks.length
+                dueSoonCount: dueSoonTasks.length,
             };
         }
         catch (error) {

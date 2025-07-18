@@ -1,19 +1,16 @@
-export { 
-  useRepositoryData, 
-  useRepositoryActions 
-} from './useRepositoryData';
-export type { 
+export { useRepositoryData, useRepositoryActions } from './useRepositoryData';
+export type {
   UseRepositoryDataOptions,
   UseRepositoryDataReturn,
   UseRepositoryActionsOptions,
-  UseRepositoryActionsReturn
+  UseRepositoryActionsReturn,
 } from './useRepositoryData';
 
 export { useRepositoryOperations } from './useRepositoryOperations';
-export type { 
+export type {
   UseRepositoryOperationsResult,
   ConnectRepositoryOptions,
-  ValidateRepositoryOptions 
+  ValidateRepositoryOptions,
 } from './useRepositoryOperations';
 
 export { useProjectOperations } from './useProjectOperations';
@@ -23,8 +20,8 @@ export { useTaskData } from './useTaskData';
 export type { UseTaskDataOptions, UseTaskDataReturn } from './useTaskData';
 
 export { useWebSocketTaskUpdates } from './useWebSocketTaskUpdates';
-export type { 
+export type {
   TaskUpdateHandler,
   UseWebSocketTaskUpdatesOptions,
-  UseWebSocketTaskUpdatesResult 
+  UseWebSocketTaskUpdatesResult,
 } from './useWebSocketTaskUpdates';

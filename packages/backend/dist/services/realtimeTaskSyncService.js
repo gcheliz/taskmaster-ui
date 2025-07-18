@@ -15,13 +15,13 @@ class RealtimeTaskSyncService {
             enabled: true,
             debounceMs: 500,
             maxRepositories: 10,
-            ...config
+            ...config,
         };
         // Create file watcher with appropriate config
         this.fileWatcher = new fileWatcherService_1.FileWatcherService({
             debounceMs: this.config.debounceMs,
             ignoreInitial: true,
-            persistent: true
+            persistent: true,
         });
     }
     /**
@@ -72,7 +72,7 @@ class RealtimeTaskSyncService {
             this.broadcastMessage({
                 event: 'REPOSITORY_ADDED',
                 repositoryPath,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
             });
         }
         catch (error) {
@@ -96,7 +96,7 @@ class RealtimeTaskSyncService {
             this.broadcastMessage({
                 event: 'REPOSITORY_REMOVED',
                 repositoryPath,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
             });
         }
         catch (error) {
@@ -119,7 +119,7 @@ class RealtimeTaskSyncService {
             enabled: this.config.enabled || false,
             monitoredRepositories: this.watchedRepositories.size,
             watcherStats: this.fileWatcher.getStats(),
-            connectedClients: this.webSocketService.getClientCount()
+            connectedClients: this.webSocketService.getClientCount(),
         };
     }
     /**
@@ -161,8 +161,8 @@ class RealtimeTaskSyncService {
                 repositoryPath: error.repositoryPath || 'unknown',
                 timestamp: new Date().toISOString(),
                 payload: {
-                    error: error.error?.message || 'Unknown file watcher error'
-                }
+                    error: error.error?.message || 'Unknown file watcher error',
+                },
             });
         });
         // Handle file watcher ready events
@@ -183,8 +183,8 @@ class RealtimeTaskSyncService {
             payload: {
                 changeType: event.type,
                 filePath: event.filePath,
-                tasks: event.content
-            }
+                tasks: event.content,
+            },
         };
         // Broadcast to all connected clients
         this.broadcastMessage(message);
@@ -198,7 +198,7 @@ class RealtimeTaskSyncService {
             // Use the WebSocket service to broadcast
             this.webSocketService.broadcast({
                 event: message.event,
-                data: message
+                data: message,
             });
         }
         catch (error) {

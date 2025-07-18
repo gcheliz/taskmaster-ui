@@ -4,37 +4,31 @@ import { cn } from '../../../utils/cn';
 // import { Button } from '../atoms/Button';
 import { Icon, ChevronDownIcon } from '../atoms/Icon';
 
-const paginationVariants = cva(
-  'mx-auto flex w-full justify-center',
-  {
-    variants: {
-      size: {
-        sm: 'text-sm',
-        md: 'text-base',
-        lg: 'text-lg',
-      },
+const paginationVariants = cva('mx-auto flex w-full justify-center', {
+  variants: {
+    size: {
+      sm: 'text-sm',
+      md: 'text-base',
+      lg: 'text-lg',
     },
-    defaultVariants: {
-      size: 'md',
-    },
-  }
-);
+  },
+  defaultVariants: {
+    size: 'md',
+  },
+});
 
-const paginationContentVariants = cva(
-  'flex flex-row items-center gap-1',
-  {
-    variants: {
-      size: {
-        sm: 'gap-1',
-        md: 'gap-2',
-        lg: 'gap-3',
-      },
+const paginationContentVariants = cva('flex flex-row items-center gap-1', {
+  variants: {
+    size: {
+      sm: 'gap-1',
+      md: 'gap-2',
+      lg: 'gap-3',
     },
-    defaultVariants: {
-      size: 'md',
-    },
-  }
-);
+  },
+  defaultVariants: {
+    size: 'md',
+  },
+});
 
 const paginationItemVariants = cva(
   'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
@@ -42,7 +36,8 @@ const paginationItemVariants = cva(
     variants: {
       variant: {
         default: 'hover:bg-secondary-100 hover:text-secondary-900',
-        outline: 'border border-secondary-300 bg-transparent hover:bg-secondary-50',
+        outline:
+          'border border-secondary-300 bg-transparent hover:bg-secondary-50',
       },
       size: {
         sm: 'h-8 w-8 text-xs',
@@ -83,15 +78,16 @@ export interface PaginationContentProps
   extends React.HTMLAttributes<HTMLUListElement>,
     VariantProps<typeof paginationContentVariants> {}
 
-const PaginationContent = React.forwardRef<HTMLUListElement, PaginationContentProps>(
-  ({ className, size, ...props }, ref) => (
-    <ul
-      ref={ref}
-      className={cn(paginationContentVariants({ size, className }))}
-      {...props}
-    />
-  )
-);
+const PaginationContent = React.forwardRef<
+  HTMLUListElement,
+  PaginationContentProps
+>(({ className, size, ...props }, ref) => (
+  <ul
+    ref={ref}
+    className={cn(paginationContentVariants({ size, className }))}
+    {...props}
+  />
+));
 PaginationContent.displayName = 'PaginationContent';
 
 export type PaginationItemProps = React.HTMLAttributes<HTMLLIElement>;
@@ -114,7 +110,9 @@ const PaginationLink = React.forwardRef<HTMLButtonElement, PaginationLinkProps>(
     <button
       ref={ref}
       aria-current={isActive ? 'page' : undefined}
-      className={cn(paginationItemVariants({ variant, size, isActive, className }))}
+      className={cn(
+        paginationItemVariants({ variant, size, isActive, className })
+      )}
       {...props}
     />
   )
@@ -125,23 +123,24 @@ export interface PaginationPreviousProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof paginationItemVariants> {}
 
-const PaginationPrevious = React.forwardRef<HTMLButtonElement, PaginationPreviousProps>(
-  ({ className, variant, size, ...props }, ref) => (
-    <button
-      ref={ref}
-      aria-label="Go to previous page"
-      className={cn(
-        paginationItemVariants({ variant, size }),
-        'gap-1 pl-2.5',
-        className
-      )}
-      {...props}
-    >
-      <Icon icon={ChevronDownIcon} size="sm" className="rotate-90" />
-      <span>Previous</span>
-    </button>
-  )
-);
+const PaginationPrevious = React.forwardRef<
+  HTMLButtonElement,
+  PaginationPreviousProps
+>(({ className, variant, size, ...props }, ref) => (
+  <button
+    ref={ref}
+    aria-label="Go to previous page"
+    className={cn(
+      paginationItemVariants({ variant, size }),
+      'gap-1 pl-2.5',
+      className
+    )}
+    {...props}
+  >
+    <Icon icon={ChevronDownIcon} size="sm" className="rotate-90" />
+    <span>Previous</span>
+  </button>
+));
 PaginationPrevious.displayName = 'PaginationPrevious';
 
 export interface PaginationNextProps
@@ -169,19 +168,20 @@ PaginationNext.displayName = 'PaginationNext';
 
 export type PaginationEllipsisProps = React.HTMLAttributes<HTMLSpanElement>;
 
-const PaginationEllipsis = React.forwardRef<HTMLSpanElement, PaginationEllipsisProps>(
-  ({ className, ...props }, ref) => (
-    <span
-      ref={ref}
-      aria-hidden
-      className={cn('flex h-9 w-9 items-center justify-center', className)}
-      {...props}
-    >
-      <span>...</span>
-      <span className="sr-only">More pages</span>
-    </span>
-  )
-);
+const PaginationEllipsis = React.forwardRef<
+  HTMLSpanElement,
+  PaginationEllipsisProps
+>(({ className, ...props }, ref) => (
+  <span
+    ref={ref}
+    aria-hidden
+    className={cn('flex h-9 w-9 items-center justify-center', className)}
+    {...props}
+  >
+    <span>...</span>
+    <span className="sr-only">More pages</span>
+  </span>
+));
 PaginationEllipsis.displayName = 'PaginationEllipsis';
 
 // Helper component for complete pagination
@@ -195,17 +195,23 @@ export interface CompletePaginationProps {
   variant?: 'default' | 'outline';
 }
 
-const CompletePagination = React.forwardRef<HTMLElement, CompletePaginationProps>(
-  ({ 
-    currentPage, 
-    totalPages, 
-    onPageChange, 
-    showPreviousNext = true,
-    maxVisiblePages = 5,
-    size = 'md',
-    variant = 'default',
-    ...props 
-  }, ref) => {
+const CompletePagination = React.forwardRef<
+  HTMLElement,
+  CompletePaginationProps
+>(
+  (
+    {
+      currentPage,
+      totalPages,
+      onPageChange,
+      showPreviousNext = true,
+      maxVisiblePages = 5,
+      size = 'md',
+      variant = 'default',
+      ...props
+    },
+    ref
+  ) => {
     const getVisiblePages = () => {
       const delta = Math.floor(maxVisiblePages / 2);
       const range: (number | 'ellipsis')[] = [];
@@ -236,9 +242,10 @@ const CompletePagination = React.forwardRef<HTMLElement, CompletePaginationProps
       return rangeWithDots;
     };
 
-    const visiblePages = totalPages <= maxVisiblePages ? 
-      Array.from({ length: totalPages }, (_, i) => i + 1) : 
-      getVisiblePages();
+    const visiblePages =
+      totalPages <= maxVisiblePages
+        ? Array.from({ length: totalPages }, (_, i) => i + 1)
+        : getVisiblePages();
 
     return (
       <Pagination ref={ref} size={size} {...props}>

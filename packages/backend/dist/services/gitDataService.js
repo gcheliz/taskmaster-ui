@@ -25,7 +25,7 @@ class GitDataService {
             this.getCurrentBranch(git),
             this.getLastCommit(git),
             this.getRepositoryStatus(git),
-            this.getAllBranches(git)
+            this.getAllBranches(git),
         ]);
         const repositoryName = this.extractRepositoryName(repositoryPath);
         return {
@@ -34,7 +34,7 @@ class GitDataService {
             currentBranch,
             lastCommit,
             status,
-            branches
+            branches,
         };
     }
     /**
@@ -72,8 +72,8 @@ class GitDataService {
                 message: commit.message,
                 author: {
                     name: commit.author_name,
-                    email: commit.author_email
-                }
+                    email: commit.author_email,
+                },
             };
         }
         catch (error) {
@@ -93,7 +93,7 @@ class GitDataService {
                 untracked: status.not_added.length,
                 conflicted: status.conflicted.length,
                 ahead: status.ahead,
-                behind: status.behind
+                behind: status.behind,
             };
             return gitStatus;
         }
@@ -120,7 +120,7 @@ class GitDataService {
                     current: branch.current,
                     tracking: branch.tracking || undefined,
                     ahead: branch.ahead || undefined,
-                    behind: branch.behind || undefined
+                    behind: branch.behind || undefined,
                 });
             }
             // Process remote branches
@@ -132,7 +132,7 @@ class GitDataService {
                 branches.push({
                     name: remoteName,
                     type: 'remote',
-                    current: false
+                    current: false,
                 });
             }
             return branches;
@@ -191,9 +191,9 @@ class GitDataService {
         return (0, simple_git_1.simpleGit)({
             baseDir: repositoryPath,
             timeout: {
-                block: this.timeout
+                block: this.timeout,
             },
-            config: []
+            config: [],
         });
     }
     /**

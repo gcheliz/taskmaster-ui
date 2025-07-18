@@ -13,7 +13,7 @@ const mockProjects: Project[] = [
     createdAt: '2023-01-15T10:30:00.000Z',
     lastAccessed: '2023-01-16T14:20:00.000Z',
     tasksCount: 25,
-    status: 'active'
+    status: 'active',
   },
   {
     id: 'proj-2',
@@ -24,7 +24,7 @@ const mockProjects: Project[] = [
     createdAt: '2023-01-10T09:15:00.000Z',
     lastAccessed: '2023-01-15T11:45:00.000Z',
     tasksCount: 18,
-    status: 'active'
+    status: 'active',
   },
   {
     id: 'proj-3',
@@ -34,8 +34,8 @@ const mockProjects: Project[] = [
     repositoryPath: '/Users/john/projects/legacy-system',
     createdAt: '2022-12-20T16:00:00.000Z',
     tasksCount: 42,
-    status: 'inactive'
-  }
+    status: 'inactive',
+  },
 ];
 
 describe('ProjectList', () => {
@@ -62,17 +62,23 @@ describe('ProjectList', () => {
     // Check first project details
     expect(screen.getByText('TaskMaster UI')).toBeInTheDocument();
     expect(screen.getByText('taskmaster-ui')).toBeInTheDocument();
-    expect(screen.getByText('/Users/john/projects/taskmaster-ui')).toBeInTheDocument();
+    expect(
+      screen.getByText('/Users/john/projects/taskmaster-ui')
+    ).toBeInTheDocument();
     expect(screen.getByText('25')).toBeInTheDocument();
     expect(screen.getByText('tasks')).toBeInTheDocument();
     expect(screen.getByText('Active')).toBeInTheDocument();
   });
 
   it('displays loading state', () => {
-    const { container } = render(<ProjectList projects={[]} isLoading={true} />);
+    const { container } = render(
+      <ProjectList projects={[]} isLoading={true} />
+    );
 
     expect(screen.getByText('Projects')).toBeInTheDocument();
-    expect(container.querySelectorAll('.skeleton-line').length).toBeGreaterThan(0);
+    expect(container.querySelectorAll('.skeleton-line').length).toBeGreaterThan(
+      0
+    );
     expect(screen.getByText('New Project')).toBeDisabled();
   });
 
@@ -109,9 +115,16 @@ describe('ProjectList', () => {
 
   it('calls onProjectClick when project is clicked', () => {
     const mockOnProjectClick = vi.fn();
-    render(<ProjectList projects={mockProjects} onProjectClick={mockOnProjectClick} />);
+    render(
+      <ProjectList
+        projects={mockProjects}
+        onProjectClick={mockOnProjectClick}
+      />
+    );
 
-    const projectItem = screen.getByText('TaskMaster UI').closest('.project-item');
+    const projectItem = screen
+      .getByText('TaskMaster UI')
+      .closest('.project-item');
     fireEvent.click(projectItem!);
 
     expect(mockOnProjectClick).toHaveBeenCalledWith(mockProjects[0]);
@@ -119,7 +132,12 @@ describe('ProjectList', () => {
 
   it('calls onCreateProject when create button is clicked', () => {
     const mockOnCreateProject = vi.fn();
-    render(<ProjectList projects={mockProjects} onCreateProject={mockOnCreateProject} />);
+    render(
+      <ProjectList
+        projects={mockProjects}
+        onCreateProject={mockOnCreateProject}
+      />
+    );
 
     fireEvent.click(screen.getByText('New Project'));
     expect(mockOnCreateProject).toHaveBeenCalled();
@@ -135,10 +153,17 @@ describe('ProjectList', () => {
 
   it('handles keyboard navigation for projects', () => {
     const mockOnProjectClick = vi.fn();
-    render(<ProjectList projects={mockProjects} onProjectClick={mockOnProjectClick} />);
+    render(
+      <ProjectList
+        projects={mockProjects}
+        onProjectClick={mockOnProjectClick}
+      />
+    );
 
-    const projectItem = screen.getByText('TaskMaster UI').closest('.project-item');
-    
+    const projectItem = screen
+      .getByText('TaskMaster UI')
+      .closest('.project-item');
+
     // Test Enter key
     fireEvent.keyDown(projectItem!, { key: 'Enter' });
     expect(mockOnProjectClick).toHaveBeenCalledWith(mockProjects[0]);
@@ -172,7 +197,7 @@ describe('ProjectList', () => {
 
     // Should show "Yesterday" for projects accessed 1 day ago
     expect(screen.getByText('Last accessed Yesterday')).toBeInTheDocument();
-    
+
     vi.useRealTimers();
   });
 
@@ -188,8 +213,8 @@ describe('ProjectList', () => {
     const projectsWithoutLastAccessed = [
       {
         ...mockProjects[0],
-        lastAccessed: undefined
-      }
+        lastAccessed: undefined,
+      },
     ];
 
     render(<ProjectList projects={projectsWithoutLastAccessed} />);
@@ -202,8 +227,8 @@ describe('ProjectList', () => {
     const projectsWithoutTasksCount = [
       {
         ...mockProjects[0],
-        tasksCount: undefined
-      }
+        tasksCount: undefined,
+      },
     ];
 
     render(<ProjectList projects={projectsWithoutTasksCount} />);
@@ -217,8 +242,8 @@ describe('ProjectList', () => {
     const projectsWithoutStatus = [
       {
         ...mockProjects[0],
-        status: undefined
-      }
+        status: undefined,
+      },
     ];
 
     render(<ProjectList projects={projectsWithoutStatus} />);
@@ -232,8 +257,8 @@ describe('ProjectList', () => {
     const archivedProject = [
       {
         ...mockProjects[0],
-        status: 'archived' as const
-      }
+        status: 'archived' as const,
+      },
     ];
 
     render(<ProjectList projects={archivedProject} />);
@@ -256,8 +281,8 @@ describe('ProjectList', () => {
       {
         ...mockProjects[0],
         createdAt: 'invalid-date',
-        lastAccessed: 'invalid-date'
-      }
+        lastAccessed: 'invalid-date',
+      },
     ];
 
     render(<ProjectList projects={projectWithInvalidDate} />);

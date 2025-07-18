@@ -5,20 +5,17 @@ import { Input } from '../atoms/Input';
 import { Button } from '../atoms/Button';
 import { Icon, EyeIcon, XMarkIcon } from '../atoms/Icon';
 
-const searchFieldVariants = cva(
-  'relative flex w-full',
-  {
-    variants: {
-      variant: {
-        default: '',
-        compact: 'max-w-md',
-      },
+const searchFieldVariants = cva('relative flex w-full', {
+  variants: {
+    variant: {
+      default: '',
+      compact: 'max-w-md',
     },
-    defaultVariants: {
-      variant: 'default',
-    },
-  }
-);
+  },
+  defaultVariants: {
+    variant: 'default',
+  },
+});
 
 export interface SearchFieldProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>,
@@ -32,22 +29,26 @@ export interface SearchFieldProps
 }
 
 const SearchField = React.forwardRef<HTMLInputElement, SearchFieldProps>(
-  ({ 
-    className, 
-    variant, 
-    onSearch, 
-    onClear, 
-    showClearButton = true, 
-    showSearchButton = false,
-    inputSize = 'md',
-    isLoading = false,
-    value: controlledValue,
-    onChange,
-    placeholder = 'Search...',
-    ...props 
-  }, ref) => {
+  (
+    {
+      className,
+      variant,
+      onSearch,
+      onClear,
+      showClearButton = true,
+      showSearchButton = false,
+      inputSize = 'md',
+      isLoading = false,
+      value: controlledValue,
+      onChange,
+      placeholder = 'Search...',
+      ...props
+    },
+    ref
+  ) => {
     const [internalValue, setInternalValue] = useState('');
-    const value = controlledValue !== undefined ? controlledValue : internalValue;
+    const value =
+      controlledValue !== undefined ? controlledValue : internalValue;
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = e.target.value;
@@ -66,7 +67,7 @@ const SearchField = React.forwardRef<HTMLInputElement, SearchFieldProps>(
         setInternalValue('');
       }
       onClear?.();
-      
+
       // Create a synthetic event for controlled components
       if (onChange) {
         const syntheticEvent = {
@@ -86,19 +87,20 @@ const SearchField = React.forwardRef<HTMLInputElement, SearchFieldProps>(
     };
 
     const searchIcon = <Icon icon={EyeIcon} size="sm" />;
-    const clearButton = value && showClearButton ? (
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon"
-        className="h-8 w-8 p-0 hover:bg-transparent"
-        onClick={handleClear}
-        tabIndex={-1}
-        aria-label="Clear search"
-      >
-        <Icon icon={XMarkIcon} size="sm" />
-      </Button>
-    ) : null;
+    const clearButton =
+      value && showClearButton ? (
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 p-0 hover:bg-transparent"
+          onClick={handleClear}
+          tabIndex={-1}
+          aria-label="Clear search"
+        >
+          <Icon icon={XMarkIcon} size="sm" />
+        </Button>
+      ) : null;
 
     return (
       <div className={cn(searchFieldVariants({ variant, className }))}>

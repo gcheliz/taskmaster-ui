@@ -22,24 +22,29 @@ export interface RecentActivityFeedWidgetProps {
 
 /**
  * Recent Activity Feed Widget
- * 
+ *
  * A reusable widget component that displays a chronological list of recent
  * project activities, including Git commits, task updates, and project changes.
  * Supports filtering, grouping, and customizable display options.
  */
-export const RecentActivityFeedWidget: React.FC<RecentActivityFeedWidgetProps> = ({
+export const RecentActivityFeedWidget: React.FC<
+  RecentActivityFeedWidgetProps
+> = ({
   activities,
   maxItems = 20,
   showFilters = true,
   showAvatar = true,
   showTimestamp = true,
   groupByDate = false,
-  className = ''
+  className = '',
 }) => {
   // Sort activities by timestamp (newest first)
   const sortedActivities = useMemo(() => {
     return [...activities]
-      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+      .sort(
+        (a, b) =>
+          new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+      )
       .slice(0, maxItems);
   }, [activities, maxItems]);
 
@@ -48,7 +53,7 @@ export const RecentActivityFeedWidget: React.FC<RecentActivityFeedWidgetProps> =
     if (!groupByDate) return sortedActivities;
 
     const groups: { [key: string]: ActivityItem[] } = {};
-    
+
     sortedActivities.forEach(activity => {
       const date = new Date(activity.timestamp).toDateString();
       if (!groups[date]) {
@@ -59,7 +64,7 @@ export const RecentActivityFeedWidget: React.FC<RecentActivityFeedWidgetProps> =
 
     return Object.entries(groups).map(([date, items]) => ({
       date,
-      items
+      items,
     }));
   }, [sortedActivities, groupByDate]);
 
@@ -104,7 +109,7 @@ export const RecentActivityFeedWidget: React.FC<RecentActivityFeedWidgetProps> =
     if (diffMins < 60) return `${diffMins}m ago`;
     if (diffHours < 24) return `${diffHours}h ago`;
     if (diffDays < 7) return `${diffDays}d ago`;
-    
+
     return date.toLocaleDateString();
   };
 
@@ -113,17 +118,17 @@ export const RecentActivityFeedWidget: React.FC<RecentActivityFeedWidgetProps> =
     const date = new Date(dateStr);
     const today = new Date();
     const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000);
-    
+
     if (date.toDateString() === today.toDateString()) {
       return 'Today';
     } else if (date.toDateString() === yesterday.toDateString()) {
       return 'Yesterday';
     } else {
-      return date.toLocaleDateString('en-US', { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
+      return date.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
       });
     }
   };
@@ -163,9 +168,11 @@ export const RecentActivityFeedWidget: React.FC<RecentActivityFeedWidgetProps> =
       <div className="widget-header">
         <div className="header-info">
           <h3>Recent Activity</h3>
-          <span className="activity-count">{sortedActivities.length} activities</span>
+          <span className="activity-count">
+            {sortedActivities.length} activities
+          </span>
         </div>
-        
+
         {showFilters && (
           <div className="activity-filters">
             <div className="filter-legend">
@@ -191,25 +198,31 @@ export const RecentActivityFeedWidget: React.FC<RecentActivityFeedWidgetProps> =
         {groupByDate ? (
           // Grouped by date
           <div className="activity-groups">
-            {(groupedActivities as { date: string; items: ActivityItem[] }[]).map((group, groupIndex) => (
+            {(
+              groupedActivities as { date: string; items: ActivityItem[] }[]
+            ).map((group, groupIndex) => (
               <div key={groupIndex} className="activity-group">
                 <div className="group-header">
                   <h4 className="group-date">{formatDate(group.date)}</h4>
-                  <span className="group-count">{group.items.length} activities</span>
+                  <span className="group-count">
+                    {group.items.length} activities
+                  </span>
                 </div>
                 <div className="group-items">
                   {group.items.map((activity, index) => (
                     <div key={activity.id} className="activity-item">
                       <div className="activity-indicator">
-                        <div 
+                        <div
                           className="activity-icon"
                           style={{ color: getActivityColor(activity.type) }}
                         >
                           {getActivityIcon(activity.type)}
                         </div>
-                        {index < group.items.length - 1 && <div className="activity-line" />}
+                        {index < group.items.length - 1 && (
+                          <div className="activity-line" />
+                        )}
                       </div>
-                      
+
                       <div className="activity-content">
                         <div className="activity-header">
                           <div className="activity-meta">
@@ -224,9 +237,13 @@ export const RecentActivityFeedWidget: React.FC<RecentActivityFeedWidgetProps> =
                               </span>
                               <div className="activity-details">
                                 {activity.author && (
-                                  <span className="activity-author">by {activity.author}</span>
+                                  <span className="activity-author">
+                                    by {activity.author}
+                                  </span>
                                 )}
-                                <span className="activity-type">{activity.type}</span>
+                                <span className="activity-type">
+                                  {activity.type}
+                                </span>
                                 {showTimestamp && (
                                   <span className="activity-time">
                                     {formatTimestamp(activity.timestamp)}
@@ -249,15 +266,17 @@ export const RecentActivityFeedWidget: React.FC<RecentActivityFeedWidgetProps> =
             {sortedActivities.map((activity, index) => (
               <div key={activity.id} className="activity-item">
                 <div className="activity-indicator">
-                  <div 
+                  <div
                     className="activity-icon"
                     style={{ color: getActivityColor(activity.type) }}
                   >
                     {getActivityIcon(activity.type)}
                   </div>
-                  {index < sortedActivities.length - 1 && <div className="activity-line" />}
+                  {index < sortedActivities.length - 1 && (
+                    <div className="activity-line" />
+                  )}
                 </div>
-                
+
                 <div className="activity-content">
                   <div className="activity-header">
                     <div className="activity-meta">
@@ -272,7 +291,9 @@ export const RecentActivityFeedWidget: React.FC<RecentActivityFeedWidgetProps> =
                         </span>
                         <div className="activity-details">
                           {activity.author && (
-                            <span className="activity-author">by {activity.author}</span>
+                            <span className="activity-author">
+                              by {activity.author}
+                            </span>
                           )}
                           <span className="activity-type">{activity.type}</span>
                           {showTimestamp && (

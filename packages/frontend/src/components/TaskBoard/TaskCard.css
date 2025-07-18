@@ -349,33 +349,33 @@
   .task-card {
     padding: 0.75rem;
   }
-  
+
   .task-card__header {
     margin-bottom: 0.5rem;
   }
-  
+
   .task-title {
     font-size: 0.875rem;
   }
-  
+
   .task-meta-row {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.25rem;
   }
-  
+
   .task-metadata-row {
     gap: 0.5rem;
   }
-  
+
   .task-card__metadata {
     margin-bottom: 0.5rem;
   }
-  
+
   .task-assignee {
     font-size: 0.6875rem;
   }
-  
+
   .assignee-name {
     max-width: 80px;
   }
@@ -385,25 +385,25 @@
   .task-card {
     padding: 0.5rem;
   }
-  
+
   .task-title {
     font-size: 0.8125rem;
     -webkit-line-clamp: 1;
   }
-  
+
   .task-description {
     font-size: 0.8125rem;
     -webkit-line-clamp: 2;
   }
-  
+
   .task-card__tags {
     gap: 0.25rem;
   }
-  
+
   .task-tag {
     font-size: 0.6875rem;
   }
-  
+
   .task-meta-item {
     font-size: 0.6875rem;
   }
@@ -432,12 +432,12 @@
     box-shadow: none;
     page-break-inside: avoid;
   }
-  
+
   .task-card:hover {
     transform: none;
     box-shadow: none;
   }
-  
+
   .task-card::before {
     background-color: #000 !important;
   }

@@ -1,15 +1,20 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { 
-  Card, 
-  CardHeader, 
-  CardTitle, 
-  CardDescription, 
-  CardContent, 
-  CardFooter 
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
 } from '../../components/ui/molecules/Card';
 import { Button } from '../../components/ui/atoms/Button';
 import { Badge } from '../../components/ui/atoms/Badge';
-import { Icon, CheckIcon, EyeIcon, PencilIcon } from '../../components/ui/atoms/Icon';
+import {
+  Icon,
+  CheckIcon,
+  EyeIcon,
+  PencilIcon,
+} from '../../components/ui/atoms/Icon';
 
 const meta: Meta<typeof Card> = {
   title: 'Molecules/Card',
@@ -18,7 +23,8 @@ const meta: Meta<typeof Card> = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'A flexible card component with header, content, and footer sections. Perfect for displaying structured content.',
+        component:
+          'A flexible card component with header, content, and footer sections. Perfect for displaying structured content.',
       },
     },
   },
@@ -40,7 +46,7 @@ const meta: Meta<typeof Card> = {
     },
   },
   decorators: [
-    (Story) => (
+    Story => (
       <div className="w-96">
         <Story />
       </div>
@@ -52,7 +58,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: (args) => (
+  render: args => (
     <Card {...args}>
       <CardHeader>
         <CardTitle>Card Title</CardTitle>
@@ -76,28 +82,36 @@ export const Variants: Story = {
       <Card variant="default">
         <CardContent>
           <p className="font-medium">Default</p>
-          <p className="text-sm text-secondary-600">Standard card with border</p>
+          <p className="text-sm text-secondary-600">
+            Standard card with border
+          </p>
         </CardContent>
       </Card>
-      
+
       <Card variant="outline">
         <CardContent>
           <p className="font-medium">Outline</p>
-          <p className="text-sm text-secondary-600">Card with prominent border</p>
+          <p className="text-sm text-secondary-600">
+            Card with prominent border
+          </p>
         </CardContent>
       </Card>
-      
+
       <Card variant="elevated">
         <CardContent>
           <p className="font-medium">Elevated</p>
-          <p className="text-sm text-secondary-600">Card with shadow elevation</p>
+          <p className="text-sm text-secondary-600">
+            Card with shadow elevation
+          </p>
         </CardContent>
       </Card>
-      
+
       <Card variant="ghost">
         <CardContent>
           <p className="font-medium">Ghost</p>
-          <p className="text-sm text-secondary-600">Minimal card without border</p>
+          <p className="text-sm text-secondary-600">
+            Minimal card without border
+          </p>
         </CardContent>
       </Card>
     </div>
@@ -113,14 +127,14 @@ export const Sizes: Story = {
           <p className="text-sm text-secondary-600">Compact padding</p>
         </CardContent>
       </Card>
-      
+
       <Card size="md">
         <CardContent>
           <p className="font-medium">Medium Card</p>
           <p className="text-sm text-secondary-600">Standard padding</p>
         </CardContent>
       </Card>
-      
+
       <Card size="lg">
         <CardContent>
           <p className="font-medium">Large Card</p>
@@ -156,7 +170,8 @@ export const TaskCard: Story = {
           <Badge variant="in-progress">In Progress</Badge>
         </div>
         <CardDescription>
-          Create login and registration forms with proper validation and error handling.
+          Create login and registration forms with proper validation and error
+          handling.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -166,18 +181,23 @@ export const TaskCard: Story = {
             <span className="font-medium">60%</span>
           </div>
           <div className="w-full bg-secondary-200 rounded-full h-2">
-            <div className="bg-primary-600 h-2 rounded-full" style={{ width: '60%' }} />
+            <div
+              className="bg-primary-600 h-2 rounded-full"
+              style={{ width: '60%' }}
+            />
           </div>
           <div className="flex gap-2">
-            <Badge variant="outline" size="sm">Frontend</Badge>
-            <Badge variant="warning" size="sm">High Priority</Badge>
+            <Badge variant="outline" size="sm">
+              Frontend
+            </Badge>
+            <Badge variant="warning" size="sm">
+              High Priority
+            </Badge>
           </div>
         </div>
       </CardContent>
       <CardFooter alignment="between">
-        <div className="text-sm text-secondary-600">
-          Due: Dec 15, 2024
-        </div>
+        <div className="text-sm text-secondary-600">Due: Dec 15, 2024</div>
         <div className="flex gap-2">
           <Button size="sm" variant="outline">
             <Icon icon={EyeIcon} size="sm" />
@@ -220,7 +240,9 @@ export const ProfileCard: Story = {
       <CardFooter alignment="center">
         <div className="flex gap-2">
           <Button size="sm">View Profile</Button>
-          <Button size="sm" variant="outline">Message</Button>
+          <Button size="sm" variant="outline">
+            Message
+          </Button>
         </div>
       </CardFooter>
     </Card>
@@ -234,7 +256,9 @@ export const StatsCard: Story = {
         <CardContent>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-secondary-600">Total Tasks</p>
+              <p className="text-sm font-medium text-secondary-600">
+                Total Tasks
+              </p>
               <p className="text-2xl font-bold">142</p>
             </div>
             <div className="h-8 w-8 bg-primary-100 rounded-full flex items-center justify-center">
@@ -243,12 +267,14 @@ export const StatsCard: Story = {
           </div>
         </CardContent>
       </Card>
-      
+
       <Card>
         <CardContent>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-secondary-600">Completed</p>
+              <p className="text-sm font-medium text-secondary-600">
+                Completed
+              </p>
               <p className="text-2xl font-bold text-success-600">89</p>
             </div>
             <div className="h-8 w-8 bg-success-100 rounded-full flex items-center justify-center">
@@ -257,12 +283,14 @@ export const StatsCard: Story = {
           </div>
         </CardContent>
       </Card>
-      
+
       <Card>
         <CardContent>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-secondary-600">In Progress</p>
+              <p className="text-sm font-medium text-secondary-600">
+                In Progress
+              </p>
               <p className="text-2xl font-bold text-warning-600">23</p>
             </div>
             <div className="h-8 w-8 bg-warning-100 rounded-full flex items-center justify-center">
@@ -291,14 +319,18 @@ export const NotificationCard: Story = {
               </CardDescription>
             </div>
           </div>
-          <Badge variant="success" size="sm">New</Badge>
+          <Badge variant="success" size="sm">
+            New
+          </Badge>
         </div>
       </CardHeader>
       <CardFooter>
         <div className="flex justify-between items-center w-full">
           <span className="text-sm text-secondary-500">2 minutes ago</span>
           <div className="flex gap-2">
-            <Button size="sm" variant="ghost">Dismiss</Button>
+            <Button size="sm" variant="ghost">
+              Dismiss
+            </Button>
             <Button size="sm">View Task</Button>
           </div>
         </div>
@@ -323,7 +355,10 @@ export const ComplexLayout: Story = {
                 <span>75%</span>
               </div>
               <div className="w-full bg-secondary-200 rounded-full h-2">
-                <div className="bg-primary-600 h-2 rounded-full" style={{ width: '75%' }} />
+                <div
+                  className="bg-primary-600 h-2 rounded-full"
+                  style={{ width: '75%' }}
+                />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4 text-sm">
@@ -342,7 +377,7 @@ export const ComplexLayout: Story = {
           <Button className="w-full">View Details</Button>
         </CardFooter>
       </Card>
-      
+
       <Card>
         <CardHeader>
           <CardTitle>Recent Activity</CardTitle>
@@ -350,9 +385,21 @@ export const ComplexLayout: Story = {
         <CardContent>
           <div className="space-y-3">
             {[
-              { action: 'Task completed', task: 'User authentication', time: '2m ago' },
-              { action: 'Task created', task: 'Add dark theme', time: '1h ago' },
-              { action: 'Task updated', task: 'Fix navigation bug', time: '3h ago' },
+              {
+                action: 'Task completed',
+                task: 'User authentication',
+                time: '2m ago',
+              },
+              {
+                action: 'Task created',
+                task: 'Add dark theme',
+                time: '1h ago',
+              },
+              {
+                action: 'Task updated',
+                task: 'Fix navigation bug',
+                time: '3h ago',
+              },
             ].map((item, index) => (
               <div key={index} className="flex items-center gap-3 text-sm">
                 <div className="w-2 h-2 bg-primary-600 rounded-full flex-shrink-0" />
@@ -366,7 +413,9 @@ export const ComplexLayout: Story = {
           </div>
         </CardContent>
         <CardFooter>
-          <Button variant="outline" className="w-full">View All Activity</Button>
+          <Button variant="outline" className="w-full">
+            View All Activity
+          </Button>
         </CardFooter>
       </Card>
     </div>

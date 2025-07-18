@@ -48,16 +48,17 @@ const TASK_STATUSES: { value: TaskStatus; label: string; color: string }[] = [
   { value: 'cancelled', label: 'Cancelled', color: '#6b7280' },
 ];
 
-const TASK_PRIORITIES: { value: TaskPriority; label: string; color: string }[] = [
-  { value: 'low', label: 'Low', color: '#10b981' },
-  { value: 'medium', label: 'Medium', color: '#f59e0b' },
-  { value: 'high', label: 'High', color: '#ef4444' },
-  { value: 'urgent', label: 'Urgent', color: '#dc2626' },
-];
+const TASK_PRIORITIES: { value: TaskPriority; label: string; color: string }[] =
+  [
+    { value: 'low', label: 'Low', color: '#10b981' },
+    { value: 'medium', label: 'Medium', color: '#f59e0b' },
+    { value: 'high', label: 'High', color: '#ef4444' },
+    { value: 'urgent', label: 'Urgent', color: '#dc2626' },
+  ];
 
 /**
  * Task Modal Component
- * 
+ *
  * Provides a modal interface for creating, editing, and viewing tasks.
  * Supports full CRUD operations and dependency management.
  */
@@ -140,7 +141,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
       const dueDate = new Date(formData.dueDate);
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      
+
       if (dueDate < today) {
         errors.dueDate = 'Due date cannot be in the past';
       }
@@ -170,7 +171,8 @@ export const TaskModal: React.FC<TaskModalProps> = ({
         details: formData.details?.trim() || undefined,
         testStrategy: formData.testStrategy?.trim() || undefined,
         assignedTo: formData.assignedTo?.trim() || undefined,
-        dependencies: formData.dependencies?.filter(dep => dep !== undefined) || [],
+        dependencies:
+          formData.dependencies?.filter(dep => dep !== undefined) || [],
         tags: formData.tags?.filter(tag => tag.trim() !== '') || [],
       };
 
@@ -269,7 +271,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
             <div className="error-banner">
               <span className="error-icon">⚠️</span>
               <span className="error-message">{error}</span>
-              <button 
+              <button
                 className="error-dismiss"
                 onClick={() => setError(null)}
                 aria-label="Dismiss error"
@@ -289,7 +291,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                 id="task-title"
                 type="text"
                 value={formData.title || ''}
-                onChange={(e) => updateFormData('title', e.target.value)}
+                onChange={e => updateFormData('title', e.target.value)}
                 className={`form-input ${validationErrors.title ? 'error' : ''}`}
                 placeholder="Enter task title..."
                 disabled={isLoading || isReadOnly}
@@ -309,7 +311,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
               <textarea
                 id="task-description"
                 value={formData.description || ''}
-                onChange={(e) => updateFormData('description', e.target.value)}
+                onChange={e => updateFormData('description', e.target.value)}
                 className={`form-textarea ${validationErrors.description ? 'error' : ''}`}
                 placeholder="Enter task description..."
                 disabled={isLoading || isReadOnly}
@@ -318,7 +320,9 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                 data-testid="task-description-input"
               />
               {validationErrors.description && (
-                <span className="form-error">{validationErrors.description}</span>
+                <span className="form-error">
+                  {validationErrors.description}
+                </span>
               )}
             </div>
 
@@ -331,7 +335,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                 <select
                   id="task-priority"
                   value={formData.priority || 'medium'}
-                  onChange={(e) => updateFormData('priority', e.target.value)}
+                  onChange={e => updateFormData('priority', e.target.value)}
                   className={`form-select ${validationErrors.priority ? 'error' : ''}`}
                   disabled={isLoading || isReadOnly}
                   data-testid="task-priority-select"
@@ -343,16 +347,23 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                   ))}
                 </select>
                 {validationErrors.priority && (
-                  <span className="form-error">{validationErrors.priority}</span>
+                  <span className="form-error">
+                    {validationErrors.priority}
+                  </span>
                 )}
                 {formData.priority && (
                   <div className="priority-indicator">
-                    <span 
-                      className="priority-dot" 
-                      style={{ backgroundColor: getPriorityColor(formData.priority) }}
+                    <span
+                      className="priority-dot"
+                      style={{
+                        backgroundColor: getPriorityColor(formData.priority),
+                      }}
                     />
                     <span className="priority-label">
-                      {TASK_PRIORITIES.find(p => p.value === formData.priority)?.label}
+                      {
+                        TASK_PRIORITIES.find(p => p.value === formData.priority)
+                          ?.label
+                      }
                     </span>
                   </div>
                 )}
@@ -365,7 +376,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                 <select
                   id="task-status"
                   value={formData.status || 'pending'}
-                  onChange={(e) => updateFormData('status', e.target.value)}
+                  onChange={e => updateFormData('status', e.target.value)}
                   className={`form-select ${validationErrors.status ? 'error' : ''}`}
                   disabled={isLoading || isReadOnly}
                   data-testid="task-status-select"
@@ -381,12 +392,17 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                 )}
                 {formData.status && (
                   <div className="status-indicator">
-                    <span 
-                      className="status-dot" 
-                      style={{ backgroundColor: getStatusColor(formData.status) }}
+                    <span
+                      className="status-dot"
+                      style={{
+                        backgroundColor: getStatusColor(formData.status),
+                      }}
                     />
                     <span className="status-label">
-                      {TASK_STATUSES.find(s => s.value === formData.status)?.label}
+                      {
+                        TASK_STATUSES.find(s => s.value === formData.status)
+                          ?.label
+                      }
                     </span>
                   </div>
                 )}
@@ -401,7 +417,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
               <textarea
                 id="task-details"
                 value={formData.details || ''}
-                onChange={(e) => updateFormData('details', e.target.value)}
+                onChange={e => updateFormData('details', e.target.value)}
                 className="form-textarea"
                 placeholder="Enter additional task details..."
                 disabled={isLoading || isReadOnly}
@@ -421,7 +437,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
               <textarea
                 id="task-test-strategy"
                 value={formData.testStrategy || ''}
-                onChange={(e) => updateFormData('testStrategy', e.target.value)}
+                onChange={e => updateFormData('testStrategy', e.target.value)}
                 className="form-textarea"
                 placeholder="Enter test strategy..."
                 disabled={isLoading || isReadOnly}
@@ -443,7 +459,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                   id="task-assigned-to"
                   type="text"
                   value={formData.assignedTo || ''}
-                  onChange={(e) => updateFormData('assignedTo', e.target.value)}
+                  onChange={e => updateFormData('assignedTo', e.target.value)}
                   className="form-input"
                   placeholder="Enter assignee name..."
                   disabled={isLoading || isReadOnly}
@@ -459,7 +475,14 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                   id="task-due-date"
                   type="date"
                   value={formData.dueDate ? formData.dueDate.split('T')[0] : ''}
-                  onChange={(e) => updateFormData('dueDate', e.target.value ? new Date(e.target.value).toISOString() : undefined)}
+                  onChange={e =>
+                    updateFormData(
+                      'dueDate',
+                      e.target.value
+                        ? new Date(e.target.value).toISOString()
+                        : undefined
+                    )
+                  }
                   className={`form-input ${validationErrors.dueDate ? 'error' : ''}`}
                   disabled={isLoading || isReadOnly}
                   data-testid="task-due-date-input"
@@ -479,7 +502,12 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                 id="task-estimated-hours"
                 type="number"
                 value={formData.estimatedHours || ''}
-                onChange={(e) => updateFormData('estimatedHours', e.target.value ? Number(e.target.value) : undefined)}
+                onChange={e =>
+                  updateFormData(
+                    'estimatedHours',
+                    e.target.value ? Number(e.target.value) : undefined
+                  )
+                }
                 className="form-input"
                 placeholder="Enter estimated hours..."
                 disabled={isLoading || isReadOnly}
@@ -498,7 +526,15 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                 id="task-tags"
                 type="text"
                 value={formData.tags?.join(', ') || ''}
-                onChange={(e) => updateFormData('tags', e.target.value.split(',').map(tag => tag.trim()).filter(tag => tag))}
+                onChange={e =>
+                  updateFormData(
+                    'tags',
+                    e.target.value
+                      .split(',')
+                      .map(tag => tag.trim())
+                      .filter(tag => tag)
+                  )
+                }
                 className="form-input"
                 placeholder="Enter tags separated by commas..."
                 disabled={isLoading || isReadOnly}
@@ -512,95 +548,125 @@ export const TaskModal: React.FC<TaskModalProps> = ({
             {/* Dependencies */}
             {availableTasks.length > 0 && (
               <div className="form-group">
-                <label className="form-label">
-                  Dependencies
-                </label>
+                <label className="form-label">Dependencies</label>
                 <div className="dependencies-container">
                   {/* Selected Dependencies */}
-                  {formData.dependencies && formData.dependencies.length > 0 && (
-                    <div className="selected-dependencies">
-                      <div className="selected-dependencies-header">
-                        <span className="dependencies-count">
-                          {formData.dependencies.length} dependenc{formData.dependencies.length === 1 ? 'y' : 'ies'}
-                        </span>
-                      </div>
-                      <div className="selected-dependencies-list">
-                        {formData.dependencies.map((depId) => {
-                          const depTask = availableTasks.find(t => t.id === depId);
-                          if (!depTask) return null;
-                          
-                          return (
-                            <div key={depId} className="dependency-item">
-                              <div className="dependency-info">
-                                <span className="dependency-id">#{depTask.id}</span>
-                                <span className="dependency-title">{depTask.title}</span>
-                                <span className="dependency-status" style={{ 
-                                  color: getStatusColor(depTask.status),
-                                  backgroundColor: `${getStatusColor(depTask.status)}20`,
-                                }}>
-                                  {TASK_STATUSES.find(s => s.value === depTask.status)?.label || depTask.status}
-                                </span>
+                  {formData.dependencies &&
+                    formData.dependencies.length > 0 && (
+                      <div className="selected-dependencies">
+                        <div className="selected-dependencies-header">
+                          <span className="dependencies-count">
+                            {formData.dependencies.length} dependenc
+                            {formData.dependencies.length === 1 ? 'y' : 'ies'}
+                          </span>
+                        </div>
+                        <div className="selected-dependencies-list">
+                          {formData.dependencies.map(depId => {
+                            const depTask = availableTasks.find(
+                              t => t.id === depId
+                            );
+                            if (!depTask) return null;
+
+                            return (
+                              <div key={depId} className="dependency-item">
+                                <div className="dependency-info">
+                                  <span className="dependency-id">
+                                    #{depTask.id}
+                                  </span>
+                                  <span className="dependency-title">
+                                    {depTask.title}
+                                  </span>
+                                  <span
+                                    className="dependency-status"
+                                    style={{
+                                      color: getStatusColor(depTask.status),
+                                      backgroundColor: `${getStatusColor(depTask.status)}20`,
+                                    }}
+                                  >
+                                    {TASK_STATUSES.find(
+                                      s => s.value === depTask.status
+                                    )?.label || depTask.status}
+                                  </span>
+                                </div>
+                                {!isReadOnly && (
+                                  <button
+                                    type="button"
+                                    className="remove-dependency-button"
+                                    onClick={() => {
+                                      const newDeps =
+                                        formData.dependencies?.filter(
+                                          id => id !== depId
+                                        ) || [];
+                                      updateFormData('dependencies', newDeps);
+                                    }}
+                                    title="Remove dependency"
+                                  >
+                                    ✕
+                                  </button>
+                                )}
                               </div>
-                              {!isReadOnly && (
-                                <button
-                                  type="button"
-                                  className="remove-dependency-button"
-                                  onClick={() => {
-                                    const newDeps = formData.dependencies?.filter(id => id !== depId) || [];
-                                    updateFormData('dependencies', newDeps);
-                                  }}
-                                  title="Remove dependency"
-                                >
-                                  ✕
-                                </button>
-                              )}
-                            </div>
-                          );
-                        })}
+                            );
+                          })}
+                        </div>
                       </div>
-                    </div>
-                  )}
-                  
+                    )}
+
                   {/* Add Dependencies */}
                   {!isReadOnly && (
                     <div className="add-dependencies">
                       <select
                         className="form-select dependency-select"
                         value=""
-                        onChange={(e) => {
+                        onChange={e => {
                           const selectedId = Number(e.target.value);
-                          if (selectedId && !formData.dependencies?.includes(selectedId)) {
-                            const newDeps = [...(formData.dependencies || []), selectedId];
+                          if (
+                            selectedId &&
+                            !formData.dependencies?.includes(selectedId)
+                          ) {
+                            const newDeps = [
+                              ...(formData.dependencies || []),
+                              selectedId,
+                            ];
                             updateFormData('dependencies', newDeps);
                           }
                         }}
                         disabled={isLoading}
                       >
-                        <option value="">Select a task to add as dependency...</option>
+                        <option value="">
+                          Select a task to add as dependency...
+                        </option>
                         {availableTasks
-                          .filter(t => 
-                            t.id !== task?.id && // Don't allow self-dependency
-                            !formData.dependencies?.includes(t.id) // Don't show already selected
+                          .filter(
+                            t =>
+                              t.id !== task?.id && // Don't allow self-dependency
+                              !formData.dependencies?.includes(t.id) // Don't show already selected
                           )
                           .sort((a, b) => a.id - b.id)
                           .map(t => (
                             <option key={t.id} value={t.id}>
-                              #{t.id} - {t.title} ({TASK_STATUSES.find(s => s.value === t.status)?.label || t.status})
+                              #{t.id} - {t.title} (
+                              {TASK_STATUSES.find(s => s.value === t.status)
+                                ?.label || t.status}
+                              )
                             </option>
                           ))}
                       </select>
                       <div className="form-help">
-                        Select tasks that must be completed before this task can be worked on.
+                        Select tasks that must be completed before this task can
+                        be worked on.
                       </div>
                     </div>
                   )}
-                  
+
                   {/* Empty state */}
-                  {(!formData.dependencies || formData.dependencies.length === 0) && (
+                  {(!formData.dependencies ||
+                    formData.dependencies.length === 0) && (
                     <div className="dependencies-empty">
                       <span className="empty-icon">🔗</span>
                       <span className="empty-text">
-                        {isReadOnly ? 'No dependencies' : 'No dependencies set. Select tasks above to add dependencies.'}
+                        {isReadOnly
+                          ? 'No dependencies'
+                          : 'No dependencies set. Select tasks above to add dependencies.'}
                       </span>
                     </div>
                   )}
@@ -619,7 +685,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
           >
             {isReadOnly ? 'Close' : 'Cancel'}
           </button>
-          
+
           {isReadOnly && onEdit && (
             <button
               type="button"
@@ -631,7 +697,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
               Edit Task
             </button>
           )}
-          
+
           {!isReadOnly && (
             <button
               type="submit"
@@ -646,13 +712,11 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                   {isCreateMode ? 'Creating...' : 'Saving...'}
                 </>
               ) : (
-                <>
-                  {isCreateMode ? 'Create Task' : 'Save Changes'}
-                </>
+                <>{isCreateMode ? 'Create Task' : 'Save Changes'}</>
               )}
             </button>
           )}
-          
+
           {isEditMode && onDelete && task?.id && (
             <button
               type="button"

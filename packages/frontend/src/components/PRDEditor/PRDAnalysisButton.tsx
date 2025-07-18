@@ -19,7 +19,7 @@ export interface PRDAnalysisButtonProps {
 
 /**
  * PRD Analysis Button Component
- * 
+ *
  * Provides a button to trigger PRD analysis with loading states
  * and error handling. Integrates with the usePRDAnalysis hook.
  */
@@ -32,7 +32,9 @@ export const PRDAnalysisButton: React.FC<PRDAnalysisButtonProps> = ({
   onAnalysisStart,
 }) => {
   const [showOptions, setShowOptions] = useState(false);
-  const [analysisOptions, setAnalysisOptions] = useState<Partial<PRDAnalysisRequest>>({
+  const [analysisOptions, setAnalysisOptions] = useState<
+    Partial<PRDAnalysisRequest>
+  >({
     analysisType: 'detailed',
     options: {
       includeComplexity: true,
@@ -41,17 +43,12 @@ export const PRDAnalysisButton: React.FC<PRDAnalysisButtonProps> = ({
     },
   });
 
-  const {
-    isAnalyzing,
-    analysisError,
-    analyzePRD,
-    clearError,
-    canAnalyze,
-  } = usePRDAnalysis({
-    onAnalysisComplete,
-    onAnalysisError,
-    onAnalysisStart,
-  });
+  const { isAnalyzing, analysisError, analyzePRD, clearError, canAnalyze } =
+    usePRDAnalysis({
+      onAnalysisComplete,
+      onAnalysisError,
+      onAnalysisStart,
+    });
 
   const handleAnalyze = async () => {
     if (!content.trim()) {
@@ -90,7 +87,11 @@ export const PRDAnalysisButton: React.FC<PRDAnalysisButtonProps> = ({
           onClick={handleAnalyze}
           disabled={isDisabled}
           className={`analyze-button ${isAnalyzing ? 'analyzing' : ''} ${isDisabled ? 'disabled' : ''}`}
-          title={isEmpty ? 'Add content to analyze' : 'Analyze PRD for tasks and complexity'}
+          title={
+            isEmpty
+              ? 'Add content to analyze'
+              : 'Analyze PRD for tasks and complexity'
+          }
         >
           {isAnalyzing ? (
             <>
@@ -98,9 +99,7 @@ export const PRDAnalysisButton: React.FC<PRDAnalysisButtonProps> = ({
               Analyzing...
             </>
           ) : (
-            <>
-              🔍 Analyze PRD
-            </>
+            <>🔍 Analyze PRD</>
           )}
         </button>
 
@@ -134,7 +133,9 @@ export const PRDAnalysisButton: React.FC<PRDAnalysisButtonProps> = ({
               <label>Analysis Type:</label>
               <select
                 value={analysisOptions.analysisType || 'detailed'}
-                onChange={(e) => handleOptionsChange('analysisType', e.target.value)}
+                onChange={e =>
+                  handleOptionsChange('analysisType', e.target.value)
+                }
               >
                 <option value="basic">Basic Analysis</option>
                 <option value="detailed">Detailed Analysis</option>
@@ -148,7 +149,9 @@ export const PRDAnalysisButton: React.FC<PRDAnalysisButtonProps> = ({
                   <input
                     type="checkbox"
                     checked={analysisOptions.options?.includeComplexity ?? true}
-                    onChange={(e) => handleOptionToggle('includeComplexity', e.target.checked)}
+                    onChange={e =>
+                      handleOptionToggle('includeComplexity', e.target.checked)
+                    }
                   />
                   Complexity Analysis
                 </label>
@@ -156,15 +159,24 @@ export const PRDAnalysisButton: React.FC<PRDAnalysisButtonProps> = ({
                   <input
                     type="checkbox"
                     checked={analysisOptions.options?.includeEstimation ?? true}
-                    onChange={(e) => handleOptionToggle('includeEstimation', e.target.checked)}
+                    onChange={e =>
+                      handleOptionToggle('includeEstimation', e.target.checked)
+                    }
                   />
                   Time Estimation
                 </label>
                 <label className="checkbox-label">
                   <input
                     type="checkbox"
-                    checked={analysisOptions.options?.includeDependencies ?? true}
-                    onChange={(e) => handleOptionToggle('includeDependencies', e.target.checked)}
+                    checked={
+                      analysisOptions.options?.includeDependencies ?? true
+                    }
+                    onChange={e =>
+                      handleOptionToggle(
+                        'includeDependencies',
+                        e.target.checked
+                      )
+                    }
                   />
                   Dependency Detection
                 </label>
@@ -188,14 +200,8 @@ export const PRDAnalysisButton: React.FC<PRDAnalysisButtonProps> = ({
       {/* Error Display */}
       {analysisError && (
         <div className="analysis-error">
-          <span className="error-message">
-            {analysisError.message}
-          </span>
-          <button
-            type="button"
-            onClick={clearError}
-            className="clear-error"
-          >
+          <span className="error-message">{analysisError.message}</span>
+          <button type="button" onClick={clearError} className="clear-error">
             ×
           </button>
         </div>

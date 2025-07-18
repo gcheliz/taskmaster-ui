@@ -13,31 +13,37 @@ export class WebSocketService {
       this.clients.add(ws);
 
       // Send welcome message
-      ws.send(JSON.stringify({
-        type: 'connection',
-        message: 'Connected to TaskMaster UI',
-        timestamp: new Date().toISOString(),
-      }));
+      ws.send(
+        JSON.stringify({
+          type: 'connection',
+          message: 'Connected to TaskMaster UI',
+          timestamp: new Date().toISOString(),
+        })
+      );
 
       // Handle incoming messages
-      ws.on('message', (data) => {
+      ws.on('message', data => {
         try {
           const message = JSON.parse(data.toString());
           console.log('Received message:', message);
 
           // Echo back the message with timestamp
-          ws.send(JSON.stringify({
-            type: 'echo',
-            data: message,
-            timestamp: new Date().toISOString(),
-          }));
+          ws.send(
+            JSON.stringify({
+              type: 'echo',
+              data: message,
+              timestamp: new Date().toISOString(),
+            })
+          );
         } catch (error) {
           console.error('Error parsing WebSocket message:', error);
-          ws.send(JSON.stringify({
-            type: 'error',
-            message: 'Invalid message format',
-            timestamp: new Date().toISOString(),
-          }));
+          ws.send(
+            JSON.stringify({
+              type: 'error',
+              message: 'Invalid message format',
+              timestamp: new Date().toISOString(),
+            })
+          );
         }
       });
 
@@ -48,7 +54,7 @@ export class WebSocketService {
       });
 
       // Handle errors
-      ws.on('error', (error) => {
+      ws.on('error', error => {
         console.error('WebSocket error:', error);
         this.clients.delete(ws);
       });
@@ -69,7 +75,7 @@ export class WebSocketService {
       timestamp: new Date().toISOString(),
     });
 
-    this.clients.forEach((client) => {
+    this.clients.forEach(client => {
       if (client.readyState === WebSocket.OPEN) {
         client.send(data);
       }

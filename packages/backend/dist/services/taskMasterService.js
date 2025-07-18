@@ -20,7 +20,7 @@ class TaskMasterService extends events_1.EventEmitter {
         this.outputParser = parser || taskMasterOutputParser_1.taskMasterOutputParser;
         this.defaultConfig = config || {
             timeout: 60000, // 60 seconds
-            verbose: false
+            verbose: false,
         };
         // Set up event forwarding from command executor
         this.commandExecutor.on('progress', (processId, progress) => {
@@ -37,7 +37,7 @@ class TaskMasterService extends events_1.EventEmitter {
             requestId,
             repositoryPath: path,
             operation: 'init',
-            prdFile: options.prdFile
+            prdFile: options.prdFile,
         };
         logger_1.logger.info('Initializing TaskMaster project', context, 'service');
         try {
@@ -46,12 +46,12 @@ class TaskMasterService extends events_1.EventEmitter {
             this.emit('operationStart', 'initProject', { path, options });
             logger_1.logger.logCliExecution('init', path, context);
             const command = this.commandBuilder.buildCommand('init', {
-                prdFile: options.prdFile
+                prdFile: options.prdFile,
             });
             logger_1.logger.debug('Built init command', { ...context, command: command.command }, 'service');
             const result = await this.commandExecutor.executeCommand(command.command, command.args, {
                 cwd: path,
-                timeout: this.defaultConfig.timeout
+                timeout: this.defaultConfig.timeout,
             });
             const duration = Date.now() - startTime;
             if (!result.success) {
@@ -60,7 +60,7 @@ class TaskMasterService extends events_1.EventEmitter {
                     ...context,
                     stdout: result.stdout,
                     stderr: result.stderr,
-                    exitCode: result.exitCode
+                    exitCode: result.exitCode,
                 });
                 logger_1.logger.logCliResult('init', false, duration, context, taskMasterError);
                 throw taskMasterError;
@@ -80,7 +80,7 @@ class TaskMasterService extends events_1.EventEmitter {
                 path,
                 taskCount: 0,
                 completedTasks: 0,
-                lastUpdated: new Date()
+                lastUpdated: new Date(),
             };
             const taskMasterResult = {
                 success: true,
@@ -90,7 +90,7 @@ class TaskMasterService extends events_1.EventEmitter {
                 exitCode: result.exitCode || 0,
                 duration,
                 command: `${command.command} ${command.args.join(' ')}`,
-                timestamp: new Date()
+                timestamp: new Date(),
             };
             logger_1.logger.logCliResult('init', true, duration, context);
             this.emit('operationComplete', 'initProject', taskMasterResult);
@@ -98,9 +98,9 @@ class TaskMasterService extends events_1.EventEmitter {
         }
         catch (error) {
             const duration = Date.now() - startTime;
-            const taskMasterError = error instanceof errorHandler_1.TaskMasterError ?
-                error :
-                errorHandler_1.errorHandler.normalizeError(error, context);
+            const taskMasterError = error instanceof errorHandler_1.TaskMasterError
+                ? error
+                : errorHandler_1.errorHandler.normalizeError(error, context);
             logger_1.logger.logCliResult('init', false, duration, context, taskMasterError);
             const errorResult = this.createErrorResult(taskMasterError, 'initProject', path, startTime);
             this.emit('operationError', 'initProject', errorResult);
@@ -115,18 +115,18 @@ class TaskMasterService extends events_1.EventEmitter {
         try {
             this.emit('operationStart', 'getProjectStatus', { path });
             const command = this.commandBuilder.buildCommand('list', {
-                tag: this.extractTagFromPath(path)
+                tag: this.extractTagFromPath(path),
             });
             const result = await this.commandExecutor.executeCommand(command.command, command.args, {
                 cwd: path,
-                timeout: this.defaultConfig.timeout
+                timeout: this.defaultConfig.timeout,
             });
             const projectInfo = this.outputParser.extractProjectInfo(result.stdout) || {
                 name: 'TaskMaster Project',
                 path,
                 taskCount: 0,
                 completedTasks: 0,
-                lastUpdated: new Date()
+                lastUpdated: new Date(),
             };
             // Enhance project info with path
             projectInfo.path = path;
@@ -138,7 +138,7 @@ class TaskMasterService extends events_1.EventEmitter {
                 exitCode: result.exitCode || 0,
                 duration: Date.now() - startTime,
                 command: `${command.command} ${command.args.join(' ')}`,
-                timestamp: new Date()
+                timestamp: new Date(),
             };
             this.emit('operationComplete', 'getProjectStatus', taskMasterResult);
             return taskMasterResult;
@@ -158,11 +158,11 @@ class TaskMasterService extends events_1.EventEmitter {
             this.emit('operationStart', 'listTasks', { path, options });
             const command = this.commandBuilder.buildCommand('list', {
                 status: options.status,
-                tag: options.tag || this.extractTagFromPath(path)
+                tag: options.tag || this.extractTagFromPath(path),
             });
             const result = await this.commandExecutor.executeCommand(command.command, command.args, {
                 cwd: path,
-                timeout: this.defaultConfig.timeout
+                timeout: this.defaultConfig.timeout,
             });
             const parsedOutput = this.outputParser.parseOutput(result.stdout, 'list');
             const tasks = parsedOutput
@@ -176,7 +176,7 @@ class TaskMasterService extends events_1.EventEmitter {
                 exitCode: result.exitCode || 0,
                 duration: Date.now() - startTime,
                 command: `${command.command} ${command.args.join(' ')}`,
-                timestamp: new Date()
+                timestamp: new Date(),
             };
             this.emit('operationComplete', 'listTasks', taskMasterResult);
             return taskMasterResult;
@@ -196,11 +196,11 @@ class TaskMasterService extends events_1.EventEmitter {
             this.emit('operationStart', 'getTask', { path, taskId, options });
             const command = this.commandBuilder.buildCommand('show', {
                 id: taskId,
-                tag: options.tag || this.extractTagFromPath(path)
+                tag: options.tag || this.extractTagFromPath(path),
             });
             const result = await this.commandExecutor.executeCommand(command.command, command.args, {
                 cwd: path,
-                timeout: this.defaultConfig.timeout
+                timeout: this.defaultConfig.timeout,
             });
             const taskInfo = this.outputParser.extractTaskInfo(result.stdout);
             if (!taskInfo) {
@@ -214,7 +214,7 @@ class TaskMasterService extends events_1.EventEmitter {
                 exitCode: result.exitCode || 0,
                 duration: Date.now() - startTime,
                 command: `${command.command} ${command.args.join(' ')}`,
-                timestamp: new Date()
+                timestamp: new Date(),
             };
             this.emit('operationComplete', 'getTask', taskMasterResult);
             return taskMasterResult;
@@ -231,15 +231,20 @@ class TaskMasterService extends events_1.EventEmitter {
     async updateTaskStatus(path, taskId, status, options = {}) {
         const startTime = Date.now();
         try {
-            this.emit('operationStart', 'updateTaskStatus', { path, taskId, status, options });
+            this.emit('operationStart', 'updateTaskStatus', {
+                path,
+                taskId,
+                status,
+                options,
+            });
             const command = this.commandBuilder.buildCommand('set-status', {
                 id: taskId,
                 status,
-                tag: options.tag || this.extractTagFromPath(path)
+                tag: options.tag || this.extractTagFromPath(path),
             });
             const result = await this.commandExecutor.executeCommand(command.command, command.args, {
                 cwd: path,
-                timeout: this.defaultConfig.timeout
+                timeout: this.defaultConfig.timeout,
             });
             // Get updated task info
             const updatedTask = await this.getTask(path, taskId, options);
@@ -251,7 +256,7 @@ class TaskMasterService extends events_1.EventEmitter {
                 exitCode: result.exitCode || 0,
                 duration: Date.now() - startTime,
                 command: `${command.command} ${command.args.join(' ')}`,
-                timestamp: new Date()
+                timestamp: new Date(),
             };
             this.emit('operationComplete', 'updateTaskStatus', taskMasterResult);
             return taskMasterResult;
@@ -270,11 +275,11 @@ class TaskMasterService extends events_1.EventEmitter {
         try {
             this.emit('operationStart', 'getNextTask', { path, options });
             const command = this.commandBuilder.buildCommand('next', {
-                tag: options.tag || this.extractTagFromPath(path)
+                tag: options.tag || this.extractTagFromPath(path),
             });
             const result = await this.commandExecutor.executeCommand(command.command, command.args, {
                 cwd: path,
-                timeout: this.defaultConfig.timeout
+                timeout: this.defaultConfig.timeout,
             });
             const taskInfo = this.outputParser.extractTaskInfo(result.stdout);
             const taskMasterResult = {
@@ -285,7 +290,7 @@ class TaskMasterService extends events_1.EventEmitter {
                 exitCode: result.exitCode || 0,
                 duration: Date.now() - startTime,
                 command: `${command.command} ${command.args.join(' ')}`,
-                timestamp: new Date()
+                timestamp: new Date(),
             };
             this.emit('operationComplete', 'getNextTask', taskMasterResult);
             return taskMasterResult;
@@ -300,7 +305,7 @@ class TaskMasterService extends events_1.EventEmitter {
     async parsePRD(path, prdFile, options = {}) {
         return this.executeGenericCommand('parse-prd', path, {
             file: prdFile,
-            append: options.append
+            append: options.append,
         });
     }
     async expandTask(path, taskId, options = {}) {
@@ -308,7 +313,7 @@ class TaskMasterService extends events_1.EventEmitter {
             id: taskId,
             research: options.research,
             force: options.force,
-            tag: options.tag || this.extractTagFromPath(path)
+            tag: options.tag || this.extractTagFromPath(path),
         });
     }
     async analyzeComplexity(path, options = {}) {
@@ -316,18 +321,18 @@ class TaskMasterService extends events_1.EventEmitter {
             from: options.from,
             to: options.to,
             research: options.research,
-            tag: options.tag || this.extractTagFromPath(path)
+            tag: options.tag || this.extractTagFromPath(path),
         });
     }
     async validateDependencies(path, options = {}) {
         return this.executeGenericCommand('validate-dependencies', path, {
-            tag: options.tag || this.extractTagFromPath(path)
+            tag: options.tag || this.extractTagFromPath(path),
         });
     }
     async generateReport(path, type, options = {}) {
         const command = type === 'complexity' ? 'complexity-report' : 'list';
         return this.executeGenericCommand(command, path, {
-            tag: options.tag || this.extractTagFromPath(path)
+            tag: options.tag || this.extractTagFromPath(path),
         });
     }
     /**
@@ -340,7 +345,7 @@ class TaskMasterService extends events_1.EventEmitter {
             const command = this.commandBuilder.buildCommand(operation, args);
             const result = await this.commandExecutor.executeCommand(command.command, command.args, {
                 cwd: path,
-                timeout: this.defaultConfig.timeout
+                timeout: this.defaultConfig.timeout,
             });
             const taskMasterResult = {
                 success: result.success,
@@ -349,7 +354,7 @@ class TaskMasterService extends events_1.EventEmitter {
                 exitCode: result.exitCode || 0,
                 duration: Date.now() - startTime,
                 command: `${command.command} ${command.args.join(' ')}`,
-                timestamp: new Date()
+                timestamp: new Date(),
             };
             this.emit('operationComplete', operation, taskMasterResult);
             return taskMasterResult;
@@ -364,9 +369,9 @@ class TaskMasterService extends events_1.EventEmitter {
      * Helper to create error results
      */
     createErrorResult(error, operation, context, startTime) {
-        const taskMasterError = error instanceof errorHandler_1.TaskMasterError ?
-            error :
-            errorHandler_1.errorHandler.normalizeError(error, { operation, context });
+        const taskMasterError = error instanceof errorHandler_1.TaskMasterError
+            ? error
+            : errorHandler_1.errorHandler.normalizeError(error, { operation, context });
         return {
             success: false,
             error: taskMasterError.userMessage,
@@ -374,7 +379,7 @@ class TaskMasterService extends events_1.EventEmitter {
             exitCode: 1,
             duration: Date.now() - startTime,
             command: operation,
-            timestamp: new Date()
+            timestamp: new Date(),
         };
     }
     /**
@@ -407,8 +412,15 @@ class TaskMasterService extends events_1.EventEmitter {
      */
     validateOperation(operation, context) {
         const validOperations = [
-            'init', 'list', 'show', 'set-status', 'next', 'parse-prd',
-            'expand', 'analyze-complexity', 'validate-dependencies'
+            'init',
+            'list',
+            'show',
+            'set-status',
+            'next',
+            'parse-prd',
+            'expand',
+            'analyze-complexity',
+            'validate-dependencies',
         ];
         if (!validOperations.includes(operation)) {
             throw errorHandler_1.errorHandler.handleValidationError('operation', operation, `Invalid operation. Valid operations: ${validOperations.join(', ')}`, context);
@@ -442,14 +454,14 @@ class TaskMasterService extends events_1.EventEmitter {
     async healthCheck() {
         const context = {
             requestId: this.generateRequestId(),
-            operation: 'health-check'
+            operation: 'health-check',
         };
         try {
             logger_1.logger.debug('Performing health check', context, 'service');
             // Test CLI availability by checking version or help
             const command = this.commandBuilder.buildCommand('help', {});
             const result = await this.commandExecutor.executeCommand(command.command, ['--version'], {
-                timeout: 5000 // Short timeout for health check
+                timeout: 5000, // Short timeout for health check
             });
             const healthy = result.success;
             const details = {
@@ -457,7 +469,7 @@ class TaskMasterService extends events_1.EventEmitter {
                 version: healthy ? result.stdout.trim() : 'unknown',
                 lastCheck: new Date().toISOString(),
                 executorHealthy: true, // this.commandExecutor.isHealthy(),
-                activeProcesses: this.commandExecutor.getActiveProcessCount()
+                activeProcesses: this.commandExecutor.getActiveProcessCount(),
             };
             logger_1.logger.info('Health check completed', { ...context, healthy, details }, 'service');
             return { healthy, details };
@@ -470,8 +482,8 @@ class TaskMasterService extends events_1.EventEmitter {
                 details: {
                     error: taskMasterError.message,
                     cliAvailable: false,
-                    lastCheck: new Date().toISOString()
-                }
+                    lastCheck: new Date().toISOString(),
+                },
             };
         }
     }

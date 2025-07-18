@@ -6,7 +6,11 @@ import { WebSocketService } from './websocket';
 import path from 'path';
 
 export interface TaskSyncMessage {
-  event: 'TASKS_UPDATED' | 'TASKS_ERROR' | 'REPOSITORY_ADDED' | 'REPOSITORY_REMOVED';
+  event:
+    | 'TASKS_UPDATED'
+    | 'TASKS_ERROR'
+    | 'REPOSITORY_ADDED'
+    | 'REPOSITORY_REMOVED';
   repositoryPath: string;
   timestamp: string;
   payload?: any;
@@ -34,14 +38,14 @@ export class RealtimeTaskSyncService {
       enabled: true,
       debounceMs: 500,
       maxRepositories: 10,
-      ...config
+      ...config,
     };
-    
+
     // Create file watcher with appropriate config
     this.fileWatcher = new FileWatcherService({
       debounceMs: this.config.debounceMs,
       ignoreInitial: true,
-      persistent: true
+      persistent: true,
     });
   }
 
@@ -85,7 +89,9 @@ export class RealtimeTaskSyncService {
 
     // Check repository limit
     if (this.watchedRepositories.size >= this.config.maxRepositories!) {
-      console.warn(`⚠️  Maximum repositories limit (${this.config.maxRepositories}) reached. Cannot add ${repositoryPath}`);
+      console.warn(
+        `⚠️  Maximum repositories limit (${this.config.maxRepositories}) reached. Cannot add ${repositoryPath}`
+      );
       return;
     }
 
@@ -98,18 +104,20 @@ export class RealtimeTaskSyncService {
       // Start watching the repository
       this.fileWatcher.watchTasksFile(repositoryPath);
       this.watchedRepositories.add(repositoryPath);
-      
+
       console.log(`📡 Started real-time monitoring for: ${repositoryPath}`);
-      
+
       // Notify clients about new repository
       this.broadcastMessage({
         event: 'REPOSITORY_ADDED',
         repositoryPath,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
-      
     } catch (error) {
-      console.error(`❌ Failed to add repository for monitoring: ${repositoryPath}`, error);
+      console.error(
+        `❌ Failed to add repository for monitoring: ${repositoryPath}`,
+        error
+      );
       throw error;
     }
   }
@@ -126,18 +134,20 @@ export class RealtimeTaskSyncService {
     try {
       await this.fileWatcher.unwatchRepository(repositoryPath);
       this.watchedRepositories.delete(repositoryPath);
-      
+
       console.log(`🛑 Stopped real-time monitoring for: ${repositoryPath}`);
-      
+
       // Notify clients about repository removal
       this.broadcastMessage({
         event: 'REPOSITORY_REMOVED',
         repositoryPath,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
-      
     } catch (error) {
-      console.error(`❌ Failed to remove repository from monitoring: ${repositoryPath}`, error);
+      console.error(
+        `❌ Failed to remove repository from monitoring: ${repositoryPath}`,
+        error
+      );
       throw error;
     }
   }
@@ -164,7 +174,7 @@ export class RealtimeTaskSyncService {
       enabled: this.config.enabled || false,
       monitoredRepositories: this.watchedRepositories.size,
       watcherStats: this.fileWatcher.getStats(),
-      connectedClients: this.webSocketService.getClientCount()
+      connectedClients: this.webSocketService.getClientCount(),
     };
   }
 
@@ -173,22 +183,21 @@ export class RealtimeTaskSyncService {
    */
   async shutdown(): Promise<void> {
     console.log('🛑 Shutting down RealtimeTaskSyncService...');
-    
+
     try {
       // Stop watching all repositories
       const repositoriesToUnwatch = Array.from(this.watchedRepositories);
       for (const repoPath of repositoriesToUnwatch) {
         await this.removeRepository(repoPath);
       }
-      
+
       // Shutdown file watcher
       await this.fileWatcher.shutdown();
-      
+
       this.watchedRepositories.clear();
       this.isInitialized = false;
-      
+
       console.log('✅ RealtimeTaskSyncService shutdown complete');
-      
     } catch (error) {
       console.error('❌ Error during RealtimeTaskSyncService shutdown:', error);
       throw error;
@@ -207,15 +216,15 @@ export class RealtimeTaskSyncService {
     // Handle file watcher errors
     this.fileWatcher.on('error', (error: any) => {
       console.error('❌ File watcher error:', error);
-      
+
       // Broadcast error to clients
       this.broadcastMessage({
         event: 'TASKS_ERROR',
         repositoryPath: error.repositoryPath || 'unknown',
         timestamp: new Date().toISOString(),
         payload: {
-          error: error.error?.message || 'Unknown file watcher error'
-        }
+          error: error.error?.message || 'Unknown file watcher error',
+        },
       });
     });
 
@@ -229,8 +238,10 @@ export class RealtimeTaskSyncService {
    * Handle file change events from the file watcher
    */
   private handleFileChanged(event: FileChangeEvent): void {
-    console.log(`📁 Task file ${event.type} detected for: ${event.repositoryPath}`);
-    
+    console.log(
+      `📁 Task file ${event.type} detected for: ${event.repositoryPath}`
+    );
+
     // Prepare the message for WebSocket clients
     const message: TaskSyncMessage = {
       event: 'TASKS_UPDATED',
@@ -239,8 +250,8 @@ export class RealtimeTaskSyncService {
       payload: {
         changeType: event.type,
         filePath: event.filePath,
-        tasks: event.content
-      }
+        tasks: event.content,
+      },
     };
 
     // Broadcast to all connected clients
@@ -252,14 +263,15 @@ export class RealtimeTaskSyncService {
    */
   private broadcastMessage(message: TaskSyncMessage): void {
     try {
-      console.log(`📢 Broadcasting ${message.event} for: ${message.repositoryPath}`);
-      
+      console.log(
+        `📢 Broadcasting ${message.event} for: ${message.repositoryPath}`
+      );
+
       // Use the WebSocket service to broadcast
       this.webSocketService.broadcast({
         event: message.event,
-        data: message
+        data: message,
       });
-      
     } catch (error) {
       console.error('❌ Failed to broadcast message:', error);
     }
@@ -274,7 +286,10 @@ export function createRealtimeTaskSyncService(
   config?: RealtimeTaskSyncConfig
 ): RealtimeTaskSyncService {
   if (!realtimeTaskSyncService) {
-    realtimeTaskSyncService = new RealtimeTaskSyncService(webSocketService, config);
+    realtimeTaskSyncService = new RealtimeTaskSyncService(
+      webSocketService,
+      config
+    );
   }
   return realtimeTaskSyncService;
 }

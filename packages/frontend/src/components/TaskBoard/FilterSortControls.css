@@ -298,13 +298,13 @@
 }
 
 /* Filter/Sort State Indicators */
-.filter-select[data-has-filter="true"] {
+.filter-select[data-has-filter='true'] {
   background: #e3f2fd;
   border-color: #2196f3;
   color: #1976d2;
 }
 
-.sort-select[data-is-active="true"] {
+.sort-select[data-is-active='true'] {
   background: #fff3e0;
   border-color: #ff9800;
   color: #f57c00;

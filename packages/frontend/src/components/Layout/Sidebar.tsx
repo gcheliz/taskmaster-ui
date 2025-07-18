@@ -8,7 +8,7 @@ export interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ className = '' }) => {
   return (
-    <aside 
+    <aside
       className={`app-sidebar ${className}`.trim()}
       role="navigation"
       aria-label="Main navigation"
@@ -16,45 +16,45 @@ export const Sidebar: React.FC<SidebarProps> = ({ className = '' }) => {
       <nav id="sidebar-nav" className="sidebar-nav">
         <ul role="list">
           <li>
-            <NavLink 
+            <NavLink
               to="/dashboard"
-              className={({ isActive }) => isActive ? 'active' : ''}
+              className={({ isActive }) => (isActive ? 'active' : '')}
               tabIndex={0}
             >
               Dashboard
             </NavLink>
           </li>
           <li>
-            <NavLink 
+            <NavLink
               to="/repository-management"
-              className={({ isActive }) => isActive ? 'active' : ''}
+              className={({ isActive }) => (isActive ? 'active' : '')}
               tabIndex={0}
             >
               Repository Management
             </NavLink>
           </li>
           <li>
-            <NavLink 
+            <NavLink
               to="/task-board"
-              className={({ isActive }) => isActive ? 'active' : ''}
+              className={({ isActive }) => (isActive ? 'active' : '')}
               tabIndex={0}
             >
               Task Board
             </NavLink>
           </li>
           <li>
-            <NavLink 
+            <NavLink
               to="/terminal"
-              className={({ isActive }) => isActive ? 'active' : ''}
+              className={({ isActive }) => (isActive ? 'active' : '')}
               tabIndex={0}
             >
               Terminal
             </NavLink>
           </li>
           <li>
-            <NavLink 
+            <NavLink
               to="/settings"
-              className={({ isActive }) => isActive ? 'active' : ''}
+              className={({ isActive }) => (isActive ? 'active' : '')}
               tabIndex={0}
             >
               Settings

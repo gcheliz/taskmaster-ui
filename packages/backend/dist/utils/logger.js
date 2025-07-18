@@ -23,7 +23,8 @@ class TaskMasterLogger {
         }
         // Set log level from environment
         const envLogLevel = process.env.LOG_LEVEL?.toLowerCase();
-        if (envLogLevel && Object.values(LogLevel).includes(envLogLevel)) {
+        if (envLogLevel &&
+            Object.values(LogLevel).includes(envLogLevel)) {
             this.logLevel = envLogLevel;
         }
     }
@@ -40,7 +41,13 @@ class TaskMasterLogger {
         this.logLevel = level;
     }
     shouldLog(level) {
-        const levels = [LogLevel.ERROR, LogLevel.WARN, LogLevel.INFO, LogLevel.DEBUG, LogLevel.TRACE];
+        const levels = [
+            LogLevel.ERROR,
+            LogLevel.WARN,
+            LogLevel.INFO,
+            LogLevel.DEBUG,
+            LogLevel.TRACE,
+        ];
         const currentLevelIndex = levels.indexOf(this.logLevel);
         const requestedLevelIndex = levels.indexOf(level);
         return requestedLevelIndex <= currentLevelIndex;
@@ -54,11 +61,11 @@ class TaskMasterLogger {
             message,
             context: {
                 ...context,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
             },
             error,
             timestamp: new Date().toISOString(),
-            module
+            module,
         };
         // Send to all handlers
         this.logHandlers.forEach(handler => {
@@ -89,7 +96,7 @@ class TaskMasterLogger {
     logApiRequest(method, path, context) {
         this.info(`API ${method} ${path}`, {
             ...context,
-            type: 'api_request'
+            type: 'api_request',
         }, 'api');
     }
     logApiResponse(method, path, statusCode, duration, context) {
@@ -98,7 +105,7 @@ class TaskMasterLogger {
             ...context,
             statusCode,
             duration,
-            type: 'api_response'
+            type: 'api_response',
         }, undefined, 'api');
     }
     logCliExecution(operation, repositoryPath, context) {
@@ -106,7 +113,7 @@ class TaskMasterLogger {
             ...context,
             operation,
             repositoryPath,
-            type: 'cli_execution'
+            type: 'cli_execution',
         }, 'cli');
     }
     logCliResult(operation, success, duration, context, error) {
@@ -116,7 +123,7 @@ class TaskMasterLogger {
             operation,
             success,
             duration,
-            type: 'cli_result'
+            type: 'cli_result',
         }, error, 'cli');
     }
     logParsingError(operation, rawOutput, context, error) {
@@ -125,7 +132,7 @@ class TaskMasterLogger {
             operation,
             outputLength: rawOutput.length,
             outputPreview: rawOutput.substring(0, 200),
-            type: 'parsing_error'
+            type: 'parsing_error',
         }, error, 'parser');
     }
     logSecurityEvent(event, context, severity = 'medium') {
@@ -133,7 +140,7 @@ class TaskMasterLogger {
         this.log(level, `Security event: ${event}`, {
             ...context,
             severity,
-            type: 'security_event'
+            type: 'security_event',
         }, undefined, 'security');
     }
 }
@@ -192,11 +199,13 @@ class FileLogHandler {
         const fs = require('fs');
         const logLine = JSON.stringify({
             ...entry,
-            error: entry.error ? {
-                message: entry.error.message,
-                stack: entry.error.stack,
-                name: entry.error.name
-            } : undefined
+            error: entry.error
+                ? {
+                    message: entry.error.message,
+                    stack: entry.error.stack,
+                    name: entry.error.name,
+                }
+                : undefined,
         }) + '\n';
         try {
             fs.appendFileSync(this.logFile, logLine);

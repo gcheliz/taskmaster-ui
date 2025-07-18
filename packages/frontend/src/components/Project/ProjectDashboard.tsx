@@ -18,7 +18,7 @@ export interface ProjectDashboardProps {
 
 /**
  * Project Dashboard Component
- * 
+ *
  * Main dashboard for project management that includes:
  * - Project listing and overview
  * - Project creation functionality
@@ -27,7 +27,7 @@ export interface ProjectDashboardProps {
 export const ProjectDashboard: React.FC<ProjectDashboardProps> = ({
   className = '',
   onProjectSelect,
-  onProjectCreated
+  onProjectCreated,
 }) => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -35,15 +35,24 @@ export const ProjectDashboard: React.FC<ProjectDashboardProps> = ({
     type: 'success' | 'error' | 'info';
     message: string;
   } | null>(null);
-  
-  const { getProjects, createProject, isLoading, error: projectError } = useProjectOperations();
+
+  const {
+    getProjects,
+    createProject,
+    isLoading,
+    error: projectError,
+  } = useProjectOperations();
   const { state: repositoryState } = useRepository();
 
   // Helper function to convert ProjectResponse to Project
-  const convertProjectResponseToProject = (projectResponse: ProjectResponse): Project => {
+  const convertProjectResponseToProject = (
+    projectResponse: ProjectResponse
+  ): Project => {
     // Find repository info from context
-    const repository = repositoryState.repositories.find(repo => repo.id === projectResponse.repositoryId);
-    
+    const repository = repositoryState.repositories.find(
+      repo => repo.id === projectResponse.repositoryId
+    );
+
     return {
       id: projectResponse.id,
       name: projectResponse.name,
@@ -53,7 +62,7 @@ export const ProjectDashboard: React.FC<ProjectDashboardProps> = ({
       createdAt: projectResponse.createdAt,
       lastAccessed: undefined, // Not provided by backend yet
       tasksCount: undefined, // Not provided by backend yet
-      status: projectResponse.status === 'active' ? 'active' : 'inactive'
+      status: projectResponse.status === 'active' ? 'active' : 'inactive',
     };
   };
 
@@ -64,7 +73,9 @@ export const ProjectDashboard: React.FC<ProjectDashboardProps> = ({
   const loadProjects = async () => {
     try {
       const projectResponses = await getProjects();
-      const convertedProjects = projectResponses.map(convertProjectResponseToProject);
+      const convertedProjects = projectResponses.map(
+        convertProjectResponseToProject
+      );
       setProjects(convertedProjects);
     } catch (err) {
       console.error('Failed to load projects:', err);
@@ -72,31 +83,36 @@ export const ProjectDashboard: React.FC<ProjectDashboardProps> = ({
     }
   };
 
-  const handleCreateProject = async (repositoryId: string, projectName: string): Promise<void> => {
+  const handleCreateProject = async (
+    repositoryId: string,
+    projectName: string
+  ): Promise<void> => {
     try {
       const result = await createProject({ repositoryId, projectName });
-      
+
       if (result.success && result.project) {
         const newProject = convertProjectResponseToProject(result.project);
         setProjects(prev => [newProject, ...prev]);
-        
+
         // Show success notification with TaskMaster info if available
         let message = `Project "${projectName}" created successfully!`;
         if (result.taskMasterInfo) {
           message += ` TaskMaster initialized with ${result.taskMasterInfo.taskCount} tasks.`;
         }
         showNotification('success', message);
-        
+
         if (onProjectCreated) {
           onProjectCreated(newProject);
         }
       } else {
-        const errorMessage = result.error?.message || 'Failed to create project';
+        const errorMessage =
+          result.error?.message || 'Failed to create project';
         showNotification('error', errorMessage);
         throw new Error(errorMessage);
       }
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to create project';
+      const errorMessage =
+        err instanceof Error ? err.message : 'Failed to create project';
       showNotification('error', errorMessage);
       throw new Error(errorMessage);
     }
@@ -108,7 +124,10 @@ export const ProjectDashboard: React.FC<ProjectDashboardProps> = ({
     }
   };
 
-  const showNotification = (type: 'success' | 'error' | 'info', message: string) => {
+  const showNotification = (
+    type: 'success' | 'error' | 'info',
+    message: string
+  ) => {
     setNotification({ type, message });
     setTimeout(() => setNotification(null), 5000);
   };
@@ -118,12 +137,23 @@ export const ProjectDashboard: React.FC<ProjectDashboardProps> = ({
   };
 
   return (
-    <div className={`project-dashboard ${className}`} data-testid="project-dashboard">
+    <div
+      className={`project-dashboard ${className}`}
+      data-testid="project-dashboard"
+    >
       {/* Notification */}
       {notification && (
-        <div className={`notification notification--${notification.type}`} data-testid="notification">
-          <span className="notification-message" data-testid="notification-message">{notification.message}</span>
-          <button 
+        <div
+          className={`notification notification--${notification.type}`}
+          data-testid="notification"
+        >
+          <span
+            className="notification-message"
+            data-testid="notification-message"
+          >
+            {notification.message}
+          </span>
+          <button
             className="notification-dismiss"
             onClick={dismissNotification}
             aria-label="Dismiss notification"
@@ -142,7 +172,7 @@ export const ProjectDashboard: React.FC<ProjectDashboardProps> = ({
             Manage your TaskMaster projects and repositories
           </p>
         </div>
-        
+
         {!isLoading && projects.length > 0 && (
           <div className="dashboard-stats">
             <div className="stat-card">
@@ -184,28 +214,35 @@ export const ProjectDashboard: React.FC<ProjectDashboardProps> = ({
           <div className="quick-actions-content">
             <h3 className="quick-actions-title">Get Started</h3>
             <p className="quick-actions-description">
-              Create your first TaskMaster project to start organizing and tracking your development tasks.
+              Create your first TaskMaster project to start organizing and
+              tracking your development tasks.
             </p>
             <div className="quick-actions-steps">
               <div className="step-item">
                 <span className="step-number">1</span>
                 <div className="step-content">
                   <span className="step-title">Connect Repository</span>
-                  <span className="step-description">Add a Git repository to your workspace</span>
+                  <span className="step-description">
+                    Add a Git repository to your workspace
+                  </span>
                 </div>
               </div>
               <div className="step-item">
                 <span className="step-number">2</span>
                 <div className="step-content">
                   <span className="step-title">Create Project</span>
-                  <span className="step-description">Initialize TaskMaster in your repository</span>
+                  <span className="step-description">
+                    Initialize TaskMaster in your repository
+                  </span>
                 </div>
               </div>
               <div className="step-item">
                 <span className="step-number">3</span>
                 <div className="step-content">
                   <span className="step-title">Start Managing Tasks</span>
-                  <span className="step-description">Create, organize, and track your development tasks</span>
+                  <span className="step-description">
+                    Create, organize, and track your development tasks
+                  </span>
                 </div>
               </div>
             </div>

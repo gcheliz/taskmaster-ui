@@ -1,5 +1,17 @@
 import React from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  Legend,
+  Tooltip,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+} from 'recharts';
 import './TaskCompletionChart.css';
 
 export interface TaskCompletionChartProps {
@@ -28,7 +40,7 @@ interface ChartDataItem {
 
 /**
  * Task Completion Chart Widget
- * 
+ *
  * A reusable widget component that displays task statistics and visual charts
  * showing the distribution of tasks by their status. Supports multiple chart types
  * including pie, donut, and bar charts.
@@ -40,7 +52,7 @@ export const TaskCompletionChart: React.FC<TaskCompletionChartProps> = ({
   showTooltip = true,
   width = 400,
   height = 300,
-  className = ''
+  className = '',
 }) => {
   // Color mapping for different task statuses
   const statusColors = {
@@ -48,7 +60,7 @@ export const TaskCompletionChart: React.FC<TaskCompletionChartProps> = ({
     'in-progress': '#3b82f6',
     pending: '#f59e0b',
     blocked: '#ef4444',
-    deferred: '#6b7280'
+    deferred: '#6b7280',
   };
 
   // Prepare chart data
@@ -57,36 +69,42 @@ export const TaskCompletionChart: React.FC<TaskCompletionChartProps> = ({
       name: 'Completed',
       value: data.completed,
       color: statusColors.completed,
-      percentage: data.total > 0 ? (data.completed / data.total) * 100 : 0
+      percentage: data.total > 0 ? (data.completed / data.total) * 100 : 0,
     },
     {
       name: 'In Progress',
       value: data.inProgress,
       color: statusColors['in-progress'],
-      percentage: data.total > 0 ? (data.inProgress / data.total) * 100 : 0
+      percentage: data.total > 0 ? (data.inProgress / data.total) * 100 : 0,
     },
     {
       name: 'Pending',
       value: data.pending,
       color: statusColors.pending,
-      percentage: data.total > 0 ? (data.pending / data.total) * 100 : 0
+      percentage: data.total > 0 ? (data.pending / data.total) * 100 : 0,
     },
     {
       name: 'Blocked',
       value: data.blocked,
       color: statusColors.blocked,
-      percentage: data.total > 0 ? (data.blocked / data.total) * 100 : 0
+      percentage: data.total > 0 ? (data.blocked / data.total) * 100 : 0,
     },
     {
       name: 'Deferred',
       value: data.deferred,
       color: statusColors.deferred,
-      percentage: data.total > 0 ? (data.deferred / data.total) * 100 : 0
-    }
+      percentage: data.total > 0 ? (data.deferred / data.total) * 100 : 0,
+    },
   ].filter(item => item.value > 0); // Only show non-zero values
 
   // Custom tooltip component
-  const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ payload: ChartDataItem }> }) => {
+  const CustomTooltip = ({
+    active,
+    payload,
+  }: {
+    active?: boolean;
+    payload?: Array<{ payload: ChartDataItem }>;
+  }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
@@ -94,7 +112,9 @@ export const TaskCompletionChart: React.FC<TaskCompletionChartProps> = ({
           <p className="tooltip-label">{data.name}</p>
           <p className="tooltip-value">
             <span className="tooltip-count">{data.value} tasks</span>
-            <span className="tooltip-percentage">({data.percentage.toFixed(1)}%)</span>
+            <span className="tooltip-percentage">
+              ({data.percentage.toFixed(1)}%)
+            </span>
           </p>
         </div>
       );
@@ -103,13 +123,17 @@ export const TaskCompletionChart: React.FC<TaskCompletionChartProps> = ({
   };
 
   // Custom legend component
-  const CustomLegend = ({ payload }: { payload?: Array<{ color: string; value: string; payload: ChartDataItem }> }) => {
+  const CustomLegend = ({
+    payload,
+  }: {
+    payload?: Array<{ color: string; value: string; payload: ChartDataItem }>;
+  }) => {
     return (
       <ul className="chart-legend">
         {payload?.map((entry, index: number) => (
           <li key={`legend-${index}`} className="legend-item">
-            <span 
-              className="legend-color" 
+            <span
+              className="legend-color"
               style={{ backgroundColor: entry.color }}
             />
             <span className="legend-label">{entry.value}</span>
@@ -121,7 +145,8 @@ export const TaskCompletionChart: React.FC<TaskCompletionChartProps> = ({
   };
 
   // Calculate completion rate
-  const completionRate = data.total > 0 ? (data.completed / data.total) * 100 : 0;
+  const completionRate =
+    data.total > 0 ? (data.completed / data.total) * 100 : 0;
 
   // No data state
   if (data.total === 0) {
@@ -163,7 +188,10 @@ export const TaskCompletionChart: React.FC<TaskCompletionChartProps> = ({
       <div className="chart-container" style={{ width, height }}>
         <ResponsiveContainer width="100%" height="100%">
           {chartType === 'bar' ? (
-            <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+            <BarChart
+              data={chartData}
+              margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+            >
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
               <YAxis />
@@ -202,11 +230,16 @@ export const TaskCompletionChart: React.FC<TaskCompletionChartProps> = ({
         <div className="breakdown-grid">
           {chartData.map((item, index) => (
             <div key={index} className="breakdown-item">
-              <div className="breakdown-indicator" style={{ backgroundColor: item.color }} />
+              <div
+                className="breakdown-indicator"
+                style={{ backgroundColor: item.color }}
+              />
               <div className="breakdown-info">
                 <span className="breakdown-label">{item.name}</span>
                 <span className="breakdown-value">{item.value}</span>
-                <span className="breakdown-percentage">({item.percentage.toFixed(1)}%)</span>
+                <span className="breakdown-percentage">
+                  ({item.percentage.toFixed(1)}%)
+                </span>
               </div>
             </div>
           ))}
@@ -220,11 +253,11 @@ export const TaskCompletionChart: React.FC<TaskCompletionChartProps> = ({
           <span className="progress-value">{completionRate.toFixed(1)}%</span>
         </div>
         <div className="progress-bar">
-          <div 
+          <div
             className="progress-fill"
-            style={{ 
+            style={{
               width: `${completionRate}%`,
-              backgroundColor: statusColors.completed
+              backgroundColor: statusColors.completed,
             }}
           />
         </div>

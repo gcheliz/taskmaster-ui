@@ -54,7 +54,10 @@ describe('NotificationCard', () => {
   });
 
   it('renders correct icon for warning type', () => {
-    const warningNotification = { ...mockNotification, type: 'warning' as const };
+    const warningNotification = {
+      ...mockNotification,
+      type: 'warning' as const,
+    };
     render(
       <NotificationCard
         notification={warningNotification}
@@ -101,7 +104,9 @@ describe('NotificationCard', () => {
       />
     );
 
-    expect(screen.queryByLabelText('Dismiss notification')).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText('Dismiss notification')
+    ).not.toBeInTheDocument();
   });
 
   it('calls onDismiss when dismiss button is clicked', async () => {
@@ -116,9 +121,12 @@ describe('NotificationCard', () => {
     fireEvent.click(dismissButton);
 
     // Wait for animation delay
-    await waitFor(() => {
-      expect(mockOnDismiss).toHaveBeenCalledWith('test-1');
-    }, { timeout: 500 });
+    await waitFor(
+      () => {
+        expect(mockOnDismiss).toHaveBeenCalledWith('test-1');
+      },
+      { timeout: 500 }
+    );
   });
 
   it('renders action button when action is provided', () => {
@@ -159,7 +167,9 @@ describe('NotificationCard', () => {
     );
 
     expect(screen.getByText('Test Notification')).toBeInTheDocument();
-    expect(screen.queryByText('This is a test message')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('This is a test message')
+    ).not.toBeInTheDocument();
   });
 
   it('has correct accessibility attributes', () => {
@@ -208,7 +218,7 @@ describe('NotificationCard', () => {
     );
 
     const card = screen.getByRole('alert');
-    
+
     await waitFor(() => {
       expect(card).toHaveClass('visible');
     });

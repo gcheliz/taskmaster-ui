@@ -1,4 +1,10 @@
-import React, { useState, useRef, useEffect, createContext, useContext } from 'react';
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  createContext,
+  useContext,
+} from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '../../../utils/cn';
 import { Button } from '../atoms/Button';
@@ -26,7 +32,8 @@ const dropdownItemVariants = cva(
     variants: {
       variant: {
         default: 'hover:bg-secondary-100',
-        destructive: 'hover:bg-error-100 hover:text-error-900 focus:bg-error-100 focus:text-error-900',
+        destructive:
+          'hover:bg-error-100 hover:text-error-900 focus:bg-error-100 focus:text-error-900',
       },
       size: {
         sm: 'px-1.5 py-1 text-xs',
@@ -141,10 +148,10 @@ const useRadioGroupContext = () => {
   return context;
 };
 
-const Dropdown: React.FC<DropdownProps> = ({ 
-  open: controlledOpen, 
-  onOpenChange: controlledOnOpenChange, 
-  children 
+const Dropdown: React.FC<DropdownProps> = ({
+  open: controlledOpen,
+  onOpenChange: controlledOnOpenChange,
+  children,
 }) => {
   const [internalOpen, setInternalOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -169,7 +176,8 @@ const Dropdown: React.FC<DropdownProps> = ({
 
     if (open) {
       document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
+      return () =>
+        document.removeEventListener('mousedown', handleClickOutside);
     }
   }, [open, onOpenChange]);
 
@@ -189,64 +197,92 @@ const Dropdown: React.FC<DropdownProps> = ({
   }, [open, onOpenChange]);
 
   return (
-    <DropdownContext.Provider value={{ open, onOpenChange, triggerRef, contentRef }}>
-      <div className="relative inline-block text-left">
-        {children}
-      </div>
+    <DropdownContext.Provider
+      value={{ open, onOpenChange, triggerRef, contentRef }}
+    >
+      <div className="relative inline-block text-left">{children}</div>
     </DropdownContext.Provider>
   );
 };
 
-const DropdownTrigger = React.forwardRef<HTMLButtonElement, DropdownTriggerProps>(
-  ({ className, variant, size, children, asChild, ...props }, ref) => {
-    const { open, onOpenChange, triggerRef } = useDropdownContext();
+const DropdownTrigger = React.forwardRef<
+  HTMLButtonElement,
+  DropdownTriggerProps
+>(({ className, variant, size, children, asChild, ...props }, ref) => {
+  const { open, onOpenChange, triggerRef } = useDropdownContext();
 
-    const handleClick = () => {
-      onOpenChange(!open);
-    };
+  const handleClick = () => {
+    onOpenChange(!open);
+  };
 
-    const handleKeyDown = (event: React.KeyboardEvent) => {
-      if (event.key === 'ArrowDown' || event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-        onOpenChange(true);
-      }
-    };
-
-    if (asChild && React.isValidElement(children)) {
-      return React.cloneElement(children, {
-        ref: ref || triggerRef,
-        onClick: handleClick,
-        onKeyDown: handleKeyDown,
-        'data-state': open ? 'open' : 'closed',
-        'aria-expanded': open,
-        'aria-haspopup': 'menu',
-        ...(children.props || {}),
-      } as any);
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (
+      event.key === 'ArrowDown' ||
+      event.key === 'Enter' ||
+      event.key === ' '
+    ) {
+      event.preventDefault();
+      onOpenChange(true);
     }
+  };
 
-    return (
-      <Button
-        ref={ref || triggerRef}
-        variant={variant === 'default' ? 'primary' : variant === 'outline' ? 'outline' : variant === 'ghost' ? 'ghost' : 'primary'}
-        size={size}
-        className={cn(dropdownTriggerVariants({ variant, className }))}
-        onClick={handleClick}
-        onKeyDown={handleKeyDown}
-        data-state={open ? 'open' : 'closed'}
-        aria-expanded={open}
-        aria-haspopup="menu"
-        {...props}
-      >
-        {children}
-        <Icon icon={ChevronDownIcon} size="sm" className="transition-transform duration-200" />
-      </Button>
-    );
+  if (asChild && React.isValidElement(children)) {
+    return React.cloneElement(children, {
+      ref: ref || triggerRef,
+      onClick: handleClick,
+      onKeyDown: handleKeyDown,
+      'data-state': open ? 'open' : 'closed',
+      'aria-expanded': open,
+      'aria-haspopup': 'menu',
+      ...(children.props || {}),
+    } as any);
   }
-);
+
+  return (
+    <Button
+      ref={ref || triggerRef}
+      variant={
+        variant === 'default'
+          ? 'primary'
+          : variant === 'outline'
+            ? 'outline'
+            : variant === 'ghost'
+              ? 'ghost'
+              : 'primary'
+      }
+      size={size}
+      className={cn(dropdownTriggerVariants({ variant, className }))}
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      data-state={open ? 'open' : 'closed'}
+      aria-expanded={open}
+      aria-haspopup="menu"
+      {...props}
+    >
+      {children}
+      <Icon
+        icon={ChevronDownIcon}
+        size="sm"
+        className="transition-transform duration-200"
+      />
+    </Button>
+  );
+});
 DropdownTrigger.displayName = 'DropdownTrigger';
 
 const DropdownContent = React.forwardRef<HTMLDivElement, DropdownContentProps>(
-  ({ className, size, align = 'center', side = 'bottom', sideOffset = 4, children, ...props }, ref) => {
+  (
+    {
+      className,
+      size,
+      align = 'center',
+      side = 'bottom',
+      sideOffset = 4,
+      children,
+      ...props
+    },
+    ref
+  ) => {
     const { open, onOpenChange, triggerRef, contentRef } = useDropdownContext();
     const [position, setPosition] = useState({ top: 0, left: 0 });
 
@@ -291,7 +327,9 @@ const DropdownContent = React.forwardRef<HTMLDivElement, DropdownContentProps>(
     // Focus management
     useEffect(() => {
       if (open && contentRef.current) {
-        const firstItem = contentRef.current.querySelector('[role="menuitem"]:not([data-disabled="true"])') as HTMLElement;
+        const firstItem = contentRef.current.querySelector(
+          '[role="menuitem"]:not([data-disabled="true"])'
+        ) as HTMLElement;
         if (firstItem) {
           firstItem.focus();
         }
@@ -302,7 +340,9 @@ const DropdownContent = React.forwardRef<HTMLDivElement, DropdownContentProps>(
 
     const handleKeyDown = (event: React.KeyboardEvent) => {
       const items = Array.from(
-        contentRef.current?.querySelectorAll('[role="menuitem"]:not([data-disabled="true"])') || []
+        contentRef.current?.querySelectorAll(
+          '[role="menuitem"]:not([data-disabled="true"])'
+        ) || []
       ) as HTMLElement[];
 
       const currentIndex = items.indexOf(event.target as HTMLElement);
@@ -310,13 +350,15 @@ const DropdownContent = React.forwardRef<HTMLDivElement, DropdownContentProps>(
       switch (event.key) {
         case 'ArrowDown': {
           event.preventDefault();
-          const nextIndex = currentIndex < items.length - 1 ? currentIndex + 1 : 0;
+          const nextIndex =
+            currentIndex < items.length - 1 ? currentIndex + 1 : 0;
           items[nextIndex]?.focus();
           break;
         }
         case 'ArrowUp': {
           event.preventDefault();
-          const prevIndex = currentIndex > 0 ? currentIndex - 1 : items.length - 1;
+          const prevIndex =
+            currentIndex > 0 ? currentIndex - 1 : items.length - 1;
           items[prevIndex]?.focus();
           break;
         }
@@ -334,10 +376,7 @@ const DropdownContent = React.forwardRef<HTMLDivElement, DropdownContentProps>(
     return (
       <div
         ref={ref || contentRef}
-        className={cn(
-          dropdownContentVariants({ size, className }),
-          'fixed'
-        )}
+        className={cn(dropdownContentVariants({ size, className }), 'fixed')}
         style={{ top: position.top, left: position.left }}
         data-state={open ? 'open' : 'closed'}
         data-side={side}
@@ -353,14 +392,17 @@ const DropdownContent = React.forwardRef<HTMLDivElement, DropdownContentProps>(
 DropdownContent.displayName = 'DropdownContent';
 
 const DropdownItem = React.forwardRef<HTMLDivElement, DropdownItemProps>(
-  ({ className, variant, size, disabled, onSelect, children, ...props }, ref) => {
+  (
+    { className, variant, size, disabled, onSelect, children, ...props },
+    ref
+  ) => {
     const { onOpenChange } = useDropdownContext();
 
     const handleClick = (event: React.MouseEvent) => {
       if (disabled) return;
-      
+
       onSelect?.(event);
-      
+
       if (!event.defaultPrevented) {
         onOpenChange(false);
       }
@@ -395,26 +437,45 @@ const DropdownLabel = React.forwardRef<HTMLDivElement, DropdownLabelProps>(
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn('px-2 py-1.5 text-sm font-semibold text-secondary-900', className)}
+      className={cn(
+        'px-2 py-1.5 text-sm font-semibold text-secondary-900',
+        className
+      )}
       {...props}
     />
   )
 );
 DropdownLabel.displayName = 'DropdownLabel';
 
-const DropdownSeparator = React.forwardRef<HTMLDivElement, DropdownSeparatorProps>(
-  ({ className, ...props }, ref) => (
-    <div
-      ref={ref}
-      className={cn('-mx-1 my-1 h-px bg-secondary-200', className)}
-      {...props}
-    />
-  )
-);
+const DropdownSeparator = React.forwardRef<
+  HTMLDivElement,
+  DropdownSeparatorProps
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn('-mx-1 my-1 h-px bg-secondary-200', className)}
+    {...props}
+  />
+));
 DropdownSeparator.displayName = 'DropdownSeparator';
 
-const DropdownCheckboxItem = React.forwardRef<HTMLDivElement, DropdownCheckboxItemProps>(
-  ({ className, variant, size, checked, onCheckedChange, disabled, children, ...props }, ref) => {
+const DropdownCheckboxItem = React.forwardRef<
+  HTMLDivElement,
+  DropdownCheckboxItemProps
+>(
+  (
+    {
+      className,
+      variant,
+      size,
+      checked,
+      onCheckedChange,
+      disabled,
+      children,
+      ...props
+    },
+    ref
+  ) => {
     const { onOpenChange } = useDropdownContext();
 
     const handleClick = (event: React.MouseEvent) => {
@@ -433,7 +494,10 @@ const DropdownCheckboxItem = React.forwardRef<HTMLDivElement, DropdownCheckboxIt
     return (
       <div
         ref={ref}
-        className={cn(dropdownItemVariants({ variant, size, className }), 'pr-8')}
+        className={cn(
+          dropdownItemVariants({ variant, size, className }),
+          'pr-8'
+        )}
         role="menuitemcheckbox"
         aria-checked={checked}
         tabIndex={disabled ? -1 : 0}
@@ -469,49 +533,50 @@ const DropdownRadioGroup: React.FC<DropdownRadioGroupProps> = ({
   );
 };
 
-const DropdownRadioItem = React.forwardRef<HTMLDivElement, DropdownRadioItemProps>(
-  ({ className, variant, size, value, disabled, children, ...props }, ref) => {
-    const { onOpenChange } = useDropdownContext();
-    const radioContext = useRadioGroupContext();
-    const isSelected = radioContext?.value === value;
+const DropdownRadioItem = React.forwardRef<
+  HTMLDivElement,
+  DropdownRadioItemProps
+>(({ className, variant, size, value, disabled, children, ...props }, ref) => {
+  const { onOpenChange } = useDropdownContext();
+  const radioContext = useRadioGroupContext();
+  const isSelected = radioContext?.value === value;
 
-    const handleClick = (event: React.MouseEvent) => {
-      if (disabled) return;
+  const handleClick = (event: React.MouseEvent) => {
+    if (disabled) return;
+    event.preventDefault();
+    radioContext?.onValueChange?.(value);
+    onOpenChange(false);
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if ((event.key === 'Enter' || event.key === ' ') && !disabled) {
       event.preventDefault();
       radioContext?.onValueChange?.(value);
       onOpenChange(false);
-    };
+    }
+  };
 
-    const handleKeyDown = (event: React.KeyboardEvent) => {
-      if ((event.key === 'Enter' || event.key === ' ') && !disabled) {
-        event.preventDefault();
-        radioContext?.onValueChange?.(value);
-        onOpenChange(false);
-      }
-    };
-
-    return (
-      <div
-        ref={ref}
-        className={cn(dropdownItemVariants({ variant, size, className }), 'pr-8')}
-        role="menuitemradio"
-        aria-checked={isSelected}
-        tabIndex={disabled ? -1 : 0}
-        data-disabled={disabled}
-        onClick={handleClick}
-        onKeyDown={handleKeyDown}
-        {...props}
-      >
-        {children}
-        {isSelected && (
-          <span className="absolute right-2 flex h-3.5 w-3.5 items-center justify-center">
-            <Icon icon={CheckIcon} size="sm" />
-          </span>
-        )}
-      </div>
-    );
-  }
-);
+  return (
+    <div
+      ref={ref}
+      className={cn(dropdownItemVariants({ variant, size, className }), 'pr-8')}
+      role="menuitemradio"
+      aria-checked={isSelected}
+      tabIndex={disabled ? -1 : 0}
+      data-disabled={disabled}
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      {...props}
+    >
+      {children}
+      {isSelected && (
+        <span className="absolute right-2 flex h-3.5 w-3.5 items-center justify-center">
+          <Icon icon={CheckIcon} size="sm" />
+        </span>
+      )}
+    </div>
+  );
+});
 DropdownRadioItem.displayName = 'DropdownRadioItem';
 
 export {

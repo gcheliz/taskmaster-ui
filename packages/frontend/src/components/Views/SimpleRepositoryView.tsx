@@ -7,7 +7,7 @@ export const SimpleRepositoryView: React.FC = () => {
         <h1>📁 Repository Management</h1>
         <p>Connect and manage your Git repositories</p>
       </div>
-      
+
       <div className="view-content">
         <div className="card">
           <h2>Connected Repositories</h2>
@@ -16,7 +16,9 @@ export const SimpleRepositoryView: React.FC = () => {
               <div className="repo-info">
                 <h3>taskmaster-ui</h3>
                 <p>Main project repository</p>
-                <span className="repo-path">/Users/gonzalo/workspace/taskmaster-ui</span>
+                <span className="repo-path">
+                  /Users/gonzalo/workspace/taskmaster-ui
+                </span>
               </div>
               <div className="repo-stats">
                 <span className="stat">15 commits</span>
@@ -24,12 +26,14 @@ export const SimpleRepositoryView: React.FC = () => {
                 <span className="stat">Active</span>
               </div>
             </div>
-            
+
             <div className="repo-item">
               <div className="repo-info">
                 <h3>taskmaster-cli</h3>
                 <p>Command line interface</p>
-                <span className="repo-path">/Users/gonzalo/workspace/taskmaster-cli</span>
+                <span className="repo-path">
+                  /Users/gonzalo/workspace/taskmaster-cli
+                </span>
               </div>
               <div className="repo-stats">
                 <span className="stat">8 commits</span>
@@ -38,13 +42,13 @@ export const SimpleRepositoryView: React.FC = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="actions">
             <button className="primary-button">+ Add Repository</button>
             <button className="secondary-button">Refresh All</button>
           </div>
         </div>
-        
+
         <div className="card">
           <h2>Quick Actions</h2>
           <div className="action-grid">

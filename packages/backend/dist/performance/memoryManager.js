@@ -48,7 +48,7 @@ class AdvancedMemoryManager extends events_1.EventEmitter {
             retentionSamples: 100,
             enableMonitoring: true,
             enableGCOptimization: true,
-            ...config
+            ...config,
         };
         this.initializeMonitoring();
         this.setupGCListeners();
@@ -70,7 +70,7 @@ class AdvancedMemoryManager extends events_1.EventEmitter {
             averageGCTime: this.gcCount > 0 ? this.totalGCTime / this.gcCount : 0,
             memoryLeakSuspected: this.detectMemoryLeak(),
             lastGC: this.getLastGCTime(),
-            trend: this.analyzeTrend()
+            trend: this.analyzeTrend(),
         };
     }
     /**
@@ -85,7 +85,7 @@ class AdvancedMemoryManager extends events_1.EventEmitter {
                 beforeGC,
                 afterGC,
                 freed: beforeGC - afterGC,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
             });
             return true;
         }
@@ -111,7 +111,7 @@ class AdvancedMemoryManager extends events_1.EventEmitter {
             size: () => pool.length,
             clear: () => {
                 pool.length = 0;
-            }
+            },
         };
         this.objectPools.set(category, pool);
         return poolManager;
@@ -154,16 +154,18 @@ class AdvancedMemoryManager extends events_1.EventEmitter {
                 beforeStats,
                 afterStats,
                 optimizations,
-                memoryFreed: beforeStats.heapUsed - afterStats.heapUsed
+                memoryFreed: beforeStats.heapUsed - afterStats.heapUsed,
             });
             return {
                 beforeOptimization: beforeStats,
                 afterOptimization: afterStats,
-                optimizations
+                optimizations,
             };
         }
         catch (error) {
-            this.emit('memory:optimization:error', { error: error.message });
+            this.emit('memory:optimization:error', {
+                error: error.message,
+            });
             throw error;
         }
     }
@@ -177,29 +179,29 @@ class AdvancedMemoryManager extends events_1.EventEmitter {
             this.emit('memory:critical', {
                 utilization: heapUtilization,
                 heapUsed: stats.heapUsed,
-                heapTotal: stats.heapTotal
+                heapTotal: stats.heapTotal,
             });
             return {
                 level: 'critical',
                 action: 'Immediate cleanup required - consider forcing GC or reducing memory usage',
-                statistics: stats
+                statistics: stats,
             };
         }
         if (heapUtilization >= this.config.warningThreshold) {
             this.emit('memory:warning', {
                 utilization: heapUtilization,
-                heapUsed: stats.heapUsed
+                heapUsed: stats.heapUsed,
             });
             return {
                 level: 'warning',
                 action: 'Monitor closely - consider cleanup operations',
-                statistics: stats
+                statistics: stats,
             };
         }
         return {
             level: 'normal',
             action: 'Memory usage is normal',
-            statistics: stats
+            statistics: stats,
         };
     }
     /**
@@ -229,11 +231,14 @@ class AdvancedMemoryManager extends events_1.EventEmitter {
             trends: {
                 memoryTrend: stats.trend,
                 averageGrowthRate: growthRate,
-                predictedExhaustion
+                predictedExhaustion,
             },
             recommendations,
-            objectPools: Object.fromEntries(Array.from(this.objectPools.entries()).map(([key, pool]) => [key, pool.length])),
-            tracking: Object.fromEntries(this.weakRefTracker.getAllCounts())
+            objectPools: Object.fromEntries(Array.from(this.objectPools.entries()).map(([key, pool]) => [
+                key,
+                pool.length,
+            ])),
+            tracking: Object.fromEntries(this.weakRefTracker.getAllCounts()),
         };
     }
     /**
@@ -280,7 +285,7 @@ class AdvancedMemoryManager extends events_1.EventEmitter {
                 this.emit('gc:complete', {
                     duration: gcTime,
                     count: this.gcCount,
-                    memoryAfter: process.memoryUsage()
+                    memoryAfter: process.memoryUsage(),
                 });
                 return result;
             };
@@ -293,7 +298,7 @@ class AdvancedMemoryManager extends events_1.EventEmitter {
             heapUsed: memUsage.heapUsed,
             heapTotal: memUsage.heapTotal,
             external: memUsage.external,
-            rss: memUsage.rss
+            rss: memUsage.rss,
         };
         this.samples.push(sample);
         // Keep only recent samples
@@ -306,7 +311,9 @@ class AdvancedMemoryManager extends events_1.EventEmitter {
             return false;
         // Simple leak detection: consistent growth over time
         const recent = this.samples.slice(-10);
-        const growth = recent.map((sample, index) => index > 0 ? sample.heapUsed - recent[index - 1].heapUsed : 0).slice(1);
+        const growth = recent
+            .map((sample, index) => index > 0 ? sample.heapUsed - recent[index - 1].heapUsed : 0)
+            .slice(1);
         const positiveGrowth = growth.filter(g => g > 0).length;
         return positiveGrowth > 7; // More than 70% of samples show growth
     }
@@ -332,14 +339,15 @@ class AdvancedMemoryManager extends events_1.EventEmitter {
             this.emit('memory:leak:suspected', {
                 heapUsed: stats.heapUsed,
                 trend: stats.trend,
-                trackingStats: this.getTrackingStatistics()
+                trackingStats: this.getTrackingStatistics(),
             });
         }
     }
     calculateGrowthRate() {
         if (this.samples.length < 2)
             return 0;
-        const timespan = this.samples[this.samples.length - 1].timestamp - this.samples[0].timestamp;
+        const timespan = this.samples[this.samples.length - 1].timestamp -
+            this.samples[0].timestamp;
         const memoryChange = this.samples[this.samples.length - 1].heapUsed - this.samples[0].heapUsed;
         return timespan > 0 ? (memoryChange / timespan) * 1000 : 0; // bytes per second
     }
@@ -349,7 +357,8 @@ class AdvancedMemoryManager extends events_1.EventEmitter {
         const currentUsage = process.memoryUsage().heapUsed;
         const remainingMemory = this.config.maxHeapSize - currentUsage;
         const timeToExhaustion = remainingMemory / growthRate; // seconds
-        if (timeToExhaustion < 3600) { // Less than 1 hour
+        if (timeToExhaustion < 3600) {
+            // Less than 1 hour
             const minutes = Math.floor(timeToExhaustion / 60);
             return `Approximately ${minutes} minutes`;
         }
@@ -382,6 +391,6 @@ exports.memoryManager = new AdvancedMemoryManager({
     enableMonitoring: process.env.NODE_ENV !== 'test',
     enableGCOptimization: true,
     warningThreshold: 0.8,
-    criticalThreshold: 0.9
+    criticalThreshold: 0.9,
 });
 //# sourceMappingURL=memoryManager.js.map

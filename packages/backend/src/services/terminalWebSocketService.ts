@@ -4,7 +4,13 @@ import { terminalService, TerminalOutput } from './terminalService';
 import { logger } from '../utils/logger';
 
 export interface TerminalWebSocketMessage {
-  type: 'command' | 'input' | 'kill' | 'resize' | 'create-session' | 'close-session';
+  type:
+    | 'command'
+    | 'input'
+    | 'kill'
+    | 'resize'
+    | 'create-session'
+    | 'close-session';
   sessionId?: string;
   data?: any;
 }
@@ -20,9 +26,9 @@ export class TerminalWebSocketService {
   private connections: Map<WebSocket, string[]> = new Map(); // ws -> sessionIds
 
   constructor(server: Server) {
-    this.wss = new WebSocketServer({ 
+    this.wss = new WebSocketServer({
       server,
-      path: '/terminal-ws'
+      path: '/terminal-ws',
     });
 
     this.setupWebSocketServer();
@@ -32,7 +38,7 @@ export class TerminalWebSocketService {
   private setupWebSocketServer(): void {
     this.wss.on('connection', (ws: WebSocket) => {
       logger.info('Terminal WebSocket connection established');
-      
+
       // Initialize connection session tracking
       this.connections.set(ws, []);
 
@@ -41,7 +47,11 @@ export class TerminalWebSocketService {
           const data: TerminalWebSocketMessage = JSON.parse(message);
           this.handleWebSocketMessage(ws, data);
         } catch (error) {
-          logger.error('Failed to parse WebSocket message:', {}, error instanceof Error ? error : new Error('Unknown error'));
+          logger.error(
+            'Failed to parse WebSocket message:',
+            {},
+            error instanceof Error ? error : new Error('Unknown error')
+          );
           this.sendError(ws, 'Invalid message format');
         }
       });
@@ -67,13 +77,16 @@ export class TerminalWebSocketService {
         data: {
           type: output.type,
           data: output.data,
-          timestamp: output.timestamp
-        }
+          timestamp: output.timestamp,
+        },
       });
     });
   }
 
-  private async handleWebSocketMessage(ws: WebSocket, message: TerminalWebSocketMessage): Promise<void> {
+  private async handleWebSocketMessage(
+    ws: WebSocket,
+    message: TerminalWebSocketMessage
+  ): Promise<void> {
     try {
       switch (message.type) {
         case 'create-session':
@@ -104,37 +117,56 @@ export class TerminalWebSocketService {
           this.sendError(ws, `Unknown message type: ${message.type}`);
       }
     } catch (error) {
-      logger.error('Error handling WebSocket message:', {}, error instanceof Error ? error : new Error('Unknown error'));
-      this.sendError(ws, error instanceof Error ? error.message : 'Internal server error');
+      logger.error(
+        'Error handling WebSocket message:',
+        {},
+        error instanceof Error ? error : new Error('Unknown error')
+      );
+      this.sendError(
+        ws,
+        error instanceof Error ? error.message : 'Internal server error'
+      );
     }
   }
 
-  private async handleCreateSession(ws: WebSocket, message: TerminalWebSocketMessage): Promise<void> {
+  private async handleCreateSession(
+    ws: WebSocket,
+    message: TerminalWebSocketMessage
+  ): Promise<void> {
     const { workingDirectory, repositoryPath } = message.data || {};
-    
+
     try {
-      const sessionId = terminalService.createSession(workingDirectory, repositoryPath);
-      
+      const sessionId = terminalService.createSession(
+        workingDirectory,
+        repositoryPath
+      );
+
       // Subscribe this connection to the session
       this.subscribeToSession(ws, sessionId);
-      
+
       this.sendResponse(ws, {
         type: 'session-created',
         sessionId,
         data: {
           sessionId,
-          workingDirectory: workingDirectory || repositoryPath || process.cwd()
-        }
+          workingDirectory: workingDirectory || repositoryPath || process.cwd(),
+        },
       });
     } catch (error) {
-      this.sendError(ws, error instanceof Error ? error.message : 'Failed to create session');
+      this.sendError(
+        ws,
+        error instanceof Error ? error.message : 'Failed to create session'
+      );
     }
   }
 
-  private async handleCommand(ws: WebSocket, message: TerminalWebSocketMessage): Promise<void> {
+  private async handleCommand(
+    ws: WebSocket,
+    message: TerminalWebSocketMessage
+  ): Promise<void> {
     const { sessionId } = message;
     const { command } = message.data || {};
-    
+
     if (!sessionId || !command) {
       this.sendError(ws, 'Session ID and command are required');
       return;
@@ -143,14 +175,20 @@ export class TerminalWebSocketService {
     try {
       await terminalService.executeCommand(sessionId, command);
     } catch (error) {
-      this.sendError(ws, error instanceof Error ? error.message : 'Failed to execute command');
+      this.sendError(
+        ws,
+        error instanceof Error ? error.message : 'Failed to execute command'
+      );
     }
   }
 
-  private async handleInput(ws: WebSocket, message: TerminalWebSocketMessage): Promise<void> {
+  private async handleInput(
+    ws: WebSocket,
+    message: TerminalWebSocketMessage
+  ): Promise<void> {
     const { sessionId } = message;
     const { input } = message.data || {};
-    
+
     if (!sessionId || input === undefined) {
       this.sendError(ws, 'Session ID and input are required');
       return;
@@ -159,13 +197,19 @@ export class TerminalWebSocketService {
     try {
       terminalService.sendInput(sessionId, input);
     } catch (error) {
-      this.sendError(ws, error instanceof Error ? error.message : 'Failed to send input');
+      this.sendError(
+        ws,
+        error instanceof Error ? error.message : 'Failed to send input'
+      );
     }
   }
 
-  private async handleKill(ws: WebSocket, message: TerminalWebSocketMessage): Promise<void> {
+  private async handleKill(
+    ws: WebSocket,
+    message: TerminalWebSocketMessage
+  ): Promise<void> {
     const { sessionId } = message;
-    
+
     if (!sessionId) {
       this.sendError(ws, 'Session ID is required');
       return;
@@ -174,14 +218,20 @@ export class TerminalWebSocketService {
     try {
       terminalService.killProcess(sessionId);
     } catch (error) {
-      this.sendError(ws, error instanceof Error ? error.message : 'Failed to kill process');
+      this.sendError(
+        ws,
+        error instanceof Error ? error.message : 'Failed to kill process'
+      );
     }
   }
 
-  private async handleResize(ws: WebSocket, message: TerminalWebSocketMessage): Promise<void> {
+  private async handleResize(
+    ws: WebSocket,
+    message: TerminalWebSocketMessage
+  ): Promise<void> {
     const { sessionId } = message;
     const { cols, rows } = message.data || {};
-    
+
     if (!sessionId || !cols || !rows) {
       this.sendError(ws, 'Session ID, cols, and rows are required');
       return;
@@ -189,12 +239,17 @@ export class TerminalWebSocketService {
 
     // For now, just acknowledge the resize
     // In a full implementation, you would update the terminal size
-    logger.info(`Terminal resize requested for session ${sessionId}: ${cols}x${rows}`);
+    logger.info(
+      `Terminal resize requested for session ${sessionId}: ${cols}x${rows}`
+    );
   }
 
-  private async handleCloseSession(ws: WebSocket, message: TerminalWebSocketMessage): Promise<void> {
+  private async handleCloseSession(
+    ws: WebSocket,
+    message: TerminalWebSocketMessage
+  ): Promise<void> {
     const { sessionId } = message;
-    
+
     if (!sessionId) {
       this.sendError(ws, 'Session ID is required');
       return;
@@ -203,14 +258,17 @@ export class TerminalWebSocketService {
     try {
       terminalService.closeSession(sessionId);
       this.unsubscribeFromSession(ws, sessionId);
-      
+
       this.sendResponse(ws, {
         type: 'session-closed',
         sessionId,
-        data: { sessionId }
+        data: { sessionId },
       });
     } catch (error) {
-      this.sendError(ws, error instanceof Error ? error.message : 'Failed to close session');
+      this.sendError(
+        ws,
+        error instanceof Error ? error.message : 'Failed to close session'
+      );
     }
   }
 
@@ -233,20 +291,27 @@ export class TerminalWebSocketService {
 
   private handleConnectionClose(ws: WebSocket): void {
     const sessionIds = this.connections.get(ws) || [];
-    
+
     // Close all sessions associated with this connection
     sessionIds.forEach(sessionId => {
       try {
         terminalService.closeSession(sessionId);
       } catch (error) {
-        logger.error(`Failed to close session ${sessionId}:`, {}, error instanceof Error ? error : new Error('Unknown error'));
+        logger.error(
+          `Failed to close session ${sessionId}:`,
+          {},
+          error instanceof Error ? error : new Error('Unknown error')
+        );
       }
     });
-    
+
     this.connections.delete(ws);
   }
 
-  private broadcastToSessionSubscribers(sessionId: string, message: TerminalWebSocketResponse): void {
+  private broadcastToSessionSubscribers(
+    sessionId: string,
+    message: TerminalWebSocketResponse
+  ): void {
     for (const [ws, sessionIds] of this.connections) {
       if (sessionIds.includes(sessionId)) {
         this.sendResponse(ws, message);
@@ -254,7 +319,10 @@ export class TerminalWebSocketService {
     }
   }
 
-  private sendResponse(ws: WebSocket, response: TerminalWebSocketResponse): void {
+  private sendResponse(
+    ws: WebSocket,
+    response: TerminalWebSocketResponse
+  ): void {
     if (ws.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify(response));
     }
@@ -263,7 +331,7 @@ export class TerminalWebSocketService {
   private sendError(ws: WebSocket, message: string): void {
     this.sendResponse(ws, {
       type: 'error',
-      data: { message }
+      data: { message },
     });
   }
 

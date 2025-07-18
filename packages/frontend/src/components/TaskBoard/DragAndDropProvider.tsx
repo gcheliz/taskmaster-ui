@@ -22,7 +22,11 @@ export interface DragAndDropProviderProps {
   /** Children components to wrap with drag and drop context */
   children: React.ReactNode;
   /** Callback when a task is moved between columns */
-  onTaskMove?: (taskId: number, fromStatus: TaskStatus, toStatus: TaskStatus) => void;
+  onTaskMove?: (
+    taskId: number,
+    fromStatus: TaskStatus,
+    toStatus: TaskStatus
+  ) => void;
   /** Optional drag overlay component */
   dragOverlay?: React.ReactNode;
   /** Additional CSS class name */
@@ -42,7 +46,7 @@ export interface DropData {
 
 /**
  * Drag and Drop Provider Component
- * 
+ *
  * Provides drag and drop context for the task board using dnd-kit.
  * Handles drag events, accessibility, and provides the necessary context
  * for draggable tasks and droppable columns.
@@ -51,7 +55,7 @@ export const DragAndDropProvider: React.FC<DragAndDropProviderProps> = ({
   children,
   onTaskMove,
   dragOverlay,
-  className = ''
+  className = '',
 }) => {
   const [activeId, setActiveId] = useState<string | null>(null);
 
@@ -77,10 +81,10 @@ export const DragAndDropProvider: React.FC<DragAndDropProviderProps> = ({
   const handleDragStart = useCallback((event: DragStartEvent) => {
     const { active } = event;
     setActiveId(active.id as string);
-    
+
     // Add visual feedback
     document.body.style.cursor = 'grabbing';
-    
+
     const activeData = active.data.current as DragData;
     if (activeData && activeData.type === 'task') {
       announceToScreenReader(
@@ -88,75 +92,81 @@ export const DragAndDropProvider: React.FC<DragAndDropProviderProps> = ({
         'polite'
       );
     }
-    
+
     console.log('Drag started:', active.id);
   }, []);
 
   // Handle drag over (for visual feedback)
   const handleDragOver = useCallback((event: DragOverEvent) => {
     const { active, over } = event;
-    
+
     if (!over) {
       return;
     }
-    
+
     // Optional: Add custom drag over logic
     console.log('Drag over:', { active: active.id, over: over.id });
   }, []);
 
   // Handle drag end
-  const handleDragEnd = useCallback((event: DragEndEvent) => {
-    const { active, over } = event;
-    
-    // Clean up
-    setActiveId(null);
-    document.body.style.cursor = '';
-    
-    if (!over) {
-      announceToScreenReader('Task move cancelled', 'polite');
-      console.log('Drag ended without drop target');
-      return;
-    }
-    
-    const activeData = active.data.current as DragData;
-    const overData = over.data.current as DropData;
-    
-    // Validate drag data
-    if (!activeData || activeData.type !== 'task') {
-      announceToScreenReader('Invalid task move attempted', 'assertive');
-      console.error('Invalid drag data:', activeData);
-      return;
-    }
-    
-    // Validate drop data
-    if (!overData || overData.type !== 'column') {
-      announceToScreenReader('Invalid drop target', 'assertive');
-      console.error('Invalid drop data:', overData);
-      return;
-    }
-    
-    const { taskId, status: fromStatus } = activeData;
-    const { status: toStatus } = overData;
-    
-    // Don't move if status is the same
-    if (fromStatus === toStatus) {
-      announceToScreenReader(`Task ${taskId} is already in ${fromStatus}`, 'polite');
-      console.log('Task already in the same column');
-      return;
-    }
-    
-    // Announce successful move
-    announceToScreenReader(
-      `Task ${taskId} moved from ${fromStatus} to ${toStatus}`,
-      'polite'
-    );
-    
-    // Call the onTaskMove callback
-    if (onTaskMove) {
-      console.log('Moving task:', { taskId, fromStatus, toStatus });
-      onTaskMove(taskId, fromStatus, toStatus);
-    }
-  }, [onTaskMove]);
+  const handleDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      const { active, over } = event;
+
+      // Clean up
+      setActiveId(null);
+      document.body.style.cursor = '';
+
+      if (!over) {
+        announceToScreenReader('Task move cancelled', 'polite');
+        console.log('Drag ended without drop target');
+        return;
+      }
+
+      const activeData = active.data.current as DragData;
+      const overData = over.data.current as DropData;
+
+      // Validate drag data
+      if (!activeData || activeData.type !== 'task') {
+        announceToScreenReader('Invalid task move attempted', 'assertive');
+        console.error('Invalid drag data:', activeData);
+        return;
+      }
+
+      // Validate drop data
+      if (!overData || overData.type !== 'column') {
+        announceToScreenReader('Invalid drop target', 'assertive');
+        console.error('Invalid drop data:', overData);
+        return;
+      }
+
+      const { taskId, status: fromStatus } = activeData;
+      const { status: toStatus } = overData;
+
+      // Don't move if status is the same
+      if (fromStatus === toStatus) {
+        announceToScreenReader(
+          `Task ${taskId} is already in ${fromStatus}`,
+          'polite'
+        );
+        console.log('Task already in the same column');
+        return;
+      }
+
+      // Announce successful move
+      announceToScreenReader(
+        `Task ${taskId} moved from ${fromStatus} to ${toStatus}`,
+        'polite'
+      );
+
+      // Call the onTaskMove callback
+      if (onTaskMove) {
+        console.log('Moving task:', { taskId, fromStatus, toStatus });
+        onTaskMove(taskId, fromStatus, toStatus);
+      }
+    },
+    [onTaskMove]
+  );
 
   // Handle drag cancel
   const handleDragCancel = useCallback(() => {
@@ -177,22 +187,22 @@ export const DragAndDropProvider: React.FC<DragAndDropProviderProps> = ({
     >
       <div className={`drag-drop-provider ${className}`}>
         {children}
-        
+
         {/* Drag Overlay */}
         <DragOverlay dropAnimation={null}>
-          {activeId ? (
-            dragOverlay || (
-              <div className="drag-overlay">
-                <div className="drag-overlay-content">
-                  <span className="drag-overlay-icon">🔄</span>
-                  <span className="drag-overlay-text">Moving task...</span>
+          {activeId
+            ? dragOverlay || (
+                <div className="drag-overlay">
+                  <div className="drag-overlay-content">
+                    <span className="drag-overlay-icon">🔄</span>
+                    <span className="drag-overlay-text">Moving task...</span>
+                  </div>
                 </div>
-              </div>
-            )
-          ) : null}
+              )
+            : null}
         </DragOverlay>
       </div>
-      
+
       <style>{`
         .drag-drop-provider {
           position: relative;

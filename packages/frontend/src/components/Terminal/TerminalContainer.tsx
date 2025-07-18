@@ -33,7 +33,7 @@ export interface TerminalContainerProps {
 
 /**
  * TerminalContainer Component
- * 
+ *
  * Complete terminal implementation with integrated session management,
  * WebSocket communication, and xterm.js rendering.
  */
@@ -50,7 +50,7 @@ export const TerminalContainer: React.FC<TerminalContainerProps> = ({
   className = '',
   showNotifications = true,
   autoCreate = true,
-  autoConnect = true
+  autoConnect = true,
 }) => {
   const {
     session,
@@ -62,13 +62,13 @@ export const TerminalContainer: React.FC<TerminalContainerProps> = ({
     sendInput,
     closeSession,
     resizeTerminal,
-    setTerminal
+    setTerminal,
   } = useTerminal({
     workingDirectory,
     repositoryPath,
     autoCreate,
     autoConnect,
-    showNotifications
+    showNotifications,
   });
 
   const handleTerminalReady = (terminalInstance: any) => {
@@ -98,7 +98,6 @@ export const TerminalContainer: React.FC<TerminalContainerProps> = ({
   const handleResize = (cols: number, rows: number) => {
     resizeTerminal(cols, rows);
   };
-
 
   return (
     <Terminal

@@ -24,7 +24,7 @@ class AdvancedBatchProcessor extends events_1.EventEmitter {
             retryDelayMs: 1000,
             enableCompression: false,
             memoryThreshold: 50 * 1024 * 1024, // 50MB
-            ...config
+            ...config,
         };
         this.statistics = {
             totalBatches: 0,
@@ -36,7 +36,7 @@ class AdvancedBatchProcessor extends events_1.EventEmitter {
             retryCount: 0,
             memoryUsage: 0,
             throughput: 0,
-            lastProcessedAt: new Date().toISOString()
+            lastProcessedAt: new Date().toISOString(),
         };
         this.startFlushTimer();
     }
@@ -53,7 +53,7 @@ class AdvancedBatchProcessor extends events_1.EventEmitter {
                 retryCount: 0,
                 resolve,
                 reject,
-                metadata
+                metadata,
             };
             // Check if item can be batched
             if (this.processor.canBatch && !this.processor.canBatch(data)) {
@@ -63,7 +63,8 @@ class AdvancedBatchProcessor extends events_1.EventEmitter {
             }
             // Check memory threshold
             const estimatedMemory = this.processor.estimateMemoryUsage?.(data) || 1024;
-            if (this.currentMemoryUsage + estimatedMemory > this.config.memoryThreshold) {
+            if (this.currentMemoryUsage + estimatedMemory >
+                this.config.memoryThreshold) {
                 this.flush();
             }
             this.currentMemoryUsage += estimatedMemory;
@@ -73,7 +74,7 @@ class AdvancedBatchProcessor extends events_1.EventEmitter {
             this.emit('item:added', {
                 itemId: item.id,
                 queueSize: this.pendingItems.length,
-                memoryUsage: this.currentMemoryUsage
+                memoryUsage: this.currentMemoryUsage,
             });
             // Flush if batch is full or memory threshold reached
             if (this.pendingItems.length >= this.config.maxBatchSize) {
@@ -92,7 +93,7 @@ class AdvancedBatchProcessor extends events_1.EventEmitter {
         if (this.processingBatches.size >= this.config.concurrencyLimit) {
             this.emit('batch:concurrency:limit', {
                 currentBatches: this.processingBatches.size,
-                limit: this.config.concurrencyLimit
+                limit: this.config.concurrencyLimit,
             });
             return;
         }
@@ -106,7 +107,7 @@ class AdvancedBatchProcessor extends events_1.EventEmitter {
         this.emit('batch:start', {
             batchId,
             itemCount: itemsToProcess.length,
-            remainingItems: this.pendingItems.length
+            remainingItems: this.pendingItems.length,
         });
         try {
             await this.processBatch(batchId, itemsToProcess);
@@ -115,7 +116,7 @@ class AdvancedBatchProcessor extends events_1.EventEmitter {
             this.emit('batch:error', {
                 batchId,
                 error: error.message,
-                itemCount: itemsToProcess.length
+                itemCount: itemsToProcess.length,
             });
         }
         finally {
@@ -132,7 +133,7 @@ class AdvancedBatchProcessor extends events_1.EventEmitter {
             ...this.statistics,
             memoryUsage: this.currentMemoryUsage,
             throughput: this.calculateThroughput(),
-            lastProcessedAt: this.statistics.lastProcessedAt
+            lastProcessedAt: this.statistics.lastProcessedAt,
         };
     }
     /**
@@ -144,21 +145,23 @@ class AdvancedBatchProcessor extends events_1.EventEmitter {
             ...stats,
             efficiency: {
                 batchUtilization: stats.averageBatchSize / this.config.maxBatchSize,
-                successRate: stats.totalBatches > 0 ? stats.successfulBatches / stats.totalBatches : 0,
+                successRate: stats.totalBatches > 0
+                    ? stats.successfulBatches / stats.totalBatches
+                    : 0,
                 averageRetryRate: stats.totalItems > 0 ? stats.retryCount / stats.totalItems : 0,
-                memoryEfficiency: this.currentMemoryUsage / this.config.memoryThreshold
+                memoryEfficiency: this.currentMemoryUsage / this.config.memoryThreshold,
             },
             queuing: {
                 currentQueueSize: this.pendingItems.length,
                 currentBatches: this.processingBatches.size,
                 concurrencyUtilization: this.processingBatches.size / this.config.concurrencyLimit,
-                estimatedWaitTime: this.estimateWaitTime()
+                estimatedWaitTime: this.estimateWaitTime(),
             },
             performance: {
                 throughput: stats.throughput,
                 averageLatency: stats.averageProcessingTime,
-                memoryPressure: this.currentMemoryUsage / this.config.memoryThreshold
-            }
+                memoryPressure: this.currentMemoryUsage / this.config.memoryThreshold,
+            },
         };
     }
     /**
@@ -200,7 +203,7 @@ class AdvancedBatchProcessor extends events_1.EventEmitter {
             this.emit('batch:success', {
                 batchId,
                 itemCount: items.length,
-                duration: performance.now() - startTime
+                duration: performance.now() - startTime,
             });
         }
         catch (error) {
@@ -212,7 +215,7 @@ class AdvancedBatchProcessor extends events_1.EventEmitter {
         if (this.config.enableRetries) {
             // Separate items that can be retried
             const retryableItems = items.filter(item => item.retryCount < this.config.maxRetries &&
-                (Date.now() - item.timestamp) < this.config.maxWaitTime);
+                Date.now() - item.timestamp < this.config.maxWaitTime);
             const failedItems = items.filter(item => !retryableItems.includes(item));
             // Reject failed items
             failedItems.forEach(item => {
@@ -230,7 +233,7 @@ class AdvancedBatchProcessor extends events_1.EventEmitter {
                     this.emit('batch:retry', {
                         batchId,
                         retryCount: retryableItems.length,
-                        failedCount: failedItems.length
+                        failedCount: failedItems.length,
                     });
                 }, this.config.retryDelayMs);
             }
@@ -245,7 +248,7 @@ class AdvancedBatchProcessor extends events_1.EventEmitter {
             batchId,
             error: error.message,
             itemCount: items.length,
-            duration: performance.now() - startTime
+            duration: performance.now() - startTime,
         });
     }
     async processSingleItem(item) {
@@ -276,9 +279,11 @@ class AdvancedBatchProcessor extends events_1.EventEmitter {
         // Update averages
         const totalBatches = this.statistics.totalBatches;
         this.statistics.averageBatchSize =
-            (this.statistics.averageBatchSize * (totalBatches - 1) + itemCount) / totalBatches;
+            (this.statistics.averageBatchSize * (totalBatches - 1) + itemCount) /
+                totalBatches;
         this.statistics.averageProcessingTime =
-            (this.statistics.averageProcessingTime * (totalBatches - 1) + duration) / totalBatches;
+            (this.statistics.averageProcessingTime * (totalBatches - 1) + duration) /
+                totalBatches;
     }
     calculateThroughput() {
         // Items per second in the last minute
@@ -290,7 +295,7 @@ class AdvancedBatchProcessor extends events_1.EventEmitter {
         const avgBatchSize = this.statistics.averageBatchSize || this.config.maxBatchSize;
         const avgProcessingTime = this.statistics.averageProcessingTime || 1000;
         const estimatedBatches = Math.ceil(queueSize / avgBatchSize);
-        return estimatedBatches * avgProcessingTime / this.config.concurrencyLimit;
+        return ((estimatedBatches * avgProcessingTime) / this.config.concurrencyLimit);
     }
     generateId() {
         return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -317,7 +322,7 @@ class TaskMasterBatchProcessor {
                 // Return errors for failed items
                 const errorResults = operationItems.map(() => ({
                     success: false,
-                    error: error.message
+                    error: error.message,
                 }));
                 results.push(...errorResults);
             }
@@ -333,11 +338,11 @@ class TaskMasterBatchProcessor {
         // Estimate memory usage based on operation type
         const baseSize = 1024; // 1KB base
         const operationMultipliers = {
-            'list': 5,
-            'show': 3,
-            'status': 2,
-            'complexity': 10,
-            'expand': 15
+            list: 5,
+            show: 3,
+            status: 2,
+            complexity: 10,
+            expand: 15,
         };
         const multiplier = operationMultipliers[item.operation] || 1;
         return baseSize * multiplier;
@@ -369,7 +374,9 @@ class TaskMasterBatchProcessor {
     }
     async processList(items) {
         // Batch multiple list requests efficiently
-        const uniqueRepositories = [...new Set(items.map(item => item.repositoryPath))];
+        const uniqueRepositories = [
+            ...new Set(items.map(item => item.repositoryPath)),
+        ];
         const repositoryResults = new Map();
         for (const repo of uniqueRepositories) {
             try {
@@ -377,7 +384,10 @@ class TaskMasterBatchProcessor {
                 repositoryResults.set(repo, result);
             }
             catch (error) {
-                repositoryResults.set(repo, { success: false, error: error.message });
+                repositoryResults.set(repo, {
+                    success: false,
+                    error: error.message,
+                });
             }
         }
         return items.map(item => repositoryResults.get(item.repositoryPath));
@@ -391,15 +401,17 @@ class TaskMasterBatchProcessor {
                 // Process multiple shows for same repository in parallel
                 const showPromises = repoItems.map(item => this.cliService.getTask(repo, item.arguments.id));
                 const repoResults = await Promise.allSettled(showPromises);
-                results.push(...repoResults.map(result => result.status === 'fulfilled' ? result.value : {
-                    success: false,
-                    error: result.reason?.message
-                }));
+                results.push(...repoResults.map(result => result.status === 'fulfilled'
+                    ? result.value
+                    : {
+                        success: false,
+                        error: result.reason?.message,
+                    }));
             }
             catch (error) {
                 const errorResults = repoItems.map(() => ({
                     success: false,
-                    error: error.message
+                    error: error.message,
                 }));
                 results.push(...errorResults);
             }
@@ -440,6 +452,6 @@ exports.taskMasterBatchProcessor = new AdvancedBatchProcessor(new TaskMasterBatc
     maxWaitTime: 2000,
     concurrencyLimit: 5,
     enableRetries: true,
-    maxRetries: 2
+    maxRetries: 2,
 });
 //# sourceMappingURL=batchProcessor.js.map

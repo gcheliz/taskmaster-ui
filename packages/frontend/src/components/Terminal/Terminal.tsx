@@ -67,17 +67,19 @@ export const Terminal: React.FC<TerminalProps> = ({
   isLoading = false,
   error = null,
   enableWebLinks = true,
-  enableClipboard = true
+  enableClipboard = true,
 }) => {
   const terminalRef = useRef<HTMLDivElement>(null);
   const xtermRef = useRef<XTerminal | null>(null);
   const fitAddonRef = useRef<FitAddon | null>(null);
   const webLinksAddonRef = useRef<WebLinksAddon | null>(null);
-  
-  const [connectionStatus, setConnectionStatus] = useState<'connected' | 'disconnected' | 'connecting'>('disconnected');
+
+  const [connectionStatus, setConnectionStatus] = useState<
+    'connected' | 'disconnected' | 'connecting'
+  >('disconnected');
   const [currentDirectory] = useState(workingDirectory);
   const [isProcessRunning, setIsProcessRunning] = useState(false);
-  
+
   // Initialize terminal
   useEffect(() => {
     if (!terminalRef.current || isLoading || error) {
@@ -125,7 +127,7 @@ export const Terminal: React.FC<TerminalProps> = ({
       drawBoldTextInBrightColors: true,
       altClickMovesCursor: true,
       customGlyphs: true,
-      smoothScrollDuration: 0
+      smoothScrollDuration: 0,
     });
 
     // Create and load addons
@@ -141,7 +143,7 @@ export const Terminal: React.FC<TerminalProps> = ({
 
     // Open terminal
     terminal.open(terminalRef.current);
-    
+
     // Fit terminal to container
     fitAddon.fit();
 
@@ -149,9 +151,9 @@ export const Terminal: React.FC<TerminalProps> = ({
     xtermRef.current = terminal;
 
     // Terminal event handlers
-    terminal.onData((data) => {
+    terminal.onData(data => {
       onData?.(data);
-      
+
       // Handle special key combinations
       if (data === '\r') {
         // Enter key - might be executing a command
@@ -162,11 +164,11 @@ export const Terminal: React.FC<TerminalProps> = ({
       }
     });
 
-    terminal.onResize((size) => {
+    terminal.onResize(size => {
       onResize?.(size.cols, size.rows);
     });
 
-    terminal.onTitleChange((title) => {
+    terminal.onTitleChange(title => {
       // Update terminal title if changed by shell
       document.title = title;
     });
@@ -213,7 +215,7 @@ export const Terminal: React.FC<TerminalProps> = ({
     title,
     onReady,
     onData,
-    onResize
+    onResize,
   ]);
 
   // Handle WebSocket connection
@@ -223,13 +225,13 @@ export const Terminal: React.FC<TerminalProps> = ({
     }
 
     const terminal = xtermRef.current;
-    
+
     setConnectionStatus('connecting');
 
     const handleMessage = (event: MessageEvent) => {
       try {
         const message = JSON.parse(event.data);
-        
+
         switch (message.type) {
           case 'output':
             if (message.data.type === 'stdout') {
@@ -241,17 +243,19 @@ export const Terminal: React.FC<TerminalProps> = ({
               setIsProcessRunning(false);
             }
             break;
-            
+
           case 'session-created':
             setConnectionStatus('connected');
             break;
-            
+
           case 'session-closed':
             setConnectionStatus('disconnected');
             break;
-            
+
           case 'error':
-            terminal.write(`\\x1b[31mError: ${message.data.message}\\x1b[0m\\r\\n`);
+            terminal.write(
+              `\\x1b[31mError: ${message.data.message}\\x1b[0m\\r\\n`
+            );
             setIsProcessRunning(false);
             break;
         }
@@ -307,29 +311,34 @@ export const Terminal: React.FC<TerminalProps> = ({
 
   const killProcess = useCallback(() => {
     if (websocket && sessionId) {
-      websocket.send(JSON.stringify({
-        type: 'kill',
-        sessionId
-      }));
+      websocket.send(
+        JSON.stringify({
+          type: 'kill',
+          sessionId,
+        })
+      );
     }
     setIsProcessRunning(false);
   }, [websocket, sessionId]);
 
   const closeTerminal = useCallback(() => {
     if (websocket && sessionId) {
-      websocket.send(JSON.stringify({
-        type: 'close-session',
-        sessionId
-      }));
+      websocket.send(
+        JSON.stringify({
+          type: 'close-session',
+          sessionId,
+        })
+      );
     }
     onClose?.();
   }, [websocket, sessionId, onClose]);
 
-
   // Render loading state
   if (isLoading) {
     return (
-      <div className={`terminal-container terminal-container--${mode} ${className}`}>
+      <div
+        className={`terminal-container terminal-container--${mode} ${className}`}
+      >
         {showHeader && (
           <div className="terminal-header">
             <h3 className="terminal-title">{title}</h3>
@@ -345,7 +354,9 @@ export const Terminal: React.FC<TerminalProps> = ({
   // Render error state
   if (error) {
     return (
-      <div className={`terminal-container terminal-container--${mode} ${className}`}>
+      <div
+        className={`terminal-container terminal-container--${mode} ${className}`}
+      >
         {showHeader && (
           <div className="terminal-header">
             <h3 className="terminal-title">{title}</h3>
@@ -353,7 +364,7 @@ export const Terminal: React.FC<TerminalProps> = ({
         )}
         <div className="terminal-error">
           <div className="terminal-error-message">{error}</div>
-          <button 
+          <button
             className="terminal-error-retry"
             onClick={() => window.location.reload()}
           >
@@ -365,22 +376,29 @@ export const Terminal: React.FC<TerminalProps> = ({
   }
 
   return (
-    <div className={`terminal-container terminal-container--${mode} terminal-container--${theme} ${className}`}>
+    <div
+      className={`terminal-container terminal-container--${mode} terminal-container--${theme} ${className}`}
+    >
       {showHeader && (
         <div className="terminal-header">
           <div className="terminal-title-section">
             <h3 className="terminal-title">{title}</h3>
             <div className="terminal-session-info">
               {sessionId && (
-                <span className="terminal-session-badge">{sessionId.slice(0, 8)}</span>
+                <span className="terminal-session-badge">
+                  {sessionId.slice(0, 8)}
+                </span>
               )}
-              <span className="terminal-working-directory" title={currentDirectory}>
+              <span
+                className="terminal-working-directory"
+                title={currentDirectory}
+              >
                 {currentDirectory}
               </span>
             </div>
           </div>
           <div className="terminal-controls">
-            <button 
+            <button
               className="terminal-button terminal-button--clear"
               onClick={clearTerminal}
               title="Clear terminal"
@@ -388,7 +406,7 @@ export const Terminal: React.FC<TerminalProps> = ({
               Clear
             </button>
             {isProcessRunning && (
-              <button 
+              <button
                 className="terminal-button terminal-button--kill"
                 onClick={killProcess}
                 title="Kill running process"
@@ -396,7 +414,7 @@ export const Terminal: React.FC<TerminalProps> = ({
                 Kill
               </button>
             )}
-            <button 
+            <button
               className="terminal-button terminal-button--close"
               onClick={closeTerminal}
               title="Close terminal"
@@ -406,25 +424,27 @@ export const Terminal: React.FC<TerminalProps> = ({
           </div>
         </div>
       )}
-      
+
       <div className="terminal-content">
         <div ref={terminalRef} className="terminal-xterm" />
       </div>
-      
+
       {showStatusBar && (
         <div className="terminal-status-bar">
           <div className="terminal-status-left">
             <div className="terminal-connection-status">
-              <div className={`terminal-connection-indicator terminal-connection-indicator--${connectionStatus}`} />
+              <div
+                className={`terminal-connection-indicator terminal-connection-indicator--${connectionStatus}`}
+              />
               <span>{connectionStatus}</span>
             </div>
-            {sessionId && (
-              <span>Session: {sessionId.slice(0, 8)}</span>
-            )}
+            {sessionId && <span>Session: {sessionId.slice(0, 8)}</span>}
           </div>
           <div className="terminal-status-right">
             <span>
-              {xtermRef.current ? `${xtermRef.current.cols}x${xtermRef.current.rows}` : `${initialSize.cols}x${initialSize.rows}`}
+              {xtermRef.current
+                ? `${xtermRef.current.cols}x${xtermRef.current.rows}`
+                : `${initialSize.cols}x${initialSize.rows}`}
             </span>
             {repositoryPath && (
               <span title={repositoryPath}>

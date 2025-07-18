@@ -230,7 +230,8 @@ export class ApiService {
       if (!response.ok) {
         throw new ApiError(
           data.error?.code || 'UNKNOWN_ERROR',
-          data.error?.message || `HTTP ${response.status}: ${response.statusText}`,
+          data.error?.message ||
+            `HTTP ${response.status}: ${response.statusText}`,
           response.status,
           data.error?.correlationId
         );
@@ -286,7 +287,9 @@ export class ApiService {
   }
 
   // Project Management API
-  async createProject(request: CreateProjectRequest): Promise<CreateProjectResponse> {
+  async createProject(
+    request: CreateProjectRequest
+  ): Promise<CreateProjectResponse> {
     return this.request<CreateProjectResponse>('/projects', {
       method: 'POST',
       body: JSON.stringify(request),
@@ -294,7 +297,9 @@ export class ApiService {
   }
 
   async getProjects(): Promise<{ projects: ProjectResponse[]; count: number }> {
-    return this.request<{ projects: ProjectResponse[]; count: number }>('/projects');
+    return this.request<{ projects: ProjectResponse[]; count: number }>(
+      '/projects'
+    );
   }
 
   async getProject(id: string): Promise<ProjectResponse> {
@@ -317,7 +322,10 @@ export class ApiService {
     return this.request<any>(`/tasks/file?${params}`);
   }
 
-  async getTasksFromRepository(repositoryPath: string, projectTag?: string): Promise<any> {
+  async getTasksFromRepository(
+    repositoryPath: string,
+    projectTag?: string
+  ): Promise<any> {
     const params = new URLSearchParams({ repositoryPath });
     if (projectTag) {
       params.append('projectTag', projectTag);
@@ -326,14 +334,22 @@ export class ApiService {
   }
 
   // Task Update API
-  async updateTaskStatus(taskId: number, status: string, projectId?: string): Promise<any> {
+  async updateTaskStatus(
+    taskId: number,
+    status: string,
+    projectId?: string
+  ): Promise<any> {
     return this.request<any>(`/tasks/${taskId}/status`, {
       method: 'PUT',
       body: JSON.stringify({ status, projectId }),
     });
   }
 
-  async updateTask(taskId: number, updates: any, projectId?: string): Promise<any> {
+  async updateTask(
+    taskId: number,
+    updates: any,
+    projectId?: string
+  ): Promise<any> {
     return this.request<any>(`/tasks/${taskId}`, {
       method: 'PUT',
       body: JSON.stringify({ ...updates, projectId }),
@@ -362,12 +378,16 @@ export class ApiService {
     });
   }
 
-  async getPRDAnalysisHistory(limit?: number): Promise<{ analyses: PRDAnalysisResult[]; count: number }> {
+  async getPRDAnalysisHistory(
+    limit?: number
+  ): Promise<{ analyses: PRDAnalysisResult[]; count: number }> {
     const params = new URLSearchParams();
     if (limit) {
       params.append('limit', limit.toString());
     }
-    return this.request<{ analyses: PRDAnalysisResult[]; count: number }>(`/prd/analyses?${params}`);
+    return this.request<{ analyses: PRDAnalysisResult[]; count: number }>(
+      `/prd/analyses?${params}`
+    );
   }
 
   async getPRDAnalysis(analysisId: string): Promise<PRDAnalysisResult> {
@@ -375,28 +395,43 @@ export class ApiService {
   }
 
   // Dashboard API
-  async getDashboardData(projectId: string, projectTag?: string): Promise<DashboardData> {
+  async getDashboardData(
+    projectId: string,
+    projectTag?: string
+  ): Promise<DashboardData> {
     const params = new URLSearchParams();
     if (projectTag) {
       params.append('tag', projectTag);
     }
-    return this.request<DashboardData>(`/dashboard/projects/${projectId}?${params}`);
+    return this.request<DashboardData>(
+      `/dashboard/projects/${projectId}?${params}`
+    );
   }
 
-  async getProjectHealth(projectId: string, projectTag?: string): Promise<ProjectHealthData> {
+  async getProjectHealth(
+    projectId: string,
+    projectTag?: string
+  ): Promise<ProjectHealthData> {
     const params = new URLSearchParams();
     if (projectTag) {
       params.append('tag', projectTag);
     }
-    return this.request<ProjectHealthData>(`/dashboard/projects/${projectId}/health?${params}`);
+    return this.request<ProjectHealthData>(
+      `/dashboard/projects/${projectId}/health?${params}`
+    );
   }
 
-  async getDashboardMetrics(projectId: string, projectTag?: string): Promise<DashboardData> {
+  async getDashboardMetrics(
+    projectId: string,
+    projectTag?: string
+  ): Promise<DashboardData> {
     const params = new URLSearchParams();
     if (projectTag) {
       params.append('tag', projectTag);
     }
-    return this.request<DashboardData>(`/dashboard/projects/${projectId}/metrics?${params}`);
+    return this.request<DashboardData>(
+      `/dashboard/projects/${projectId}/metrics?${params}`
+    );
   }
 }
 

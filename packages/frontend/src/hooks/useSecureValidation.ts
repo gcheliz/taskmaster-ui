@@ -1,6 +1,6 @@
 /**
  * React Hook for Secure Form Validation
- * 
+ *
  * Provides reusable form validation with security-focused checks
  * and sanitization for TaskMaster UI components.
  */
@@ -12,10 +12,10 @@ import {
   validateProjectName,
   validateTaskId,
   validateTextInput,
-  validateURL
+  validateURL,
 } from '../utils/security';
 
-export type ValidatorType = 
+export type ValidatorType =
   | 'repositoryPath'
   | 'projectName'
   | 'taskId'
@@ -39,32 +39,35 @@ export interface FieldValidation {
 
 export interface UseSecureValidationOptions {
   initialValues?: Record<string, string>;
-  validators: Record<string, {
-    type: ValidatorType;
-    options?: ValidationOptions;
-  }>;
+  validators: Record<
+    string,
+    {
+      type: ValidatorType;
+      options?: ValidationOptions;
+    }
+  >;
   onSubmit?: (values: Record<string, string>) => void | Promise<void>;
 }
 
 export const useSecureValidation = ({
   initialValues = {},
   validators,
-  onSubmit
+  onSubmit,
 }: UseSecureValidationOptions) => {
   // Initialize field states
   const [fields, setFields] = useState<Record<string, FieldValidation>>(() => {
     const initialFields: Record<string, FieldValidation> = {};
-    
+
     Object.keys(validators).forEach(fieldName => {
       initialFields[fieldName] = {
         value: initialValues[fieldName] || '',
         error: null,
         isValid: true,
         isDirty: false,
-        isTouched: false
+        isTouched: false,
       };
     });
-    
+
     return initialFields;
   });
 
@@ -72,56 +75,64 @@ export const useSecureValidation = ({
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   // Validation function for a specific field
-  const validateField = useCallback((fieldName: string, value: string): ValidationResult => {
-    const validator = validators[fieldName];
-    if (!validator) {
-      return { isValid: true, sanitizedValue: value };
-    }
-
-    const { type, options = {} } = validator;
-
-    switch (type) {
-      case 'repositoryPath':
-        return validateRepositoryPath(value);
-      
-      case 'projectName':
-        return validateProjectName(value);
-      
-      case 'taskId':
-        return validateTaskId(value);
-      
-      case 'url':
-        return validateURL(value);
-      
-      case 'text':
-        return validateTextInput(value, options);
-      
-      default:
+  const validateField = useCallback(
+    (fieldName: string, value: string): ValidationResult => {
+      const validator = validators[fieldName];
+      if (!validator) {
         return { isValid: true, sanitizedValue: value };
-    }
-  }, [validators]);
+      }
+
+      const { type, options = {} } = validator;
+
+      switch (type) {
+        case 'repositoryPath':
+          return validateRepositoryPath(value);
+
+        case 'projectName':
+          return validateProjectName(value);
+
+        case 'taskId':
+          return validateTaskId(value);
+
+        case 'url':
+          return validateURL(value);
+
+        case 'text':
+          return validateTextInput(value, options);
+
+        default:
+          return { isValid: true, sanitizedValue: value };
+      }
+    },
+    [validators]
+  );
 
   // Update a field value and validate
-  const updateField = useCallback((fieldName: string, value: string) => {
-    const validation = validateField(fieldName, value);
-    
-    setFields(prev => ({
-      ...prev,
-      [fieldName]: {
-        ...prev[fieldName],
-        value,
-        error: validation.isValid ? null : validation.error || 'Invalid input',
-        isValid: validation.isValid,
-        isDirty: value !== (initialValues[fieldName] || ''),
-        isTouched: true
-      }
-    }));
+  const updateField = useCallback(
+    (fieldName: string, value: string) => {
+      const validation = validateField(fieldName, value);
 
-    // Clear submit error when user starts typing
-    if (submitError) {
-      setSubmitError(null);
-    }
-  }, [validateField, initialValues, submitError]);
+      setFields(prev => ({
+        ...prev,
+        [fieldName]: {
+          ...prev[fieldName],
+          value,
+          error: validation.isValid
+            ? null
+            : validation.error || 'Invalid input',
+          isValid: validation.isValid,
+          isDirty: value !== (initialValues[fieldName] || ''),
+          isTouched: true,
+        },
+      }));
+
+      // Clear submit error when user starts typing
+      if (submitError) {
+        setSubmitError(null);
+      }
+    },
+    [validateField, initialValues, submitError]
+  );
 
   // Mark field as touched (for blur events)
   const touchField = useCallback((fieldName: string) => {
@@ -129,8 +140,8 @@ export const useSecureValidation = ({
       ...prev,
       [fieldName]: {
         ...prev[fieldName],
-        isTouched: true
-      }
+        isTouched: true,
+      },
     }));
   }, []);
 
@@ -147,7 +158,7 @@ export const useSecureValidation = ({
         ...field,
         error: validation.isValid ? null : validation.error || 'Invalid input',
         isValid: validation.isValid,
-        isTouched: true
+        isTouched: true,
       };
 
       if (!validation.isValid) {
@@ -173,43 +184,48 @@ export const useSecureValidation = ({
   }, [fields, validateField]);
 
   // Handle form submission
-  const handleSubmit = useCallback(async (e?: React.FormEvent) => {
-    if (e) {
-      e.preventDefault();
-    }
-
-    setIsSubmitting(true);
-    setSubmitError(null);
-
-    try {
-      const isValid = validateAllFields();
-      
-      if (!isValid) {
-        throw new Error('Please fix validation errors before submitting');
+  const handleSubmit = useCallback(
+    async (e?: React.FormEvent) => {
+      if (e) {
+        e.preventDefault();
       }
 
-      if (onSubmit) {
-        const sanitizedValues = getSanitizedValues();
-        await onSubmit(sanitizedValues);
+      setIsSubmitting(true);
+      setSubmitError(null);
+
+      try {
+        const isValid = validateAllFields();
+
+        if (!isValid) {
+          throw new Error('Please fix validation errors before submitting');
+        }
+
+        if (onSubmit) {
+          const sanitizedValues = getSanitizedValues();
+          await onSubmit(sanitizedValues);
+        }
+      } catch (error) {
+        setSubmitError(
+          error instanceof Error ? error.message : 'Submission failed'
+        );
+      } finally {
+        setIsSubmitting(false);
       }
-    } catch (error) {
-      setSubmitError(error instanceof Error ? error.message : 'Submission failed');
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, [validateAllFields, getSanitizedValues, onSubmit]);
+    },
+    [validateAllFields, getSanitizedValues, onSubmit]
+  );
 
   // Reset form to initial values
   const resetForm = useCallback(() => {
     const resetFields: Record<string, FieldValidation> = {};
-    
+
     Object.keys(validators).forEach(fieldName => {
       resetFields[fieldName] = {
         value: initialValues[fieldName] || '',
         error: null,
         isValid: true,
         isDirty: false,
-        isTouched: false
+        isTouched: false,
       };
     });
 
@@ -218,18 +234,21 @@ export const useSecureValidation = ({
   }, [validators, initialValues]);
 
   // Reset a specific field
-  const resetField = useCallback((fieldName: string) => {
-    setFields(prev => ({
-      ...prev,
-      [fieldName]: {
-        value: initialValues[fieldName] || '',
-        error: null,
-        isValid: true,
-        isDirty: false,
-        isTouched: false
-      }
-    }));
-  }, [initialValues]);
+  const resetField = useCallback(
+    (fieldName: string) => {
+      setFields(prev => ({
+        ...prev,
+        [fieldName]: {
+          value: initialValues[fieldName] || '',
+          error: null,
+          isValid: true,
+          isDirty: false,
+          isTouched: false,
+        },
+      }));
+    },
+    [initialValues]
+  );
 
   // Computed values
   const formState = useMemo(() => {
@@ -254,37 +273,45 @@ export const useSecureValidation = ({
       isDirty: isFormDirty,
       isTouched: isFormTouched,
       isSubmitting,
-      submitError
+      submitError,
     };
   }, [fields, isSubmitting, submitError]);
 
   // Field helpers for easy binding to form inputs
-  const getFieldProps = useCallback((fieldName: string) => {
-    const field = fields[fieldName];
-    
-    return {
-      value: field?.value || '',
-      onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        updateField(fieldName, e.target.value);
-      },
-      onBlur: () => touchField(fieldName),
-      'aria-invalid': field?.error ? 'true' : 'false',
-      'aria-describedby': field?.error ? `${fieldName}-error` : undefined
-    };
-  }, [fields, updateField, touchField]);
+  const getFieldProps = useCallback(
+    (fieldName: string) => {
+      const field = fields[fieldName];
+
+      return {
+        value: field?.value || '',
+        onChange: (
+          e: React.ChangeEvent<
+            HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+          >
+        ) => {
+          updateField(fieldName, e.target.value);
+        },
+        onBlur: () => touchField(fieldName),
+        'aria-invalid': field?.error ? 'true' : 'false',
+        'aria-describedby': field?.error ? `${fieldName}-error` : undefined,
+      };
+    },
+    [fields, updateField, touchField]
+  );
 
   return {
     fields,
     formState,
     updateField,
     touchField,
-    validateField: (fieldName: string) => validateField(fieldName, fields[fieldName]?.value || ''),
+    validateField: (fieldName: string) =>
+      validateField(fieldName, fields[fieldName]?.value || ''),
     validateAllFields,
     getSanitizedValues,
     handleSubmit,
     resetForm,
     resetField,
-    getFieldProps
+    getFieldProps,
   };
 };
 

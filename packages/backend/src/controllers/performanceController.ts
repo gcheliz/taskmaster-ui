@@ -1,6 +1,6 @@
 /**
  * Performance Monitoring Controller
- * 
+ *
  * Provides endpoints for database performance monitoring and query analysis
  */
 
@@ -9,25 +9,24 @@ import { DatabaseService } from '../services/database';
 import queryAnalyzer from '../services/queryAnalyzer';
 
 export class PerformanceController {
-  
   /**
    * Get query performance analysis
    */
   public async getQueryAnalysis(req: Request, res: Response): Promise<void> {
     try {
       const analysis = DatabaseService.getInstance().getQueryAnalysis();
-      
+
       res.json({
         success: true,
         data: analysis,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       console.error('Error getting query analysis:', error);
       res.status(500).json({
         success: false,
         error: 'Failed to get query analysis',
-        message: (error as Error).message
+        message: (error as Error).message,
       });
     }
   }
@@ -38,17 +37,17 @@ export class PerformanceController {
   public async clearLogs(req: Request, res: Response): Promise<void> {
     try {
       DatabaseService.getInstance().clearQueryLogs();
-      
+
       res.json({
         success: true,
-        message: 'Query logs cleared successfully'
+        message: 'Query logs cleared successfully',
       });
     } catch (error) {
       console.error('Error clearing logs:', error);
       res.status(500).json({
         success: false,
         error: 'Failed to clear logs',
-        message: (error as Error).message
+        message: (error as Error).message,
       });
     }
   }
@@ -60,15 +59,15 @@ export class PerformanceController {
     try {
       const filename = `query-logs-${Date.now()}.json`;
       const outputPath = `/tmp/${filename}`;
-      
+
       DatabaseService.getInstance().exportQueryLogs(outputPath);
-      
-      res.download(outputPath, filename, (err) => {
+
+      res.download(outputPath, filename, err => {
         if (err) {
           console.error('Error downloading file:', err);
           res.status(500).json({
             success: false,
-            error: 'Failed to download logs'
+            error: 'Failed to download logs',
           });
         }
       });
@@ -77,7 +76,7 @@ export class PerformanceController {
       res.status(500).json({
         success: false,
         error: 'Failed to export logs',
-        message: (error as Error).message
+        message: (error as Error).message,
       });
     }
   }
@@ -100,9 +99,11 @@ export class PerformanceController {
         host: urlObj?.hostname || 'unknown',
         port: urlObj?.port || 'unknown',
         database: urlObj?.pathname?.slice(1) || 'unknown',
-        connectionPoolSize: urlObj?.searchParams.get('connection_limit') || 'default',
+        connectionPoolSize:
+          urlObj?.searchParams.get('connection_limit') || 'default',
         poolTimeout: urlObj?.searchParams.get('pool_timeout') || 'default',
-        statementTimeout: urlObj?.searchParams.get('statement_timeout') || 'default'
+        statementTimeout:
+          urlObj?.searchParams.get('statement_timeout') || 'default',
       };
 
       res.json({
@@ -110,15 +111,15 @@ export class PerformanceController {
         data: {
           connection: connectionInfo,
           stats,
-          queryAnalysisEnabled: queryAnalyzer.getEnabled()
-        }
+          queryAnalysisEnabled: queryAnalyzer.getEnabled(),
+        },
       });
     } catch (error) {
       console.error('Error getting connection info:', error);
       res.status(500).json({
         success: false,
         error: 'Failed to get connection info',
-        message: (error as Error).message
+        message: (error as Error).message,
       });
     }
   }
@@ -140,20 +141,20 @@ export class PerformanceController {
       results.push({
         test: 'Simple SELECT',
         duration: Date.now() - simpleStart,
-        status: 'passed'
+        status: 'passed',
       });
 
       // Test 2: Count queries
       const countStart = Date.now();
       const [projectCount, taskCount] = await Promise.all([
         prisma.project.count(),
-        prisma.task.count()
+        prisma.task.count(),
       ]);
       results.push({
         test: 'Count queries',
         duration: Date.now() - countStart,
         status: 'passed',
-        results: { projectCount, taskCount }
+        results: { projectCount, taskCount },
       });
 
       // Test 3: Join query (tasks with projects)
@@ -161,43 +162,40 @@ export class PerformanceController {
       const tasksWithProjects = await prisma.task.findMany({
         take: 10,
         include: {
-          project: true
-        }
+          project: true,
+        },
       });
       results.push({
         test: 'Join query (tasks with projects)',
         duration: Date.now() - joinStart,
         status: 'passed',
-        resultCount: tasksWithProjects.length
+        resultCount: tasksWithProjects.length,
       });
 
       // Test 4: Complex query with filtering
       const complexStart = Date.now();
       const complexQuery = await prisma.task.findMany({
         where: {
-          OR: [
-            { status: 'IN_PROGRESS' },
-            { priority: 'HIGH' }
-          ]
+          OR: [{ status: 'IN_PROGRESS' }, { priority: 'HIGH' }],
         },
         include: {
           project: {
             select: {
               name: true,
-              description: true
-            }
-          }
+              description: true,
+            },
+          },
         },
         orderBy: {
-          createdAt: 'desc'
+          createdAt: 'desc',
         },
-        take: 5
+        take: 5,
       });
       results.push({
         test: 'Complex filtered query',
         duration: Date.now() - complexStart,
         status: 'passed',
-        resultCount: complexQuery.length
+        resultCount: complexQuery.length,
       });
 
       const totalTime = Date.now() - startTime;
@@ -205,7 +203,7 @@ export class PerformanceController {
       // Record performance metrics
       dbService.recordPerformanceMetric({
         responseTime: totalTime,
-        queryCount: results.length
+        queryCount: results.length,
       });
 
       res.json({
@@ -214,22 +212,23 @@ export class PerformanceController {
           totalDuration: totalTime,
           tests: results,
           summary: {
-            averageQueryTime: results.reduce((sum, r) => sum + r.duration, 0) / results.length,
-            slowestQuery: results.reduce((slowest, current) => 
+            averageQueryTime:
+              results.reduce((sum, r) => sum + r.duration, 0) / results.length,
+            slowestQuery: results.reduce((slowest, current) =>
               current.duration > slowest.duration ? current : slowest
             ),
-            fastestQuery: results.reduce((fastest, current) => 
+            fastestQuery: results.reduce((fastest, current) =>
               current.duration < fastest.duration ? current : fastest
-            )
-          }
-        }
+            ),
+          },
+        },
       });
     } catch (error) {
       console.error('Error running performance test:', error);
       res.status(500).json({
         success: false,
         error: 'Performance test failed',
-        message: (error as Error).message
+        message: (error as Error).message,
       });
     }
   }
@@ -244,7 +243,7 @@ export class PerformanceController {
 
       // Get analysis from query analyzer
       const analysis = dbService.getQueryAnalysis();
-      
+
       // Run EXPLAIN on some sample queries to analyze performance
       const explainResults = [];
 
@@ -261,12 +260,12 @@ export class PerformanceController {
         `;
         explainResults.push({
           query: 'Tasks with projects (IN_PROGRESS)',
-          plan: explainPlan
+          plan: explainPlan,
         });
       } catch (explainError) {
         explainResults.push({
           query: 'Tasks with projects (IN_PROGRESS)',
-          error: (explainError as Error).message
+          error: (explainError as Error).message,
         });
       }
 
@@ -282,12 +281,12 @@ export class PerformanceController {
         `;
         explainResults.push({
           query: 'Repositories with commit counts',
-          plan: explainPlan2
+          plan: explainPlan2,
         });
       } catch (explainError) {
         explainResults.push({
           query: 'Repositories with commit counts',
-          error: (explainError as Error).message
+          error: (explainError as Error).message,
         });
       }
 
@@ -296,15 +295,18 @@ export class PerformanceController {
         data: {
           queryAnalysis: analysis,
           explainPlans: explainResults,
-          recommendations: this.generateOptimizationRecommendations(analysis, explainResults)
-        }
+          recommendations: this.generateOptimizationRecommendations(
+            analysis,
+            explainResults
+          ),
+        },
       });
     } catch (error) {
       console.error('Error analyzing slow queries:', error);
       res.status(500).json({
         success: false,
         error: 'Failed to analyze slow queries',
-        message: (error as Error).message
+        message: (error as Error).message,
       });
     }
   }
@@ -312,7 +314,10 @@ export class PerformanceController {
   /**
    * Generate optimization recommendations based on analysis
    */
-  private generateOptimizationRecommendations(analysis: any, explainResults: any[]): string[] {
+  private generateOptimizationRecommendations(
+    analysis: any,
+    explainResults: any[]
+  ): string[] {
     const recommendations: string[] = [];
 
     // Add recommendations from query analyzer
@@ -327,12 +332,16 @@ export class PerformanceController {
         if (plan && plan.Plan) {
           const executionTime = plan['Execution Time'];
           if (executionTime > 100) {
-            recommendations.push(`Consider optimizing: ${result.query} (${executionTime}ms execution time)`);
+            recommendations.push(
+              `Consider optimizing: ${result.query} (${executionTime}ms execution time)`
+            );
           }
 
           // Check for sequential scans
           if (this.hasSequentialScan(plan.Plan)) {
-            recommendations.push(`Add indexes to avoid sequential scans in: ${result.query}`);
+            recommendations.push(
+              `Add indexes to avoid sequential scans in: ${result.query}`
+            );
           }
         }
       }
@@ -346,7 +355,7 @@ export class PerformanceController {
    */
   private hasSequentialScan(plan: any): boolean {
     if (!plan) return false;
-    
+
     if (plan['Node Type'] === 'Seq Scan') {
       return true;
     }
@@ -364,12 +373,12 @@ export class PerformanceController {
   public async toggleAnalysis(req: Request, res: Response): Promise<void> {
     try {
       const { enabled } = req.body;
-      
+
       if (typeof enabled !== 'boolean') {
         res.status(400).json({
           success: false,
           error: 'Invalid request',
-          message: 'enabled must be a boolean value'
+          message: 'enabled must be a boolean value',
         });
         return;
       }
@@ -379,14 +388,14 @@ export class PerformanceController {
       res.json({
         success: true,
         message: `Query analysis ${enabled ? 'enabled' : 'disabled'}`,
-        enabled: queryAnalyzer.getEnabled()
+        enabled: queryAnalyzer.getEnabled(),
       });
     } catch (error) {
       console.error('Error toggling analysis:', error);
       res.status(500).json({
         success: false,
         error: 'Failed to toggle analysis',
-        message: (error as Error).message
+        message: (error as Error).message,
       });
     }
   }

@@ -451,11 +451,11 @@
   .create-project-modal {
     animation: none;
   }
-  
+
   .create-project-modal__content {
     animation: none;
   }
-  
+
   .button-spinner {
     animation: none;
   }
@@ -466,12 +466,12 @@
   .create-project-modal__content {
     border: 2px solid var(--color-border);
   }
-  
+
   .button:focus {
     outline: 2px solid var(--color-primary);
     outline-offset: 2px;
   }
-  
+
   .form-select:focus,
   .form-input:focus {
     outline: 2px solid var(--color-primary);

@@ -22,7 +22,7 @@ import {
   ApiError,
   TaskFilters,
   PaginationOptions,
-  SortingOptions
+  SortingOptions,
 } from '../types/api';
 
 // Controller Interface for Dependency Injection
@@ -48,97 +48,132 @@ export class TaskMasterController implements ITaskMasterController {
    * Execute CLI Command Endpoint
    * POST /api/cli/execute
    */
-  async executeCommand(req: EnhancedRequest, res: EnhancedResponse): Promise<void> {
+  async executeCommand(
+    req: EnhancedRequest,
+    res: EnhancedResponse
+  ): Promise<void> {
     try {
       const request = req.validatedBody as CliExecuteRequest;
-      const { repositoryPath, operation, arguments: args = {}, options = {} } = request;
+      const {
+        repositoryPath,
+        operation,
+        arguments: args = {},
+        options = {},
+      } = request;
 
       // Emit WebSocket event for real-time tracking
       this.emitWebSocketEvent('command:start', {
         requestId: req.requestId,
         repositoryPath,
         operation,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
 
       let result;
-      
+
       // Route to appropriate service method based on operation
       switch (operation) {
         case 'init':
-          result = await this.taskMasterService.initProject(repositoryPath, args);
+          result = await this.taskMasterService.initProject(
+            repositoryPath,
+            args
+          );
           break;
-          
+
         case 'status':
         case 'list':
           result = await this.taskMasterService.listTasks(repositoryPath, {
             status: args.status,
-            tag: options.tag
+            tag: options.tag,
           });
           break;
-          
+
         case 'show':
           if (!args.id) {
             throw new Error('Task ID is required for show operation');
           }
-          result = await this.taskMasterService.getTask(repositoryPath, args.id.toString(), {
-            tag: options.tag
-          });
+          result = await this.taskMasterService.getTask(
+            repositoryPath,
+            args.id.toString(),
+            {
+              tag: options.tag,
+            }
+          );
           break;
-          
+
         case 'set-status':
           if (!args.id || !args.status) {
-            throw new Error('Task ID and status are required for set-status operation');
+            throw new Error(
+              'Task ID and status are required for set-status operation'
+            );
           }
           result = await this.taskMasterService.updateTaskStatus(
-            repositoryPath, 
-            args.id.toString(), 
+            repositoryPath,
+            args.id.toString(),
             args.status,
             { tag: options.tag }
           );
           break;
-          
+
         case 'next':
           result = await this.taskMasterService.getNextTask(repositoryPath, {
-            tag: options.tag
+            tag: options.tag,
           });
           break;
-          
+
         case 'parse-prd':
           if (!args.file) {
-            throw new Error('PRD file path is required for parse-prd operation');
+            throw new Error(
+              'PRD file path is required for parse-prd operation'
+            );
           }
-          result = await this.taskMasterService.parsePRD(repositoryPath, args.file, {
-            append: args.append
-          });
+          result = await this.taskMasterService.parsePRD(
+            repositoryPath,
+            args.file,
+            {
+              append: args.append,
+            }
+          );
           break;
-          
+
         case 'expand':
           if (!args.id && !args.all) {
-            throw new Error('Task ID or --all flag is required for expand operation');
+            throw new Error(
+              'Task ID or --all flag is required for expand operation'
+            );
           }
-          result = await this.taskMasterService.expandTask(repositoryPath, args.id?.toString(), {
-            research: args.research,
-            force: args.force,
-            tag: options.tag
-          });
+          result = await this.taskMasterService.expandTask(
+            repositoryPath,
+            args.id?.toString(),
+            {
+              research: args.research,
+              force: args.force,
+              tag: options.tag,
+            }
+          );
           break;
-          
+
         case 'analyze-complexity':
-          result = await this.taskMasterService.analyzeComplexity(repositoryPath, {
-            from: args.from,
-            to: args.to,
-            research: args.research,
-            tag: options.tag
-          });
+          result = await this.taskMasterService.analyzeComplexity(
+            repositoryPath,
+            {
+              from: args.from,
+              to: args.to,
+              research: args.research,
+              tag: options.tag,
+            }
+          );
           break;
-          
+
         case 'validate-dependencies':
-          result = await this.taskMasterService.validateDependencies(repositoryPath, {
-            tag: options.tag
-          });
+          result = await this.taskMasterService.validateDependencies(
+            repositoryPath,
+            {
+              tag: options.tag,
+            }
+          );
           break;
-          
+
         default:
           throw new Error(`Unknown operation: ${operation}`);
       }
@@ -150,7 +185,7 @@ export class TaskMasterController implements ITaskMasterController {
         operation,
         success: result.success,
         duration: result.duration,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
 
       const response: CliExecuteResponse = {
@@ -161,14 +196,13 @@ export class TaskMasterController implements ITaskMasterController {
           requestId: req.requestId,
           duration: Date.now() - req.startTime,
           version: process.env.API_VERSION || '1.0.0',
-          rateLimit: req.rateLimit
-        }
+          rateLimit: req.rateLimit,
+        },
       };
 
       res.apiSuccess(result, {
-        rateLimit: req.rateLimit
+        rateLimit: req.rateLimit,
       });
-
     } catch (error) {
       await this.handleError(error as Error, req, res, 'executeCommand');
     }
@@ -178,7 +212,10 @@ export class TaskMasterController implements ITaskMasterController {
    * Get Project Status Endpoint
    * GET /api/project/status
    */
-  async getProjectStatus(req: EnhancedRequest, res: EnhancedResponse): Promise<void> {
+  async getProjectStatus(
+    req: EnhancedRequest,
+    res: EnhancedResponse
+  ): Promise<void> {
     try {
       const request = req.query as unknown as ProjectStatusRequest;
       const { repositoryPath, includeStats, includeTasks } = request;
@@ -188,11 +225,13 @@ export class TaskMasterController implements ITaskMasterController {
       }
 
       // Get project status
-      const statusResult = await this.taskMasterService.getProjectStatus(repositoryPath);
-      
+      const statusResult =
+        await this.taskMasterService.getProjectStatus(repositoryPath);
+
       let tasksData = undefined;
       if (includeTasks) {
-        const tasksResult = await this.taskMasterService.listTasks(repositoryPath);
+        const tasksResult =
+          await this.taskMasterService.listTasks(repositoryPath);
         tasksData = tasksResult.data;
       }
 
@@ -205,13 +244,12 @@ export class TaskMasterController implements ITaskMasterController {
       const responseData = {
         project: statusResult.data!,
         stats,
-        tasks: tasksData
+        tasks: tasksData,
       };
 
       res.apiSuccess(responseData, {
-        rateLimit: req.rateLimit
+        rateLimit: req.rateLimit,
       });
-
     } catch (error) {
       await this.handleError(error as Error, req, res, 'getProjectStatus');
     }
@@ -224,7 +262,12 @@ export class TaskMasterController implements ITaskMasterController {
   async listTasks(req: EnhancedRequest, res: EnhancedResponse): Promise<void> {
     try {
       const request = req.query as unknown as TaskListRequest;
-      const { repositoryPath, filters = {}, pagination = { page: 1, limit: 50 }, sorting } = request;
+      const {
+        repositoryPath,
+        filters = {},
+        pagination = { page: 1, limit: 50 },
+        sorting,
+      } = request;
 
       if (!repositoryPath) {
         throw new Error('Repository path is required');
@@ -233,7 +276,7 @@ export class TaskMasterController implements ITaskMasterController {
       // Get tasks from service
       const result = await this.taskMasterService.listTasks(repositoryPath, {
         status: filters.status?.[0], // Service accepts single status for now
-        tag: this.extractTagFromPath(repositoryPath)
+        tag: this.extractTagFromPath(repositoryPath),
       });
 
       if (!result.success || !result.data) {
@@ -242,27 +285,29 @@ export class TaskMasterController implements ITaskMasterController {
 
       // Apply client-side filtering and pagination
       let filteredTasks = result.data;
-      
+
       // Apply filters
       if (filters.status && filters.status.length > 0) {
-        filteredTasks = filteredTasks.filter(task => 
+        filteredTasks = filteredTasks.filter(task =>
           filters.status!.includes(task.status)
         );
       }
-      
+
       if (filters.priority && filters.priority.length > 0) {
-        filteredTasks = filteredTasks.filter(task => 
+        filteredTasks = filteredTasks.filter(task =>
           filters.priority!.includes(task.priority)
         );
       }
-      
+
       if (filters.complexity && filters.complexity.length > 0) {
         filteredTasks = filteredTasks.filter(task => {
-          const taskComplexity = this.getTaskComplexityLevel(task.complexity || 1);
+          const taskComplexity = this.getTaskComplexityLevel(
+            task.complexity || 1
+          );
           return filters.complexity!.includes(taskComplexity);
         });
       }
-      
+
       if (filters.assignee && filters.assignee.length > 0) {
         filteredTasks = filteredTasks.filter(task => {
           // For now, we'll treat all tasks as unassigned since assignee is not in TaskInfo
@@ -270,7 +315,7 @@ export class TaskMasterController implements ITaskMasterController {
           return filters.assignee!.includes(taskAssignee);
         });
       }
-      
+
       if (filters.complexityRange && filters.complexityRange.length === 2) {
         const [minComplexity, maxComplexity] = filters.complexityRange;
         filteredTasks = filteredTasks.filter(task => {
@@ -278,13 +323,14 @@ export class TaskMasterController implements ITaskMasterController {
           return complexity >= minComplexity && complexity <= maxComplexity;
         });
       }
-      
+
       if (filters.search) {
         const searchTerm = filters.search.toLowerCase();
-        filteredTasks = filteredTasks.filter(task =>
-          task.title.toLowerCase().includes(searchTerm) ||
-          task.description?.toLowerCase().includes(searchTerm) ||
-          (task as any).details?.toLowerCase().includes(searchTerm)
+        filteredTasks = filteredTasks.filter(
+          task =>
+            task.title.toLowerCase().includes(searchTerm) ||
+            task.description?.toLowerCase().includes(searchTerm) ||
+            (task as any).details?.toLowerCase().includes(searchTerm)
         );
       }
 
@@ -307,16 +353,15 @@ export class TaskMasterController implements ITaskMasterController {
           pageSize: pagination.limit,
           totalItems: totalCount,
           hasNext: endIndex < totalCount,
-          hasPrevious: pagination.page > 1
+          hasPrevious: pagination.page > 1,
         },
         filters,
-        totalCount
+        totalCount,
       };
 
       res.apiSuccess(responseData, {
-        rateLimit: req.rateLimit
+        rateLimit: req.rateLimit,
       });
-
     } catch (error) {
       await this.handleError(error as Error, req, res, 'listTasks');
     }
@@ -337,9 +382,13 @@ export class TaskMasterController implements ITaskMasterController {
       }
 
       // Get task details
-      const result = await this.taskMasterService.getTask(repositoryPath, taskId, {
-        tag: this.extractTagFromPath(repositoryPath)
-      });
+      const result = await this.taskMasterService.getTask(
+        repositoryPath,
+        taskId,
+        {
+          tag: this.extractTagFromPath(repositoryPath),
+        }
+      );
 
       if (!result.success || !result.data) {
         throw new Error(`Task ${taskId} not found`);
@@ -348,15 +397,14 @@ export class TaskMasterController implements ITaskMasterController {
       const responseData = {
         task: result.data,
         subtasks: includeSubtasks ? [] : undefined, // Would be implemented with subtask service
-        history: includeHistory ? [] : undefined,   // Would be implemented with history service
-        dependencies: [],  // Would be populated from dependency analysis
-        dependents: []     // Would be populated from dependency analysis
+        history: includeHistory ? [] : undefined, // Would be implemented with history service
+        dependencies: [], // Would be populated from dependency analysis
+        dependents: [], // Would be populated from dependency analysis
       };
 
       res.apiSuccess(responseData, {
-        rateLimit: req.rateLimit
+        rateLimit: req.rateLimit,
       });
-
     } catch (error) {
       await this.handleError(error as Error, req, res, 'getTask');
     }
@@ -395,26 +443,28 @@ export class TaskMasterController implements ITaskMasterController {
           taskId,
           repositoryPath,
           updates,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
 
         res.apiSuccess(result.data, {
-          rateLimit: req.rateLimit
+          rateLimit: req.rateLimit,
         });
       } else {
         // For other updates, get current task data
-        const taskResult = await this.taskMasterService.getTask(repositoryPath, taskId);
-        
+        const taskResult = await this.taskMasterService.getTask(
+          repositoryPath,
+          taskId
+        );
+
         if (!taskResult.success || !taskResult.data) {
           throw new Error(`Task ${taskId} not found`);
         }
 
         // In a real implementation, you'd update other fields here
         res.apiSuccess(taskResult.data, {
-          rateLimit: req.rateLimit
+          rateLimit: req.rateLimit,
         });
       }
-
     } catch (error) {
       await this.handleError(error as Error, req, res, 'updateTask');
     }
@@ -430,11 +480,15 @@ export class TaskMasterController implements ITaskMasterController {
       const request = req.validatedBody as TaskExpansionRequest;
       const { repositoryPath, options = {} } = request;
 
-      const result = await this.taskMasterService.expandTask(repositoryPath, taskId, {
-        research: options.research,
-        force: options.force,
-        tag: this.extractTagFromPath(repositoryPath)
-      });
+      const result = await this.taskMasterService.expandTask(
+        repositoryPath,
+        taskId,
+        {
+          research: options.research,
+          force: options.force,
+          tag: this.extractTagFromPath(repositoryPath),
+        }
+      );
 
       // Create expansion result
       const responseData = {
@@ -444,8 +498,8 @@ export class TaskMasterController implements ITaskMasterController {
           totalSubtasksCreated: 0, // Would be calculated from actual expansion
           averageExpansionRatio: 0,
           estimatedTimeToComplete: '1 hour',
-          researchUsed: options.research || false
-        }
+          researchUsed: options.research || false,
+        },
       };
 
       // Emit WebSocket notification
@@ -454,13 +508,12 @@ export class TaskMasterController implements ITaskMasterController {
         repositoryPath,
         options,
         result: responseData,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
 
       res.apiSuccess(responseData, {
-        rateLimit: req.rateLimit
+        rateLimit: req.rateLimit,
       });
-
     } catch (error) {
       await this.handleError(error as Error, req, res, 'expandTask');
     }
@@ -470,35 +523,40 @@ export class TaskMasterController implements ITaskMasterController {
    * Analyze Project Complexity
    * POST /api/analysis/complexity
    */
-  async analyzeComplexity(req: EnhancedRequest, res: EnhancedResponse): Promise<void> {
+  async analyzeComplexity(
+    req: EnhancedRequest,
+    res: EnhancedResponse
+  ): Promise<void> {
     try {
       const request = req.validatedBody as ComplexityAnalysisRequest;
       const { repositoryPath, range, options = {} } = request;
 
-      const result = await this.taskMasterService.analyzeComplexity(repositoryPath, {
-        from: range?.from,
-        to: range?.to,
-        research: options.research,
-        tag: this.extractTagFromPath(repositoryPath)
-      });
+      const result = await this.taskMasterService.analyzeComplexity(
+        repositoryPath,
+        {
+          from: range?.from,
+          to: range?.to,
+          research: options.research,
+          tag: this.extractTagFromPath(repositoryPath),
+        }
+      );
 
       // Create complexity analysis result
       const responseData = {
         overallComplexity: 7.5, // Would be calculated from actual analysis
-        taskComplexities: [],   // Would be populated from analysis
-        recommendations: [],    // Would be generated from analysis
+        taskComplexities: [], // Would be populated from analysis
+        recommendations: [], // Would be generated from analysis
         metadata: {
           analysisTime: result.duration,
           algorithmsUsed: ['dependency-analysis', 'complexity-heuristics'],
           confidenceScore: 0.85,
-          lastUpdate: new Date().toISOString()
-        }
+          lastUpdate: new Date().toISOString(),
+        },
       };
 
       res.apiSuccess(responseData, {
-        rateLimit: req.rateLimit
+        rateLimit: req.rateLimit,
       });
-
     } catch (error) {
       await this.handleError(error as Error, req, res, 'analyzeComplexity');
     }
@@ -508,7 +566,10 @@ export class TaskMasterController implements ITaskMasterController {
    * Stream Command Execution (Server-Sent Events)
    * GET /api/cli/stream
    */
-  async streamCommand(req: EnhancedRequest, res: EnhancedResponse): Promise<void> {
+  async streamCommand(
+    req: EnhancedRequest,
+    res: EnhancedResponse
+  ): Promise<void> {
     try {
       const { repositoryPath, operation } = req.query as any;
 
@@ -520,16 +581,16 @@ export class TaskMasterController implements ITaskMasterController {
       res.writeHead(200, {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive',
+        Connection: 'keep-alive',
         'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Cache-Control'
+        'Access-Control-Allow-Headers': 'Cache-Control',
       });
 
       // Send initial event
       this.sendSSE(res, 'start', {
         requestId: req.requestId,
         operation,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
 
       // Set up periodic heartbeat
@@ -555,12 +616,11 @@ export class TaskMasterController implements ITaskMasterController {
         this.sendSSE(res, 'complete', {
           success: true,
           duration: 3000,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
         clearInterval(heartbeat);
         res.end();
       }, 3000);
-
     } catch (error) {
       await this.handleError(error as Error, req, res, 'streamCommand');
     }
@@ -568,7 +628,12 @@ export class TaskMasterController implements ITaskMasterController {
 
   // Helper Methods
 
-  private async handleError(error: Error, req: EnhancedRequest, res: EnhancedResponse, operation: string): Promise<void> {
+  private async handleError(
+    error: Error,
+    req: EnhancedRequest,
+    res: EnhancedResponse,
+    operation: string
+  ): Promise<void> {
     console.error(`Error in ${operation} for request ${req.requestId}:`, error);
 
     // Emit error event
@@ -576,17 +641,20 @@ export class TaskMasterController implements ITaskMasterController {
       requestId: req.requestId,
       operation,
       error: error.message,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
     const apiError: ApiError = {
       code: this.getErrorCode(error),
       message: error.message,
-      details: process.env.NODE_ENV === 'development' ? {
-        stack: error.stack,
-        operation
-      } : undefined,
-      correlationId: req.correlationId
+      details:
+        process.env.NODE_ENV === 'development'
+          ? {
+              stack: error.stack,
+              operation,
+            }
+          : undefined,
+      correlationId: req.correlationId,
     };
 
     res.apiError(apiError, this.getStatusCode(error));
@@ -603,11 +671,16 @@ export class TaskMasterController implements ITaskMasterController {
   private getStatusCode(error: Error): number {
     const code = this.getErrorCode(error);
     switch (code) {
-      case 'NOT_FOUND': return 404;
-      case 'VALIDATION_ERROR': return 400;
-      case 'PERMISSION_DENIED': return 403;
-      case 'TIMEOUT': return 408;
-      default: return 500;
+      case 'NOT_FOUND':
+        return 404;
+      case 'VALIDATION_ERROR':
+        return 400;
+      case 'PERMISSION_DENIED':
+        return 403;
+      case 'TIMEOUT':
+        return 408;
+      default:
+        return 500;
     }
   }
 
@@ -630,7 +703,9 @@ export class TaskMasterController implements ITaskMasterController {
   private calculateProjectStats(tasks: any[]): any {
     const totalTasks = tasks.length;
     const completedTasks = tasks.filter(t => t.status === 'done').length;
-    const inProgressTasks = tasks.filter(t => t.status === 'in-progress').length;
+    const inProgressTasks = tasks.filter(
+      t => t.status === 'in-progress'
+    ).length;
     const pendingTasks = tasks.filter(t => t.status === 'pending').length;
     const blockedTasks = tasks.filter(t => t.status === 'blocked').length;
 
@@ -642,7 +717,7 @@ export class TaskMasterController implements ITaskMasterController {
       blockedTasks,
       averageComplexity: 5.5, // Would be calculated from actual complexity data
       estimatedCompletion: '2 weeks',
-      lastActivity: new Date().toISOString()
+      lastActivity: new Date().toISOString(),
     };
   }
 
@@ -650,25 +725,31 @@ export class TaskMasterController implements ITaskMasterController {
     return tasks.sort((a, b) => {
       let aValue = a[sorting.field];
       let bValue = b[sorting.field];
-      
+
       // Handle special sorting cases
       if (sorting.field === 'priority') {
-        const priorityOrder = { 'high': 3, 'medium': 2, 'low': 1 };
+        const priorityOrder = { high: 3, medium: 2, low: 1 };
         aValue = priorityOrder[aValue as keyof typeof priorityOrder] || 0;
         bValue = priorityOrder[bValue as keyof typeof priorityOrder] || 0;
       }
-      
+
       if (sorting.field === 'status') {
-        const statusOrder = { 'pending': 1, 'in-progress': 2, 'done': 3, 'blocked': 4, 'deferred': 5 };
+        const statusOrder = {
+          pending: 1,
+          'in-progress': 2,
+          done: 3,
+          blocked: 4,
+          deferred: 5,
+        };
         aValue = statusOrder[aValue as keyof typeof statusOrder] || 0;
         bValue = statusOrder[bValue as keyof typeof statusOrder] || 0;
       }
-      
+
       if (sorting.field === 'created' || sorting.field === 'updated') {
         aValue = new Date(aValue).getTime();
         bValue = new Date(bValue).getTime();
       }
-      
+
       if (sorting.direction === 'asc') {
         return aValue > bValue ? 1 : aValue < bValue ? -1 : 0;
       } else {

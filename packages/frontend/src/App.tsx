@@ -1,14 +1,14 @@
-import { useEffect } from 'react'
-import { BrowserRouter } from 'react-router-dom'
-import { AppLayout } from './components/Layout'
-import { RepositoryProvider } from './contexts/RepositoryContext'
-import { NotificationProvider } from './contexts/NotificationContext'
-import { WebSocketProvider } from './contexts/WebSocketContext'
-import { ThemeProvider } from './contexts/ThemeContext'
-import { NotificationContainer } from './components/Notifications'
-import { AppRoutes } from './routes/AppRoutes'
-import { initializeKeyboardDetection } from './utils/keyboard'
-import './App.css'
+import { useEffect } from 'react';
+import { BrowserRouter } from 'react-router-dom';
+import { AppLayout } from './components/Layout';
+import { RepositoryProvider } from './contexts/RepositoryContext';
+import { NotificationProvider } from './contexts/NotificationContext';
+import { WebSocketProvider } from './contexts/WebSocketContext';
+import { ThemeProvider } from './contexts/ThemeContext';
+import { NotificationContainer } from './components/Notifications';
+import { AppRoutes } from './routes/AppRoutes';
+import { initializeKeyboardDetection } from './utils/keyboard';
+import './App.css';
 
 function App() {
   // Initialize keyboard navigation detection
@@ -31,7 +31,7 @@ function App() {
         </NotificationProvider>
       </ThemeProvider>
     </BrowserRouter>
-  )
+  );
 }
 
-export default App
+export default App;

@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { useDashboard } from '../../hooks/useDashboard';
-import { TaskCompletionChart, ProgressVisualizationWidget, RecentActivityFeedWidget } from '../Widgets';
+import {
+  TaskCompletionChart,
+  ProgressVisualizationWidget,
+  RecentActivityFeedWidget,
+} from '../Widgets';
 import './DashboardView.css';
 
 export interface DashboardViewProps {
@@ -11,16 +15,18 @@ export interface DashboardViewProps {
 
 /**
  * Dashboard View Component
- * 
+ *
  * Main dashboard container that displays project metrics, charts, and insights.
  * Provides a comprehensive overview of project health and progress.
  */
 export const DashboardView: React.FC<DashboardViewProps> = ({
   projectId,
   projectTag,
-  className = ''
+  className = '',
 }) => {
-  const [activeTab, setActiveTab] = useState<'overview' | 'analytics' | 'activity'>('overview');
+  const [activeTab, setActiveTab] = useState<
+    'overview' | 'analytics' | 'activity'
+  >('overview');
   const [refreshing, setRefreshing] = useState(false);
 
   const {
@@ -32,18 +38,18 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     refresh,
     clearError,
     isStale,
-    retryCount
+    retryCount,
   } = useDashboard({
     projectId,
     projectTag,
     refreshInterval: 30000,
     autoRefresh: true,
-    onError: (error) => {
+    onError: error => {
       console.error('Dashboard error:', error);
     },
-    onDataUpdate: (data) => {
+    onDataUpdate: data => {
       console.log('Dashboard data updated:', data);
-    }
+    },
   });
 
   const handleRefresh = async () => {
@@ -57,22 +63,33 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
   const getHealthColor = (status: string) => {
     switch (status) {
-      case 'excellent': return '#22c55e';
-      case 'good': return '#3b82f6';
-      case 'fair': return '#f59e0b';
-      case 'needs-attention': return '#ef4444';
-      default: return '#6b7280';
+      case 'excellent':
+        return '#22c55e';
+      case 'good':
+        return '#3b82f6';
+      case 'fair':
+        return '#f59e0b';
+      case 'needs-attention':
+        return '#ef4444';
+      default:
+        return '#6b7280';
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'done': return '#22c55e';
-      case 'in-progress': return '#3b82f6';
-      case 'pending': return '#f59e0b';
-      case 'blocked': return '#ef4444';
-      case 'deferred': return '#6b7280';
-      default: return '#6b7280';
+      case 'done':
+        return '#22c55e';
+      case 'in-progress':
+        return '#3b82f6';
+      case 'pending':
+        return '#f59e0b';
+      case 'blocked':
+        return '#ef4444';
+      case 'deferred':
+        return '#6b7280';
+      default:
+        return '#6b7280';
     }
   };
 
@@ -149,7 +166,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <div className="header-actions">
           <div className="health-indicator">
             {health && (
-              <div className="health-badge" style={{ backgroundColor: getHealthColor(health.status) }}>
+              <div
+                className="health-badge"
+                style={{ backgroundColor: getHealthColor(health.status) }}
+              >
                 <span className="health-score">{Math.round(health.score)}</span>
                 <span className="health-label">Health</span>
               </div>
@@ -245,9 +265,12 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   <h3>Estimated Hours</h3>
                   <div className="metric-icon">⏱️</div>
                 </div>
-                <div className="metric-value">{data.insights.totalEstimatedHours}h</div>
+                <div className="metric-value">
+                  {data.insights.totalEstimatedHours}h
+                </div>
                 <div className="metric-detail">
-                  Avg complexity: {data.insights.averageTaskComplexity.toFixed(1)}
+                  Avg complexity:{' '}
+                  {data.insights.averageTaskComplexity.toFixed(1)}
                 </div>
               </div>
 
@@ -274,7 +297,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   inProgress: data.taskMetrics.inProgress,
                   pending: data.taskMetrics.pending,
                   blocked: data.taskMetrics.blocked,
-                  deferred: data.taskMetrics.deferred
+                  deferred: data.taskMetrics.deferred,
                 }}
                 chartType="donut"
                 showLegend={true}
@@ -288,25 +311,30 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <div className="status-breakdown">
               <h3>Task Status Distribution</h3>
               <div className="status-bars">
-                {Object.entries(data.taskMetrics.statusBreakdown).map(([status, count]) => (
-                  <div key={status} className="status-bar">
-                    <div className="status-label">
-                      <span className="status-name" style={{ color: getStatusColor(status) }}>
-                        {status.replace('-', ' ')}
-                      </span>
-                      <span className="status-count">{count}</span>
+                {Object.entries(data.taskMetrics.statusBreakdown).map(
+                  ([status, count]) => (
+                    <div key={status} className="status-bar">
+                      <div className="status-label">
+                        <span
+                          className="status-name"
+                          style={{ color: getStatusColor(status) }}
+                        >
+                          {status.replace('-', ' ')}
+                        </span>
+                        <span className="status-count">{count}</span>
+                      </div>
+                      <div className="status-progress">
+                        <div
+                          className="status-fill"
+                          style={{
+                            width: `${(count / data.taskMetrics.total) * 100}%`,
+                            backgroundColor: getStatusColor(status),
+                          }}
+                        />
+                      </div>
                     </div>
-                    <div className="status-progress">
-                      <div
-                        className="status-fill"
-                        style={{
-                          width: `${(count / data.taskMetrics.total) * 100}%`,
-                          backgroundColor: getStatusColor(status)
-                        }}
-                      />
-                    </div>
-                  </div>
-                ))}
+                  )
+                )}
               </div>
             </div>
 
@@ -346,7 +374,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <div className="chart-section">
               <h3>Priority Distribution</h3>
               <div className="priority-chart">
-                {data.chartData.priorityDistribution.map((item) => (
+                {data.chartData.priorityDistribution.map(item => (
                   <div key={item.priority} className="priority-item">
                     <div className="priority-label">{item.priority}</div>
                     <div className="priority-bar">
@@ -354,8 +382,12 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                         className="priority-fill"
                         style={{
                           width: `${item.percentage}%`,
-                          backgroundColor: item.priority === 'high' ? '#ef4444' : 
-                                         item.priority === 'medium' ? '#f59e0b' : '#22c55e'
+                          backgroundColor:
+                            item.priority === 'high'
+                              ? '#ef4444'
+                              : item.priority === 'medium'
+                                ? '#f59e0b'
+                                : '#22c55e',
                         }}
                       />
                     </div>
@@ -369,7 +401,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <div className="chart-section">
               <h3>Complexity Breakdown</h3>
               <div className="complexity-chart">
-                {data.chartData.complexityBreakdown.map((item) => (
+                {data.chartData.complexityBreakdown.map(item => (
                   <div key={item.complexity} className="complexity-item">
                     <div className="complexity-label">{item.complexity}</div>
                     <div className="complexity-bar">
@@ -377,14 +409,20 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                         className="complexity-fill"
                         style={{
                           width: `${(item.count / data.taskMetrics.total) * 100}%`,
-                          backgroundColor: item.complexity === 'high' ? '#ef4444' : 
-                                         item.complexity === 'medium' ? '#f59e0b' : '#22c55e'
+                          backgroundColor:
+                            item.complexity === 'high'
+                              ? '#ef4444'
+                              : item.complexity === 'medium'
+                                ? '#f59e0b'
+                                : '#22c55e',
                         }}
                       />
                     </div>
                     <div className="complexity-stats">
                       <span className="complexity-count">{item.count}</span>
-                      <span className="complexity-time">~{item.averageTime}h</span>
+                      <span className="complexity-time">
+                        ~{item.averageTime}h
+                      </span>
                     </div>
                   </div>
                 ))}
@@ -398,11 +436,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 <div className="subtask-overview">
                   <div className="subtask-stat">
                     <span className="subtask-label">Total Subtasks:</span>
-                    <span className="subtask-value">{data.subtaskMetrics.total}</span>
+                    <span className="subtask-value">
+                      {data.subtaskMetrics.total}
+                    </span>
                   </div>
                   <div className="subtask-stat">
                     <span className="subtask-label">Completed:</span>
-                    <span className="subtask-value">{data.subtaskMetrics.completed}</span>
+                    <span className="subtask-value">
+                      {data.subtaskMetrics.completed}
+                    </span>
                   </div>
                   <div className="subtask-stat">
                     <span className="subtask-label">Completion Rate:</span>
@@ -416,7 +458,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     className="subtask-fill"
                     style={{
                       width: `${data.subtaskMetrics.completionRate}%`,
-                      backgroundColor: '#3b82f6'
+                      backgroundColor: '#3b82f6',
                     }}
                   />
                 </div>

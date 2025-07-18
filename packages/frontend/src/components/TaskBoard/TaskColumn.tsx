@@ -1,6 +1,9 @@
 import React from 'react';
 import { useDroppable } from '@dnd-kit/core';
-import type { TaskColumn as TaskColumnType, TaskStatus } from '../../types/task';
+import type {
+  TaskColumn as TaskColumnType,
+  TaskStatus,
+} from '../../types/task';
 import { TaskCard } from './TaskCard';
 import type { DropData } from './DragAndDropProvider';
 import './TaskColumn.css';
@@ -11,7 +14,11 @@ export interface TaskColumnProps {
   /** Callback when a task is clicked */
   onTaskClick?: (taskId: number) => void;
   /** Callback when a task is moved between columns */
-  onTaskMove?: (taskId: number, fromStatus: TaskStatus, toStatus: TaskStatus) => void;
+  onTaskMove?: (
+    taskId: number,
+    fromStatus: TaskStatus,
+    toStatus: TaskStatus
+  ) => void;
   /** Whether to show the create task button */
   showCreateButton?: boolean;
   /** Callback when create task is clicked */
@@ -22,7 +29,7 @@ export interface TaskColumnProps {
 
 /**
  * Task Column Component
- * 
+ *
  * Represents a single column in the Kanban board for a specific task status.
  * Contains task cards and handles column-specific operations.
  */
@@ -32,7 +39,7 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
   onTaskMove: _onTaskMove,
   showCreateButton = true,
   onCreateTask,
-  className = ''
+  className = '',
 }) => {
   const { title, status, tasks, color, limit } = column;
   const taskCount = tasks.length;
@@ -41,15 +48,12 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
   // Configure droppable behavior
   const dropData: DropData = {
     type: 'column',
-    status: status
+    status: status,
   };
 
-  const {
-    isOver,
-    setNodeRef
-  } = useDroppable({
+  const { isOver, setNodeRef } = useDroppable({
     id: `column-${status}`,
-    data: dropData
+    data: dropData,
   });
 
   const handleTaskClick = (taskId: number) => {
@@ -83,9 +87,8 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
     }
   };
 
-
   return (
-    <section 
+    <section
       ref={setNodeRef}
       className={`task-column ${isOver ? 'drag-over' : ''} ${className}`}
       style={{ '--column-color': color } as React.CSSProperties}
@@ -97,40 +100,47 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
       <header className="task-column__header">
         <div className="column-title-section">
           <h3 id={`column-title-${status}`} className="column-title">
-            <span className="column-icon" aria-hidden="true">{getStatusIcon(status)}</span>
+            <span className="column-icon" aria-hidden="true">
+              {getStatusIcon(status)}
+            </span>
             {title}
           </h3>
-          <div 
+          <div
             id={`column-count-${status}`}
             className={`column-count ${isOverLimit ? 'over-limit' : ''}`}
             aria-label={`${taskCount} task${taskCount !== 1 ? 's' : ''} in ${title.toLowerCase()}${limit ? `, limit ${limit}` : ''}`}
           >
             <span aria-hidden="true">{taskCount}</span>
             {limit && (
-              <span className="column-limit" aria-hidden="true">/{limit}</span>
+              <span className="column-limit" aria-hidden="true">
+                /{limit}
+              </span>
             )}
             <span className="sr-only">
-              {taskCount} task{taskCount !== 1 ? 's' : ''} in {title.toLowerCase()}
+              {taskCount} task{taskCount !== 1 ? 's' : ''} in{' '}
+              {title.toLowerCase()}
               {limit && `, limit ${limit}`}
               {isOverLimit && ', over limit'}
             </span>
           </div>
         </div>
-        
+
         {showCreateButton && (
-          <button 
+          <button
             className="column-create-button"
             onClick={handleCreateTask}
             aria-label={`Create new task in ${title.toLowerCase()}`}
             title={`Create task in ${title}`}
           >
-            <span className="button-icon" aria-hidden="true">➕</span>
+            <span className="button-icon" aria-hidden="true">
+              ➕
+            </span>
             <span className="sr-only">Create task</span>
           </button>
         )}
       </header>
 
-      <div 
+      <div
         className="task-column__content"
         role="group"
         aria-labelledby={`column-title-${status}`}
@@ -138,11 +148,13 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
         {tasks.length === 0 ? (
           <div className="column-empty" role="status" aria-live="polite">
             <div className="empty-message">
-              <span className="empty-icon" aria-hidden="true">{getStatusIcon(status)}</span>
+              <span className="empty-icon" aria-hidden="true">
+                {getStatusIcon(status)}
+              </span>
               <span className="empty-text">No {title.toLowerCase()} tasks</span>
             </div>
             {showCreateButton && (
-              <button 
+              <button
                 className="empty-create-button"
                 onClick={handleCreateTask}
                 aria-label={`Create first task in ${title.toLowerCase()}`}
@@ -152,12 +164,12 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
             )}
           </div>
         ) : (
-          <div 
+          <div
             className="task-cards"
             role="group"
             aria-label={`${taskCount} task${taskCount !== 1 ? 's' : ''} in ${title.toLowerCase()}`}
           >
-            {tasks.map((task) => (
+            {tasks.map(task => (
               <TaskCard
                 key={task.id}
                 task={task}

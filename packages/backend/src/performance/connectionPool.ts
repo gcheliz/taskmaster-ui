@@ -61,7 +61,7 @@ export class AdvancedConnectionPool<T extends Connection> extends EventEmitter {
     reject: (error: Error) => void;
     timestamp: number;
   }> = [];
-  
+
   private statistics: PoolStatistics;
   private healthCheckTimer?: NodeJS.Timeout;
   private config: PoolConfig;
@@ -71,7 +71,7 @@ export class AdvancedConnectionPool<T extends Connection> extends EventEmitter {
     config: Partial<PoolConfig> = {}
   ) {
     super();
-    
+
     this.config = {
       minConnections: 2,
       maxConnections: 10,
@@ -81,7 +81,7 @@ export class AdvancedConnectionPool<T extends Connection> extends EventEmitter {
       maxRetries: 3,
       healthCheckInterval: 60000, // 1 minute
       enableMonitoring: true,
-      ...config
+      ...config,
     };
 
     this.statistics = {
@@ -96,7 +96,7 @@ export class AdvancedConnectionPool<T extends Connection> extends EventEmitter {
       averageAcquireTime: 0,
       averageConnectionLifetime: 0,
       healthyConnections: 0,
-      unhealthyConnections: 0
+      unhealthyConnections: 0,
     };
 
     this.initializePool();
@@ -107,14 +107,16 @@ export class AdvancedConnectionPool<T extends Connection> extends EventEmitter {
    */
   async acquire(): Promise<T> {
     const startTime = performance.now();
-    
+
     try {
       // Check for available connection
       const availableConnection = this.getAvailableConnection();
       if (availableConnection) {
         this.markConnectionAsUsed(availableConnection);
         this.updateAcquireStatistics(startTime);
-        this.emit('connection:acquired', { connectionId: availableConnection.id });
+        this.emit('connection:acquired', {
+          connectionId: availableConnection.id,
+        });
         return availableConnection;
       }
 
@@ -129,9 +131,11 @@ export class AdvancedConnectionPool<T extends Connection> extends EventEmitter {
 
       // Wait for available connection
       return await this.waitForConnection(startTime);
-
     } catch (error) {
-      this.emit('connection:acquire:error', { error, duration: performance.now() - startTime });
+      this.emit('connection:acquire:error', {
+        error,
+        duration: performance.now() - startTime,
+      });
       throw error;
     }
   }
@@ -147,10 +151,10 @@ export class AdvancedConnectionPool<T extends Connection> extends EventEmitter {
 
       connection.inUse = false;
       connection.lastUsed = Date.now();
-      
+
       // Check connection health before returning to pool
       const isHealthy = await this.validateConnection(connection);
-      
+
       if (!isHealthy) {
         await this.destroyConnection(connection);
         this.emit('connection:unhealthy', { connectionId: connection.id });
@@ -165,11 +169,10 @@ export class AdvancedConnectionPool<T extends Connection> extends EventEmitter {
       await this.processPendingRequests();
 
       this.emit('connection:released', { connectionId: connection.id });
-
     } catch (error) {
-      this.emit('connection:release:error', { 
-        connectionId: connection.id, 
-        error: (error as Error).message 
+      this.emit('connection:release:error', {
+        connectionId: connection.id,
+        error: (error as Error).message,
       });
       throw error;
     }
@@ -182,21 +185,20 @@ export class AdvancedConnectionPool<T extends Connection> extends EventEmitter {
     try {
       this.connections.delete(connection.id);
       this.removeFromAvailable(connection);
-      
+
       await this.connectionFactory.destroy(connection);
-      
+
       this.statistics.totalDestroyed++;
       this.updatePoolStatistics();
-      
+
       this.emit('connection:destroyed', { connectionId: connection.id });
 
       // Maintain minimum connections
       await this.ensureMinimumConnections();
-
     } catch (error) {
-      this.emit('connection:destroy:error', { 
-        connectionId: connection.id, 
-        error: (error as Error).message 
+      this.emit('connection:destroy:error', {
+        connectionId: connection.id,
+        error: (error as Error).message,
       });
     }
   }
@@ -237,11 +239,10 @@ export class AdvancedConnectionPool<T extends Connection> extends EventEmitter {
       // Ensure minimum connections
       await this.ensureMinimumConnections();
 
-      this.emit('health:check:complete', { 
+      this.emit('health:check:complete', {
         checkedConnections: this.connections.size,
-        destroyedConnections: unhealthyConnections.length 
+        destroyedConnections: unhealthyConnections.length,
       });
-
     } catch (error) {
       this.emit('health:check:error', { error: (error as Error).message });
     }
@@ -261,33 +262,39 @@ export class AdvancedConnectionPool<T extends Connection> extends EventEmitter {
   getPerformanceMetrics(): any {
     const stats = this.getStatistics();
     const now = Date.now();
-    
+
     // Calculate connection age distribution
-    const connectionAges = Array.from(this.connections.values()).map(conn => 
-      now - conn.createdAt
+    const connectionAges = Array.from(this.connections.values()).map(
+      conn => now - conn.createdAt
     );
-    
-    const avgAge = connectionAges.length > 0 
-      ? connectionAges.reduce((sum, age) => sum + age, 0) / connectionAges.length 
-      : 0;
+
+    const avgAge =
+      connectionAges.length > 0
+        ? connectionAges.reduce((sum, age) => sum + age, 0) /
+          connectionAges.length
+        : 0;
 
     return {
       ...stats,
       poolEfficiency: {
-        utilizationRate: stats.totalConnections > 0 
-          ? stats.busyConnections / stats.totalConnections 
-          : 0,
+        utilizationRate:
+          stats.totalConnections > 0
+            ? stats.busyConnections / stats.totalConnections
+            : 0,
         averageConnectionAge: avgAge,
-        connectionTurnover: stats.totalDestroyed > 0 
-          ? stats.totalCreated / stats.totalDestroyed 
-          : 0,
-        waitingRequestsRatio: stats.pendingRequests / Math.max(1, stats.totalConnections)
+        connectionTurnover:
+          stats.totalDestroyed > 0
+            ? stats.totalCreated / stats.totalDestroyed
+            : 0,
+        waitingRequestsRatio:
+          stats.pendingRequests / Math.max(1, stats.totalConnections),
       },
       performance: {
         averageAcquireTime: stats.averageAcquireTime,
-        throughput: stats.totalAcquired / Math.max(1, (now - this.startTime) / 1000),
-        errorRate: this.errorCount / Math.max(1, stats.totalAcquired)
-      }
+        throughput:
+          stats.totalAcquired / Math.max(1, (now - this.startTime) / 1000),
+        errorRate: this.errorCount / Math.max(1, stats.totalAcquired),
+      },
     };
   }
 
@@ -309,17 +316,16 @@ export class AdvancedConnectionPool<T extends Connection> extends EventEmitter {
       this.pendingRequests = [];
 
       // Destroy all connections
-      const destroyPromises = Array.from(this.connections.values()).map(connection =>
-        this.connectionFactory.destroy(connection)
+      const destroyPromises = Array.from(this.connections.values()).map(
+        connection => this.connectionFactory.destroy(connection)
       );
-      
+
       await Promise.allSettled(destroyPromises);
-      
+
       this.connections.clear();
       this.availableConnections = [];
-      
-      this.emit('pool:shutdown');
 
+      this.emit('pool:shutdown');
     } catch (error) {
       this.emit('pool:shutdown:error', { error: (error as Error).message });
       throw error;
@@ -335,7 +341,7 @@ export class AdvancedConnectionPool<T extends Connection> extends EventEmitter {
     try {
       // Create minimum connections
       await this.ensureMinimumConnections();
-      
+
       // Start health check timer
       if (this.config.healthCheckInterval > 0) {
         this.healthCheckTimer = setInterval(() => {
@@ -345,10 +351,13 @@ export class AdvancedConnectionPool<T extends Connection> extends EventEmitter {
         }, this.config.healthCheckInterval);
       }
 
-      this.emit('pool:initialized', { minConnections: this.config.minConnections });
-
+      this.emit('pool:initialized', {
+        minConnections: this.config.minConnections,
+      });
     } catch (error) {
-      this.emit('pool:initialization:error', { error: (error as Error).message });
+      this.emit('pool:initialization:error', {
+        error: (error as Error).message,
+      });
       throw error;
     }
   }
@@ -358,14 +367,16 @@ export class AdvancedConnectionPool<T extends Connection> extends EventEmitter {
     const needed = this.config.minConnections - currentCount;
 
     if (needed > 0) {
-      const createPromises = Array(needed).fill(null).map(() => this.createConnection());
+      const createPromises = Array(needed)
+        .fill(null)
+        .map(() => this.createConnection());
       const results = await Promise.allSettled(createPromises);
-      
+
       results.forEach((result, index) => {
         if (result.status === 'rejected') {
-          this.emit('connection:create:error', { 
+          this.emit('connection:create:error', {
             error: result.reason?.message,
-            attempt: index + 1 
+            attempt: index + 1,
           });
         }
       });
@@ -382,11 +393,10 @@ export class AdvancedConnectionPool<T extends Connection> extends EventEmitter {
 
       this.connections.set(connection.id, connection);
       this.statistics.totalCreated++;
-      
-      this.emit('connection:created', { connectionId: connection.id });
-      
-      return connection;
 
+      this.emit('connection:created', { connectionId: connection.id });
+
+      return connection;
     } catch (error) {
       this.errorCount++;
       this.emit('connection:create:error', { error: (error as Error).message });
@@ -422,7 +432,7 @@ export class AdvancedConnectionPool<T extends Connection> extends EventEmitter {
           clearTimeout(timeout);
           reject(error);
         },
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
 
       this.pendingRequests.push(pendingRequest);
@@ -431,10 +441,13 @@ export class AdvancedConnectionPool<T extends Connection> extends EventEmitter {
   }
 
   private async processPendingRequests(): Promise<void> {
-    while (this.pendingRequests.length > 0 && this.availableConnections.length > 0) {
+    while (
+      this.pendingRequests.length > 0 &&
+      this.availableConnections.length > 0
+    ) {
       const pending = this.pendingRequests.shift();
       const connection = this.availableConnections.shift();
-      
+
       if (pending && connection) {
         this.markConnectionAsUsed(connection);
         pending.resolve(connection);
@@ -444,7 +457,9 @@ export class AdvancedConnectionPool<T extends Connection> extends EventEmitter {
   }
 
   private removePendingRequest(resolve: Function): void {
-    const index = this.pendingRequests.findIndex(req => req.resolve === resolve);
+    const index = this.pendingRequests.findIndex(
+      req => req.resolve === resolve
+    );
     if (index > -1) {
       this.pendingRequests.splice(index, 1);
       this.statistics.pendingRequests = this.pendingRequests.length;
@@ -452,7 +467,9 @@ export class AdvancedConnectionPool<T extends Connection> extends EventEmitter {
   }
 
   private removeFromAvailable(connection: T): void {
-    const index = this.availableConnections.findIndex(c => c.id === connection.id);
+    const index = this.availableConnections.findIndex(
+      c => c.id === connection.id
+    );
     if (index > -1) {
       this.availableConnections.splice(index, 1);
     }
@@ -469,20 +486,23 @@ export class AdvancedConnectionPool<T extends Connection> extends EventEmitter {
   private updateAcquireStatistics(startTime: number): void {
     const duration = performance.now() - startTime;
     const totalAcquired = this.statistics.totalAcquired;
-    
-    this.statistics.averageAcquireTime = 
-      (this.statistics.averageAcquireTime * (totalAcquired - 1) + duration) / totalAcquired;
+
+    this.statistics.averageAcquireTime =
+      (this.statistics.averageAcquireTime * (totalAcquired - 1) + duration) /
+      totalAcquired;
   }
 
   private updatePoolStatistics(): void {
     this.statistics.totalConnections = this.connections.size;
     this.statistics.availableConnections = this.availableConnections.length;
-    this.statistics.busyConnections = Array.from(this.connections.values())
-      .filter(c => c.inUse).length;
-    this.statistics.healthyConnections = Array.from(this.connections.values())
-      .filter(c => c.isHealthy).length;
-    this.statistics.unhealthyConnections = this.statistics.totalConnections - 
-      this.statistics.healthyConnections;
+    this.statistics.busyConnections = Array.from(
+      this.connections.values()
+    ).filter(c => c.inUse).length;
+    this.statistics.healthyConnections = Array.from(
+      this.connections.values()
+    ).filter(c => c.isHealthy).length;
+    this.statistics.unhealthyConnections =
+      this.statistics.totalConnections - this.statistics.healthyConnections;
   }
 }
 
@@ -515,7 +535,7 @@ export class TaskMasterConnection implements Connection {
     try {
       // In a real implementation, this would ping the TaskMaster CLI process
       // For now, simulate a health check
-      return this.isHealthy && (Date.now() - this.lastUsed) < 300000; // 5 minutes
+      return this.isHealthy && Date.now() - this.lastUsed < 300000; // 5 minutes
     } catch (error) {
       return false;
     }
@@ -525,16 +545,18 @@ export class TaskMasterConnection implements Connection {
 /**
  * TaskMaster Connection Factory
  */
-export class TaskMasterConnectionFactory implements ConnectionFactory<TaskMasterConnection> {
+export class TaskMasterConnectionFactory
+  implements ConnectionFactory<TaskMasterConnection>
+{
   constructor(private defaultRepositoryPath: string) {}
 
   async create(): Promise<TaskMasterConnection> {
     // In a real implementation, this would initialize a TaskMaster CLI process
     const connection = new TaskMasterConnection(this.defaultRepositoryPath);
-    
+
     // Simulate connection setup time
     await new Promise(resolve => setTimeout(resolve, 100));
-    
+
     return connection;
   }
 
@@ -555,6 +577,6 @@ export const taskMasterPool = new AdvancedConnectionPool(
     maxConnections: 8,
     acquireTimeoutMs: 5000,
     idleTimeoutMs: 300000,
-    healthCheckInterval: 60000
+    healthCheckInterval: 60000,
   }
 );

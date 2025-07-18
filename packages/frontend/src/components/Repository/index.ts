@@ -2,11 +2,11 @@ export { AddRepository } from './AddRepository';
 export type { AddRepositoryProps } from './AddRepository';
 
 export { RepositoryMetadata } from './RepositoryMetadata';
-export type { 
-  RepositoryMetadataProps, 
+export type {
+  RepositoryMetadataProps,
   RepositoryMetadataData,
   CommitInfo,
-  GitStatus 
+  GitStatus,
 } from './RepositoryMetadata';
 
 export { BranchList } from './BranchList';

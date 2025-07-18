@@ -24,7 +24,7 @@ const router = express.Router();
  *           pattern: "^[a-zA-Z0-9\\-_\\s]+$"
  *           description: Name of the project to create
  *           example: "My TaskMaster Project"
- *     
+ *
  *     ProjectResponse:
  *       type: object
  *       properties:
@@ -58,7 +58,7 @@ const router = express.Router();
  *           type: string
  *           description: Path to the TaskMaster tasks.json file
  *           example: "/Users/john/projects/my-project/.taskmaster/tasks/tasks.json"
- *     
+ *
  *     TaskMasterInfo:
  *       type: object
  *       properties:
@@ -74,7 +74,7 @@ const router = express.Router();
  *           type: integer
  *           description: Duration of initialization in milliseconds
  *           example: 1500
- *     
+ *
  *     ProjectCreateResponse:
  *       type: object
  *       properties:
@@ -87,7 +87,7 @@ const router = express.Router();
  *         taskMasterInfo:
  *           $ref: '#/components/schemas/TaskMasterInfo'
  *           description: Information about TaskMaster CLI initialization
- *     
+ *
  *     ProjectListResponse:
  *       type: object
  *       properties:
@@ -99,7 +99,7 @@ const router = express.Router();
  *           type: integer
  *           description: Total number of projects
  *           example: 3
- *     
+ *
  *     ErrorResponse:
  *       type: object
  *       properties:
@@ -226,7 +226,7 @@ const router = express.Router();
  *                   code: "TASKMASTER_INIT_ERROR"
  *                   details:
  *                     message: "TaskMaster CLI not found"
- *   
+ *
  *   get:
  *     summary: Get all projects
  *     description: Retrieves a list of all TaskMaster projects
@@ -328,7 +328,7 @@ const router = express.Router();
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
- *   
+ *
  *   delete:
  *     summary: Delete project by ID
  *     description: Removes a project and its TaskMaster configuration (does not delete the repository)

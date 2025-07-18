@@ -9,33 +9,39 @@ const Welcome = () => {
           TaskMaster UI Component Library
         </h1>
         <p className="text-body-large text-secondary-600 max-w-2xl mx-auto">
-          Welcome to the TaskMaster UI component library built with React, TypeScript, 
-          Tailwind CSS, and Storybook. This is your playground for developing and 
-          testing UI components in isolation.
+          Welcome to the TaskMaster UI component library built with React,
+          TypeScript, Tailwind CSS, and Storybook. This is your playground for
+          developing and testing UI components in isolation.
         </p>
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
         <div className="card-elevated p-6">
-          <h3 className="text-headline-medium text-primary-700 mb-3">🎨 Design System</h3>
+          <h3 className="text-headline-medium text-primary-700 mb-3">
+            🎨 Design System
+          </h3>
           <p className="text-body-medium text-secondary-600">
-            Comprehensive design tokens with colors, typography, spacing, and components 
-            built on Tailwind CSS v4.1.11.
+            Comprehensive design tokens with colors, typography, spacing, and
+            components built on Tailwind CSS v4.1.11.
           </p>
         </div>
 
         <div className="card-elevated p-6">
-          <h3 className="text-headline-medium text-success-700 mb-3">📚 Component Library</h3>
+          <h3 className="text-headline-medium text-success-700 mb-3">
+            📚 Component Library
+          </h3>
           <p className="text-body-medium text-secondary-600">
-            Atomic design methodology with atoms, molecules, and organisms for 
+            Atomic design methodology with atoms, molecules, and organisms for
             scalable component architecture.
           </p>
         </div>
 
         <div className="card-elevated p-6">
-          <h3 className="text-headline-medium text-warning-700 mb-3">♿ Accessibility</h3>
+          <h3 className="text-headline-medium text-warning-700 mb-3">
+            ♿ Accessibility
+          </h3>
           <p className="text-body-medium text-secondary-600">
-            WCAG-compliant components with focus management, ARIA attributes, 
+            WCAG-compliant components with focus management, ARIA attributes,
             and screen reader support.
           </p>
         </div>
@@ -45,7 +51,7 @@ const Welcome = () => {
         <h2 className="text-headline-large text-center text-secondary-800">
           Component Examples
         </h2>
-        
+
         <div className="flex flex-wrap gap-4 justify-center">
           <button className="btn-primary">Primary Action</button>
           <button className="btn-secondary">Secondary Action</button>
@@ -67,8 +73,8 @@ const Welcome = () => {
           <label className="block text-sm font-medium text-secondary-700 mb-2">
             Sample Input
           </label>
-          <input 
-            type="text" 
+          <input
+            type="text"
             className="input-base focus-ring w-full"
             placeholder="Enter some text..."
           />
@@ -77,8 +83,8 @@ const Welcome = () => {
 
       <div className="mt-12 text-center">
         <p className="text-body-small text-secondary-500">
-          Use the Controls panel to interact with component props, 
-          and the Viewport addon to test responsive behavior.
+          Use the Controls panel to interact with component props, and the
+          Viewport addon to test responsive behavior.
         </p>
       </div>
     </div>
@@ -92,7 +98,8 @@ const meta: Meta<typeof Welcome> = {
     layout: 'fullscreen',
     docs: {
       description: {
-        component: 'Welcome to the TaskMaster UI component library. This story demonstrates the design system integration and basic component usage.',
+        component:
+          'Welcome to the TaskMaster UI component library. This story demonstrates the design system integration and basic component usage.',
       },
     },
   },

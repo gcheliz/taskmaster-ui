@@ -10,7 +10,7 @@ export {
   type CacheConfig,
   type CacheEntry,
   type CacheStatistics,
-  type InvalidationStrategy
+  type InvalidationStrategy,
 } from './cacheManager';
 
 export {
@@ -22,7 +22,7 @@ export {
   type PoolConfig,
   type Connection,
   type PoolStatistics,
-  type ConnectionFactory
+  type ConnectionFactory,
 } from './connectionPool';
 
 export {
@@ -33,7 +33,7 @@ export {
   type BatchConfig,
   type BatchItem,
   type BatchProcessor,
-  type BatchStatistics
+  type BatchStatistics,
 } from './batchProcessor';
 
 export {
@@ -44,7 +44,7 @@ export {
   trackMemoryUsage,
   getMemoryPressure,
   type MemoryConfig,
-  type MemoryStatistics
+  type MemoryStatistics,
 } from './memoryManager';
 
 // Performance Monitoring Integration
@@ -79,7 +79,7 @@ export class PerformanceMonitor {
     const duration = performance.now() - startTime;
     this.metrics.set(operation, duration);
     this.startTimes.delete(operation);
-    
+
     return duration;
   }
 
@@ -117,7 +117,7 @@ export const performanceUtils = {
   ): Promise<{ result: T; duration: number }> {
     const monitor = PerformanceMonitor.getInstance();
     monitor.startTimer(operation);
-    
+
     try {
       const result = await fn();
       const duration = monitor.endTimer(operation);
@@ -131,13 +131,10 @@ export const performanceUtils = {
   /**
    * Measure execution time of a sync function
    */
-  measure<T>(
-    operation: string,
-    fn: () => T
-  ): { result: T; duration: number } {
+  measure<T>(operation: string, fn: () => T): { result: T; duration: number } {
     const monitor = PerformanceMonitor.getInstance();
     monitor.startTimer(operation);
-    
+
     try {
       const result = fn();
       const duration = monitor.endTimer(operation);
@@ -156,7 +153,7 @@ export const performanceUtils = {
     wait: number
   ): (...args: Parameters<T>) => void {
     let timeout: NodeJS.Timeout;
-    
+
     return (...args: Parameters<T>) => {
       clearTimeout(timeout);
       timeout = setTimeout(() => func.apply(this, args), wait);
@@ -171,12 +168,12 @@ export const performanceUtils = {
     limit: number
   ): (...args: Parameters<T>) => void {
     let inThrottle: boolean;
-    
+
     return (...args: Parameters<T>) => {
       if (!inThrottle) {
         func.apply(this, args);
         inThrottle = true;
-        setTimeout(() => inThrottle = false, limit);
+        setTimeout(() => (inThrottle = false), limit);
       }
     };
   },
@@ -189,19 +186,19 @@ export const performanceUtils = {
     keyGenerator?: (...args: Parameters<T>) => string
   ): T {
     const cache = new Map();
-    
+
     return ((...args: Parameters<T>) => {
       const key = keyGenerator ? keyGenerator(...args) : JSON.stringify(args);
-      
+
       if (cache.has(key)) {
         return cache.get(key);
       }
-      
+
       const result = func.apply(this, args);
       cache.set(key, result);
       return result;
     }) as T;
-  }
+  },
 };
 
 // Export performance monitor singleton
@@ -212,23 +209,23 @@ export const performanceConfig = {
   cache: {
     enabled: true,
     defaultTTL: 5 * 60 * 1000, // 5 minutes
-    maxSize: 1000
+    maxSize: 1000,
   },
   connectionPool: {
     enabled: true,
     minConnections: 2,
-    maxConnections: 10
+    maxConnections: 10,
   },
   batchProcessing: {
     enabled: true,
     maxBatchSize: 50,
-    flushInterval: 1000
+    flushInterval: 1000,
   },
   memoryManagement: {
     enabled: true,
     warningThreshold: 0.8,
-    criticalThreshold: 0.9
-  }
+    criticalThreshold: 0.9,
+  },
 };
 
 /**
@@ -259,7 +256,6 @@ export async function initializePerformanceOptimizations(): Promise<void> {
     }
 
     console.log('🎯 All performance optimizations initialized successfully');
-
   } catch (error) {
     console.error('❌ Failed to initialize performance optimizations:', error);
     throw error;
@@ -282,7 +278,7 @@ export async function shutdownPerformanceOptimizations(): Promise<void> {
     } catch (error) {
       console.warn('Error disposing globalCache:', error);
     }
-    
+
     try {
       const { commandCache } = await import('./cacheManager');
       if (commandCache) {
@@ -293,7 +289,6 @@ export async function shutdownPerformanceOptimizations(): Promise<void> {
     }
 
     console.log('✅ All performance optimizations shut down gracefully');
-
   } catch (error) {
     console.error('❌ Error during performance optimization shutdown:', error);
     throw error;

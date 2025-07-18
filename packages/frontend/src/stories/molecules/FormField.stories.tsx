@@ -9,7 +9,8 @@ const meta: Meta<typeof FormField> = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'A complete form field molecule combining Label and Input atoms with proper accessibility and validation states.',
+        component:
+          'A complete form field molecule combining Label and Input atoms with proper accessibility and validation states.',
       },
     },
   },
@@ -39,7 +40,7 @@ const meta: Meta<typeof FormField> = {
     },
   },
   decorators: [
-    (Story) => (
+    Story => (
       <div className="w-80">
         <Story />
       </div>
@@ -80,7 +81,8 @@ export const WithHelpText: Story = {
     label: 'Password',
     placeholder: 'Enter password',
     type: 'password',
-    helpText: 'Must be at least 8 characters with uppercase, lowercase, and numbers',
+    helpText:
+      'Must be at least 8 characters with uppercase, lowercase, and numbers',
     required: true,
   },
 };
@@ -141,21 +143,13 @@ export const Disabled: Story = {
 export const DifferentSizes: Story = {
   render: () => (
     <div className="space-y-6">
-      <FormField
-        label="Small Field"
-        placeholder="Small input"
-        inputSize="sm"
-      />
+      <FormField label="Small Field" placeholder="Small input" inputSize="sm" />
       <FormField
         label="Medium Field"
         placeholder="Medium input"
         inputSize="md"
       />
-      <FormField
-        label="Large Field"
-        placeholder="Large input"
-        inputSize="lg"
-      />
+      <FormField label="Large Field" placeholder="Large input" inputSize="lg" />
     </div>
   ),
 };
@@ -168,7 +162,7 @@ export const CompleteForm: Story = {
         placeholder="Enter your full name"
         required
       />
-      
+
       <FormField
         label="Email Address"
         placeholder="john@example.com"
@@ -176,7 +170,7 @@ export const CompleteForm: Story = {
         required
         description="We'll use this to contact you about your account"
       />
-      
+
       <FormField
         label="Password"
         placeholder="Enter secure password"
@@ -184,21 +178,21 @@ export const CompleteForm: Story = {
         required
         helpText="Must be at least 8 characters with uppercase, lowercase, and numbers"
       />
-      
+
       <FormField
         label="Confirm Password"
         placeholder="Confirm your password"
         type="password"
         required
       />
-      
+
       <FormField
         label="Phone Number"
         placeholder="+1 (555) 123-4567"
         type="tel"
         description="Optional - for account recovery"
       />
-      
+
       <FormField
         label="Company"
         placeholder="Enter company name"
@@ -218,14 +212,14 @@ export const ValidationStates: Story = {
         success="Email address is valid"
         rightIcon={<Icon icon={CheckIcon} size="sm" color="success" />}
       />
-      
+
       <FormField
         label="Invalid Email"
         value="invalid-email"
         type="email"
         error="Please enter a valid email address"
       />
-      
+
       <FormField
         label="Checking Username"
         value="john_doe"
@@ -233,7 +227,7 @@ export const ValidationStates: Story = {
         description="Checking availability..."
         leftIcon={<Icon icon={EyeIcon} size="sm" />}
       />
-      
+
       <FormField
         label="Required Field"
         placeholder="This field is required"
@@ -248,8 +242,10 @@ export const AccessibilityExample: Story = {
   render: () => (
     <form className="space-y-6 max-w-md">
       <fieldset className="border border-secondary-200 rounded-lg p-4">
-        <legend className="px-2 text-sm font-medium">Personal Information</legend>
-        
+        <legend className="px-2 text-sm font-medium">
+          Personal Information
+        </legend>
+
         <div className="space-y-4">
           <FormField
             label="First Name"
@@ -257,14 +253,14 @@ export const AccessibilityExample: Story = {
             required
             helpText="Enter your legal first name as it appears on documents"
           />
-          
+
           <FormField
             label="Last Name"
             placeholder="Enter your last name"
             required
             helpText="Enter your legal last name as it appears on documents"
           />
-          
+
           <FormField
             label="Date of Birth"
             type="date"
@@ -273,10 +269,12 @@ export const AccessibilityExample: Story = {
           />
         </div>
       </fieldset>
-      
+
       <fieldset className="border border-secondary-200 rounded-lg p-4">
-        <legend className="px-2 text-sm font-medium">Contact Information</legend>
-        
+        <legend className="px-2 text-sm font-medium">
+          Contact Information
+        </legend>
+
         <div className="space-y-4">
           <FormField
             label="Email Address"
@@ -285,7 +283,7 @@ export const AccessibilityExample: Story = {
             required
             description="Primary email for account notifications"
           />
-          
+
           <FormField
             label="Phone Number"
             placeholder="+1 (555) 123-4567"

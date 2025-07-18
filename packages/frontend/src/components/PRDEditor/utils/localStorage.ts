@@ -1,6 +1,6 @@
 /**
  * Local Storage Utilities for PRD Editor
- * 
+ *
  * Provides type-safe and robust local storage operations
  * for saving and loading PRD editor data.
  */
@@ -24,7 +24,7 @@ export interface PRDEditorSessionData {
 const STORAGE_KEYS = {
   CONTENT: 'prd-editor-data',
   SESSION: 'prd-editor-session',
-  AUTOSAVE_HISTORY: 'prd-editor-autosave-history'
+  AUTOSAVE_HISTORY: 'prd-editor-autosave-history',
 } as const;
 
 const STORAGE_VERSION = '1.0.0';
@@ -33,18 +33,20 @@ const MAX_AUTOSAVE_HISTORY = 10;
 /**
  * Save PRD editor data to local storage
  */
-export const savePRDData = (data: Omit<PRDEditorSaveData, 'version'>): boolean => {
+export const savePRDData = (
+  data: Omit<PRDEditorSaveData, 'version'>
+): boolean => {
   try {
     const saveData: PRDEditorSaveData = {
       ...data,
-      version: STORAGE_VERSION
+      version: STORAGE_VERSION,
     };
 
     localStorage.setItem(STORAGE_KEYS.CONTENT, JSON.stringify(saveData));
-    
+
     // Also save to autosave history
     saveToAutosaveHistory(saveData);
-    
+
     return true;
   } catch (error) {
     console.error('Failed to save PRD data:', error);
@@ -58,13 +60,13 @@ export const savePRDData = (data: Omit<PRDEditorSaveData, 'version'>): boolean =
 export const loadPRDData = (): PRDEditorSaveData | null => {
   try {
     const savedDataString = localStorage.getItem(STORAGE_KEYS.CONTENT);
-    
+
     if (!savedDataString) {
       return null;
     }
 
     const savedData: PRDEditorSaveData = JSON.parse(savedDataString);
-    
+
     // Validate data structure
     if (!isValidPRDData(savedData)) {
       console.warn('Invalid PRD data structure, clearing storage');
@@ -111,7 +113,7 @@ export const saveSessionData = (data: PRDEditorSessionData): boolean => {
 export const loadSessionData = (): PRDEditorSessionData | null => {
   try {
     const sessionDataString = localStorage.getItem(STORAGE_KEYS.SESSION);
-    
+
     if (!sessionDataString) {
       return null;
     }
@@ -129,13 +131,13 @@ export const loadSessionData = (): PRDEditorSessionData | null => {
 export const getAutosaveHistory = (): PRDEditorSaveData[] => {
   try {
     const historyString = localStorage.getItem(STORAGE_KEYS.AUTOSAVE_HISTORY);
-    
+
     if (!historyString) {
       return [];
     }
 
     const history = JSON.parse(historyString);
-    
+
     if (!Array.isArray(history)) {
       return [];
     }
@@ -150,7 +152,9 @@ export const getAutosaveHistory = (): PRDEditorSaveData[] => {
 /**
  * Restore from autosave history
  */
-export const restoreFromHistory = (timestamp: string): PRDEditorSaveData | null => {
+export const restoreFromHistory = (
+  timestamp: string
+): PRDEditorSaveData | null => {
   try {
     const history = getAutosaveHistory();
     return history.find(item => item.timestamp === timestamp) || null;
@@ -183,20 +187,21 @@ export const getStorageInfo = (): {
   percentage: number;
 } => {
   try {
-    const used = new Blob([localStorage.getItem(STORAGE_KEYS.CONTENT) || '']).size;
+    const used = new Blob([localStorage.getItem(STORAGE_KEYS.CONTENT) || ''])
+      .size;
     const available = 5 * 1024 * 1024; // Typical 5MB limit
     const percentage = (used / available) * 100;
 
     return {
       used,
       available,
-      percentage
+      percentage,
     };
   } catch (error) {
     return {
       used: 0,
       available: 0,
-      percentage: 0
+      percentage: 0,
     };
   }
 };
@@ -208,14 +213,17 @@ export const getStorageInfo = (): {
 const saveToAutosaveHistory = (data: PRDEditorSaveData): void => {
   try {
     const history = getAutosaveHistory();
-    
+
     // Add new entry
     history.unshift(data);
-    
+
     // Keep only the latest entries
     const trimmedHistory = history.slice(0, MAX_AUTOSAVE_HISTORY);
-    
-    localStorage.setItem(STORAGE_KEYS.AUTOSAVE_HISTORY, JSON.stringify(trimmedHistory));
+
+    localStorage.setItem(
+      STORAGE_KEYS.AUTOSAVE_HISTORY,
+      JSON.stringify(trimmedHistory)
+    );
   } catch (error) {
     console.error('Failed to save to autosave history:', error);
   }
@@ -242,5 +250,5 @@ export default {
   getAutosaveHistory,
   restoreFromHistory,
   isLocalStorageAvailable,
-  getStorageInfo
+  getStorageInfo,
 };

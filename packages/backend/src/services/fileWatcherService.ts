@@ -36,7 +36,7 @@ export class FileWatcherService extends EventEmitter {
       persistent: true,
       usePolling: false,
       interval: 100,
-      ...config
+      ...config,
     };
   }
 
@@ -51,10 +51,10 @@ export class FileWatcherService extends EventEmitter {
 
     console.log('🔍 Initializing FileWatcherService...');
     this.isInitialized = true;
-    
+
     // Set up error handling
     this.setupErrorHandling();
-    
+
     console.log('✅ FileWatcherService initialized successfully');
   }
 
@@ -66,8 +66,13 @@ export class FileWatcherService extends EventEmitter {
       throw new Error('Repository path is required and must be a string');
     }
 
-    const tasksFilePath = path.join(repositoryPath, '.taskmaster', 'tasks', 'tasks.json');
-    
+    const tasksFilePath = path.join(
+      repositoryPath,
+      '.taskmaster',
+      'tasks',
+      'tasks.json'
+    );
+
     // Check if file exists
     if (!existsSync(tasksFilePath)) {
       console.warn(`⚠️  Tasks file not found: ${tasksFilePath}`);
@@ -88,15 +93,21 @@ export class FileWatcherService extends EventEmitter {
       ignoreInitial: this.config.ignoreInitial,
       persistent: this.config.persistent,
       usePolling: this.config.usePolling,
-      interval: this.config.interval
+      interval: this.config.interval,
     });
 
     // Set up event handlers
     watcher
-      .on('add', (filePath) => this.handleFileEvent('add', filePath, repositoryPath))
-      .on('change', (filePath) => this.handleFileEvent('change', filePath, repositoryPath))
-      .on('unlink', (filePath) => this.handleFileEvent('unlink', filePath, repositoryPath))
-      .on('error', (error) => {
+      .on('add', filePath =>
+        this.handleFileEvent('add', filePath, repositoryPath)
+      )
+      .on('change', filePath =>
+        this.handleFileEvent('change', filePath, repositoryPath)
+      )
+      .on('unlink', filePath =>
+        this.handleFileEvent('unlink', filePath, repositoryPath)
+      )
+      .on('error', error => {
         console.error(`❌ Watcher error for ${repositoryPath}:`, error);
         this.emit('error', { repositoryPath, error });
       })
@@ -120,7 +131,7 @@ export class FileWatcherService extends EventEmitter {
     }
 
     console.log(`🛑 Stopping watcher for: ${repositoryPath}`);
-    
+
     // Clear any pending debounce timers
     const timer = this.debounceTimers.get(repositoryPath);
     if (timer) {
@@ -131,7 +142,7 @@ export class FileWatcherService extends EventEmitter {
     // Close watcher
     await watcher.close();
     this.watchers.delete(repositoryPath);
-    
+
     console.log(`✅ Watcher stopped for: ${repositoryPath}`);
   }
 
@@ -160,7 +171,7 @@ export class FileWatcherService extends EventEmitter {
     return {
       watchedRepositories: this.watchers.size,
       activeWatchers: this.watchers.size,
-      pendingDebounces: this.debounceTimers.size
+      pendingDebounces: this.debounceTimers.size,
     };
   }
 
@@ -169,7 +180,7 @@ export class FileWatcherService extends EventEmitter {
    */
   async shutdown(): Promise<void> {
     console.log('🛑 Shutting down FileWatcherService...');
-    
+
     // Clear all debounce timers
     for (const timer of this.debounceTimers.values()) {
       clearTimeout(timer);
@@ -183,23 +194,30 @@ export class FileWatcherService extends EventEmitter {
           await watcher.close();
           console.log(`✅ Closed watcher for: ${repositoryPath}`);
         } catch (error) {
-          console.error(`❌ Error closing watcher for ${repositoryPath}:`, error);
+          console.error(
+            `❌ Error closing watcher for ${repositoryPath}:`,
+            error
+          );
         }
       }
     );
 
     await Promise.all(shutdownPromises);
     this.watchers.clear();
-    
+
     console.log('✅ FileWatcherService shutdown complete');
   }
 
   /**
    * Handle file events with debouncing
    */
-  private handleFileEvent(type: FileChangeEvent['type'], filePath: string, repositoryPath: string): void {
+  private handleFileEvent(
+    type: FileChangeEvent['type'],
+    filePath: string,
+    repositoryPath: string
+  ): void {
     const watchKey = `${repositoryPath}:${type}`;
-    
+
     // Clear existing debounce timer
     const existingTimer = this.debounceTimers.get(watchKey);
     if (existingTimer) {
@@ -218,11 +236,15 @@ export class FileWatcherService extends EventEmitter {
   /**
    * Process the actual file event
    */
-  private processFileEvent(type: FileChangeEvent['type'], filePath: string, repositoryPath: string): void {
+  private processFileEvent(
+    type: FileChangeEvent['type'],
+    filePath: string,
+    repositoryPath: string
+  ): void {
     console.log(`📁 File ${type} event detected: ${filePath}`);
-    
+
     let content: any;
-    
+
     // Read file content for add/change events
     if (type === 'add' || type === 'change') {
       try {
@@ -242,21 +264,23 @@ export class FileWatcherService extends EventEmitter {
       filePath,
       repositoryPath,
       timestamp: new Date(),
-      content
+      content,
     };
 
     // Emit the event
     this.emit('fileChanged', event);
-    
+
     // Log the event
-    console.log(`📢 Emitted fileChanged event for: ${repositoryPath} (${type})`);
+    console.log(
+      `📢 Emitted fileChanged event for: ${repositoryPath} (${type})`
+    );
   }
 
   /**
    * Setup error handling
    */
   private setupErrorHandling(): void {
-    this.on('error', (error) => {
+    this.on('error', error => {
       console.error('❌ FileWatcherService error:', error);
     });
 

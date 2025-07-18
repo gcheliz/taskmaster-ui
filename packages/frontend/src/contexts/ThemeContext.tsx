@@ -21,9 +21,9 @@ interface ThemeProviderProps {
   defaultTheme?: ThemeMode;
 }
 
-export const ThemeProvider: React.FC<ThemeProviderProps> = ({ 
-  children, 
-  defaultTheme = 'system' 
+export const ThemeProvider: React.FC<ThemeProviderProps> = ({
+  children,
+  defaultTheme = 'system',
 }) => {
   const [theme, setTheme] = useState<ThemeMode>(defaultTheme);
   const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light');
@@ -31,7 +31,9 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   // Get system theme preference
   const getSystemTheme = (): 'light' | 'dark' => {
     if (typeof window !== 'undefined' && window.matchMedia) {
-      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      return window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? 'dark'
+        : 'light';
     }
     return 'light';
   };
@@ -60,14 +62,14 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   useEffect(() => {
     const newResolvedTheme = resolveTheme(theme);
     setResolvedTheme(newResolvedTheme);
-    
+
     // Apply theme to document
     document.documentElement.setAttribute('data-theme', newResolvedTheme);
-    
+
     // Update body class for additional styling if needed
     document.body.classList.remove('light-theme', 'dark-theme');
     document.body.classList.add(`${newResolvedTheme}-theme`);
-    
+
     // Save to localStorage
     try {
       localStorage.setItem(THEME_STORAGE_KEY, theme);
@@ -80,10 +82,13 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   useEffect(() => {
     if (theme === 'system') {
       const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      
+
       const handleSystemThemeChange = (e: MediaQueryListEvent) => {
         setResolvedTheme(e.matches ? 'dark' : 'light');
-        document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+        document.documentElement.setAttribute(
+          'data-theme',
+          e.matches ? 'dark' : 'light'
+        );
         document.body.classList.remove('light-theme', 'dark-theme');
         document.body.classList.add(`${e.matches ? 'dark' : 'light'}-theme`);
       };
@@ -91,7 +96,8 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
       // Use the newer addEventListener if available, otherwise use the deprecated addListener
       if (mediaQuery.addEventListener) {
         mediaQuery.addEventListener('change', handleSystemThemeChange);
-        return () => mediaQuery.removeEventListener('change', handleSystemThemeChange);
+        return () =>
+          mediaQuery.removeEventListener('change', handleSystemThemeChange);
       } else {
         // Fallback for older browsers
         mediaQuery.addListener(handleSystemThemeChange);
@@ -124,9 +130,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   };
 
   return (
-    <ThemeContext.Provider value={value}>
-      {children}
-    </ThemeContext.Provider>
+    <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
   );
 };
 

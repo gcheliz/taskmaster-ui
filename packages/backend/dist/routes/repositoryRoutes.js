@@ -17,19 +17,19 @@ const schemas = {
                 description: 'Absolute path to the repository directory',
                 example: '/Users/john/projects/my-app',
                 minLength: 1,
-                maxLength: 500
+                maxLength: 500,
             },
             validateGit: {
                 type: 'boolean',
                 description: 'Whether to validate Git repository status',
-                default: true
+                default: true,
             },
             validateTaskMaster: {
                 type: 'boolean',
                 description: 'Whether to validate TaskMaster project status',
-                default: true
-            }
-        }
+                default: true,
+            },
+        },
     },
     RepositoryValidateResponse: {
         type: 'object',
@@ -46,13 +46,19 @@ const schemas = {
                             properties: {
                                 type: {
                                     type: 'string',
-                                    enum: ['path', 'directory', 'git', 'taskmaster', 'permissions']
+                                    enum: [
+                                        'path',
+                                        'directory',
+                                        'git',
+                                        'taskmaster',
+                                        'permissions',
+                                    ],
                                 },
                                 isValid: { type: 'boolean' },
                                 message: { type: 'string' },
-                                details: { type: 'object' }
-                            }
-                        }
+                                details: { type: 'object' },
+                            },
+                        },
                     },
                     repositoryInfo: {
                         type: 'object',
@@ -62,22 +68,22 @@ const schemas = {
                             isGitRepository: { type: 'boolean' },
                             isTaskMasterProject: { type: 'boolean' },
                             gitBranch: { type: 'string' },
-                            gitRemoteUrl: { type: 'string' }
-                        }
+                            gitRemoteUrl: { type: 'string' },
+                        },
                     },
                     errors: {
                         type: 'array',
-                        items: { type: 'string' }
-                    }
-                }
+                        items: { type: 'string' },
+                    },
+                },
             },
             error: {
                 type: 'object',
                 properties: {
                     code: { type: 'string' },
                     message: { type: 'string' },
-                    correlationId: { type: 'string' }
-                }
+                    correlationId: { type: 'string' },
+                },
             },
             metadata: {
                 type: 'object',
@@ -85,11 +91,11 @@ const schemas = {
                     timestamp: { type: 'string' },
                     requestId: { type: 'string' },
                     duration: { type: 'number' },
-                    version: { type: 'string' }
-                }
-            }
-        }
-    }
+                    version: { type: 'string' },
+                },
+            },
+        },
+    },
 };
 exports.repositoryApiSchemas = schemas;
 // Route Factory
@@ -221,8 +227,8 @@ class RepositoryRouteFactory {
                     success: false,
                     error: {
                         code: 'MISSING_PARAMETER',
-                        message: 'repositoryPath is required'
-                    }
+                        message: 'repositoryPath is required',
+                    },
                 });
             }
             req.validatedBody = req.body;

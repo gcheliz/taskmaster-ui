@@ -22,7 +22,7 @@ export interface TaskCardProps {
 
 /**
  * Task Card Component
- * 
+ *
  * Reusable card component that displays a single task with all its details.
  * Supports different display modes and handles task interaction events.
  */
@@ -32,31 +32,26 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   className = '',
   compact = false,
   showFullDetails = true,
-  isDraggable = true
+  isDraggable = true,
 }) => {
   // Configure draggable behavior
   const dragData: DragData = {
     type: 'task',
     taskId: task.id,
-    status: task.status
+    status: task.status,
   };
 
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    isDragging
-  } = useDraggable({
-    id: `task-${task.id}`,
-    data: dragData,
-    disabled: !isDraggable
-  });
+  const { attributes, listeners, setNodeRef, transform, isDragging } =
+    useDraggable({
+      id: `task-${task.id}`,
+      data: dragData,
+      disabled: !isDraggable,
+    });
 
   const style = {
     transform: CSS.Translate.toString(transform),
     opacity: isDragging ? 0.5 : 1,
-    cursor: isDragging ? 'grabbing' : isDraggable ? 'grab' : 'default'
+    cursor: isDragging ? 'grabbing' : isDraggable ? 'grab' : 'default',
   };
 
   const handleTaskClick = () => {
@@ -121,17 +116,24 @@ export const TaskCard: React.FC<TaskCardProps> = ({
     }
   };
 
-  const isOverdue = task.dueDate && new Date(task.dueDate) < new Date() && task.status !== 'done';
-  const isDueSoon = task.dueDate && !isOverdue && 
+  const isOverdue =
+    task.dueDate &&
+    new Date(task.dueDate) < new Date() &&
+    task.status !== 'done';
+  const isDueSoon =
+    task.dueDate &&
+    !isOverdue &&
     new Date(task.dueDate) <= new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
   // Merge accessibility attributes with DnD attributes
   const mergedAttributes = {
     ...attributes,
-    role: "button",
+    role: 'button',
     tabIndex: 0,
     'aria-label': `Task ${task.title}, priority ${task.priority}, status ${task.status}. Press Enter or Space to open details.`,
-    'aria-describedby': task.description ? `task-${task.id}-description` : undefined
+    'aria-describedby': task.description
+      ? `task-${task.id}-description`
+      : undefined,
   };
 
   return (
@@ -149,10 +151,12 @@ export const TaskCard: React.FC<TaskCardProps> = ({
       `.trim()}
       onClick={handleTaskClick}
       onKeyDown={handleKeyDown}
-      style={{ 
-        '--priority-color': getPriorityColor(task.priority),
-        ...style
-      } as React.CSSProperties}
+      style={
+        {
+          '--priority-color': getPriorityColor(task.priority),
+          ...style,
+        } as React.CSSProperties
+      }
       {...mergedAttributes}
       {...listeners}
     >
@@ -168,10 +172,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
           </div>
         </div>
         <div className="task-priority">
-          <span 
-            className="priority-icon" 
-            title={`${task.priority} priority`}
-          >
+          <span className="priority-icon" title={`${task.priority} priority`}>
             {getPriorityIcon(task.priority)}
           </span>
         </div>
@@ -179,7 +180,9 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
       {showFullDetails && task.description && (
         <div className="task-card__description">
-          <p id={`task-${task.id}-description`} className="task-description">{task.description}</p>
+          <p id={`task-${task.id}-description`} className="task-description">
+            {task.description}
+          </p>
         </div>
       )}
 
@@ -192,24 +195,25 @@ export const TaskCard: React.FC<TaskCardProps> = ({
                 <span className="meta-value">{task.estimatedHours}h</span>
               </div>
             )}
-            
+
             {task.complexity && (
               <div className="task-meta-item">
                 <span className="meta-icon">🔧</span>
                 <span className="meta-value">{task.complexity}/10</span>
               </div>
             )}
-            
+
             {task.subtasks && task.subtasks.length > 0 && (
               <div className="task-meta-item">
                 <span className="meta-icon">📋</span>
                 <span className="meta-value">
-                  {task.subtasks.filter(st => st.status === 'done').length}/{task.subtasks.length}
+                  {task.subtasks.filter(st => st.status === 'done').length}/
+                  {task.subtasks.length}
                 </span>
               </div>
             )}
           </div>
-          
+
           {task.assignedTo && (
             <div className="task-assignee">
               <span className="assignee-icon">👤</span>
@@ -235,7 +239,9 @@ export const TaskCard: React.FC<TaskCardProps> = ({
       )}
 
       {showFullDetails && task.dueDate && (
-        <div className={`task-card__due-date ${isOverdue ? 'overdue' : isDueSoon ? 'due-soon' : ''}`}>
+        <div
+          className={`task-card__due-date ${isOverdue ? 'overdue' : isDueSoon ? 'due-soon' : ''}`}
+        >
           <span className="due-icon">📅</span>
           <span className="due-date">
             Due: {new Date(task.dueDate).toLocaleDateString()}

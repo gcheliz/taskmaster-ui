@@ -69,7 +69,21 @@ export interface LabelProps
 }
 
 const Label = React.forwardRef<HTMLLabelElement, LabelProps>(
-  ({ className, variant, size, required, error, success, description, helpText, children, ...props }, ref) => {
+  (
+    {
+      className,
+      variant,
+      size,
+      required,
+      error,
+      success,
+      description,
+      helpText,
+      children,
+      ...props
+    },
+    ref
+  ) => {
     // Determine variant based on state
     const computedVariant = error ? 'error' : success ? 'success' : variant;
 
@@ -77,24 +91,33 @@ const Label = React.forwardRef<HTMLLabelElement, LabelProps>(
       <div className="space-y-1">
         <label
           ref={ref}
-          className={cn(labelVariants({ variant: computedVariant, size, required, className }))}
+          className={cn(
+            labelVariants({
+              variant: computedVariant,
+              size,
+              required,
+              className,
+            })
+          )}
           {...props}
         >
           {children}
         </label>
         {description && (
-          <p className={cn(
-            'text-xs',
-            error ? 'text-error-600' : success ? 'text-success-600' : 'text-secondary-600'
-          )}>
+          <p
+            className={cn(
+              'text-xs',
+              error
+                ? 'text-error-600'
+                : success
+                  ? 'text-success-600'
+                  : 'text-secondary-600'
+            )}
+          >
             {description}
           </p>
         )}
-        {helpText && (
-          <p className="text-xs text-secondary-500">
-            {helpText}
-          </p>
-        )}
+        {helpText && <p className="text-xs text-secondary-500">{helpText}</p>}
       </div>
     );
   }

@@ -1,7 +1,10 @@
 import app from './app';
 import { WebSocketService } from './services/websocket';
 import { createRealtimeTaskSyncService } from './services/realtimeTaskSyncService';
-import { TerminalWebSocketService, terminalWebSocketService } from './services/terminalWebSocketService';
+import {
+  TerminalWebSocketService,
+  terminalWebSocketService,
+} from './services/terminalWebSocketService';
 import { terminalService } from './services/terminalService';
 
 const PORT = process.env.PORT || 3001;
@@ -23,17 +26,17 @@ if (require.main === module) {
   const realtimeSyncService = createRealtimeTaskSyncService(wsService, {
     enabled: true,
     debounceMs: 500,
-    maxRepositories: 10
+    maxRepositories: 10,
   });
-  
-  realtimeSyncService.initialize().catch((error) => {
+
+  realtimeSyncService.initialize().catch(error => {
     console.error('Failed to initialize real-time sync service:', error);
   });
 
   // Handle graceful shutdown
   const gracefulShutdown = async (signal: string) => {
     console.log(`\n🛑 Received ${signal}, starting graceful shutdown...`);
-    
+
     try {
       await realtimeSyncService.shutdown();
       terminalService.destroy();

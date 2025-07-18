@@ -63,11 +63,11 @@ export const commandService = {
       },
       body: JSON.stringify(request),
     });
-    
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    
+
     return response.json();
   },
 
@@ -93,11 +93,11 @@ export const commandService = {
       },
       body: JSON.stringify(request),
     });
-    
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    
+
     return response.json();
   },
 
@@ -118,15 +118,18 @@ export const commandService = {
     if (repositoryPath) {
       params.append('repositoryPath', repositoryPath);
     }
-    
-    const response = await fetch(`/api/commands/available?${params.toString()}`, {
-      method: 'GET',
-    });
-    
+
+    const response = await fetch(
+      `/api/commands/available?${params.toString()}`,
+      {
+        method: 'GET',
+      }
+    );
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    
+
     return response.json();
   },
 
@@ -146,11 +149,11 @@ export const commandService = {
     const response = await fetch('/api/commands/presets', {
       method: 'GET',
     });
-    
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    
+
     return response.json();
   },
 };

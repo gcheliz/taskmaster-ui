@@ -50,7 +50,7 @@ export interface RepositoryMetadataProps {
 
 /**
  * Repository Metadata Component
- * 
+ *
  * Displays essential repository information including:
  * - Repository name and path
  * - Current branch
@@ -65,7 +65,7 @@ export const RepositoryMetadata: React.FC<RepositoryMetadataProps> = ({
   showFullPath = false,
   showCommitDetails = true,
   onRepositoryClick,
-  onBranchClick
+  onBranchClick,
 }) => {
   if (isLoading) {
     return (
@@ -121,24 +121,25 @@ export const RepositoryMetadata: React.FC<RepositoryMetadataProps> = ({
 
   const getStatusIndicator = () => {
     const { status } = repository;
-    
+
     if (status.isClean) {
       return {
         className: 'status-clean',
         icon: '●',
         label: 'Clean',
-        title: 'Working directory is clean'
+        title: 'Working directory is clean',
       };
     }
 
-    const totalChanges = status.staged + status.unstaged + status.untracked + status.conflicted;
-    
+    const totalChanges =
+      status.staged + status.unstaged + status.untracked + status.conflicted;
+
     if (status.conflicted > 0) {
       return {
         className: 'status-conflicted',
         icon: '●',
         label: 'Conflicts',
-        title: `${status.conflicted} conflicted file(s)`
+        title: `${status.conflicted} conflicted file(s)`,
       };
     }
 
@@ -146,7 +147,7 @@ export const RepositoryMetadata: React.FC<RepositoryMetadataProps> = ({
       className: 'status-dirty',
       icon: '●',
       label: `${totalChanges} change${totalChanges === 1 ? '' : 's'}`,
-      title: `${status.staged} staged, ${status.unstaged} unstaged, ${status.untracked} untracked`
+      title: `${status.staged} staged, ${status.unstaged} unstaged, ${status.untracked} untracked`,
     };
   };
 
@@ -158,14 +159,14 @@ export const RepositoryMetadata: React.FC<RepositoryMetadataProps> = ({
     <div className={`repository-metadata ${className}`}>
       <div className="repository-metadata__header">
         <div className="repository-metadata__name-section">
-          <h3 
+          <h3
             className={`repository-name ${onRepositoryClick ? 'clickable' : ''}`}
             onClick={onRepositoryClick}
             title={showFullPath ? repository.name : repository.path}
           >
             📁 {displayName}
           </h3>
-          <div 
+          <div
             className={`status-indicator ${statusIndicator.className}`}
             title={statusIndicator.title}
           >
@@ -177,7 +178,7 @@ export const RepositoryMetadata: React.FC<RepositoryMetadataProps> = ({
 
       <div className="repository-metadata__branch">
         <span className="branch-label">Branch:</span>
-        <span 
+        <span
           className={`branch-name ${onBranchClick ? 'clickable' : ''}`}
           onClick={onBranchClick}
           title="Current branch"
@@ -187,12 +188,18 @@ export const RepositoryMetadata: React.FC<RepositoryMetadataProps> = ({
         {(repository.status.ahead || repository.status.behind) && (
           <div className="branch-tracking">
             {repository.status.ahead ? (
-              <span className="ahead" title={`${repository.status.ahead} commits ahead`}>
+              <span
+                className="ahead"
+                title={`${repository.status.ahead} commits ahead`}
+              >
                 ↑{repository.status.ahead}
               </span>
             ) : null}
             {repository.status.behind ? (
-              <span className="behind" title={`${repository.status.behind} commits behind`}>
+              <span
+                className="behind"
+                title={`${repository.status.behind} commits behind`}
+              >
                 ↓{repository.status.behind}
               </span>
             ) : null}

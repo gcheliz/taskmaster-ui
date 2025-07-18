@@ -57,7 +57,8 @@ const Radio = React.forwardRef<HTMLInputElement, RadioProps>(
     const radioStyles: React.CSSProperties = {
       ...style,
       ...(props.checked && {
-        backgroundImage: 'radial-gradient(circle, currentColor 40%, transparent 41%)',
+        backgroundImage:
+          'radial-gradient(circle, currentColor 40%, transparent 41%)',
       }),
     };
 
@@ -65,7 +66,9 @@ const Radio = React.forwardRef<HTMLInputElement, RadioProps>(
       <div className="relative inline-flex items-center">
         <input
           type="radio"
-          className={cn(radioVariants({ size, variant: computedVariant, className }))}
+          className={cn(
+            radioVariants({ size, variant: computedVariant, className })
+          )}
           ref={ref}
           style={radioStyles}
           {...props}

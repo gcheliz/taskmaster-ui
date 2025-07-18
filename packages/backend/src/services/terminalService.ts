@@ -65,7 +65,7 @@ export class TerminalService extends EventEmitter {
       shell: defaultShell,
       isActive: true,
       createdAt: new Date(),
-      lastActivity: new Date()
+      lastActivity: new Date(),
     };
 
     this.sessions.set(sessionId, session);
@@ -98,7 +98,7 @@ export class TerminalService extends EventEmitter {
 
     // Parse command and arguments
     const [cmd, ...args] = command.trim().split(/\\s+/);
-    
+
     try {
       // Spawn the command
       const childProcess = spawn(cmd, args, {
@@ -109,8 +109,8 @@ export class TerminalService extends EventEmitter {
           ...process.env,
           TERM: 'xterm-256color',
           COLUMNS: '80',
-          LINES: '24'
-        }
+          LINES: '24',
+        },
       });
 
       // Store the process reference
@@ -122,7 +122,7 @@ export class TerminalService extends EventEmitter {
           type: 'stdout',
           data: data.toString(),
           sessionId,
-          timestamp: new Date()
+          timestamp: new Date(),
         };
         this.emit('output', output);
       });
@@ -133,7 +133,7 @@ export class TerminalService extends EventEmitter {
           type: 'stderr',
           data: data.toString(),
           sessionId,
-          timestamp: new Date()
+          timestamp: new Date(),
         };
         this.emit('output', output);
       });
@@ -144,10 +144,10 @@ export class TerminalService extends EventEmitter {
           type: 'exit',
           data: `Process exited with code ${code}\\n`,
           sessionId,
-          timestamp: new Date()
+          timestamp: new Date(),
         };
         this.emit('output', output);
-        
+
         // Clear the process reference
         if (session.process === childProcess) {
           session.process = undefined;
@@ -160,17 +160,16 @@ export class TerminalService extends EventEmitter {
           type: 'stderr',
           data: `Error: ${error.message}\\n`,
           sessionId,
-          timestamp: new Date()
+          timestamp: new Date(),
         };
         this.emit('output', output);
       });
-
     } catch (error) {
       const output: TerminalOutput = {
         type: 'stderr',
         data: `Failed to execute command: ${error instanceof Error ? error.message : 'Unknown error'}\\n`,
         sessionId,
-        timestamp: new Date()
+        timestamp: new Date(),
       };
       this.emit('output', output);
     }
@@ -213,7 +212,7 @@ export class TerminalService extends EventEmitter {
     }
 
     const newPath = path.resolve(session.workingDirectory, directory);
-    
+
     if (!this.isValidDirectory(newPath)) {
       throw new Error(`Invalid directory: ${directory}`);
     }
@@ -225,7 +224,7 @@ export class TerminalService extends EventEmitter {
       type: 'stdout',
       data: `Changed directory to ${newPath}\\n`,
       sessionId,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
     this.emit('output', output);
   }
@@ -241,7 +240,9 @@ export class TerminalService extends EventEmitter {
    * Get all active sessions
    */
   getActiveSessions(): TerminalSession[] {
-    return Array.from(this.sessions.values()).filter(session => session.isActive);
+    return Array.from(this.sessions.values()).filter(
+      session => session.isActive
+    );
   }
 
   /**
@@ -260,7 +261,7 @@ export class TerminalService extends EventEmitter {
 
     session.isActive = false;
     this.sessions.delete(sessionId);
-    
+
     logger.info(`Closed terminal session ${sessionId}`);
   }
 
@@ -285,7 +286,10 @@ export class TerminalService extends EventEmitter {
   /**
    * Handle built-in commands
    */
-  private async handleBuiltInCommand(sessionId: string, command: string): Promise<void> {
+  private async handleBuiltInCommand(
+    sessionId: string,
+    command: string
+  ): Promise<void> {
     const session = this.sessions.get(sessionId);
     if (!session) {
       return;
@@ -308,7 +312,7 @@ export class TerminalService extends EventEmitter {
           type: 'stdout',
           data: `${session.workingDirectory}\\n`,
           sessionId,
-          timestamp: new Date()
+          timestamp: new Date(),
         };
         this.emit('output', output);
         break;
@@ -319,7 +323,7 @@ export class TerminalService extends EventEmitter {
           type: 'stdout',
           data: '\\x1b[2J\\x1b[H',
           sessionId,
-          timestamp: new Date()
+          timestamp: new Date(),
         };
         this.emit('output', clearOutput);
         break;
@@ -348,9 +352,12 @@ export class TerminalService extends EventEmitter {
    * Setup cleanup interval for inactive sessions
    */
   private setupCleanupInterval(): void {
-    this.cleanupInterval = setInterval(() => {
-      this.cleanupInactiveSessions();
-    }, 5 * 60 * 1000); // Check every 5 minutes
+    this.cleanupInterval = setInterval(
+      () => {
+        this.cleanupInactiveSessions();
+      },
+      5 * 60 * 1000
+    ); // Check every 5 minutes
   }
 
   /**
@@ -358,7 +365,7 @@ export class TerminalService extends EventEmitter {
    */
   private cleanupInactiveSessions(): void {
     const now = Date.now();
-    
+
     for (const [sessionId, session] of this.sessions) {
       if (now - session.lastActivity.getTime() > this.sessionTimeout) {
         logger.info(`Cleaning up inactive session ${sessionId}`);
@@ -382,7 +389,9 @@ export class TerminalService extends EventEmitter {
     }
 
     if (oldestSessionId) {
-      logger.info(`Cleaning up oldest session ${oldestSessionId} due to capacity limit`);
+      logger.info(
+        `Cleaning up oldest session ${oldestSessionId} due to capacity limit`
+      );
       this.closeSession(oldestSessionId);
     }
   }

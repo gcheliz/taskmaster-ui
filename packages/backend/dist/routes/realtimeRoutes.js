@@ -15,20 +15,20 @@ router.get('/status', (req, res) => {
         if (!syncService) {
             return res.status(503).json({
                 success: false,
-                error: 'Real-time sync service not available'
+                error: 'Real-time sync service not available',
             });
         }
         const stats = syncService.getStats();
         res.json({
             success: true,
-            data: stats
+            data: stats,
         });
     }
     catch (error) {
         console.error('Error getting real-time status:', error);
         res.status(500).json({
             success: false,
-            error: 'Failed to get real-time sync status'
+            error: 'Failed to get real-time sync status',
         });
     }
 });
@@ -42,14 +42,14 @@ router.post('/repositories', (req, res) => {
         if (!repositoryPath || typeof repositoryPath !== 'string') {
             return res.status(400).json({
                 success: false,
-                error: 'Repository path is required and must be a string'
+                error: 'Repository path is required and must be a string',
             });
         }
         const syncService = (0, realtimeTaskSyncService_1.getRealtimeTaskSyncService)();
         if (!syncService) {
             return res.status(503).json({
                 success: false,
-                error: 'Real-time sync service not available'
+                error: 'Real-time sync service not available',
             });
         }
         syncService.addRepository(repositoryPath);
@@ -58,15 +58,17 @@ router.post('/repositories', (req, res) => {
             message: `Repository added for real-time monitoring: ${repositoryPath}`,
             data: {
                 repositoryPath,
-                monitoredRepositories: syncService.getMonitoredRepositories()
-            }
+                monitoredRepositories: syncService.getMonitoredRepositories(),
+            },
         });
     }
     catch (error) {
         console.error('Error adding repository for monitoring:', error);
         res.status(500).json({
             success: false,
-            error: error instanceof Error ? error.message : 'Failed to add repository for monitoring'
+            error: error instanceof Error
+                ? error.message
+                : 'Failed to add repository for monitoring',
         });
     }
 });
@@ -81,14 +83,14 @@ router.delete('/repositories/*', async (req, res) => {
         if (!repositoryPath || repositoryPath === '/') {
             return res.status(400).json({
                 success: false,
-                error: 'Repository path is required'
+                error: 'Repository path is required',
             });
         }
         const syncService = (0, realtimeTaskSyncService_1.getRealtimeTaskSyncService)();
         if (!syncService) {
             return res.status(503).json({
                 success: false,
-                error: 'Real-time sync service not available'
+                error: 'Real-time sync service not available',
             });
         }
         await syncService.removeRepository(repositoryPath);
@@ -97,15 +99,17 @@ router.delete('/repositories/*', async (req, res) => {
             message: `Repository removed from real-time monitoring: ${repositoryPath}`,
             data: {
                 repositoryPath,
-                monitoredRepositories: syncService.getMonitoredRepositories()
-            }
+                monitoredRepositories: syncService.getMonitoredRepositories(),
+            },
         });
     }
     catch (error) {
         console.error('Error removing repository from monitoring:', error);
         res.status(500).json({
             success: false,
-            error: error instanceof Error ? error.message : 'Failed to remove repository from monitoring'
+            error: error instanceof Error
+                ? error.message
+                : 'Failed to remove repository from monitoring',
         });
     }
 });
@@ -119,7 +123,7 @@ router.get('/repositories', (req, res) => {
         if (!syncService) {
             return res.status(503).json({
                 success: false,
-                error: 'Real-time sync service not available'
+                error: 'Real-time sync service not available',
             });
         }
         const monitoredRepositories = syncService.getMonitoredRepositories();
@@ -127,15 +131,15 @@ router.get('/repositories', (req, res) => {
             success: true,
             data: {
                 repositories: monitoredRepositories,
-                count: monitoredRepositories.length
-            }
+                count: monitoredRepositories.length,
+            },
         });
     }
     catch (error) {
         console.error('Error getting monitored repositories:', error);
         res.status(500).json({
             success: false,
-            error: 'Failed to get monitored repositories'
+            error: 'Failed to get monitored repositories',
         });
     }
 });

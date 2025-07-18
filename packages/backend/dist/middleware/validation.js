@@ -7,7 +7,7 @@ const index_1 = require("./index");
  */
 exports.validatePrdAnalysisRequest = (0, index_1.validationMiddleware)({
     bodySchema: {
-        required: ['repositoryPath', 'prdContent']
+        required: ['repositoryPath', 'prdContent'],
     },
     customValidators: [
         (req) => {
@@ -19,7 +19,7 @@ exports.validatePrdAnalysisRequest = (0, index_1.validationMiddleware)({
                     field: 'repositoryPath',
                     code: 'INVALID_TYPE',
                     message: 'Repository path must be a string',
-                    value: repositoryPath
+                    value: repositoryPath,
                 });
             }
             // Validate PRD content
@@ -28,7 +28,7 @@ exports.validatePrdAnalysisRequest = (0, index_1.validationMiddleware)({
                     field: 'prdContent',
                     code: 'INVALID_TYPE',
                     message: 'PRD content must be a string',
-                    value: prdContent
+                    value: prdContent,
                 });
             }
             if (prdContent && prdContent.length === 0) {
@@ -36,15 +36,16 @@ exports.validatePrdAnalysisRequest = (0, index_1.validationMiddleware)({
                     field: 'prdContent',
                     code: 'EMPTY_CONTENT',
                     message: 'PRD content cannot be empty',
-                    value: prdContent
+                    value: prdContent,
                 });
             }
-            if (prdContent && prdContent.length > 1000000) { // 1MB limit
+            if (prdContent && prdContent.length > 1000000) {
+                // 1MB limit
                 errors.push({
                     field: 'prdContent',
                     code: 'CONTENT_TOO_LARGE',
                     message: 'PRD content cannot exceed 1MB',
-                    value: prdContent.length
+                    value: prdContent.length,
                 });
             }
             // Validate options if provided
@@ -53,7 +54,7 @@ exports.validatePrdAnalysisRequest = (0, index_1.validationMiddleware)({
                     field: 'options',
                     code: 'INVALID_TYPE',
                     message: 'Options must be an object',
-                    value: options
+                    value: options,
                 });
             }
             if (options) {
@@ -63,31 +64,33 @@ exports.validatePrdAnalysisRequest = (0, index_1.validationMiddleware)({
                         field: 'options.tag',
                         code: 'INVALID_TYPE',
                         message: 'Tag must be a string',
-                        value: options.tag
+                        value: options.tag,
                     });
                 }
                 // Validate append
-                if (options.append !== undefined && typeof options.append !== 'boolean') {
+                if (options.append !== undefined &&
+                    typeof options.append !== 'boolean') {
                     errors.push({
                         field: 'options.append',
                         code: 'INVALID_TYPE',
                         message: 'Append must be a boolean',
-                        value: options.append
+                        value: options.append,
                     });
                 }
                 // Validate research
-                if (options.research !== undefined && typeof options.research !== 'boolean') {
+                if (options.research !== undefined &&
+                    typeof options.research !== 'boolean') {
                     errors.push({
                         field: 'options.research',
                         code: 'INVALID_TYPE',
                         message: 'Research must be a boolean',
-                        value: options.research
+                        value: options.research,
                     });
                 }
             }
             return errors;
-        }
-    ]
+        },
+    ],
 });
 /**
  * Basic auth middleware (placeholder - implement proper auth as needed)

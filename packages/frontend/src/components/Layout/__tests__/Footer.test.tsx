@@ -4,7 +4,9 @@ import { Footer } from '../Footer';
 describe('Footer', () => {
   it('renders copyright information', () => {
     render(<Footer />);
-    expect(screen.getByText(/© 2025 TaskMaster UI. All rights reserved./)).toBeInTheDocument();
+    expect(
+      screen.getByText(/© 2025 TaskMaster UI. All rights reserved./)
+    ).toBeInTheDocument();
   });
 
   it('renders application status', () => {
@@ -19,22 +21,22 @@ describe('Footer', () => {
 
   it('has correct CSS class structure', () => {
     const { container } = render(<Footer />);
-    
+
     // Check for main footer element
     const footerElement = container.querySelector('.app-footer');
     expect(footerElement).toBeInTheDocument();
-    
+
     // Check for footer content container
     const footerContent = container.querySelector('.footer-content');
     expect(footerContent).toBeInTheDocument();
-    
+
     // Check for footer sections
     const footerLeft = container.querySelector('.footer-left');
     expect(footerLeft).toBeInTheDocument();
-    
+
     const footerCenter = container.querySelector('.footer-center');
     expect(footerCenter).toBeInTheDocument();
-    
+
     const footerRight = container.querySelector('.footer-right');
     expect(footerRight).toBeInTheDocument();
   });
@@ -47,7 +49,7 @@ describe('Footer', () => {
 
   it('has correct semantic structure', () => {
     render(<Footer />);
-    
+
     // Check that the main element is a footer tag
     const footerElement = screen.getByRole('contentinfo');
     expect(footerElement).toBeInTheDocument();
@@ -55,7 +57,7 @@ describe('Footer', () => {
 
   it('displays status with correct styling classes', () => {
     const { container } = render(<Footer />);
-    
+
     const statusElement = container.querySelector('.app-status');
     expect(statusElement).toBeInTheDocument();
     expect(statusElement).toHaveTextContent('Status: Online');
@@ -63,7 +65,7 @@ describe('Footer', () => {
 
   it('displays version with correct styling classes', () => {
     const { container } = render(<Footer />);
-    
+
     const versionElement = container.querySelector('.app-version');
     expect(versionElement).toBeInTheDocument();
     expect(versionElement).toHaveTextContent('v1.0.0');
@@ -71,10 +73,10 @@ describe('Footer', () => {
 
   it('has proper layout structure with three sections', () => {
     const { container } = render(<Footer />);
-    
+
     const footerContent = container.querySelector('.footer-content');
     const sections = footerContent?.children;
-    
+
     expect(sections).toHaveLength(3);
     expect(sections?.[0]).toHaveClass('footer-left');
     expect(sections?.[1]).toHaveClass('footer-center');

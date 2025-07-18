@@ -3,7 +3,7 @@ import { Repository } from '@prisma/client';
 
 /**
  * Repository Service
- * 
+ *
  * Handles repository data persistence and retrieval from the database.
  * Provides CRUD operations for repository management using Prisma.
  */
@@ -26,9 +26,9 @@ export class RepositoryService {
           project: true,
           commits: {
             orderBy: { timestamp: 'desc' },
-            take: 10 // Include last 10 commits
-          }
-        }
+            take: 10, // Include last 10 commits
+          },
+        },
       });
       return repository;
     } catch (error) {
@@ -48,10 +48,10 @@ export class RepositoryService {
           project: true,
           commits: {
             orderBy: { timestamp: 'desc' },
-            take: 5 // Include last 5 commits for each repo
-          }
+            take: 5, // Include last 5 commits for each repo
+          },
         },
-        orderBy: { createdAt: 'desc' }
+        orderBy: { createdAt: 'desc' },
       });
       return repositories;
     } catch (error) {
@@ -72,9 +72,9 @@ export class RepositoryService {
           project: true,
           commits: {
             orderBy: { timestamp: 'desc' },
-            take: 10
-          }
-        }
+            take: 10,
+          },
+        },
       });
       return repository;
     } catch (error) {
@@ -95,10 +95,10 @@ export class RepositoryService {
           project: true,
           commits: {
             orderBy: { timestamp: 'desc' },
-            take: 5
-          }
+            take: 5,
+          },
         },
-        orderBy: { createdAt: 'desc' }
+        orderBy: { createdAt: 'desc' },
       });
       return repositories;
     } catch (error) {
@@ -125,12 +125,12 @@ export class RepositoryService {
           url: data.url,
           path: data.path,
           branch: data.branch || 'main',
-          projectId: data.projectId
+          projectId: data.projectId,
         },
         include: {
           project: true,
-          commits: true
-        }
+          commits: true,
+        },
       });
       return repository;
     } catch (error) {
@@ -143,7 +143,7 @@ export class RepositoryService {
    * Update repository
    */
   async updateRepository(
-    id: string, 
+    id: string,
     updates: {
       name?: string;
       url?: string;
@@ -153,12 +153,12 @@ export class RepositoryService {
   ): Promise<Repository | null> {
     try {
       const prisma = this.dbService.getPrisma();
-      
+
       // Check if repository exists
       const existing = await prisma.repository.findUnique({
-        where: { id }
+        where: { id },
       });
-      
+
       if (!existing) {
         return null;
       }
@@ -170,11 +170,11 @@ export class RepositoryService {
           project: true,
           commits: {
             orderBy: { timestamp: 'desc' },
-            take: 10
-          }
-        }
+            take: 10,
+          },
+        },
       });
-      
+
       return repository;
     } catch (error) {
       console.error('Error updating repository:', error);
@@ -188,21 +188,21 @@ export class RepositoryService {
   async deleteRepository(id: string): Promise<boolean> {
     try {
       const prisma = this.dbService.getPrisma();
-      
+
       // Check if repository exists
       const existing = await prisma.repository.findUnique({
-        where: { id }
+        where: { id },
       });
-      
+
       if (!existing) {
         return false;
       }
 
       // Delete repository (commits will be cascade deleted due to foreign key constraint)
       await prisma.repository.delete({
-        where: { id }
+        where: { id },
       });
-      
+
       return true;
     } catch (error) {
       console.error('Error deleting repository:', error);
@@ -251,10 +251,10 @@ export class RepositoryService {
   }> {
     try {
       const prisma = this.dbService.getPrisma();
-      
+
       const [commitCount, latestCommit] = await Promise.all([
         prisma.commit.count({
-          where: { repositoryId: id }
+          where: { repositoryId: id },
         }),
         prisma.commit.findFirst({
           where: { repositoryId: id },
@@ -263,14 +263,14 @@ export class RepositoryService {
             hash: true,
             message: true,
             author: true,
-            timestamp: true
-          }
-        })
+            timestamp: true,
+          },
+        }),
       ]);
 
       return {
         commitCount,
-        latestCommit: latestCommit || undefined
+        latestCommit: latestCommit || undefined,
       };
     } catch (error) {
       console.error('Error getting repository stats:', error);

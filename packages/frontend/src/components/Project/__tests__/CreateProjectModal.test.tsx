@@ -14,13 +14,13 @@ const mockRepositories = [
   {
     id: 'repo-1',
     name: 'taskmaster-ui',
-    path: '/Users/john/projects/taskmaster-ui'
+    path: '/Users/john/projects/taskmaster-ui',
   },
   {
     id: 'repo-2',
     name: 'backend-api',
-    path: '/Users/john/projects/backend-api'
-  }
+    path: '/Users/john/projects/backend-api',
+  },
 ];
 
 describe('CreateProjectModal', () => {
@@ -77,8 +77,12 @@ describe('CreateProjectModal', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText('taskmaster-ui (/Users/john/projects/taskmaster-ui)')).toBeInTheDocument();
-      expect(screen.getByText('backend-api (/Users/john/projects/backend-api)')).toBeInTheDocument();
+      expect(
+        screen.getByText('taskmaster-ui (/Users/john/projects/taskmaster-ui)')
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText('backend-api (/Users/john/projects/backend-api)')
+      ).toBeInTheDocument();
     });
   });
 
@@ -128,14 +132,18 @@ describe('CreateProjectModal', () => {
 
     // Wait for repositories to load
     await waitFor(() => {
-      expect(screen.getByText('taskmaster-ui (/Users/john/projects/taskmaster-ui)')).toBeInTheDocument();
+      expect(
+        screen.getByText('taskmaster-ui (/Users/john/projects/taskmaster-ui)')
+      ).toBeInTheDocument();
     });
 
     const createButton = screen.getByText('Create Project');
     fireEvent.click(createButton);
 
     await waitFor(() => {
-      expect(screen.getByText('Please select a repository')).toBeInTheDocument();
+      expect(
+        screen.getByText('Please select a repository')
+      ).toBeInTheDocument();
       expect(screen.getByText('Project name is required')).toBeInTheDocument();
     });
 
@@ -153,7 +161,9 @@ describe('CreateProjectModal', () => {
 
     // Wait for repositories to load
     await waitFor(() => {
-      expect(screen.getByText('taskmaster-ui (/Users/john/projects/taskmaster-ui)')).toBeInTheDocument();
+      expect(
+        screen.getByText('taskmaster-ui (/Users/john/projects/taskmaster-ui)')
+      ).toBeInTheDocument();
     });
 
     const projectNameInput = screen.getByLabelText('Project Name *');
@@ -163,7 +173,9 @@ describe('CreateProjectModal', () => {
     fireEvent.click(screen.getByText('Create Project'));
 
     await waitFor(() => {
-      expect(screen.getByText('Project name must be at least 2 characters long')).toBeInTheDocument();
+      expect(
+        screen.getByText('Project name must be at least 2 characters long')
+      ).toBeInTheDocument();
     });
 
     // Test invalid characters
@@ -171,7 +183,11 @@ describe('CreateProjectModal', () => {
     fireEvent.click(screen.getByText('Create Project'));
 
     await waitFor(() => {
-      expect(screen.getByText('Project name can only contain letters, numbers, spaces, hyphens, and underscores')).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          'Project name can only contain letters, numbers, spaces, hyphens, and underscores'
+        )
+      ).toBeInTheDocument();
     });
 
     // Test too long
@@ -179,7 +195,9 @@ describe('CreateProjectModal', () => {
     fireEvent.click(screen.getByText('Create Project'));
 
     await waitFor(() => {
-      expect(screen.getByText('Project name must be less than 50 characters')).toBeInTheDocument();
+      expect(
+        screen.getByText('Project name must be less than 50 characters')
+      ).toBeInTheDocument();
     });
   });
 
@@ -196,7 +214,9 @@ describe('CreateProjectModal', () => {
 
     // Wait for repositories to load
     await waitFor(() => {
-      expect(screen.getByText('taskmaster-ui (/Users/john/projects/taskmaster-ui)')).toBeInTheDocument();
+      expect(
+        screen.getByText('taskmaster-ui (/Users/john/projects/taskmaster-ui)')
+      ).toBeInTheDocument();
     });
 
     // Select repository
@@ -212,7 +232,10 @@ describe('CreateProjectModal', () => {
     fireEvent.click(createButton);
 
     await waitFor(() => {
-      expect(mockOnCreateProject).toHaveBeenCalledWith('repo-1', 'Test Project');
+      expect(mockOnCreateProject).toHaveBeenCalledWith(
+        'repo-1',
+        'Test Project'
+      );
     });
 
     await waitFor(() => {
@@ -231,7 +254,9 @@ describe('CreateProjectModal', () => {
 
     // Wait for repositories to load
     await waitFor(() => {
-      expect(screen.getByText('taskmaster-ui (/Users/john/projects/taskmaster-ui)')).toBeInTheDocument();
+      expect(
+        screen.getByText('taskmaster-ui (/Users/john/projects/taskmaster-ui)')
+      ).toBeInTheDocument();
     });
 
     // Select repository
@@ -246,7 +271,9 @@ describe('CreateProjectModal', () => {
       expect(screen.getByText('Project Preview')).toBeInTheDocument();
       expect(screen.getByText('taskmaster-ui')).toBeInTheDocument();
       expect(screen.getByText('Test Project')).toBeInTheDocument();
-      expect(screen.getByText('/Users/john/projects/taskmaster-ui/.taskmaster/')).toBeInTheDocument();
+      expect(
+        screen.getByText('/Users/john/projects/taskmaster-ui/.taskmaster/')
+      ).toBeInTheDocument();
     });
   });
 
@@ -263,12 +290,18 @@ describe('CreateProjectModal', () => {
 
     // Wait for repositories to load
     await waitFor(() => {
-      expect(screen.getByText('taskmaster-ui (/Users/john/projects/taskmaster-ui)')).toBeInTheDocument();
+      expect(
+        screen.getByText('taskmaster-ui (/Users/john/projects/taskmaster-ui)')
+      ).toBeInTheDocument();
     });
 
     // Fill form
-    fireEvent.change(screen.getByLabelText('Repository *'), { target: { value: 'repo-1' } });
-    fireEvent.change(screen.getByLabelText('Project Name *'), { target: { value: 'Test Project' } });
+    fireEvent.change(screen.getByLabelText('Repository *'), {
+      target: { value: 'repo-1' },
+    });
+    fireEvent.change(screen.getByLabelText('Project Name *'), {
+      target: { value: 'Test Project' },
+    });
 
     // Submit form
     fireEvent.click(screen.getByText('Create Project'));
@@ -292,12 +325,18 @@ describe('CreateProjectModal', () => {
 
     // Wait for repositories to load
     await waitFor(() => {
-      expect(screen.getByText('taskmaster-ui (/Users/john/projects/taskmaster-ui)')).toBeInTheDocument();
+      expect(
+        screen.getByText('taskmaster-ui (/Users/john/projects/taskmaster-ui)')
+      ).toBeInTheDocument();
     });
 
     // Fill form
-    fireEvent.change(screen.getByLabelText('Repository *'), { target: { value: 'repo-1' } });
-    fireEvent.change(screen.getByLabelText('Project Name *'), { target: { value: 'Test Project' } });
+    fireEvent.change(screen.getByLabelText('Repository *'), {
+      target: { value: 'repo-1' },
+    });
+    fireEvent.change(screen.getByLabelText('Project Name *'), {
+      target: { value: 'Test Project' },
+    });
 
     // Submit form
     fireEvent.click(screen.getByText('Create Project'));
@@ -344,7 +383,9 @@ describe('CreateProjectModal', () => {
       />
     );
 
-    const backdrop = screen.getByText('Create New Project').closest('.create-project-modal');
+    const backdrop = screen
+      .getByText('Create New Project')
+      .closest('.create-project-modal');
     fireEvent.click(backdrop!);
     expect(mockOnClose).toHaveBeenCalled();
   });
@@ -358,7 +399,9 @@ describe('CreateProjectModal', () => {
       />
     );
 
-    const content = screen.getByText('Create New Project').closest('.create-project-modal__content');
+    const content = screen
+      .getByText('Create New Project')
+      .closest('.create-project-modal__content');
     fireEvent.click(content!);
     expect(mockOnClose).not.toHaveBeenCalled();
   });
@@ -398,7 +441,9 @@ describe('CreateProjectModal', () => {
       />
     );
 
-    expect(container.querySelector('.create-project-modal')).toHaveClass('custom-class');
+    expect(container.querySelector('.create-project-modal')).toHaveClass(
+      'custom-class'
+    );
   });
 
   it('shows empty state when no repositories', async () => {
@@ -451,7 +496,9 @@ describe('CreateProjectModal', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText('taskmaster-ui (/Users/john/projects/taskmaster-ui)')).toBeInTheDocument();
+      expect(
+        screen.getByText('taskmaster-ui (/Users/john/projects/taskmaster-ui)')
+      ).toBeInTheDocument();
     });
   });
 });

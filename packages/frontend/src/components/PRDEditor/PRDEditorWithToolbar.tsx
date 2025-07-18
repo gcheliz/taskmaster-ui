@@ -11,7 +11,11 @@ import { ListItem } from '@tiptap/extension-list-item';
 import { Code } from '@tiptap/extension-code';
 import { Blockquote } from '@tiptap/extension-blockquote';
 import { PRDToolbar } from './PRDToolbar';
-import { savePRDData, loadPRDData, isLocalStorageAvailable } from './utils/localStorage';
+import {
+  savePRDData,
+  loadPRDData,
+  isLocalStorageAvailable,
+} from './utils/localStorage';
 import './PRDEditorWithToolbar.css';
 
 export interface PRDEditorWithToolbarProps {
@@ -41,7 +45,7 @@ export interface PRDEditorWithToolbarProps {
 
 /**
  * PRD Editor with Toolbar Component
- * 
+ *
  * Complete PRD editing solution with integrated toolbar for formatting controls.
  * Features include:
  * - Full formatting toolbar with all controls
@@ -63,7 +67,7 @@ export const PRDEditorWithToolbar: React.FC<PRDEditorWithToolbarProps> = ({
   onAutoSave,
   showToolbar = true,
   title = '',
-  onTitleChange
+  onTitleChange,
 }) => {
   const [content, setContent] = useState(initialContent);
   const [documentTitle, setDocumentTitle] = useState(title);
@@ -131,11 +135,11 @@ export const PRDEditorWithToolbar: React.FC<PRDEditorWithToolbarProps> = ({
     onUpdate: ({ editor }) => {
       const html = editor.getHTML();
       const text = editor.getText();
-      
+
       setContent(html);
       setWordCount(text.split(/\s+/).filter(word => word.length > 0).length);
       setCharCount(text.length);
-      
+
       onContentChange?.(html);
     },
     onCreate: ({ editor }) => {
@@ -143,7 +147,7 @@ export const PRDEditorWithToolbar: React.FC<PRDEditorWithToolbarProps> = ({
       if (initialContent) {
         editor.commands.setContent(initialContent);
       }
-      
+
       // Initialize word and character counts
       const text = editor.getText();
       setWordCount(text.split(/\s+/).filter(word => word.length > 0).length);
@@ -166,7 +170,7 @@ export const PRDEditorWithToolbar: React.FC<PRDEditorWithToolbarProps> = ({
     if (!editor || readOnly || !isLocalStorageAvailable()) return;
 
     setIsSaving(true);
-    
+
     try {
       // Save to local storage using utility function
       const saveSuccess = savePRDData({
@@ -174,18 +178,18 @@ export const PRDEditorWithToolbar: React.FC<PRDEditorWithToolbarProps> = ({
         title: documentTitle,
         timestamp: new Date().toISOString(),
         wordCount,
-        charCount
+        charCount,
       });
-      
+
       if (!saveSuccess) {
         throw new Error('Failed to save to local storage');
       }
-      
+
       // Call external save callback if provided
       if (onAutoSave) {
         await onAutoSave(content);
       }
-      
+
       setLastSaved(new Date());
     } catch (error) {
       console.error('Auto-save failed:', error);
@@ -193,35 +197,43 @@ export const PRDEditorWithToolbar: React.FC<PRDEditorWithToolbarProps> = ({
     } finally {
       setIsSaving(false);
     }
-  }, [editor, content, documentTitle, wordCount, charCount, readOnly, onAutoSave]);
+  }, [
+    editor,
+    content,
+    documentTitle,
+    wordCount,
+    charCount,
+    readOnly,
+    onAutoSave,
+  ]);
 
   // Load content from local storage on mount
   useEffect(() => {
     if (!isLocalStorageAvailable() || initialContent || title) return;
-    
+
     const savedData = loadPRDData();
-    
+
     if (savedData) {
       // Load content into editor
       if (savedData.content) {
         editor?.commands.setContent(savedData.content);
         setContent(savedData.content);
       }
-      
+
       // Load title
       if (savedData.title) {
         setDocumentTitle(savedData.title);
       }
-      
+
       // Load metadata
       if (savedData.timestamp) {
         setLastSaved(new Date(savedData.timestamp));
       }
-      
+
       if (savedData.wordCount) {
         setWordCount(savedData.wordCount);
       }
-      
+
       if (savedData.charCount) {
         setCharCount(savedData.charCount);
       }
@@ -229,10 +241,13 @@ export const PRDEditorWithToolbar: React.FC<PRDEditorWithToolbarProps> = ({
   }, [editor, initialContent, title]);
 
   // Handle title changes
-  const handleTitleChange = useCallback((newTitle: string) => {
-    setDocumentTitle(newTitle);
-    onTitleChange?.(newTitle);
-  }, [onTitleChange]);
+  const handleTitleChange = useCallback(
+    (newTitle: string) => {
+      setDocumentTitle(newTitle);
+      onTitleChange?.(newTitle);
+    },
+    [onTitleChange]
+  );
 
   // Cleanup on unmount
   useEffect(() => {
@@ -253,14 +268,16 @@ export const PRDEditorWithToolbar: React.FC<PRDEditorWithToolbarProps> = ({
   }
 
   return (
-    <div className={`prd-editor-with-toolbar ${className} ${readOnly ? 'read-only' : ''}`}>
+    <div
+      className={`prd-editor-with-toolbar ${className} ${readOnly ? 'read-only' : ''}`}
+    >
       {/* Document Header */}
       <div className="prd-editor__header">
         <div className="header-content">
           <input
             type="text"
             value={documentTitle}
-            onChange={(e) => handleTitleChange(e.target.value)}
+            onChange={e => handleTitleChange(e.target.value)}
             placeholder="Enter PRD title..."
             className="document-title-input"
             disabled={readOnly}
@@ -293,37 +310,23 @@ export const PRDEditorWithToolbar: React.FC<PRDEditorWithToolbarProps> = ({
 
       {/* Toolbar */}
       {showToolbar && !readOnly && (
-        <PRDToolbar
-          editor={editor}
-          disabled={isSaving}
-        />
+        <PRDToolbar editor={editor} disabled={isSaving} />
       )}
 
       {/* Editor Content */}
       <div className="prd-editor__content">
-        <EditorContent 
-          editor={editor}
-          className="editor-content"
-        />
+        <EditorContent editor={editor} className="editor-content" />
       </div>
 
       {/* Status Bar */}
       <div className="prd-editor__status">
         <div className="status-left">
-          <span className="word-count">
-            {wordCount} words
-          </span>
-          <span className="char-count">
-            {charCount} characters
-          </span>
+          <span className="word-count">{wordCount} words</span>
+          <span className="char-count">{charCount} characters</span>
         </div>
         <div className="status-right">
-          {!readOnly && (
-            <span className="editor-mode">Edit Mode</span>
-          )}
-          {readOnly && (
-            <span className="editor-mode read-only">Read Only</span>
-          )}
+          {!readOnly && <span className="editor-mode">Edit Mode</span>}
+          {readOnly && <span className="editor-mode read-only">Read Only</span>}
         </div>
       </div>
 
@@ -336,11 +339,21 @@ export const PRDEditorWithToolbar: React.FC<PRDEditorWithToolbarProps> = ({
             <div className="empty-state-tips">
               <h4>Pro Tips:</h4>
               <ul>
-                <li>Use <strong>Ctrl+1-6</strong> for headings</li>
-                <li>Use <strong>Ctrl+B</strong> for bold text</li>
-                <li>Use <strong>Ctrl+I</strong> for italic text</li>
-                <li>Use <strong>Ctrl+Shift+8</strong> for bullet lists</li>
-                <li>Use <strong>Ctrl+Shift+7</strong> for numbered lists</li>
+                <li>
+                  Use <strong>Ctrl+1-6</strong> for headings
+                </li>
+                <li>
+                  Use <strong>Ctrl+B</strong> for bold text
+                </li>
+                <li>
+                  Use <strong>Ctrl+I</strong> for italic text
+                </li>
+                <li>
+                  Use <strong>Ctrl+Shift+8</strong> for bullet lists
+                </li>
+                <li>
+                  Use <strong>Ctrl+Shift+7</strong> for numbered lists
+                </li>
                 <li>Your work is automatically saved</li>
               </ul>
             </div>

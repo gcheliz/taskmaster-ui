@@ -13,7 +13,7 @@ export interface PRDToolbarProps {
 
 /**
  * PRD Editor Toolbar Component
- * 
+ *
  * Provides formatting controls for the PRD editor including:
  * - Heading levels (H1-H6)
  * - Text formatting (bold, italic, underline)
@@ -23,7 +23,7 @@ export interface PRDToolbarProps {
 export const PRDToolbar: React.FC<PRDToolbarProps> = ({
   editor,
   disabled = false,
-  className = ''
+  className = '',
 }) => {
   if (!editor) {
     return null;
@@ -73,20 +73,32 @@ export const PRDToolbar: React.FC<PRDToolbarProps> = ({
       <div className="toolbar-group">
         <select
           value={
-            editor.isActive('heading', { level: 1 }) ? 'h1' :
-            editor.isActive('heading', { level: 2 }) ? 'h2' :
-            editor.isActive('heading', { level: 3 }) ? 'h3' :
-            editor.isActive('heading', { level: 4 }) ? 'h4' :
-            editor.isActive('heading', { level: 5 }) ? 'h5' :
-            editor.isActive('heading', { level: 6 }) ? 'h6' :
-            'p'
+            editor.isActive('heading', { level: 1 })
+              ? 'h1'
+              : editor.isActive('heading', { level: 2 })
+                ? 'h2'
+                : editor.isActive('heading', { level: 3 })
+                  ? 'h3'
+                  : editor.isActive('heading', { level: 4 })
+                    ? 'h4'
+                    : editor.isActive('heading', { level: 5 })
+                      ? 'h5'
+                      : editor.isActive('heading', { level: 6 })
+                        ? 'h6'
+                        : 'p'
           }
-          onChange={(e) => {
+          onChange={e => {
             const value = e.target.value;
             if (value === 'p') {
               editor.chain().focus().setParagraph().run();
             } else {
-              const level = parseInt(value.replace('h', '')) as 1 | 2 | 3 | 4 | 5 | 6;
+              const level = parseInt(value.replace('h', '')) as
+                | 1
+                | 2
+                | 3
+                | 4
+                | 5
+                | 6;
               editor.chain().focus().toggleHeading({ level }).run();
             }
           }}
@@ -188,9 +200,7 @@ export const PRDToolbar: React.FC<PRDToolbarProps> = ({
       {/* Document Stats */}
       <div className="toolbar-spacer"></div>
       <div className="toolbar-stats">
-        <span className="char-count">
-          {editor.getText().length} chars
-        </span>
+        <span className="char-count">{editor.getText().length} chars</span>
       </div>
     </div>
   );

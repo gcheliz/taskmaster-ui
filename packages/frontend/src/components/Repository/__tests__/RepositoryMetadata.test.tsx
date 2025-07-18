@@ -13,8 +13,8 @@ const mockRepository: RepositoryMetadataData = {
     message: 'Add new feature for user management',
     author: {
       name: 'John Doe',
-      email: 'john@example.com'
-    }
+      email: 'john@example.com',
+    },
   },
   status: {
     isClean: true,
@@ -23,38 +23,54 @@ const mockRepository: RepositoryMetadataData = {
     untracked: 0,
     conflicted: 0,
     ahead: 0,
-    behind: 0
-  }
+    behind: 0,
+  },
 };
 
 describe('RepositoryMetadata', () => {
   it('renders repository metadata correctly', () => {
     render(<RepositoryMetadata repository={mockRepository} />);
 
-    expect(screen.getByText((_, element) => 
-      element?.textContent === '📁 test-repository'
-    )).toBeInTheDocument();
-    expect(screen.getByText((_, element) => 
-      element?.textContent === '🌿 main'
-    )).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        (_, element) => element?.textContent === '📁 test-repository'
+      )
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText((_, element) => element?.textContent === '🌿 main')
+    ).toBeInTheDocument();
     expect(screen.getByText('abc123d')).toBeInTheDocument();
-    expect(screen.getByText('Add new feature for user management')).toBeInTheDocument();
+    expect(
+      screen.getByText('Add new feature for user management')
+    ).toBeInTheDocument();
     expect(screen.getByText('by John Doe')).toBeInTheDocument();
   });
 
   it('shows full path when showFullPath is true', () => {
-    render(<RepositoryMetadata repository={mockRepository} showFullPath={true} />);
+    render(
+      <RepositoryMetadata repository={mockRepository} showFullPath={true} />
+    );
 
-    expect(screen.getByText((_, element) => 
-      element?.textContent === '📁 /Users/john/projects/test-repository'
-    )).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        (_, element) =>
+          element?.textContent === '📁 /Users/john/projects/test-repository'
+      )
+    ).toBeInTheDocument();
   });
 
   it('hides commit details when showCommitDetails is false', () => {
-    render(<RepositoryMetadata repository={mockRepository} showCommitDetails={false} />);
+    render(
+      <RepositoryMetadata
+        repository={mockRepository}
+        showCommitDetails={false}
+      />
+    );
 
     expect(screen.queryByText('abc123d')).not.toBeInTheDocument();
-    expect(screen.queryByText('Add new feature for user management')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('Add new feature for user management')
+    ).not.toBeInTheDocument();
     expect(screen.queryByText('by John Doe')).not.toBeInTheDocument();
   });
 
@@ -76,8 +92,8 @@ describe('RepositoryMetadata', () => {
         untracked: 3,
         conflicted: 0,
         ahead: 0,
-        behind: 0
-      }
+        behind: 0,
+      },
     };
 
     render(<RepositoryMetadata repository={dirtyRepository} />);
@@ -98,8 +114,8 @@ describe('RepositoryMetadata', () => {
         untracked: 0,
         conflicted: 2,
         ahead: 0,
-        behind: 0
-      }
+        behind: 0,
+      },
     };
 
     render(<RepositoryMetadata repository={conflictedRepository} />);
@@ -116,8 +132,8 @@ describe('RepositoryMetadata', () => {
       status: {
         ...mockRepository.status,
         ahead: 2,
-        behind: 1
-      }
+        behind: 1,
+      },
     };
 
     render(<RepositoryMetadata repository={trackingRepository} />);
@@ -133,21 +149,23 @@ describe('RepositoryMetadata', () => {
     const mockBranchClick = vi.fn();
 
     render(
-      <RepositoryMetadata 
+      <RepositoryMetadata
         repository={mockRepository}
         onRepositoryClick={mockRepositoryClick}
         onBranchClick={mockBranchClick}
       />
     );
 
-    fireEvent.click(screen.getByText((_, element) => 
-      element?.textContent === '📁 test-repository'
-    ));
+    fireEvent.click(
+      screen.getByText(
+        (_, element) => element?.textContent === '📁 test-repository'
+      )
+    );
     expect(mockRepositoryClick).toHaveBeenCalledTimes(1);
 
-    fireEvent.click(screen.getByText((_, element) => 
-      element?.textContent === '🌿 main'
-    ));
+    fireEvent.click(
+      screen.getByText((_, element) => element?.textContent === '🌿 main')
+    );
     expect(mockBranchClick).toHaveBeenCalledTimes(1);
   });
 
@@ -165,8 +183,8 @@ describe('RepositoryMetadata', () => {
       ...mockRepository,
       lastCommit: {
         ...mockRepository.lastCommit,
-        date: oneHourAgo
-      }
+        date: oneHourAgo,
+      },
     };
 
     render(<RepositoryMetadata repository={recentRepository} />);
@@ -175,31 +193,47 @@ describe('RepositoryMetadata', () => {
   });
 
   it('displays loading state correctly', () => {
-    const { container } = render(<RepositoryMetadata repository={mockRepository} isLoading={true} />);
+    const { container } = render(
+      <RepositoryMetadata repository={mockRepository} isLoading={true} />
+    );
 
-    expect(container.querySelector('.repository-metadata__skeleton')).toBeInTheDocument();
-    expect(screen.queryByText((_, element) => 
-      element?.textContent === '📁 test-repository'
-    )).not.toBeInTheDocument();
+    expect(
+      container.querySelector('.repository-metadata__skeleton')
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        (_, element) => element?.textContent === '📁 test-repository'
+      )
+    ).not.toBeInTheDocument();
   });
 
   it('displays error state correctly', () => {
     const errorMessage = 'Failed to load repository data';
-    render(<RepositoryMetadata repository={mockRepository} error={errorMessage} />);
+    render(
+      <RepositoryMetadata repository={mockRepository} error={errorMessage} />
+    );
 
     expect(screen.getByText(errorMessage)).toBeInTheDocument();
     expect(screen.getByText('⚠️')).toBeInTheDocument();
-    expect(screen.queryByText((_, element) => 
-      element?.textContent === '📁 test-repository'
-    )).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        (_, element) => element?.textContent === '📁 test-repository'
+      )
+    ).not.toBeInTheDocument();
   });
 
   it('applies custom className correctly', () => {
     const { container } = render(
-      <RepositoryMetadata repository={mockRepository} className="custom-class" />
+      <RepositoryMetadata
+        repository={mockRepository}
+        className="custom-class"
+      />
     );
 
-    expect(container.firstChild).toHaveClass('repository-metadata', 'custom-class');
+    expect(container.firstChild).toHaveClass(
+      'repository-metadata',
+      'custom-class'
+    );
   });
 
   it('shows changes section only when repository is dirty', () => {
@@ -213,8 +247,8 @@ describe('RepositoryMetadata', () => {
       status: {
         ...mockRepository.status,
         isClean: false,
-        staged: 1
-      }
+        staged: 1,
+      },
     };
 
     render(<RepositoryMetadata repository={dirtyRepository} />);
@@ -226,13 +260,16 @@ describe('RepositoryMetadata', () => {
       ...mockRepository,
       lastCommit: {
         ...mockRepository.lastCommit,
-        message: 'This is a very long commit message that should be truncated properly when displayed in the UI to ensure it does not break the layout or become unreadable'
-      }
+        message:
+          'This is a very long commit message that should be truncated properly when displayed in the UI to ensure it does not break the layout or become unreadable',
+      },
     };
 
     render(<RepositoryMetadata repository={longMessageRepository} />);
 
-    const commitMessage = screen.getByText(longMessageRepository.lastCommit.message);
+    const commitMessage = screen.getByText(
+      longMessageRepository.lastCommit.message
+    );
     expect(commitMessage).toBeInTheDocument();
     expect(commitMessage).toHaveClass('commit-message');
   });
@@ -241,14 +278,16 @@ describe('RepositoryMetadata', () => {
     const specialNameRepository = {
       ...mockRepository,
       name: 'my-awesome-project_v2.0',
-      path: '/Users/john/projects/my-awesome-project_v2.0'
+      path: '/Users/john/projects/my-awesome-project_v2.0',
     };
 
     render(<RepositoryMetadata repository={specialNameRepository} />);
 
-    expect(screen.getByText((_, element) => 
-      element?.textContent === '📁 my-awesome-project_v2.0'
-    )).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        (_, element) => element?.textContent === '📁 my-awesome-project_v2.0'
+      )
+    ).toBeInTheDocument();
   });
 
   it('displays tooltip information correctly', () => {
@@ -261,13 +300,15 @@ describe('RepositoryMetadata', () => {
         untracked: 3,
         conflicted: 0,
         ahead: 0,
-        behind: 0
-      }
+        behind: 0,
+      },
     };
 
     render(<RepositoryMetadata repository={dirtyRepository} />);
 
-    expect(screen.getByTitle('2 staged, 1 unstaged, 3 untracked')).toBeInTheDocument();
+    expect(
+      screen.getByTitle('2 staged, 1 unstaged, 3 untracked')
+    ).toBeInTheDocument();
     expect(screen.getByTitle('Staged files')).toBeInTheDocument();
     expect(screen.getByTitle('Unstaged files')).toBeInTheDocument();
     expect(screen.getByTitle('Untracked files')).toBeInTheDocument();
@@ -283,8 +324,8 @@ describe('RepositoryMetadata', () => {
         untracked: 0,
         conflicted: 0,
         ahead: 0,
-        behind: 0
-      }
+        behind: 0,
+      },
     };
 
     render(<RepositoryMetadata repository={singleChangeRepository} />);
@@ -297,18 +338,18 @@ describe('RepositoryMetadata', () => {
     const mockBranchClick = vi.fn();
 
     render(
-      <RepositoryMetadata 
+      <RepositoryMetadata
         repository={mockRepository}
         onRepositoryClick={mockRepositoryClick}
         onBranchClick={mockBranchClick}
       />
     );
 
-    const repositoryName = screen.getByText((_, element) => 
-      element?.textContent === '📁 test-repository'
+    const repositoryName = screen.getByText(
+      (_, element) => element?.textContent === '📁 test-repository'
     );
-    const branchName = screen.getByText((_, element) => 
-      element?.textContent === '🌿 main'
+    const branchName = screen.getByText(
+      (_, element) => element?.textContent === '🌿 main'
     );
 
     expect(repositoryName).toHaveClass('clickable');
@@ -320,8 +361,8 @@ describe('RepositoryMetadata', () => {
       ...mockRepository,
       lastCommit: {
         ...mockRepository.lastCommit,
-        date: 'invalid-date'
-      }
+        date: 'invalid-date',
+      },
     };
 
     render(<RepositoryMetadata repository={invalidDateRepository} />);

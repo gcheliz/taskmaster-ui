@@ -1,7 +1,18 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '../../components/ui/molecules/Tabs';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/molecules/Card';
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+} from '../../components/ui/molecules/Tabs';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../../components/ui/molecules/Card';
 import { Badge } from '../../components/ui/atoms/Badge';
 import { Button } from '../../components/ui/atoms/Button';
 
@@ -12,7 +23,8 @@ const meta: Meta<typeof Tabs> = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'A set of layered sections of content that display one panel of content at a time. Perfect for organizing related content.',
+        component:
+          'A set of layered sections of content that display one panel of content at a time. Perfect for organizing related content.',
       },
     },
   },
@@ -29,7 +41,7 @@ const meta: Meta<typeof Tabs> = {
     },
   },
   decorators: [
-    (Story) => (
+    Story => (
       <div className="w-96">
         <Story />
       </div>
@@ -45,7 +57,7 @@ export const Default: Story = {
     defaultValue: 'tab1',
     variant: 'default',
   },
-  render: (args) => (
+  render: args => (
     <Tabs {...args}>
       <TabsList>
         <TabsTrigger value="tab1">Account</TabsTrigger>
@@ -161,7 +173,9 @@ export const Variants: Story = {
             <TabsTrigger value="tab3">Reports</TabsTrigger>
           </TabsList>
           <TabsContent value="tab1">
-            <p className="text-sm text-secondary-600 mt-4">Default variant content</p>
+            <p className="text-sm text-secondary-600 mt-4">
+              Default variant content
+            </p>
           </TabsContent>
           <TabsContent value="tab2">
             <p className="text-sm text-secondary-600 mt-4">Analytics content</p>
@@ -181,7 +195,9 @@ export const Variants: Story = {
             <TabsTrigger value="tab3">Reports</TabsTrigger>
           </TabsList>
           <TabsContent value="tab1">
-            <p className="text-sm text-secondary-600 mt-4">Line variant content</p>
+            <p className="text-sm text-secondary-600 mt-4">
+              Line variant content
+            </p>
           </TabsContent>
           <TabsContent value="tab2">
             <p className="text-sm text-secondary-600 mt-4">Analytics content</p>
@@ -201,7 +217,9 @@ export const Variants: Story = {
             <TabsTrigger value="tab3">Reports</TabsTrigger>
           </TabsList>
           <TabsContent value="tab1">
-            <p className="text-sm text-secondary-600 mt-4">Pills variant content</p>
+            <p className="text-sm text-secondary-600 mt-4">
+              Pills variant content
+            </p>
           </TabsContent>
           <TabsContent value="tab2">
             <p className="text-sm text-secondary-600 mt-4">Analytics content</p>
@@ -244,19 +262,39 @@ export const TaskMasterDashboard: Story = {
             </div>
             <div className="grid gap-4">
               {[
-                { id: 1, title: "Implement user authentication", status: "in-progress", priority: "high" },
-                { id: 2, title: "Add dark theme support", status: "pending", priority: "medium" },
-                { id: 3, title: "Fix navigation bug", status: "done", priority: "high" },
-              ].map((task) => (
+                {
+                  id: 1,
+                  title: 'Implement user authentication',
+                  status: 'in-progress',
+                  priority: 'high',
+                },
+                {
+                  id: 2,
+                  title: 'Add dark theme support',
+                  status: 'pending',
+                  priority: 'medium',
+                },
+                {
+                  id: 3,
+                  title: 'Fix navigation bug',
+                  status: 'done',
+                  priority: 'high',
+                },
+              ].map(task => (
                 <Card key={task.id}>
                   <CardContent className="flex items-center justify-between p-4">
                     <div>
                       <h3 className="font-medium">{task.title}</h3>
-                      <p className="text-sm text-secondary-600">Task #{task.id}</p>
+                      <p className="text-sm text-secondary-600">
+                        Task #{task.id}
+                      </p>
                     </div>
                     <div className="flex gap-2">
                       <Badge variant={task.status as any}>{task.status}</Badge>
-                      <Badge variant={task.priority === 'high' ? 'error' : 'warning'} size="sm">
+                      <Badge
+                        variant={task.priority === 'high' ? 'error' : 'warning'}
+                        size="sm"
+                      >
                         {task.priority}
                       </Badge>
                     </div>
@@ -275,9 +313,9 @@ export const TaskMasterDashboard: Story = {
             </div>
             <div className="grid md:grid-cols-2 gap-4">
               {[
-                { name: "TaskMaster UI", progress: 75, tasks: 24 },
-                { name: "Mobile App", progress: 45, tasks: 18 },
-                { name: "API Documentation", progress: 90, tasks: 8 },
+                { name: 'TaskMaster UI', progress: 75, tasks: 24 },
+                { name: 'Mobile App', progress: 45, tasks: 18 },
+                { name: 'API Documentation', progress: 90, tasks: 8 },
               ].map((project, index) => (
                 <Card key={index}>
                   <CardHeader>
@@ -291,8 +329,8 @@ export const TaskMasterDashboard: Story = {
                         <span>{project.progress}%</span>
                       </div>
                       <div className="w-full bg-secondary-200 rounded-full h-2">
-                        <div 
-                          className="bg-primary-600 h-2 rounded-full" 
+                        <div
+                          className="bg-primary-600 h-2 rounded-full"
                           style={{ width: `${project.progress}%` }}
                         />
                       </div>
@@ -309,19 +347,23 @@ export const TaskMasterDashboard: Story = {
             <h2 className="text-xl font-semibold">Team Members</h2>
             <div className="grid md:grid-cols-2 gap-4">
               {[
-                { name: "John Doe", role: "Frontend Developer", avatar: "JD" },
-                { name: "Jane Smith", role: "Backend Developer", avatar: "JS" },
-                { name: "Mike Johnson", role: "UI/UX Designer", avatar: "MJ" },
-                { name: "Sarah Wilson", role: "Project Manager", avatar: "SW" },
+                { name: 'John Doe', role: 'Frontend Developer', avatar: 'JD' },
+                { name: 'Jane Smith', role: 'Backend Developer', avatar: 'JS' },
+                { name: 'Mike Johnson', role: 'UI/UX Designer', avatar: 'MJ' },
+                { name: 'Sarah Wilson', role: 'Project Manager', avatar: 'SW' },
               ].map((member, index) => (
                 <Card key={index}>
                   <CardContent className="flex items-center gap-4 p-4">
                     <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
-                      <span className="text-primary-600 font-semibold text-sm">{member.avatar}</span>
+                      <span className="text-primary-600 font-semibold text-sm">
+                        {member.avatar}
+                      </span>
                     </div>
                     <div>
                       <h3 className="font-medium">{member.name}</h3>
-                      <p className="text-sm text-secondary-600">{member.role}</p>
+                      <p className="text-sm text-secondary-600">
+                        {member.role}
+                      </p>
                     </div>
                   </CardContent>
                 </Card>
@@ -369,26 +411,26 @@ export const TaskMasterDashboard: Story = {
 export const ControlledTabs: Story = {
   render: () => {
     const [activeTab, setActiveTab] = React.useState('overview');
-    
+
     return (
       <div className="space-y-4">
         <div className="flex gap-2">
-          <Button 
-            size="sm" 
+          <Button
+            size="sm"
             variant={activeTab === 'overview' ? 'primary' : 'outline'}
             onClick={() => setActiveTab('overview')}
           >
             Switch to Overview
           </Button>
-          <Button 
-            size="sm" 
+          <Button
+            size="sm"
             variant={activeTab === 'details' ? 'primary' : 'outline'}
             onClick={() => setActiveTab('details')}
           >
             Switch to Details
           </Button>
         </div>
-        
+
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList>
             <TabsTrigger value="overview">Overview</TabsTrigger>

@@ -10,7 +10,11 @@ import { OrderedList } from '@tiptap/extension-ordered-list';
 import { ListItem } from '@tiptap/extension-list-item';
 import { Code } from '@tiptap/extension-code';
 import { Blockquote } from '@tiptap/extension-blockquote';
-import { savePRDData, loadPRDData, isLocalStorageAvailable } from './utils/localStorage';
+import {
+  savePRDData,
+  loadPRDData,
+  isLocalStorageAvailable,
+} from './utils/localStorage';
 import './PRDEditor.css';
 
 export interface PRDEditorProps {
@@ -34,7 +38,7 @@ export interface PRDEditorProps {
 
 /**
  * PRD Rich Text Editor Component
- * 
+ *
  * A sophisticated rich text editor built on TipTap for creating and editing
  * Product Requirements Documents (PRDs). Features include:
  * - Full formatting toolbar (headings, lists, bold/italic/underline)
@@ -51,7 +55,7 @@ export const PRDEditor: React.FC<PRDEditorProps> = ({
   placeholder = 'Start writing your PRD...',
   autoSave = true,
   autoSaveInterval = 2000,
-  onAutoSave
+  onAutoSave,
 }) => {
   const [content, setContent] = useState(initialContent);
   const [isSaving, setIsSaving] = useState(false);
@@ -141,30 +145,32 @@ export const PRDEditor: React.FC<PRDEditorProps> = ({
     if (!editor || !content || readOnly || !isLocalStorageAvailable()) return;
 
     setIsSaving(true);
-    
+
     try {
       // Calculate word count for saving
       const text = editor.getText();
-      const wordCount = text.split(/\s+/).filter(word => word.length > 0).length;
-      
+      const wordCount = text
+        .split(/\s+/)
+        .filter(word => word.length > 0).length;
+
       // Save to local storage using utility function
       const saveSuccess = savePRDData({
         content,
         title: '', // Basic editor doesn't have title
         timestamp: new Date().toISOString(),
         wordCount,
-        charCount: text.length
+        charCount: text.length,
       });
-      
+
       if (!saveSuccess) {
         throw new Error('Failed to save to local storage');
       }
-      
+
       // Call external save callback if provided
       if (onAutoSave) {
         await onAutoSave(content);
       }
-      
+
       setLastSaved(new Date());
     } catch (error) {
       console.error('Auto-save failed:', error);
@@ -176,13 +182,13 @@ export const PRDEditor: React.FC<PRDEditorProps> = ({
   // Load content from local storage on mount
   useEffect(() => {
     if (!isLocalStorageAvailable() || initialContent) return;
-    
+
     const savedData = loadPRDData();
-    
+
     if (savedData && savedData.content) {
       editor?.commands.setContent(savedData.content);
       setContent(savedData.content);
-      
+
       if (savedData.timestamp) {
         setLastSaved(new Date(savedData.timestamp));
       }
@@ -228,18 +234,13 @@ export const PRDEditor: React.FC<PRDEditorProps> = ({
               Saving...
             </span>
           )}
-          {!readOnly && (
-            <span className="editor-mode">Edit Mode</span>
-          )}
+          {!readOnly && <span className="editor-mode">Edit Mode</span>}
         </div>
       </div>
 
       {/* Editor Content */}
       <div className="prd-editor__content">
-        <EditorContent 
-          editor={editor}
-          className="editor-content"
-        />
+        <EditorContent editor={editor} className="editor-content" />
       </div>
 
       {/* Empty State */}

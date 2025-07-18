@@ -1,6 +1,9 @@
 import { useEffect, useCallback } from 'react';
 import { useTaskBoard } from './useTaskBoard';
-import type { FilterOptions, SortOptions } from '../components/TaskBoard/FilterSortControls';
+import type {
+  FilterOptions,
+  SortOptions,
+} from '../components/TaskBoard/FilterSortControls';
 
 export interface TaskFiltersIntegrationOptions {
   repositoryPath: string;
@@ -18,17 +21,17 @@ export interface TaskFiltersIntegrationReturn {
   totalCount: number;
   filteredCount: number;
   availableAssignees: string[];
-  
+
   // Filter state
   filters: FilterOptions;
   sorting: SortOptions;
-  
+
   // Actions
   updateFilter: (key: keyof FilterOptions, value: string) => void;
   updateSort: (key: keyof SortOptions, value: string) => void;
   clearFilters: () => void;
   refetchTasks: () => Promise<void>;
-  
+
   // Computed values
   hasActiveFilters: boolean;
   hasActiveSort: boolean;
@@ -36,7 +39,7 @@ export interface TaskFiltersIntegrationReturn {
 
 /**
  * Integration hook that connects FilterSortControls with backend API
- * 
+ *
  * Provides a complete integration between the UI controls and the backend API,
  * automatically triggering API calls when filters/sort options change.
  */
@@ -48,7 +51,7 @@ export const useTaskFiltersIntegration = (
     onTasksChange,
     onFilterChange,
     onSortChange,
-    onError
+    onError,
   } = options;
 
   const taskBoard = useTaskBoard({
@@ -57,9 +60,9 @@ export const useTaskFiltersIntegration = (
     debounceMs: 300,
     pageSize: 100,
     onError,
-    onDataChange: (data) => {
+    onDataChange: data => {
       onTasksChange?.(data.tasks);
-    }
+    },
   });
 
   const {
@@ -70,20 +73,26 @@ export const useTaskFiltersIntegration = (
     filtersActions,
     hasActiveFilters,
     hasActiveSort,
-    refetch
+    refetch,
   } = taskBoard;
 
   // Update filter and notify parent
-  const updateFilter = useCallback((key: keyof FilterOptions, value: string) => {
-    filtersActions.updateFilter(key, value);
-    onFilterChange?.(filtersState.filters);
-  }, [filtersActions, filtersState.filters, onFilterChange]);
+  const updateFilter = useCallback(
+    (key: keyof FilterOptions, value: string) => {
+      filtersActions.updateFilter(key, value);
+      onFilterChange?.(filtersState.filters);
+    },
+    [filtersActions, filtersState.filters, onFilterChange]
+  );
 
   // Update sort and notify parent
-  const updateSort = useCallback((key: keyof SortOptions, value: string) => {
-    filtersActions.updateSort(key, value);
-    onSortChange?.(filtersState.sorting);
-  }, [filtersActions, filtersState.sorting, onSortChange]);
+  const updateSort = useCallback(
+    (key: keyof SortOptions, value: string) => {
+      filtersActions.updateSort(key, value);
+      onSortChange?.(filtersState.sorting);
+    },
+    [filtersActions, filtersState.sorting, onSortChange]
+  );
 
   // Clear filters and notify parent
   const clearFilters = useCallback(() => {
@@ -119,20 +128,20 @@ export const useTaskFiltersIntegration = (
     totalCount: data?.totalCount || 0,
     filteredCount: data?.filteredCount || 0,
     availableAssignees: data?.availableAssignees || [],
-    
+
     // Filter state
     filters: filtersState.filters,
     sorting: filtersState.sorting,
-    
+
     // Actions
     updateFilter,
     updateSort,
     clearFilters,
     refetchTasks,
-    
+
     // Computed values
     hasActiveFilters,
-    hasActiveSort
+    hasActiveSort,
   };
 };
 

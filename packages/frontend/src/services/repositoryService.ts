@@ -1,6 +1,10 @@
-import type { RepositoryMetadataData, BranchInfo } from '../components/Repository';
+import type {
+  RepositoryMetadataData,
+  BranchInfo,
+} from '../components/Repository';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
 
 export interface ApiResponse<T> {
   success: boolean;
@@ -58,7 +62,7 @@ export interface RepositoryDetailsResponse {
 
 /**
  * Repository Service
- * 
+ *
  * Provides API functions for:
  * - Fetching repository metadata and details
  * - Managing repository connections
@@ -79,10 +83,14 @@ export class RepositoryService {
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        const errorData = await response
+          .json()
+          .catch(() => ({ error: 'Unknown error' }));
         return {
           success: false,
-          error: errorData.error || `HTTP ${response.status}: ${response.statusText}`,
+          error:
+            errorData.error ||
+            `HTTP ${response.status}: ${response.statusText}`,
         };
       }
 
@@ -102,7 +110,9 @@ export class RepositoryService {
   /**
    * Validate a repository path
    */
-  static async validateRepository(path: string): Promise<ApiResponse<{ isValid: boolean; message?: string }>> {
+  static async validateRepository(
+    path: string
+  ): Promise<ApiResponse<{ isValid: boolean; message?: string }>> {
     return this.fetchApi('/api/repositories/validate', {
       method: 'POST',
       body: JSON.stringify({ path }),
@@ -112,7 +122,9 @@ export class RepositoryService {
   /**
    * Add a repository to the system
    */
-  static async addRepository(path: string): Promise<ApiResponse<{ id: string; path: string }>> {
+  static async addRepository(
+    path: string
+  ): Promise<ApiResponse<{ id: string; path: string }>> {
     return this.fetchApi('/api/repositories', {
       method: 'POST',
       body: JSON.stringify({ path }),
@@ -122,14 +134,18 @@ export class RepositoryService {
   /**
    * Get all connected repositories
    */
-  static async getRepositories(): Promise<ApiResponse<Array<{ id: string; path: string; name: string }>>> {
+  static async getRepositories(): Promise<
+    ApiResponse<Array<{ id: string; path: string; name: string }>>
+  > {
     return this.fetchApi('/api/repositories');
   }
 
   /**
    * Remove a repository from the system
    */
-  static async removeRepository(id: string): Promise<ApiResponse<{ success: boolean }>> {
+  static async removeRepository(
+    id: string
+  ): Promise<ApiResponse<{ success: boolean }>> {
     return this.fetchApi(`/api/repositories/${id}`, {
       method: 'DELETE',
     });
@@ -138,14 +154,18 @@ export class RepositoryService {
   /**
    * Get detailed repository information including metadata and branches
    */
-  static async getRepositoryDetails(repositoryId: string): Promise<ApiResponse<RepositoryDetailsResponse>> {
+  static async getRepositoryDetails(
+    repositoryId: string
+  ): Promise<ApiResponse<RepositoryDetailsResponse>> {
     return this.fetchApi(`/api/repositories/${repositoryId}/details`);
   }
 
   /**
    * Extract repository metadata from detailed response
    */
-  static extractRepositoryMetadata(details: RepositoryDetailsResponse): RepositoryMetadataData {
+  static extractRepositoryMetadata(
+    details: RepositoryDetailsResponse
+  ): RepositoryMetadataData {
     return {
       name: details.name,
       path: details.path,
@@ -204,16 +224,21 @@ export class RepositoryService {
     branchName: string,
     force: boolean = false
   ): Promise<ApiResponse<{ success: boolean; message: string }>> {
-    return this.fetchApi(`/api/repositories/${repositoryId}/branches/${encodeURIComponent(branchName)}`, {
-      method: 'DELETE',
-      body: JSON.stringify({ force }),
-    });
+    return this.fetchApi(
+      `/api/repositories/${repositoryId}/branches/${encodeURIComponent(branchName)}`,
+      {
+        method: 'DELETE',
+        body: JSON.stringify({ force }),
+      }
+    );
   }
 
   /**
    * Fetch the latest changes from remote
    */
-  static async fetchRepository(repositoryId: string): Promise<ApiResponse<{ success: boolean; message: string }>> {
+  static async fetchRepository(
+    repositoryId: string
+  ): Promise<ApiResponse<{ success: boolean; message: string }>> {
     return this.fetchApi(`/api/repositories/${repositoryId}/fetch`, {
       method: 'POST',
     });
@@ -222,7 +247,9 @@ export class RepositoryService {
   /**
    * Pull changes from remote branch
    */
-  static async pullRepository(repositoryId: string): Promise<ApiResponse<{ success: boolean; message: string }>> {
+  static async pullRepository(
+    repositoryId: string
+  ): Promise<ApiResponse<{ success: boolean; message: string }>> {
     return this.fetchApi(`/api/repositories/${repositoryId}/pull`, {
       method: 'POST',
     });
@@ -249,15 +276,19 @@ export class RepositoryService {
     repositoryId: string,
     limit: number = 50,
     branchName?: string
-  ): Promise<ApiResponse<Array<{
-    hash: string;
-    date: string;
-    message: string;
-    author: {
-      name: string;
-      email: string;
-    };
-  }>>> {
+  ): Promise<
+    ApiResponse<
+      Array<{
+        hash: string;
+        date: string;
+        message: string;
+        author: {
+          name: string;
+          email: string;
+        };
+      }>
+    >
+  > {
     const params = new URLSearchParams({
       limit: limit.toString(),
       ...(branchName && { branch: branchName }),
@@ -269,12 +300,14 @@ export class RepositoryService {
   /**
    * Get file changes in working directory
    */
-  static async getFileChanges(repositoryId: string): Promise<ApiResponse<{
-    staged: Array<{ path: string; status: string }>;
-    unstaged: Array<{ path: string; status: string }>;
-    untracked: Array<{ path: string }>;
-    conflicted: Array<{ path: string }>;
-  }>> {
+  static async getFileChanges(repositoryId: string): Promise<
+    ApiResponse<{
+      staged: Array<{ path: string; status: string }>;
+      unstaged: Array<{ path: string; status: string }>;
+      untracked: Array<{ path: string }>;
+      conflicted: Array<{ path: string }>;
+    }>
+  > {
     return this.fetchApi(`/api/repositories/${repositoryId}/changes`);
   }
 

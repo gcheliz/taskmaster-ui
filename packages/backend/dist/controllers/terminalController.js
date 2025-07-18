@@ -15,8 +15,8 @@ class TerminalController {
                 success: true,
                 data: {
                     sessionId,
-                    message: 'Terminal session created successfully'
-                }
+                    message: 'Terminal session created successfully',
+                },
             });
         }
         catch (error) {
@@ -25,8 +25,10 @@ class TerminalController {
                 success: false,
                 error: {
                     code: 'TERMINAL_SESSION_ERROR',
-                    message: error instanceof Error ? error.message : 'Failed to create terminal session'
-                }
+                    message: error instanceof Error
+                        ? error.message
+                        : 'Failed to create terminal session',
+                },
             });
         }
     }
@@ -42,8 +44,8 @@ class TerminalController {
                     success: false,
                     error: {
                         code: 'SESSION_NOT_FOUND',
-                        message: `Terminal session not found: ${sessionId}`
-                    }
+                        message: `Terminal session not found: ${sessionId}`,
+                    },
                 });
                 return;
             }
@@ -56,8 +58,8 @@ class TerminalController {
                     shell: session.shell,
                     isActive: session.isActive,
                     createdAt: session.createdAt,
-                    lastActivity: session.lastActivity
-                }
+                    lastActivity: session.lastActivity,
+                },
             });
         }
         catch (error) {
@@ -66,8 +68,10 @@ class TerminalController {
                 success: false,
                 error: {
                     code: 'TERMINAL_SESSION_ERROR',
-                    message: error instanceof Error ? error.message : 'Failed to get terminal session'
-                }
+                    message: error instanceof Error
+                        ? error.message
+                        : 'Failed to get terminal session',
+                },
             });
         }
     }
@@ -84,14 +88,14 @@ class TerminalController {
                 shell: session.shell,
                 isActive: session.isActive,
                 createdAt: session.createdAt,
-                lastActivity: session.lastActivity
+                lastActivity: session.lastActivity,
             }));
             res.json({
                 success: true,
                 data: {
                     sessions: sessionData,
-                    count: sessionData.length
-                }
+                    count: sessionData.length,
+                },
             });
         }
         catch (error) {
@@ -100,8 +104,10 @@ class TerminalController {
                 success: false,
                 error: {
                     code: 'TERMINAL_SESSION_ERROR',
-                    message: error instanceof Error ? error.message : 'Failed to get active terminal sessions'
-                }
+                    message: error instanceof Error
+                        ? error.message
+                        : 'Failed to get active terminal sessions',
+                },
             });
         }
     }
@@ -117,8 +123,8 @@ class TerminalController {
                     success: false,
                     error: {
                         code: 'INVALID_COMMAND',
-                        message: 'Command is required and must be a string'
-                    }
+                        message: 'Command is required and must be a string',
+                    },
                 });
                 return;
             }
@@ -126,8 +132,8 @@ class TerminalController {
             res.json({
                 success: true,
                 data: {
-                    message: 'Command executed successfully'
-                }
+                    message: 'Command executed successfully',
+                },
             });
         }
         catch (error) {
@@ -136,8 +142,10 @@ class TerminalController {
                 success: false,
                 error: {
                     code: 'COMMAND_EXECUTION_ERROR',
-                    message: error instanceof Error ? error.message : 'Failed to execute command'
-                }
+                    message: error instanceof Error
+                        ? error.message
+                        : 'Failed to execute command',
+                },
             });
         }
     }
@@ -153,8 +161,8 @@ class TerminalController {
                     success: false,
                     error: {
                         code: 'INVALID_INPUT',
-                        message: 'Input is required and must be a string'
-                    }
+                        message: 'Input is required and must be a string',
+                    },
                 });
                 return;
             }
@@ -162,8 +170,8 @@ class TerminalController {
             res.json({
                 success: true,
                 data: {
-                    message: 'Input sent successfully'
-                }
+                    message: 'Input sent successfully',
+                },
             });
         }
         catch (error) {
@@ -172,8 +180,8 @@ class TerminalController {
                 success: false,
                 error: {
                     code: 'INPUT_SEND_ERROR',
-                    message: error instanceof Error ? error.message : 'Failed to send input'
-                }
+                    message: error instanceof Error ? error.message : 'Failed to send input',
+                },
             });
         }
     }
@@ -187,8 +195,8 @@ class TerminalController {
             res.json({
                 success: true,
                 data: {
-                    message: 'Process killed successfully'
-                }
+                    message: 'Process killed successfully',
+                },
             });
         }
         catch (error) {
@@ -197,8 +205,8 @@ class TerminalController {
                 success: false,
                 error: {
                     code: 'PROCESS_KILL_ERROR',
-                    message: error instanceof Error ? error.message : 'Failed to kill process'
-                }
+                    message: error instanceof Error ? error.message : 'Failed to kill process',
+                },
             });
         }
     }
@@ -214,8 +222,8 @@ class TerminalController {
                     success: false,
                     error: {
                         code: 'INVALID_DIRECTORY',
-                        message: 'Directory is required and must be a string'
-                    }
+                        message: 'Directory is required and must be a string',
+                    },
                 });
                 return;
             }
@@ -223,8 +231,8 @@ class TerminalController {
             res.json({
                 success: true,
                 data: {
-                    message: 'Directory changed successfully'
-                }
+                    message: 'Directory changed successfully',
+                },
             });
         }
         catch (error) {
@@ -233,8 +241,10 @@ class TerminalController {
                 success: false,
                 error: {
                     code: 'DIRECTORY_CHANGE_ERROR',
-                    message: error instanceof Error ? error.message : 'Failed to change directory'
-                }
+                    message: error instanceof Error
+                        ? error.message
+                        : 'Failed to change directory',
+                },
             });
         }
     }
@@ -248,8 +258,8 @@ class TerminalController {
             res.json({
                 success: true,
                 data: {
-                    message: 'Terminal session closed successfully'
-                }
+                    message: 'Terminal session closed successfully',
+                },
             });
         }
         catch (error) {
@@ -258,8 +268,10 @@ class TerminalController {
                 success: false,
                 error: {
                     code: 'TERMINAL_SESSION_ERROR',
-                    message: error instanceof Error ? error.message : 'Failed to close terminal session'
-                }
+                    message: error instanceof Error
+                        ? error.message
+                        : 'Failed to close terminal session',
+                },
             });
         }
     }

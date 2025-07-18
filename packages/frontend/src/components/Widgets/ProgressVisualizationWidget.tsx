@@ -1,5 +1,16 @@
 import React, { useMemo } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area } from 'recharts';
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+} from 'recharts';
 import './ProgressVisualizationWidget.css';
 
 export interface ProgressDataPoint {
@@ -24,12 +35,14 @@ export interface ProgressVisualizationWidgetProps {
 
 /**
  * Progress Visualization Widget
- * 
+ *
  * A reusable widget component that visualizes project progress over time using
  * line charts or area charts. Shows cumulative task completions, completion rates,
  * and velocity trends against a timeline.
  */
-export const ProgressVisualizationWidget: React.FC<ProgressVisualizationWidgetProps> = ({
+export const ProgressVisualizationWidget: React.FC<
+  ProgressVisualizationWidgetProps
+> = ({
   data,
   chartType = 'line',
   showVelocity = true,
@@ -37,16 +50,16 @@ export const ProgressVisualizationWidget: React.FC<ProgressVisualizationWidgetPr
   timeRange = '30d',
   width = 800,
   height = 400,
-  className = ''
+  className = '',
 }) => {
   // Filter data based on time range
   const filteredData = useMemo(() => {
     if (timeRange === 'all') return data;
-    
+
     const now = new Date();
     const days = timeRange === '7d' ? 7 : timeRange === '30d' ? 30 : 90;
     const cutoffDate = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
-    
+
     return data.filter(point => new Date(point.date) >= cutoffDate);
   }, [data, timeRange]);
 
@@ -56,7 +69,14 @@ export const ProgressVisualizationWidget: React.FC<ProgressVisualizationWidgetPr
       let velocity = 0;
       if (index > 0) {
         const prevPoint = filteredData[index - 1];
-        const daysDiff = Math.max(1, Math.floor((new Date(point.date).getTime() - new Date(prevPoint.date).getTime()) / (24 * 60 * 60 * 1000)));
+        const daysDiff = Math.max(
+          1,
+          Math.floor(
+            (new Date(point.date).getTime() -
+              new Date(prevPoint.date).getTime()) /
+              (24 * 60 * 60 * 1000)
+          )
+        );
         velocity = (point.completed - prevPoint.completed) / daysDiff;
       }
       return { ...point, velocity: Math.round(velocity * 100) / 100 };
@@ -66,29 +86,35 @@ export const ProgressVisualizationWidget: React.FC<ProgressVisualizationWidgetPr
   // Calculate trend line data
   const trendData = useMemo(() => {
     if (!showTrendLine || dataWithVelocity.length < 2) return [];
-    
+
     const n = dataWithVelocity.length;
     const sumX = dataWithVelocity.reduce((sum, _, i) => sum + i, 0);
-    const sumY = dataWithVelocity.reduce((sum, point) => sum + point.completed, 0);
-    const sumXY = dataWithVelocity.reduce((sum, point, i) => sum + i * point.completed, 0);
+    const sumY = dataWithVelocity.reduce(
+      (sum, point) => sum + point.completed,
+      0
+    );
+    const sumXY = dataWithVelocity.reduce(
+      (sum, point, i) => sum + i * point.completed,
+      0
+    );
     const sumXX = dataWithVelocity.reduce((sum, _, i) => sum + i * i, 0);
-    
+
     const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
     const intercept = (sumY - slope * sumX) / n;
-    
+
     return dataWithVelocity.map((point, i) => ({
       ...point,
-      trend: Math.round(slope * i + intercept)
+      trend: Math.round(slope * i + intercept),
     }));
   }, [dataWithVelocity, showTrendLine]);
 
   // Format date for display
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
-    return date.toLocaleDateString('en-US', { 
-      month: 'short', 
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
       day: 'numeric',
-      year: timeRange === 'all' ? 'numeric' : undefined
+      year: timeRange === 'all' ? 'numeric' : undefined,
     });
   };
 
@@ -98,10 +124,14 @@ export const ProgressVisualizationWidget: React.FC<ProgressVisualizationWidgetPr
   };
 
   // Custom tooltip component
-  const CustomTooltip = ({ active, payload, label }: { 
-    active?: boolean; 
-    payload?: Array<{ payload: ProgressDataPoint & { velocity: number } }>; 
-    label?: string 
+  const CustomTooltip = ({
+    active,
+    payload,
+    label,
+  }: {
+    active?: boolean;
+    payload?: Array<{ payload: ProgressDataPoint & { velocity: number } }>;
+    label?: string;
   }) => {
     if (active && payload && payload.length && label) {
       const data = payload[0].payload;
@@ -119,12 +149,16 @@ export const ProgressVisualizationWidget: React.FC<ProgressVisualizationWidgetPr
             </div>
             <div className="tooltip-item">
               <span className="tooltip-dot rate" />
-              <span className="tooltip-text">Rate: {formatPercentage(data.completionRate)}</span>
+              <span className="tooltip-text">
+                Rate: {formatPercentage(data.completionRate)}
+              </span>
             </div>
             {showVelocity && (
               <div className="tooltip-item">
                 <span className="tooltip-dot velocity" />
-                <span className="tooltip-text">Velocity: {data.velocity} tasks/day</span>
+                <span className="tooltip-text">
+                  Velocity: {data.velocity} tasks/day
+                </span>
               </div>
             )}
           </div>
@@ -137,19 +171,27 @@ export const ProgressVisualizationWidget: React.FC<ProgressVisualizationWidgetPr
   // Calculate key metrics
   const metrics = useMemo(() => {
     if (dataWithVelocity.length === 0) return null;
-    
+
     const latest = dataWithVelocity[dataWithVelocity.length - 1];
     const earliest = dataWithVelocity[0];
-    const totalDays = Math.max(1, Math.floor((new Date(latest.date).getTime() - new Date(earliest.date).getTime()) / (24 * 60 * 60 * 1000)));
+    const totalDays = Math.max(
+      1,
+      Math.floor(
+        (new Date(latest.date).getTime() - new Date(earliest.date).getTime()) /
+          (24 * 60 * 60 * 1000)
+      )
+    );
     const avgVelocity = (latest.completed - earliest.completed) / totalDays;
-    const avgCompletionRate = dataWithVelocity.reduce((sum, point) => sum + point.completionRate, 0) / dataWithVelocity.length;
-    
+    const avgCompletionRate =
+      dataWithVelocity.reduce((sum, point) => sum + point.completionRate, 0) /
+      dataWithVelocity.length;
+
     return {
       totalCompleted: latest.completed,
       totalTasks: latest.total,
       avgVelocity: Math.round(avgVelocity * 100) / 100,
       avgCompletionRate: Math.round(avgCompletionRate * 100) / 100,
-      timeSpan: totalDays
+      timeSpan: totalDays,
     };
   }, [dataWithVelocity]);
 
@@ -183,13 +225,15 @@ export const ProgressVisualizationWidget: React.FC<ProgressVisualizationWidgetPr
                 <span className="metric-label">avg velocity</span>
               </span>
               <span className="metric">
-                <span className="metric-value">{formatPercentage(metrics.avgCompletionRate)}</span>
+                <span className="metric-value">
+                  {formatPercentage(metrics.avgCompletionRate)}
+                </span>
                 <span className="metric-label">avg rate</span>
               </span>
             </div>
           )}
         </div>
-        
+
         {/* Time Range Filter */}
         <div className="time-range-filter">
           <span className="filter-label">Time Range:</span>
@@ -203,8 +247,8 @@ export const ProgressVisualizationWidget: React.FC<ProgressVisualizationWidgetPr
           {chartType === 'area' ? (
             <AreaChart data={showTrendLine ? trendData : dataWithVelocity}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis 
-                dataKey="date" 
+              <XAxis
+                dataKey="date"
                 tickFormatter={formatDate}
                 interval="preserveStartEnd"
               />
@@ -244,8 +288,8 @@ export const ProgressVisualizationWidget: React.FC<ProgressVisualizationWidgetPr
           ) : (
             <LineChart data={showTrendLine ? trendData : dataWithVelocity}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis 
-                dataKey="date" 
+              <XAxis
+                dataKey="date"
                 tickFormatter={formatDate}
                 interval="preserveStartEnd"
               />
@@ -300,7 +344,10 @@ export const ProgressVisualizationWidget: React.FC<ProgressVisualizationWidgetPr
           <div className="summary-item">
             <span className="summary-label">Current Progress</span>
             <span className="summary-value">
-              {metrics && formatPercentage((metrics.totalCompleted / metrics.totalTasks) * 100)}
+              {metrics &&
+                formatPercentage(
+                  (metrics.totalCompleted / metrics.totalTasks) * 100
+                )}
             </span>
           </div>
           <div className="summary-item">
@@ -314,7 +361,9 @@ export const ProgressVisualizationWidget: React.FC<ProgressVisualizationWidgetPr
           <div className="summary-item">
             <span className="summary-label">Latest Update</span>
             <span className="summary-value">
-              {dataWithVelocity.length > 0 ? formatDate(dataWithVelocity[dataWithVelocity.length - 1].date) : 'N/A'}
+              {dataWithVelocity.length > 0
+                ? formatDate(dataWithVelocity[dataWithVelocity.length - 1].date)
+                : 'N/A'}
             </span>
           </div>
         </div>

@@ -9,7 +9,7 @@ class TerminalWebSocketService {
         this.connections = new Map(); // ws -> sessionIds
         this.wss = new ws_1.WebSocketServer({
             server,
-            path: '/terminal-ws'
+            path: '/terminal-ws',
         });
         this.setupWebSocketServer();
         this.setupTerminalServiceListeners();
@@ -48,8 +48,8 @@ class TerminalWebSocketService {
                 data: {
                     type: output.type,
                     data: output.data,
-                    timestamp: output.timestamp
-                }
+                    timestamp: output.timestamp,
+                },
             });
         });
     }
@@ -94,8 +94,8 @@ class TerminalWebSocketService {
                 sessionId,
                 data: {
                     sessionId,
-                    workingDirectory: workingDirectory || repositoryPath || process.cwd()
-                }
+                    workingDirectory: workingDirectory || repositoryPath || process.cwd(),
+                },
             });
         }
         catch (error) {
@@ -166,7 +166,7 @@ class TerminalWebSocketService {
             this.sendResponse(ws, {
                 type: 'session-closed',
                 sessionId,
-                data: { sessionId }
+                data: { sessionId },
             });
         }
         catch (error) {
@@ -216,7 +216,7 @@ class TerminalWebSocketService {
     sendError(ws, message) {
         this.sendResponse(ws, {
             type: 'error',
-            data: { message }
+            data: { message },
         });
     }
     /**

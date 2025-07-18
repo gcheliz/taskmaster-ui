@@ -13,7 +13,7 @@ class RateLimiter {
         return (0, index_1.rateLimitMiddleware)({
             windowMs: 15 * 60 * 1000, // 15 minutes default
             maxRequests: 100, // 100 requests per window default
-            ...options
+            ...options,
         });
     }
     /**
@@ -28,7 +28,7 @@ class RateLimiter {
                 const ip = req.ip || req.socket.remoteAddress || 'unknown';
                 const userAgent = req.get('User-Agent') || 'unknown';
                 return `${ip}:${userAgent}`;
-            }
+            },
         });
     }
     /**

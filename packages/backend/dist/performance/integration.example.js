@@ -17,7 +17,7 @@ class OptimizedTaskMasterService {
             defaultTTL: 10 * 60 * 1000, // 10 minutes
             enableStatistics: true,
             enableCompression: true,
-            compressionThreshold: 2048 // 2KB
+            compressionThreshold: 2048, // 2KB
         });
         // Initialize connection pool for CLI processes
         this.connectionPool = new index_1.AdvancedConnectionPool(new index_1.TaskMasterConnectionFactory('/default/repo'), {
@@ -25,7 +25,7 @@ class OptimizedTaskMasterService {
             maxConnections: 15,
             acquireTimeoutMs: 8000,
             idleTimeoutMs: 600000, // 10 minutes
-            healthCheckInterval: 90000 // 1.5 minutes
+            healthCheckInterval: 90000, // 1.5 minutes
         });
         // Initialize batch processor for request optimization
         this.batchProcessor = new index_1.AdvancedBatchProcessor(new index_1.TaskMasterBatchProcessor(this), {
@@ -34,7 +34,7 @@ class OptimizedTaskMasterService {
             maxWaitTime: 3000,
             concurrencyLimit: 8,
             enableRetries: true,
-            maxRetries: 3
+            maxRetries: 3,
         });
         // Initialize memory manager for leak prevention
         this.memoryManager = new index_1.AdvancedMemoryManager({
@@ -42,7 +42,7 @@ class OptimizedTaskMasterService {
             enableGCOptimization: true,
             warningThreshold: 0.75,
             criticalThreshold: 0.9,
-            gcInterval: 45000 // 45 seconds
+            gcInterval: 45000, // 45 seconds
         });
         this.setupPerformanceMonitoring();
     }
@@ -63,7 +63,7 @@ class OptimizedTaskMasterService {
                 return this.batchProcessor.add({
                     operation: 'list',
                     repositoryPath,
-                    arguments: options
+                    arguments: options,
                 }, this.calculatePriority('list', options));
             }
             // 3. Direct execution with connection pooling
@@ -85,7 +85,10 @@ class OptimizedTaskMasterService {
      */
     async getTask(repositoryPath, taskId, options = {}) {
         return index_1.performanceUtils.measureAsync('getTask', async () => {
-            const cacheKey = this.generateCacheKey('show', repositoryPath, { id: taskId, ...options });
+            const cacheKey = this.generateCacheKey('show', repositoryPath, {
+                id: taskId,
+                ...options,
+            });
             // Memory-efficient object tracking
             this.memoryManager.trackObject({ repositoryPath, taskId }, 'task_request');
             // Check cache with compression
@@ -97,7 +100,7 @@ class OptimizedTaskMasterService {
             const result = await this.batchProcessor.add({
                 operation: 'show',
                 repositoryPath,
-                arguments: { id: taskId, ...options }
+                arguments: { id: taskId, ...options },
             }, this.calculatePriority('show', { id: taskId }));
             // Cache with task-specific TTL
             await this.cache.set(cacheKey, result, this.calculateTTL('show', result));
@@ -146,7 +149,7 @@ class OptimizedTaskMasterService {
             batchProcessor: this.batchProcessor.getPerformanceMetrics(),
             memory: this.memoryManager.generateMemoryReport(),
             generalMetrics: index_1.performanceMonitor.getMetrics(),
-            recommendations: this.generateRecommendations()
+            recommendations: this.generateRecommendations(),
         };
     }
     /**
@@ -157,7 +160,7 @@ class OptimizedTaskMasterService {
             cache: await this.optimizeCache(),
             memory: await this.memoryManager.optimizeMemory(),
             connections: await this.optimizeConnections(),
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
         };
         index_1.performanceMonitor.recordMetric('optimization_cycles', 1);
         return results;
@@ -170,7 +173,7 @@ class OptimizedTaskMasterService {
         await Promise.all([
             this.batchProcessor.shutdown(),
             this.connectionPool.shutdown(),
-            this.memoryManager.shutdown()
+            this.memoryManager.shutdown(),
         ]);
         this.cache.dispose();
         console.log('✅ Optimized TaskMaster service shut down successfully');
@@ -185,15 +188,15 @@ class OptimizedTaskMasterService {
             index_1.performanceMonitor.recordMetric('cache_misses_total', 1);
         });
         // Monitor memory pressure
-        this.memoryManager.on('memory:warning', (data) => {
+        this.memoryManager.on('memory:warning', data => {
             console.warn('⚠️ Memory warning:', data);
         });
-        this.memoryManager.on('memory:critical', (data) => {
+        this.memoryManager.on('memory:critical', data => {
             console.error('🚨 Critical memory pressure:', data);
             this.memoryManager.optimizeMemory();
         });
         // Monitor connection pool health
-        this.connectionPool.on('connection:create:error', (data) => {
+        this.connectionPool.on('connection:create:error', data => {
             console.error('❌ Connection creation failed:', data);
         });
     }
@@ -208,11 +211,11 @@ class OptimizedTaskMasterService {
     }
     calculatePriority(operation, args) {
         const priorityMap = {
-            'next': 10, // Highest priority
-            'show': 8, // High priority
-            'status': 6, // Medium priority
-            'list': 4, // Low priority
-            'complexity': 2 // Lowest priority
+            next: 10, // Highest priority
+            show: 8, // High priority
+            status: 6, // Medium priority
+            list: 4, // Low priority
+            complexity: 2, // Lowest priority
         };
         let priority = priorityMap[operation] || 5;
         // Boost priority for urgent tasks
@@ -224,11 +227,11 @@ class OptimizedTaskMasterService {
     }
     calculateTTL(operation, result) {
         const baseTTLs = {
-            'list': 3 * 60 * 1000, // 3 minutes
-            'show': 8 * 60 * 1000, // 8 minutes
-            'status': 2 * 60 * 1000, // 2 minutes
-            'complexity': 60 * 60 * 1000, // 1 hour
-            'next': 45 * 1000 // 45 seconds
+            list: 3 * 60 * 1000, // 3 minutes
+            show: 8 * 60 * 1000, // 8 minutes
+            status: 2 * 60 * 1000, // 2 minutes
+            complexity: 60 * 60 * 1000, // 1 hour
+            next: 45 * 1000, // 45 seconds
         };
         let ttl = baseTTLs[operation] || 5 * 60 * 1000;
         // Adjust TTL based on result characteristics
@@ -256,7 +259,7 @@ class OptimizedTaskMasterService {
             success: true,
             data: `${operation} result for ${repositoryPath}`,
             timestamp: new Date().toISOString(),
-            connectionId: connection.id
+            connectionId: connection.id,
         };
     }
     async optimizeCache() {
@@ -267,7 +270,7 @@ class OptimizedTaskMasterService {
             cleanedEntries: cleanedCount,
             memoryFreed: beforeStats.memoryUsage - afterStats.memoryUsage,
             beforeStats,
-            afterStats
+            afterStats,
         };
     }
     async optimizeConnections() {
@@ -293,7 +296,8 @@ class OptimizedTaskMasterService {
         }
         // Batch processing recommendations
         const batchStats = this.batchProcessor.getStatistics();
-        if (batchStats.averageBatchSize < this.batchProcessor['config'].maxBatchSize * 0.5) {
+        if (batchStats.averageBatchSize <
+            this.batchProcessor['config'].maxBatchSize * 0.5) {
             recommendations.push('Batch utilization is low - consider reducing flush interval');
         }
         return recommendations;
@@ -314,10 +318,22 @@ async function demonstrateOptimizedTaskMaster() {
         // Mixed operations to demonstrate all optimizations
         const operations = [
             { repositoryPath: '/project/alpha', operation: 'list', arguments: {} },
-            { repositoryPath: '/project/alpha', operation: 'show', arguments: { id: '1.1' } },
-            { repositoryPath: '/project/beta', operation: 'list', arguments: { status: 'pending' } },
-            { repositoryPath: '/project/alpha', operation: 'show', arguments: { id: '1.2' } },
-            { repositoryPath: '/project/gamma', operation: 'status', arguments: {} }
+            {
+                repositoryPath: '/project/alpha',
+                operation: 'show',
+                arguments: { id: '1.1' },
+            },
+            {
+                repositoryPath: '/project/beta',
+                operation: 'list',
+                arguments: { status: 'pending' },
+            },
+            {
+                repositoryPath: '/project/alpha',
+                operation: 'show',
+                arguments: { id: '1.2' },
+            },
+            { repositoryPath: '/project/gamma', operation: 'status', arguments: {} },
         ];
         // Execute operations (should benefit from caching and batching)
         await service.processBulkTasks(operations);

@@ -41,26 +41,20 @@ export const NotificationCard: React.FC<NotificationCardProps> = ({
   };
 
   return (
-    <div 
+    <div
       className={`notification-card ${notification.type} ${isVisible ? 'visible' : ''}`}
       role="alert"
       aria-live={notification.type === 'error' ? 'assertive' : 'polite'}
     >
-      <div className="notification-icon">
-        {getIcon()}
-      </div>
-      
+      <div className="notification-icon">{getIcon()}</div>
+
       <div className="notification-content">
-        <div className="notification-title">
-          {notification.title}
-        </div>
+        <div className="notification-title">{notification.title}</div>
         {notification.message && (
-          <div className="notification-message">
-            {notification.message}
-          </div>
+          <div className="notification-message">{notification.message}</div>
         )}
         {notification.action && (
-          <button 
+          <button
             className="notification-action"
             onClick={notification.action.onClick}
           >
@@ -70,7 +64,7 @@ export const NotificationCard: React.FC<NotificationCardProps> = ({
       </div>
 
       {notification.dismissible && (
-        <button 
+        <button
           className="notification-dismiss"
           onClick={handleDismiss}
           aria-label="Dismiss notification"

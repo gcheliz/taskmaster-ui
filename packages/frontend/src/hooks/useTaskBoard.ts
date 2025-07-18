@@ -1,6 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useTaskFilters } from './useTaskFilters';
-import type { TaskFiltersState, ApiFilters, ApiSorting } from './useTaskFilters';
+import type {
+  TaskFiltersState,
+  ApiFilters,
+  ApiSorting,
+} from './useTaskFilters';
 import { apiService } from '../services/api';
 
 export interface TaskBoardOptions {
@@ -43,31 +47,31 @@ export interface UseTaskBoardReturn {
   data: TaskBoardData | null;
   loading: boolean;
   error: Error | null;
-  
+
   // Filter/Sort state
   filtersState: TaskFiltersState;
   filtersActions: ReturnType<typeof useTaskFilters>['actions'];
-  
+
   // Computed values
   hasActiveFilters: boolean;
   hasActiveSort: boolean;
   isDefaultState: boolean;
-  
+
   // Actions
   refetch: () => Promise<void>;
   clearError: () => void;
-  
+
   // Pagination
   currentPage: number;
   setPage: (page: number) => void;
-  
+
   // Utility
   getFilteredTasks: (filters?: ApiFilters, sorting?: ApiSorting) => Task[];
 }
 
 /**
  * Comprehensive hook for task board functionality
- * 
+ *
  * Combines task filtering, sorting, pagination, and API integration
  * with automatic debouncing and error handling.
  */
@@ -78,7 +82,7 @@ export const useTaskBoard = (options: TaskBoardOptions): UseTaskBoardReturn => {
     debounceMs = 300,
     pageSize = 50,
     onError,
-    onDataChange
+    onDataChange,
   } = options;
 
   const [data, setData] = useState<TaskBoardData | null>(null);
@@ -92,7 +96,9 @@ export const useTaskBoard = (options: TaskBoardOptions): UseTaskBoardReturn => {
   const { state: filtersState, actions: filtersActions } = filtersHook;
 
   // Debounced search term
-  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(filtersState.searchTerm);
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(
+    filtersState.searchTerm
+  );
 
   // Debounce search term changes
   useEffect(() => {
@@ -112,17 +118,15 @@ export const useTaskBoard = (options: TaskBoardOptions): UseTaskBoardReturn => {
       // For now, use the existing getTasksFromRepository method
       // This will be enhanced once the full API integration is complete
       const response = await apiService.getTasksFromRepository(repositoryPath);
-      
+
       // Transform the response to match our expected format
       const tasks = response.tasks || [];
       const totalCount = tasks.length;
-      
+
       // Extract unique assignees for filter dropdown
-      const assignees = Array.from(new Set(
-        tasks
-          .map((task: any) => task.assignee)
-          .filter(Boolean)
-      )) as string[];
+      const assignees = Array.from(
+        new Set(tasks.map((task: any) => task.assignee).filter(Boolean))
+      ) as string[];
 
       const taskBoardData: TaskBoardData = {
         tasks,
@@ -132,17 +136,17 @@ export const useTaskBoard = (options: TaskBoardOptions): UseTaskBoardReturn => {
           currentPage: 1,
           totalPages: 1,
           hasNext: false,
-          hasPrevious: false
+          hasPrevious: false,
         },
-        availableAssignees: assignees
+        availableAssignees: assignees,
       };
 
       setData(taskBoardData);
       setAllTasks(tasks);
       onDataChange?.(taskBoardData);
-
     } catch (err) {
-      const error = err instanceof Error ? err : new Error('Failed to fetch tasks');
+      const error =
+        err instanceof Error ? err : new Error('Failed to fetch tasks');
       setError(error);
       onError?.(error);
     } finally {
@@ -157,7 +161,7 @@ export const useTaskBoard = (options: TaskBoardOptions): UseTaskBoardReturn => {
     filtersState.sorting,
     filtersHook,
     onError,
-    onDataChange
+    onDataChange,
   ]);
 
   // Auto-refetch when filters/sorting change
@@ -171,7 +175,7 @@ export const useTaskBoard = (options: TaskBoardOptions): UseTaskBoardReturn => {
     debouncedSearchTerm,
     currentPage,
     autoRefetch,
-    fetchTasks
+    fetchTasks,
   ]);
 
   // Reset to first page when filters change
@@ -180,80 +184,92 @@ export const useTaskBoard = (options: TaskBoardOptions): UseTaskBoardReturn => {
   }, [filtersState.filters, filtersState.sorting, debouncedSearchTerm]);
 
   // Client-side filtering for immediate feedback
-  const getFilteredTasks = useCallback((
-    customFilters?: ApiFilters,
-    customSorting?: ApiSorting
-  ): Task[] => {
-    if (!allTasks.length) return [];
+  const getFilteredTasks = useCallback(
+    (customFilters?: ApiFilters, customSorting?: ApiSorting): Task[] => {
+      if (!allTasks.length) return [];
 
-    const filters = customFilters || filtersHook.getApiFilters();
-    const sorting = customSorting || filtersHook.getApiSorting();
+      const filters = customFilters || filtersHook.getApiFilters();
+      const sorting = customSorting || filtersHook.getApiSorting();
 
-    let filtered = [...allTasks];
+      let filtered = [...allTasks];
 
-    // Apply filters
-    if (filters.status && filters.status.length > 0) {
-      filtered = filtered.filter(task => filters.status!.includes(task.status));
-    }
+      // Apply filters
+      if (filters.status && filters.status.length > 0) {
+        filtered = filtered.filter(task =>
+          filters.status!.includes(task.status)
+        );
+      }
 
-    if (filters.priority && filters.priority.length > 0) {
-      filtered = filtered.filter(task => filters.priority!.includes(task.priority));
-    }
+      if (filters.priority && filters.priority.length > 0) {
+        filtered = filtered.filter(task =>
+          filters.priority!.includes(task.priority)
+        );
+      }
 
-    if (filters.complexity && filters.complexity.length > 0) {
-      filtered = filtered.filter(task => {
-        const complexity = task.complexity || 1;
-        const level = complexity >= 7 ? 'high' : complexity >= 4 ? 'medium' : 'low';
-        return filters.complexity!.includes(level);
+      if (filters.complexity && filters.complexity.length > 0) {
+        filtered = filtered.filter(task => {
+          const complexity = task.complexity || 1;
+          const level =
+            complexity >= 7 ? 'high' : complexity >= 4 ? 'medium' : 'low';
+          return filters.complexity!.includes(level);
+        });
+      }
+
+      if (filters.assignee && filters.assignee.length > 0) {
+        filtered = filtered.filter(task => {
+          const assignee = task.assignee || 'unassigned';
+          return filters.assignee!.includes(assignee);
+        });
+      }
+
+      if (filters.search) {
+        const searchTerm = filters.search.toLowerCase();
+        filtered = filtered.filter(
+          task =>
+            task.title.toLowerCase().includes(searchTerm) ||
+            task.description?.toLowerCase().includes(searchTerm)
+        );
+      }
+
+      // Apply sorting
+      filtered.sort((a, b) => {
+        let aValue = (a as any)[sorting.field];
+        let bValue = (b as any)[sorting.field];
+
+        if (sorting.field === 'priority') {
+          const priorityOrder = { high: 3, medium: 2, low: 1 };
+          aValue = priorityOrder[aValue as keyof typeof priorityOrder] || 0;
+          bValue = priorityOrder[bValue as keyof typeof priorityOrder] || 0;
+        }
+
+        if (sorting.field === 'status') {
+          const statusOrder = {
+            pending: 1,
+            'in-progress': 2,
+            done: 3,
+            blocked: 4,
+            deferred: 5,
+          };
+          aValue = statusOrder[aValue as keyof typeof statusOrder] || 0;
+          bValue = statusOrder[bValue as keyof typeof statusOrder] || 0;
+        }
+
+        if (sorting.field === 'created' || sorting.field === 'updated') {
+          aValue = new Date(aValue || 0).getTime();
+          bValue = new Date(bValue || 0).getTime();
+        }
+
+        if (sorting.direction === 'asc') {
+          return aValue > bValue ? 1 : aValue < bValue ? -1 : 0;
+        } else {
+          return aValue < bValue ? 1 : aValue > bValue ? -1 : 0;
+        }
       });
-    }
 
-    if (filters.assignee && filters.assignee.length > 0) {
-      filtered = filtered.filter(task => {
-        const assignee = task.assignee || 'unassigned';
-        return filters.assignee!.includes(assignee);
-      });
-    }
-
-    if (filters.search) {
-      const searchTerm = filters.search.toLowerCase();
-      filtered = filtered.filter(task =>
-        task.title.toLowerCase().includes(searchTerm) ||
-        task.description?.toLowerCase().includes(searchTerm)
-      );
-    }
-
-    // Apply sorting
-    filtered.sort((a, b) => {
-      let aValue = (a as any)[sorting.field];
-      let bValue = (b as any)[sorting.field];
-
-      if (sorting.field === 'priority') {
-        const priorityOrder = { 'high': 3, 'medium': 2, 'low': 1 };
-        aValue = priorityOrder[aValue as keyof typeof priorityOrder] || 0;
-        bValue = priorityOrder[bValue as keyof typeof priorityOrder] || 0;
-      }
-
-      if (sorting.field === 'status') {
-        const statusOrder = { 'pending': 1, 'in-progress': 2, 'done': 3, 'blocked': 4, 'deferred': 5 };
-        aValue = statusOrder[aValue as keyof typeof statusOrder] || 0;
-        bValue = statusOrder[bValue as keyof typeof statusOrder] || 0;
-      }
-
-      if (sorting.field === 'created' || sorting.field === 'updated') {
-        aValue = new Date(aValue || 0).getTime();
-        bValue = new Date(bValue || 0).getTime();
-      }
-
-      if (sorting.direction === 'asc') {
-        return aValue > bValue ? 1 : aValue < bValue ? -1 : 0;
-      } else {
-        return aValue < bValue ? 1 : aValue > bValue ? -1 : 0;
-      }
-    });
-
-    return filtered;
-  }, [allTasks, filtersHook]);
+      return filtered;
+    },
+    [allTasks, filtersHook]
+  );
 
   // Clear error
   const clearError = useCallback(() => {
@@ -266,37 +282,40 @@ export const useTaskBoard = (options: TaskBoardOptions): UseTaskBoardReturn => {
   }, [fetchTasks]);
 
   // Set page with bounds checking
-  const setPage = useCallback((page: number) => {
-    const maxPage = data?.pagination.totalPages || 1;
-    const validPage = Math.max(1, Math.min(page, maxPage));
-    setCurrentPage(validPage);
-  }, [data]);
+  const setPage = useCallback(
+    (page: number) => {
+      const maxPage = data?.pagination.totalPages || 1;
+      const validPage = Math.max(1, Math.min(page, maxPage));
+      setCurrentPage(validPage);
+    },
+    [data]
+  );
 
   return {
     // Data
     data,
     loading,
     error,
-    
+
     // Filter/Sort state
     filtersState,
     filtersActions,
-    
+
     // Computed values
     hasActiveFilters: filtersHook.hasActiveFilters,
     hasActiveSort: filtersHook.hasActiveSort,
     isDefaultState: filtersHook.isDefaultState,
-    
+
     // Actions
     refetch,
     clearError,
-    
+
     // Pagination
     currentPage,
     setPage,
-    
+
     // Utility
-    getFilteredTasks
+    getFilteredTasks,
   };
 };
 

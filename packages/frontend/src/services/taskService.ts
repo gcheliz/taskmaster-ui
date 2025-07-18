@@ -1,23 +1,23 @@
 // Task Service
 // Handles reading and parsing tasks.json files
 
-import type { 
-  Task, 
-  TasksData, 
-  TaskMasterProject, 
-  TaskBoardData, 
-  TaskColumn, 
+import type {
+  Task,
+  TasksData,
+  TaskMasterProject,
+  TaskBoardData,
+  TaskColumn,
   TaskStats,
   TaskFilters,
   TaskSortOptions,
-  TaskStatus
+  TaskStatus,
 } from '../types/task';
 import {
   DEFAULT_COLUMNS,
   getTasksByStatus,
   getTaskStats,
   filterTasks,
-  sortTasks
+  sortTasks,
 } from '../types/task';
 import { ApiError, apiService } from './api';
 
@@ -39,7 +39,7 @@ export class TaskService {
       apiBaseUrl: config.apiBaseUrl || '/api',
       enableCache: config.enableCache !== false,
       cacheTimeout: config.cacheTimeout || 5 * 60 * 1000, // 5 minutes
-      ...config
+      ...config,
     };
   }
 
@@ -48,7 +48,7 @@ export class TaskService {
    */
   async loadTasksFromProject(projectId: string): Promise<TasksData> {
     const cacheKey = `tasks-${projectId}`;
-    
+
     // Check cache first
     if (this.config.enableCache && this.cache.has(cacheKey)) {
       const cached = this.cache.get(cacheKey)!;
@@ -58,8 +58,10 @@ export class TaskService {
     }
 
     try {
-      const response = await fetch(`${this.config.apiBaseUrl}/projects/${projectId}/tasks`);
-      
+      const response = await fetch(
+        `${this.config.apiBaseUrl}/projects/${projectId}/tasks`
+      );
+
       if (!response.ok) {
         throw new ApiError(
           'FETCH_TASKS_ERROR',
@@ -69,25 +71,24 @@ export class TaskService {
       }
 
       const tasksData: TasksData = await response.json();
-      
+
       // Validate and transform data
       const validatedData = this.validateTasksData(tasksData);
-      
+
       // Cache the result
       if (this.config.enableCache) {
         this.cache.set(cacheKey, {
           data: validatedData,
-          timestamp: Date.now()
+          timestamp: Date.now(),
         });
       }
 
       return validatedData;
-      
     } catch (error) {
       if (error instanceof ApiError) {
         throw error;
       }
-      
+
       throw new ApiError(
         'NETWORK_ERROR',
         'Failed to load tasks from server',
@@ -99,33 +100,32 @@ export class TaskService {
   /**
    * Update a task's status
    */
-  async updateTaskStatus(taskId: number, newStatus: TaskStatus, projectId?: string): Promise<Task> {
+  async updateTaskStatus(
+    taskId: number,
+    newStatus: TaskStatus,
+    projectId?: string
+  ): Promise<Task> {
     const cacheKey = `tasks-${projectId || 'default'}`;
-    
+
     try {
       const updatedTask = await apiService.updateTaskStatus(
-        taskId, 
-        newStatus, 
+        taskId,
+        newStatus,
         projectId || this.config.projectId
       );
-      
+
       // Clear cache to force reload
       if (this.config.enableCache) {
         this.cache.delete(cacheKey);
       }
 
       return updatedTask;
-      
     } catch (error) {
       if (error instanceof ApiError) {
         throw error;
       }
-      
-      throw new ApiError(
-        'NETWORK_ERROR',
-        'Failed to update task status',
-        500
-      );
+
+      throw new ApiError('NETWORK_ERROR', 'Failed to update task status', 500);
     }
   }
 
@@ -134,63 +134,57 @@ export class TaskService {
    */
   async createTask(taskData: Partial<Task>, projectId?: string): Promise<Task> {
     const cacheKey = `tasks-${projectId || 'default'}`;
-    
+
     try {
       const createdTask = await apiService.createTask(
         taskData,
         projectId || this.config.projectId
       );
-      
+
       // Clear cache to force reload
       if (this.config.enableCache) {
         this.cache.delete(cacheKey);
       }
 
       return createdTask;
-      
     } catch (error) {
       if (error instanceof ApiError) {
         throw error;
       }
-      
-      throw new ApiError(
-        'NETWORK_ERROR',
-        'Failed to create task',
-        500
-      );
+
+      throw new ApiError('NETWORK_ERROR', 'Failed to create task', 500);
     }
   }
 
   /**
    * Update a task
    */
-  async updateTask(taskId: number, updates: Partial<Task>, projectId?: string): Promise<Task> {
+  async updateTask(
+    taskId: number,
+    updates: Partial<Task>,
+    projectId?: string
+  ): Promise<Task> {
     const cacheKey = `tasks-${projectId || 'default'}`;
-    
+
     try {
       const updatedTask = await apiService.updateTask(
         taskId,
         updates,
         projectId || this.config.projectId
       );
-      
+
       // Clear cache to force reload
       if (this.config.enableCache) {
         this.cache.delete(cacheKey);
       }
 
       return updatedTask;
-      
     } catch (error) {
       if (error instanceof ApiError) {
         throw error;
       }
-      
-      throw new ApiError(
-        'NETWORK_ERROR',
-        'Failed to update task',
-        500
-      );
+
+      throw new ApiError('NETWORK_ERROR', 'Failed to update task', 500);
     }
   }
 
@@ -199,28 +193,20 @@ export class TaskService {
    */
   async deleteTask(taskId: number, projectId?: string): Promise<void> {
     const cacheKey = `tasks-${projectId || 'default'}`;
-    
+
     try {
-      await apiService.deleteTask(
-        taskId,
-        projectId || this.config.projectId
-      );
+      await apiService.deleteTask(taskId, projectId || this.config.projectId);
 
       // Clear cache to force reload
       if (this.config.enableCache) {
         this.cache.delete(cacheKey);
       }
-      
     } catch (error) {
       if (error instanceof ApiError) {
         throw error;
       }
-      
-      throw new ApiError(
-        'NETWORK_ERROR',
-        'Failed to delete task',
-        500
-      );
+
+      throw new ApiError('NETWORK_ERROR', 'Failed to delete task', 500);
     }
   }
 
@@ -232,13 +218,12 @@ export class TaskService {
       // Import sample data
       const sampleData = await import('../data/sample-tasks.json');
       const projectData = sampleData.default as TaskMasterProject;
-      
+
       // Get the first project in the sample data
       const projectKey = Object.keys(projectData)[0];
       const tasksData = projectData[projectKey];
-      
+
       return this.validateTasksData(tasksData);
-      
     } catch (error) {
       throw new ApiError(
         'SAMPLE_DATA_ERROR',
@@ -253,7 +238,7 @@ export class TaskService {
    */
   async loadTasksFromFile(filePath: string): Promise<TasksData> {
     const cacheKey = `tasks-file-${filePath}`;
-    
+
     // Check cache first
     if (this.config.enableCache && this.cache.has(cacheKey)) {
       const cached = this.cache.get(cacheKey)!;
@@ -267,7 +252,11 @@ export class TaskService {
       let tasksData: TasksData;
 
       // Handle TaskMaster project format (project -> tasks structure)
-      if (response && typeof response === 'object' && !Array.isArray(response.tasks)) {
+      if (
+        response &&
+        typeof response === 'object' &&
+        !Array.isArray(response.tasks)
+      ) {
         // Check if it's a TaskMaster project format
         const projectKeys = Object.keys(response);
         if (projectKeys.length > 0) {
@@ -287,24 +276,25 @@ export class TaskService {
 
       // Validate and cache the result
       const validatedData = this.validateTasksData(tasksData);
-      
+
       if (this.config.enableCache) {
         this.cache.set(cacheKey, {
           data: validatedData,
-          timestamp: Date.now()
+          timestamp: Date.now(),
         });
       }
 
       return validatedData;
-      
     } catch (error) {
       if (error instanceof ApiError) {
         throw error;
       }
-      
+
       throw new ApiError(
         'TASK_FILE_ERROR',
-        error instanceof Error ? error.message : 'Failed to load tasks from file',
+        error instanceof Error
+          ? error.message
+          : 'Failed to load tasks from file',
         500
       );
     }
@@ -313,9 +303,12 @@ export class TaskService {
   /**
    * Load tasks from a repository's TaskMaster project
    */
-  async loadTasksFromRepository(repositoryPath: string, projectTag?: string): Promise<TasksData> {
+  async loadTasksFromRepository(
+    repositoryPath: string,
+    projectTag?: string
+  ): Promise<TasksData> {
     const cacheKey = `tasks-repo-${repositoryPath}-${projectTag || 'default'}`;
-    
+
     // Check cache first
     if (this.config.enableCache && this.cache.has(cacheKey)) {
       const cached = this.cache.get(cacheKey)!;
@@ -325,7 +318,10 @@ export class TaskService {
     }
 
     try {
-      const response = await apiService.getTasksFromRepository(repositoryPath, projectTag);
+      const response = await apiService.getTasksFromRepository(
+        repositoryPath,
+        projectTag
+      );
       let tasksData: TasksData;
 
       // Handle TaskMaster project format
@@ -347,24 +343,25 @@ export class TaskService {
 
       // Validate and cache the result
       const validatedData = this.validateTasksData(tasksData);
-      
+
       if (this.config.enableCache) {
         this.cache.set(cacheKey, {
           data: validatedData,
-          timestamp: Date.now()
+          timestamp: Date.now(),
         });
       }
 
       return validatedData;
-      
     } catch (error) {
       if (error instanceof ApiError) {
         throw error;
       }
-      
+
       throw new ApiError(
         'REPOSITORY_TASK_ERROR',
-        error instanceof Error ? error.message : 'Failed to load tasks from repository',
+        error instanceof Error
+          ? error.message
+          : 'Failed to load tasks from repository',
         500
       );
     }
@@ -377,20 +374,25 @@ export class TaskService {
     try {
       // Try to load from configured repository first
       if (this.config.repositoryPath) {
-        return await this.loadTasksFromRepository(this.config.repositoryPath, this.config.projectTag);
+        return await this.loadTasksFromRepository(
+          this.config.repositoryPath,
+          this.config.projectTag
+        );
       }
-      
+
       // Try to load from configured project
       if (this.config.projectId) {
         return await this.loadTasksFromProject(this.config.projectId);
       }
-      
+
       // Fall back to sample data
       return await this.loadSampleTasks();
-      
     } catch (error) {
       // If all else fails, use sample data
-      console.warn('Failed to load tasks from configured sources, using sample data:', error);
+      console.warn(
+        'Failed to load tasks from configured sources, using sample data:',
+        error
+      );
       return await this.loadSampleTasks();
     }
   }
@@ -398,29 +400,33 @@ export class TaskService {
   /**
    * Transform tasks data into Kanban board format
    */
-  createTaskBoard(tasksData: TasksData, filters?: TaskFilters, sortOptions?: TaskSortOptions): TaskBoardData {
+  createTaskBoard(
+    tasksData: TasksData,
+    filters?: TaskFilters,
+    sortOptions?: TaskSortOptions
+  ): TaskBoardData {
     let tasks = tasksData.tasks;
-    
+
     // Apply filters if provided
     if (filters) {
       tasks = filterTasks(tasks, filters);
     }
-    
+
     // Apply sorting if provided
     if (sortOptions) {
       tasks = sortTasks(tasks, sortOptions);
     }
-    
+
     // Group tasks by status into columns
     const columns: TaskColumn[] = DEFAULT_COLUMNS.map(columnDef => ({
       ...columnDef,
-      tasks: getTasksByStatus(tasks, columnDef.status)
+      tasks: getTasksByStatus(tasks, columnDef.status),
     }));
-    
+
     return {
       columns,
       tasks,
-      metadata: tasksData.metadata
+      metadata: tasksData.metadata,
     };
   }
 
@@ -476,7 +482,7 @@ export class TaskService {
   getTasksDueSoon(tasksData: TasksData, days: number = 7): Task[] {
     const now = new Date();
     const futureDate = new Date(now.getTime() + days * 24 * 60 * 60 * 1000);
-    
+
     return tasksData.tasks.filter(task => {
       if (!task.dueDate || task.status === 'done') return false;
       const dueDate = new Date(task.dueDate);
@@ -489,10 +495,11 @@ export class TaskService {
    */
   searchTasks(tasksData: TasksData, searchTerm: string): Task[] {
     if (!searchTerm.trim()) return tasksData.tasks;
-    
+
     const term = searchTerm.toLowerCase();
     return tasksData.tasks.filter(task => {
-      const searchableText = `${task.title} ${task.description} ${task.details || ''}`.toLowerCase();
+      const searchableText =
+        `${task.title} ${task.description} ${task.details || ''}`.toLowerCase();
       return searchableText.includes(term);
     });
   }
@@ -510,7 +517,7 @@ export class TaskService {
   updateConfig(config: Partial<TaskServiceConfig>): void {
     this.config = {
       ...this.config,
-      ...config
+      ...config,
     };
     // Clear cache when config changes
     this.clearCache();
@@ -522,7 +529,7 @@ export class TaskService {
   setRepositoryPath(repositoryPath: string, projectTag?: string): void {
     this.updateConfig({
       repositoryPath,
-      projectTag
+      projectTag,
     });
   }
 
@@ -531,7 +538,7 @@ export class TaskService {
    */
   setProjectId(projectId: string): void {
     this.updateConfig({
-      projectId
+      projectId,
     });
   }
 
@@ -548,7 +555,7 @@ export class TaskService {
   getCacheStats(): { size: number; keys: string[] } {
     return {
       size: this.cache.size,
-      keys: Array.from(this.cache.keys())
+      keys: Array.from(this.cache.keys()),
     };
   }
 
@@ -580,17 +587,23 @@ export class TaskService {
       if (!task.id || typeof task.id !== 'number') {
         throw new Error(`Invalid task at index ${index}: id must be a number`);
       }
-      
+
       if (!task.title || typeof task.title !== 'string') {
-        throw new Error(`Invalid task at index ${index}: title must be a string`);
+        throw new Error(
+          `Invalid task at index ${index}: title must be a string`
+        );
       }
-      
+
       if (!task.status || typeof task.status !== 'string') {
-        throw new Error(`Invalid task at index ${index}: status must be a string`);
+        throw new Error(
+          `Invalid task at index ${index}: status must be a string`
+        );
       }
-      
+
       if (!task.priority || typeof task.priority !== 'string') {
-        throw new Error(`Invalid task at index ${index}: priority must be a string`);
+        throw new Error(
+          `Invalid task at index ${index}: priority must be a string`
+        );
       }
     });
 
@@ -603,9 +616,13 @@ export class TaskService {
   formatTaskForDisplay(task: Task): Task {
     return {
       ...task,
-      createdAt: task.createdAt ? new Date(task.createdAt).toISOString() : undefined,
-      updatedAt: task.updatedAt ? new Date(task.updatedAt).toISOString() : undefined,
-      dueDate: task.dueDate ? new Date(task.dueDate).toISOString() : undefined
+      createdAt: task.createdAt
+        ? new Date(task.createdAt).toISOString()
+        : undefined,
+      updatedAt: task.updatedAt
+        ? new Date(task.updatedAt).toISOString()
+        : undefined,
+      dueDate: task.dueDate ? new Date(task.dueDate).toISOString() : undefined,
     };
   }
 
@@ -625,15 +642,19 @@ export class TaskService {
    * Get tasks that depend on a specific task
    */
   getTaskDependents(tasksData: TasksData, taskId: number): Task[] {
-    return tasksData.tasks.filter(task => 
-      task.dependencies && task.dependencies.includes(taskId)
+    return tasksData.tasks.filter(
+      task => task.dependencies && task.dependencies.includes(taskId)
     );
   }
 
   /**
    * Check if a task can be moved to a new status
    */
-  canMoveTask(tasksData: TasksData, taskId: number, newStatus: Task['status']): boolean {
+  canMoveTask(
+    tasksData: TasksData,
+    taskId: number,
+    newStatus: Task['status']
+  ): boolean {
     const task = this.findTaskById(tasksData, taskId);
     if (!task) return false;
 

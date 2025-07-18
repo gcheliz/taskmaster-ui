@@ -1,11 +1,15 @@
 /**
  * API Security Utilities
- * 
+ *
  * Provides secure handling of API requests related to file system
  * and repository operations from the frontend.
  */
 
-import { validateRepositoryPath, validateProjectName, validateTaskId } from './security';
+import {
+  validateRepositoryPath,
+  validateProjectName,
+  validateTaskId,
+} from './security';
 import { config } from '../config/environment';
 import { SecurityEnforcer } from '../config/security';
 
@@ -58,10 +62,10 @@ export class SecureApiClient {
         'Content-Type': 'application/json',
         'X-Requested-With': 'XMLHttpRequest',
         'X-Client-Version': '1.0.0',
-        ...configOverrides?.headers
+        ...configOverrides?.headers,
       },
       retries: configOverrides?.retries || 3,
-      retryDelay: configOverrides?.retryDelay || 1000
+      retryDelay: configOverrides?.retryDelay || 1000,
     };
   }
 
@@ -78,7 +82,7 @@ export class SecureApiClient {
       body,
       timeout = this.config.timeout,
       validateResponse = true,
-      rateLimitKey
+      rateLimitKey,
     } = options;
 
     // Validate endpoint
@@ -88,7 +92,7 @@ export class SecureApiClient {
         success: false,
         error: 'Invalid API endpoint',
         status: 400,
-        headers: new Headers()
+        headers: new Headers(),
       };
     }
 
@@ -100,7 +104,7 @@ export class SecureApiClient {
           success: false,
           error: 'Rate limit exceeded. Please try again later.',
           status: 429,
-          headers: new Headers()
+          headers: new Headers(),
         };
       }
       SecurityEnforcer.recordAttempt('api', clientId);
@@ -120,7 +124,7 @@ export class SecureApiClient {
       const requestHeaders: Record<string, string> = {
         ...this.config.headers,
         ...headers,
-        'X-Request-ID': requestId
+        'X-Request-ID': requestId,
       };
 
       // Prepare request body
@@ -140,7 +144,7 @@ export class SecureApiClient {
         body: requestBody,
         signal: abortController.signal,
         credentials: 'include',
-        mode: 'cors'
+        mode: 'cors',
       });
 
       clearTimeout(timeoutId);
@@ -150,13 +154,13 @@ export class SecureApiClient {
           success: false,
           error: `Invalid response: ${response.status} ${response.statusText}`,
           status: response.status,
-          headers: response.headers
+          headers: response.headers,
         };
       }
 
       let data: T | undefined;
       const contentType = response.headers.get('content-type');
-      
+
       if (contentType?.includes('application/json')) {
         const text = await response.text();
         if (text.trim()) {
@@ -169,11 +173,12 @@ export class SecureApiClient {
       return {
         success: response.ok,
         data,
-        error: response.ok ? undefined : `Request failed: ${response.status} ${response.statusText}`,
+        error: response.ok
+          ? undefined
+          : `Request failed: ${response.status} ${response.statusText}`,
         status: response.status,
-        headers: response.headers
+        headers: response.headers,
       };
-
     } catch (error) {
       clearTimeout(timeoutId);
 
@@ -183,7 +188,7 @@ export class SecureApiClient {
             success: false,
             error: 'Request timeout',
             status: 408,
-            headers: new Headers()
+            headers: new Headers(),
           };
         }
 
@@ -191,7 +196,7 @@ export class SecureApiClient {
           success: false,
           error: error.message,
           status: 500,
-          headers: new Headers()
+          headers: new Headers(),
         };
       }
 
@@ -199,7 +204,7 @@ export class SecureApiClient {
         success: false,
         error: 'Unknown error occurred',
         status: 500,
-        headers: new Headers()
+        headers: new Headers(),
       };
     } finally {
       this.abortControllers.delete(requestId);
@@ -216,21 +221,21 @@ export class SecureApiClient {
         success: false,
         error: validation.error || 'Invalid repository path',
         status: 400,
-        headers: new Headers()
+        headers: new Headers(),
       };
     }
 
     return this.request('/api/repositories', {
       method: 'POST',
       body: { path: validation.sanitizedValue },
-      rateLimitKey: 'repository'
+      rateLimitKey: 'repository',
     });
   }
 
   async getRepositories(): Promise<ApiResponse> {
     return this.request('/api/repositories', {
       method: 'GET',
-      rateLimitKey: 'repository'
+      rateLimitKey: 'repository',
     });
   }
 
@@ -240,28 +245,31 @@ export class SecureApiClient {
         success: false,
         error: 'Invalid repository ID',
         status: 400,
-        headers: new Headers()
+        headers: new Headers(),
       };
     }
 
     const sanitizedId = this.sanitizeId(repositoryId);
     return this.request(`/api/repositories/${sanitizedId}`, {
       method: 'DELETE',
-      rateLimitKey: 'repository'
+      rateLimitKey: 'repository',
     });
   }
 
   /**
    * Secure project operations
    */
-  async createProject(repositoryId: string, projectName: string): Promise<ApiResponse> {
+  async createProject(
+    repositoryId: string,
+    projectName: string
+  ): Promise<ApiResponse> {
     const nameValidation = validateProjectName(projectName);
     if (!nameValidation.isValid) {
       return {
         success: false,
         error: nameValidation.error || 'Invalid project name',
         status: 400,
-        headers: new Headers()
+        headers: new Headers(),
       };
     }
 
@@ -270,40 +278,50 @@ export class SecureApiClient {
       method: 'POST',
       body: {
         repositoryId: sanitizedRepoId,
-        name: nameValidation.sanitizedValue
+        name: nameValidation.sanitizedValue,
       },
-      rateLimitKey: 'project'
+      rateLimitKey: 'project',
     });
   }
 
   /**
    * Secure task operations
    */
-  async updateTaskStatus(taskId: string | number, status: string): Promise<ApiResponse> {
+  async updateTaskStatus(
+    taskId: string | number,
+    status: string
+  ): Promise<ApiResponse> {
     const idValidation = validateTaskId(taskId);
     if (!idValidation.isValid) {
       return {
         success: false,
         error: idValidation.error || 'Invalid task ID',
         status: 400,
-        headers: new Headers()
+        headers: new Headers(),
       };
     }
 
-    const allowedStatuses = ['pending', 'in-progress', 'done', 'blocked', 'cancelled', 'deferred'];
+    const allowedStatuses = [
+      'pending',
+      'in-progress',
+      'done',
+      'blocked',
+      'cancelled',
+      'deferred',
+    ];
     if (!allowedStatuses.includes(status)) {
       return {
         success: false,
         error: 'Invalid task status',
         status: 400,
-        headers: new Headers()
+        headers: new Headers(),
       };
     }
 
     return this.request(`/api/tasks/${idValidation.sanitizedValue}`, {
       method: 'PATCH',
       body: { status },
-      rateLimitKey: 'task'
+      rateLimitKey: 'task',
     });
   }
 
@@ -438,21 +456,22 @@ export const secureApiClient = new SecureApiClient();
 export const useSecureApi = () => {
   return {
     client: secureApiClient,
-    
+
     // Repository operations
     addRepository: (path: string) => secureApiClient.addRepository(path),
     getRepositories: () => secureApiClient.getRepositories(),
     deleteRepository: (id: string) => secureApiClient.deleteRepository(id),
-    
+
     // Project operations
-    createProject: (repoId: string, name: string) => secureApiClient.createProject(repoId, name),
-    
+    createProject: (repoId: string, name: string) =>
+      secureApiClient.createProject(repoId, name),
+
     // Task operations
-    updateTaskStatus: (taskId: string | number, status: string) => 
+    updateTaskStatus: (taskId: string | number, status: string) =>
       secureApiClient.updateTaskStatus(taskId, status),
-    
+
     // Utility
-    cancelAllRequests: () => secureApiClient.cancelAllRequests()
+    cancelAllRequests: () => secureApiClient.cancelAllRequests(),
   };
 };
 

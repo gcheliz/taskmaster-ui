@@ -1,6 +1,6 @@
 /**
  * Query Performance Analyzer
- * 
+ *
  * This service provides comprehensive query performance monitoring and analysis
  * for the TaskMaster UI database operations.
  */
@@ -42,7 +42,9 @@ export class QueryAnalyzer {
 
   constructor() {
     this.logFile = path.join(process.cwd(), 'logs', 'query-performance.log');
-    this.isEnabled = process.env.NODE_ENV === 'development' || process.env.ENABLE_QUERY_ANALYSIS === 'true';
+    this.isEnabled =
+      process.env.NODE_ENV === 'development' ||
+      process.env.ENABLE_QUERY_ANALYSIS === 'true';
     this.ensureLogDirectory();
   }
 
@@ -60,21 +62,21 @@ export class QueryAnalyzer {
    * Create enhanced Prisma client with query logging
    */
   public createEnhancedPrismaClient(config?: any): PrismaClient {
-    const logLevels = this.isEnabled 
-      ? ['query', 'info', 'warn', 'error'] as const
-      : ['error'] as const;
+    const logLevels = this.isEnabled
+      ? (['query', 'info', 'warn', 'error'] as const)
+      : (['error'] as const);
 
     const prismaConfig: any = {
       log: logLevels.map(level => ({
         level,
-        emit: 'event'
+        emit: 'event',
       })),
       // Connection pooling configuration
       datasources: {
         db: {
-          url: this.enhanceConnectionString(process.env.DATABASE_URL || '')
-        }
-      }
+          url: this.enhanceConnectionString(process.env.DATABASE_URL || ''),
+        },
+      },
     };
 
     // Apply any additional configuration (like SSL settings)
@@ -98,17 +100,17 @@ export class QueryAnalyzer {
     if (!url) return url;
 
     const urlObj = new URL(url);
-    
+
     // Environment-based connection pool settings
     const isProduction = process.env.NODE_ENV === 'production';
-    
+
     // Connection Pool Configuration
     if (!urlObj.searchParams.has('connection_limit')) {
       // Production: Higher connection limit for concurrent requests
       // Development: Lower limit to prevent resource exhaustion
       urlObj.searchParams.set('connection_limit', isProduction ? '20' : '10');
     }
-    
+
     if (!urlObj.searchParams.has('pool_timeout')) {
       // Time in seconds to wait for an available connection
       urlObj.searchParams.set('pool_timeout', '10');
@@ -165,7 +167,7 @@ export class QueryAnalyzer {
         params: event.params,
         duration: event.duration,
         target: event.target,
-        level: 'query'
+        level: 'query',
       };
 
       this.recordQuery(queryLog);
@@ -177,7 +179,7 @@ export class QueryAnalyzer {
         timestamp: new Date(),
         query: event.message,
         target: event.target,
-        level: 'info'
+        level: 'info',
       };
 
       this.recordQuery(queryLog);
@@ -189,7 +191,7 @@ export class QueryAnalyzer {
         timestamp: new Date(),
         query: event.message,
         target: event.target,
-        level: 'warn'
+        level: 'warn',
       };
 
       this.recordQuery(queryLog);
@@ -202,7 +204,7 @@ export class QueryAnalyzer {
         timestamp: new Date(),
         query: event.message,
         target: event.target,
-        level: 'error'
+        level: 'error',
       };
 
       this.recordQuery(queryLog);
@@ -227,8 +229,12 @@ export class QueryAnalyzer {
     this.writeToLogFile(queryLog);
 
     // Alert on slow queries
-    if (queryLog.duration && queryLog.duration > 1000) { // 1 second threshold
-      console.warn(`🐌 Slow query detected (${queryLog.duration}ms):`, queryLog.query);
+    if (queryLog.duration && queryLog.duration > 1000) {
+      // 1 second threshold
+      console.warn(
+        `🐌 Slow query detected (${queryLog.duration}ms):`,
+        queryLog.query
+      );
     }
   }
 
@@ -243,7 +249,7 @@ export class QueryAnalyzer {
         duration: queryLog.duration,
         target: queryLog.target,
         query: queryLog.query,
-        params: queryLog.params
+        params: queryLog.params,
       };
 
       fs.appendFileSync(this.logFile, JSON.stringify(logEntry) + '\n');
@@ -256,7 +262,9 @@ export class QueryAnalyzer {
    * Analyze query performance
    */
   public analyzeQueries(): QueryStats {
-    const queryOnlyLogs = this.queryLogs.filter(log => log.level === 'query' && log.duration);
+    const queryOnlyLogs = this.queryLogs.filter(
+      log => log.level === 'query' && log.duration
+    );
 
     if (queryOnlyLogs.length === 0) {
       return {
@@ -265,35 +273,42 @@ export class QueryAnalyzer {
         slowestQuery: null,
         fastestQuery: null,
         mostFrequentQueries: [],
-        queryTypes: {}
+        queryTypes: {},
       };
     }
 
     // Calculate basic stats
     const durations = queryOnlyLogs.map(log => log.duration!);
     const totalQueries = queryOnlyLogs.length;
-    const averageDuration = durations.reduce((sum, duration) => sum + duration, 0) / totalQueries;
+    const averageDuration =
+      durations.reduce((sum, duration) => sum + duration, 0) / totalQueries;
 
     // Find slowest and fastest queries
-    const slowestQuery = queryOnlyLogs.reduce((slowest, current) => 
-      (current.duration! > (slowest?.duration || 0)) ? current : slowest
+    const slowestQuery = queryOnlyLogs.reduce((slowest, current) =>
+      current.duration! > (slowest?.duration || 0) ? current : slowest
     );
 
-    const fastestQuery = queryOnlyLogs.reduce((fastest, current) => 
-      (current.duration! < (fastest?.duration || Infinity)) ? current : fastest
+    const fastestQuery = queryOnlyLogs.reduce((fastest, current) =>
+      current.duration! < (fastest?.duration || Infinity) ? current : fastest
     );
 
     // Analyze query frequency and performance
-    const queryFrequency = new Map<string, { count: number; totalDuration: number }>();
-    
+    const queryFrequency = new Map<
+      string,
+      { count: number; totalDuration: number }
+    >();
+
     queryOnlyLogs.forEach(log => {
       // Normalize query by removing parameter values
       const normalizedQuery = this.normalizeQuery(log.query);
-      const existing = queryFrequency.get(normalizedQuery) || { count: 0, totalDuration: 0 };
-      
+      const existing = queryFrequency.get(normalizedQuery) || {
+        count: 0,
+        totalDuration: 0,
+      };
+
       queryFrequency.set(normalizedQuery, {
         count: existing.count + 1,
-        totalDuration: existing.totalDuration + (log.duration || 0)
+        totalDuration: existing.totalDuration + (log.duration || 0),
       });
     });
 
@@ -302,7 +317,7 @@ export class QueryAnalyzer {
       .map(([query, stats]) => ({
         query,
         count: stats.count,
-        avgDuration: stats.totalDuration / stats.count
+        avgDuration: stats.totalDuration / stats.count,
       }))
       .sort((a, b) => b.count - a.count)
       .slice(0, 10);
@@ -320,7 +335,7 @@ export class QueryAnalyzer {
       slowestQuery,
       fastestQuery,
       mostFrequentQueries,
-      queryTypes
+      queryTypes,
     };
   }
 
@@ -341,7 +356,7 @@ export class QueryAnalyzer {
    */
   private getQueryType(query: string): string {
     const trimmed = query.trim().toUpperCase();
-    
+
     if (trimmed.startsWith('SELECT')) return 'SELECT';
     if (trimmed.startsWith('INSERT')) return 'INSERT';
     if (trimmed.startsWith('UPDATE')) return 'UPDATE';
@@ -349,7 +364,7 @@ export class QueryAnalyzer {
     if (trimmed.startsWith('BEGIN')) return 'TRANSACTION';
     if (trimmed.startsWith('COMMIT')) return 'COMMIT';
     if (trimmed.startsWith('ROLLBACK')) return 'ROLLBACK';
-    
+
     return 'OTHER';
   }
 
@@ -362,7 +377,7 @@ export class QueryAnalyzer {
     this.performanceMetrics.push({
       ...metric,
       // Add timestamp for metric
-      timestamp: Date.now()
+      timestamp: Date.now(),
     } as any);
 
     // Keep only last 500 metrics
@@ -386,7 +401,7 @@ export class QueryAnalyzer {
     return {
       queryStats,
       recentMetrics,
-      recommendations
+      recommendations,
     };
   }
 
@@ -398,7 +413,9 @@ export class QueryAnalyzer {
 
     // Check average query duration
     if (stats.averageDuration > 100) {
-      recommendations.push('Consider adding database indexes for frequently queried fields');
+      recommendations.push(
+        'Consider adding database indexes for frequently queried fields'
+      );
     }
 
     // Check for slow queries
@@ -409,7 +426,7 @@ export class QueryAnalyzer {
     // Check query frequency
     const selectQueries = stats.queryTypes['SELECT'] || 0;
     const totalQueries = stats.totalQueries;
-    
+
     if (selectQueries / totalQueries > 0.8) {
       recommendations.push('Consider implementing query result caching');
     }
@@ -417,7 +434,9 @@ export class QueryAnalyzer {
     // Check for frequent complex queries
     stats.mostFrequentQueries.forEach(query => {
       if (query.count > 10 && query.avgDuration > 50) {
-        recommendations.push(`Optimize frequently executed query: ${query.query.substring(0, 50)}...`);
+        recommendations.push(
+          `Optimize frequently executed query: ${query.query.substring(0, 50)}...`
+        );
       }
     });
 
@@ -430,7 +449,7 @@ export class QueryAnalyzer {
   public clearLogs(): void {
     this.queryLogs = [];
     this.performanceMetrics = [];
-    
+
     // Clear log file
     try {
       fs.writeFileSync(this.logFile, '');
@@ -448,7 +467,7 @@ export class QueryAnalyzer {
         exportedAt: new Date().toISOString(),
         queryLogs: this.queryLogs,
         performanceMetrics: this.performanceMetrics,
-        summary: this.getPerformanceSummary()
+        summary: this.getPerformanceSummary(),
       };
 
       fs.writeFileSync(outputPath, JSON.stringify(exportData, null, 2));

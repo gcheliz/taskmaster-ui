@@ -25,7 +25,7 @@ export enum LogLevel {
   WARN = 'warn',
   INFO = 'info',
   DEBUG = 'debug',
-  TRACE = 'trace'
+  TRACE = 'trace',
 }
 
 export class TaskMasterLogger {
@@ -36,7 +36,7 @@ export class TaskMasterLogger {
   private constructor() {
     // Add console handler by default
     this.addHandler(new ConsoleLogHandler());
-    
+
     // Add file handler in production
     if (process.env.NODE_ENV === 'production') {
       this.addHandler(new FileLogHandler());
@@ -44,7 +44,10 @@ export class TaskMasterLogger {
 
     // Set log level from environment
     const envLogLevel = process.env.LOG_LEVEL?.toLowerCase();
-    if (envLogLevel && Object.values(LogLevel).includes(envLogLevel as LogLevel)) {
+    if (
+      envLogLevel &&
+      Object.values(LogLevel).includes(envLogLevel as LogLevel)
+    ) {
       this.logLevel = envLogLevel as LogLevel;
     }
   }
@@ -65,13 +68,25 @@ export class TaskMasterLogger {
   }
 
   private shouldLog(level: LogLevel): boolean {
-    const levels = [LogLevel.ERROR, LogLevel.WARN, LogLevel.INFO, LogLevel.DEBUG, LogLevel.TRACE];
+    const levels = [
+      LogLevel.ERROR,
+      LogLevel.WARN,
+      LogLevel.INFO,
+      LogLevel.DEBUG,
+      LogLevel.TRACE,
+    ];
     const currentLevelIndex = levels.indexOf(this.logLevel);
     const requestedLevelIndex = levels.indexOf(level);
     return requestedLevelIndex <= currentLevelIndex;
   }
 
-  private log(level: LogLevel, message: string, context?: LogContext, error?: Error, module: string = 'unknown'): void {
+  private log(
+    level: LogLevel,
+    message: string,
+    context?: LogContext,
+    error?: Error,
+    module: string = 'unknown'
+  ): void {
     if (!this.shouldLog(level)) {
       return;
     }
@@ -81,11 +96,11 @@ export class TaskMasterLogger {
       message,
       context: {
         ...context,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       },
       error,
       timestamp: new Date().toISOString(),
-      module
+      module,
     };
 
     // Send to all handlers
@@ -98,7 +113,12 @@ export class TaskMasterLogger {
     });
   }
 
-  error(message: string, context?: LogContext, error?: Error, module?: string): void {
+  error(
+    message: string,
+    context?: LogContext,
+    error?: Error,
+    module?: string
+  ): void {
     this.log(LogLevel.ERROR, message, context, error, module);
   }
 
@@ -120,59 +140,115 @@ export class TaskMasterLogger {
 
   // Specialized logging methods for common scenarios
   logApiRequest(method: string, path: string, context: LogContext): void {
-    this.info(`API ${method} ${path}`, {
-      ...context,
-      type: 'api_request'
-    }, 'api');
+    this.info(
+      `API ${method} ${path}`,
+      {
+        ...context,
+        type: 'api_request',
+      },
+      'api'
+    );
   }
 
-  logApiResponse(method: string, path: string, statusCode: number, duration: number, context: LogContext): void {
+  logApiResponse(
+    method: string,
+    path: string,
+    statusCode: number,
+    duration: number,
+    context: LogContext
+  ): void {
     const level = statusCode >= 400 ? LogLevel.ERROR : LogLevel.INFO;
-    this.log(level, `API ${method} ${path} - ${statusCode} (${duration}ms)`, {
-      ...context,
-      statusCode,
-      duration,
-      type: 'api_response'
-    }, undefined, 'api');
+    this.log(
+      level,
+      `API ${method} ${path} - ${statusCode} (${duration}ms)`,
+      {
+        ...context,
+        statusCode,
+        duration,
+        type: 'api_response',
+      },
+      undefined,
+      'api'
+    );
   }
 
-  logCliExecution(operation: string, repositoryPath: string, context: LogContext): void {
-    this.info(`CLI execution: ${operation}`, {
-      ...context,
-      operation,
-      repositoryPath,
-      type: 'cli_execution'
-    }, 'cli');
+  logCliExecution(
+    operation: string,
+    repositoryPath: string,
+    context: LogContext
+  ): void {
+    this.info(
+      `CLI execution: ${operation}`,
+      {
+        ...context,
+        operation,
+        repositoryPath,
+        type: 'cli_execution',
+      },
+      'cli'
+    );
   }
 
-  logCliResult(operation: string, success: boolean, duration: number, context: LogContext, error?: Error): void {
+  logCliResult(
+    operation: string,
+    success: boolean,
+    duration: number,
+    context: LogContext,
+    error?: Error
+  ): void {
     const level = success ? LogLevel.INFO : LogLevel.ERROR;
-    this.log(level, `CLI ${operation} ${success ? 'completed' : 'failed'} (${duration}ms)`, {
-      ...context,
-      operation,
-      success,
-      duration,
-      type: 'cli_result'
-    }, error, 'cli');
+    this.log(
+      level,
+      `CLI ${operation} ${success ? 'completed' : 'failed'} (${duration}ms)`,
+      {
+        ...context,
+        operation,
+        success,
+        duration,
+        type: 'cli_result',
+      },
+      error,
+      'cli'
+    );
   }
 
-  logParsingError(operation: string, rawOutput: string, context: LogContext, error: Error): void {
-    this.error(`Parsing failed for ${operation}`, {
-      ...context,
-      operation,
-      outputLength: rawOutput.length,
-      outputPreview: rawOutput.substring(0, 200),
-      type: 'parsing_error'
-    }, error, 'parser');
+  logParsingError(
+    operation: string,
+    rawOutput: string,
+    context: LogContext,
+    error: Error
+  ): void {
+    this.error(
+      `Parsing failed for ${operation}`,
+      {
+        ...context,
+        operation,
+        outputLength: rawOutput.length,
+        outputPreview: rawOutput.substring(0, 200),
+        type: 'parsing_error',
+      },
+      error,
+      'parser'
+    );
   }
 
-  logSecurityEvent(event: string, context: LogContext, severity: 'low' | 'medium' | 'high' = 'medium'): void {
+  logSecurityEvent(
+    event: string,
+    context: LogContext,
+    severity: 'low' | 'medium' | 'high' = 'medium'
+  ): void {
     const level = severity === 'high' ? LogLevel.ERROR : LogLevel.WARN;
-    this.log(level, `Security event: ${event}`, {
-      ...context,
-      severity,
-      type: 'security_event'
-    }, undefined, 'security');
+    this.log(
+      level,
+      `Security event: ${event}`,
+      {
+        ...context,
+        severity,
+        type: 'security_event',
+      },
+      undefined,
+      'security'
+    );
   }
 }
 
@@ -187,9 +263,9 @@ export class ConsoleLogHandler implements LogHandler {
     const timestamp = new Date(entry.timestamp).toISOString();
     const level = entry.level.toUpperCase().padEnd(5);
     const module = entry.module.padEnd(10);
-    
+
     let message = `[${timestamp}] ${level} [${module}] ${entry.message}`;
-    
+
     if (entry.context && Object.keys(entry.context).length > 0) {
       message += ` ${JSON.stringify(entry.context)}`;
     }
@@ -199,7 +275,10 @@ export class ConsoleLogHandler implements LogHandler {
       case LogLevel.ERROR:
         console.error('\x1b[31m%s\x1b[0m', message); // Red
         if (entry.error) {
-          console.error('\x1b[31m%s\x1b[0m', entry.error.stack || entry.error.message);
+          console.error(
+            '\x1b[31m%s\x1b[0m',
+            entry.error.stack || entry.error.message
+          );
         }
         break;
       case LogLevel.WARN:
@@ -233,7 +312,7 @@ export class FileLogHandler implements LogHandler {
     const fs = require('fs');
     const path = require('path');
     const logDir = path.dirname(this.logFile);
-    
+
     if (!fs.existsSync(logDir)) {
       fs.mkdirSync(logDir, { recursive: true });
     }
@@ -241,14 +320,17 @@ export class FileLogHandler implements LogHandler {
 
   handle(entry: LogEntry): void {
     const fs = require('fs');
-    const logLine = JSON.stringify({
-      ...entry,
-      error: entry.error ? {
-        message: entry.error.message,
-        stack: entry.error.stack,
-        name: entry.error.name
-      } : undefined
-    }) + '\n';
+    const logLine =
+      JSON.stringify({
+        ...entry,
+        error: entry.error
+          ? {
+              message: entry.error.message,
+              stack: entry.error.stack,
+              name: entry.error.name,
+            }
+          : undefined,
+      }) + '\n';
 
     try {
       fs.appendFileSync(this.logFile, logLine);

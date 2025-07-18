@@ -107,7 +107,7 @@
   .dashboard-content {
     grid-template-columns: 1fr;
   }
-  
+
   .stats-grid {
     grid-template-columns: 1fr;
   }
@@ -117,11 +117,11 @@
   .dashboard h1 {
     font-size: var(--font-size-2xl);
   }
-  
+
   .card {
     padding: var(--card-padding-sm);
   }
-  
+
   .stat-number {
     font-size: var(--font-size-2xl);
   }

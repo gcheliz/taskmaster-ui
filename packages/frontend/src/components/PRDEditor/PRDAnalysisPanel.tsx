@@ -25,7 +25,7 @@ export interface PRDAnalysisPanelProps {
 
 /**
  * PRD Analysis Panel Component
- * 
+ *
  * A comprehensive panel that combines analysis trigger and results display.
  * Provides a complete interface for PRD analysis with state management.
  */
@@ -39,12 +39,13 @@ export const PRDAnalysisPanel: React.FC<PRDAnalysisPanelProps> = ({
   onDependencySelect,
   onVisibilityChange,
 }) => {
-  const [analysisResult, setAnalysisResult] = useState<PRDAnalysisResult | null>(null);
+  const [analysisResult, setAnalysisResult] =
+    useState<PRDAnalysisResult | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisError, setAnalysisError] = useState<Error | null>(null);
 
   const analysisResultsHandler = usePRDAnalysisResults({
-    onTaskSelect: (taskIndex) => {
+    onTaskSelect: taskIndex => {
       if (analysisResult) {
         const actualTask = analysisResult.analysis.extractedTasks[taskIndex];
         onTaskSelect?.(taskIndex, actualTask);
@@ -58,12 +59,15 @@ export const PRDAnalysisPanel: React.FC<PRDAnalysisPanelProps> = ({
     setAnalysisError(null);
   }, []);
 
-  const handleAnalysisComplete = useCallback((result: PRDAnalysisResult) => {
-    setAnalysisResult(result);
-    setIsAnalyzing(false);
-    setAnalysisError(null);
-    onAnalysisComplete?.(result);
-  }, [onAnalysisComplete]);
+  const handleAnalysisComplete = useCallback(
+    (result: PRDAnalysisResult) => {
+      setAnalysisResult(result);
+      setIsAnalyzing(false);
+      setAnalysisError(null);
+      onAnalysisComplete?.(result);
+    },
+    [onAnalysisComplete]
+  );
 
   const handleAnalysisError = useCallback((error: Error) => {
     setAnalysisError(error);
@@ -100,7 +104,9 @@ export const PRDAnalysisPanel: React.FC<PRDAnalysisPanelProps> = ({
   }
 
   return (
-    <div className={`prd-analysis-panel ${compact ? 'compact' : ''} ${className}`}>
+    <div
+      className={`prd-analysis-panel ${compact ? 'compact' : ''} ${className}`}
+    >
       {/* Panel Header */}
       <div className="panel-header">
         <div className="header-content">
@@ -137,7 +143,7 @@ export const PRDAnalysisPanel: React.FC<PRDAnalysisPanelProps> = ({
           onAnalysisError={handleAnalysisError}
           disabled={isAnalyzing}
         />
-        
+
         {/* Status Indicators */}
         <div className="status-indicators">
           {isAnalyzing && (
@@ -178,7 +184,10 @@ export const PRDAnalysisPanel: React.FC<PRDAnalysisPanelProps> = ({
           <div className="empty-content">
             <div className="empty-icon">🔍</div>
             <h4>Ready to Analyze</h4>
-            <p>Click the analyze button to extract tasks and complexity from your PRD.</p>
+            <p>
+              Click the analyze button to extract tasks and complexity from your
+              PRD.
+            </p>
             <div className="empty-features">
               <div className="feature-item">
                 <span className="feature-icon">📋</span>

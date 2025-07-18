@@ -9,17 +9,20 @@ export const SimpleDashboardView: React.FC = () => {
         <h1>Welcome to TaskMaster UI</h1>
         <p>Your comprehensive task management dashboard</p>
       </div>
-      
+
       <div className="dashboard-content">
         <div className="dashboard-grid">
           <div className="card">
             <h2>📊 Dashboard Overview</h2>
-            <p>This is the main dashboard where you can manage your tasks and repositories.</p>
-            
+            <p>
+              This is the main dashboard where you can manage your tasks and
+              repositories.
+            </p>
+
             <div className="demo-section">
               <h3>Demo Counter</h3>
-              <button 
-                onClick={() => setCount((count) => count + 1)}
+              <button
+                onClick={() => setCount(count => count + 1)}
                 className="demo-button"
               >
                 Count is {count}
@@ -27,7 +30,7 @@ export const SimpleDashboardView: React.FC = () => {
               <p>This demonstrates React state management and routing.</p>
             </div>
           </div>
-          
+
           <div className="card">
             <h2>📈 Quick Stats</h2>
             <div className="stats-grid">
@@ -55,15 +58,21 @@ export const SimpleDashboardView: React.FC = () => {
             <div className="activity-list">
               <div className="activity-item">
                 <span className="activity-time">2 minutes ago</span>
-                <span className="activity-desc">Task "Fix navigation" completed</span>
+                <span className="activity-desc">
+                  Task "Fix navigation" completed
+                </span>
               </div>
               <div className="activity-item">
                 <span className="activity-time">15 minutes ago</span>
-                <span className="activity-desc">Repository "taskmaster-ui" updated</span>
+                <span className="activity-desc">
+                  Repository "taskmaster-ui" updated
+                </span>
               </div>
               <div className="activity-item">
                 <span className="activity-time">1 hour ago</span>
-                <span className="activity-desc">New task "Add routing" created</span>
+                <span className="activity-desc">
+                  New task "Add routing" created
+                </span>
               </div>
             </div>
           </div>
@@ -74,21 +83,30 @@ export const SimpleDashboardView: React.FC = () => {
               <div className="health-item">
                 <span className="health-label">Overall Health</span>
                 <div className="health-bar">
-                  <div className="health-fill" style={{ width: '85%', backgroundColor: '#22c55e' }}></div>
+                  <div
+                    className="health-fill"
+                    style={{ width: '85%', backgroundColor: '#22c55e' }}
+                  ></div>
                 </div>
                 <span className="health-score">85%</span>
               </div>
               <div className="health-item">
                 <span className="health-label">Task Completion</span>
                 <div className="health-bar">
-                  <div className="health-fill" style={{ width: '72%', backgroundColor: '#3b82f6' }}></div>
+                  <div
+                    className="health-fill"
+                    style={{ width: '72%', backgroundColor: '#3b82f6' }}
+                  ></div>
                 </div>
                 <span className="health-score">72%</span>
               </div>
               <div className="health-item">
                 <span className="health-label">Code Quality</span>
                 <div className="health-bar">
-                  <div className="health-fill" style={{ width: '91%', backgroundColor: '#10b981' }}></div>
+                  <div
+                    className="health-fill"
+                    style={{ width: '91%', backgroundColor: '#10b981' }}
+                  ></div>
                 </div>
                 <span className="health-score">91%</span>
               </div>

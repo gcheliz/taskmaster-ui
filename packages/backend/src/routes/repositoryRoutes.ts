@@ -16,19 +16,19 @@ const schemas = {
         description: 'Absolute path to the repository directory',
         example: '/Users/john/projects/my-app',
         minLength: 1,
-        maxLength: 500
+        maxLength: 500,
       },
       validateGit: {
         type: 'boolean',
         description: 'Whether to validate Git repository status',
-        default: true
+        default: true,
       },
       validateTaskMaster: {
         type: 'boolean',
         description: 'Whether to validate TaskMaster project status',
-        default: true
-      }
-    }
+        default: true,
+      },
+    },
   },
 
   RepositoryValidateResponse: {
@@ -44,15 +44,21 @@ const schemas = {
             items: {
               type: 'object',
               properties: {
-                type: { 
-                  type: 'string', 
-                  enum: ['path', 'directory', 'git', 'taskmaster', 'permissions'] 
+                type: {
+                  type: 'string',
+                  enum: [
+                    'path',
+                    'directory',
+                    'git',
+                    'taskmaster',
+                    'permissions',
+                  ],
                 },
                 isValid: { type: 'boolean' },
                 message: { type: 'string' },
-                details: { type: 'object' }
-              }
-            }
+                details: { type: 'object' },
+              },
+            },
           },
           repositoryInfo: {
             type: 'object',
@@ -62,22 +68,22 @@ const schemas = {
               isGitRepository: { type: 'boolean' },
               isTaskMasterProject: { type: 'boolean' },
               gitBranch: { type: 'string' },
-              gitRemoteUrl: { type: 'string' }
-            }
+              gitRemoteUrl: { type: 'string' },
+            },
           },
           errors: {
             type: 'array',
-            items: { type: 'string' }
-          }
-        }
+            items: { type: 'string' },
+          },
+        },
       },
       error: {
         type: 'object',
         properties: {
           code: { type: 'string' },
           message: { type: 'string' },
-          correlationId: { type: 'string' }
-        }
+          correlationId: { type: 'string' },
+        },
       },
       metadata: {
         type: 'object',
@@ -85,11 +91,11 @@ const schemas = {
           timestamp: { type: 'string' },
           requestId: { type: 'string' },
           duration: { type: 'number' },
-          version: { type: 'string' }
-        }
-      }
-    }
-  }
+          version: { type: 'string' },
+        },
+      },
+    },
+  },
 };
 
 // Route Factory
@@ -218,7 +224,8 @@ export class RepositoryRouteFactory {
      *       500:
      *         description: Internal server error
      */
-    router.post('/validate',
+    router.post(
+      '/validate',
       (req: any, res: any, next: any) => {
         // Basic validation
         if (!req.body.repositoryPath) {
@@ -226,14 +233,16 @@ export class RepositoryRouteFactory {
             success: false,
             error: {
               code: 'MISSING_PARAMETER',
-              message: 'repositoryPath is required'
-            }
+              message: 'repositoryPath is required',
+            },
           });
         }
         req.validatedBody = req.body;
         next();
       },
-      this.asyncHandler(this.controller.validateRepository.bind(this.controller))
+      this.asyncHandler(
+        this.controller.validateRepository.bind(this.controller)
+      )
     );
   }
 
@@ -261,7 +270,8 @@ export class RepositoryRouteFactory {
      *       500:
      *         description: Internal server error
      */
-    router.get('/info',
+    router.get(
+      '/info',
       this.asyncHandler(this.controller.getRepositoryInfo.bind(this.controller))
     );
   }
@@ -275,7 +285,7 @@ export class RepositoryRouteFactory {
      *       - Repository Management
      *     summary: Get comprehensive repository details
      *     description: |
-     *       Retrieve comprehensive repository metadata including current branch, 
+     *       Retrieve comprehensive repository metadata including current branch,
      *       last commit details, working directory status, branch list, and remote information.
      *       This endpoint provides all data needed for repository and branch information display.
      *     parameters:
@@ -415,8 +425,11 @@ export class RepositoryRouteFactory {
      *       500:
      *         description: Internal server error
      */
-    router.get('/details',
-      this.asyncHandler(this.controller.getRepositoryDetails.bind(this.controller))
+    router.get(
+      '/details',
+      this.asyncHandler(
+        this.controller.getRepositoryDetails.bind(this.controller)
+      )
     );
   }
 
@@ -433,7 +446,8 @@ export class RepositoryRouteFactory {
      *       200:
      *         description: Service is healthy
      */
-    router.get('/health',
+    router.get(
+      '/health',
       this.asyncHandler(this.controller.healthCheck.bind(this.controller))
     );
   }

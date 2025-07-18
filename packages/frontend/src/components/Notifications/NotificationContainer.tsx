@@ -4,7 +4,13 @@ import { NotificationCard } from './NotificationCard';
 import './NotificationContainer.css';
 
 export interface NotificationContainerProps {
-  position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' | 'top-center' | 'bottom-center';
+  position?:
+    | 'top-right'
+    | 'top-left'
+    | 'bottom-right'
+    | 'bottom-left'
+    | 'top-center'
+    | 'bottom-center';
   className?: string;
 }
 
@@ -19,14 +25,14 @@ export const NotificationContainer: React.FC<NotificationContainerProps> = ({
   }
 
   return (
-    <div 
+    <div
       className={`notification-container ${position} ${className}`.trim()}
       role="region"
       aria-label="Notifications"
       aria-live="polite"
       aria-atomic="false"
     >
-      {state.notifications.map((notification) => (
+      {state.notifications.map(notification => (
         <NotificationCard
           key={notification.id}
           notification={notification}

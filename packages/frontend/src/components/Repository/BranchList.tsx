@@ -45,7 +45,7 @@ export interface BranchListProps {
 
 /**
  * Branch List Component
- * 
+ *
  * Displays a scrollable list of repository branches with:
  * - Visual distinction between local and remote branches
  * - Current branch highlighting
@@ -62,7 +62,7 @@ export const BranchList: React.FC<BranchListProps> = ({
   onCheckoutBranch,
   showCommitDetails = true,
   showTrackingInfo = true,
-  maxDisplayCount = 50
+  maxDisplayCount = 50,
 }) => {
   const [displayCount, setDisplayCount] = React.useState(maxDisplayCount);
 
@@ -179,9 +179,7 @@ export const BranchList: React.FC<BranchListProps> = ({
   return (
     <div className={`branch-list ${className}`}>
       <div className="branch-list__header">
-        <h4 className="branch-list__title">
-          Branches ({branches.length})
-        </h4>
+        <h4 className="branch-list__title">Branches ({branches.length})</h4>
         {branches.length > 0 && (
           <div className="branch-list__summary">
             <span className="summary-item">
@@ -213,12 +211,18 @@ export const BranchList: React.FC<BranchListProps> = ({
               >
                 <div className="branch-item__header">
                   <div className="branch-info">
-                    <span className="branch-icon" title={getBranchTypeLabel(branch)}>
+                    <span
+                      className="branch-icon"
+                      title={getBranchTypeLabel(branch)}
+                    >
                       {getBranchIcon(branch)}
                     </span>
                     <span className="branch-name">{branch.name}</span>
                     {branch.isCurrent && (
-                      <span className="current-indicator" title="Current branch">
+                      <span
+                        className="current-indicator"
+                        title="Current branch"
+                      >
                         CURRENT
                       </span>
                     )}
@@ -227,16 +231,16 @@ export const BranchList: React.FC<BranchListProps> = ({
                     {showTrackingInfo && branch.tracking && (
                       <div className="tracking-info">
                         {branch.tracking.ahead ? (
-                          <span 
-                            className="ahead" 
+                          <span
+                            className="ahead"
                             title={`${branch.tracking.ahead} commits ahead of ${branch.tracking.remote}`}
                           >
                             ↑{branch.tracking.ahead}
                           </span>
                         ) : null}
                         {branch.tracking.behind ? (
-                          <span 
-                            className="behind" 
+                          <span
+                            className="behind"
                             title={`${branch.tracking.behind} commits behind ${branch.tracking.remote}`}
                           >
                             ↓{branch.tracking.behind}
@@ -244,29 +248,37 @@ export const BranchList: React.FC<BranchListProps> = ({
                         ) : null}
                       </div>
                     )}
-                    {!branch.isCurrent && branch.isLocal && onCheckoutBranch && (
-                      <button
-                        className="checkout-button"
-                        onClick={(e) => handleCheckoutClick(e, branch.name)}
-                        title={`Checkout branch: ${branch.name}`}
-                      >
-                        Checkout
-                      </button>
-                    )}
+                    {!branch.isCurrent &&
+                      branch.isLocal &&
+                      onCheckoutBranch && (
+                        <button
+                          className="checkout-button"
+                          onClick={e => handleCheckoutClick(e, branch.name)}
+                          title={`Checkout branch: ${branch.name}`}
+                        >
+                          Checkout
+                        </button>
+                      )}
                   </div>
                 </div>
 
                 {showCommitDetails && (
                   <div className="branch-item__commit">
                     <div className="commit-info">
-                      <span className="commit-hash" title={branch.lastCommit.hash}>
+                      <span
+                        className="commit-hash"
+                        title={branch.lastCommit.hash}
+                      >
                         {formatCommitHash(branch.lastCommit.hash)}
                       </span>
                       <span className="commit-date">
                         {formatDate(branch.lastCommit.date)}
                       </span>
                     </div>
-                    <div className="commit-message" title={branch.lastCommit.message}>
+                    <div
+                      className="commit-message"
+                      title={branch.lastCommit.message}
+                    >
                       {branch.lastCommit.message}
                     </div>
                     <div className="commit-author">
@@ -284,7 +296,8 @@ export const BranchList: React.FC<BranchListProps> = ({
                 className="load-more-button"
                 onClick={() => setDisplayCount(prev => prev + maxDisplayCount)}
               >
-                Load {Math.min(maxDisplayCount, branches.length - displayCount)} more branches
+                Load {Math.min(maxDisplayCount, branches.length - displayCount)}{' '}
+                more branches
               </button>
             </div>
           )}

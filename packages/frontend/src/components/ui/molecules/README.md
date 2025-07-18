@@ -11,9 +11,11 @@ Molecular components are combinations of atomic components that work together as
 ### Form Components
 
 #### FormField
+
 A complete form field that combines Label and Input atoms with validation states.
 
 **Features:**
+
 - Built-in label, description, and help text
 - Error and success states with appropriate styling
 - Icon support (left and right)
@@ -21,6 +23,7 @@ A complete form field that combines Label and Input atoms with validation states
 - Full accessibility support
 
 **Usage:**
+
 ```tsx
 import { FormField } from '@/components/ui/molecules';
 
@@ -31,13 +34,15 @@ import { FormField } from '@/components/ui/molecules';
   helpText="We'll never share your email"
   error={errors.email}
   required
-/>
+/>;
 ```
 
 #### SearchField
+
 A specialized input field for search functionality with built-in search icon.
 
 **Features:**
+
 - Integrated search icon
 - Clear button functionality
 - Loading states
@@ -46,38 +51,48 @@ A specialized input field for search functionality with built-in search icon.
 ### Layout Components
 
 #### Card
+
 A flexible container component for displaying structured content.
 
 **Features:**
+
 - Header, content, and footer sections
 - Multiple variants (default, outline, elevated, ghost)
 - Size variants (sm, md, lg)
 - Composable sub-components
 
 **Usage:**
+
 ```tsx
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/molecules';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from '@/components/ui/molecules';
 
 <Card>
   <CardHeader>
     <CardTitle>Card Title</CardTitle>
     <CardDescription>Card description</CardDescription>
   </CardHeader>
-  <CardContent>
-    Card content goes here
-  </CardContent>
+  <CardContent>Card content goes here</CardContent>
   <CardFooter>
     <Button>Action</Button>
   </CardFooter>
-</Card>
+</Card>;
 ```
 
 ### Feedback Components
 
 #### Alert
+
 A component for displaying important messages to users.
 
 **Features:**
+
 - Multiple variants (info, success, warning, error)
 - Icon support
 - Dismissible alerts
@@ -86,9 +101,11 @@ A component for displaying important messages to users.
 ### Navigation Components
 
 #### Tabs
+
 A set of layered sections of content that display one panel at a time.
 
 **Features:**
+
 - Multiple visual variants (default, line, pills)
 - Controlled and uncontrolled modes
 - Full keyboard navigation
@@ -96,8 +113,14 @@ A set of layered sections of content that display one panel at a time.
 - Context-based state management
 
 **Usage:**
+
 ```tsx
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/molecules';
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+} from '@/components/ui/molecules';
 
 <Tabs defaultValue="tab1">
   <TabsList>
@@ -106,13 +129,15 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/molecu
   </TabsList>
   <TabsContent value="tab1">Content 1</TabsContent>
   <TabsContent value="tab2">Content 2</TabsContent>
-</Tabs>
+</Tabs>;
 ```
 
 #### Pagination
+
 A component for navigating through multiple pages of content.
 
 **Features:**
+
 - Complete pagination system with ellipsis support
 - Previous/Next buttons
 - Multiple size variants
@@ -120,6 +145,7 @@ A component for navigating through multiple pages of content.
 - Helper component for easy implementation
 
 **Usage:**
+
 ```tsx
 import { CompletePagination } from '@/components/ui/molecules';
 
@@ -128,15 +154,17 @@ import { CompletePagination } from '@/components/ui/molecules';
   totalPages={totalPages}
   onPageChange={setCurrentPage}
   maxVisiblePages={5}
-/>
+/>;
 ```
 
 ### Overlay Components
 
 #### Modal
+
 A dialog component that overlays content on top of the main interface.
 
 **Features:**
+
 - React Portal for proper overlay behavior
 - Focus trapping and keyboard navigation
 - Multiple size variants (sm, md, lg, xl, full)
@@ -145,8 +173,17 @@ A dialog component that overlays content on top of the main interface.
 - Body scroll prevention
 
 **Usage:**
+
 ```tsx
-import { Modal, ModalTrigger, ModalContent, ModalHeader, ModalTitle, ModalBody, ModalFooter } from '@/components/ui/molecules';
+import {
+  Modal,
+  ModalTrigger,
+  ModalContent,
+  ModalHeader,
+  ModalTitle,
+  ModalBody,
+  ModalFooter,
+} from '@/components/ui/molecules';
 
 <Modal open={open} onOpenChange={setOpen}>
   <ModalTrigger>Open Modal</ModalTrigger>
@@ -154,22 +191,22 @@ import { Modal, ModalTrigger, ModalContent, ModalHeader, ModalTitle, ModalBody, 
     <ModalHeader>
       <ModalTitle>Modal Title</ModalTitle>
     </ModalHeader>
-    <ModalBody>
-      Modal content
-    </ModalBody>
+    <ModalBody>Modal content</ModalBody>
     <ModalFooter>
       <Button onClick={() => setOpen(false)}>Close</Button>
     </ModalFooter>
   </ModalContent>
-</Modal>
+</Modal>;
 ```
 
 ### Interactive Components
 
 #### Dropdown
+
 A dropdown menu component that displays a list of options in an overlay.
 
 **Features:**
+
 - Keyboard navigation (Arrow keys, Home, End, Enter, Space, Escape)
 - Multiple positioning options (align, side)
 - Checkbox and radio group support
@@ -179,8 +216,14 @@ A dropdown menu component that displays a list of options in an overlay.
 - Controlled and uncontrolled modes
 
 **Usage:**
+
 ```tsx
-import { Dropdown, DropdownTrigger, DropdownContent, DropdownItem } from '@/components/ui/molecules';
+import {
+  Dropdown,
+  DropdownTrigger,
+  DropdownContent,
+  DropdownItem,
+} from '@/components/ui/molecules';
 
 <Dropdown>
   <DropdownTrigger>Open Menu</DropdownTrigger>
@@ -189,26 +232,31 @@ import { Dropdown, DropdownTrigger, DropdownContent, DropdownItem } from '@/comp
     <DropdownItem>Option 2</DropdownItem>
     <DropdownItem>Option 3</DropdownItem>
   </DropdownContent>
-</Dropdown>
+</Dropdown>;
 ```
 
 ## Design Principles
 
 ### Composition
+
 All molecular components are designed to be composable, allowing you to combine them in different ways while maintaining consistency.
 
 ### Accessibility
+
 Every component includes proper ARIA attributes, keyboard navigation, and focus management to ensure they are accessible to all users.
 
 ### Flexibility
+
 Components support both controlled and uncontrolled modes, allowing you to use them in different patterns depending on your needs.
 
 ### Type Safety
+
 All components are fully typed with TypeScript, providing excellent developer experience and catching errors at compile time.
 
 ## Styling
 
 All molecular components use:
+
 - **class-variance-authority** for type-safe variant management
 - **Tailwind CSS** for styling with custom design tokens
 - **CSS-in-JS** patterns where needed for dynamic styling
@@ -216,6 +264,7 @@ All molecular components use:
 ## Testing
 
 Components are tested using:
+
 - **Storybook** for visual testing and documentation
 - **TypeScript** for type checking
 - Manual accessibility testing
@@ -223,6 +272,7 @@ Components are tested using:
 ## Integration
 
 These molecular components are designed to work seamlessly with:
+
 - The atomic components in `../atoms/`
 - The organism components in `../organisms/`
 - The overall TaskMaster UI design system
@@ -258,6 +308,7 @@ molecules/
 ## Dependencies
 
 All molecular components depend on:
+
 - React 18+
 - TypeScript
 - class-variance-authority
@@ -267,6 +318,7 @@ All molecular components depend on:
 ## Browser Support
 
 Components are tested and supported in:
+
 - Chrome (latest)
 - Firefox (latest)
 - Safari (latest)

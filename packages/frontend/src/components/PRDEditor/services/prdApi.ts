@@ -1,6 +1,6 @@
 /**
  * PRD API Service
- * 
+ *
  * Provides backend API integration for saving and loading PRD documents
  * to/from the file system via the backend API.
  */
@@ -67,7 +67,9 @@ const apiRequest = async <T>(
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
+      throw new Error(
+        errorData.message || `HTTP ${response.status}: ${response.statusText}`
+      );
     }
 
     const data = await response.json();
@@ -167,9 +169,12 @@ export const exportPRDDocument = async (
   format: 'pdf' | 'docx' | 'html' | 'md'
 ): Promise<PRDApiResponse<Blob>> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/documents/${id}/export?format=${format}`, {
-      method: 'GET',
-    });
+    const response = await fetch(
+      `${API_BASE_URL}/documents/${id}/export?format=${format}`,
+      {
+        method: 'GET',
+      }
+    );
 
     if (!response.ok) {
       throw new Error(`Export failed: ${response.statusText}`);
@@ -191,7 +196,9 @@ export const exportPRDDocument = async (
 /**
  * Check if the backend API is available
  */
-export const checkApiHealth = async (): Promise<PRDApiResponse<{ status: string }>> => {
+export const checkApiHealth = async (): Promise<
+  PRDApiResponse<{ status: string }>
+> => {
   return apiRequest<{ status: string }>('/health', {
     method: 'GET',
   });
@@ -221,12 +228,14 @@ export class PRDAutoSaver {
    */
   start(content: string, title: string): void {
     this.stop(); // Clear any existing timer
-    
+
     this.saveTimer = setTimeout(async () => {
       try {
         await this.onSave(content, title);
       } catch (error) {
-        this.onError(error instanceof Error ? error.message : 'Auto-save failed');
+        this.onError(
+          error instanceof Error ? error.message : 'Auto-save failed'
+        );
       }
     }, this.saveInterval);
   }

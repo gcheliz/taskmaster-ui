@@ -58,7 +58,7 @@ export class AdvancedCacheManager<T = any> extends EventEmitter {
 
   constructor(config: Partial<CacheConfig> = {}) {
     super();
-    
+
     this.config = {
       maxSize: 1000,
       defaultTTL: 5 * 60 * 1000, // 5 minutes
@@ -66,7 +66,7 @@ export class AdvancedCacheManager<T = any> extends EventEmitter {
       compressionThreshold: 1024, // 1KB
       enableCompression: true,
       gcInterval: 60 * 1000, // 1 minute
-      ...config
+      ...config,
     };
 
     this.statistics = {
@@ -78,7 +78,7 @@ export class AdvancedCacheManager<T = any> extends EventEmitter {
       memoryUsage: 0,
       entryCount: 0,
       averageResponseTime: 0,
-      compressionRatio: 0
+      compressionRatio: 0,
     };
 
     this.startGarbageCollection();
@@ -89,10 +89,10 @@ export class AdvancedCacheManager<T = any> extends EventEmitter {
    */
   async get(key: string): Promise<T | null> {
     const startTime = performance.now();
-    
+
     try {
       const entry = this.cache.get(key);
-      
+
       if (!entry) {
         this.updateStatistics('miss', startTime);
         this.emit('cache:miss', { key });
@@ -111,19 +111,19 @@ export class AdvancedCacheManager<T = any> extends EventEmitter {
       // Update access information
       entry.accessCount++;
       entry.lastAccessed = Date.now();
-      
+
       // Move to end of access order (most recently used)
       this.updateAccessOrder(key);
-      
+
       this.updateStatistics('hit', startTime);
       this.emit('cache:hit', { key, entry });
-      
+
       // Decompress if needed
-      const value = entry.compressed ? 
-        await this.decompress(entry.value) : entry.value;
-        
+      const value = entry.compressed
+        ? await this.decompress(entry.value)
+        : entry.value;
+
       return value;
-      
     } catch (error) {
       this.emit('cache:error', { operation: 'get', key, error });
       throw error;
@@ -135,19 +135,22 @@ export class AdvancedCacheManager<T = any> extends EventEmitter {
    */
   async set(key: string, value: T, ttl?: number): Promise<void> {
     const startTime = performance.now();
-    
+
     try {
       const now = Date.now();
       const entryTTL = ttl || this.config.defaultTTL;
-      
+
       // Calculate size and compress if necessary
       const serializedValue = JSON.stringify(value);
       const size = Buffer.byteLength(serializedValue, 'utf8');
-      
+
       let finalValue = value;
       let compressed = false;
-      
-      if (this.config.enableCompression && size > this.config.compressionThreshold) {
+
+      if (
+        this.config.enableCompression &&
+        size > this.config.compressionThreshold
+      ) {
         finalValue = await this.compress(value);
         compressed = true;
       }
@@ -160,19 +163,22 @@ export class AdvancedCacheManager<T = any> extends EventEmitter {
         accessCount: 1,
         lastAccessed: now,
         size,
-        compressed
+        compressed,
       };
 
       // Check if we need to evict entries
       await this.ensureCapacity();
-      
+
       // Store entry
       this.cache.set(key, entry);
       this.updateAccessOrder(key);
-      
+
       this.updateMemoryUsage();
-      this.emit('cache:set', { key, entry, compressionSaved: compressed ? size * 0.3 : 0 });
-      
+      this.emit('cache:set', {
+        key,
+        entry,
+        compressionSaved: compressed ? size * 0.3 : 0,
+      });
     } catch (error) {
       this.emit('cache:error', { operation: 'set', key, error });
       throw error;
@@ -239,15 +245,15 @@ export class AdvancedCacheManager<T = any> extends EventEmitter {
    */
   async mget(keys: string[]): Promise<Map<string, T | null>> {
     const results = new Map<string, T | null>();
-    
+
     // Parallel processing for better performance
-    const promises = keys.map(async (key) => {
+    const promises = keys.map(async key => {
       const value = await this.get(key);
       return { key, value };
     });
 
     const resolvedResults = await Promise.all(promises);
-    
+
     resolvedResults.forEach(({ key, value }) => {
       results.set(key, value);
     });
@@ -258,8 +264,10 @@ export class AdvancedCacheManager<T = any> extends EventEmitter {
   /**
    * Bulk set operation
    */
-  async mset(entries: Array<{ key: string; value: T; ttl?: number }>): Promise<void> {
-    const promises = entries.map(({ key, value, ttl }) => 
+  async mset(
+    entries: Array<{ key: string; value: T; ttl?: number }>
+  ): Promise<void> {
+    const promises = entries.map(({ key, value, ttl }) =>
       this.set(key, value, ttl)
     );
 
@@ -269,13 +277,15 @@ export class AdvancedCacheManager<T = any> extends EventEmitter {
   /**
    * Cache warming strategies
    */
-  async warm(warmupFunction: () => Promise<Array<{ key: string; value: T }>>): Promise<void> {
+  async warm(
+    warmupFunction: () => Promise<Array<{ key: string; value: T }>>
+  ): Promise<void> {
     try {
       this.emit('cache:warming:start');
-      
+
       const entries = await warmupFunction();
       await this.mset(entries);
-      
+
       this.emit('cache:warming:complete', { count: entries.length });
     } catch (error) {
       this.emit('cache:warming:error', { error });
@@ -288,14 +298,14 @@ export class AdvancedCacheManager<T = any> extends EventEmitter {
    */
   getStatistics(): CacheStatistics {
     const totalOps = this.statistics.hits + this.statistics.misses;
-    
+
     return {
       ...this.statistics,
       hitRate: totalOps > 0 ? this.statistics.hits / totalOps : 0,
       totalOperations: totalOps,
       entryCount: this.cache.size,
       memoryUsage: this.calculateMemoryUsage(),
-      compressionRatio: this.calculateCompressionRatio()
+      compressionRatio: this.calculateCompressionRatio(),
     };
   }
 
@@ -305,7 +315,7 @@ export class AdvancedCacheManager<T = any> extends EventEmitter {
   getPerformanceMetrics(): any {
     const stats = this.getStatistics();
     const now = Date.now();
-    
+
     // Calculate hot keys (most accessed)
     const hotKeys = Array.from(this.cache.entries())
       .sort((a, b) => b[1].accessCount - a[1].accessCount)
@@ -322,8 +332,8 @@ export class AdvancedCacheManager<T = any> extends EventEmitter {
       efficiency: {
         memoryEfficiency: this.calculateMemoryEfficiency(),
         timeEfficiency: stats.averageResponseTime,
-        compressionEfficiency: stats.compressionRatio
-      }
+        compressionEfficiency: stats.compressionRatio,
+      },
     };
   }
 
@@ -348,7 +358,7 @@ export class AdvancedCacheManager<T = any> extends EventEmitter {
 
     this.statistics.evictions += cleanedCount;
     this.emit('cache:cleanup', { cleanedCount });
-    
+
     return cleanedCount;
   }
 
@@ -367,9 +377,9 @@ export class AdvancedCacheManager<T = any> extends EventEmitter {
       memoryUsage: 0,
       entryCount: 0,
       averageResponseTime: 0,
-      compressionRatio: 0
+      compressionRatio: 0,
     };
-    
+
     this.emit('cache:cleared');
   }
 
@@ -381,7 +391,7 @@ export class AdvancedCacheManager<T = any> extends EventEmitter {
       clearInterval(this.gcTimer);
       this.gcTimer = undefined;
     }
-    
+
     this.clear();
     this.removeAllListeners();
   }
@@ -418,7 +428,7 @@ export class AdvancedCacheManager<T = any> extends EventEmitter {
     if (!this.config.enableStatistics) return;
 
     const duration = performance.now() - startTime;
-    
+
     if (operation === 'hit') {
       this.statistics.hits++;
     } else {
@@ -427,8 +437,9 @@ export class AdvancedCacheManager<T = any> extends EventEmitter {
 
     // Update average response time
     const totalOps = this.statistics.hits + this.statistics.misses;
-    this.statistics.averageResponseTime = 
-      (this.statistics.averageResponseTime * (totalOps - 1) + duration) / totalOps;
+    this.statistics.averageResponseTime =
+      (this.statistics.averageResponseTime * (totalOps - 1) + duration) /
+      totalOps;
   }
 
   private updateMemoryUsage(): void {
@@ -446,14 +457,14 @@ export class AdvancedCacheManager<T = any> extends EventEmitter {
   private calculateCompressionRatio(): number {
     let compressedEntries = 0;
     let totalEntries = 0;
-    
+
     for (const entry of this.cache.values()) {
       totalEntries++;
       if (entry.compressed) {
         compressedEntries++;
       }
     }
-    
+
     return totalEntries > 0 ? compressedEntries / totalEntries : 0;
   }
 
@@ -466,16 +477,16 @@ export class AdvancedCacheManager<T = any> extends EventEmitter {
   private calculateAgeDistribution(): any {
     const now = Date.now();
     const buckets = { fresh: 0, medium: 0, old: 0 };
-    
+
     for (const entry of this.cache.values()) {
       const age = now - entry.timestamp;
       const ageRatio = age / entry.ttl;
-      
+
       if (ageRatio < 0.3) buckets.fresh++;
       else if (ageRatio < 0.7) buckets.medium++;
       else buckets.old++;
     }
-    
+
     return buckets;
   }
 
@@ -516,14 +527,18 @@ export class CommandResultCache extends AdvancedCacheManager<any> {
       maxSize: 500,
       defaultTTL: 10 * 60 * 1000, // 10 minutes
       enableCompression: true,
-      compressionThreshold: 512
+      compressionThreshold: 512,
     });
   }
 
   /**
    * Generate cache key for command
    */
-  private generateCommandKey(repositoryPath: string, operation: string, args: any): string {
+  private generateCommandKey(
+    repositoryPath: string,
+    operation: string,
+    args: any
+  ): string {
     const argsHash = this.hashObject(args);
     return `cmd:${repositoryPath}:${operation}:${argsHash}`;
   }
@@ -532,9 +547,9 @@ export class CommandResultCache extends AdvancedCacheManager<any> {
    * Cache command result
    */
   async cacheCommandResult(
-    repositoryPath: string, 
-    operation: string, 
-    args: any, 
+    repositoryPath: string,
+    operation: string,
+    args: any,
     result: any
   ): Promise<void> {
     const key = this.generateCommandKey(repositoryPath, operation, args);
@@ -545,8 +560,8 @@ export class CommandResultCache extends AdvancedCacheManager<any> {
    * Get cached command result
    */
   async getCachedCommandResult(
-    repositoryPath: string, 
-    operation: string, 
+    repositoryPath: string,
+    operation: string,
     args: any
   ): Promise<any | null> {
     const key = this.generateCommandKey(repositoryPath, operation, args);
@@ -558,25 +573,27 @@ export class CommandResultCache extends AdvancedCacheManager<any> {
    */
   invalidateRepository(repositoryPath: string): number {
     return this.invalidate({
-      pattern: new RegExp(`^cmd:${this.escapeRegex(repositoryPath)}:`)
+      pattern: new RegExp(`^cmd:${this.escapeRegex(repositoryPath)}:`),
     });
   }
 
   private getTTLForOperation(operation: string): number {
     // Different operations have different cache lifetimes
     const ttlMap: Record<string, number> = {
-      'list': 2 * 60 * 1000,      // 2 minutes
-      'show': 5 * 60 * 1000,      // 5 minutes
-      'status': 1 * 60 * 1000,    // 1 minute
-      'complexity': 30 * 60 * 1000, // 30 minutes
-      'next': 30 * 1000           // 30 seconds
+      list: 2 * 60 * 1000, // 2 minutes
+      show: 5 * 60 * 1000, // 5 minutes
+      status: 1 * 60 * 1000, // 1 minute
+      complexity: 30 * 60 * 1000, // 30 minutes
+      next: 30 * 1000, // 30 seconds
     };
-    
+
     return ttlMap[operation] || (this as any).config.defaultTTL;
   }
 
   private hashObject(obj: any): string {
-    return Buffer.from(JSON.stringify(obj, Object.keys(obj).sort())).toString('base64');
+    return Buffer.from(JSON.stringify(obj, Object.keys(obj).sort())).toString(
+      'base64'
+    );
   }
 
   private escapeRegex(str: string): string {

@@ -1,6 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Button } from '../../components/ui/atoms/Button';
-import { Icon, PlusIcon, CheckIcon, TrashIcon } from '../../components/ui/atoms/Icon';
+import {
+  Icon,
+  PlusIcon,
+  CheckIcon,
+  TrashIcon,
+} from '../../components/ui/atoms/Icon';
 
 const meta: Meta<typeof Button> = {
   title: 'Atoms/Button',
@@ -9,7 +14,8 @@ const meta: Meta<typeof Button> = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'A versatile button component with multiple variants, sizes, and states. Built with Tailwind CSS and class-variance-authority for consistent styling.',
+        component:
+          'A versatile button component with multiple variants, sizes, and states. Built with Tailwind CSS and class-variance-authority for consistent styling.',
       },
     },
   },
@@ -140,12 +146,23 @@ export const InteractiveStates: Story = {
     <div className="space-y-4">
       <div className="flex gap-4">
         <Button variant="primary">Normal</Button>
-        <Button variant="primary" className="hover:bg-primary-700">Hover</Button>
-        <Button variant="primary" className="focus:ring-2 focus:ring-primary-500">Focus</Button>
+        <Button variant="primary" className="hover:bg-primary-700">
+          Hover
+        </Button>
+        <Button
+          variant="primary"
+          className="focus:ring-2 focus:ring-primary-500"
+        >
+          Focus
+        </Button>
       </div>
       <div className="flex gap-4">
-        <Button variant="primary" loading>Loading</Button>
-        <Button variant="primary" disabled>Disabled</Button>
+        <Button variant="primary" loading>
+          Loading
+        </Button>
+        <Button variant="primary" disabled>
+          Disabled
+        </Button>
       </div>
     </div>
   ),

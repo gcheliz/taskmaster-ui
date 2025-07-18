@@ -19,7 +19,7 @@ class AdvancedCacheManager extends events_1.EventEmitter {
             compressionThreshold: 1024, // 1KB
             enableCompression: true,
             gcInterval: 60 * 1000, // 1 minute
-            ...config
+            ...config,
         };
         this.statistics = {
             hits: 0,
@@ -30,7 +30,7 @@ class AdvancedCacheManager extends events_1.EventEmitter {
             memoryUsage: 0,
             entryCount: 0,
             averageResponseTime: 0,
-            compressionRatio: 0
+            compressionRatio: 0,
         };
         this.startGarbageCollection();
     }
@@ -62,8 +62,9 @@ class AdvancedCacheManager extends events_1.EventEmitter {
             this.updateStatistics('hit', startTime);
             this.emit('cache:hit', { key, entry });
             // Decompress if needed
-            const value = entry.compressed ?
-                await this.decompress(entry.value) : entry.value;
+            const value = entry.compressed
+                ? await this.decompress(entry.value)
+                : entry.value;
             return value;
         }
         catch (error) {
@@ -84,7 +85,8 @@ class AdvancedCacheManager extends events_1.EventEmitter {
             const size = Buffer.byteLength(serializedValue, 'utf8');
             let finalValue = value;
             let compressed = false;
-            if (this.config.enableCompression && size > this.config.compressionThreshold) {
+            if (this.config.enableCompression &&
+                size > this.config.compressionThreshold) {
                 finalValue = await this.compress(value);
                 compressed = true;
             }
@@ -96,7 +98,7 @@ class AdvancedCacheManager extends events_1.EventEmitter {
                 accessCount: 1,
                 lastAccessed: now,
                 size,
-                compressed
+                compressed,
             };
             // Check if we need to evict entries
             await this.ensureCapacity();
@@ -104,7 +106,11 @@ class AdvancedCacheManager extends events_1.EventEmitter {
             this.cache.set(key, entry);
             this.updateAccessOrder(key);
             this.updateMemoryUsage();
-            this.emit('cache:set', { key, entry, compressionSaved: compressed ? size * 0.3 : 0 });
+            this.emit('cache:set', {
+                key,
+                entry,
+                compressionSaved: compressed ? size * 0.3 : 0,
+            });
         }
         catch (error) {
             this.emit('cache:error', { operation: 'set', key, error });
@@ -206,7 +212,7 @@ class AdvancedCacheManager extends events_1.EventEmitter {
             totalOperations: totalOps,
             entryCount: this.cache.size,
             memoryUsage: this.calculateMemoryUsage(),
-            compressionRatio: this.calculateCompressionRatio()
+            compressionRatio: this.calculateCompressionRatio(),
         };
     }
     /**
@@ -229,8 +235,8 @@ class AdvancedCacheManager extends events_1.EventEmitter {
             efficiency: {
                 memoryEfficiency: this.calculateMemoryEfficiency(),
                 timeEfficiency: stats.averageResponseTime,
-                compressionEfficiency: stats.compressionRatio
-            }
+                compressionEfficiency: stats.compressionRatio,
+            },
         };
     }
     /**
@@ -268,7 +274,7 @@ class AdvancedCacheManager extends events_1.EventEmitter {
             memoryUsage: 0,
             entryCount: 0,
             averageResponseTime: 0,
-            compressionRatio: 0
+            compressionRatio: 0,
         };
         this.emit('cache:cleared');
     }
@@ -319,7 +325,8 @@ class AdvancedCacheManager extends events_1.EventEmitter {
         // Update average response time
         const totalOps = this.statistics.hits + this.statistics.misses;
         this.statistics.averageResponseTime =
-            (this.statistics.averageResponseTime * (totalOps - 1) + duration) / totalOps;
+            (this.statistics.averageResponseTime * (totalOps - 1) + duration) /
+                totalOps;
     }
     updateMemoryUsage() {
         this.statistics.memoryUsage = this.calculateMemoryUsage();
@@ -395,7 +402,7 @@ class CommandResultCache extends AdvancedCacheManager {
             maxSize: 500,
             defaultTTL: 10 * 60 * 1000, // 10 minutes
             enableCompression: true,
-            compressionThreshold: 512
+            compressionThreshold: 512,
         });
     }
     /**
@@ -424,17 +431,17 @@ class CommandResultCache extends AdvancedCacheManager {
      */
     invalidateRepository(repositoryPath) {
         return this.invalidate({
-            pattern: new RegExp(`^cmd:${this.escapeRegex(repositoryPath)}:`)
+            pattern: new RegExp(`^cmd:${this.escapeRegex(repositoryPath)}:`),
         });
     }
     getTTLForOperation(operation) {
         // Different operations have different cache lifetimes
         const ttlMap = {
-            'list': 2 * 60 * 1000, // 2 minutes
-            'show': 5 * 60 * 1000, // 5 minutes
-            'status': 1 * 60 * 1000, // 1 minute
-            'complexity': 30 * 60 * 1000, // 30 minutes
-            'next': 30 * 1000 // 30 seconds
+            list: 2 * 60 * 1000, // 2 minutes
+            show: 5 * 60 * 1000, // 5 minutes
+            status: 1 * 60 * 1000, // 1 minute
+            complexity: 30 * 60 * 1000, // 30 minutes
+            next: 30 * 1000, // 30 seconds
         };
         return ttlMap[operation] || this.config.defaultTTL;
     }

@@ -7,12 +7,18 @@ const badgeVariants = cva(
   {
     variants: {
       variant: {
-        default: 'border-transparent bg-primary-100 text-primary-800 hover:bg-primary-200',
-        secondary: 'border-transparent bg-secondary-100 text-secondary-800 hover:bg-secondary-200',
-        success: 'border-transparent bg-success-100 text-success-800 hover:bg-success-200',
-        warning: 'border-transparent bg-warning-100 text-warning-800 hover:bg-warning-200',
-        error: 'border-transparent bg-error-100 text-error-800 hover:bg-error-200',
-        outline: 'border-secondary-300 text-secondary-700 hover:bg-secondary-50',
+        default:
+          'border-transparent bg-primary-100 text-primary-800 hover:bg-primary-200',
+        secondary:
+          'border-transparent bg-secondary-100 text-secondary-800 hover:bg-secondary-200',
+        success:
+          'border-transparent bg-success-100 text-success-800 hover:bg-success-200',
+        warning:
+          'border-transparent bg-warning-100 text-warning-800 hover:bg-warning-200',
+        error:
+          'border-transparent bg-error-100 text-error-800 hover:bg-error-200',
+        outline:
+          'border-secondary-300 text-secondary-700 hover:bg-secondary-50',
         // TaskMaster specific status badges
         pending: 'status-pending text-white',
         'in-progress': 'status-in-progress text-white',
@@ -44,7 +50,18 @@ export interface BadgeProps
    * The visual style variant of the badge
    * @default 'default'
    */
-  variant?: 'default' | 'secondary' | 'success' | 'warning' | 'error' | 'outline' | 'pending' | 'in-progress' | 'done' | 'blocked' | 'deferred';
+  variant?:
+    | 'default'
+    | 'secondary'
+    | 'success'
+    | 'warning'
+    | 'error'
+    | 'outline'
+    | 'pending'
+    | 'in-progress'
+    | 'done'
+    | 'blocked'
+    | 'deferred';
   /**
    * The size of the badge
    * @default 'md'
@@ -62,7 +79,11 @@ const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
         aria-label={`Status: ${children}`}
         {...props}
       >
-        {icon && <span className="mr-1 flex items-center" aria-hidden="true">{icon}</span>}
+        {icon && (
+          <span className="mr-1 flex items-center" aria-hidden="true">
+            {icon}
+          </span>
+        )}
         {children}
       </span>
     );

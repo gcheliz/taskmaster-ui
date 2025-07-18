@@ -22,12 +22,12 @@ class ProjectService {
                 data: {
                     name: data.name,
                     description: data.description,
-                    path: data.path
+                    path: data.path,
                 },
                 include: {
                     repositories: true,
-                    tasks: true
-                }
+                    tasks: true,
+                },
             });
             return project;
         }
@@ -49,21 +49,21 @@ class ProjectService {
                         include: {
                             commits: {
                                 orderBy: { timestamp: 'desc' },
-                                take: 5
-                            }
-                        }
+                                take: 5,
+                            },
+                        },
                     },
                     tasks: {
                         orderBy: { createdAt: 'desc' },
-                        take: 10
+                        take: 10,
                     },
                     _count: {
                         select: {
                             repositories: true,
-                            tasks: true
-                        }
-                    }
-                }
+                            tasks: true,
+                        },
+                    },
+                },
             });
             return project;
         }
@@ -82,8 +82,8 @@ class ProjectService {
                 where: { name },
                 include: {
                     repositories: true,
-                    tasks: true
-                }
+                    tasks: true,
+                },
             });
             return project;
         }
@@ -102,8 +102,8 @@ class ProjectService {
                 where: { path },
                 include: {
                     repositories: true,
-                    tasks: true
-                }
+                    tasks: true,
+                },
             });
             return project;
         }
@@ -124,22 +124,22 @@ class ProjectService {
                         include: {
                             commits: {
                                 orderBy: { timestamp: 'desc' },
-                                take: 3
-                            }
-                        }
+                                take: 3,
+                            },
+                        },
                     },
                     tasks: {
                         orderBy: { createdAt: 'desc' },
-                        take: 5
+                        take: 5,
                     },
                     _count: {
                         select: {
                             repositories: true,
-                            tasks: true
-                        }
-                    }
+                            tasks: true,
+                        },
+                    },
                 },
-                orderBy: { createdAt: 'desc' }
+                orderBy: { createdAt: 'desc' },
             });
             return projects;
         }
@@ -156,7 +156,7 @@ class ProjectService {
             const prisma = this.dbService.getPrisma();
             // Check if project exists
             const existing = await prisma.project.findUnique({
-                where: { id }
+                where: { id },
             });
             if (!existing) {
                 return null;
@@ -166,8 +166,8 @@ class ProjectService {
                 data: updates,
                 include: {
                     repositories: true,
-                    tasks: true
-                }
+                    tasks: true,
+                },
             });
             return project;
         }
@@ -184,14 +184,14 @@ class ProjectService {
             const prisma = this.dbService.getPrisma();
             // Check if project exists
             const existing = await prisma.project.findUnique({
-                where: { id }
+                where: { id },
             });
             if (!existing) {
                 return false;
             }
             // Delete project (repositories and tasks will be cascade deleted)
             await prisma.project.delete({
-                where: { id }
+                where: { id },
             });
             return true;
         }
@@ -246,20 +246,20 @@ class ProjectService {
     async getProjectStats(id) {
         try {
             const prisma = this.dbService.getPrisma();
-            const [repositoryCount, taskCount, completedTasks, pendingTasks, latestRepository, latestTask] = await Promise.all([
+            const [repositoryCount, taskCount, completedTasks, pendingTasks, latestRepository, latestTask,] = await Promise.all([
                 prisma.repository.count({ where: { projectId: id } }),
                 prisma.task.count({ where: { projectId: id } }),
                 prisma.task.count({
                     where: {
                         projectId: id,
-                        status: 'COMPLETED'
-                    }
+                        status: 'COMPLETED',
+                    },
                 }),
                 prisma.task.count({
                     where: {
                         projectId: id,
-                        status: 'PENDING'
-                    }
+                        status: 'PENDING',
+                    },
                 }),
                 prisma.repository.findFirst({
                     where: { projectId: id },
@@ -267,8 +267,8 @@ class ProjectService {
                     select: {
                         name: true,
                         path: true,
-                        createdAt: true
-                    }
+                        createdAt: true,
+                    },
                 }),
                 prisma.task.findFirst({
                     where: { projectId: id },
@@ -276,9 +276,9 @@ class ProjectService {
                     select: {
                         title: true,
                         status: true,
-                        createdAt: true
-                    }
-                })
+                        createdAt: true,
+                    },
+                }),
             ]);
             return {
                 repositoryCount,
@@ -286,7 +286,7 @@ class ProjectService {
                 completedTasks,
                 pendingTasks,
                 latestRepository: latestRepository || undefined,
-                latestTask: latestTask || undefined
+                latestTask: latestTask || undefined,
             };
         }
         catch (error) {
@@ -307,8 +307,8 @@ class ProjectService {
                     where: { path: data.path },
                     include: {
                         repositories: true,
-                        tasks: true
-                    }
+                        tasks: true,
+                    },
                 });
                 if (existing) {
                     return existing;
@@ -318,12 +318,12 @@ class ProjectService {
                     data: {
                         name: data.name,
                         description: data.description,
-                        path: data.path
+                        path: data.path,
                     },
                     include: {
                         repositories: true,
-                        tasks: true
-                    }
+                        tasks: true,
+                    },
                 });
                 return project;
             });
@@ -347,8 +347,8 @@ class ProjectService {
                     data: {
                         name: projectData.name,
                         description: projectData.description,
-                        path: projectData.path
-                    }
+                        path: projectData.path,
+                    },
                 });
                 // Create repository linked to the project
                 const repository = await prisma.repository.create({
@@ -357,8 +357,8 @@ class ProjectService {
                         url: repositoryData.url,
                         path: repositoryData.path,
                         branch: repositoryData.branch || 'main',
-                        projectId: project.id
-                    }
+                        projectId: project.id,
+                    },
                 });
                 return { project, repository };
             });

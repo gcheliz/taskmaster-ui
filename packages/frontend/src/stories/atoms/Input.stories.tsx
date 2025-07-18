@@ -10,7 +10,8 @@ const meta: Meta<typeof Input> = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'A flexible input component with variants, sizes, and icon support. Built with proper accessibility and form integration.',
+        component:
+          'A flexible input component with variants, sizes, and icon support. Built with proper accessibility and form integration.',
       },
     },
   },
@@ -36,7 +37,7 @@ const meta: Meta<typeof Input> = {
     },
   },
   decorators: [
-    (Story) => (
+    Story => (
       <div className="w-80">
         <Story />
       </div>
@@ -54,139 +55,153 @@ export const Default: Story = {
 };
 
 export const WithLabel: Story = {
-  render: (args) => (
+  render: args => (
     <div className="space-y-2">
       <Label htmlFor="input-with-label">Email Address</Label>
-      <Input id="input-with-label" type="email" placeholder="john@example.com" {...args} />
+      <Input
+        id="input-with-label"
+        type="email"
+        placeholder="john@example.com"
+        {...args}
+      />
     </div>
   ),
 };
 
 export const Required: Story = {
-  render: (args) => (
+  render: args => (
     <div className="space-y-2">
       <Label htmlFor="required-input" required>
         Password
       </Label>
-      <Input id="required-input" type="password" placeholder="Enter password" {...args} />
+      <Input
+        id="required-input"
+        type="password"
+        placeholder="Enter password"
+        {...args}
+      />
     </div>
   ),
 };
 
 export const WithDescription: Story = {
-  render: (args) => (
+  render: args => (
     <div className="space-y-2">
-      <Label 
-        htmlFor="input-with-desc" 
+      <Label
+        htmlFor="input-with-desc"
         description="We'll never share your email with anyone else."
       >
         Email Address
       </Label>
-      <Input id="input-with-desc" type="email" placeholder="john@example.com" {...args} />
+      <Input
+        id="input-with-desc"
+        type="email"
+        placeholder="john@example.com"
+        {...args}
+      />
     </div>
   ),
 };
 
 export const WithHelpText: Story = {
-  render: (args) => (
+  render: args => (
     <div className="space-y-2">
-      <Label 
-        htmlFor="input-with-help" 
+      <Label
+        htmlFor="input-with-help"
         helpText="Must be at least 8 characters long"
       >
         Password
       </Label>
-      <Input id="input-with-help" type="password" placeholder="Enter password" {...args} />
+      <Input
+        id="input-with-help"
+        type="password"
+        placeholder="Enter password"
+        {...args}
+      />
     </div>
   ),
 };
 
 export const ErrorState: Story = {
-  render: (args) => (
+  render: args => (
     <div className="space-y-2">
-      <Label 
-        htmlFor="error-input" 
+      <Label
+        htmlFor="error-input"
         error
         description="Please enter a valid email address"
       >
         Email Address
       </Label>
-      <Input 
-        id="error-input" 
-        type="email" 
-        placeholder="john@example.com" 
+      <Input
+        id="error-input"
+        type="email"
+        placeholder="john@example.com"
         error
-        {...args} 
+        {...args}
       />
     </div>
   ),
 };
 
 export const SuccessState: Story = {
-  render: (args) => (
+  render: args => (
     <div className="space-y-2">
-      <Label 
-        htmlFor="success-input" 
+      <Label
+        htmlFor="success-input"
         success
         description="Email address is valid"
       >
         Email Address
       </Label>
-      <Input 
-        id="success-input" 
-        type="email" 
+      <Input
+        id="success-input"
+        type="email"
         value="john@example.com"
         success
-        {...args} 
+        {...args}
       />
     </div>
   ),
 };
 
 export const Disabled: Story = {
-  render: (args) => (
+  render: args => (
     <div className="space-y-2">
-      <Label htmlFor="disabled-input">
-        Disabled Input
-      </Label>
-      <Input 
-        id="disabled-input" 
-        placeholder="This input is disabled" 
+      <Label htmlFor="disabled-input">Disabled Input</Label>
+      <Input
+        id="disabled-input"
+        placeholder="This input is disabled"
         disabled
-        {...args} 
+        {...args}
       />
     </div>
   ),
 };
 
 export const WithLeftIcon: Story = {
-  render: (args) => (
+  render: args => (
     <div className="space-y-2">
-      <Label htmlFor="icon-left-input">
-        Search
-      </Label>
-      <Input 
-        id="icon-left-input" 
-        placeholder="Search tasks..." 
+      <Label htmlFor="icon-left-input">Search</Label>
+      <Input
+        id="icon-left-input"
+        placeholder="Search tasks..."
         leftIcon={<Icon icon={EyeIcon} size="sm" />}
-        {...args} 
+        {...args}
       />
     </div>
   ),
 };
 
 export const WithRightIcon: Story = {
-  render: (args) => (
+  render: args => (
     <div className="space-y-2">
-      <Label htmlFor="icon-right-input">
-        Validated Input
-      </Label>
-      <Input 
-        id="icon-right-input" 
-        placeholder="Enter value..." 
+      <Label htmlFor="icon-right-input">Validated Input</Label>
+      <Input
+        id="icon-right-input"
+        placeholder="Enter value..."
         rightIcon={<Icon icon={CheckIcon} size="sm" color="success" />}
         success
-        {...args} 
+        {...args}
       />
     </div>
   ),
@@ -245,51 +260,41 @@ export const FormExample: Story = {
         <Label htmlFor="form-name" required>
           Full Name
         </Label>
-        <Input 
-          id="form-name" 
-          type="text" 
-          placeholder="John Doe" 
-        />
+        <Input id="form-name" type="text" placeholder="John Doe" />
       </div>
-      
+
       <div className="space-y-2">
-        <Label 
-          htmlFor="form-email" 
+        <Label
+          htmlFor="form-email"
           required
           description="We'll use this to contact you about your account"
         >
           Email Address
         </Label>
-        <Input 
-          id="form-email" 
-          type="email" 
-          placeholder="john@example.com" 
-        />
+        <Input id="form-email" type="email" placeholder="john@example.com" />
       </div>
-      
+
       <div className="space-y-2">
-        <Label 
-          htmlFor="form-password" 
+        <Label
+          htmlFor="form-password"
           required
           helpText="Must be at least 8 characters with uppercase, lowercase, and numbers"
         >
           Password
         </Label>
-        <Input 
-          id="form-password" 
-          type="password" 
-          placeholder="Enter secure password" 
+        <Input
+          id="form-password"
+          type="password"
+          placeholder="Enter secure password"
         />
       </div>
-      
+
       <div className="space-y-2">
-        <Label htmlFor="form-bio">
-          Bio (Optional)
-        </Label>
-        <Input 
-          id="form-bio" 
-          type="text" 
-          placeholder="Tell us about yourself..." 
+        <Label htmlFor="form-bio">Bio (Optional)</Label>
+        <Input
+          id="form-bio"
+          type="text"
+          placeholder="Tell us about yourself..."
         />
       </div>
     </form>

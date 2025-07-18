@@ -1,8 +1,8 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
-import { SimpleDashboardView } from '../components/Views/SimpleDashboardView'
-import { SimpleRepositoryView } from '../components/Views/SimpleRepositoryView'
-import { SimpleTaskBoardView } from '../components/Views/SimpleTaskBoardView'
-import { SimpleTerminalView } from '../components/Views/SimpleTerminalView'
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { SimpleDashboardView } from '../components/Views/SimpleDashboardView';
+import { SimpleRepositoryView } from '../components/Views/SimpleRepositoryView';
+import { SimpleTaskBoardView } from '../components/Views/SimpleTaskBoardView';
+import { SimpleTerminalView } from '../components/Views/SimpleTerminalView';
 
 export function AppRoutes() {
   return (
@@ -15,7 +15,7 @@ export function AppRoutes() {
       <Route path="/settings" element={<SettingsView />} />
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
-  )
+  );
 }
 
 // Simple Settings component
@@ -48,5 +48,5 @@ function SettingsView() {
         </div>
       </div>
     </div>
-  )
+  );
 }

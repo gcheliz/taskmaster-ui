@@ -7,7 +7,7 @@ export const SimpleTaskBoardView: React.FC = () => {
         <h1>📋 Task Board</h1>
         <p>Manage your tasks with a Kanban-style board</p>
       </div>
-      
+
       <div className="view-content">
         <div className="board-container">
           <div className="task-column">

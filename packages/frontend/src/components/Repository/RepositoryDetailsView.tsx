@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { RepositoryMetadata } from './RepositoryMetadata';
 import { BranchList } from './BranchList';
-import { useRepositoryData, useRepositoryActions } from '../../hooks/useRepositoryData';
+import {
+  useRepositoryData,
+  useRepositoryActions,
+} from '../../hooks/useRepositoryData';
 import './RepositoryDetailsView.css';
 
 export interface RepositoryDetailsViewProps {
@@ -21,7 +24,7 @@ export interface RepositoryDetailsViewProps {
 
 /**
  * Repository Details View Component
- * 
+ *
  * Combines RepositoryMetadata and BranchList components to provide
  * a comprehensive view of repository information with integrated
  * backend data fetching and Git operations.
@@ -32,14 +35,16 @@ export const RepositoryDetailsView: React.FC<RepositoryDetailsViewProps> = ({
   refreshInterval = 30000,
   mode = 'full',
   onRepositoryClick,
-  onBranchClick
+  onBranchClick,
 }) => {
-  const [notifications, setNotifications] = useState<Array<{
-    id: string;
-    type: 'success' | 'error' | 'info';
-    message: string;
-    timestamp: Date;
-  }>>([]);
+  const [notifications, setNotifications] = useState<
+    Array<{
+      id: string;
+      type: 'success' | 'error' | 'info';
+      message: string;
+      timestamp: Date;
+    }>
+  >([]);
 
   const {
     metadata,
@@ -48,7 +53,7 @@ export const RepositoryDetailsView: React.FC<RepositoryDetailsViewProps> = ({
     error,
     isRefreshing,
     refresh,
-    lastFetch
+    lastFetch,
   } = useRepositoryData({
     repositoryId,
     refreshInterval,
@@ -60,14 +65,17 @@ export const RepositoryDetailsView: React.FC<RepositoryDetailsViewProps> = ({
     fetchRemote,
     pullFromRemote,
     isActionLoading,
-    currentAction
+    currentAction,
   } = useRepositoryActions({
     repositoryId,
-    onSuccess: (message) => addNotification('success', message),
-    onError: (error) => addNotification('error', error),
+    onSuccess: message => addNotification('success', message),
+    onError: error => addNotification('error', error),
   });
 
-  const addNotification = (type: 'success' | 'error' | 'info', message: string) => {
+  const addNotification = (
+    type: 'success' | 'error' | 'info',
+    message: string
+  ) => {
     const notification = {
       id: Date.now().toString(),
       type,
@@ -123,17 +131,17 @@ export const RepositoryDetailsView: React.FC<RepositoryDetailsViewProps> = ({
 
   const formatLastUpdate = (date: Date | null): string => {
     if (!date) return 'Never';
-    
+
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
     const diffMinutes = Math.floor(diffMs / 60000);
-    
+
     if (diffMinutes < 1) return 'Just now';
     if (diffMinutes < 60) return `${diffMinutes}m ago`;
-    
+
     const diffHours = Math.floor(diffMinutes / 60);
     if (diffHours < 24) return `${diffHours}h ago`;
-    
+
     return date.toLocaleDateString();
   };
 
@@ -160,12 +168,14 @@ export const RepositoryDetailsView: React.FC<RepositoryDetailsViewProps> = ({
       {notifications.length > 0 && (
         <div className="notifications">
           {notifications.map(notification => (
-            <div 
+            <div
               key={notification.id}
               className={`notification notification--${notification.type}`}
               onClick={() => dismissNotification(notification.id)}
             >
-              <span className="notification-message">{notification.message}</span>
+              <span className="notification-message">
+                {notification.message}
+              </span>
               <button className="notification-dismiss">×</button>
             </div>
           ))}
@@ -187,7 +197,7 @@ export const RepositoryDetailsView: React.FC<RepositoryDetailsViewProps> = ({
             <span className="action-indicator">{currentAction}...</span>
           )}
         </div>
-        
+
         <div className="header-actions">
           <button
             className="action-button"
@@ -197,7 +207,7 @@ export const RepositoryDetailsView: React.FC<RepositoryDetailsViewProps> = ({
           >
             🔄 Refresh
           </button>
-          
+
           {mode === 'full' && (
             <>
               <button
@@ -208,7 +218,7 @@ export const RepositoryDetailsView: React.FC<RepositoryDetailsViewProps> = ({
               >
                 📥 Fetch
               </button>
-              
+
               <button
                 className="action-button"
                 onClick={handlePullFromRemote}
@@ -246,15 +256,15 @@ export const RepositoryDetailsView: React.FC<RepositoryDetailsViewProps> = ({
               hash: '',
               date: '',
               message: '',
-              author: { name: '', email: '' }
+              author: { name: '', email: '' },
             },
             status: {
               isClean: true,
               staged: 0,
               unstaged: 0,
               untracked: 0,
-              conflicted: 0
-            }
+              conflicted: 0,
+            },
           }}
           isLoading={true}
           error={null}
@@ -269,7 +279,7 @@ export const RepositoryDetailsView: React.FC<RepositoryDetailsViewProps> = ({
           branches={branches}
           isLoading={isLoading && branches.length === 0}
           error={error && branches.length === 0 ? error : null}
-          onBranchClick={(branch) => handleBranchClick(branch.name)}
+          onBranchClick={branch => handleBranchClick(branch.name)}
           onCheckoutBranch={handleCheckoutBranch}
           showCommitDetails={true}
           showTrackingInfo={true}
@@ -286,11 +296,15 @@ export const RepositoryDetailsView: React.FC<RepositoryDetailsViewProps> = ({
           </div>
           <div className="stat-item">
             <span className="stat-label">Local:</span>
-            <span className="stat-value">{branches.filter(b => b.isLocal).length}</span>
+            <span className="stat-value">
+              {branches.filter(b => b.isLocal).length}
+            </span>
           </div>
           <div className="stat-item">
             <span className="stat-label">Remote:</span>
-            <span className="stat-value">{branches.filter(b => b.isRemote && !b.isLocal).length}</span>
+            <span className="stat-value">
+              {branches.filter(b => b.isRemote && !b.isLocal).length}
+            </span>
           </div>
         </div>
       )}

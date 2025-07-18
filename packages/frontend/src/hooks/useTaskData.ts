@@ -1,5 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
-import type { TasksData, TaskBoardData, TaskFilters, TaskSortOptions } from '../types/task';
+import type {
+  TasksData,
+  TaskBoardData,
+  TaskFilters,
+  TaskSortOptions,
+} from '../types/task';
 import { taskService } from '../services/taskService';
 import { ApiError } from '../services/api';
 
@@ -34,7 +39,10 @@ export interface UseTaskDataReturn {
   /** Refresh function */
   refresh: () => Promise<void>;
   /** Load tasks from repository */
-  loadFromRepository: (repositoryPath: string, projectTag?: string) => Promise<void>;
+  loadFromRepository: (
+    repositoryPath: string,
+    projectTag?: string
+  ) => Promise<void>;
   /** Load tasks from file */
   loadFromFile: (filePath: string) => Promise<void>;
   /** Load tasks from project */
@@ -52,13 +60,21 @@ export interface UseTaskDataReturn {
 /**
  * React hook for managing task data loading and state
  */
-export function useTaskData(options: UseTaskDataOptions = {}): UseTaskDataReturn {
+export function useTaskData(
+  options: UseTaskDataOptions = {}
+): UseTaskDataReturn {
   const [tasksData, setTasksData] = useState<TasksData | null>(null);
-  const [taskBoardData, setTaskBoardData] = useState<TaskBoardData | null>(null);
+  const [taskBoardData, setTaskBoardData] = useState<TaskBoardData | null>(
+    null
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [filters, setFilters] = useState<TaskFilters | undefined>(options.filters);
-  const [sortOptions, setSortOptions] = useState<TaskSortOptions | undefined>(options.sortOptions);
+  const [filters, setFilters] = useState<TaskFilters | undefined>(
+    options.filters
+  );
+  const [sortOptions, setSortOptions] = useState<TaskSortOptions | undefined>(
+    options.sortOptions
+  );
 
   const {
     repositoryPath,
@@ -66,13 +82,17 @@ export function useTaskData(options: UseTaskDataOptions = {}): UseTaskDataReturn
     projectId,
     filePath,
     autoLoad = true,
-    pollingInterval
+    pollingInterval,
   } = options;
 
   // Update task board data when tasks or filters change
   useEffect(() => {
     if (tasksData) {
-      const boardData = taskService.createTaskBoard(tasksData, filters, sortOptions);
+      const boardData = taskService.createTaskBoard(
+        tasksData,
+        filters,
+        sortOptions
+      );
       setTaskBoardData(boardData);
     } else {
       setTaskBoardData(null);
@@ -80,41 +100,56 @@ export function useTaskData(options: UseTaskDataOptions = {}): UseTaskDataReturn
   }, [tasksData, filters, sortOptions]);
 
   // Generic load function
-  const loadTasks = useCallback(async (loadFunction: () => Promise<TasksData>) => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      
-      const data = await loadFunction();
-      setTasksData(data);
-    } catch (err) {
-      const errorMessage = err instanceof ApiError 
-        ? err.message 
-        : err instanceof Error 
-          ? err.message 
-          : 'Failed to load tasks';
-      
-      setError(errorMessage);
-      setTasksData(null);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  const loadTasks = useCallback(
+    async (loadFunction: () => Promise<TasksData>) => {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        const data = await loadFunction();
+        setTasksData(data);
+      } catch (err) {
+        const errorMessage =
+          err instanceof ApiError
+            ? err.message
+            : err instanceof Error
+              ? err.message
+              : 'Failed to load tasks';
+
+        setError(errorMessage);
+        setTasksData(null);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    []
+  );
 
   // Load from repository
-  const loadFromRepository = useCallback(async (repoPath: string, projectTag?: string) => {
-    await loadTasks(() => taskService.loadTasksFromRepository(repoPath, projectTag));
-  }, [loadTasks]);
+  const loadFromRepository = useCallback(
+    async (repoPath: string, projectTag?: string) => {
+      await loadTasks(() =>
+        taskService.loadTasksFromRepository(repoPath, projectTag)
+      );
+    },
+    [loadTasks]
+  );
 
   // Load from file
-  const loadFromFile = useCallback(async (filePath: string) => {
-    await loadTasks(() => taskService.loadTasksFromFile(filePath));
-  }, [loadTasks]);
+  const loadFromFile = useCallback(
+    async (filePath: string) => {
+      await loadTasks(() => taskService.loadTasksFromFile(filePath));
+    },
+    [loadTasks]
+  );
 
   // Load from project
-  const loadFromProject = useCallback(async (projectId: string) => {
-    await loadTasks(() => taskService.loadTasksFromProject(projectId));
-  }, [loadTasks]);
+  const loadFromProject = useCallback(
+    async (projectId: string) => {
+      await loadTasks(() => taskService.loadTasksFromProject(projectId));
+    },
+    [loadTasks]
+  );
 
   // Load sample tasks
   const loadSampleTasks = useCallback(async () => {
@@ -132,7 +167,16 @@ export function useTaskData(options: UseTaskDataOptions = {}): UseTaskDataReturn
     } else {
       await loadSampleTasks();
     }
-  }, [filePath, repositoryPath, projectTag, projectId, loadFromFile, loadFromRepository, loadFromProject, loadSampleTasks]);
+  }, [
+    filePath,
+    repositoryPath,
+    projectTag,
+    projectId,
+    loadFromFile,
+    loadFromRepository,
+    loadFromProject,
+    loadSampleTasks,
+  ]);
 
   // Refresh current data source
   const refresh = useCallback(async () => {
@@ -190,7 +234,7 @@ export function useTaskData(options: UseTaskDataOptions = {}): UseTaskDataReturn
     loadSampleTasks,
     updateFilters,
     updateSortOptions,
-    clear
+    clear,
   };
 }
 

@@ -1,6 +1,6 @@
 /**
  * Simplified Production Secrets Manager
- * 
+ *
  * This module provides secure secrets management with environment variables as primary provider
  * and optional cloud provider support that can be added later.
  */
@@ -20,7 +20,9 @@ export interface SecretValue {
 
 // Secrets manager configuration schema
 const secretsManagerConfigSchema = z.object({
-  provider: z.enum(['env', 'file', 'aws', 'gcp', 'vault', 'k8s']).default('env'),
+  provider: z
+    .enum(['env', 'file', 'aws', 'gcp', 'vault', 'k8s'])
+    .default('env'),
   timeout: z.number().default(5000),
   retries: z.number().default(3),
   cacheTtl: z.number().default(300000), // 5 minutes
@@ -40,7 +42,7 @@ class EnvironmentProvider {
     if (!value) {
       throw new Error(`Environment variable ${key} not found`);
     }
-    
+
     return {
       value,
       source: 'env',
@@ -67,10 +69,10 @@ class FileSecretsProvider {
 
   async getSecret(key: string): Promise<SecretValue> {
     // For .pem files, use the key as-is; for others, convert to lowercase
-    const secretPath = key.endsWith('.pem') ? 
-      path.join(this.secretsPath, key) : 
-      path.join(this.secretsPath, key.toLowerCase());
-    
+    const secretPath = key.endsWith('.pem')
+      ? path.join(this.secretsPath, key)
+      : path.join(this.secretsPath, key.toLowerCase());
+
     try {
       const value = await fs.readFile(secretPath, 'utf8');
       return {
@@ -104,13 +106,14 @@ class FileSecretsProvider {
 
 // Main secrets manager class
 export class SecretsManager {
-  private cache: Map<string, { value: SecretValue; expiry: number }> = new Map();
+  private cache: Map<string, { value: SecretValue; expiry: number }> =
+    new Map();
   private config: SecretsManagerConfig;
   private provider: EnvironmentProvider | FileSecretsProvider;
 
   constructor(config: Partial<SecretsManagerConfig> = {}) {
     this.config = secretsManagerConfigSchema.parse(config);
-    
+
     // Choose provider based on configuration
     switch (this.config.provider) {
       case 'file':
@@ -129,19 +132,19 @@ export class SecretsManager {
   async getSecret(key: string): Promise<string> {
     const cacheKey = `${this.config.provider}:${key}`;
     const cached = this.cache.get(cacheKey);
-    
+
     if (cached && cached.expiry > Date.now()) {
       return cached.value.value;
     }
-    
+
     const secret = await this.withRetries(() => this.provider.getSecret(key));
-    
+
     // Cache the result
     this.cache.set(cacheKey, {
       value: secret,
       expiry: Date.now() + this.config.cacheTtl,
     });
-    
+
     return secret.value;
   }
 
@@ -151,19 +154,19 @@ export class SecretsManager {
   async getSecretWithMetadata(key: string): Promise<SecretValue> {
     const cacheKey = `${this.config.provider}:${key}`;
     const cached = this.cache.get(cacheKey);
-    
+
     if (cached && cached.expiry > Date.now()) {
       return cached.value;
     }
-    
+
     const secret = await this.withRetries(() => this.provider.getSecret(key));
-    
+
     // Cache the result
     this.cache.set(cacheKey, {
       value: secret,
       expiry: Date.now() + this.config.cacheTtl,
     });
-    
+
     return secret;
   }
 
@@ -187,12 +190,12 @@ export class SecretsManager {
   async getProviderStatus(): Promise<Map<string, boolean>> {
     const status = new Map<string, boolean>();
     status.set('env', await this.provider.isAvailable());
-    
+
     // Cloud providers would be checked here if available
     status.set('aws', false);
     status.set('gcp', false);
     status.set('k8s', false);
-    
+
     return status;
   }
 
@@ -218,28 +221,31 @@ export class SecretsManager {
    */
   private async withRetries<T>(operation: () => Promise<T>): Promise<T> {
     let lastError: Error;
-    
+
     for (let attempt = 1; attempt <= this.config.retries; attempt++) {
       try {
         return await Promise.race([
           operation(),
-          new Promise<never>((_, reject) => 
-            setTimeout(() => reject(new Error('Operation timeout')), this.config.timeout)
+          new Promise<never>((_, reject) =>
+            setTimeout(
+              () => reject(new Error('Operation timeout')),
+              this.config.timeout
+            )
           ),
         ]);
       } catch (error: any) {
         lastError = error;
-        
+
         if (attempt === this.config.retries) {
           break;
         }
-        
+
         // Exponential backoff
         const delay = Math.min(1000 * Math.pow(2, attempt - 1), 10000);
         await new Promise(resolve => setTimeout(resolve, delay));
       }
     }
-    
+
     throw lastError!;
   }
 }
@@ -254,17 +260,20 @@ export function getSecretsManager(): SecretsManager {
   if (!defaultSecretsManager) {
     // Auto-detect provider based on environment
     let provider = process.env.SECRETS_PROVIDER as any;
-    
+
     // If no provider specified, auto-detect
     if (!provider) {
       // In production Docker environments, prefer file-based secrets
-      if (process.env.NODE_ENV === 'production' && process.env.DOCKER_SECRETS === 'true') {
+      if (
+        process.env.NODE_ENV === 'production' &&
+        process.env.DOCKER_SECRETS === 'true'
+      ) {
         provider = 'file';
       } else {
         provider = 'env';
       }
     }
-    
+
     const config: Partial<SecretsManagerConfig> = {
       provider,
       timeout: parseInt(process.env.SECRETS_TIMEOUT || '5000'),
@@ -272,10 +281,10 @@ export function getSecretsManager(): SecretsManager {
       cacheTtl: parseInt(process.env.SECRETS_CACHE_TTL || '300000'),
       secretsPath: process.env.SECRETS_PATH || '/run/secrets',
     };
-    
+
     defaultSecretsManager = new SecretsManager(config);
   }
-  
+
   return defaultSecretsManager;
 }
 
@@ -296,10 +305,10 @@ export async function getApplicationSecrets(): Promise<{
   };
 }> {
   const secretsManager = getSecretsManager();
-  
+
   // For file-based secrets, try to get secrets individually
   let databaseUrl = env.DATABASE_URL;
-  
+
   // If using file-based secrets and no DATABASE_URL is set, construct it from individual secrets
   if (!databaseUrl && secretsManager['config'].provider === 'file') {
     try {
@@ -307,10 +316,12 @@ export async function getApplicationSecrets(): Promise<{
       databaseUrl = `postgresql://taskmaster:${dbPassword}@postgres:5432/taskmaster_prod?sslmode=require`;
     } catch (error) {
       // Fallback to environment variable or empty string
-      databaseUrl = await secretsManager.getSecret('DATABASE_URL').catch(() => '');
+      databaseUrl = await secretsManager
+        .getSecret('DATABASE_URL')
+        .catch(() => '');
     }
   }
-  
+
   // Get SSL configuration if using file-based secrets
   let sslConfig: { ca: string; cert: string; key: string } | undefined;
   if (secretsManager['config'].provider === 'file') {
@@ -326,17 +337,33 @@ export async function getApplicationSecrets(): Promise<{
       console.warn('SSL certificates not available for database connection');
     }
   }
-  
+
   const secrets = {
-    jwtSecret: env.JWT_SECRET || await secretsManager.getSecret('jwt_secret').catch(() => ''),
-    encryptionKey: env.ENCRYPTION_KEY || await secretsManager.getSecret('encryption_key').catch(() => ''),
-    databaseUrl: databaseUrl || await secretsManager.getSecret('DATABASE_URL').catch(() => ''),
-    githubToken: env.GITHUB_TOKEN || await secretsManager.getSecret('github_token').catch(() => undefined),
-    slackToken: env.SLACK_BOT_TOKEN || await secretsManager.getSecret('slack_bot_token').catch(() => undefined),
-    anthropicKey: env.ANTHROPIC_API_KEY || await secretsManager.getSecret('anthropic_api_key').catch(() => undefined),
+    jwtSecret:
+      env.JWT_SECRET ||
+      (await secretsManager.getSecret('jwt_secret').catch(() => '')),
+    encryptionKey:
+      env.ENCRYPTION_KEY ||
+      (await secretsManager.getSecret('encryption_key').catch(() => '')),
+    databaseUrl:
+      databaseUrl ||
+      (await secretsManager.getSecret('DATABASE_URL').catch(() => '')),
+    githubToken:
+      env.GITHUB_TOKEN ||
+      (await secretsManager.getSecret('github_token').catch(() => undefined)),
+    slackToken:
+      env.SLACK_BOT_TOKEN ||
+      (await secretsManager
+        .getSecret('slack_bot_token')
+        .catch(() => undefined)),
+    anthropicKey:
+      env.ANTHROPIC_API_KEY ||
+      (await secretsManager
+        .getSecret('anthropic_api_key')
+        .catch(() => undefined)),
     sslConfig,
   };
-  
+
   return secrets;
 }
 
@@ -346,9 +373,9 @@ export async function getApplicationSecrets(): Promise<{
 export async function validateSecrets(): Promise<void> {
   const secretsManager = getSecretsManager();
   const requiredSecrets = ['JWT_SECRET', 'ENCRYPTION_KEY', 'DATABASE_URL'];
-  
+
   const missing: string[] = [];
-  
+
   for (const secret of requiredSecrets) {
     try {
       await secretsManager.getSecret(secret);
@@ -356,7 +383,7 @@ export async function validateSecrets(): Promise<void> {
       missing.push(secret);
     }
   }
-  
+
   if (missing.length > 0) {
     throw new Error(`Missing required secrets: ${missing.join(', ')}`);
   }

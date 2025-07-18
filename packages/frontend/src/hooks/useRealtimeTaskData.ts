@@ -1,8 +1,16 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import type { TasksData, TaskBoardData, TaskFilters, TaskSortOptions } from '../types/task';
+import type {
+  TasksData,
+  TaskBoardData,
+  TaskFilters,
+  TaskSortOptions,
+} from '../types/task';
 import { taskService } from '../services/taskService';
 import { ApiError } from '../services/api';
-import { useWebSocketTaskUpdates, type TaskUpdateHandler } from './useWebSocketTaskUpdates';
+import {
+  useWebSocketTaskUpdates,
+  type TaskUpdateHandler,
+} from './useWebSocketTaskUpdates';
 import { useNotification } from '../contexts/NotificationContext';
 
 export interface UseRealtimeTaskDataOptions {
@@ -55,7 +63,10 @@ export interface UseRealtimeTaskDataReturn {
   /** Refresh function */
   refresh: () => Promise<void>;
   /** Load tasks from repository */
-  loadFromRepository: (repositoryPath: string, projectTag?: string) => Promise<void>;
+  loadFromRepository: (
+    repositoryPath: string,
+    projectTag?: string
+  ) => Promise<void>;
   /** Load tasks from file */
   loadFromFile: (filePath: string) => Promise<void>;
   /** Load tasks from project */
@@ -76,19 +87,29 @@ export interface UseRealtimeTaskDataReturn {
 
 /**
  * React hook for managing task data with real-time WebSocket updates
- * 
+ *
  * This hook combines traditional task loading with WebSocket-based real-time updates.
  * When real-time is enabled, it will automatically refresh tasks when changes are
  * detected on the backend.
  */
-export function useRealtimeTaskData(options: UseRealtimeTaskDataOptions = {}): UseRealtimeTaskDataReturn {
+export function useRealtimeTaskData(
+  options: UseRealtimeTaskDataOptions = {}
+): UseRealtimeTaskDataReturn {
   const [tasksData, setTasksData] = useState<TasksData | null>(null);
-  const [taskBoardData, setTaskBoardData] = useState<TaskBoardData | null>(null);
+  const [taskBoardData, setTaskBoardData] = useState<TaskBoardData | null>(
+    null
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [filters, setFilters] = useState<TaskFilters | undefined>(options.filters);
-  const [sortOptions, setSortOptions] = useState<TaskSortOptions | undefined>(options.sortOptions);
-  const [isRealtimeActive, setIsRealtimeActive] = useState(options.enableRealtime ?? true);
+  const [filters, setFilters] = useState<TaskFilters | undefined>(
+    options.filters
+  );
+  const [sortOptions, setSortOptions] = useState<TaskSortOptions | undefined>(
+    options.sortOptions
+  );
+  const [isRealtimeActive, setIsRealtimeActive] = useState(
+    options.enableRealtime ?? true
+  );
   const [lastUpdateTime, setLastUpdateTime] = useState<string | null>(null);
   const [updateCount, setUpdateCount] = useState(0);
 
@@ -111,13 +132,17 @@ export function useRealtimeTaskData(options: UseRealtimeTaskDataOptions = {}): U
     autoLoad = true,
     pollingInterval,
     showUpdateNotifications = true,
-    notificationMessages = {}
+    notificationMessages = {},
   } = options;
 
   // Update task board data when tasks or filters change
   useEffect(() => {
     if (tasksData) {
-      const boardData = taskService.createTaskBoard(tasksData, filters, sortOptions);
+      const boardData = taskService.createTaskBoard(
+        tasksData,
+        filters,
+        sortOptions
+      );
       setTaskBoardData(boardData);
     } else {
       setTaskBoardData(null);
@@ -125,49 +150,68 @@ export function useRealtimeTaskData(options: UseRealtimeTaskDataOptions = {}): U
   }, [tasksData, filters, sortOptions]);
 
   // Generic load function
-  const loadTasks = useCallback(async (loadFunction: () => Promise<TasksData>) => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      
-      const data = await loadFunction();
-      setTasksData(data);
-      setLastUpdateTime(new Date().toISOString());
-    } catch (err) {
-      const errorMessage = err instanceof ApiError 
-        ? err.message 
-        : err instanceof Error 
-          ? err.message 
-          : 'Failed to load tasks';
-      
-      setError(errorMessage);
-      setTasksData(null);
-      
-      if (showUpdateNotifications) {
-        showError('Failed to Load Tasks', errorMessage);
+  const loadTasks = useCallback(
+    async (loadFunction: () => Promise<TasksData>) => {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        const data = await loadFunction();
+        setTasksData(data);
+        setLastUpdateTime(new Date().toISOString());
+      } catch (err) {
+        const errorMessage =
+          err instanceof ApiError
+            ? err.message
+            : err instanceof Error
+              ? err.message
+              : 'Failed to load tasks';
+
+        setError(errorMessage);
+        setTasksData(null);
+
+        if (showUpdateNotifications) {
+          showError('Failed to Load Tasks', errorMessage);
+        }
+      } finally {
+        setIsLoading(false);
       }
-    } finally {
-      setIsLoading(false);
-    }
-  }, [showUpdateNotifications, showError]);
+    },
+    [showUpdateNotifications, showError]
+  );
 
   // Load from repository
-  const loadFromRepository = useCallback(async (repoPath: string, projectTag?: string) => {
-    currentDataSourceRef.current = { type: 'repository', repositoryPath: repoPath, projectTag };
-    await loadTasks(() => taskService.loadTasksFromRepository(repoPath, projectTag));
-  }, [loadTasks]);
+  const loadFromRepository = useCallback(
+    async (repoPath: string, projectTag?: string) => {
+      currentDataSourceRef.current = {
+        type: 'repository',
+        repositoryPath: repoPath,
+        projectTag,
+      };
+      await loadTasks(() =>
+        taskService.loadTasksFromRepository(repoPath, projectTag)
+      );
+    },
+    [loadTasks]
+  );
 
   // Load from file
-  const loadFromFile = useCallback(async (filePath: string) => {
-    currentDataSourceRef.current = { type: 'file', filePath };
-    await loadTasks(() => taskService.loadTasksFromFile(filePath));
-  }, [loadTasks]);
+  const loadFromFile = useCallback(
+    async (filePath: string) => {
+      currentDataSourceRef.current = { type: 'file', filePath };
+      await loadTasks(() => taskService.loadTasksFromFile(filePath));
+    },
+    [loadTasks]
+  );
 
   // Load from project
-  const loadFromProject = useCallback(async (projectId: string) => {
-    currentDataSourceRef.current = { type: 'project', projectId };
-    await loadTasks(() => taskService.loadTasksFromProject(projectId));
-  }, [loadTasks]);
+  const loadFromProject = useCallback(
+    async (projectId: string) => {
+      currentDataSourceRef.current = { type: 'project', projectId };
+      await loadTasks(() => taskService.loadTasksFromProject(projectId));
+    },
+    [loadTasks]
+  );
 
   // Load sample tasks
   const loadSampleTasks = useCallback(async () => {
@@ -186,7 +230,16 @@ export function useRealtimeTaskData(options: UseRealtimeTaskDataOptions = {}): U
     } else {
       await loadSampleTasks();
     }
-  }, [filePath, repositoryPath, projectTag, projectId, loadFromFile, loadFromRepository, loadFromProject, loadSampleTasks]);
+  }, [
+    filePath,
+    repositoryPath,
+    projectTag,
+    projectId,
+    loadFromFile,
+    loadFromRepository,
+    loadFromProject,
+    loadSampleTasks,
+  ]);
 
   // Refresh current data source
   const refresh = useCallback(async () => {
@@ -199,7 +252,10 @@ export function useRealtimeTaskData(options: UseRealtimeTaskDataOptions = {}): U
     switch (currentSource.type) {
       case 'repository':
         if (currentSource.repositoryPath) {
-          await loadFromRepository(currentSource.repositoryPath, currentSource.projectTag);
+          await loadFromRepository(
+            currentSource.repositoryPath,
+            currentSource.projectTag
+          );
         }
         break;
       case 'file':
@@ -216,7 +272,13 @@ export function useRealtimeTaskData(options: UseRealtimeTaskDataOptions = {}): U
         await loadSampleTasks();
         break;
     }
-  }, [autoLoadTasks, loadFromRepository, loadFromFile, loadFromProject, loadSampleTasks]);
+  }, [
+    autoLoadTasks,
+    loadFromRepository,
+    loadFromFile,
+    loadFromProject,
+    loadSampleTasks,
+  ]);
 
   // Update filters
   const updateFilters = useCallback((newFilters: TaskFilters) => {
@@ -245,67 +307,95 @@ export function useRealtimeTaskData(options: UseRealtimeTaskDataOptions = {}): U
 
   // WebSocket event handlers
   const webSocketHandlers: TaskUpdateHandler = {
-    onTasksUpdated: useCallback((repoPath: string, tasks: any) => {
-      console.log('📋 Real-time task update received:', { repoPath, tasks });
-      
-      // Check if this update is for our current repository
-      const currentSource = currentDataSourceRef.current;
-      if (currentSource?.type === 'repository' && currentSource.repositoryPath === repoPath) {
-        // Update tasks data directly from WebSocket payload
-        if (tasks) {
-          setTasksData(tasks);
-          setLastUpdateTime(new Date().toISOString());
-          setUpdateCount(prev => prev + 1);
-          
-          if (showUpdateNotifications) {
-            showSuccess(
-              'Tasks Updated',
-              notificationMessages.tasksUpdated || 'Task board refreshed with latest changes',
-              { duration: 3000 }
-            );
+    onTasksUpdated: useCallback(
+      (repoPath: string, tasks: any) => {
+        console.log('📋 Real-time task update received:', { repoPath, tasks });
+
+        // Check if this update is for our current repository
+        const currentSource = currentDataSourceRef.current;
+        if (
+          currentSource?.type === 'repository' &&
+          currentSource.repositoryPath === repoPath
+        ) {
+          // Update tasks data directly from WebSocket payload
+          if (tasks) {
+            setTasksData(tasks);
+            setLastUpdateTime(new Date().toISOString());
+            setUpdateCount(prev => prev + 1);
+
+            if (showUpdateNotifications) {
+              showSuccess(
+                'Tasks Updated',
+                notificationMessages.tasksUpdated ||
+                  'Task board refreshed with latest changes',
+                { duration: 3000 }
+              );
+            }
+          } else {
+            // If no tasks in payload, refresh from the backend
+            refresh();
           }
-        } else {
-          // If no tasks in payload, refresh from the backend
-          refresh();
         }
-      }
-    }, [refresh, showUpdateNotifications, showSuccess, notificationMessages.tasksUpdated]),
+      },
+      [
+        refresh,
+        showUpdateNotifications,
+        showSuccess,
+        notificationMessages.tasksUpdated,
+      ]
+    ),
 
-    onRepositoryAdded: useCallback((repoPath: string) => {
-      console.log('📂 Repository added to monitoring:', repoPath);
-      
-      if (showUpdateNotifications) {
-        showInfo(
-          'Repository Added',
-          notificationMessages.repositoryAdded || `Now monitoring ${repoPath}`,
-          { duration: 4000 }
-        );
-      }
-    }, [showUpdateNotifications, showInfo, notificationMessages.repositoryAdded]),
+    onRepositoryAdded: useCallback(
+      (repoPath: string) => {
+        console.log('📂 Repository added to monitoring:', repoPath);
 
-    onRepositoryRemoved: useCallback((repoPath: string) => {
-      console.log('📂 Repository removed from monitoring:', repoPath);
-      
-      if (showUpdateNotifications) {
-        showInfo(
-          'Repository Removed',
-          notificationMessages.repositoryRemoved || `Stopped monitoring ${repoPath}`,
-          { duration: 4000 }
-        );
-      }
-    }, [showUpdateNotifications, showInfo, notificationMessages.repositoryRemoved]),
+        if (showUpdateNotifications) {
+          showInfo(
+            'Repository Added',
+            notificationMessages.repositoryAdded ||
+              `Now monitoring ${repoPath}`,
+            { duration: 4000 }
+          );
+        }
+      },
+      [showUpdateNotifications, showInfo, notificationMessages.repositoryAdded]
+    ),
 
-    onTasksError: useCallback((repoPath: string, error: string) => {
-      console.error('❌ Real-time task error:', { repoPath, error });
-      
-      if (showUpdateNotifications) {
-        showError(
-          'Tasks Error',
-          notificationMessages.tasksError || `Error updating tasks for ${repoPath}: ${error}`,
-          { duration: 6000 }
-        );
-      }
-    }, [showUpdateNotifications, showError, notificationMessages.tasksError])
+    onRepositoryRemoved: useCallback(
+      (repoPath: string) => {
+        console.log('📂 Repository removed from monitoring:', repoPath);
+
+        if (showUpdateNotifications) {
+          showInfo(
+            'Repository Removed',
+            notificationMessages.repositoryRemoved ||
+              `Stopped monitoring ${repoPath}`,
+            { duration: 4000 }
+          );
+        }
+      },
+      [
+        showUpdateNotifications,
+        showInfo,
+        notificationMessages.repositoryRemoved,
+      ]
+    ),
+
+    onTasksError: useCallback(
+      (repoPath: string, error: string) => {
+        console.error('❌ Real-time task error:', { repoPath, error });
+
+        if (showUpdateNotifications) {
+          showError(
+            'Tasks Error',
+            notificationMessages.tasksError ||
+              `Error updating tasks for ${repoPath}: ${error}`,
+            { duration: 6000 }
+          );
+        }
+      },
+      [showUpdateNotifications, showError, notificationMessages.tasksError]
+    ),
   };
 
   // Use WebSocket for real-time updates
@@ -313,14 +403,11 @@ export function useRealtimeTaskData(options: UseRealtimeTaskDataOptions = {}): U
     isConnected,
     connectionState,
     requestRefresh: requestRealtimeRefresh,
-  } = useWebSocketTaskUpdates(
-    webSocketHandlers,
-    {
-      repositoryPath: isRealtimeActive ? repositoryPath : undefined,
-      showNotifications: false, // We handle notifications ourselves
-      enableLogging: true,
-    }
-  );
+  } = useWebSocketTaskUpdates(webSocketHandlers, {
+    repositoryPath: isRealtimeActive ? repositoryPath : undefined,
+    showNotifications: false, // We handle notifications ourselves
+    enableLogging: true,
+  });
 
   // Auto-load on mount
   useEffect(() => {
@@ -331,7 +418,11 @@ export function useRealtimeTaskData(options: UseRealtimeTaskDataOptions = {}): U
 
   // Polling for auto-refresh (disabled when WebSocket is active)
   useEffect(() => {
-    if (pollingInterval && pollingInterval > 0 && (!isRealtimeActive || !isConnected)) {
+    if (
+      pollingInterval &&
+      pollingInterval > 0 &&
+      (!isRealtimeActive || !isConnected)
+    ) {
       const interval = setInterval(() => {
         if (tasksData && !isLoading) {
           console.log('🔄 Polling refresh (WebSocket inactive)');
@@ -341,7 +432,14 @@ export function useRealtimeTaskData(options: UseRealtimeTaskDataOptions = {}): U
 
       return () => clearInterval(interval);
     }
-  }, [pollingInterval, tasksData, isLoading, refresh, isRealtimeActive, isConnected]);
+  }, [
+    pollingInterval,
+    tasksData,
+    isLoading,
+    refresh,
+    isRealtimeActive,
+    isConnected,
+  ]);
 
   return {
     tasksData,
@@ -361,7 +459,7 @@ export function useRealtimeTaskData(options: UseRealtimeTaskDataOptions = {}): U
     updateSortOptions,
     clear,
     requestRealtimeRefresh,
-    toggleRealtime
+    toggleRealtime,
   };
 }
 

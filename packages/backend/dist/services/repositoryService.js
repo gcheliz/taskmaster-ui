@@ -24,9 +24,9 @@ class RepositoryService {
                     project: true,
                     commits: {
                         orderBy: { timestamp: 'desc' },
-                        take: 10 // Include last 10 commits
-                    }
-                }
+                        take: 10, // Include last 10 commits
+                    },
+                },
             });
             return repository;
         }
@@ -46,10 +46,10 @@ class RepositoryService {
                     project: true,
                     commits: {
                         orderBy: { timestamp: 'desc' },
-                        take: 5 // Include last 5 commits for each repo
-                    }
+                        take: 5, // Include last 5 commits for each repo
+                    },
                 },
-                orderBy: { createdAt: 'desc' }
+                orderBy: { createdAt: 'desc' },
             });
             return repositories;
         }
@@ -70,9 +70,9 @@ class RepositoryService {
                     project: true,
                     commits: {
                         orderBy: { timestamp: 'desc' },
-                        take: 10
-                    }
-                }
+                        take: 10,
+                    },
+                },
             });
             return repository;
         }
@@ -93,10 +93,10 @@ class RepositoryService {
                     project: true,
                     commits: {
                         orderBy: { timestamp: 'desc' },
-                        take: 5
-                    }
+                        take: 5,
+                    },
                 },
-                orderBy: { createdAt: 'desc' }
+                orderBy: { createdAt: 'desc' },
             });
             return repositories;
         }
@@ -117,12 +117,12 @@ class RepositoryService {
                     url: data.url,
                     path: data.path,
                     branch: data.branch || 'main',
-                    projectId: data.projectId
+                    projectId: data.projectId,
                 },
                 include: {
                     project: true,
-                    commits: true
-                }
+                    commits: true,
+                },
             });
             return repository;
         }
@@ -139,7 +139,7 @@ class RepositoryService {
             const prisma = this.dbService.getPrisma();
             // Check if repository exists
             const existing = await prisma.repository.findUnique({
-                where: { id }
+                where: { id },
             });
             if (!existing) {
                 return null;
@@ -151,9 +151,9 @@ class RepositoryService {
                     project: true,
                     commits: {
                         orderBy: { timestamp: 'desc' },
-                        take: 10
-                    }
-                }
+                        take: 10,
+                    },
+                },
             });
             return repository;
         }
@@ -170,14 +170,14 @@ class RepositoryService {
             const prisma = this.dbService.getPrisma();
             // Check if repository exists
             const existing = await prisma.repository.findUnique({
-                where: { id }
+                where: { id },
             });
             if (!existing) {
                 return false;
             }
             // Delete repository (commits will be cascade deleted due to foreign key constraint)
             await prisma.repository.delete({
-                where: { id }
+                where: { id },
             });
             return true;
         }
@@ -221,7 +221,7 @@ class RepositoryService {
             const prisma = this.dbService.getPrisma();
             const [commitCount, latestCommit] = await Promise.all([
                 prisma.commit.count({
-                    where: { repositoryId: id }
+                    where: { repositoryId: id },
                 }),
                 prisma.commit.findFirst({
                     where: { repositoryId: id },
@@ -230,13 +230,13 @@ class RepositoryService {
                         hash: true,
                         message: true,
                         author: true,
-                        timestamp: true
-                    }
-                })
+                        timestamp: true,
+                    },
+                }),
             ]);
             return {
                 commitCount,
-                latestCommit: latestCommit || undefined
+                latestCommit: latestCommit || undefined,
             };
         }
         catch (error) {

@@ -1,7 +1,13 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { TaskBoard } from './TaskBoard';
 import { TaskModal, type TaskModalMode } from './TaskModal';
-import type { Task, TaskStatus, TaskFilters, TaskSortOptions, TaskBoardData } from '../../types/task';
+import type {
+  Task,
+  TaskStatus,
+  TaskFilters,
+  TaskSortOptions,
+  TaskBoardData,
+} from '../../types/task';
 import { useRealtimeTaskData } from '../../hooks/useRealtimeTaskData';
 import { useTaskUpdates } from '../../hooks/useTaskUpdates';
 import { useNotification } from '../../contexts/NotificationContext';
@@ -34,14 +40,18 @@ export interface TaskBoardManagerProps {
   /** Callback when a task is clicked */
   onTaskClick?: (taskId: number) => void;
   /** Callback when a task is moved between columns */
-  onTaskMove?: (taskId: number, fromStatus: TaskStatus, toStatus: TaskStatus) => void;
+  onTaskMove?: (
+    taskId: number,
+    fromStatus: TaskStatus,
+    toStatus: TaskStatus
+  ) => void;
   /** Callback when create task is clicked */
   onCreateTask?: (status: TaskStatus) => void;
 }
 
 /**
  * TaskBoard Manager Component
- * 
+ *
  * Enhanced wrapper for TaskBoard with additional features like filtering,
  * sorting, data source management, and real-time WebSocket updates.
  */
@@ -59,15 +69,16 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
   showRealtimeNotifications = true,
   onTaskClick,
   onTaskMove,
-  onCreateTask
+  onCreateTask,
 }) => {
   const [filters, setFilters] = useState<TaskFilters>({});
   const [sortOptions, setSortOptions] = useState<TaskSortOptions>({
     field: 'createdAt',
-    direction: 'desc'
+    direction: 'desc',
   });
-  const [localTaskBoardData, setLocalTaskBoardData] = useState<TaskBoardData | null>(null);
-  
+  const [localTaskBoardData, setLocalTaskBoardData] =
+    useState<TaskBoardData | null>(null);
+
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<TaskModalMode>('create');
@@ -92,7 +103,7 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
     updateSortOptions,
     clear,
     requestRealtimeRefresh,
-    toggleRealtime
+    toggleRealtime,
   } = useRealtimeTaskData({
     repositoryPath,
     projectTag,
@@ -103,26 +114,22 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
     filters,
     sortOptions,
     enableRealtime,
-    showUpdateNotifications: showRealtimeNotifications
+    showUpdateNotifications: showRealtimeNotifications,
   });
 
-  const {
-    isUpdating,
-    updateError,
-    updateTaskStatus,
-    clearUpdateError
-  } = useTaskUpdates({
-    projectId,
-    onUpdateSuccess: (task) => {
-      showSuccess(`Task "${task.title}" updated successfully`);
-      // Refresh data to sync with server
-      refresh();
-    },
-    onUpdateError: (error) => {
-      showError(`Failed to update task: ${error}`);
-    },
-    optimisticUpdates: true
-  });
+  const { isUpdating, updateError, updateTaskStatus, clearUpdateError } =
+    useTaskUpdates({
+      projectId,
+      onUpdateSuccess: task => {
+        showSuccess(`Task "${task.title}" updated successfully`);
+        // Refresh data to sync with server
+        refresh();
+      },
+      onUpdateError: error => {
+        showError(`Failed to update task: ${error}`);
+      },
+      optimisticUpdates: true,
+    });
 
   // Sync local data with remote data
   useEffect(() => {
@@ -138,69 +145,88 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
   // Display current data (local if available, otherwise remote)
   const currentTaskBoardData = localTaskBoardData || taskBoardData;
 
-  const handleTaskClick = useCallback((taskId: number) => {
-    if (onTaskClick) {
-      onTaskClick(taskId);
-    } else {
-      // Open task modal in view mode
-      const task = currentTaskBoardData?.tasks.find(t => t.id === taskId);
-      if (task) {
-        setSelectedTask(task);
-        setModalMode('view');
+  const handleTaskClick = useCallback(
+    (taskId: number) => {
+      if (onTaskClick) {
+        onTaskClick(taskId);
+      } else {
+        // Open task modal in view mode
+        const task = currentTaskBoardData?.tasks.find(t => t.id === taskId);
+        if (task) {
+          setSelectedTask(task);
+          setModalMode('view');
+          setIsModalOpen(true);
+        }
+      }
+    },
+    [onTaskClick, currentTaskBoardData]
+  );
+
+  const handleTaskMove = useCallback(
+    async (taskId: number, fromStatus: TaskStatus, toStatus: TaskStatus) => {
+      if (onTaskMove) {
+        onTaskMove(taskId, fromStatus, toStatus);
+        return;
+      }
+
+      if (!currentTaskBoardData) {
+        console.error('No task board data available for task move');
+        return;
+      }
+
+      console.log('Task moved:', { taskId, fromStatus, toStatus });
+
+      try {
+        // Update task status with optimistic update
+        const updatedBoardData = await updateTaskStatus(
+          taskId,
+          toStatus,
+          currentTaskBoardData
+        );
+
+        if (updatedBoardData) {
+          setLocalTaskBoardData(updatedBoardData);
+        }
+      } catch (error) {
+        console.error('Failed to move task:', error);
+      }
+    },
+    [onTaskMove, currentTaskBoardData, updateTaskStatus]
+  );
+
+  const handleCreateTask = useCallback(
+    (status: TaskStatus) => {
+      if (onCreateTask) {
+        onCreateTask(status);
+      } else {
+        // Open task modal in create mode
+        setSelectedTask(undefined);
+        setModalMode('create');
         setIsModalOpen(true);
       }
-    }
-  }, [onTaskClick, currentTaskBoardData]);
-
-  const handleTaskMove = useCallback(async (taskId: number, fromStatus: TaskStatus, toStatus: TaskStatus) => {
-    if (onTaskMove) {
-      onTaskMove(taskId, fromStatus, toStatus);
-      return;
-    }
-
-    if (!currentTaskBoardData) {
-      console.error('No task board data available for task move');
-      return;
-    }
-
-    console.log('Task moved:', { taskId, fromStatus, toStatus });
-    
-    try {
-      // Update task status with optimistic update
-      const updatedBoardData = await updateTaskStatus(taskId, toStatus, currentTaskBoardData);
-      
-      if (updatedBoardData) {
-        setLocalTaskBoardData(updatedBoardData);
-      }
-    } catch (error) {
-      console.error('Failed to move task:', error);
-    }
-  }, [onTaskMove, currentTaskBoardData, updateTaskStatus]);
-
-  const handleCreateTask = useCallback((status: TaskStatus) => {
-    if (onCreateTask) {
-      onCreateTask(status);
-    } else {
-      // Open task modal in create mode
-      setSelectedTask(undefined);
-      setModalMode('create');
-      setIsModalOpen(true);
-    }
-  }, [onCreateTask]);
+    },
+    [onCreateTask]
+  );
 
   const handleRefresh = useCallback(async () => {
     await refresh();
   }, [refresh]);
 
-  const handleFilterChange = useCallback((newFilters: TaskFilters) => {
-    setFilters(newFilters);
-    updateFilters(newFilters);
-  }, [updateFilters]);
+  const handleFilterChange = useCallback(
+    (newFilters: TaskFilters) => {
+      setFilters(newFilters);
+      updateFilters(newFilters);
+    },
+    [updateFilters]
+  );
 
-  const handleSortChange = useCallback((newSortOptions: TaskSortOptions) => {
-    setSortOptions(newSortOptions);
-    updateSortOptions(newSortOptions);
-  }, [updateSortOptions]);
+  const handleSortChange = useCallback(
+    (newSortOptions: TaskSortOptions) => {
+      setSortOptions(newSortOptions);
+      updateSortOptions(newSortOptions);
+    },
+    [updateSortOptions]
+  );
 
   const handleLoadFromRepository = useCallback(async () => {
     if (repositoryPath) {
@@ -231,46 +257,66 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
     setModalMode('create');
   }, []);
 
-  const handleSaveTask = useCallback(async (taskData: Partial<Task>) => {
-    try {
-      if (modalMode === 'create') {
-        // Create new task
-        const newTask = await taskService.createTask(taskData, projectId);
-        showSuccess(`Task "${newTask.title}" created successfully`);
-        
-        // Refresh data to sync with server
-        await refresh();
-      } else if (modalMode === 'edit' && selectedTask) {
-        // Update existing task
-        const updatedTask = await taskService.updateTask(selectedTask.id, taskData, projectId);
-        showSuccess(`Task "${updatedTask.title}" updated successfully`);
-        
-        // Refresh data to sync with server
-        await refresh();
-      }
-      
-      handleCloseModal();
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to save task';
-      showError(errorMessage);
-      throw error; // Re-throw to let the modal handle the error state
-    }
-  }, [modalMode, selectedTask, projectId, refresh, showSuccess, showError, handleCloseModal]);
+  const handleSaveTask = useCallback(
+    async (taskData: Partial<Task>) => {
+      try {
+        if (modalMode === 'create') {
+          // Create new task
+          const newTask = await taskService.createTask(taskData, projectId);
+          showSuccess(`Task "${newTask.title}" created successfully`);
 
-  const handleDeleteTask = useCallback(async (taskId: number) => {
-    try {
-      await taskService.deleteTask(taskId, projectId);
-      showSuccess('Task deleted successfully');
-      
-      // Refresh data to sync with server
-      await refresh();
-      handleCloseModal();
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to delete task';
-      showError(errorMessage);
-      throw error; // Re-throw to let the modal handle the error state
-    }
-  }, [projectId, refresh, showSuccess, showError, handleCloseModal]);
+          // Refresh data to sync with server
+          await refresh();
+        } else if (modalMode === 'edit' && selectedTask) {
+          // Update existing task
+          const updatedTask = await taskService.updateTask(
+            selectedTask.id,
+            taskData,
+            projectId
+          );
+          showSuccess(`Task "${updatedTask.title}" updated successfully`);
+
+          // Refresh data to sync with server
+          await refresh();
+        }
+
+        handleCloseModal();
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : 'Failed to save task';
+        showError(errorMessage);
+        throw error; // Re-throw to let the modal handle the error state
+      }
+    },
+    [
+      modalMode,
+      selectedTask,
+      projectId,
+      refresh,
+      showSuccess,
+      showError,
+      handleCloseModal,
+    ]
+  );
+
+  const handleDeleteTask = useCallback(
+    async (taskId: number) => {
+      try {
+        await taskService.deleteTask(taskId, projectId);
+        showSuccess('Task deleted successfully');
+
+        // Refresh data to sync with server
+        await refresh();
+        handleCloseModal();
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : 'Failed to delete task';
+        showError(errorMessage);
+        throw error; // Re-throw to let the modal handle the error state
+      }
+    },
+    [projectId, refresh, showSuccess, showError, handleCloseModal]
+  );
 
   const handleEditTask = useCallback(() => {
     // Switch from view mode to edit mode
@@ -287,12 +333,18 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
               <h3>Filters</h3>
               <div className="filter-group">
                 <label>Status:</label>
-                <select 
+                <select
                   multiple
                   value={filters.status || []}
-                  onChange={(e) => {
-                    const selectedStatuses = Array.from(e.target.selectedOptions, option => option.value) as TaskStatus[];
-                    handleFilterChange({ ...filters, status: selectedStatuses });
+                  onChange={e => {
+                    const selectedStatuses = Array.from(
+                      e.target.selectedOptions,
+                      option => option.value
+                    ) as TaskStatus[];
+                    handleFilterChange({
+                      ...filters,
+                      status: selectedStatuses,
+                    });
                   }}
                 >
                   <option value="pending">Pending</option>
@@ -303,15 +355,21 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
                   <option value="cancelled">Cancelled</option>
                 </select>
               </div>
-              
+
               <div className="filter-group">
                 <label>Priority:</label>
-                <select 
+                <select
                   multiple
                   value={filters.priority || []}
-                  onChange={(e) => {
-                    const selectedPriorities = Array.from(e.target.selectedOptions, option => option.value) as ('low' | 'medium' | 'high' | 'urgent')[];
-                    handleFilterChange({ ...filters, priority: selectedPriorities });
+                  onChange={e => {
+                    const selectedPriorities = Array.from(
+                      e.target.selectedOptions,
+                      option => option.value
+                    ) as ('low' | 'medium' | 'high' | 'urgent')[];
+                    handleFilterChange({
+                      ...filters,
+                      priority: selectedPriorities,
+                    });
                   }}
                 >
                   <option value="low">Low</option>
@@ -320,18 +378,20 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
                   <option value="urgent">Urgent</option>
                 </select>
               </div>
-              
+
               <div className="filter-group">
                 <label>Search:</label>
                 <input
                   type="text"
                   placeholder="Search tasks..."
                   value={filters.search || ''}
-                  onChange={(e) => handleFilterChange({ ...filters, search: e.target.value })}
+                  onChange={e =>
+                    handleFilterChange({ ...filters, search: e.target.value })
+                  }
                 />
               </div>
-              
-              <button 
+
+              <button
                 className="clear-filters-button"
                 onClick={() => handleFilterChange({})}
               >
@@ -339,15 +399,20 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
               </button>
             </div>
           )}
-          
+
           {showSorting && (
             <div className="sorting-controls">
               <h3>Sort By</h3>
               <div className="sort-group">
                 <label>Field:</label>
-                <select 
+                <select
                   value={sortOptions.field}
-                  onChange={(e) => handleSortChange({ ...sortOptions, field: e.target.value as keyof Task })}
+                  onChange={e =>
+                    handleSortChange({
+                      ...sortOptions,
+                      field: e.target.value as keyof Task,
+                    })
+                  }
                 >
                   <option value="createdAt">Created Date</option>
                   <option value="updatedAt">Updated Date</option>
@@ -357,12 +422,17 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
                   <option value="complexity">Complexity</option>
                 </select>
               </div>
-              
+
               <div className="sort-group">
                 <label>Direction:</label>
-                <select 
+                <select
                   value={sortOptions.direction}
-                  onChange={(e) => handleSortChange({ ...sortOptions, direction: e.target.value as 'asc' | 'desc' })}
+                  onChange={e =>
+                    handleSortChange({
+                      ...sortOptions,
+                      direction: e.target.value as 'asc' | 'desc',
+                    })
+                  }
                 >
                   <option value="asc">Ascending</option>
                   <option value="desc">Descending</option>
@@ -390,24 +460,24 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
         <div className="task-board-manager__dev-tools">
           <h4>Development Tools</h4>
           <div className="dev-tools-grid">
-            <button 
+            <button
               onClick={handleRefresh}
               disabled={isLoading}
               className="dev-tool-button refresh"
             >
               {isLoading ? 'Loading...' : 'Refresh'}
             </button>
-            
-            <button 
+
+            <button
               onClick={() => loadSampleTasks()}
               disabled={isLoading}
               className="dev-tool-button sample"
             >
               Load Sample
             </button>
-            
+
             {repositoryPath && (
-              <button 
+              <button
                 onClick={handleLoadFromRepository}
                 disabled={isLoading}
                 className="dev-tool-button repository"
@@ -415,9 +485,9 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
                 Load Repository
               </button>
             )}
-            
+
             {filePath && (
-              <button 
+              <button
                 onClick={handleLoadFromFile}
                 disabled={isLoading}
                 className="dev-tool-button file"
@@ -425,9 +495,9 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
                 Load File
               </button>
             )}
-            
+
             {projectId && (
-              <button 
+              <button
                 onClick={handleLoadFromProject}
                 disabled={isLoading}
                 className="dev-tool-button project"
@@ -435,24 +505,24 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
                 Load Project
               </button>
             )}
-            
-            <button 
+
+            <button
               onClick={handleClear}
               disabled={isLoading}
               className="dev-tool-button clear"
             >
               Clear
             </button>
-            
-            <button 
+
+            <button
               onClick={toggleRealtime}
               disabled={isLoading}
               className={`dev-tool-button realtime ${isRealtimeActive ? 'active' : ''}`}
             >
               {isRealtimeActive ? 'Disable' : 'Enable'} Real-time
             </button>
-            
-            <button 
+
+            <button
               onClick={requestRealtimeRefresh}
               disabled={isLoading || !isRealtimeActive}
               className="dev-tool-button realtime-refresh"
@@ -460,28 +530,54 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
               Request RT Refresh
             </button>
           </div>
-          
+
           <div className="dev-tools-info">
-            <p><strong>Active Filters:</strong> {Object.keys(filters).length}</p>
-            <p><strong>Sort:</strong> {sortOptions.field} ({sortOptions.direction})</p>
-            <p><strong>Tasks:</strong> {taskBoardData?.tasks.length || 0}</p>
-            <p><strong>Data Source:</strong> {
-              repositoryPath ? 'Repository' : 
-              filePath ? 'File' : 
-              projectId ? 'Project' : 
-              'Sample'
-            }</p>
-            <p><strong>Real-time:</strong> {isRealtimeActive ? 'Active' : 'Inactive'}</p>
-            <p><strong>WebSocket:</strong> {connectionState}</p>
-            <p><strong>Updates:</strong> {updateCount}</p>
-            <p><strong>Task Updates:</strong> {isUpdating ? 'In Progress' : 'Ready'}</p>
+            <p>
+              <strong>Active Filters:</strong> {Object.keys(filters).length}
+            </p>
+            <p>
+              <strong>Sort:</strong> {sortOptions.field} (
+              {sortOptions.direction})
+            </p>
+            <p>
+              <strong>Tasks:</strong> {taskBoardData?.tasks.length || 0}
+            </p>
+            <p>
+              <strong>Data Source:</strong>{' '}
+              {repositoryPath
+                ? 'Repository'
+                : filePath
+                  ? 'File'
+                  : projectId
+                    ? 'Project'
+                    : 'Sample'}
+            </p>
+            <p>
+              <strong>Real-time:</strong>{' '}
+              {isRealtimeActive ? 'Active' : 'Inactive'}
+            </p>
+            <p>
+              <strong>WebSocket:</strong> {connectionState}
+            </p>
+            <p>
+              <strong>Updates:</strong> {updateCount}
+            </p>
+            <p>
+              <strong>Task Updates:</strong>{' '}
+              {isUpdating ? 'In Progress' : 'Ready'}
+            </p>
             {lastUpdateTime && (
-              <p><strong>Last Update:</strong> {new Date(lastUpdateTime).toLocaleTimeString()}</p>
+              <p>
+                <strong>Last Update:</strong>{' '}
+                {new Date(lastUpdateTime).toLocaleTimeString()}
+              </p>
             )}
             {updateError && (
               <div className="dev-tools-error">
-                <p><strong>Update Error:</strong> {updateError}</p>
-                <button 
+                <p>
+                  <strong>Update Error:</strong> {updateError}
+                </p>
+                <button
                   onClick={clearUpdateError}
                   className="dev-tool-button clear-error"
                 >

@@ -48,11 +48,28 @@ export interface SpinnerProps
    * Color of the spinner
    * @default 'current'
    */
-  spinnerColor?: 'current' | 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'white' | 'muted';
+  spinnerColor?:
+    | 'current'
+    | 'primary'
+    | 'secondary'
+    | 'success'
+    | 'warning'
+    | 'error'
+    | 'white'
+    | 'muted';
 }
 
 const Spinner = React.forwardRef<HTMLDivElement, SpinnerProps>(
-  ({ className, size, spinnerColor, 'aria-label': ariaLabel = 'Loading', ...props }, ref) => {
+  (
+    {
+      className,
+      size,
+      spinnerColor,
+      'aria-label': ariaLabel = 'Loading',
+      ...props
+    },
+    ref
+  ) => {
     return (
       <div
         role="status"
@@ -70,34 +87,31 @@ const Spinner = React.forwardRef<HTMLDivElement, SpinnerProps>(
 Spinner.displayName = 'Spinner';
 
 // Pulse Spinner variant for different loading states
-const pulseVariants = cva(
-  'animate-pulse rounded-full bg-current opacity-75',
-  {
-    variants: {
-      size: {
-        xs: 'h-3 w-3',
-        sm: 'h-4 w-4',
-        md: 'h-6 w-6',
-        lg: 'h-8 w-8',
-        xl: 'h-12 w-12',
-      },
-      pulseColor: {
-        current: 'bg-current',
-        primary: 'bg-primary-600',
-        secondary: 'bg-secondary-600',
-        success: 'bg-success-600',
-        warning: 'bg-warning-600',
-        error: 'bg-error-600',
-        white: 'bg-white',
-        muted: 'bg-secondary-400',
-      },
+const pulseVariants = cva('animate-pulse rounded-full bg-current opacity-75', {
+  variants: {
+    size: {
+      xs: 'h-3 w-3',
+      sm: 'h-4 w-4',
+      md: 'h-6 w-6',
+      lg: 'h-8 w-8',
+      xl: 'h-12 w-12',
     },
-    defaultVariants: {
-      size: 'md',
-      pulseColor: 'current',
+    pulseColor: {
+      current: 'bg-current',
+      primary: 'bg-primary-600',
+      secondary: 'bg-secondary-600',
+      success: 'bg-success-600',
+      warning: 'bg-warning-600',
+      error: 'bg-error-600',
+      white: 'bg-white',
+      muted: 'bg-secondary-400',
     },
-  }
-);
+  },
+  defaultVariants: {
+    size: 'md',
+    pulseColor: 'current',
+  },
+});
 
 export interface PulseSpinnerProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, 'color'>,
@@ -106,7 +120,16 @@ export interface PulseSpinnerProps
 }
 
 const PulseSpinner = React.forwardRef<HTMLDivElement, PulseSpinnerProps>(
-  ({ className, size, pulseColor, 'aria-label': ariaLabel = 'Loading', ...props }, ref) => {
+  (
+    {
+      className,
+      size,
+      pulseColor,
+      'aria-label': ariaLabel = 'Loading',
+      ...props
+    },
+    ref
+  ) => {
     return (
       <div
         role="status"
@@ -124,16 +147,58 @@ const PulseSpinner = React.forwardRef<HTMLDivElement, PulseSpinnerProps>(
 PulseSpinner.displayName = 'PulseSpinner';
 
 // Dots Spinner for subtle loading states
-export interface DotsSpinnerProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'color'> {
+export interface DotsSpinnerProps
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'color'> {
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-  color?: 'current' | 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'white' | 'muted';
+  color?:
+    | 'current'
+    | 'primary'
+    | 'secondary'
+    | 'success'
+    | 'warning'
+    | 'error'
+    | 'white'
+    | 'muted';
   'aria-label'?: string;
 }
 
 const DotsSpinner = React.forwardRef<HTMLDivElement, DotsSpinnerProps>(
-  ({ className, size = 'md', color = 'current', 'aria-label': ariaLabel = 'Loading', ...props }, ref) => {
-    const dotSize = size === 'xs' ? 'h-1 w-1' : size === 'sm' ? 'h-1.5 w-1.5' : size === 'md' ? 'h-2 w-2' : size === 'lg' ? 'h-2.5 w-2.5' : 'h-3 w-3';
-    const colorClass = color === 'current' ? 'bg-current' : color === 'primary' ? 'bg-primary-600' : color === 'secondary' ? 'bg-secondary-600' : color === 'success' ? 'bg-success-600' : color === 'warning' ? 'bg-warning-600' : color === 'error' ? 'bg-error-600' : color === 'white' ? 'bg-white' : 'bg-secondary-400';
+  (
+    {
+      className,
+      size = 'md',
+      color = 'current',
+      'aria-label': ariaLabel = 'Loading',
+      ...props
+    },
+    ref
+  ) => {
+    const dotSize =
+      size === 'xs'
+        ? 'h-1 w-1'
+        : size === 'sm'
+          ? 'h-1.5 w-1.5'
+          : size === 'md'
+            ? 'h-2 w-2'
+            : size === 'lg'
+              ? 'h-2.5 w-2.5'
+              : 'h-3 w-3';
+    const colorClass =
+      color === 'current'
+        ? 'bg-current'
+        : color === 'primary'
+          ? 'bg-primary-600'
+          : color === 'secondary'
+            ? 'bg-secondary-600'
+            : color === 'success'
+              ? 'bg-success-600'
+              : color === 'warning'
+                ? 'bg-warning-600'
+                : color === 'error'
+                  ? 'bg-error-600'
+                  : color === 'white'
+                    ? 'bg-white'
+                    : 'bg-secondary-400';
 
     return (
       <div
@@ -143,9 +208,18 @@ const DotsSpinner = React.forwardRef<HTMLDivElement, DotsSpinnerProps>(
         ref={ref}
         {...props}
       >
-        <div className={cn(dotSize, colorClass, 'rounded-full animate-bounce')} style={{ animationDelay: '0ms' }} />
-        <div className={cn(dotSize, colorClass, 'rounded-full animate-bounce')} style={{ animationDelay: '150ms' }} />
-        <div className={cn(dotSize, colorClass, 'rounded-full animate-bounce')} style={{ animationDelay: '300ms' }} />
+        <div
+          className={cn(dotSize, colorClass, 'rounded-full animate-bounce')}
+          style={{ animationDelay: '0ms' }}
+        />
+        <div
+          className={cn(dotSize, colorClass, 'rounded-full animate-bounce')}
+          style={{ animationDelay: '150ms' }}
+        />
+        <div
+          className={cn(dotSize, colorClass, 'rounded-full animate-bounce')}
+          style={{ animationDelay: '300ms' }}
+        />
         <span className="sr-only">{ariaLabel}</span>
       </div>
     );

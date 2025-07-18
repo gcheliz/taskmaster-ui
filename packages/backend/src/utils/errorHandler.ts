@@ -9,40 +9,40 @@ export enum ErrorType {
   CLI_EXECUTION_FAILED = 'CLI_EXECUTION_FAILED',
   CLI_TIMEOUT = 'CLI_TIMEOUT',
   CLI_INVALID_OUTPUT = 'CLI_INVALID_OUTPUT',
-  
+
   // Parsing Errors
   PARSING_FAILED = 'PARSING_FAILED',
   INVALID_JSON = 'INVALID_JSON',
   UNEXPECTED_FORMAT = 'UNEXPECTED_FORMAT',
-  
+
   // Validation Errors
   INVALID_REPOSITORY_PATH = 'INVALID_REPOSITORY_PATH',
   INVALID_OPERATION = 'INVALID_OPERATION',
   INVALID_ARGUMENTS = 'INVALID_ARGUMENTS',
   MISSING_REQUIRED_FIELD = 'MISSING_REQUIRED_FIELD',
-  
+
   // System Errors
   FILE_SYSTEM_ERROR = 'FILE_SYSTEM_ERROR',
   PERMISSION_DENIED = 'PERMISSION_DENIED',
   NETWORK_ERROR = 'NETWORK_ERROR',
   DATABASE_ERROR = 'DATABASE_ERROR',
-  
+
   // Security Errors
   UNAUTHORIZED_ACCESS = 'UNAUTHORIZED_ACCESS',
   INVALID_TOKEN = 'INVALID_TOKEN',
   RATE_LIMIT_EXCEEDED = 'RATE_LIMIT_EXCEEDED',
-  
+
   // Application Errors
   UNKNOWN_ERROR = 'UNKNOWN_ERROR',
   CONFIGURATION_ERROR = 'CONFIGURATION_ERROR',
-  DEPENDENCY_ERROR = 'DEPENDENCY_ERROR'
+  DEPENDENCY_ERROR = 'DEPENDENCY_ERROR',
 }
 
 export enum ErrorSeverity {
   LOW = 'low',
   MEDIUM = 'medium',
   HIGH = 'high',
-  CRITICAL = 'critical'
+  CRITICAL = 'critical',
 }
 
 export interface ErrorDetails {
@@ -71,7 +71,7 @@ export class TaskMasterError extends Error {
 
   constructor(details: ErrorDetails) {
     super(details.message);
-    
+
     this.name = 'TaskMasterError';
     this.type = details.type;
     this.severity = details.severity;
@@ -123,11 +123,13 @@ export class TaskMasterError extends Error {
       isRetryable: this.isRetryable,
       retryAfter: this.retryAfter,
       stack: this.stack,
-      originalError: this.originalError ? {
-        name: this.originalError.name,
-        message: this.originalError.message,
-        stack: this.originalError.stack
-      } : undefined
+      originalError: this.originalError
+        ? {
+            name: this.originalError.name,
+            message: this.originalError.message,
+            stack: this.originalError.stack,
+          }
+        : undefined,
     };
   }
 }
@@ -149,9 +151,11 @@ export class ErrorHandler {
     logger.error('CLI execution error', context, error, 'error-handler');
 
     // Check if CLI is not found
-    if (error.message.includes('command not found') || 
-        error.message.includes('ENOENT') ||
-        error.message.includes('not recognized')) {
+    if (
+      error.message.includes('command not found') ||
+      error.message.includes('ENOENT') ||
+      error.message.includes('not recognized')
+    ) {
       return new TaskMasterError({
         type: ErrorType.CLI_NOT_FOUND,
         severity: ErrorSeverity.HIGH,
@@ -162,16 +166,18 @@ export class ErrorHandler {
         suggestions: [
           'Install TaskMaster CLI using npm: npm install -g task-master-ai',
           'Verify TaskMaster CLI is in your PATH',
-          'Check if the CLI is properly configured'
+          'Check if the CLI is properly configured',
         ],
-        isRetryable: false
+        isRetryable: false,
       });
     }
 
     // Check for timeout
-    if (error.message.includes('timeout') || 
-        error.message.includes('ETIMEDOUT') ||
-        error.message.includes('timed out')) {
+    if (
+      error.message.includes('timeout') ||
+      error.message.includes('ETIMEDOUT') ||
+      error.message.includes('timed out')
+    ) {
       return new TaskMasterError({
         type: ErrorType.CLI_TIMEOUT,
         severity: ErrorSeverity.MEDIUM,
@@ -182,17 +188,19 @@ export class ErrorHandler {
         suggestions: [
           'Try the operation again',
           'Check if the repository is very large',
-          'Verify network connectivity if using remote repositories'
+          'Verify network connectivity if using remote repositories',
         ],
         isRetryable: true,
-        retryAfter: 5000
+        retryAfter: 5000,
       });
     }
 
     // Check for permission errors
-    if (error.message.includes('permission denied') || 
-        error.message.includes('EACCES') ||
-        error.message.includes('access denied')) {
+    if (
+      error.message.includes('permission denied') ||
+      error.message.includes('EACCES') ||
+      error.message.includes('access denied')
+    ) {
       return new TaskMasterError({
         type: ErrorType.PERMISSION_DENIED,
         severity: ErrorSeverity.HIGH,
@@ -203,9 +211,9 @@ export class ErrorHandler {
         suggestions: [
           'Check file permissions for the repository',
           'Ensure you have read/write access to the directory',
-          'Run with appropriate user permissions'
+          'Run with appropriate user permissions',
         ],
-        isRetryable: false
+        isRetryable: false,
       });
     }
 
@@ -220,16 +228,21 @@ export class ErrorHandler {
       suggestions: [
         'Verify the repository path is correct',
         'Check if the repository is a valid TaskMaster project',
-        'Try initializing the project with task-master init'
+        'Try initializing the project with task-master init',
       ],
-      isRetryable: true
+      isRetryable: true,
     });
   }
 
   /**
    * Handle parsing errors
    */
-  handleParsingError(rawOutput: string, operation: string, error: Error, context: LogContext): TaskMasterError {
+  handleParsingError(
+    rawOutput: string,
+    operation: string,
+    error: Error,
+    context: LogContext
+  ): TaskMasterError {
     logger.logParsingError(operation, rawOutput, context, error);
 
     return new TaskMasterError({
@@ -241,28 +254,37 @@ export class ErrorHandler {
         ...context,
         operation,
         outputLength: rawOutput.length,
-        outputPreview: rawOutput.substring(0, 200)
+        outputPreview: rawOutput.substring(0, 200),
       },
       originalError: error,
       suggestions: [
         'Try running the command again',
         'Verify the TaskMaster CLI version is compatible',
-        'Check if the output format has changed'
+        'Check if the output format has changed',
       ],
-      isRetryable: true
+      isRetryable: true,
     });
   }
 
   /**
    * Handle validation errors
    */
-  handleValidationError(field: string, value: any, reason: string, context: LogContext): TaskMasterError {
-    logger.warn(`Validation error: ${field} - ${reason}`, {
-      ...context,
-      field,
-      value: typeof value === 'string' ? value.substring(0, 100) : value,
-      reason
-    }, 'validation');
+  handleValidationError(
+    field: string,
+    value: any,
+    reason: string,
+    context: LogContext
+  ): TaskMasterError {
+    logger.warn(
+      `Validation error: ${field} - ${reason}`,
+      {
+        ...context,
+        field,
+        value: typeof value === 'string' ? value.substring(0, 100) : value,
+        reason,
+      },
+      'validation'
+    );
 
     let errorType = ErrorType.INVALID_ARGUMENTS;
     let code = 'VAL_001';
@@ -284,14 +306,14 @@ export class ErrorHandler {
         ...context,
         field,
         value,
-        reason
+        reason,
       },
       suggestions: [
         `Please provide a valid ${field}`,
         'Check the API documentation for expected format',
-        'Verify all required fields are provided'
+        'Verify all required fields are provided',
       ],
-      isRetryable: false
+      isRetryable: false,
     });
   }
 
@@ -302,7 +324,10 @@ export class ErrorHandler {
     logger.error('System error', context, error, 'system');
 
     // File system errors
-    if (error.message.includes('ENOENT') && !error.message.includes('command not found')) {
+    if (
+      error.message.includes('ENOENT') &&
+      !error.message.includes('command not found')
+    ) {
       return new TaskMasterError({
         type: ErrorType.FILE_SYSTEM_ERROR,
         severity: ErrorSeverity.MEDIUM,
@@ -313,16 +338,18 @@ export class ErrorHandler {
         suggestions: [
           'Verify the file path exists',
           'Check directory permissions',
-          'Ensure the repository is properly initialized'
+          'Ensure the repository is properly initialized',
         ],
-        isRetryable: false
+        isRetryable: false,
       });
     }
 
     // Network errors
-    if (error.message.includes('ENOTFOUND') || 
-        error.message.includes('ECONNREFUSED') ||
-        error.message.includes('network')) {
+    if (
+      error.message.includes('ENOTFOUND') ||
+      error.message.includes('ECONNREFUSED') ||
+      error.message.includes('network')
+    ) {
       return new TaskMasterError({
         type: ErrorType.NETWORK_ERROR,
         severity: ErrorSeverity.MEDIUM,
@@ -333,10 +360,10 @@ export class ErrorHandler {
         suggestions: [
           'Check your internet connection',
           'Verify DNS settings',
-          'Try again in a few moments'
+          'Try again in a few moments',
         ],
         isRetryable: true,
-        retryAfter: 10000
+        retryAfter: 10000,
       });
     }
 
@@ -351,16 +378,20 @@ export class ErrorHandler {
       suggestions: [
         'Try the operation again',
         'Check system resources',
-        'Contact support if the problem persists'
+        'Contact support if the problem persists',
       ],
-      isRetryable: true
+      isRetryable: true,
     });
   }
 
   /**
    * Handle security events
    */
-  handleSecurityError(event: string, context: LogContext, severity: ErrorSeverity = ErrorSeverity.HIGH): TaskMasterError {
+  handleSecurityError(
+    event: string,
+    context: LogContext,
+    severity: ErrorSeverity = ErrorSeverity.HIGH
+  ): TaskMasterError {
     logger.logSecurityEvent(event, context, severity as any);
 
     let errorType = ErrorType.UNAUTHORIZED_ACCESS;
@@ -383,10 +414,11 @@ export class ErrorHandler {
       suggestions: [
         'Verify your authentication credentials',
         'Check if your access token is valid',
-        'Wait before retrying if rate limited'
+        'Wait before retrying if rate limited',
       ],
       isRetryable: errorType === ErrorType.RATE_LIMIT_EXCEEDED,
-      retryAfter: errorType === ErrorType.RATE_LIMIT_EXCEEDED ? 60000 : undefined
+      retryAfter:
+        errorType === ErrorType.RATE_LIMIT_EXCEEDED ? 60000 : undefined,
     });
   }
 
@@ -411,7 +443,7 @@ export class ErrorHandler {
         code: 'UNK_001',
         context,
         suggestions: ['Try the operation again'],
-        isRetryable: true
+        isRetryable: true,
       });
     }
 
@@ -424,9 +456,9 @@ export class ErrorHandler {
       context,
       suggestions: [
         'Try the operation again',
-        'Contact support if the problem persists'
+        'Contact support if the problem persists',
       ],
-      isRetryable: true
+      isRetryable: true,
     });
   }
 

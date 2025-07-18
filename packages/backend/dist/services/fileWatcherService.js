@@ -22,7 +22,7 @@ class FileWatcherService extends events_1.EventEmitter {
             persistent: true,
             usePolling: false,
             interval: 100,
-            ...config
+            ...config,
         };
     }
     /**
@@ -64,14 +64,14 @@ class FileWatcherService extends events_1.EventEmitter {
             ignoreInitial: this.config.ignoreInitial,
             persistent: this.config.persistent,
             usePolling: this.config.usePolling,
-            interval: this.config.interval
+            interval: this.config.interval,
         });
         // Set up event handlers
         watcher
-            .on('add', (filePath) => this.handleFileEvent('add', filePath, repositoryPath))
-            .on('change', (filePath) => this.handleFileEvent('change', filePath, repositoryPath))
-            .on('unlink', (filePath) => this.handleFileEvent('unlink', filePath, repositoryPath))
-            .on('error', (error) => {
+            .on('add', filePath => this.handleFileEvent('add', filePath, repositoryPath))
+            .on('change', filePath => this.handleFileEvent('change', filePath, repositoryPath))
+            .on('unlink', filePath => this.handleFileEvent('unlink', filePath, repositoryPath))
+            .on('error', error => {
             console.error(`❌ Watcher error for ${repositoryPath}:`, error);
             this.emit('error', { repositoryPath, error });
         })
@@ -122,7 +122,7 @@ class FileWatcherService extends events_1.EventEmitter {
         return {
             watchedRepositories: this.watchers.size,
             activeWatchers: this.watchers.size,
-            pendingDebounces: this.debounceTimers.size
+            pendingDebounces: this.debounceTimers.size,
         };
     }
     /**
@@ -191,7 +191,7 @@ class FileWatcherService extends events_1.EventEmitter {
             filePath,
             repositoryPath,
             timestamp: new Date(),
-            content
+            content,
         };
         // Emit the event
         this.emit('fileChanged', event);
@@ -202,7 +202,7 @@ class FileWatcherService extends events_1.EventEmitter {
      * Setup error handling
      */
     setupErrorHandling() {
-        this.on('error', (error) => {
+        this.on('error', error => {
             console.error('❌ FileWatcherService error:', error);
         });
         // Handle process events (only in non-test environments)

@@ -1,5 +1,11 @@
 import { Router } from 'express';
-import { getHealth, getApiHealth, getSecretsHealth, getSSLHealth, getSystemHealth } from '../controllers/healthController';
+import {
+  getHealth,
+  getApiHealth,
+  getSecretsHealth,
+  getSSLHealth,
+  getSystemHealth,
+} from '../controllers/healthController';
 
 const router = Router();
 

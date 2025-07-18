@@ -30,40 +30,34 @@ const cardVariants = cva(
   }
 );
 
-const cardHeaderVariants = cva(
-  'flex flex-col space-y-1.5',
-  {
-    variants: {
-      alignment: {
-        left: 'items-start text-left',
-        center: 'items-center text-center',
-        right: 'items-end text-right',
-      },
+const cardHeaderVariants = cva('flex flex-col space-y-1.5', {
+  variants: {
+    alignment: {
+      left: 'items-start text-left',
+      center: 'items-center text-center',
+      right: 'items-end text-right',
     },
-    defaultVariants: {
-      alignment: 'left',
-    },
-  }
-);
+  },
+  defaultVariants: {
+    alignment: 'left',
+  },
+});
 
 const cardContentVariants = cva('pt-0');
 
-const cardFooterVariants = cva(
-  'flex items-center pt-6',
-  {
-    variants: {
-      alignment: {
-        left: 'justify-start',
-        center: 'justify-center',
-        right: 'justify-end',
-        between: 'justify-between',
-      },
+const cardFooterVariants = cva('flex items-center pt-6', {
+  variants: {
+    alignment: {
+      left: 'justify-start',
+      center: 'justify-center',
+      right: 'justify-end',
+      between: 'justify-between',
     },
-    defaultVariants: {
-      alignment: 'left',
-    },
-  }
-);
+  },
+  defaultVariants: {
+    alignment: 'left',
+  },
+});
 
 export interface CardProps
   extends React.HTMLAttributes<HTMLDivElement>,
@@ -88,7 +82,11 @@ export interface CardProps
 const Card = React.forwardRef<HTMLDivElement, CardProps>(
   ({ className, variant, size, interactive, onClick, ...props }, ref) => {
     const handleKeyDown = (event: React.KeyboardEvent) => {
-      if (interactive && onClick && (event.key === 'Enter' || event.key === ' ')) {
+      if (
+        interactive &&
+        onClick &&
+        (event.key === 'Enter' || event.key === ' ')
+      ) {
         event.preventDefault();
         onClick(event as any);
       }
@@ -130,7 +128,10 @@ const CardTitle = React.forwardRef<HTMLParagraphElement, CardTitleProps>(
   ({ className, ...props }, ref) => (
     <h3
       ref={ref}
-      className={cn('text-headline-medium font-semibold leading-none tracking-tight', className)}
+      className={cn(
+        'text-headline-medium font-semibold leading-none tracking-tight',
+        className
+      )}
       {...props}
     />
   )
@@ -139,15 +140,16 @@ CardTitle.displayName = 'CardTitle';
 
 export type CardDescriptionProps = React.HTMLAttributes<HTMLParagraphElement>;
 
-const CardDescription = React.forwardRef<HTMLParagraphElement, CardDescriptionProps>(
-  ({ className, ...props }, ref) => (
-    <p
-      ref={ref}
-      className={cn('text-body-medium text-secondary-600', className)}
-      {...props}
-    />
-  )
-);
+const CardDescription = React.forwardRef<
+  HTMLParagraphElement,
+  CardDescriptionProps
+>(({ className, ...props }, ref) => (
+  <p
+    ref={ref}
+    className={cn('text-body-medium text-secondary-600', className)}
+    {...props}
+  />
+));
 CardDescription.displayName = 'CardDescription';
 
 export interface CardContentProps
@@ -156,7 +158,11 @@ export interface CardContentProps
 
 const CardContent = React.forwardRef<HTMLDivElement, CardContentProps>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn(cardContentVariants({ className }))} {...props} />
+    <div
+      ref={ref}
+      className={cn(cardContentVariants({ className }))}
+      {...props}
+    />
   )
 );
 CardContent.displayName = 'CardContent';

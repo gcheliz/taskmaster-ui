@@ -9,7 +9,8 @@ const meta: Meta<typeof Checkbox> = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'A checkbox component with support for different sizes, states, and indeterminate state. Built with proper accessibility features.',
+        component:
+          'A checkbox component with support for different sizes, states, and indeterminate state. Built with proper accessibility features.',
       },
     },
   },
@@ -75,7 +76,7 @@ export const DisabledChecked: Story = {
 };
 
 export const WithLabel: Story = {
-  render: (args) => (
+  render: args => (
     <div className="flex items-center space-x-2">
       <Checkbox id="checkbox-with-label" {...args} />
       <Label htmlFor="checkbox-with-label" className="cursor-pointer">
@@ -172,7 +173,7 @@ export const FormExample: Story = {
               </p>
             </div>
           </div>
-          
+
           <div className="flex items-center space-x-3">
             <Checkbox id="push-notifications" />
             <div>
@@ -184,7 +185,7 @@ export const FormExample: Story = {
               </p>
             </div>
           </div>
-          
+
           <div className="flex items-center space-x-3">
             <Checkbox id="sms-notifications" disabled />
             <div>
@@ -198,7 +199,7 @@ export const FormExample: Story = {
           </div>
         </div>
       </fieldset>
-      
+
       <fieldset>
         <legend className="text-base font-medium text-secondary-900 mb-4">
           Task Management
@@ -210,7 +211,7 @@ export const FormExample: Story = {
               Select all tasks
             </Label>
           </div>
-          
+
           <div className="ml-6 space-y-3">
             <div className="flex items-center space-x-3">
               <Checkbox id="task-1" defaultChecked />
@@ -218,14 +219,14 @@ export const FormExample: Story = {
                 Task 1: Setup project
               </Label>
             </div>
-            
+
             <div className="flex items-center space-x-3">
               <Checkbox id="task-2" defaultChecked />
               <Label htmlFor="task-2" className="cursor-pointer">
                 Task 2: Design components
               </Label>
             </div>
-            
+
             <div className="flex items-center space-x-3">
               <Checkbox id="task-3" />
               <Label htmlFor="task-3" className="cursor-pointer">

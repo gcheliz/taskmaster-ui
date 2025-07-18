@@ -17,7 +17,7 @@ class TaskMasterCommandBuilder {
         const commandArgs = this.buildArgumentsForOperation(operation, args);
         return {
             ...commandTemplate,
-            args: commandArgs
+            args: commandArgs,
         };
     }
     /**
@@ -188,7 +188,7 @@ class TaskMasterCommandBuilder {
     getAvailableCommands() {
         return Object.entries(TaskMasterCommandBuilder.COMMANDS_REGISTRY).map(([operation, template]) => ({
             ...template,
-            args: [operation] // Base args with just the operation
+            args: [operation], // Base args with just the operation
         }));
     }
     /**
@@ -200,66 +200,66 @@ class TaskMasterCommandBuilder {
 }
 exports.TaskMasterCommandBuilder = TaskMasterCommandBuilder;
 TaskMasterCommandBuilder.COMMANDS_REGISTRY = {
-    'init': {
+    init: {
         command: 'task-master',
         description: 'Initialize a new TaskMaster project',
-        requiresRepository: true
+        requiresRepository: true,
     },
-    'list': {
+    list: {
         command: 'task-master',
         description: 'List tasks in the project',
-        requiresRepository: true
+        requiresRepository: true,
     },
-    'show': {
+    show: {
         command: 'task-master',
         description: 'Show detailed task information',
-        requiresRepository: true
+        requiresRepository: true,
     },
-    'next': {
+    next: {
         command: 'task-master',
         description: 'Get the next available task',
-        requiresRepository: true
+        requiresRepository: true,
     },
     'set-status': {
         command: 'task-master',
         description: 'Update task status',
-        requiresRepository: true
+        requiresRepository: true,
     },
     'parse-prd': {
         command: 'task-master',
         description: 'Parse PRD document and generate tasks',
-        requiresRepository: true
+        requiresRepository: true,
     },
-    'expand': {
+    expand: {
         command: 'task-master',
         description: 'Expand a task into subtasks',
-        requiresRepository: true
+        requiresRepository: true,
     },
     'analyze-complexity': {
         command: 'task-master',
         description: 'Analyze project complexity',
-        requiresRepository: true
+        requiresRepository: true,
     },
     'complexity-report': {
         command: 'task-master',
         description: 'Generate complexity report',
-        requiresRepository: true
+        requiresRepository: true,
     },
     'validate-dependencies': {
         command: 'task-master',
         description: 'Validate task dependencies',
-        requiresRepository: true
+        requiresRepository: true,
     },
     'update-task': {
         command: 'task-master',
         description: 'Update task details',
-        requiresRepository: true
+        requiresRepository: true,
     },
     'update-subtask': {
         command: 'task-master',
         description: 'Update subtask details',
-        requiresRepository: true
-    }
+        requiresRepository: true,
+    },
 };
 /**
  * Fluent interface for building commands

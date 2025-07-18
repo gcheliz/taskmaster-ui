@@ -167,7 +167,7 @@ exports.performanceUtils = {
             if (!inThrottle) {
                 func.apply(this, args);
                 inThrottle = true;
-                setTimeout(() => inThrottle = false, limit);
+                setTimeout(() => (inThrottle = false), limit);
             }
         };
     },
@@ -185,7 +185,7 @@ exports.performanceUtils = {
             cache.set(key, result);
             return result;
         });
-    }
+    },
 };
 // Export performance monitor singleton
 exports.performanceMonitor = PerformanceMonitor.getInstance();
@@ -194,23 +194,23 @@ exports.performanceConfig = {
     cache: {
         enabled: true,
         defaultTTL: 5 * 60 * 1000, // 5 minutes
-        maxSize: 1000
+        maxSize: 1000,
     },
     connectionPool: {
         enabled: true,
         minConnections: 2,
-        maxConnections: 10
+        maxConnections: 10,
     },
     batchProcessing: {
         enabled: true,
         maxBatchSize: 50,
-        flushInterval: 1000
+        flushInterval: 1000,
     },
     memoryManagement: {
         enabled: true,
         warningThreshold: 0.8,
-        criticalThreshold: 0.9
-    }
+        criticalThreshold: 0.9,
+    },
 };
 /**
  * Initialize all performance optimizations

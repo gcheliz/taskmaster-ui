@@ -9,7 +9,7 @@ describe('AdvancedCacheManager', () => {
         cache = new cacheManager_1.AdvancedCacheManager({
             maxSize: 5,
             defaultTTL: 1000,
-            enableStatistics: true
+            enableStatistics: true,
         });
     });
     afterEach(() => {
@@ -72,7 +72,7 @@ describe('AdvancedCacheManager', () => {
             const entries = [
                 { key: 'key1', value: 'value1' },
                 { key: 'key2', value: 'value2' },
-                { key: 'key3', value: 'value3' }
+                { key: 'key3', value: 'value3' },
             ];
             await cache.mset(entries);
             expect(await cache.get('key1')).toBe('value1');
@@ -89,13 +89,13 @@ describe('AdvancedCacheManager', () => {
         });
         it('should invalidate by pattern', () => {
             const count = cache.invalidate({
-                pattern: /^user:/
+                pattern: /^user:/,
             });
             expect(count).toBe(2);
         });
         it('should invalidate by custom predicate', () => {
             const count = cache.invalidate({
-                customPredicate: (entry) => entry.key.includes('post')
+                customPredicate: entry => entry.key.includes('post'),
             });
             expect(count).toBe(1);
         });
@@ -124,7 +124,7 @@ describe('AdvancedCacheManager', () => {
         it('should warm cache with provided function', async () => {
             const warmupFunction = async () => [
                 { key: 'warm1', value: 'warmed1' },
-                { key: 'warm2', value: 'warmed2' }
+                { key: 'warm2', value: 'warmed2' },
             ];
             await cache.warm(warmupFunction);
             expect(await cache.get('warm1')).toBe('warmed1');
@@ -209,10 +209,12 @@ describe('CommandResultCache', () => {
             const operation = 'show';
             await commandCache.cacheCommandResult(repoPath, operation, { id: '1' }, { data: 'task1' });
             await commandCache.cacheCommandResult(repoPath, operation, { id: '2' }, { data: 'task2' });
-            expect(await commandCache.getCachedCommandResult(repoPath, operation, { id: '1' }))
-                .toEqual({ data: 'task1' });
-            expect(await commandCache.getCachedCommandResult(repoPath, operation, { id: '2' }))
-                .toEqual({ data: 'task2' });
+            expect(await commandCache.getCachedCommandResult(repoPath, operation, {
+                id: '1',
+            })).toEqual({ data: 'task1' });
+            expect(await commandCache.getCachedCommandResult(repoPath, operation, {
+                id: '2',
+            })).toEqual({ data: 'task2' });
         });
         it('should handle special characters in repository paths', async () => {
             const repoPath = '/test/repo with spaces & symbols!';

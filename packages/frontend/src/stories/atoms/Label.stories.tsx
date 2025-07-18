@@ -9,7 +9,8 @@ const meta: Meta<typeof Label> = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'A label component with support for different states, descriptions, and help text. Designed to work seamlessly with form inputs.',
+        component:
+          'A label component with support for different states, descriptions, and help text. Designed to work seamlessly with form inputs.',
       },
     },
   },
@@ -35,7 +36,7 @@ const meta: Meta<typeof Label> = {
     },
   },
   decorators: [
-    (Story) => (
+    Story => (
       <div className="w-80">
         <Story />
       </div>
@@ -62,7 +63,7 @@ export const Required: Story = {
 export const WithDescription: Story = {
   args: {
     children: 'Email Address',
-    description: 'We\'ll never share your email with anyone else.',
+    description: "We'll never share your email with anyone else.",
   },
 };
 
@@ -121,15 +122,15 @@ export const AllVariants: Story = {
 export const ComplexLabels: Story = {
   render: () => (
     <div className="space-y-6">
-      <Label 
+      <Label
         required
         description="This will be displayed publicly on your profile"
         helpText="Use your real name so people can recognize you"
       >
         Display Name
       </Label>
-      
-      <Label 
+
+      <Label
         error
         required
         description="Please enter a valid email address"
@@ -137,8 +138,8 @@ export const ComplexLabels: Story = {
       >
         Email Address
       </Label>
-      
-      <Label 
+
+      <Label
         success
         description="Password strength: Strong"
         helpText="Should contain uppercase, lowercase, numbers, and symbols"
@@ -158,10 +159,10 @@ export const WithInputs: Story = {
         </Label>
         <Input id="input1" placeholder="Enter your first name" />
       </div>
-      
+
       <div className="space-y-2">
-        <Label 
-          htmlFor="input2" 
+        <Label
+          htmlFor="input2"
           required
           description="We'll use this to contact you"
         >
@@ -169,10 +170,10 @@ export const WithInputs: Story = {
         </Label>
         <Input id="input2" type="email" placeholder="john@example.com" />
       </div>
-      
+
       <div className="space-y-2">
-        <Label 
-          htmlFor="input3" 
+        <Label
+          htmlFor="input3"
           error
           description="Password must be at least 8 characters"
         >
@@ -180,20 +181,16 @@ export const WithInputs: Story = {
         </Label>
         <Input id="input3" type="password" placeholder="Enter password" error />
       </div>
-      
+
       <div className="space-y-2">
-        <Label 
-          htmlFor="input4" 
-          success
-          description="Username is available"
-        >
+        <Label htmlFor="input4" success description="Username is available">
           Username
         </Label>
         <Input id="input4" placeholder="john_doe" success />
       </div>
-      
+
       <div className="space-y-2">
-        <Label 
+        <Label
           htmlFor="input5"
           variant="muted"
           helpText="This field is optional"
@@ -210,15 +207,17 @@ export const AccessibilityExample: Story = {
   render: () => (
     <div className="space-y-6">
       <fieldset className="border border-secondary-200 rounded-lg p-4">
-        <legend className="px-2 text-sm font-medium">Personal Information</legend>
-        
+        <legend className="px-2 text-sm font-medium">
+          Personal Information
+        </legend>
+
         <div className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="accessibility-name" required>
               Full Name
             </Label>
-            <Input 
-              id="accessibility-name" 
+            <Input
+              id="accessibility-name"
               placeholder="Enter your full name"
               aria-describedby="name-description"
             />
@@ -226,13 +225,13 @@ export const AccessibilityExample: Story = {
               Enter your legal name as it appears on official documents
             </p>
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="accessibility-email" required>
               Email Address
             </Label>
-            <Input 
-              id="accessibility-email" 
+            <Input
+              id="accessibility-email"
               type="email"
               placeholder="john@example.com"
               aria-describedby="email-description"

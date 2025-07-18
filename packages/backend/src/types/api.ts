@@ -188,7 +188,8 @@ export interface TaskExpansionOptions {
   complexityThreshold?: number;
 }
 
-export interface TaskExpansionResponse extends ApiResponse<TaskExpansionResult> {}
+export interface TaskExpansionResponse
+  extends ApiResponse<TaskExpansionResult> {}
 
 export interface TaskExpansionResult {
   expandedTasks: TaskInfo[];
@@ -220,7 +221,8 @@ export interface ComplexityAnalysisOptions {
   analyzeDependendies?: boolean;
 }
 
-export interface ComplexityAnalysisResponse extends ApiResponse<ComplexityAnalysisResult> {}
+export interface ComplexityAnalysisResponse
+  extends ApiResponse<ComplexityAnalysisResult> {}
 
 export interface ComplexityAnalysisResult {
   overallComplexity: number;
@@ -340,7 +342,8 @@ export interface RepositoryValidateRequest {
   validateTaskMaster?: boolean;
 }
 
-export interface RepositoryValidateResponse extends ApiResponse<RepositoryValidationResult> {}
+export interface RepositoryValidateResponse
+  extends ApiResponse<RepositoryValidationResult> {}
 
 export interface RepositoryValidationResult {
   isValid: boolean;

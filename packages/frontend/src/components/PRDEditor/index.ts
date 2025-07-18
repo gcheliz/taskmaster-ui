@@ -1,6 +1,6 @@
 /**
  * PRD Editor Component Exports
- * 
+ *
  * This module provides comprehensive rich text editing capabilities for
  * Product Requirements Documents (PRDs) built on TipTap.
  */

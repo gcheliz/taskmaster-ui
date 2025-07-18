@@ -17,17 +17,26 @@ const schemas = {
             repositoryPath: {
                 type: 'string',
                 description: 'Absolute path to the repository',
-                example: '/Users/john/projects/my-app'
+                example: '/Users/john/projects/my-app',
             },
             operation: {
                 type: 'string',
-                enum: ['init', 'list', 'show', 'set-status', 'next', 'parse-prd', 'expand', 'analyze-complexity'],
-                description: 'TaskMaster CLI operation to execute'
+                enum: [
+                    'init',
+                    'list',
+                    'show',
+                    'set-status',
+                    'next',
+                    'parse-prd',
+                    'expand',
+                    'analyze-complexity',
+                ],
+                description: 'TaskMaster CLI operation to execute',
             },
             arguments: {
                 type: 'object',
                 description: 'Operation-specific arguments',
-                additionalProperties: true
+                additionalProperties: true,
             },
             options: {
                 type: 'object',
@@ -35,10 +44,10 @@ const schemas = {
                     timeout: { type: 'number', minimum: 1000, maximum: 300000 },
                     tag: { type: 'string' },
                     async: { type: 'boolean' },
-                    streaming: { type: 'boolean' }
-                }
-            }
-        }
+                    streaming: { type: 'boolean' },
+                },
+            },
+        },
     },
     ProjectStatusRequest: {
         type: 'object',
@@ -46,8 +55,8 @@ const schemas = {
         properties: {
             repositoryPath: { type: 'string' },
             includeStats: { type: 'boolean', default: false },
-            includeTasks: { type: 'boolean', default: false }
-        }
+            includeTasks: { type: 'boolean', default: false },
+        },
     },
     TaskListRequest: {
         type: 'object',
@@ -59,25 +68,33 @@ const schemas = {
                 properties: {
                     status: { type: 'array', items: { type: 'string' } },
                     priority: { type: 'array', items: { type: 'string' } },
-                    complexityRange: { type: 'array', items: { type: 'number' }, minItems: 2, maxItems: 2 },
-                    search: { type: 'string' }
-                }
+                    complexityRange: {
+                        type: 'array',
+                        items: { type: 'number' },
+                        minItems: 2,
+                        maxItems: 2,
+                    },
+                    search: { type: 'string' },
+                },
             },
             pagination: {
                 type: 'object',
                 properties: {
                     page: { type: 'number', minimum: 1, default: 1 },
-                    limit: { type: 'number', minimum: 1, maximum: 100, default: 50 }
-                }
+                    limit: { type: 'number', minimum: 1, maximum: 100, default: 50 },
+                },
             },
             sorting: {
                 type: 'object',
                 properties: {
-                    field: { type: 'string', enum: ['id', 'title', 'status', 'priority', 'complexity'] },
-                    direction: { type: 'string', enum: ['asc', 'desc'], default: 'asc' }
-                }
-            }
-        }
+                    field: {
+                        type: 'string',
+                        enum: ['id', 'title', 'status', 'priority', 'complexity'],
+                    },
+                    direction: { type: 'string', enum: ['asc', 'desc'], default: 'asc' },
+                },
+            },
+        },
     },
     TaskUpdateRequest: {
         type: 'object',
@@ -87,22 +104,25 @@ const schemas = {
             updates: {
                 type: 'object',
                 properties: {
-                    status: { type: 'string', enum: ['pending', 'in-progress', 'done', 'blocked', 'deferred'] },
+                    status: {
+                        type: 'string',
+                        enum: ['pending', 'in-progress', 'done', 'blocked', 'deferred'],
+                    },
                     priority: { type: 'string', enum: ['low', 'medium', 'high'] },
                     description: { type: 'string' },
-                    notes: { type: 'string' }
-                }
+                    notes: { type: 'string' },
+                },
             },
             options: {
                 type: 'object',
                 properties: {
                     validateDependencies: { type: 'boolean', default: false },
                     notifySubscribers: { type: 'boolean', default: true },
-                    createHistoryEntry: { type: 'boolean', default: true }
-                }
-            }
-        }
-    }
+                    createHistoryEntry: { type: 'boolean', default: true },
+                },
+            },
+        },
+    },
 };
 exports.taskMasterApiSchemas = schemas;
 // Route Factory Pattern
@@ -119,7 +139,7 @@ class TaskMasterRouteFactory {
                             field: 'arguments.id',
                             code: 'REQUIRED',
                             message: `Task ID is required for ${operation} operation`,
-                            value: args?.id
+                            value: args?.id,
                         });
                     }
                     break;
@@ -129,7 +149,7 @@ class TaskMasterRouteFactory {
                             field: 'arguments.id',
                             code: 'REQUIRED',
                             message: `Task ID is required for ${operation} operation`,
-                            value: args?.id
+                            value: args?.id,
                         });
                     }
                     if (!args?.status) {
@@ -137,7 +157,7 @@ class TaskMasterRouteFactory {
                             field: 'arguments.status',
                             code: 'REQUIRED',
                             message: 'Status is required for set-status operation',
-                            value: args?.status
+                            value: args?.status,
                         });
                     }
                     break;
@@ -147,7 +167,7 @@ class TaskMasterRouteFactory {
                             field: 'arguments.file',
                             code: 'REQUIRED',
                             message: 'PRD file path is required for parse-prd operation',
-                            value: args?.file
+                            value: args?.file,
                         });
                     }
                     break;
@@ -157,7 +177,7 @@ class TaskMasterRouteFactory {
                             field: 'arguments',
                             code: 'INVALID',
                             message: 'Either task ID or --all flag is required for expand operation',
-                            value: args
+                            value: args,
                         });
                     }
                     break;
@@ -175,7 +195,7 @@ class TaskMasterRouteFactory {
                         field: 'repositoryPath',
                         code: 'SECURITY_VIOLATION',
                         message: 'Repository path contains potentially dangerous characters',
-                        value: repositoryPath
+                        value: repositoryPath,
                     });
                 }
                 // Check path length
@@ -184,7 +204,7 @@ class TaskMasterRouteFactory {
                         field: 'repositoryPath',
                         code: 'TOO_LONG',
                         message: 'Repository path is too long',
-                        value: repositoryPath
+                        value: repositoryPath,
                     });
                 }
             }
@@ -203,7 +223,7 @@ class TaskMasterRouteFactory {
         const globalMiddleware = (0, middleware_1.composeMiddleware)((0, middleware_1.requestIdMiddleware)(), (0, middleware_1.loggingMiddleware)(), (0, middleware_1.securityHeadersMiddleware)(), (0, middleware_1.apiResponseMiddleware)(), (0, middleware_1.rateLimitMiddleware)({
             windowMs: 15 * 60 * 1000, // 15 minutes
             maxRequests: 100,
-            keyGenerator: (req) => `${req.ip}:${req.user?.id || 'anonymous'}`
+            keyGenerator: req => `${req.ip}:${req.user?.id || 'anonymous'}`,
         }));
         router.use(globalMiddleware);
         // Health Check Endpoint
@@ -253,12 +273,12 @@ class TaskMasterRouteFactory {
          */
         router.post('/cli/execute', (0, middleware_1.validationMiddleware)({
             bodySchema: {
-                required: ['repositoryPath', 'operation']
+                required: ['repositoryPath', 'operation'],
             },
             customValidators: [
                 this.validateCliOperation,
-                this.validateRepositoryAccess
-            ]
+                this.validateRepositoryAccess,
+            ],
         }), this.asyncHandler(this.controller.executeCommand.bind(this.controller)));
     }
     addProjectRoutes(router) {
@@ -295,8 +315,8 @@ class TaskMasterRouteFactory {
          */
         router.get('/project/status', (0, middleware_1.validationMiddleware)({
             querySchema: {
-                required: ['repositoryPath']
-            }
+                required: ['repositoryPath'],
+            },
         }), this.asyncHandler(this.controller.getProjectStatus.bind(this.controller)));
         /**
          * @openapi
@@ -309,13 +329,13 @@ class TaskMasterRouteFactory {
          */
         router.post('/project/init', (0, middleware_1.validationMiddleware)({
             bodySchema: {
-                required: ['repositoryPath']
-            }
+                required: ['repositoryPath'],
+            },
         }), this.asyncHandler(async (req, res) => {
             // Delegate to execute command with 'init' operation
             req.validatedBody = {
                 ...req.validatedBody,
-                operation: 'init'
+                operation: 'init',
             };
             await this.controller.executeCommand(req, res);
         }));
@@ -332,8 +352,8 @@ class TaskMasterRouteFactory {
          */
         router.get('/tasks', (0, middleware_1.validationMiddleware)({
             querySchema: {
-                required: ['repositoryPath']
-            }
+                required: ['repositoryPath'],
+            },
         }), this.asyncHandler(this.controller.listTasks.bind(this.controller)));
         /**
          * @openapi
@@ -353,8 +373,8 @@ class TaskMasterRouteFactory {
          */
         router.get('/tasks/:taskId', (0, middleware_1.validationMiddleware)({
             querySchema: {
-                required: ['repositoryPath']
-            }
+                required: ['repositoryPath'],
+            },
         }), this.asyncHandler(this.controller.getTask.bind(this.controller)));
         /**
          * @openapi
@@ -367,8 +387,8 @@ class TaskMasterRouteFactory {
          */
         router.put('/tasks/:taskId', (0, middleware_1.validationMiddleware)({
             bodySchema: {
-                required: ['repositoryPath', 'updates']
-            }
+                required: ['repositoryPath', 'updates'],
+            },
         }), this.asyncHandler(this.controller.updateTask.bind(this.controller)));
         /**
          * @openapi
@@ -381,8 +401,8 @@ class TaskMasterRouteFactory {
          */
         router.post('/tasks/:taskId/expand', (0, middleware_1.validationMiddleware)({
             bodySchema: {
-                required: ['repositoryPath']
-            }
+                required: ['repositoryPath'],
+            },
         }), this.asyncHandler(this.controller.expandTask.bind(this.controller)));
         /**
          * @openapi
@@ -395,12 +415,12 @@ class TaskMasterRouteFactory {
          */
         router.get('/tasks/next', (0, middleware_1.validationMiddleware)({
             querySchema: {
-                required: ['repositoryPath']
-            }
+                required: ['repositoryPath'],
+            },
         }), this.asyncHandler(async (req, res) => {
             req.validatedBody = {
                 repositoryPath: req.query.repositoryPath,
-                operation: 'next'
+                operation: 'next',
             };
             await this.controller.executeCommand(req, res);
         }));
@@ -417,8 +437,8 @@ class TaskMasterRouteFactory {
          */
         router.post('/analysis/complexity', (0, middleware_1.validationMiddleware)({
             bodySchema: {
-                required: ['repositoryPath']
-            }
+                required: ['repositoryPath'],
+            },
         }), this.asyncHandler(this.controller.analyzeComplexity.bind(this.controller)));
         /**
          * @openapi
@@ -431,12 +451,12 @@ class TaskMasterRouteFactory {
          */
         router.get('/analysis/dependencies', (0, middleware_1.validationMiddleware)({
             querySchema: {
-                required: ['repositoryPath']
-            }
+                required: ['repositoryPath'],
+            },
         }), this.asyncHandler(async (req, res) => {
             req.validatedBody = {
                 repositoryPath: req.query.repositoryPath,
-                operation: 'validate-dependencies'
+                operation: 'validate-dependencies',
             };
             await this.controller.executeCommand(req, res);
         }));
@@ -453,8 +473,8 @@ class TaskMasterRouteFactory {
          */
         router.get('/stream/commands', (0, middleware_1.validationMiddleware)({
             querySchema: {
-                required: ['repositoryPath', 'operation']
-            }
+                required: ['repositoryPath', 'operation'],
+            },
         }), this.asyncHandler(this.controller.streamCommand.bind(this.controller)));
     }
     // Helper Methods and Middleware
@@ -467,7 +487,7 @@ class TaskMasterRouteFactory {
                 version: process.env.API_VERSION || '1.0.0',
                 memory: process.memoryUsage(),
                 pid: process.pid,
-                environment: process.env.NODE_ENV || 'development'
+                environment: process.env.NODE_ENV || 'development',
             };
             res.apiSuccess(healthInfo);
         };
@@ -479,20 +499,20 @@ class TaskMasterRouteFactory {
                 info: {
                     title: 'TaskMaster CLI API',
                     version: '1.0.0',
-                    description: 'Advanced API for TaskMaster CLI integration with enterprise features'
+                    description: 'Advanced API for TaskMaster CLI integration with enterprise features',
                 },
                 servers: [
                     {
                         url: '/api',
-                        description: 'TaskMaster API Server'
-                    }
+                        description: 'TaskMaster API Server',
+                    },
                 ],
                 components: {
-                    schemas: schemas
+                    schemas: schemas,
                 },
                 paths: {
                 // OpenAPI paths would be auto-generated from route annotations
-                }
+                },
             };
             res.json(apiDocs);
         };

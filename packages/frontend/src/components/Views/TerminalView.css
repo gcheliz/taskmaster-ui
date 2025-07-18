@@ -5,7 +5,9 @@
   height: 100%;
   width: 100%;
   background-color: #f8f9fa;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, sans-serif;
 }
 
 .terminal-view__header {
@@ -464,12 +466,12 @@
   .view-switcher {
     width: 100%;
   }
-  
+
   .view-button {
     flex: 1;
     text-align: center;
   }
-  
+
   .command-workspace-container {
     padding: 16px;
   }

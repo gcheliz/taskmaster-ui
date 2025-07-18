@@ -23,9 +23,9 @@ if (require.main === module) {
     const realtimeSyncService = (0, realtimeTaskSyncService_1.createRealtimeTaskSyncService)(wsService, {
         enabled: true,
         debounceMs: 500,
-        maxRepositories: 10
+        maxRepositories: 10,
     });
-    realtimeSyncService.initialize().catch((error) => {
+    realtimeSyncService.initialize().catch(error => {
         console.error('Failed to initialize real-time sync service:', error);
     });
     // Handle graceful shutdown

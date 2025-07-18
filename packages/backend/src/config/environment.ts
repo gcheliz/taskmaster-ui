@@ -7,9 +7,11 @@ dotenv.config();
 // Environment validation schema
 const environmentSchema = z.object({
   // Application
-  NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+  NODE_ENV: z
+    .enum(['development', 'production', 'test'])
+    .default('development'),
   PORT: z.coerce.number().default(3001),
-  
+
   // Database
   DATABASE_URL: z.string().min(1, 'DATABASE_URL is required'),
   POSTGRES_HOST: z.string().optional(),
@@ -17,36 +19,42 @@ const environmentSchema = z.object({
   POSTGRES_USER: z.string().optional(),
   POSTGRES_PASSWORD: z.string().optional(),
   POSTGRES_DB: z.string().optional(),
-  
+
   // Security
-  JWT_SECRET: z.string().min(32, 'JWT_SECRET must be at least 32 characters').optional(),
-  ENCRYPTION_KEY: z.string().min(32, 'ENCRYPTION_KEY must be at least 32 characters').optional(),
-  
+  JWT_SECRET: z
+    .string()
+    .min(32, 'JWT_SECRET must be at least 32 characters')
+    .optional(),
+  ENCRYPTION_KEY: z
+    .string()
+    .min(32, 'ENCRYPTION_KEY must be at least 32 characters')
+    .optional(),
+
   // SSL/TLS
   DATABASE_SSL: z.enum(['true', 'false']).default('false'),
   SSL_CERT_PATH: z.string().optional(),
   SSL_KEY_PATH: z.string().optional(),
   SSL_CA_PATH: z.string().optional(),
-  
+
   // Performance
   ENABLE_QUERY_ANALYSIS: z.enum(['true', 'false']).default('false'),
   QUERY_TIMEOUT: z.coerce.number().default(30000),
   CONNECTION_POOL_SIZE: z.coerce.number().default(10),
-  
+
   // Integrations
   GITHUB_TOKEN: z.string().optional(),
   SLACK_BOT_TOKEN: z.string().optional(),
   ANTHROPIC_API_KEY: z.string().optional(),
-  
+
   // External Services
   REDIS_URL: z.string().optional(),
   EXTERNAL_API_BASE_URL: z.string().url().optional(),
-  
+
   // Monitoring
   DATADOG_API_KEY: z.string().optional(),
   DATADOG_APP_KEY: z.string().optional(),
   LOG_LEVEL: z.enum(['error', 'warn', 'info', 'debug']).default('info'),
-  
+
   // Development
   SEED_DATABASE: z.enum(['true', 'false']).default('false'),
   PRISMA_STUDIO_PORT: z.coerce.number().default(5555),
@@ -78,7 +86,10 @@ export const getDatabaseConfig = () => {
         url: env.DATABASE_URL,
       },
     },
-    log: env.LOG_LEVEL === 'debug' ? ['query', 'info', 'warn', 'error'] : ['warn', 'error'],
+    log:
+      env.LOG_LEVEL === 'debug'
+        ? ['query', 'info', 'warn', 'error']
+        : ['warn', 'error'],
     errorFormat: 'pretty',
   };
 
@@ -87,7 +98,7 @@ export const getDatabaseConfig = () => {
     // Import SSL validator to enforce SSL configuration
     const { enforceSSLConfiguration } = require('./ssl-validator');
     const sslConfig = enforceSSLConfiguration();
-    
+
     if (sslConfig.enabled) {
       config.ssl = {
         rejectUnauthorized: sslConfig.rejectUnauthorized,
@@ -106,20 +117,23 @@ export const getSecurityConfig = () => ({
   jwtSecret: env.JWT_SECRET || generateSecretKey(),
   encryptionKey: env.ENCRYPTION_KEY || generateSecretKey(),
   enableSsl: env.DATABASE_SSL === 'true',
-  corsOrigins: env.NODE_ENV === 'production' 
-    ? ['https://taskmaster.holded.com'] 
-    : ['http://localhost:3000', 'http://localhost:5173'],
+  corsOrigins:
+    env.NODE_ENV === 'production'
+      ? ['https://taskmaster.holded.com']
+      : ['http://localhost:3000', 'http://localhost:5173'],
 });
 
 // Generate a secure random key if not provided
 function generateSecretKey(): string {
   const crypto = require('crypto');
   const key = crypto.randomBytes(32).toString('hex');
-  
+
   if (env.NODE_ENV === 'production') {
-    console.warn('⚠️  Using auto-generated secret key. Set JWT_SECRET/ENCRYPTION_KEY in production!');
+    console.warn(
+      '⚠️  Using auto-generated secret key. Set JWT_SECRET/ENCRYPTION_KEY in production!'
+    );
   }
-  
+
   return key;
 }
 
@@ -129,11 +143,7 @@ export function validateProductionSecrets() {
     return;
   }
 
-  const requiredSecrets = [
-    'JWT_SECRET',
-    'ENCRYPTION_KEY',
-    'DATABASE_URL',
-  ];
+  const requiredSecrets = ['JWT_SECRET', 'ENCRYPTION_KEY', 'DATABASE_URL'];
 
   const missingSecrets = requiredSecrets.filter(
     secret => !process.env[secret] || process.env[secret]?.length === 0
@@ -144,7 +154,9 @@ export function validateProductionSecrets() {
     missingSecrets.forEach(secret => {
       console.error(`  - ${secret}`);
     });
-    console.error('Please set these environment variables before starting the application.');
+    console.error(
+      'Please set these environment variables before starting the application.'
+    );
     process.exit(1);
   }
 

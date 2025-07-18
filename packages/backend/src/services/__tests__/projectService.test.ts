@@ -11,7 +11,7 @@ describe('ProjectService', () => {
   beforeEach(() => {
     // Reset mocks
     jest.clearAllMocks();
-    
+
     // Create mock Prisma client
     mockPrisma = {
       project: {
@@ -28,11 +28,13 @@ describe('ProjectService', () => {
     // Mock DatabaseService
     const mockDbService = {
       getPrisma: jest.fn().mockReturnValue(mockPrisma),
-      transaction: jest.fn().mockImplementation((callback) => callback(mockPrisma)),
+      transaction: jest
+        .fn()
+        .mockImplementation(callback => callback(mockPrisma)),
     };
 
     (DatabaseService.getInstance as jest.Mock).mockReturnValue(mockDbService);
-    
+
     projectService = new ProjectService();
   });
 
@@ -41,7 +43,7 @@ describe('ProjectService', () => {
       const projectData = {
         name: 'Test Project',
         description: 'A test project',
-        path: '/test/path'
+        path: '/test/path',
       };
 
       const mockProject = {
@@ -52,7 +54,7 @@ describe('ProjectService', () => {
         createdAt: new Date(),
         updatedAt: new Date(),
         repositories: [],
-        tasks: []
+        tasks: [],
       };
 
       mockPrisma.project.create.mockResolvedValue(mockProject);
@@ -63,12 +65,12 @@ describe('ProjectService', () => {
         data: {
           name: projectData.name,
           description: projectData.description,
-          path: projectData.path
+          path: projectData.path,
         },
         include: {
           repositories: true,
-          tasks: true
-        }
+          tasks: true,
+        },
       });
 
       expect(result).toEqual(mockProject);
@@ -77,13 +79,15 @@ describe('ProjectService', () => {
     it('should handle database errors gracefully', async () => {
       const projectData = {
         name: 'Test Project',
-        path: '/test/path'
+        path: '/test/path',
       };
 
       const dbError = new Error('Database connection failed');
       mockPrisma.project.create.mockRejectedValue(dbError);
 
-      await expect(projectService.createProject(projectData)).rejects.toThrow(dbError);
+      await expect(projectService.createProject(projectData)).rejects.toThrow(
+        dbError
+      );
       expect(mockPrisma.project.create).toHaveBeenCalled();
     });
   });
@@ -97,7 +101,7 @@ describe('ProjectService', () => {
         path: '/test/path',
         repositories: [],
         tasks: [],
-        _count: { repositories: 0, tasks: 0 }
+        _count: { repositories: 0, tasks: 0 },
       };
 
       mockPrisma.project.findUnique.mockResolvedValue(mockProject);
@@ -111,21 +115,21 @@ describe('ProjectService', () => {
             include: {
               commits: {
                 orderBy: { timestamp: 'desc' },
-                take: 5
-              }
-            }
+                take: 5,
+              },
+            },
           },
           tasks: {
             orderBy: { createdAt: 'desc' },
-            take: 10
+            take: 10,
           },
           _count: {
             select: {
               repositories: true,
-              tasks: true
-            }
-          }
-        }
+              tasks: true,
+            },
+          },
+        },
       });
 
       expect(result).toEqual(mockProject);
@@ -145,7 +149,7 @@ describe('ProjectService', () => {
     it('should return existing project if found', async () => {
       const projectData = {
         name: 'Test Project',
-        path: '/test/path'
+        path: '/test/path',
       };
 
       const existingProject = {
@@ -153,7 +157,7 @@ describe('ProjectService', () => {
         name: 'Test Project',
         path: '/test/path',
         repositories: [],
-        tasks: []
+        tasks: [],
       };
 
       mockPrisma.project.findUnique.mockResolvedValue(existingProject);
@@ -164,8 +168,8 @@ describe('ProjectService', () => {
         where: { path: projectData.path },
         include: {
           repositories: true,
-          tasks: true
-        }
+          tasks: true,
+        },
       });
 
       expect(mockPrisma.project.create).not.toHaveBeenCalled();
@@ -176,7 +180,7 @@ describe('ProjectService', () => {
       const projectData = {
         name: 'Test Project',
         path: '/test/path',
-        description: 'A test project'
+        description: 'A test project',
       };
 
       const newProject = {
@@ -185,7 +189,7 @@ describe('ProjectService', () => {
         path: '/test/path',
         description: 'A test project',
         repositories: [],
-        tasks: []
+        tasks: [],
       };
 
       mockPrisma.project.findUnique.mockResolvedValue(null);
@@ -198,12 +202,12 @@ describe('ProjectService', () => {
         data: {
           name: projectData.name,
           description: projectData.description,
-          path: projectData.path
+          path: projectData.path,
         },
         include: {
           repositories: true,
-          tasks: true
-        }
+          tasks: true,
+        },
       });
 
       expect(result).toEqual(newProject);
@@ -221,10 +225,10 @@ describe('ProjectService', () => {
       const result = await projectService.deleteProject(projectId);
 
       expect(mockPrisma.project.findUnique).toHaveBeenCalledWith({
-        where: { id: projectId }
+        where: { id: projectId },
       });
       expect(mockPrisma.project.delete).toHaveBeenCalledWith({
-        where: { id: projectId }
+        where: { id: projectId },
       });
       expect(result).toBe(true);
     });
@@ -279,28 +283,28 @@ describe('ProjectService', () => {
     it('should throw descriptive errors for database failures', async () => {
       const projectData = {
         name: 'Test Project',
-        path: '/test/path'
+        path: '/test/path',
       };
 
       const dbError = new Error('Connection failed');
       mockPrisma.project.findUnique.mockRejectedValue(dbError);
 
-      await expect(projectService.findOrCreateProject(projectData))
-        .rejects
-        .toThrow('Failed to find or create project: Connection failed');
+      await expect(
+        projectService.findOrCreateProject(projectData)
+      ).rejects.toThrow('Failed to find or create project: Connection failed');
     });
 
     it('should handle unknown errors gracefully', async () => {
       const projectData = {
         name: 'Test Project',
-        path: '/test/path'
+        path: '/test/path',
       };
 
       mockPrisma.project.findUnique.mockRejectedValue('unknown error');
 
-      await expect(projectService.findOrCreateProject(projectData))
-        .rejects
-        .toThrow('Failed to find or create project: Unknown error');
+      await expect(
+        projectService.findOrCreateProject(projectData)
+      ).rejects.toThrow('Failed to find or create project: Unknown error');
     });
   });
 });

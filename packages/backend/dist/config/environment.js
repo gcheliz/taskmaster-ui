@@ -13,7 +13,9 @@ dotenv_1.default.config();
 // Environment validation schema
 const environmentSchema = zod_1.z.object({
     // Application
-    NODE_ENV: zod_1.z.enum(['development', 'production', 'test']).default('development'),
+    NODE_ENV: zod_1.z
+        .enum(['development', 'production', 'test'])
+        .default('development'),
     PORT: zod_1.z.coerce.number().default(3001),
     // Database
     DATABASE_URL: zod_1.z.string().min(1, 'DATABASE_URL is required'),
@@ -23,8 +25,14 @@ const environmentSchema = zod_1.z.object({
     POSTGRES_PASSWORD: zod_1.z.string().optional(),
     POSTGRES_DB: zod_1.z.string().optional(),
     // Security
-    JWT_SECRET: zod_1.z.string().min(32, 'JWT_SECRET must be at least 32 characters').optional(),
-    ENCRYPTION_KEY: zod_1.z.string().min(32, 'ENCRYPTION_KEY must be at least 32 characters').optional(),
+    JWT_SECRET: zod_1.z
+        .string()
+        .min(32, 'JWT_SECRET must be at least 32 characters')
+        .optional(),
+    ENCRYPTION_KEY: zod_1.z
+        .string()
+        .min(32, 'ENCRYPTION_KEY must be at least 32 characters')
+        .optional(),
     // SSL/TLS
     DATABASE_SSL: zod_1.z.enum(['true', 'false']).default('false'),
     SSL_CERT_PATH: zod_1.z.string().optional(),
@@ -74,7 +82,9 @@ const getDatabaseConfig = () => {
                 url: exports.env.DATABASE_URL,
             },
         },
-        log: exports.env.LOG_LEVEL === 'debug' ? ['query', 'info', 'warn', 'error'] : ['warn', 'error'],
+        log: exports.env.LOG_LEVEL === 'debug'
+            ? ['query', 'info', 'warn', 'error']
+            : ['warn', 'error'],
         errorFormat: 'pretty',
     };
     // Add SSL configuration if enabled
@@ -118,11 +128,7 @@ function validateProductionSecrets() {
     if (exports.env.NODE_ENV !== 'production') {
         return;
     }
-    const requiredSecrets = [
-        'JWT_SECRET',
-        'ENCRYPTION_KEY',
-        'DATABASE_URL',
-    ];
+    const requiredSecrets = ['JWT_SECRET', 'ENCRYPTION_KEY', 'DATABASE_URL'];
     const missingSecrets = requiredSecrets.filter(secret => !process.env[secret] || process.env[secret]?.length === 0);
     if (missingSecrets.length > 0) {
         console.error('❌ Missing required production secrets:');

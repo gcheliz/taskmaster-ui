@@ -70,7 +70,7 @@ class TerminalService extends events_1.EventEmitter {
             shell: defaultShell,
             isActive: true,
             createdAt: new Date(),
-            lastActivity: new Date()
+            lastActivity: new Date(),
         };
         this.sessions.set(sessionId, session);
         logger_1.logger.info(`Created terminal session ${sessionId} in ${cwd}`);
@@ -106,8 +106,8 @@ class TerminalService extends events_1.EventEmitter {
                     ...process.env,
                     TERM: 'xterm-256color',
                     COLUMNS: '80',
-                    LINES: '24'
-                }
+                    LINES: '24',
+                },
             });
             // Store the process reference
             session.process = childProcess;
@@ -117,7 +117,7 @@ class TerminalService extends events_1.EventEmitter {
                     type: 'stdout',
                     data: data.toString(),
                     sessionId,
-                    timestamp: new Date()
+                    timestamp: new Date(),
                 };
                 this.emit('output', output);
             });
@@ -127,7 +127,7 @@ class TerminalService extends events_1.EventEmitter {
                     type: 'stderr',
                     data: data.toString(),
                     sessionId,
-                    timestamp: new Date()
+                    timestamp: new Date(),
                 };
                 this.emit('output', output);
             });
@@ -137,7 +137,7 @@ class TerminalService extends events_1.EventEmitter {
                     type: 'exit',
                     data: `Process exited with code ${code}\\n`,
                     sessionId,
-                    timestamp: new Date()
+                    timestamp: new Date(),
                 };
                 this.emit('output', output);
                 // Clear the process reference
@@ -151,7 +151,7 @@ class TerminalService extends events_1.EventEmitter {
                     type: 'stderr',
                     data: `Error: ${error.message}\\n`,
                     sessionId,
-                    timestamp: new Date()
+                    timestamp: new Date(),
                 };
                 this.emit('output', output);
             });
@@ -161,7 +161,7 @@ class TerminalService extends events_1.EventEmitter {
                 type: 'stderr',
                 data: `Failed to execute command: ${error instanceof Error ? error.message : 'Unknown error'}\\n`,
                 sessionId,
-                timestamp: new Date()
+                timestamp: new Date(),
             };
             this.emit('output', output);
         }
@@ -207,7 +207,7 @@ class TerminalService extends events_1.EventEmitter {
             type: 'stdout',
             data: `Changed directory to ${newPath}\\n`,
             sessionId,
-            timestamp: new Date()
+            timestamp: new Date(),
         };
         this.emit('output', output);
     }
@@ -279,7 +279,7 @@ class TerminalService extends events_1.EventEmitter {
                     type: 'stdout',
                     data: `${session.workingDirectory}\\n`,
                     sessionId,
-                    timestamp: new Date()
+                    timestamp: new Date(),
                 };
                 this.emit('output', output);
                 break;
@@ -289,7 +289,7 @@ class TerminalService extends events_1.EventEmitter {
                     type: 'stdout',
                     data: '\\x1b[2J\\x1b[H',
                     sessionId,
-                    timestamp: new Date()
+                    timestamp: new Date(),
                 };
                 this.emit('output', clearOutput);
                 break;

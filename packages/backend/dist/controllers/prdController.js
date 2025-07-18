@@ -12,13 +12,13 @@ class PrdController {
         const startTime = Date.now();
         const requestId = `prd_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         try {
-            const { repositoryPath, prdContent, options = {} } = req.body;
+            const { repositoryPath, prdContent, options = {}, } = req.body;
             // Validate required fields
             if (!repositoryPath || !prdContent) {
                 res.status(400).json({
                     success: false,
                     error: 'Repository path and PRD content are required',
-                    executionTime: Date.now() - startTime
+                    executionTime: Date.now() - startTime,
                 });
                 return;
             }
@@ -27,7 +27,7 @@ class PrdController {
                 repositoryPath,
                 operation: 'analyze-prd',
                 tag: options.tag,
-                contentLength: prdContent.length
+                contentLength: prdContent.length,
             };
             logger_1.logger.info('Starting PRD analysis', context, 'controller');
             // Step 1: Save PRD content to temporary file
@@ -45,7 +45,7 @@ class PrdController {
                 res.status(500).json({
                     success: false,
                     error: 'Failed to process PRD content',
-                    executionTime: Date.now() - startTime
+                    executionTime: Date.now() - startTime,
                 });
                 return;
             }
@@ -53,14 +53,14 @@ class PrdController {
                 // Step 2: Parse PRD using task-master parse-prd
                 logger_1.logger.info('Parsing PRD content', context, 'controller');
                 const parseResult = await taskMasterService_1.taskMasterService.parsePRD(repositoryPath, tempFile, {
-                    append: options.append || false
+                    append: options.append || false,
                 });
                 if (!parseResult.success) {
                     logger_1.logger.error('PRD parsing failed', context, new Error(parseResult.error), 'controller');
                     res.status(500).json({
                         success: false,
                         error: `PRD parsing failed: ${parseResult.error}`,
-                        executionTime: Date.now() - startTime
+                        executionTime: Date.now() - startTime,
                     });
                     return;
                 }
@@ -68,34 +68,36 @@ class PrdController {
                 logger_1.logger.info('Performing complexity analysis', context, 'controller');
                 const complexityResult = await taskMasterService_1.taskMasterService.analyzeComplexity(repositoryPath, {
                     research: options.research || false,
-                    tag: options.tag
+                    tag: options.tag,
                 });
                 if (!complexityResult.success) {
                     logger_1.logger.warn('Complexity analysis failed, proceeding with parsed tasks only', context, 'controller');
                 }
                 // Step 4: Process and format results
                 const parsedTasks = this.extractTasksFromOutput(parseResult.output);
-                const complexityAnalysis = complexityResult.success ?
-                    this.extractComplexityFromOutput(complexityResult.output) : null;
+                const complexityAnalysis = complexityResult.success
+                    ? this.extractComplexityFromOutput(complexityResult.output)
+                    : null;
                 const summary = {
                     totalTasks: parsedTasks.length,
-                    averageComplexity: complexityAnalysis ?
-                        this.calculateAverageComplexity(complexityAnalysis) : 0,
-                    estimatedEffort: this.calculateEstimatedEffort(parsedTasks, complexityAnalysis)
+                    averageComplexity: complexityAnalysis
+                        ? this.calculateAverageComplexity(complexityAnalysis)
+                        : 0,
+                    estimatedEffort: this.calculateEstimatedEffort(parsedTasks, complexityAnalysis),
                 };
                 const response = {
                     success: true,
                     data: {
                         parsedTasks,
                         complexityAnalysis,
-                        summary
+                        summary,
                     },
-                    executionTime: Date.now() - startTime
+                    executionTime: Date.now() - startTime,
                 };
                 logger_1.logger.info('PRD analysis completed successfully', {
                     ...context,
                     tasksCount: parsedTasks.length,
-                    hasComplexityAnalysis: !!complexityAnalysis
+                    hasComplexityAnalysis: !!complexityAnalysis,
                 }, 'controller');
                 res.json(response);
             }
@@ -116,7 +118,7 @@ class PrdController {
             res.status(500).json({
                 success: false,
                 error: normalizedError.userMessage,
-                executionTime: Date.now() - startTime
+                executionTime: Date.now() - startTime,
             });
         }
     }
@@ -144,7 +146,7 @@ class PrdController {
                             title: taskMatch[2],
                             description: '',
                             status: 'pending',
-                            priority: 'medium'
+                            priority: 'medium',
                         };
                         inTaskSection = true;
                     }
@@ -152,7 +154,8 @@ class PrdController {
                 else if (inTaskSection && currentTask) {
                     // Add description lines
                     if (trimmed && !trimmed.startsWith('Task')) {
-                        currentTask.description += (currentTask.description ? '\n' : '') + trimmed;
+                        currentTask.description +=
+                            (currentTask.description ? '\n' : '') + trimmed;
                     }
                 }
             }
@@ -172,7 +175,7 @@ class PrdController {
                             title: match[1],
                             description: '',
                             status: 'pending',
-                            priority: 'medium'
+                            priority: 'medium',
                         });
                         taskId++;
                     }
@@ -196,8 +199,8 @@ class PrdController {
                 summary: {
                     totalTasks: 0,
                     averageComplexity: 0,
-                    complexityDistribution: {}
-                }
+                    complexityDistribution: {},
+                },
             };
             const lines = output.split('\n');
             for (const line of lines) {
@@ -209,7 +212,7 @@ class PrdController {
                         complexityData.tasks.push({
                             id: complexityMatch[1],
                             complexity: parseInt(complexityMatch[2]),
-                            level: this.getComplexityLevel(parseInt(complexityMatch[2]))
+                            level: this.getComplexityLevel(parseInt(complexityMatch[2])),
                         });
                     }
                 }
@@ -218,7 +221,8 @@ class PrdController {
             if (complexityData.tasks.length > 0) {
                 complexityData.summary.totalTasks = complexityData.tasks.length;
                 const totalComplexity = complexityData.tasks.reduce((sum, task) => sum + task.complexity, 0);
-                complexityData.summary.averageComplexity = totalComplexity / complexityData.tasks.length;
+                complexityData.summary.averageComplexity =
+                    totalComplexity / complexityData.tasks.length;
                 // Distribution
                 const distribution = {};
                 complexityData.tasks.forEach((task) => {
@@ -280,7 +284,7 @@ class PrdController {
             return '< 1 hour';
         if (totalHours < 8)
             return `${Math.round(totalHours)} hours`;
-        const days = Math.round(totalHours / 8 * 10) / 10;
+        const days = Math.round((totalHours / 8) * 10) / 10;
         return `${days} days`;
     }
     /**
@@ -297,9 +301,9 @@ class PrdController {
                 details: {
                     cliAvailable: true,
                     lastCheck: new Date().toISOString(),
-                    serviceReady: true
+                    serviceReady: true,
                 },
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
             });
         }
         catch (error) {
@@ -308,7 +312,7 @@ class PrdController {
                 service: 'prd-analysis',
                 healthy: false,
                 error: 'Health check failed',
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
             });
         }
     }

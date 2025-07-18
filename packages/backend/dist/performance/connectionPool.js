@@ -26,7 +26,7 @@ class AdvancedConnectionPool extends events_1.EventEmitter {
             maxRetries: 3,
             healthCheckInterval: 60000, // 1 minute
             enableMonitoring: true,
-            ...config
+            ...config,
         };
         this.statistics = {
             totalConnections: 0,
@@ -40,7 +40,7 @@ class AdvancedConnectionPool extends events_1.EventEmitter {
             averageAcquireTime: 0,
             averageConnectionLifetime: 0,
             healthyConnections: 0,
-            unhealthyConnections: 0
+            unhealthyConnections: 0,
         };
         this.initializePool();
     }
@@ -55,7 +55,9 @@ class AdvancedConnectionPool extends events_1.EventEmitter {
             if (availableConnection) {
                 this.markConnectionAsUsed(availableConnection);
                 this.updateAcquireStatistics(startTime);
-                this.emit('connection:acquired', { connectionId: availableConnection.id });
+                this.emit('connection:acquired', {
+                    connectionId: availableConnection.id,
+                });
                 return availableConnection;
             }
             // Create new connection if possible
@@ -70,7 +72,10 @@ class AdvancedConnectionPool extends events_1.EventEmitter {
             return await this.waitForConnection(startTime);
         }
         catch (error) {
-            this.emit('connection:acquire:error', { error, duration: performance.now() - startTime });
+            this.emit('connection:acquire:error', {
+                error,
+                duration: performance.now() - startTime,
+            });
             throw error;
         }
     }
@@ -101,7 +106,7 @@ class AdvancedConnectionPool extends events_1.EventEmitter {
         catch (error) {
             this.emit('connection:release:error', {
                 connectionId: connection.id,
-                error: error.message
+                error: error.message,
             });
             throw error;
         }
@@ -123,7 +128,7 @@ class AdvancedConnectionPool extends events_1.EventEmitter {
         catch (error) {
             this.emit('connection:destroy:error', {
                 connectionId: connection.id,
-                error: error.message
+                error: error.message,
             });
         }
     }
@@ -161,7 +166,7 @@ class AdvancedConnectionPool extends events_1.EventEmitter {
             await this.ensureMinimumConnections();
             this.emit('health:check:complete', {
                 checkedConnections: this.connections.size,
-                destroyedConnections: unhealthyConnections.length
+                destroyedConnections: unhealthyConnections.length,
             });
         }
         catch (error) {
@@ -184,7 +189,8 @@ class AdvancedConnectionPool extends events_1.EventEmitter {
         // Calculate connection age distribution
         const connectionAges = Array.from(this.connections.values()).map(conn => now - conn.createdAt);
         const avgAge = connectionAges.length > 0
-            ? connectionAges.reduce((sum, age) => sum + age, 0) / connectionAges.length
+            ? connectionAges.reduce((sum, age) => sum + age, 0) /
+                connectionAges.length
             : 0;
         return {
             ...stats,
@@ -196,13 +202,13 @@ class AdvancedConnectionPool extends events_1.EventEmitter {
                 connectionTurnover: stats.totalDestroyed > 0
                     ? stats.totalCreated / stats.totalDestroyed
                     : 0,
-                waitingRequestsRatio: stats.pendingRequests / Math.max(1, stats.totalConnections)
+                waitingRequestsRatio: stats.pendingRequests / Math.max(1, stats.totalConnections),
             },
             performance: {
                 averageAcquireTime: stats.averageAcquireTime,
                 throughput: stats.totalAcquired / Math.max(1, (now - this.startTime) / 1000),
-                errorRate: this.errorCount / Math.max(1, stats.totalAcquired)
-            }
+                errorRate: this.errorCount / Math.max(1, stats.totalAcquired),
+            },
         };
     }
     /**
@@ -244,10 +250,14 @@ class AdvancedConnectionPool extends events_1.EventEmitter {
                     });
                 }, this.config.healthCheckInterval);
             }
-            this.emit('pool:initialized', { minConnections: this.config.minConnections });
+            this.emit('pool:initialized', {
+                minConnections: this.config.minConnections,
+            });
         }
         catch (error) {
-            this.emit('pool:initialization:error', { error: error.message });
+            this.emit('pool:initialization:error', {
+                error: error.message,
+            });
             throw error;
         }
     }
@@ -255,13 +265,15 @@ class AdvancedConnectionPool extends events_1.EventEmitter {
         const currentCount = this.connections.size;
         const needed = this.config.minConnections - currentCount;
         if (needed > 0) {
-            const createPromises = Array(needed).fill(null).map(() => this.createConnection());
+            const createPromises = Array(needed)
+                .fill(null)
+                .map(() => this.createConnection());
             const results = await Promise.allSettled(createPromises);
             results.forEach((result, index) => {
                 if (result.status === 'rejected') {
                     this.emit('connection:create:error', {
                         error: result.reason?.message,
-                        attempt: index + 1
+                        attempt: index + 1,
                     });
                 }
             });
@@ -310,14 +322,15 @@ class AdvancedConnectionPool extends events_1.EventEmitter {
                     clearTimeout(timeout);
                     reject(error);
                 },
-                timestamp: Date.now()
+                timestamp: Date.now(),
             };
             this.pendingRequests.push(pendingRequest);
             this.statistics.pendingRequests = this.pendingRequests.length;
         });
     }
     async processPendingRequests() {
-        while (this.pendingRequests.length > 0 && this.availableConnections.length > 0) {
+        while (this.pendingRequests.length > 0 &&
+            this.availableConnections.length > 0) {
             const pending = this.pendingRequests.shift();
             const connection = this.availableConnections.shift();
             if (pending && connection) {
@@ -352,17 +365,16 @@ class AdvancedConnectionPool extends events_1.EventEmitter {
         const duration = performance.now() - startTime;
         const totalAcquired = this.statistics.totalAcquired;
         this.statistics.averageAcquireTime =
-            (this.statistics.averageAcquireTime * (totalAcquired - 1) + duration) / totalAcquired;
+            (this.statistics.averageAcquireTime * (totalAcquired - 1) + duration) /
+                totalAcquired;
     }
     updatePoolStatistics() {
         this.statistics.totalConnections = this.connections.size;
         this.statistics.availableConnections = this.availableConnections.length;
-        this.statistics.busyConnections = Array.from(this.connections.values())
-            .filter(c => c.inUse).length;
-        this.statistics.healthyConnections = Array.from(this.connections.values())
-            .filter(c => c.isHealthy).length;
-        this.statistics.unhealthyConnections = this.statistics.totalConnections -
-            this.statistics.healthyConnections;
+        this.statistics.busyConnections = Array.from(this.connections.values()).filter(c => c.inUse).length;
+        this.statistics.healthyConnections = Array.from(this.connections.values()).filter(c => c.isHealthy).length;
+        this.statistics.unhealthyConnections =
+            this.statistics.totalConnections - this.statistics.healthyConnections;
     }
 }
 exports.AdvancedConnectionPool = AdvancedConnectionPool;
@@ -388,7 +400,7 @@ class TaskMasterConnection {
         try {
             // In a real implementation, this would ping the TaskMaster CLI process
             // For now, simulate a health check
-            return this.isHealthy && (Date.now() - this.lastUsed) < 300000; // 5 minutes
+            return this.isHealthy && Date.now() - this.lastUsed < 300000; // 5 minutes
         }
         catch (error) {
             return false;
@@ -424,6 +436,6 @@ exports.taskMasterPool = new AdvancedConnectionPool(new TaskMasterConnectionFact
     maxConnections: 8,
     acquireTimeoutMs: 5000,
     idleTimeoutMs: 300000,
-    healthCheckInterval: 60000
+    healthCheckInterval: 60000,
 });
 //# sourceMappingURL=connectionPool.js.map

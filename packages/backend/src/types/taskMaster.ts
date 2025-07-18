@@ -29,7 +29,13 @@ export interface TaskMasterResult<T = any> {
 export interface TaskInfo {
   id: string;
   title: string;
-  status: 'pending' | 'in-progress' | 'done' | 'blocked' | 'deferred' | 'cancelled';
+  status:
+    | 'pending'
+    | 'in-progress'
+    | 'done'
+    | 'blocked'
+    | 'deferred'
+    | 'cancelled';
   priority: 'high' | 'medium' | 'low';
   dependencies?: string[];
   complexity?: number;
@@ -54,28 +60,67 @@ export interface ParsedTaskMasterOutput {
 // Service Interface - Defines contract for TaskMaster CLI operations
 export interface ITaskMasterService {
   // Project Management
-  initProject(path: string, options?: { prdFile?: string }): Promise<TaskMasterResult<ProjectInfo>>;
+  initProject(
+    path: string,
+    options?: { prdFile?: string }
+  ): Promise<TaskMasterResult<ProjectInfo>>;
   getProjectStatus(path: string): Promise<TaskMasterResult<ProjectInfo>>;
-  
+
   // Task Management
-  listTasks(path: string, options?: { status?: string; tag?: string }): Promise<TaskMasterResult<TaskInfo[]>>;
-  getTask(path: string, taskId: string, options?: { tag?: string }): Promise<TaskMasterResult<TaskInfo>>;
-  updateTaskStatus(path: string, taskId: string, status: string, options?: { tag?: string }): Promise<TaskMasterResult<TaskInfo>>;
-  getNextTask(path: string, options?: { tag?: string }): Promise<TaskMasterResult<TaskInfo | null>>;
-  
+  listTasks(
+    path: string,
+    options?: { status?: string; tag?: string }
+  ): Promise<TaskMasterResult<TaskInfo[]>>;
+  getTask(
+    path: string,
+    taskId: string,
+    options?: { tag?: string }
+  ): Promise<TaskMasterResult<TaskInfo>>;
+  updateTaskStatus(
+    path: string,
+    taskId: string,
+    status: string,
+    options?: { tag?: string }
+  ): Promise<TaskMasterResult<TaskInfo>>;
+  getNextTask(
+    path: string,
+    options?: { tag?: string }
+  ): Promise<TaskMasterResult<TaskInfo | null>>;
+
   // Advanced Operations
-  parsePRD(path: string, prdFile: string, options?: { append?: boolean }): Promise<TaskMasterResult>;
-  expandTask(path: string, taskId: string, options?: { research?: boolean; force?: boolean; tag?: string }): Promise<TaskMasterResult>;
-  analyzeComplexity(path: string, options?: { from?: number; to?: number; research?: boolean; tag?: string }): Promise<TaskMasterResult>;
-  
+  parsePRD(
+    path: string,
+    prdFile: string,
+    options?: { append?: boolean }
+  ): Promise<TaskMasterResult>;
+  expandTask(
+    path: string,
+    taskId: string,
+    options?: { research?: boolean; force?: boolean; tag?: string }
+  ): Promise<TaskMasterResult>;
+  analyzeComplexity(
+    path: string,
+    options?: { from?: number; to?: number; research?: boolean; tag?: string }
+  ): Promise<TaskMasterResult>;
+
   // Utility Operations
-  validateDependencies(path: string, options?: { tag?: string }): Promise<TaskMasterResult>;
-  generateReport(path: string, type: 'complexity' | 'progress', options?: { tag?: string }): Promise<TaskMasterResult>;
+  validateDependencies(
+    path: string,
+    options?: { tag?: string }
+  ): Promise<TaskMasterResult>;
+  generateReport(
+    path: string,
+    type: 'complexity' | 'progress',
+    options?: { tag?: string }
+  ): Promise<TaskMasterResult>;
 }
 
 // Command Builder Interface - For constructing CLI commands
 export interface ITaskMasterCommandBuilder {
-  buildCommand(operation: string, args?: Record<string, any>): TaskMasterCommand;
+  buildCommand(
+    operation: string,
+    args?: Record<string, any>
+  ): TaskMasterCommand;
   validateCommand(command: TaskMasterCommand): boolean;
   getAvailableCommands(): TaskMasterCommand[];
 }
@@ -91,6 +136,9 @@ export interface ITaskMasterOutputParser {
 // Configuration Interface
 export interface ITaskMasterConfigManager {
   getConfig(repositoryPath: string): Promise<TaskMasterConfig>;
-  updateConfig(repositoryPath: string, config: Partial<TaskMasterConfig>): Promise<void>;
+  updateConfig(
+    repositoryPath: string,
+    config: Partial<TaskMasterConfig>
+  ): Promise<void>;
   validateConfig(config: TaskMasterConfig): boolean;
 }

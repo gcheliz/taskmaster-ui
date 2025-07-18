@@ -11,7 +11,13 @@ export interface TerminalSession {
 }
 
 export interface TerminalWebSocketMessage {
-  type: 'command' | 'input' | 'kill' | 'resize' | 'create-session' | 'close-session';
+  type:
+    | 'command'
+    | 'input'
+    | 'kill'
+    | 'resize'
+    | 'create-session'
+    | 'close-session';
   sessionId?: string;
   data?: any;
 }
@@ -62,7 +68,9 @@ export class TerminalService {
   /**
    * Create a new terminal session
    */
-  async createSession(request: CreateTerminalSessionRequest): Promise<CreateTerminalSessionResponse> {
+  async createSession(
+    request: CreateTerminalSessionRequest
+  ): Promise<CreateTerminalSessionResponse> {
     try {
       const response = await fetch(`${this.baseUrl}/terminal/sessions`, {
         method: 'POST',
@@ -71,18 +79,26 @@ export class TerminalService {
         },
         body: JSON.stringify(request),
       });
-      
+
       if (!response.ok) {
-        throw new ApiError('TERMINAL_ERROR', `Failed to create session: ${response.statusText}`, response.status);
+        throw new ApiError(
+          'TERMINAL_ERROR',
+          `Failed to create session: ${response.statusText}`,
+          response.status
+        );
       }
-      
+
       const data = await response.json();
       return data.data || data;
     } catch (error) {
       if (error instanceof ApiError) {
         throw error;
       }
-      throw new ApiError('NETWORK_ERROR', 'Failed to create terminal session', 500);
+      throw new ApiError(
+        'NETWORK_ERROR',
+        'Failed to create terminal session',
+        500
+      );
     }
   }
 
@@ -91,31 +107,45 @@ export class TerminalService {
    */
   async getSession(sessionId: string): Promise<TerminalSession> {
     try {
-      const response = await fetch(`${this.baseUrl}/terminal/sessions/${sessionId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      
+      const response = await fetch(
+        `${this.baseUrl}/terminal/sessions/${sessionId}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
       if (!response.ok) {
-        throw new ApiError('TERMINAL_ERROR', `Failed to get session: ${response.statusText}`, response.status);
+        throw new ApiError(
+          'TERMINAL_ERROR',
+          `Failed to get session: ${response.statusText}`,
+          response.status
+        );
       }
-      
+
       const data = await response.json();
       return data.data || data;
     } catch (error) {
       if (error instanceof ApiError) {
         throw error;
       }
-      throw new ApiError('NETWORK_ERROR', 'Failed to get terminal session', 500);
+      throw new ApiError(
+        'NETWORK_ERROR',
+        'Failed to get terminal session',
+        500
+      );
     }
   }
 
   /**
    * Get all active terminal sessions
    */
-  async getActiveSessions(): Promise<{ sessions: TerminalSession[]; count: number }> {
+  async getActiveSessions(): Promise<{
+    sessions: TerminalSession[];
+    count: number;
+  }> {
     try {
       const response = await fetch(`${this.baseUrl}/terminal/sessions`, {
         method: 'GET',
@@ -123,11 +153,15 @@ export class TerminalService {
           'Content-Type': 'application/json',
         },
       });
-      
+
       if (!response.ok) {
-        throw new ApiError('TERMINAL_ERROR', `Failed to get sessions: ${response.statusText}`, response.status);
+        throw new ApiError(
+          'TERMINAL_ERROR',
+          `Failed to get sessions: ${response.statusText}`,
+          response.status
+        );
       }
-      
+
       const data = await response.json();
       return data.data || data;
     } catch (error) {
@@ -141,18 +175,28 @@ export class TerminalService {
   /**
    * Execute a command in a terminal session
    */
-  async executeCommand(sessionId: string, request: ExecuteCommandRequest): Promise<void> {
+  async executeCommand(
+    sessionId: string,
+    request: ExecuteCommandRequest
+  ): Promise<void> {
     try {
-      const response = await fetch(`${this.baseUrl}/terminal/sessions/${sessionId}/execute`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(request),
-      });
-      
+      const response = await fetch(
+        `${this.baseUrl}/terminal/sessions/${sessionId}/execute`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(request),
+        }
+      );
+
       if (!response.ok) {
-        throw new ApiError('TERMINAL_ERROR', `Failed to execute command: ${response.statusText}`, response.status);
+        throw new ApiError(
+          'TERMINAL_ERROR',
+          `Failed to execute command: ${response.statusText}`,
+          response.status
+        );
       }
     } catch (error) {
       if (error instanceof ApiError) {
@@ -167,16 +211,23 @@ export class TerminalService {
    */
   async sendInput(sessionId: string, request: SendInputRequest): Promise<void> {
     try {
-      const response = await fetch(`${this.baseUrl}/terminal/sessions/${sessionId}/input`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(request),
-      });
-      
+      const response = await fetch(
+        `${this.baseUrl}/terminal/sessions/${sessionId}/input`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(request),
+        }
+      );
+
       if (!response.ok) {
-        throw new ApiError('TERMINAL_ERROR', `Failed to send input: ${response.statusText}`, response.status);
+        throw new ApiError(
+          'TERMINAL_ERROR',
+          `Failed to send input: ${response.statusText}`,
+          response.status
+        );
       }
     } catch (error) {
       if (error instanceof ApiError) {
@@ -191,15 +242,22 @@ export class TerminalService {
    */
   async killProcess(sessionId: string): Promise<void> {
     try {
-      const response = await fetch(`${this.baseUrl}/terminal/sessions/${sessionId}/kill`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      
+      const response = await fetch(
+        `${this.baseUrl}/terminal/sessions/${sessionId}/kill`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
       if (!response.ok) {
-        throw new ApiError('TERMINAL_ERROR', `Failed to kill process: ${response.statusText}`, response.status);
+        throw new ApiError(
+          'TERMINAL_ERROR',
+          `Failed to kill process: ${response.statusText}`,
+          response.status
+        );
       }
     } catch (error) {
       if (error instanceof ApiError) {
@@ -212,18 +270,28 @@ export class TerminalService {
   /**
    * Change working directory for a session
    */
-  async changeDirectory(sessionId: string, request: ChangeDirectoryRequest): Promise<void> {
+  async changeDirectory(
+    sessionId: string,
+    request: ChangeDirectoryRequest
+  ): Promise<void> {
     try {
-      const response = await fetch(`${this.baseUrl}/terminal/sessions/${sessionId}/cd`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(request),
-      });
-      
+      const response = await fetch(
+        `${this.baseUrl}/terminal/sessions/${sessionId}/cd`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(request),
+        }
+      );
+
       if (!response.ok) {
-        throw new ApiError('TERMINAL_ERROR', `Failed to change directory: ${response.statusText}`, response.status);
+        throw new ApiError(
+          'TERMINAL_ERROR',
+          `Failed to change directory: ${response.statusText}`,
+          response.status
+        );
       }
     } catch (error) {
       if (error instanceof ApiError) {
@@ -238,15 +306,22 @@ export class TerminalService {
    */
   async closeSession(sessionId: string): Promise<void> {
     try {
-      const response = await fetch(`${this.baseUrl}/terminal/sessions/${sessionId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      
+      const response = await fetch(
+        `${this.baseUrl}/terminal/sessions/${sessionId}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
       if (!response.ok) {
-        throw new ApiError('TERMINAL_ERROR', `Failed to close session: ${response.statusText}`, response.status);
+        throw new ApiError(
+          'TERMINAL_ERROR',
+          `Failed to close session: ${response.statusText}`,
+          response.status
+        );
       }
     } catch (error) {
       if (error instanceof ApiError) {
@@ -277,24 +352,32 @@ export class TerminalService {
   /**
    * Create a terminal session through WebSocket
    */
-  createWebSocketSession(ws: WebSocket, workingDirectory?: string, repositoryPath?: string): void {
+  createWebSocketSession(
+    ws: WebSocket,
+    workingDirectory?: string,
+    repositoryPath?: string
+  ): void {
     this.sendWebSocketMessage(ws, {
       type: 'create-session',
       data: {
         workingDirectory,
-        repositoryPath
-      }
+        repositoryPath,
+      },
     });
   }
 
   /**
    * Execute a command through WebSocket
    */
-  executeWebSocketCommand(ws: WebSocket, sessionId: string, command: string): void {
+  executeWebSocketCommand(
+    ws: WebSocket,
+    sessionId: string,
+    command: string
+  ): void {
     this.sendWebSocketMessage(ws, {
       type: 'command',
       sessionId,
-      data: { command }
+      data: { command },
     });
   }
 
@@ -305,7 +388,7 @@ export class TerminalService {
     this.sendWebSocketMessage(ws, {
       type: 'input',
       sessionId,
-      data: { input }
+      data: { input },
     });
   }
 
@@ -315,18 +398,23 @@ export class TerminalService {
   killWebSocketProcess(ws: WebSocket, sessionId: string): void {
     this.sendWebSocketMessage(ws, {
       type: 'kill',
-      sessionId
+      sessionId,
     });
   }
 
   /**
    * Resize terminal through WebSocket
    */
-  resizeWebSocketTerminal(ws: WebSocket, sessionId: string, cols: number, rows: number): void {
+  resizeWebSocketTerminal(
+    ws: WebSocket,
+    sessionId: string,
+    cols: number,
+    rows: number
+  ): void {
     this.sendWebSocketMessage(ws, {
       type: 'resize',
       sessionId,
-      data: { cols, rows }
+      data: { cols, rows },
     });
   }
 
@@ -336,7 +424,7 @@ export class TerminalService {
   closeWebSocketSession(ws: WebSocket, sessionId: string): void {
     this.sendWebSocketMessage(ws, {
       type: 'close-session',
-      sessionId
+      sessionId,
     });
   }
 }

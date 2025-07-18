@@ -10,7 +10,7 @@ describe('AdvancedCacheManager', () => {
     cache = new AdvancedCacheManager<string>({
       maxSize: 5,
       defaultTTL: 1000,
-      enableStatistics: true
+      enableStatistics: true,
     });
   });
 
@@ -32,12 +32,12 @@ describe('AdvancedCacheManager', () => {
 
     it('should handle TTL expiration', async () => {
       await cache.set('key1', 'value1', 100); // 100ms TTL
-      
+
       let result = await cache.get('key1');
       expect(result).toBe('value1');
-      
+
       await new Promise(resolve => setTimeout(resolve, 150));
-      
+
       result = await cache.get('key1');
       expect(result).toBeNull();
     });
@@ -45,7 +45,7 @@ describe('AdvancedCacheManager', () => {
     it('should delete specific keys', async () => {
       await cache.set('key1', 'value1');
       expect(await cache.get('key1')).toBe('value1');
-      
+
       const deleted = cache.delete('key1');
       expect(deleted).toBe(true);
       expect(await cache.get('key1')).toBeNull();
@@ -79,7 +79,7 @@ describe('AdvancedCacheManager', () => {
       await cache.set('key3', 'value3');
 
       const results = await cache.mget(['key1', 'key2', 'key3', 'nonexistent']);
-      
+
       expect(results.get('key1')).toBe('value1');
       expect(results.get('key2')).toBe('value2');
       expect(results.get('key3')).toBe('value3');
@@ -90,7 +90,7 @@ describe('AdvancedCacheManager', () => {
       const entries = [
         { key: 'key1', value: 'value1' },
         { key: 'key2', value: 'value2' },
-        { key: 'key3', value: 'value3' }
+        { key: 'key3', value: 'value3' },
       ];
 
       await cache.mset(entries);
@@ -111,7 +111,7 @@ describe('AdvancedCacheManager', () => {
 
     it('should invalidate by pattern', () => {
       const count = cache.invalidate({
-        pattern: /^user:/
+        pattern: /^user:/,
       });
 
       expect(count).toBe(2);
@@ -119,7 +119,7 @@ describe('AdvancedCacheManager', () => {
 
     it('should invalidate by custom predicate', () => {
       const count = cache.invalidate({
-        customPredicate: (entry) => entry.key.includes('post')
+        customPredicate: entry => entry.key.includes('post'),
       });
 
       expect(count).toBe(1);
@@ -129,10 +129,10 @@ describe('AdvancedCacheManager', () => {
   describe('Statistics', () => {
     it('should track hit and miss statistics', async () => {
       await cache.set('key1', 'value1');
-      
+
       // Hit
       await cache.get('key1');
-      
+
       // Miss
       await cache.get('nonexistent');
 
@@ -156,7 +156,7 @@ describe('AdvancedCacheManager', () => {
     it('should warm cache with provided function', async () => {
       const warmupFunction = async () => [
         { key: 'warm1', value: 'warmed1' },
-        { key: 'warm2', value: 'warmed2' }
+        { key: 'warm2', value: 'warmed2' },
       ];
 
       await cache.warm(warmupFunction);
@@ -170,12 +170,12 @@ describe('AdvancedCacheManager', () => {
     it('should clean up expired entries', async () => {
       await cache.set('key1', 'value1', 100); // 100ms TTL
       await cache.set('key2', 'value2', 5000); // 5s TTL
-      
+
       await new Promise(resolve => setTimeout(resolve, 150));
-      
+
       const cleanedCount = cache.cleanup();
       expect(cleanedCount).toBe(1);
-      
+
       expect(await cache.get('key1')).toBeNull();
       expect(await cache.get('key2')).toBe('value2');
     });
@@ -183,12 +183,12 @@ describe('AdvancedCacheManager', () => {
     it('should clear all entries', async () => {
       await cache.set('key1', 'value1');
       await cache.set('key2', 'value2');
-      
+
       cache.clear();
-      
+
       expect(await cache.get('key1')).toBeNull();
       expect(await cache.get('key2')).toBeNull();
-      
+
       const stats = cache.getStatistics();
       expect(stats.entryCount).toBe(0);
     });
@@ -201,7 +201,7 @@ describe('AdvancedCacheManager', () => {
       await cache.get('nonexistent');
 
       const metrics = cache.getPerformanceMetrics();
-      
+
       expect(metrics.hotKeys).toBeDefined();
       expect(metrics.ageDistribution).toBeDefined();
       expect(metrics.efficiency).toBeDefined();
@@ -229,36 +229,75 @@ describe('CommandResultCache', () => {
       const result = { success: true, data: ['task1', 'task2'] };
 
       await commandCache.cacheCommandResult(repoPath, operation, args, result);
-      
-      const cached = await commandCache.getCachedCommandResult(repoPath, operation, args);
+
+      const cached = await commandCache.getCachedCommandResult(
+        repoPath,
+        operation,
+        args
+      );
       expect(cached).toEqual(result);
     });
 
     it('should invalidate repository-specific cache', async () => {
       const repoPath = '/test/repo';
-      
-      await commandCache.cacheCommandResult(repoPath, 'list', {}, { data: 'test1' });
-      await commandCache.cacheCommandResult(repoPath, 'status', {}, { data: 'test2' });
-      await commandCache.cacheCommandResult('/other/repo', 'list', {}, { data: 'test3' });
+
+      await commandCache.cacheCommandResult(
+        repoPath,
+        'list',
+        {},
+        { data: 'test1' }
+      );
+      await commandCache.cacheCommandResult(
+        repoPath,
+        'status',
+        {},
+        { data: 'test2' }
+      );
+      await commandCache.cacheCommandResult(
+        '/other/repo',
+        'list',
+        {},
+        { data: 'test3' }
+      );
 
       const invalidated = commandCache.invalidateRepository(repoPath);
       expect(invalidated).toBe(2);
 
-      expect(await commandCache.getCachedCommandResult(repoPath, 'list', {})).toBeNull();
-      expect(await commandCache.getCachedCommandResult(repoPath, 'status', {})).toBeNull();
-      expect(await commandCache.getCachedCommandResult('/other/repo', 'list', {})).toEqual({ data: 'test3' });
+      expect(
+        await commandCache.getCachedCommandResult(repoPath, 'list', {})
+      ).toBeNull();
+      expect(
+        await commandCache.getCachedCommandResult(repoPath, 'status', {})
+      ).toBeNull();
+      expect(
+        await commandCache.getCachedCommandResult('/other/repo', 'list', {})
+      ).toEqual({ data: 'test3' });
     });
 
     it('should use different TTLs for different operations', async () => {
       const repoPath = '/test/repo';
-      
-      await commandCache.cacheCommandResult(repoPath, 'next', {}, { data: 'next' });
-      await commandCache.cacheCommandResult(repoPath, 'complexity', {}, { data: 'complex' });
+
+      await commandCache.cacheCommandResult(
+        repoPath,
+        'next',
+        {},
+        { data: 'next' }
+      );
+      await commandCache.cacheCommandResult(
+        repoPath,
+        'complexity',
+        {},
+        { data: 'complex' }
+      );
 
       // Check that different operations have different cache lifetimes
       // (This is more of a configuration test - actual TTL testing would require waiting)
-      expect(await commandCache.getCachedCommandResult(repoPath, 'next', {})).toEqual({ data: 'next' });
-      expect(await commandCache.getCachedCommandResult(repoPath, 'complexity', {})).toEqual({ data: 'complex' });
+      expect(
+        await commandCache.getCachedCommandResult(repoPath, 'next', {})
+      ).toEqual({ data: 'next' });
+      expect(
+        await commandCache.getCachedCommandResult(repoPath, 'complexity', {})
+      ).toEqual({ data: 'complex' });
     });
   });
 
@@ -266,14 +305,30 @@ describe('CommandResultCache', () => {
     it('should generate different keys for different arguments', async () => {
       const repoPath = '/test/repo';
       const operation = 'show';
-      
-      await commandCache.cacheCommandResult(repoPath, operation, { id: '1' }, { data: 'task1' });
-      await commandCache.cacheCommandResult(repoPath, operation, { id: '2' }, { data: 'task2' });
 
-      expect(await commandCache.getCachedCommandResult(repoPath, operation, { id: '1' }))
-        .toEqual({ data: 'task1' });
-      expect(await commandCache.getCachedCommandResult(repoPath, operation, { id: '2' }))
-        .toEqual({ data: 'task2' });
+      await commandCache.cacheCommandResult(
+        repoPath,
+        operation,
+        { id: '1' },
+        { data: 'task1' }
+      );
+      await commandCache.cacheCommandResult(
+        repoPath,
+        operation,
+        { id: '2' },
+        { data: 'task2' }
+      );
+
+      expect(
+        await commandCache.getCachedCommandResult(repoPath, operation, {
+          id: '1',
+        })
+      ).toEqual({ data: 'task1' });
+      expect(
+        await commandCache.getCachedCommandResult(repoPath, operation, {
+          id: '2',
+        })
+      ).toEqual({ data: 'task2' });
     });
 
     it('should handle special characters in repository paths', async () => {
@@ -282,8 +337,12 @@ describe('CommandResultCache', () => {
       const result = { data: 'test' };
 
       await commandCache.cacheCommandResult(repoPath, operation, {}, result);
-      
-      const cached = await commandCache.getCachedCommandResult(repoPath, operation, {});
+
+      const cached = await commandCache.getCachedCommandResult(
+        repoPath,
+        operation,
+        {}
+      );
       expect(cached).toEqual(result);
     });
   });

@@ -30,7 +30,7 @@ export interface Task {
   dueDate?: string;
 }
 
-export type TaskStatus = 
+export type TaskStatus =
   | 'pending'
   | 'in-progress'
   | 'done'
@@ -38,11 +38,7 @@ export type TaskStatus =
   | 'cancelled'
   | 'deferred';
 
-export type TaskPriority = 
-  | 'low'
-  | 'medium'
-  | 'high'
-  | 'urgent';
+export type TaskPriority = 'low' | 'medium' | 'high' | 'urgent';
 
 export interface TaskMetadata {
   created: string;
@@ -124,36 +120,36 @@ export const DEFAULT_COLUMNS: Omit<TaskColumn, 'tasks'>[] = [
     title: 'To Do',
     status: 'pending',
     color: '#6b7280',
-    limit: 10
+    limit: 10,
   },
   {
     id: 'in-progress',
     title: 'In Progress',
     status: 'in-progress',
     color: '#3b82f6',
-    limit: 5
+    limit: 5,
   },
   {
     id: 'done',
     title: 'Done',
     status: 'done',
     color: '#10b981',
-    limit: 20
+    limit: 20,
   },
   {
     id: 'blocked',
     title: 'Blocked',
     status: 'blocked',
     color: '#ef4444',
-    limit: 5
+    limit: 5,
   },
   {
     id: 'deferred',
     title: 'Deferred',
     status: 'deferred',
     color: '#f59e0b',
-    limit: 10
-  }
+    limit: 10,
+  },
 ];
 
 // Task utilities
@@ -162,15 +158,21 @@ export const getTasksByStatus = (tasks: Task[], status: TaskStatus): Task[] => {
 };
 
 export const getTaskStats = (tasks: Task[]): TaskStats => {
-  const byStatus = tasks.reduce((acc, task) => {
-    acc[task.status] = (acc[task.status] || 0) + 1;
-    return acc;
-  }, {} as Record<TaskStatus, number>);
+  const byStatus = tasks.reduce(
+    (acc, task) => {
+      acc[task.status] = (acc[task.status] || 0) + 1;
+      return acc;
+    },
+    {} as Record<TaskStatus, number>
+  );
 
-  const byPriority = tasks.reduce((acc, task) => {
-    acc[task.priority] = (acc[task.priority] || 0) + 1;
-    return acc;
-  }, {} as Record<TaskPriority, number>);
+  const byPriority = tasks.reduce(
+    (acc, task) => {
+      acc[task.priority] = (acc[task.priority] || 0) + 1;
+      return acc;
+    },
+    {} as Record<TaskPriority, number>
+  );
 
   const completed = byStatus.done || 0;
   const total = tasks.length;
@@ -184,7 +186,7 @@ export const getTaskStats = (tasks: Task[]): TaskStats => {
     inProgress: byStatus['in-progress'] || 0,
     pending: byStatus.pending || 0,
     blocked: byStatus.blocked || 0,
-    completionRate
+    completionRate,
   };
 };
 
@@ -201,19 +203,28 @@ export const filterTasks = (tasks: Task[], filters: TaskFilters): Task[] => {
     }
 
     // Assigned to filter
-    if (filters.assignedTo && task.assignedTo && !filters.assignedTo.includes(task.assignedTo)) {
+    if (
+      filters.assignedTo &&
+      task.assignedTo &&
+      !filters.assignedTo.includes(task.assignedTo)
+    ) {
       return false;
     }
 
     // Tags filter
-    if (filters.tags && task.tags && !filters.tags.some(tag => task.tags!.includes(tag))) {
+    if (
+      filters.tags &&
+      task.tags &&
+      !filters.tags.some(tag => task.tags!.includes(tag))
+    ) {
       return false;
     }
 
     // Search filter
     if (filters.search) {
       const searchTerm = filters.search.toLowerCase();
-      const searchableText = `${task.title} ${task.description} ${task.details || ''}`.toLowerCase();
+      const searchableText =
+        `${task.title} ${task.description} ${task.details || ''}`.toLowerCase();
       if (!searchableText.includes(searchTerm)) {
         return false;
       }
@@ -223,7 +234,10 @@ export const filterTasks = (tasks: Task[], filters: TaskFilters): Task[] => {
   });
 };
 
-export const sortTasks = (tasks: Task[], sortOptions: TaskSortOptions): Task[] => {
+export const sortTasks = (
+  tasks: Task[],
+  sortOptions: TaskSortOptions
+): Task[] => {
   return [...tasks].sort((a, b) => {
     const aValue = a[sortOptions.field];
     const bValue = b[sortOptions.field];

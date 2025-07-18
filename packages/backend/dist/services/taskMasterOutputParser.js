@@ -6,7 +6,8 @@ exports.taskMasterOutputParser = exports.TaskMasterOutputParser = void 0;
  */
 class TaskListParsingStrategy {
     canParse(output, command) {
-        return command.includes('list') && (output.includes('┌') || output.includes('Task Files'));
+        return (command.includes('list') &&
+            (output.includes('┌') || output.includes('Task Files')));
     }
     parse(output) {
         const results = [];
@@ -24,7 +25,7 @@ class TaskListParsingStrategy {
                     status: this.parseStatus(status.trim()),
                     priority: priority.trim().toLowerCase(),
                 },
-                metadata: { type: 'task' }
+                metadata: { type: 'task' },
             });
         }
         // Extract progress information
@@ -37,7 +38,7 @@ class TaskListParsingStrategy {
                     type: 'info',
                     message: `Project progress: ${percentage}%`,
                     data: { progress: parseInt(percentage) },
-                    metadata: { type: 'progress' }
+                    metadata: { type: 'progress' },
                 });
                 break;
             }
@@ -61,7 +62,8 @@ class TaskListParsingStrategy {
  */
 class TaskDetailParsingStrategy {
     canParse(output, command) {
-        return command.includes('show') && output.includes('Task:') || output.includes('Subtask:');
+        return ((command.includes('show') && output.includes('Task:')) ||
+            output.includes('Subtask:'));
     }
     parse(output) {
         const results = [];
@@ -81,12 +83,20 @@ class TaskDetailParsingStrategy {
                 data: {
                     id: id.trim(),
                     title: title.trim(),
-                    status: statusMatch ? this.parseStatus(statusMatch[1].trim()) : 'pending',
-                    priority: priorityMatch ? priorityMatch[1].trim().toLowerCase() : 'medium',
-                    complexity: complexityMatch ? parseInt(complexityMatch[1]) : undefined,
-                    description: descriptionMatch ? descriptionMatch[1].trim() : undefined
+                    status: statusMatch
+                        ? this.parseStatus(statusMatch[1].trim())
+                        : 'pending',
+                    priority: priorityMatch
+                        ? priorityMatch[1].trim().toLowerCase()
+                        : 'medium',
+                    complexity: complexityMatch
+                        ? parseInt(complexityMatch[1])
+                        : undefined,
+                    description: descriptionMatch
+                        ? descriptionMatch[1].trim()
+                        : undefined,
                 },
-                metadata: { type: 'task_detail' }
+                metadata: { type: 'task_detail' },
             });
         }
         // Extract subtasks if present
@@ -101,9 +111,9 @@ class TaskDetailParsingStrategy {
                     id: id.trim(),
                     title: title.trim(),
                     status: this.parseStatus(status.trim()),
-                    type: 'subtask'
+                    type: 'subtask',
                 },
-                metadata: { type: 'subtask' }
+                metadata: { type: 'subtask' },
             });
         }
         return results;
@@ -125,7 +135,7 @@ class TaskDetailParsingStrategy {
  */
 class StatusUpdateParsingStrategy {
     canParse(output, command) {
-        return command.includes('set-status') && output.includes('Successfully updated');
+        return (command.includes('set-status') && output.includes('Successfully updated'));
     }
     parse(output) {
         const results = [];
@@ -139,9 +149,9 @@ class StatusUpdateParsingStrategy {
                 data: {
                     id: id.trim(),
                     previousStatus: fromStatus.trim(),
-                    newStatus: toStatus.trim()
+                    newStatus: toStatus.trim(),
                 },
-                metadata: { type: 'status_update' }
+                metadata: { type: 'status_update' },
             });
         }
         return results;
@@ -172,13 +182,21 @@ class NextTaskParsingStrategy {
                 data: {
                     id: id.trim(),
                     title: title.trim(),
-                    priority: priorityMatch ? priorityMatch[1].trim().toLowerCase() : 'medium',
-                    status: statusMatch ? this.parseStatus(statusMatch[1].trim()) : 'pending',
-                    dependencies: dependenciesMatch ? this.parseDependencies(dependenciesMatch[1].trim()) : [],
-                    description: descriptionMatch ? descriptionMatch[1].trim() : undefined,
-                    isNext: true
+                    priority: priorityMatch
+                        ? priorityMatch[1].trim().toLowerCase()
+                        : 'medium',
+                    status: statusMatch
+                        ? this.parseStatus(statusMatch[1].trim())
+                        : 'pending',
+                    dependencies: dependenciesMatch
+                        ? this.parseDependencies(dependenciesMatch[1].trim())
+                        : [],
+                    description: descriptionMatch
+                        ? descriptionMatch[1].trim()
+                        : undefined,
+                    isNext: true,
                 },
-                metadata: { type: 'next_task' }
+                metadata: { type: 'next_task' },
             });
         }
         return results;
@@ -199,7 +217,10 @@ class NextTaskParsingStrategy {
             return [];
         // Clean up any table formatting characters
         const cleaned = depStr.replace(/│/g, '').trim();
-        return cleaned.split(',').map(d => d.trim()).filter(d => d && !d.includes('│'));
+        return cleaned
+            .split(',')
+            .map(d => d.trim())
+            .filter(d => d && !d.includes('│'));
     }
 }
 /**
@@ -207,8 +228,9 @@ class NextTaskParsingStrategy {
  */
 class ComplexityAnalysisParsingStrategy {
     canParse(output, command) {
-        return command.includes('analyze-complexity') &&
-            (output.includes('Complexity Analysis') || output.includes('Average complexity'));
+        return (command.includes('analyze-complexity') &&
+            (output.includes('Complexity Analysis') ||
+                output.includes('Average complexity')));
     }
     parse(output) {
         const results = [];
@@ -223,7 +245,8 @@ class ComplexityAnalysisParsingStrategy {
             if (totalTasksMatch)
                 analysisData.totalTasks = parseInt(totalTasksMatch[1]);
             if (recommendationsMatch) {
-                analysisData.recommendations = recommendationsMatch[1].split('\n')
+                analysisData.recommendations = recommendationsMatch[1]
+                    .split('\n')
                     .map(r => r.trim())
                     .filter(r => r && !r.startsWith('-'));
             }
@@ -231,7 +254,7 @@ class ComplexityAnalysisParsingStrategy {
                 type: 'success',
                 message: 'Complexity analysis completed',
                 data: analysisData,
-                metadata: { type: 'complexity_analysis' }
+                metadata: { type: 'complexity_analysis' },
             });
         }
         // Extract individual task complexities
@@ -244,9 +267,9 @@ class ComplexityAnalysisParsingStrategy {
                 message: `Task ${taskId} complexity: ${complexity}`,
                 data: {
                     taskId: taskId.trim(),
-                    complexity: parseInt(complexity)
+                    complexity: parseInt(complexity),
                 },
-                metadata: { type: 'task_complexity' }
+                metadata: { type: 'task_complexity' },
             });
         }
         return results;
@@ -257,8 +280,8 @@ class ComplexityAnalysisParsingStrategy {
  */
 class PRDParsingStrategy {
     canParse(output, command) {
-        return command.includes('parse-prd') &&
-            (output.includes('Generated') || output.includes('tasks from PRD'));
+        return (command.includes('parse-prd') &&
+            (output.includes('Generated') || output.includes('tasks from PRD')));
     }
     parse(output) {
         const results = [];
@@ -267,18 +290,24 @@ class PRDParsingStrategy {
         const appendedMatch = /Appended\s+(\d+)\s+tasks|appended.*?(\d+).*?tasks/i.exec(output);
         const prdFileMatch = /PRD file:\s*(.+?)(?=\n|$)/i.exec(output);
         if (generatedTasksMatch || appendedMatch) {
-            const taskCount = generatedTasksMatch ?
-                (generatedTasksMatch[1] ? parseInt(generatedTasksMatch[1]) : 1) :
-                (appendedMatch ? (appendedMatch[1] ? parseInt(appendedMatch[1]) : parseInt(appendedMatch[2] || '1')) : 1);
+            const taskCount = generatedTasksMatch
+                ? generatedTasksMatch[1]
+                    ? parseInt(generatedTasksMatch[1])
+                    : 1
+                : appendedMatch
+                    ? appendedMatch[1]
+                        ? parseInt(appendedMatch[1])
+                        : parseInt(appendedMatch[2] || '1')
+                    : 1;
             results.push({
                 type: 'success',
                 message: `Successfully ${generatedTasksMatch ? 'generated' : 'appended'} ${taskCount} tasks from PRD`,
                 data: {
                     taskCount,
                     operation: generatedTasksMatch ? 'generate' : 'append',
-                    prdFile: prdFileMatch ? prdFileMatch[1].trim() : undefined
+                    prdFile: prdFileMatch ? prdFileMatch[1].trim() : undefined,
                 },
-                metadata: { type: 'prd_parse' }
+                metadata: { type: 'prd_parse' },
             });
         }
         // Extract task IDs that were created
@@ -292,9 +321,9 @@ class PRDParsingStrategy {
                 data: {
                     id: taskId.trim(),
                     title: title.trim(),
-                    operation: 'created'
+                    operation: 'created',
                 },
-                metadata: { type: 'task_created' }
+                metadata: { type: 'task_created' },
             });
         }
         return results;
@@ -305,8 +334,8 @@ class PRDParsingStrategy {
  */
 class ExpansionParsingStrategy {
     canParse(output, command) {
-        return command.includes('expand') &&
-            (output.includes('Expanded task') || output.includes('subtasks created'));
+        return (command.includes('expand') &&
+            (output.includes('Expanded task') || output.includes('subtasks created')));
     }
     parse(output) {
         const results = [];
@@ -321,9 +350,9 @@ class ExpansionParsingStrategy {
                 data: {
                     taskId: taskId.trim(),
                     subtaskCount: parseInt(subtaskCount),
-                    operation: 'expand'
+                    operation: 'expand',
                 },
-                metadata: { type: 'task_expansion' }
+                metadata: { type: 'task_expansion' },
             });
         }
         else if (subtasksCreatedMatch) {
@@ -333,9 +362,9 @@ class ExpansionParsingStrategy {
                 message: `${count} subtasks created`,
                 data: {
                     subtaskCount: parseInt(count),
-                    operation: 'expand'
+                    operation: 'expand',
                 },
-                metadata: { type: 'task_expansion' }
+                metadata: { type: 'task_expansion' },
             });
         }
         // Extract individual subtask information
@@ -350,9 +379,9 @@ class ExpansionParsingStrategy {
                     id: subtaskId.trim(),
                     title: title.trim(),
                     type: 'subtask',
-                    operation: 'created'
+                    operation: 'created',
                 },
-                metadata: { type: 'subtask_created' }
+                metadata: { type: 'subtask_created' },
             });
         }
         return results;
@@ -363,8 +392,9 @@ class ExpansionParsingStrategy {
  */
 class InitializationParsingStrategy {
     canParse(output, command) {
-        return command.includes('init') &&
-            (output.includes('Initialized') || output.includes('TaskMaster initialized'));
+        return (command.includes('init') &&
+            (output.includes('Initialized') ||
+                output.includes('TaskMaster initialized')));
     }
     parse(output) {
         const results = [];
@@ -379,10 +409,14 @@ class InitializationParsingStrategy {
                 data: {
                     projectPath: initializedMatch[1].trim(),
                     operation: 'init',
-                    configFile: configCreatedMatch ? configCreatedMatch[1].trim() : undefined,
-                    templateCount: templatesMatch ? parseInt(templatesMatch[1]) : undefined
+                    configFile: configCreatedMatch
+                        ? configCreatedMatch[1].trim()
+                        : undefined,
+                    templateCount: templatesMatch
+                        ? parseInt(templatesMatch[1])
+                        : undefined,
                 },
-                metadata: { type: 'project_init' }
+                metadata: { type: 'project_init' },
             });
         }
         return results;
@@ -393,8 +427,8 @@ class InitializationParsingStrategy {
  */
 class DependencyValidationParsingStrategy {
     canParse(output, command) {
-        return command.includes('validate-dependencies') &&
-            (output.includes('Dependencies') || output.includes('validation'));
+        return (command.includes('validate-dependencies') &&
+            (output.includes('Dependencies') || output.includes('validation')));
     }
     parse(output) {
         const results = [];
@@ -408,9 +442,9 @@ class DependencyValidationParsingStrategy {
                 message: 'All task dependencies are valid',
                 data: {
                     validationStatus: 'passed',
-                    issues: 0
+                    issues: 0,
                 },
-                metadata: { type: 'dependency_validation' }
+                metadata: { type: 'dependency_validation' },
             });
         }
         else if (issuesFoundMatch) {
@@ -421,9 +455,9 @@ class DependencyValidationParsingStrategy {
                 data: {
                     validationStatus: 'failed',
                     issues: issueCount,
-                    hasCircularDependencies: !!circularDepsMatch
+                    hasCircularDependencies: !!circularDepsMatch,
                 },
-                metadata: { type: 'dependency_validation' }
+                metadata: { type: 'dependency_validation' },
             });
         }
         // Extract specific dependency issues
@@ -436,9 +470,9 @@ class DependencyValidationParsingStrategy {
                 message: `Dependency issue in task ${taskId}: ${issue.trim()}`,
                 data: {
                     taskId: taskId.trim(),
-                    issue: issue.trim()
+                    issue: issue.trim(),
                 },
-                metadata: { type: 'dependency_issue' }
+                metadata: { type: 'dependency_issue' },
             });
         }
         return results;
@@ -449,15 +483,17 @@ class DependencyValidationParsingStrategy {
  */
 class ErrorParsingStrategy {
     canParse(output, command) {
-        return output.toLowerCase().includes('error') ||
+        return (output.toLowerCase().includes('error') ||
             output.toLowerCase().includes('failed') ||
             output.includes('[ERROR]') ||
-            output.includes('npm error');
+            output.includes('npm error'));
     }
     parse(output) {
         const results = [];
         // Extract error messages with context
-        const errorLines = output.split('\n').filter(line => line.toLowerCase().includes('error') ||
+        const errorLines = output
+            .split('\n')
+            .filter(line => line.toLowerCase().includes('error') ||
             line.toLowerCase().includes('failed') ||
             line.includes('[ERROR]') ||
             line.includes('npm error'));
@@ -475,16 +511,16 @@ class ErrorParsingStrategy {
                             message: message.trim(),
                             data: {
                                 errorCode: code.trim(),
-                                fullMessage: cleanLine
+                                fullMessage: cleanLine,
                             },
-                            metadata: { type: 'error' }
+                            metadata: { type: 'error' },
                         });
                     }
                     else {
                         results.push({
                             type: 'error',
                             message: cleanLine,
-                            metadata: { type: 'error' }
+                            metadata: { type: 'error' },
                         });
                     }
                 }
@@ -492,7 +528,7 @@ class ErrorParsingStrategy {
                     results.push({
                         type: 'error',
                         message: cleanLine,
-                        metadata: { type: 'error' }
+                        metadata: { type: 'error' },
                     });
                 }
             }
@@ -515,7 +551,7 @@ class TaskMasterOutputParser {
             new TaskListParsingStrategy(),
             new TaskDetailParsingStrategy(),
             new StatusUpdateParsingStrategy(),
-            new ErrorParsingStrategy() // Keep error parsing last as fallback
+            new ErrorParsingStrategy(), // Keep error parsing last as fallback
         ];
     }
     /**
@@ -536,7 +572,7 @@ class TaskMasterOutputParser {
                 type: 'info',
                 message: 'Command executed',
                 data: { rawOutput },
-                metadata: { type: 'generic' }
+                metadata: { type: 'generic' },
             });
         }
         return allResults;
@@ -555,7 +591,7 @@ class TaskMasterOutputParser {
                 priority: taskData.data.priority,
                 complexity: taskData.data.complexity,
                 description: taskData.data.description,
-                dependencies: taskData.data.dependencies
+                dependencies: taskData.data.dependencies,
             };
         }
         return null;
@@ -575,7 +611,7 @@ class TaskMasterOutputParser {
                     priority: p.data.priority,
                     complexity: p.data.complexity,
                     description: p.data.description,
-                    dependencies: p.data.dependencies || []
+                    dependencies: p.data.dependencies || [],
                 });
             }
         });
@@ -606,7 +642,7 @@ class TaskMasterOutputParser {
                 priority: nextTaskData.data.priority,
                 complexity: nextTaskData.data.complexity,
                 description: nextTaskData.data.description,
-                dependencies: nextTaskData.data.dependencies || []
+                dependencies: nextTaskData.data.dependencies || [],
             };
         }
         return null;
@@ -618,10 +654,10 @@ class TaskMasterOutputParser {
         const parsed = this.parseOutput(output, operation);
         // Find the main operation result
         const operationTypes = {
-            'init': 'project_init',
-            'expand': 'task_expansion',
+            init: 'project_init',
+            expand: 'task_expansion',
             'parse-prd': 'prd_parse',
-            'validate-dependencies': 'dependency_validation'
+            'validate-dependencies': 'dependency_validation',
         };
         const expectedType = operationTypes[operation];
         const operationData = parsed.find(p => p.metadata?.type === expectedType);
@@ -630,14 +666,14 @@ class TaskMasterOutputParser {
                 success: operationData.type === 'success',
                 message: operationData.message,
                 data: operationData.data,
-                additionalResults: parsed.filter(p => p !== operationData)
+                additionalResults: parsed.filter(p => p !== operationData),
             };
         }
         return {
             success: false,
             message: 'Unknown operation result',
             data: null,
-            additionalResults: parsed
+            additionalResults: parsed,
         };
     }
     /**
@@ -650,10 +686,11 @@ class TaskMasterOutputParser {
             return {
                 name: 'TaskMaster Project',
                 path: '', // Will be filled by calling service
-                taskCount: taskCountMatch ?
-                    parseInt(taskCountMatch[1]) + parseInt(taskCountMatch[2]) : 0,
+                taskCount: taskCountMatch
+                    ? parseInt(taskCountMatch[1]) + parseInt(taskCountMatch[2])
+                    : 0,
                 completedTasks: taskCountMatch ? parseInt(taskCountMatch[1]) : 0,
-                lastUpdated: new Date()
+                lastUpdated: new Date(),
             };
         }
         return null;
@@ -662,10 +699,10 @@ class TaskMasterOutputParser {
      * Check if output indicates an error
      */
     isErrorOutput(output) {
-        return output.toLowerCase().includes('error') ||
+        return (output.toLowerCase().includes('error') ||
             output.toLowerCase().includes('failed') ||
             output.includes('[ERROR]') ||
-            output.includes('npm error');
+            output.includes('npm error'));
     }
     /**
      * Add a custom parsing strategy

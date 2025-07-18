@@ -26,7 +26,8 @@ export const CommandWorkspace: React.FC<CommandWorkspaceProps> = ({
   const { state, clearResult } = useCommandExecution();
   const { state: repositoryState } = useRepository();
 
-  const currentRepo = repositoryPath || repositoryState.selectedRepository?.path;
+  const currentRepo =
+    repositoryPath || repositoryState.selectedRepository?.path;
   const currentWorkingDir = workingDirectory || currentRepo || process.cwd();
 
   return (
@@ -37,9 +38,7 @@ export const CommandWorkspace: React.FC<CommandWorkspaceProps> = ({
           <h3 className="text-sm font-medium text-secondary-700 mb-1">
             Repository Context
           </h3>
-          <p className="text-sm text-secondary-600 font-mono">
-            {currentRepo}
-          </p>
+          <p className="text-sm text-secondary-600 font-mono">{currentRepo}</p>
         </div>
       )}
 
@@ -56,7 +55,8 @@ export const CommandWorkspace: React.FC<CommandWorkspaceProps> = ({
             <div>
               <h4 className="font-medium">Terminal Available</h4>
               <p className="text-sm mt-1">
-                Commands can be executed in the active terminal session for real-time output.
+                Commands can be executed in the active terminal session for
+                real-time output.
               </p>
             </div>
             {state.result && onExecuteInTerminal && (
@@ -65,7 +65,9 @@ export const CommandWorkspace: React.FC<CommandWorkspaceProps> = ({
                 size="sm"
                 onClick={() => {
                   // Get the last command that was executed
-                  const lastCommand = state.result ? 'echo "Command completed"' : '';
+                  const lastCommand = state.result
+                    ? 'echo "Command completed"'
+                    : '';
                   if (lastCommand) {
                     onExecuteInTerminal(lastCommand);
                   }
@@ -95,7 +97,7 @@ export const CommandWorkspace: React.FC<CommandWorkspaceProps> = ({
                 executionId={state.executionId || undefined}
                 onClear={clearResult}
               />
-              
+
               {/* Option to execute similar command in terminal */}
               {hasActiveTerminal && onExecuteInTerminal && (
                 <div className="flex items-center gap-2 p-3 bg-secondary-50 rounded-lg">
@@ -126,7 +128,8 @@ export const CommandWorkspace: React.FC<CommandWorkspaceProps> = ({
             Select a repository to enable repository-specific commands.
           </p>
           <p className="text-xs mt-2">
-            Some commands like task-master and package management are available without a repository.
+            Some commands like task-master and package management are available
+            without a repository.
           </p>
         </div>
       )}

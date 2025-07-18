@@ -309,10 +309,33 @@ export const Interactive: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Fully interactive Kanban board. Try searching, filtering, clicking tasks, and adding new tasks.',
+        story: 'Fully interactive Kanban board with drag-and-drop. Try dragging tasks between columns, searching, filtering, clicking tasks, and adding new tasks.',
       },
     },
   },
+};
+
+export const DragAndDropDemo: Story = {
+  args: {
+    tasks: sampleTasks,
+    loading: false,
+    showSearch: true,
+    showFilters: true,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Demonstrates drag-and-drop functionality. Drag tasks between columns to change their status. Includes keyboard accessibility support - use Tab to focus tasks, Space to pick up, and Arrow keys to move between columns.',
+      },
+    },
+  },
+  decorators: [
+    (Story) => (
+      <div style={{ height: '100vh', padding: '20px' }}>
+        <Story />
+      </div>
+    ),
+  ],
 };
 
 export const Mobile: Story = {

@@ -186,7 +186,7 @@
             "id": 2,
             "title": "Implement Advanced Drag-and-Drop with Visual Feedback and Keyboard Accessibility",
             "description": "Enable users to move task cards between columns using both mouse-based drag-and-drop and full keyboard controls, providing clear visual feedback during the interaction.",
-            "status": "pending",
+            "status": "in-progress",
             "dependencies": [
               1
             ],
@@ -796,7 +796,7 @@
     ],
     "metadata": {
       "created": "2025-07-15T21:22:03.992Z",
-      "updated": "2025-07-18T20:03:19.021Z",
+      "updated": "2025-07-18T20:03:40.515Z",
       "description": "Tasks for taskmaster-ui context"
     }
   }

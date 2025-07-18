@@ -1,8 +1,16 @@
 import React from 'react';
+import { useDraggable } from '@dnd-kit/core';
+import { CSS } from '@dnd-kit/utilities';
 import { Card, CardContent } from '../atoms/Card';
 import { Badge } from '../atoms/Badge';
 import { Icon, TimeIcon } from '../atoms/Icon';
 import type { TaskStatus, TaskPriority } from '../../../types/task';
+
+export interface DragData {
+  type: 'task';
+  taskId: number;
+  status: TaskStatus;
+}
 
 export interface KanbanTaskCardProps {
   id: number;
@@ -24,6 +32,7 @@ export interface KanbanTaskCardProps {
   }>;
   onClick?: (taskId: number) => void;
   isDragging?: boolean;
+  isDraggable?: boolean;
   className?: string;
 }
 
@@ -43,8 +52,28 @@ const KanbanTaskCard: React.FC<KanbanTaskCardProps> = ({
   subtasks,
   onClick,
   isDragging = false,
+  isDraggable = true,
   className = ''
 }) => {
+  // Configure draggable behavior
+  const dragData: DragData = {
+    type: 'task',
+    taskId: id,
+    status: status,
+  };
+
+  const { attributes, listeners, setNodeRef, transform, isDragging: dndIsDragging } =
+    useDraggable({
+      id: `task-${id}`,
+      data: dragData,
+      disabled: !isDraggable,
+    });
+
+  const style = {
+    transform: CSS.Translate.toString(transform),
+  };
+
+  const isCurrentlyDragging = isDragging || dndIsDragging;
   const getPriorityColor = (taskPriority: TaskPriority) => {
     switch (taskPriority) {
       case 'urgent':
@@ -118,18 +147,46 @@ const KanbanTaskCard: React.FC<KanbanTaskCardProps> = ({
   const isOverdue = dueDate && new Date(dueDate) < new Date();
 
   const handleClick = () => {
-    onClick?.(id);
+    if (onClick && !isCurrentlyDragging) {
+      onClick(id);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleClick();
+    }
+  };
+
+  // Merge accessibility attributes with DnD attributes
+  const mergedAttributes = {
+    ...attributes,
+    role: 'button',
+    tabIndex: isDraggable ? 0 : -1,
+    'aria-label': `Task ${title}, priority ${priority}, status ${status}. ${isDraggable ? 'Press space to drag.' : ''}`,
+    'aria-describedby': description ? `task-${id}-description` : undefined,
+    'aria-grabbed': isCurrentlyDragging,
   };
 
   return (
-    <div className={`kanban-task-card ${className}`}>
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`kanban-task-card ${className}`}
+      {...mergedAttributes}
+      {...listeners}
+      onKeyDown={handleKeyDown}
+    >
       <Card
         variant="elevated"
         className={`
           cursor-pointer transition-all duration-200 border-l-4
           ${getPriorityColor(priority)}
-          ${isDragging ? 'shadow-2xl scale-105 rotate-2' : 'hover:shadow-lg hover:scale-[1.02]'}
+          ${isCurrentlyDragging ? 'shadow-2xl scale-105 rotate-2 opacity-50' : 'hover:shadow-lg hover:scale-[1.02]'}
           ${isOverdue ? 'ring-2 ring-error-500/50' : ''}
+          ${isDraggable ? 'cursor-grab' : ''}
+          ${isCurrentlyDragging ? 'cursor-grabbing' : ''}
         `}
         onClick={handleClick}
       >

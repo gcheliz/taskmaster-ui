@@ -27,6 +27,10 @@ export interface DragAndDropProviderProps {
     fromStatus: TaskStatus,
     toStatus: TaskStatus
   ) => void;
+  /** Callback when drag starts */
+  onDragStart?: (taskId: number) => void;
+  /** Callback when drag ends */
+  onDragEnd?: () => void;
   /** Optional drag overlay component */
   dragOverlay?: React.ReactNode;
   /** Additional CSS class name */
@@ -54,6 +58,8 @@ export interface DropData {
 export const DragAndDropProvider: React.FC<DragAndDropProviderProps> = ({
   children,
   onTaskMove,
+  onDragStart,
+  onDragEnd,
   dragOverlay,
   className = '',
 }) => {
@@ -91,10 +97,15 @@ export const DragAndDropProvider: React.FC<DragAndDropProviderProps> = ({
         `Started moving task ${activeData.taskId} from ${activeData.status}`,
         'polite'
       );
+      
+      // Call the onDragStart callback
+      if (onDragStart) {
+        onDragStart(activeData.taskId);
+      }
     }
 
     console.log('Drag started:', active.id);
-  }, []);
+  }, [onDragStart]);
 
   // Handle drag over (for visual feedback)
   const handleDragOver = useCallback((event: DragOverEvent) => {
@@ -164,8 +175,13 @@ export const DragAndDropProvider: React.FC<DragAndDropProviderProps> = ({
         console.log('Moving task:', { taskId, fromStatus, toStatus });
         onTaskMove(taskId, fromStatus, toStatus);
       }
+
+      // Call the onDragEnd callback
+      if (onDragEnd) {
+        onDragEnd();
+      }
     },
-    [onTaskMove]
+    [onTaskMove, onDragEnd]
   );
 
   // Handle drag cancel
@@ -174,7 +190,12 @@ export const DragAndDropProvider: React.FC<DragAndDropProviderProps> = ({
     document.body.style.cursor = '';
     announceToScreenReader('Task move cancelled', 'polite');
     console.log('Drag cancelled');
-  }, []);
+    
+    // Call the onDragEnd callback
+    if (onDragEnd) {
+      onDragEnd();
+    }
+  }, [onDragEnd]);
 
   return (
     <DndContext

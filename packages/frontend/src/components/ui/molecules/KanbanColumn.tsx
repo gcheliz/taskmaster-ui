@@ -1,4 +1,5 @@
 import React from 'react';
+import { useDroppable } from '@dnd-kit/core';
 import { Card, CardHeader, CardTitle, CardContent } from '../atoms/Card';
 import { Badge } from '../atoms/Badge';
 import { Button } from '../atoms/Button';
@@ -24,6 +25,11 @@ export interface KanbanTask {
     title: string;
     status: TaskStatus;
   }>;
+}
+
+export interface DropData {
+  type: 'column';
+  status: TaskStatus;
 }
 
 export interface KanbanColumnProps {
@@ -53,6 +59,17 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({
 }) => {
   const taskCount = tasks.length;
   const isOverLimit = limit && taskCount > limit;
+
+  // Configure droppable behavior
+  const dropData: DropData = {
+    type: 'column',
+    status: status,
+  };
+
+  const { setNodeRef, isOver } = useDroppable({
+    id: `column-${id}`,
+    data: dropData,
+  });
 
   const getStatusColor = (columnStatus: TaskStatus) => {
     switch (columnStatus) {
@@ -102,11 +119,18 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({
 
   return (
     <div
+      ref={setNodeRef}
       className={`kanban-column flex flex-col h-full min-w-[300px] max-w-[350px] ${className}`}
       data-column-id={id}
       data-status={status}
     >
-      <Card variant="outline" className="flex-1 flex flex-col bg-surface-50 dark:bg-surface-900">
+      <Card 
+        variant="outline" 
+        className={`
+          flex-1 flex flex-col bg-surface-50 dark:bg-surface-900 transition-all duration-200
+          ${isOver ? 'bg-primary-50 dark:bg-primary-900/20 border-primary-300 dark:border-primary-600' : ''}
+        `}
+      >
         <CardHeader className="flex-shrink-0 pb-3">
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center space-x-2">
@@ -179,6 +203,7 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({
                   dueDate={task.dueDate}
                   subtasks={task.subtasks}
                   onClick={onTaskClick}
+                  isDraggable={true}
                   className="transition-all duration-200"
                 />
               ))

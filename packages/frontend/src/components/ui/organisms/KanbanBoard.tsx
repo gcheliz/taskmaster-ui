@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '../atoms/Card';
 import { Button } from '../atoms/Button';
 import { Badge } from '../atoms/Badge';
@@ -6,6 +6,8 @@ import { Icon, TaskIcon, ArchiveIcon, DuplicateIcon, SettingsIcon, PlusIcon } fr
 import { Input } from '../atoms/Input';
 import { Spinner } from '../atoms/Spinner';
 import { KanbanColumn, type KanbanTask } from '../molecules/KanbanColumn';
+import { DragAndDropProvider } from '../../TaskBoard/DragAndDropProvider';
+import { KanbanDragOverlay } from './KanbanDragOverlay';
 import type { TaskStatus, TaskPriority } from '../../../types/task';
 
 export interface KanbanBoardColumn {
@@ -22,6 +24,7 @@ export interface KanbanBoardProps {
   error?: string;
   onTaskClick?: (taskId: number) => void;
   onAddTask?: (status: TaskStatus) => void;
+  onTaskMove?: (taskId: number, fromStatus: TaskStatus, toStatus: TaskStatus) => void;
   onRefresh?: () => void;
   showSearch?: boolean;
   showFilters?: boolean;
@@ -71,6 +74,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
   error,
   onTaskClick,
   onAddTask,
+  onTaskMove,
   onRefresh,
   showSearch = true,
   showFilters = true,
@@ -79,6 +83,18 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedPriority, setSelectedPriority] = useState<TaskPriority | 'all'>('all');
   const [refreshing, setRefreshing] = useState(false);
+  const [activeTask, setActiveTask] = useState<KanbanTask | null>(null);
+
+  // Handle task move between columns
+  const handleTaskMove = useCallback((
+    taskId: number,
+    fromStatus: TaskStatus,
+    toStatus: TaskStatus
+  ) => {
+    if (onTaskMove) {
+      onTaskMove(taskId, fromStatus, toStatus);
+    }
+  }, [onTaskMove]);
 
   // Filter tasks based on search and filters
   const filteredTasks = useMemo(() => {
@@ -136,6 +152,17 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
 
     return grouped;
   }, [filteredTasks]);
+
+  // Handle drag start to track active task
+  const handleDragStart = useCallback((taskId: number) => {
+    const task = filteredTasks.find(t => t.id === taskId);
+    setActiveTask(task || null);
+  }, [filteredTasks]);
+
+  // Handle drag end to clear active task
+  const handleDragEnd = useCallback(() => {
+    setActiveTask(null);
+  }, []);
 
   const handleRefresh = async () => {
     if (!onRefresh) return;
@@ -277,23 +304,31 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
 
       {/* Kanban Columns */}
       <div className="kanban-columns-container">
-        <div className="flex space-x-4 overflow-x-auto pb-4 min-h-[600px]">
-          {DEFAULT_COLUMNS.map((column) => (
-            <KanbanColumn
-              key={column.id}
-              id={column.id}
-              title={column.title}
-              status={column.status}
-              tasks={tasksByStatus[column.id] || []}
-              color={column.color}
-              limit={column.limit}
-              onTaskClick={onTaskClick}
-              onAddTask={onAddTask}
-              showAddButton={true}
-              className="flex-shrink-0"
-            />
-          ))}
-        </div>
+        <DragAndDropProvider
+          onTaskMove={handleTaskMove}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+          dragOverlay={<KanbanDragOverlay task={activeTask} isActive={!!activeTask} />}
+          className="drag-drop-kanban"
+        >
+          <div className="flex space-x-4 overflow-x-auto pb-4 min-h-[600px]">
+            {DEFAULT_COLUMNS.map((column) => (
+              <KanbanColumn
+                key={column.id}
+                id={column.id}
+                title={column.title}
+                status={column.status}
+                tasks={tasksByStatus[column.id] || []}
+                color={column.color}
+                limit={column.limit}
+                onTaskClick={onTaskClick}
+                onAddTask={onAddTask}
+                showAddButton={true}
+                className="flex-shrink-0"
+              />
+            ))}
+          </div>
+        </DragAndDropProvider>
       </div>
 
       {/* Empty State */}

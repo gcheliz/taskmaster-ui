@@ -58,8 +58,10 @@ export const TaskBoardView: React.FC<TaskBoardViewProps> = ({
     fromStatus: TaskStatus,
     toStatus: TaskStatus
   ) => {
-    // TODO: Implement task status update
+    // TODO: Implement task status update API call
     console.log('Task moved:', { taskId, fromStatus, toStatus });
+    // This would typically call an API to update the task status
+    // For now, we'll just log the move action
   };
 
   const handleCreateTask = (status: TaskStatus) => {
@@ -103,6 +105,7 @@ export const TaskBoardView: React.FC<TaskBoardViewProps> = ({
             error={error || undefined}
             onTaskClick={handleTaskClick}
             onAddTask={handleCreateTask}
+            onTaskMove={handleTaskMove}
             onRefresh={handleRefresh}
             showSearch={true}
             showFilters={true}

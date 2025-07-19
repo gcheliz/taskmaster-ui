@@ -102,3 +102,271 @@ project/
 - **IMPORTANT** Use relative paths from current working directory (e.g., `dist/assets/` not `packages/frontend/dist/assets/`)
 - **IMPORTANT** When debugging path issues, use absolute paths with `find` command to locate files
 - **CRITICAL** Always verify file/directory existence with `ls` or `find` before trying to read/access them
+
+## Web Interface Access and Verification Guidelines
+
+### Local Development Server Access Limitations
+
+**CRITICAL** Claude Code cannot directly access local web interfaces (localhost URLs) through WebFetch tool:
+- **WebFetch Limitation**: The WebFetch tool does not support localhost URLs (http://localhost:*) 
+- **Local Testing Required**: Use bash commands with `curl` to verify local services are running
+- **Service Verification**: Use `lsof -i :<port>` to check if services are listening on expected ports
+
+### Current Project Service Ports
+
+- **Storybook**: Running on port 6006 (`pnpm run storybook`)
+- **Frontend App**: Running on port 8080 (served via http-server)
+- **Vite Dev Server**: Typically port 5173 (when using `pnpm run dev`)
+
+### Verification Commands for Local Services
+
+```bash
+# Check running processes
+ps aux | grep -E "(storybook|vite|node)" | grep -v grep
+
+# Check specific ports
+lsof -i :6006  # Storybook
+lsof -i :8080  # Frontend static server
+lsof -i :5173  # Vite dev server
+
+# Test local access
+curl -s http://localhost:6006 | head -20  # Storybook homepage
+curl -s http://localhost:8080 | head -20  # Frontend app
+```
+
+### Alternative Verification Methods
+
+- **Browser Testing**: Recommend user to manually check interfaces in browser
+- **Screenshot Analysis**: Use Read tool to analyze user-provided screenshots
+- **Source Code Analysis**: Review component source files directly
+- **Build Output Verification**: Check built assets and generated files
+
+### When Debugging UI Issues
+
+1. **First**: Check if services are running with `ps aux` and `lsof`
+2. **Second**: Use `curl` to verify HTTP responses
+3. **Third**: Ask user to provide screenshots or URLs for analysis
+4. **Fourth**: Analyze source code and built assets directly
+5. **Last Resort**: Ask user to manually verify changes in browser
+
+**IMPORTANT**: Always inform user when local web interface verification is needed, as Claude Code cannot directly access localhost URLs.
+
+## Working Solution: Public Tunnel Access for Web Verification
+
+### Root Cause Analysis
+- **WebFetch Limitation**: Cannot access localhost URLs (http://localhost:*)
+- **Solution**: Create public tunnels using localtunnel to expose local services
+- **Verification**: Use WebFetch on public tunnel URLs to actually see and verify web interfaces
+
+### Complete Web Access Solution
+
+#### Step 1: Install Tunneling Tool
+```bash
+# Install localtunnel globally
+npm install -g localtunnel
+```
+
+#### Step 2: Create Public Tunnels
+```bash
+# Create stable tunnels for both services
+nohup lt --port 6006 --subdomain taskmaster-storybook > /tmp/storybook-tunnel.log 2>&1 &
+nohup lt --port 8080 --subdomain taskmaster-frontend > /tmp/frontend-tunnel.log 2>&1 &
+
+# Wait for tunnels to establish
+sleep 5
+
+# Get tunnel URLs
+cat /tmp/storybook-tunnel.log
+cat /tmp/frontend-tunnel.log
+```
+
+#### Step 3: Verify Access
+```bash
+# Test tunnel connectivity
+curl -I https://taskmaster-storybook.loca.lt
+curl -I https://taskmaster-frontend.loca.lt
+
+# Check tunnel status
+ps aux | grep "lt --port" | grep -v grep
+```
+
+#### Step 4: Use WebFetch for Verification
+```bash
+# Now Claude Code can access via WebFetch tool:
+# WebFetch URL: https://taskmaster-storybook.loca.lt
+# WebFetch URL: https://taskmaster-frontend.loca.lt
+```
+
+### Tunnel Management Commands
+
+```bash
+# Stop all tunnels
+pkill -f "lt --port"
+
+# Restart tunnels
+nohup lt --port 6006 --subdomain taskmaster-storybook > /tmp/storybook-tunnel.log 2>&1 &
+nohup lt --port 8080 --subdomain taskmaster-frontend > /tmp/frontend-tunnel.log 2>&1 &
+
+# Check tunnel logs
+tail -f /tmp/storybook-tunnel.log
+tail -f /tmp/frontend-tunnel.log
+```
+
+### Known Issues and Solutions
+
+#### Issue: WebFetch Returns Configuration Instead of Interface
+- **Cause**: WebFetch may receive build config instead of rendered interface
+- **Solution**: Try different paths or ask user for manual verification
+
+#### Issue: Frontend Service Not Responding
+- **Cause**: Service may not be properly configured for external access
+- **Solution**: Verify service is running and accessible locally first
+
+#### Issue: Tunnel Timeouts
+- **Cause**: Localtunnel free tier has limitations
+- **Solution**: Restart tunnels or use alternative tunneling services
+
+### Alternative Tunneling Options
+
+#### NgRok (Premium/Authenticated)
+```bash
+brew install ngrok
+# Requires account setup at https://dashboard.ngrok.com/signup
+ngrok authtoken <your-token>
+ngrok http 6006
+```
+
+#### SSH Tunneling (If available)
+```bash
+# Forward local port to remote server
+ssh -R 8080:localhost:6006 user@remote-server
+```
+
+### Web Verification Workflow
+
+1. **Start Local Services**: Ensure Storybook and frontend are running
+2. **Create Tunnels**: Use localtunnel to expose services publicly  
+3. **Verify Connectivity**: Test with curl before using WebFetch
+4. **Use WebFetch**: Access public URLs to examine interfaces
+5. **Document Findings**: Record any visual issues or component problems
+6. **Clean Up**: Stop tunnels when verification is complete
+
+### Critical Success Factors
+
+- **Always verify services are running locally first**
+- **Test tunnel connectivity with curl before WebFetch**
+- **Use stable subdomain names for consistent access**
+- **Monitor tunnel logs for connection issues**
+- **Document any WebFetch limitations encountered**
+
+**BREAKTHROUGH**: This solution enables Claude Code to actually see and verify web interfaces, solving the critical limitation of localhost access.
+
+## Working Solution: Public Tunnel Access for Web Verification
+
+### Root Cause Analysis
+- **WebFetch Limitation**: Cannot access localhost URLs (http://localhost:*)
+- **Solution**: Create public tunnels using localtunnel to expose local services
+- **Verification**: Use WebFetch on public tunnel URLs to actually see and verify web interfaces
+
+### Complete Web Access Solution
+
+#### Step 1: Install Tunneling Tool
+```bash
+# Install localtunnel globally
+npm install -g localtunnel
+```
+
+#### Step 2: Create Public Tunnels
+```bash
+# Create stable tunnels for both services
+nohup lt --port 6006 --subdomain taskmaster-storybook > /tmp/storybook-tunnel.log 2>&1 &
+nohup lt --port 8080 --subdomain taskmaster-frontend > /tmp/frontend-tunnel.log 2>&1 &
+
+# Wait for tunnels to establish
+sleep 5
+
+# Get tunnel URLs
+cat /tmp/storybook-tunnel.log
+cat /tmp/frontend-tunnel.log
+```
+
+#### Step 3: Verify Access
+```bash
+# Test tunnel connectivity
+curl -I https://taskmaster-storybook.loca.lt
+curl -I https://taskmaster-frontend.loca.lt
+
+# Check tunnel status
+ps aux | grep "lt --port" | grep -v grep
+```
+
+#### Step 4: Use WebFetch for Verification
+```bash
+# Now Claude Code can access via WebFetch tool:
+# WebFetch URL: https://taskmaster-storybook.loca.lt
+# WebFetch URL: https://taskmaster-frontend.loca.lt
+```
+
+### Tunnel Management Commands
+
+```bash
+# Stop all tunnels
+pkill -f "lt --port"
+
+# Restart tunnels
+nohup lt --port 6006 --subdomain taskmaster-storybook > /tmp/storybook-tunnel.log 2>&1 &
+nohup lt --port 8080 --subdomain taskmaster-frontend > /tmp/frontend-tunnel.log 2>&1 &
+
+# Check tunnel logs
+tail -f /tmp/storybook-tunnel.log
+tail -f /tmp/frontend-tunnel.log
+```
+
+### Known Issues and Solutions
+
+#### Issue: WebFetch Returns Configuration Instead of Interface
+- **Cause**: WebFetch may receive build config instead of rendered interface
+- **Solution**: Try different paths or ask user for manual verification
+
+#### Issue: Frontend Service Not Responding
+- **Cause**: Service may not be properly configured for external access
+- **Solution**: Verify service is running and accessible locally first
+
+#### Issue: Tunnel Timeouts
+- **Cause**: Localtunnel free tier has limitations
+- **Solution**: Restart tunnels or use alternative tunneling services
+
+### Alternative Tunneling Options
+
+#### NgRok (Premium/Authenticated)
+```bash
+brew install ngrok
+# Requires account setup at https://dashboard.ngrok.com/signup
+ngrok authtoken <your-token>
+ngrok http 6006
+```
+
+#### SSH Tunneling (If available)
+```bash
+# Forward local port to remote server
+ssh -R 8080:localhost:6006 user@remote-server
+```
+
+### Web Verification Workflow
+
+1. **Start Local Services**: Ensure Storybook and frontend are running
+2. **Create Tunnels**: Use localtunnel to expose services publicly  
+3. **Verify Connectivity**: Test with curl before using WebFetch
+4. **Use WebFetch**: Access public URLs to examine interfaces
+5. **Document Findings**: Record any visual issues or component problems
+6. **Clean Up**: Stop tunnels when verification is complete
+
+### Critical Success Factors
+
+- **Always verify services are running locally first**
+- **Test tunnel connectivity with curl before WebFetch**
+- **Use stable subdomain names for consistent access**
+- **Monitor tunnel logs for connection issues**
+- **Document any WebFetch limitations encountered**
+
+**BREAKTHROUGH**: This solution enables Claude Code to actually see and verify web interfaces, solving the critical limitation of localhost access.

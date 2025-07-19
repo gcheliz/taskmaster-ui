@@ -1,5 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { DndContext, type DragEndEvent, DragOverlay, type DragStartEvent } from '@dnd-kit/core';
+import {
+  DndContext,
+  type DragEndEvent,
+  DragOverlay,
+  type DragStartEvent,
+} from '@dnd-kit/core';
 import { useState } from 'react';
 import {
   Card,
@@ -12,7 +17,13 @@ import {
 import { DraggableCard } from '../../components/ui/atoms/DraggableCard';
 import { DroppableArea } from '../../components/ui/atoms/DroppableArea';
 import { Button } from '../../components/ui/atoms/Button';
-import { Icon, TaskIcon, CompleteIcon, DragHandleIcon, StarFilledIcon } from '../../components/ui/atoms/Icon';
+import {
+  Icon,
+  TaskIcon,
+  CompleteIcon,
+  DragHandleIcon,
+  StarFilledIcon,
+} from '../../components/ui/atoms/Icon';
 
 const meta = {
   title: 'Atoms/Card',
@@ -53,7 +64,7 @@ export const Default: Story = {
     size: 'md',
     interactive: false,
   },
-  render: (args) => (
+  render: args => (
     <Card {...args}>
       <CardHeader>
         <CardTitle>Card Title</CardTitle>
@@ -79,7 +90,7 @@ export const Elevated: Story = {
     variant: 'elevated',
     size: 'md',
   },
-  render: (args) => (
+  render: args => (
     <Card {...args}>
       <CardHeader>
         <CardTitle>Elevated Card</CardTitle>
@@ -98,7 +109,7 @@ export const Interactive: Story = {
     size: 'md',
     interactive: true,
   },
-  render: (args) => (
+  render: args => (
     <Card {...args} onCardClick={() => alert('Card clicked!')}>
       <CardHeader>
         <CardTitle>Interactive Card</CardTitle>
@@ -144,7 +155,7 @@ export const WithIcons: Story = {
 export const Sizes: Story = {
   render: () => (
     <div className="grid grid-cols-2 gap-4">
-      {(['sm', 'md', 'lg', 'xl'] as const).map((size) => (
+      {(['sm', 'md', 'lg', 'xl'] as const).map(size => (
         <Card key={size} variant="default" size={size}>
           <CardHeader size={size}>
             <CardTitle size={size}>Size: {size}</CardTitle>
@@ -164,7 +175,7 @@ export const Sizes: Story = {
 export const Variants: Story = {
   render: () => (
     <div className="grid grid-cols-2 gap-4">
-      {(['default', 'elevated', 'outline', 'ghost'] as const).map((variant) => (
+      {(['default', 'elevated', 'outline', 'ghost'] as const).map(variant => (
         <Card key={variant} variant={variant}>
           <CardHeader>
             <CardTitle>Variant: {variant}</CardTitle>
@@ -196,7 +207,7 @@ export const DragAndDropExample: Story = {
 
     const handleDragEnd = (event: DragEndEvent) => {
       const { active, over } = event;
-      
+
       if (over && over.id === 'droppable-area') {
         const draggedItem = items.find(item => item.id === active.id);
         if (draggedItem) {
@@ -204,7 +215,7 @@ export const DragAndDropExample: Story = {
           setDroppedItems([...droppedItems, draggedItem]);
         }
       }
-      
+
       setActiveId(null);
     };
 
@@ -215,7 +226,7 @@ export const DragAndDropExample: Story = {
         <h3 className="text-lg font-semibold mb-4 text-secondary-900 dark:text-secondary-100">
           Drag and Drop Cards Example
         </h3>
-        
+
         <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Source Area */}
@@ -224,7 +235,7 @@ export const DragAndDropExample: Story = {
                 Available Tasks
               </h4>
               <div className="space-y-3">
-                {items.map((item) => (
+                {items.map(item => (
                   <DraggableCard
                     key={item.id}
                     id={item.id}
@@ -250,15 +261,19 @@ export const DragAndDropExample: Story = {
               <h4 className="text-md font-medium mb-3 text-secondary-700 dark:text-secondary-300">
                 Completed Tasks
               </h4>
-              <DroppableArea 
+              <DroppableArea
                 id="droppable-area"
                 variant="highlighted"
                 size="lg"
                 placeholder="Drop tasks here to mark as complete"
               >
                 <div className="space-y-3">
-                  {droppedItems.map((item) => (
-                    <Card key={item.id} variant="outline" className="opacity-75">
+                  {droppedItems.map(item => (
+                    <Card
+                      key={item.id}
+                      variant="outline"
+                      className="opacity-75"
+                    >
                       <CardHeader>
                         <div className="flex items-center space-x-2">
                           <Icon icon={CompleteIcon} size="sm" color="success" />
@@ -312,7 +327,7 @@ export const DarkThemeShowcase: Story = {
         <h3 className="text-lg font-semibold mb-4 text-secondary-100">
           Dark Theme Cards
         </h3>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Card variant="default">
             <CardHeader>
@@ -335,7 +350,9 @@ export const DarkThemeShowcase: Story = {
                 <Icon icon={TaskIcon} color="primary" />
                 <CardTitle>Elevated with Icons</CardTitle>
               </div>
-              <CardDescription>Enhanced shadow and icon support</CardDescription>
+              <CardDescription>
+                Enhanced shadow and icon support
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex items-center space-x-4">

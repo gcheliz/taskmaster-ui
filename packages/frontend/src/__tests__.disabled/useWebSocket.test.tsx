@@ -3,7 +3,14 @@
  * Tests for WebSocket integration hooks
  */
 
-import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
+import {
+  describe,
+  it,
+  expect,
+  jest,
+  beforeEach,
+  afterEach,
+} from '@jest/globals';
 import { renderHook, act } from '@testing-library/react';
 import { useWebSocket, useTaskCollaboration } from '../hooks/useWebSocket';
 import { WebSocketState, WebSocketEventType } from '../types/websocket';
@@ -43,11 +50,13 @@ describe('useWebSocket Hook', () => {
 
   it('should not auto-connect when autoConnect is false', () => {
     const { webSocketService } = require('../services/websocket');
-    
-    renderHook(() => useWebSocket({
-      url: 'ws://localhost:8080',
-      autoConnect: false,
-    }));
+
+    renderHook(() =>
+      useWebSocket({
+        url: 'ws://localhost:8080',
+        autoConnect: false,
+      })
+    );
 
     expect(webSocketService.connect).not.toHaveBeenCalled();
   });
@@ -135,7 +144,10 @@ describe('useTaskCollaboration Hook', () => {
   it('should handle updateTask correctly', () => {
     const { webSocketService } = require('../services/websocket');
     webSocketService.isConnected.mockReturnValue(true);
-    webSocketService.getCurrentUser.mockReturnValue({ id: 'user-1', name: 'Test User' });
+    webSocketService.getCurrentUser.mockReturnValue({
+      id: 'user-1',
+      name: 'Test User',
+    });
 
     const { result } = renderHook(() => useTaskCollaboration(mockTasks));
 
@@ -145,7 +157,7 @@ describe('useTaskCollaboration Hook', () => {
 
     // Task should be updated locally
     expect(result.current.tasks[0].title).toBe('Updated Task');
-    
+
     // Should send update to WebSocket
     expect(webSocketService.send).toHaveBeenCalled();
   });
@@ -153,7 +165,10 @@ describe('useTaskCollaboration Hook', () => {
   it('should handle moveTask correctly', () => {
     const { webSocketService } = require('../services/websocket');
     webSocketService.isConnected.mockReturnValue(true);
-    webSocketService.getCurrentUser.mockReturnValue({ id: 'user-1', name: 'Test User' });
+    webSocketService.getCurrentUser.mockReturnValue({
+      id: 'user-1',
+      name: 'Test User',
+    });
 
     const { result } = renderHook(() => useTaskCollaboration(mockTasks));
 
@@ -164,7 +179,7 @@ describe('useTaskCollaboration Hook', () => {
     // Task should be moved locally
     expect(result.current.tasks[0].status).toBe('in-progress');
     expect(result.current.tasks[0].position).toBe(1);
-    
+
     // Should send move event to WebSocket
     expect(webSocketService.send).toHaveBeenCalled();
   });
@@ -172,7 +187,10 @@ describe('useTaskCollaboration Hook', () => {
   it('should handle createTask correctly', () => {
     const { webSocketService } = require('../services/websocket');
     webSocketService.isConnected.mockReturnValue(true);
-    webSocketService.getCurrentUser.mockReturnValue({ id: 'user-1', name: 'Test User' });
+    webSocketService.getCurrentUser.mockReturnValue({
+      id: 'user-1',
+      name: 'Test User',
+    });
 
     const { result } = renderHook(() => useTaskCollaboration([]));
 
@@ -194,7 +212,7 @@ describe('useTaskCollaboration Hook', () => {
     // Task should be added locally
     expect(result.current.tasks).toHaveLength(1);
     expect(result.current.tasks[0].title).toBe('New Task');
-    
+
     // Should send create event to WebSocket
     expect(webSocketService.send).toHaveBeenCalled();
   });
@@ -202,7 +220,10 @@ describe('useTaskCollaboration Hook', () => {
   it('should handle deleteTask correctly', () => {
     const { webSocketService } = require('../services/websocket');
     webSocketService.isConnected.mockReturnValue(true);
-    webSocketService.getCurrentUser.mockReturnValue({ id: 'user-1', name: 'Test User' });
+    webSocketService.getCurrentUser.mockReturnValue({
+      id: 'user-1',
+      name: 'Test User',
+    });
 
     const { result } = renderHook(() => useTaskCollaboration(mockTasks));
 
@@ -212,7 +233,7 @@ describe('useTaskCollaboration Hook', () => {
 
     // Task should be removed locally
     expect(result.current.tasks).toHaveLength(0);
-    
+
     // Should send delete event to WebSocket
     expect(webSocketService.send).toHaveBeenCalled();
   });
@@ -236,7 +257,10 @@ describe('Hook Integration', () => {
   it('should work together in a realistic scenario', () => {
     const { webSocketService } = require('../services/websocket');
     webSocketService.isConnected.mockReturnValue(true);
-    webSocketService.getCurrentUser.mockReturnValue({ id: 'user-1', name: 'Test User' });
+    webSocketService.getCurrentUser.mockReturnValue({
+      id: 'user-1',
+      name: 'Test User',
+    });
 
     const mockTasks: Task[] = [
       {
@@ -254,12 +278,16 @@ describe('Hook Integration', () => {
       },
     ];
 
-    const { result: webSocketResult } = renderHook(() => useWebSocket({
-      url: 'ws://localhost:8080',
-      autoConnect: false,
-    }));
+    const { result: webSocketResult } = renderHook(() =>
+      useWebSocket({
+        url: 'ws://localhost:8080',
+        autoConnect: false,
+      })
+    );
 
-    const { result: taskResult } = renderHook(() => useTaskCollaboration(mockTasks));
+    const { result: taskResult } = renderHook(() =>
+      useTaskCollaboration(mockTasks)
+    );
 
     // Should be able to use both hooks together
     expect(webSocketResult.current.isConnected).toBe(false);
@@ -267,7 +295,9 @@ describe('Hook Integration', () => {
 
     // Should be able to interact with tasks
     act(() => {
-      taskResult.current.updateTask('task-1', { title: 'Updated via Integration' });
+      taskResult.current.updateTask('task-1', {
+        title: 'Updated via Integration',
+      });
     });
 
     expect(taskResult.current.tasks[0].title).toBe('Updated via Integration');

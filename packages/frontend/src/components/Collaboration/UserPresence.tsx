@@ -57,7 +57,9 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
       'bg-pink-500',
       'bg-indigo-500',
     ];
-    const index = userId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const index = userId
+      .split('')
+      .reduce((acc, char) => acc + char.charCodeAt(0), 0);
     return colors[index % colors.length];
   };
 
@@ -85,7 +87,7 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
           {getInitials(user.name)}
         </div>
       )}
-      
+
       {showStatus && (
         <div
           className={cn(
@@ -121,7 +123,7 @@ export const ConnectedUsers: React.FC<ConnectedUsersProps> = ({
   return (
     <div className={cn('flex items-center space-x-2', className)}>
       <div className="flex -space-x-2">
-        {visibleUsers.map((user) => (
+        {visibleUsers.map(user => (
           <UserAvatar
             key={user.id}
             user={user}
@@ -130,14 +132,14 @@ export const ConnectedUsers: React.FC<ConnectedUsersProps> = ({
             className="hover:z-10 transition-all duration-200 hover:scale-110"
           />
         ))}
-        
+
         {hiddenUsersCount > 0 && (
           <div className="w-8 h-8 bg-slate-700 rounded-full flex items-center justify-center text-xs font-semibold text-slate-300 ring-2 ring-slate-800">
             +{hiddenUsersCount}
           </div>
         )}
       </div>
-      
+
       <div className="text-sm text-slate-400">
         {connectedUsers.length} online
       </div>
@@ -226,7 +228,7 @@ export const UserCursor: React.FC<UserCursorProps> = ({
             strokeWidth="1"
           />
         </svg>
-        
+
         <div
           className="absolute top-6 left-2 px-2 py-1 rounded text-xs font-medium text-white shadow-lg"
           style={{ backgroundColor: user.color || '#3B82F6' }}
@@ -254,9 +256,9 @@ export const CollaborationStatus: React.FC<CollaborationStatusProps> = ({
         <div className="w-2 h-2 bg-accent-success rounded-full animate-pulse" />
         <span className="text-sm text-slate-300">Live</span>
       </div>
-      
+
       <ConnectedUsers maxVisible={3} />
-      
+
       {activeUsers > 0 && (
         <Badge variant="success" size="sm">
           {activeUsers} collaborating

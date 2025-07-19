@@ -53,7 +53,7 @@ const KanbanTaskCard: React.FC<KanbanTaskCardProps> = ({
   onClick,
   isDragging = false,
   isDraggable = true,
-  className = ''
+  className = '',
 }) => {
   // Configure draggable behavior
   const dragData: DragData = {
@@ -62,12 +62,17 @@ const KanbanTaskCard: React.FC<KanbanTaskCardProps> = ({
     status: status,
   };
 
-  const { attributes, listeners, setNodeRef, transform, isDragging: dndIsDragging } =
-    useDraggable({
-      id: `task-${id}`,
-      data: dragData,
-      disabled: !isDraggable,
-    });
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    isDragging: dndIsDragging,
+  } = useDraggable({
+    id: `task-${id}`,
+    data: dragData,
+    disabled: !isDraggable,
+  });
 
   const style = {
     transform: CSS.Translate.toString(transform),
@@ -89,7 +94,9 @@ const KanbanTaskCard: React.FC<KanbanTaskCardProps> = ({
     }
   };
 
-  const getPriorityBadgeVariant = (taskPriority: TaskPriority): 'primary' | 'secondary' | 'success' | 'warning' | 'error' => {
+  const getPriorityBadgeVariant = (
+    taskPriority: TaskPriority
+  ): 'primary' | 'secondary' | 'success' | 'warning' | 'error' => {
     switch (taskPriority) {
       case 'urgent':
         return 'error';
@@ -104,7 +111,9 @@ const KanbanTaskCard: React.FC<KanbanTaskCardProps> = ({
     }
   };
 
-  const getStatusBadgeVariant = (taskStatus: TaskStatus): 'primary' | 'secondary' | 'success' | 'warning' | 'error' => {
+  const getStatusBadgeVariant = (
+    taskStatus: TaskStatus
+  ): 'primary' | 'secondary' | 'success' | 'warning' | 'error' => {
     switch (taskStatus) {
       case 'pending':
         return 'secondary';
@@ -136,7 +145,9 @@ const KanbanTaskCard: React.FC<KanbanTaskCardProps> = ({
 
   const getSubtaskProgress = () => {
     if (!subtasks || subtasks.length === 0) return null;
-    const completedCount = subtasks.filter(subtask => subtask.status === 'done').length;
+    const completedCount = subtasks.filter(
+      subtask => subtask.status === 'done'
+    ).length;
     const totalCount = subtasks.length;
     const percentage = (completedCount / totalCount) * 100;
     return { completed: completedCount, total: totalCount, percentage };
@@ -202,7 +213,11 @@ const KanbanTaskCard: React.FC<KanbanTaskCardProps> = ({
                   {description}
                 </p>
               </div>
-              <Badge variant="secondary" size="sm" className="ml-2 flex-shrink-0">
+              <Badge
+                variant="secondary"
+                size="sm"
+                className="ml-2 flex-shrink-0"
+              >
                 #{id}
               </Badge>
             </div>
@@ -241,7 +256,8 @@ const KanbanTaskCard: React.FC<KanbanTaskCardProps> = ({
               <div className="space-y-1">
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-secondary-600 dark:text-secondary-400">
-                    Subtasks ({subtaskProgress.completed}/{subtaskProgress.total})
+                    Subtasks ({subtaskProgress.completed}/
+                    {subtaskProgress.total})
                   </span>
                   <span className="text-secondary-600 dark:text-secondary-400">
                     {Math.round(subtaskProgress.percentage)}%
@@ -260,7 +276,12 @@ const KanbanTaskCard: React.FC<KanbanTaskCardProps> = ({
             {tags && tags.length > 0 && (
               <div className="flex flex-wrap gap-1">
                 {tags.slice(0, 3).map((tag, index) => (
-                  <Badge key={index} variant="secondary" size="sm" className="text-xs">
+                  <Badge
+                    key={index}
+                    variant="secondary"
+                    size="sm"
+                    className="text-xs"
+                  >
                     {tag}
                   </Badge>
                 ))}
@@ -284,17 +305,11 @@ const KanbanTaskCard: React.FC<KanbanTaskCardProps> = ({
                   </Badge>
                 )}
               </div>
-              
+
               <div className="flex items-center space-x-2">
-                {updatedAt && (
-                  <span>
-                    Updated {formatDate(updatedAt)}
-                  </span>
-                )}
+                {updatedAt && <span>Updated {formatDate(updatedAt)}</span>}
                 {dueDate && !isOverdue && (
-                  <span>
-                    Due {formatDate(dueDate)}
-                  </span>
+                  <span>Due {formatDate(dueDate)}</span>
                 )}
               </div>
             </div>

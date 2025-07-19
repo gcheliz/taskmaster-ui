@@ -6,7 +6,10 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { TaskBoard, type TaskBoardProps } from './TaskBoard';
 import { CollaborationStatus, UserCursor } from '../Collaboration/UserPresence';
-import { useTaskCollaboration, useUserPresence } from '../../hooks/useWebSocket';
+import {
+  useTaskCollaboration,
+  useUserPresence,
+} from '../../hooks/useWebSocket';
 import { useWebSocketContext } from '../../providers/WebSocketProvider';
 import { Toast } from '../ui/molecules/Toast';
 import { Badge } from '../ui/atoms/Badge';
@@ -14,7 +17,8 @@ import { Icon, CheckIcon, XMarkIcon } from '../ui/atoms/Icon';
 import type { Task, TaskStatus } from '../../types/websocket';
 import { cn } from '../../utils/cn';
 
-interface CollaborativeTaskBoardProps extends Omit<TaskBoardProps, 'data' | 'onTaskMove'> {
+interface CollaborativeTaskBoardProps
+  extends Omit<TaskBoardProps, 'data' | 'onTaskMove'> {
   /** Initial tasks to display */
   initialTasks?: Task[];
   /** Board ID for collaboration */
@@ -24,7 +28,11 @@ interface CollaborativeTaskBoardProps extends Omit<TaskBoardProps, 'data' | 'onT
   /** Whether to show user cursors */
   showUserCursors?: boolean;
   /** Callback when a task is moved */
-  onTaskMove?: (taskId: string, fromStatus: TaskStatus, toStatus: TaskStatus) => void;
+  onTaskMove?: (
+    taskId: string,
+    fromStatus: TaskStatus,
+    toStatus: TaskStatus
+  ) => void;
   /** Callback when a task is created */
   onTaskCreate?: (task: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => void;
   /** Callback when a task is updated */
@@ -58,20 +66,42 @@ export const CollaborativeTaskBoard: React.FC<CollaborativeTaskBoardProps> = ({
     lastUpdate,
   } = useTaskCollaboration(initialTasks);
 
-  const [notifications, setNotifications] = useState<Array<{
-    id: string;
-    type: 'info' | 'success' | 'warning' | 'error';
-    message: string;
-    timestamp: string;
-  }>>([]);
+  const [notifications, setNotifications] = useState<
+    Array<{
+      id: string;
+      type: 'info' | 'success' | 'warning' | 'error';
+      message: string;
+      timestamp: string;
+    }>
+  >([]);
 
   // Convert our Task type to the expected TaskBoardData format
   const taskBoardData = React.useMemo(() => {
     const columns = [
-      { id: 'pending', title: 'To Do', status: 'pending' as TaskStatus, tasks: [] as any[] },
-      { id: 'in-progress', title: 'In Progress', status: 'in-progress' as TaskStatus, tasks: [] as any[] },
-      { id: 'done', title: 'Done', status: 'done' as TaskStatus, tasks: [] as any[] },
-      { id: 'blocked', title: 'Blocked', status: 'blocked' as TaskStatus, tasks: [] as any[] },
+      {
+        id: 'pending',
+        title: 'To Do',
+        status: 'pending' as TaskStatus,
+        tasks: [] as any[],
+      },
+      {
+        id: 'in-progress',
+        title: 'In Progress',
+        status: 'in-progress' as TaskStatus,
+        tasks: [] as any[],
+      },
+      {
+        id: 'done',
+        title: 'Done',
+        status: 'done' as TaskStatus,
+        tasks: [] as any[],
+      },
+      {
+        id: 'blocked',
+        title: 'Blocked',
+        status: 'blocked' as TaskStatus,
+        tasks: [] as any[],
+      },
     ];
 
     const convertedTasks = tasks.map(task => ({
@@ -89,7 +119,9 @@ export const CollaborativeTaskBoard: React.FC<CollaborativeTaskBoardProps> = ({
 
     // Group tasks by status into columns
     columns.forEach(column => {
-      column.tasks = convertedTasks.filter(task => task.status === column.status);
+      column.tasks = convertedTasks.filter(
+        task => task.status === column.status
+      );
     });
 
     return {
@@ -105,66 +137,71 @@ export const CollaborativeTaskBoard: React.FC<CollaborativeTaskBoardProps> = ({
   }, [tasks, lastUpdate]);
 
   // Handle task movements
-  const handleTaskMove = useCallback((
-    taskId: number,
-    fromStatus: TaskStatus,
-    toStatus: TaskStatus
-  ) => {
-    const stringTaskId = `task-${taskId}`;
-    const task = tasks.find(t => t.id === stringTaskId);
-    
-    if (task) {
-      const fromPosition = task.position;
-      const toPosition = tasks.filter(t => t.status === toStatus).length;
-      
-      moveTask(stringTaskId, toStatus, toPosition);
-      onTaskMove?.(stringTaskId, fromStatus, toStatus);
-      
-      // Show notification for task movement
-      addNotification({
-        type: 'info',
-        message: `Task "${task.title}" moved from ${fromStatus} to ${toStatus}`,
-      });
-    }
-  }, [tasks, moveTask, onTaskMove]);
+  const handleTaskMove = useCallback(
+    (taskId: number, fromStatus: TaskStatus, toStatus: TaskStatus) => {
+      const stringTaskId = `task-${taskId}`;
+      const task = tasks.find(t => t.id === stringTaskId);
+
+      if (task) {
+        const fromPosition = task.position;
+        const toPosition = tasks.filter(t => t.status === toStatus).length;
+
+        moveTask(stringTaskId, toStatus, toPosition);
+        onTaskMove?.(stringTaskId, fromStatus, toStatus);
+
+        // Show notification for task movement
+        addNotification({
+          type: 'info',
+          message: `Task "${task.title}" moved from ${fromStatus} to ${toStatus}`,
+        });
+      }
+    },
+    [tasks, moveTask, onTaskMove]
+  );
 
   // Handle task creation
-  const handleTaskCreate = useCallback((status: TaskStatus) => {
-    const newTask: Omit<Task, 'id' | 'createdAt' | 'updatedAt'> = {
-      title: 'New Task',
-      description: '',
-      status,
-      priority: 'medium',
-      position: tasks.filter(t => t.status === status).length,
-      column: status,
-      tags: [],
-      complexity: 1,
-    };
-    
-    createTask(newTask);
-    onTaskCreate?.(newTask);
-    
-    addNotification({
-      type: 'success',
-      message: 'New task created successfully',
-    });
-  }, [tasks, createTask, onTaskCreate]);
+  const handleTaskCreate = useCallback(
+    (status: TaskStatus) => {
+      const newTask: Omit<Task, 'id' | 'createdAt' | 'updatedAt'> = {
+        title: 'New Task',
+        description: '',
+        status,
+        priority: 'medium',
+        position: tasks.filter(t => t.status === status).length,
+        column: status,
+        tags: [],
+        complexity: 1,
+      };
+
+      createTask(newTask);
+      onTaskCreate?.(newTask);
+
+      addNotification({
+        type: 'success',
+        message: 'New task created successfully',
+      });
+    },
+    [tasks, createTask, onTaskCreate]
+  );
 
   // Add notification helper
-  const addNotification = useCallback((notification: Omit<typeof notifications[0], 'id' | 'timestamp'>) => {
-    const newNotification = {
-      ...notification,
-      id: `notification-${Date.now()}-${Math.random()}`,
-      timestamp: new Date().toISOString(),
-    };
-    
-    setNotifications(prev => [...prev, newNotification]);
-    
-    // Auto-remove notification after 5 seconds
-    setTimeout(() => {
-      setNotifications(prev => prev.filter(n => n.id !== newNotification.id));
-    }, 5000);
-  }, []);
+  const addNotification = useCallback(
+    (notification: Omit<(typeof notifications)[0], 'id' | 'timestamp'>) => {
+      const newNotification = {
+        ...notification,
+        id: `notification-${Date.now()}-${Math.random()}`,
+        timestamp: new Date().toISOString(),
+      };
+
+      setNotifications(prev => [...prev, newNotification]);
+
+      // Auto-remove notification after 5 seconds
+      setTimeout(() => {
+        setNotifications(prev => prev.filter(n => n.id !== newNotification.id));
+      }, 5000);
+    },
+    []
+  );
 
   // Listen for collaboration events
   useEffect(() => {
@@ -198,20 +235,20 @@ export const CollaborativeTaskBoard: React.FC<CollaborativeTaskBoardProps> = ({
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <CollaborationStatus />
-              
+
               {!isConnected && (
                 <Badge variant="error" size="sm">
                   Disconnected
                 </Badge>
               )}
-              
+
               {isConnected && (
                 <Badge variant="success" size="sm">
                   Connected
                 </Badge>
               )}
             </div>
-            
+
             <div className="flex items-center space-x-2 text-sm text-slate-400">
               {lastUpdate && (
                 <span>

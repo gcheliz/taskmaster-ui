@@ -1,17 +1,17 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { 
-  Breadcrumb, 
-  BreadcrumbLink, 
-  BreadcrumbSeparator 
+import {
+  Breadcrumb,
+  BreadcrumbLink,
+  BreadcrumbSeparator,
 } from '../../components/ui/atoms/BreadcrumbLink';
-import { 
-  Icon, 
-  HomeFilledIcon, 
+import {
+  Icon,
+  HomeFilledIcon,
   TaskIcon,
   UserCircleIcon,
   SettingsIcon,
   CompleteIcon,
-  WarningIcon
+  WarningIcon,
 } from '../../components/ui/atoms/Icon';
 
 const meta = {
@@ -51,7 +51,7 @@ export const Default: Story = {
     size: 'md',
     responsive: true,
   },
-  render: (args) => (
+  render: args => (
     <Breadcrumb {...args}>
       <BreadcrumbLink href="#">Home</BreadcrumbLink>
       <BreadcrumbSeparator />
@@ -107,33 +107,33 @@ export const ArrowSeparator: Story = {
     <Breadcrumb>
       <BreadcrumbLink href="#">Home</BreadcrumbLink>
       <BreadcrumbSeparator>
-        <svg 
-          className="h-4 w-4" 
-          fill="none" 
-          viewBox="0 0 24 24" 
+        <svg
+          className="h-4 w-4"
+          fill="none"
+          viewBox="0 0 24 24"
           stroke="currentColor"
         >
-          <path 
-            strokeLinecap="round" 
-            strokeLinejoin="round" 
-            strokeWidth={2} 
-            d="M9 5l7 7-7 7" 
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M9 5l7 7-7 7"
           />
         </svg>
       </BreadcrumbSeparator>
       <BreadcrumbLink href="#">Projects</BreadcrumbLink>
       <BreadcrumbSeparator>
-        <svg 
-          className="h-4 w-4" 
-          fill="none" 
-          viewBox="0 0 24 24" 
+        <svg
+          className="h-4 w-4"
+          fill="none"
+          viewBox="0 0 24 24"
           stroke="currentColor"
         >
-          <path 
-            strokeLinecap="round" 
-            strokeLinejoin="round" 
-            strokeWidth={2} 
-            d="M9 5l7 7-7 7" 
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M9 5l7 7-7 7"
           />
         </svg>
       </BreadcrumbSeparator>
@@ -148,35 +148,59 @@ export const Sizes: Story = {
   render: () => (
     <div className="space-y-4">
       <div>
-        <p className="text-sm text-secondary-600 dark:text-secondary-400 mb-2">Small</p>
+        <p className="text-sm text-secondary-600 dark:text-secondary-400 mb-2">
+          Small
+        </p>
         <Breadcrumb size="sm">
-          <BreadcrumbLink href="#" size="sm">Home</BreadcrumbLink>
+          <BreadcrumbLink href="#" size="sm">
+            Home
+          </BreadcrumbLink>
           <BreadcrumbSeparator size="sm" />
-          <BreadcrumbLink href="#" size="sm">Dashboard</BreadcrumbLink>
+          <BreadcrumbLink href="#" size="sm">
+            Dashboard
+          </BreadcrumbLink>
           <BreadcrumbSeparator size="sm" />
-          <BreadcrumbLink href="#" size="sm" isCurrent>Current</BreadcrumbLink>
+          <BreadcrumbLink href="#" size="sm" isCurrent>
+            Current
+          </BreadcrumbLink>
         </Breadcrumb>
       </div>
-      
+
       <div>
-        <p className="text-sm text-secondary-600 dark:text-secondary-400 mb-2">Medium</p>
+        <p className="text-sm text-secondary-600 dark:text-secondary-400 mb-2">
+          Medium
+        </p>
         <Breadcrumb size="md">
-          <BreadcrumbLink href="#" size="md">Home</BreadcrumbLink>
+          <BreadcrumbLink href="#" size="md">
+            Home
+          </BreadcrumbLink>
           <BreadcrumbSeparator size="md" />
-          <BreadcrumbLink href="#" size="md">Dashboard</BreadcrumbLink>
+          <BreadcrumbLink href="#" size="md">
+            Dashboard
+          </BreadcrumbLink>
           <BreadcrumbSeparator size="md" />
-          <BreadcrumbLink href="#" size="md" isCurrent>Current</BreadcrumbLink>
+          <BreadcrumbLink href="#" size="md" isCurrent>
+            Current
+          </BreadcrumbLink>
         </Breadcrumb>
       </div>
-      
+
       <div>
-        <p className="text-sm text-secondary-600 dark:text-secondary-400 mb-2">Large</p>
+        <p className="text-sm text-secondary-600 dark:text-secondary-400 mb-2">
+          Large
+        </p>
         <Breadcrumb size="lg">
-          <BreadcrumbLink href="#" size="lg">Home</BreadcrumbLink>
+          <BreadcrumbLink href="#" size="lg">
+            Home
+          </BreadcrumbLink>
           <BreadcrumbSeparator size="lg" />
-          <BreadcrumbLink href="#" size="lg">Dashboard</BreadcrumbLink>
+          <BreadcrumbLink href="#" size="lg">
+            Dashboard
+          </BreadcrumbLink>
           <BreadcrumbSeparator size="lg" />
-          <BreadcrumbLink href="#" size="lg" isCurrent>Current</BreadcrumbLink>
+          <BreadcrumbLink href="#" size="lg" isCurrent>
+            Current
+          </BreadcrumbLink>
         </Breadcrumb>
       </div>
     </div>
@@ -191,7 +215,9 @@ export const CollapsedBreadcrumb: Story = {
           Collapsed (max 4 items)
         </p>
         <Breadcrumb maxItems={4}>
-          <BreadcrumbLink href="#" icon={HomeFilledIcon}>Home</BreadcrumbLink>
+          <BreadcrumbLink href="#" icon={HomeFilledIcon}>
+            Home
+          </BreadcrumbLink>
           <BreadcrumbSeparator />
           <BreadcrumbLink href="#">Level 1</BreadcrumbLink>
           <BreadcrumbSeparator />
@@ -201,16 +227,20 @@ export const CollapsedBreadcrumb: Story = {
           <BreadcrumbSeparator />
           <BreadcrumbLink href="#">Level 4</BreadcrumbLink>
           <BreadcrumbSeparator />
-          <BreadcrumbLink href="#" isCurrent>Current Page</BreadcrumbLink>
+          <BreadcrumbLink href="#" isCurrent>
+            Current Page
+          </BreadcrumbLink>
         </Breadcrumb>
       </div>
-      
+
       <div>
         <p className="text-sm text-secondary-600 dark:text-secondary-400 mb-2">
           Collapsed (max 3 items)
         </p>
         <Breadcrumb maxItems={3}>
-          <BreadcrumbLink href="#" icon={HomeFilledIcon}>Home</BreadcrumbLink>
+          <BreadcrumbLink href="#" icon={HomeFilledIcon}>
+            Home
+          </BreadcrumbLink>
           <BreadcrumbSeparator />
           <BreadcrumbLink href="#">Projects</BreadcrumbLink>
           <BreadcrumbSeparator />
@@ -220,7 +250,9 @@ export const CollapsedBreadcrumb: Story = {
           <BreadcrumbSeparator />
           <BreadcrumbLink href="#">Backlog Review</BreadcrumbLink>
           <BreadcrumbSeparator />
-          <BreadcrumbLink href="#" isCurrent>Current Sprint</BreadcrumbLink>
+          <BreadcrumbLink href="#" isCurrent>
+            Current Sprint
+          </BreadcrumbLink>
         </Breadcrumb>
       </div>
     </div>
@@ -231,24 +263,36 @@ export const Variants: Story = {
   render: () => (
     <div className="space-y-4">
       <div>
-        <p className="text-sm text-secondary-600 dark:text-secondary-400 mb-2">Default</p>
+        <p className="text-sm text-secondary-600 dark:text-secondary-400 mb-2">
+          Default
+        </p>
         <Breadcrumb>
           <BreadcrumbLink href="#">Home</BreadcrumbLink>
           <BreadcrumbSeparator />
           <BreadcrumbLink href="#">Dashboard</BreadcrumbLink>
           <BreadcrumbSeparator />
-          <BreadcrumbLink href="#" isCurrent>Current</BreadcrumbLink>
+          <BreadcrumbLink href="#" isCurrent>
+            Current
+          </BreadcrumbLink>
         </Breadcrumb>
       </div>
-      
+
       <div>
-        <p className="text-sm text-secondary-600 dark:text-secondary-400 mb-2">Primary</p>
+        <p className="text-sm text-secondary-600 dark:text-secondary-400 mb-2">
+          Primary
+        </p>
         <Breadcrumb>
-          <BreadcrumbLink href="#" variant="primary">Home</BreadcrumbLink>
+          <BreadcrumbLink href="#" variant="primary">
+            Home
+          </BreadcrumbLink>
           <BreadcrumbSeparator />
-          <BreadcrumbLink href="#" variant="primary">Dashboard</BreadcrumbLink>
+          <BreadcrumbLink href="#" variant="primary">
+            Dashboard
+          </BreadcrumbLink>
           <BreadcrumbSeparator />
-          <BreadcrumbLink href="#" variant="primary" isCurrent>Current</BreadcrumbLink>
+          <BreadcrumbLink href="#" variant="primary" isCurrent>
+            Current
+          </BreadcrumbLink>
         </Breadcrumb>
       </div>
     </div>
@@ -288,17 +332,11 @@ export const ResponsiveBreadcrumb: Story = {
             Home
           </BreadcrumbLink>
           <BreadcrumbSeparator />
-          <BreadcrumbLink href="#">
-            Project Management
-          </BreadcrumbLink>
+          <BreadcrumbLink href="#">Project Management</BreadcrumbLink>
           <BreadcrumbSeparator />
-          <BreadcrumbLink href="#">
-            Task Management System
-          </BreadcrumbLink>
+          <BreadcrumbLink href="#">Task Management System</BreadcrumbLink>
           <BreadcrumbSeparator />
-          <BreadcrumbLink href="#">
-            User Interface Components
-          </BreadcrumbLink>
+          <BreadcrumbLink href="#">User Interface Components</BreadcrumbLink>
           <BreadcrumbSeparator />
           <BreadcrumbLink href="#" isCurrent>
             Navigation Components
@@ -319,7 +357,7 @@ export const DarkThemeShowcase: Story = {
         <h3 className="text-lg font-semibold text-secondary-100">
           Dark Theme Breadcrumbs
         </h3>
-        
+
         <div className="space-y-4">
           <div>
             <p className="text-sm text-secondary-400 mb-2">Basic Dark Theme</p>
@@ -337,7 +375,7 @@ export const DarkThemeShowcase: Story = {
               </BreadcrumbLink>
             </Breadcrumb>
           </div>
-          
+
           <div>
             <p className="text-sm text-secondary-400 mb-2">Primary Variant</p>
             <Breadcrumb>
@@ -349,16 +387,25 @@ export const DarkThemeShowcase: Story = {
                 Analytics
               </BreadcrumbLink>
               <BreadcrumbSeparator />
-              <BreadcrumbLink href="#" variant="primary" icon={CompleteIcon} isCurrent>
+              <BreadcrumbLink
+                href="#"
+                variant="primary"
+                icon={CompleteIcon}
+                isCurrent
+              >
                 Reports
               </BreadcrumbLink>
             </Breadcrumb>
           </div>
-          
+
           <div>
-            <p className="text-sm text-secondary-400 mb-2">Collapsed with Custom Separator</p>
+            <p className="text-sm text-secondary-400 mb-2">
+              Collapsed with Custom Separator
+            </p>
             <Breadcrumb maxItems={3} separator="›">
-              <BreadcrumbLink href="#" icon={HomeFilledIcon}>Home</BreadcrumbLink>
+              <BreadcrumbLink href="#" icon={HomeFilledIcon}>
+                Home
+              </BreadcrumbLink>
               <BreadcrumbSeparator>›</BreadcrumbSeparator>
               <BreadcrumbLink href="#">Projects</BreadcrumbLink>
               <BreadcrumbSeparator>›</BreadcrumbSeparator>
@@ -366,7 +413,9 @@ export const DarkThemeShowcase: Story = {
               <BreadcrumbSeparator>›</BreadcrumbSeparator>
               <BreadcrumbLink href="#">Components</BreadcrumbLink>
               <BreadcrumbSeparator>›</BreadcrumbSeparator>
-              <BreadcrumbLink href="#" isCurrent>Navigation</BreadcrumbLink>
+              <BreadcrumbLink href="#" isCurrent>
+                Navigation
+              </BreadcrumbLink>
             </Breadcrumb>
           </div>
         </div>

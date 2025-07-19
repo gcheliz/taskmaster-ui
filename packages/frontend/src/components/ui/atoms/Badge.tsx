@@ -22,11 +22,15 @@ const badgeVariants = cva(
         outline:
           'border-slate-300 text-slate-700 hover:bg-slate-50 hover:shadow-md hover:shadow-slate-500/25',
         // TaskMaster specific status badges
-        pending: 'border-transparent bg-amber-600 text-white hover:bg-amber-700 hover:shadow-md hover:shadow-amber-500/25',
-        'in-progress': 'border-transparent bg-blue-600 text-white hover:bg-blue-700 hover:shadow-md hover:shadow-blue-500/25',
+        pending:
+          'border-transparent bg-amber-600 text-white hover:bg-amber-700 hover:shadow-md hover:shadow-amber-500/25',
+        'in-progress':
+          'border-transparent bg-blue-600 text-white hover:bg-blue-700 hover:shadow-md hover:shadow-blue-500/25',
         done: 'border-transparent bg-green-600 text-white hover:bg-green-700 hover:shadow-md hover:shadow-green-500/25',
-        blocked: 'border-transparent bg-red-600 text-white hover:bg-red-700 hover:shadow-md hover:shadow-red-500/25',
-        deferred: 'border-transparent bg-slate-500 text-white hover:bg-slate-600 hover:shadow-md hover:shadow-slate-500/25',
+        blocked:
+          'border-transparent bg-red-600 text-white hover:bg-red-700 hover:shadow-md hover:shadow-red-500/25',
+        deferred:
+          'border-transparent bg-slate-500 text-white hover:bg-slate-600 hover:shadow-md hover:shadow-slate-500/25',
       },
       size: {
         sm: 'px-2 py-0.5 text-xs min-w-[1.5rem] min-h-[1.25rem]',

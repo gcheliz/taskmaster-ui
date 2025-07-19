@@ -1,6 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { QuickActionCard } from '../../components/ui/molecules/QuickActionCard';
-import { TaskIcon, NotificationIcon, UserCircleIcon, DuplicateIcon, PlusIcon, SettingsIcon, ArchiveIcon } from '../../components/ui/atoms/Icon';
+import {
+  TaskIcon,
+  NotificationIcon,
+  UserCircleIcon,
+  DuplicateIcon,
+  PlusIcon,
+  SettingsIcon,
+  ArchiveIcon,
+} from '../../components/ui/atoms/Icon';
 
 const meta: Meta<typeof QuickActionCard> = {
   title: 'UI/Molecules/QuickActionCard',
@@ -12,7 +20,14 @@ const meta: Meta<typeof QuickActionCard> = {
   argTypes: {
     variant: {
       control: 'select',
-      options: ['primary', 'secondary', 'success', 'warning', 'error', 'outline'],
+      options: [
+        'primary',
+        'secondary',
+        'success',
+        'warning',
+        'error',
+        'outline',
+      ],
     },
     iconColor: {
       control: 'select',
@@ -60,7 +75,7 @@ export const WithBadge: Story = {
     variant: 'outline',
     badge: {
       text: 'Admin',
-      variant: 'warning'
+      variant: 'warning',
     },
     onClick: () => console.log('Manage team clicked'),
   },
@@ -145,7 +160,8 @@ export const LongTitle: Story = {
   args: {
     id: 'long-title',
     title: 'Generate Comprehensive Project Report',
-    description: 'Create detailed analytics and insights report for the current project with all metrics and performance data included',
+    description:
+      'Create detailed analytics and insights report for the current project with all metrics and performance data included',
     icon: NotificationIcon,
     iconColor: 'success',
     variant: 'outline',
@@ -175,7 +191,7 @@ export const WithShortcutAndBadge: Story = {
     shortcut: 'Ctrl+Shift+A',
     badge: {
       text: 'New',
-      variant: 'success'
+      variant: 'success',
     },
     onClick: () => console.log('Complex action clicked'),
   },

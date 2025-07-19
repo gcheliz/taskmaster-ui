@@ -164,11 +164,15 @@ export const TaskCard: React.FC<TaskCardProps> = ({
     >
       <div className="flex justify-between items-start mb-2">
         <div className="flex-1 min-w-0">
-          <h4 className="font-semibold text-gray-900 text-sm leading-tight truncate">{task.title}</h4>
+          <h4 className="font-semibold text-gray-900 text-sm leading-tight truncate">
+            {task.title}
+          </h4>
           <div className="flex items-center gap-2 mt-1">
             <span className="text-xs text-gray-500 font-mono">#{task.id}</span>
             <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs rounded-full bg-gray-100 text-gray-700">
-              <span className="text-xs" aria-hidden="true">{getStatusIcon(task.status)}</span>
+              <span className="text-xs" aria-hidden="true">
+                {getStatusIcon(task.status)}
+              </span>
               <span className="font-medium">{task.status}</span>
             </span>
           </div>
@@ -182,7 +186,10 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
       {showFullDetails && task.description && (
         <div className="mb-3">
-          <p id={`task-${task.id}-description`} className="text-sm text-gray-600 leading-relaxed">
+          <p
+            id={`task-${task.id}-description`}
+            className="text-sm text-gray-600 leading-relaxed"
+          >
             {task.description}
           </p>
         </div>
@@ -193,21 +200,27 @@ export const TaskCard: React.FC<TaskCardProps> = ({
           <div className="flex items-center gap-3 flex-wrap">
             {task.estimatedHours && (
               <div className="flex items-center gap-1 text-xs text-gray-500">
-                <span className="text-xs" aria-hidden="true">⏱️</span>
+                <span className="text-xs" aria-hidden="true">
+                  ⏱️
+                </span>
                 <span className="font-medium">{task.estimatedHours}h</span>
               </div>
             )}
 
             {task.complexity && (
               <div className="flex items-center gap-1 text-xs text-gray-500">
-                <span className="text-xs" aria-hidden="true">🔧</span>
+                <span className="text-xs" aria-hidden="true">
+                  🔧
+                </span>
                 <span className="font-medium">{task.complexity}/10</span>
               </div>
             )}
 
             {task.subtasks && task.subtasks.length > 0 && (
               <div className="flex items-center gap-1 text-xs text-gray-500">
-                <span className="text-xs" aria-hidden="true">📋</span>
+                <span className="text-xs" aria-hidden="true">
+                  📋
+                </span>
                 <span className="font-medium">
                   {task.subtasks.filter(st => st.status === 'done').length}/
                   {task.subtasks.length}
@@ -218,7 +231,9 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
           {task.assignedTo && (
             <div className="flex items-center gap-1 text-xs text-gray-600">
-              <span className="text-xs" aria-hidden="true">👤</span>
+              <span className="text-xs" aria-hidden="true">
+                👤
+              </span>
               <span className="font-medium">{task.assignedTo}</span>
             </div>
           )}
@@ -228,7 +243,10 @@ export const TaskCard: React.FC<TaskCardProps> = ({
       {showFullDetails && task.tags && task.tags.length > 0 && (
         <div className="flex items-center gap-1 flex-wrap mb-2">
           {task.tags.slice(0, compact ? 2 : 3).map((tag, index) => (
-            <span key={index} className="inline-block px-2 py-0.5 text-xs font-medium bg-blue-100 text-blue-800 rounded-md">
+            <span
+              key={index}
+              className="inline-block px-2 py-0.5 text-xs font-medium bg-blue-100 text-blue-800 rounded-md"
+            >
               {tag}
             </span>
           ))}
@@ -244,7 +262,9 @@ export const TaskCard: React.FC<TaskCardProps> = ({
         <div
           className={`flex items-center gap-1 text-xs ${isOverdue ? 'text-red-600 font-semibold' : isDueSoon ? 'text-yellow-600 font-semibold' : 'text-gray-500'}`}
         >
-          <span className="text-xs" aria-hidden="true">📅</span>
+          <span className="text-xs" aria-hidden="true">
+            📅
+          </span>
           <span className="font-medium">
             Due: {new Date(task.dueDate).toLocaleDateString()}
           </span>
@@ -253,7 +273,9 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
       {showFullDetails && task.dependencies && task.dependencies.length > 0 && (
         <div className="flex items-center gap-1 text-xs text-gray-500">
-          <span className="text-xs" aria-hidden="true">🔗</span>
+          <span className="text-xs" aria-hidden="true">
+            🔗
+          </span>
           <span className="font-medium">
             Depends on: {task.dependencies.join(', ')}
           </span>

@@ -115,7 +115,8 @@ export const WithoutDetails: Story = {
 export const LongMessage: Story = {
   args: {
     ...sampleActivity,
-    message: 'This is a very long commit message that should be truncated when it exceeds the maximum length limit to ensure proper display in the timeline component without breaking the layout',
+    message:
+      'This is a very long commit message that should be truncated when it exceeds the maximum length limit to ensure proper display in the timeline component without breaking the layout',
   },
 };
 

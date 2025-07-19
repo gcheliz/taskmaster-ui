@@ -98,7 +98,10 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
     >
       <header className="mb-4">
         <div className="flex items-center justify-between">
-          <h3 id={`column-title-${status}`} className="font-semibold text-gray-900 text-lg flex items-center gap-2">
+          <h3
+            id={`column-title-${status}`}
+            className="font-semibold text-gray-900 text-lg flex items-center gap-2"
+          >
             <span className="text-xl" aria-hidden="true">
               {getStatusIcon(status)}
             </span>
@@ -145,12 +148,18 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
         aria-labelledby={`column-title-${status}`}
       >
         {tasks.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-32 text-center" role="status" aria-live="polite">
+          <div
+            className="flex flex-col items-center justify-center h-32 text-center"
+            role="status"
+            aria-live="polite"
+          >
             <div className="flex flex-col items-center gap-2 mb-4">
               <span className="text-3xl opacity-50" aria-hidden="true">
                 {getStatusIcon(status)}
               </span>
-              <span className="text-sm text-gray-500">No {title.toLowerCase()} tasks</span>
+              <span className="text-sm text-gray-500">
+                No {title.toLowerCase()} tasks
+              </span>
             </div>
             {showCreateButton && (
               <button

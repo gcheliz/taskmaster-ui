@@ -29,10 +29,24 @@ const environmentSchema = zod_1.z.object({
         .string()
         .min(32, 'JWT_SECRET must be at least 32 characters')
         .optional(),
+    JWT_EXPIRES_IN: zod_1.z.string().default('7d'),
     ENCRYPTION_KEY: zod_1.z
         .string()
         .min(32, 'ENCRYPTION_KEY must be at least 32 characters')
         .optional(),
+    SESSION_SECRET: zod_1.z
+        .string()
+        .min(32, 'SESSION_SECRET must be at least 32 characters')
+        .optional(),
+    // OAuth Configuration
+    GOOGLE_CLIENT_ID: zod_1.z.string().optional(),
+    GOOGLE_CLIENT_SECRET: zod_1.z.string().optional(),
+    GOOGLE_CALLBACK_URL: zod_1.z.string().optional(),
+    GITHUB_CLIENT_ID: zod_1.z.string().optional(),
+    GITHUB_CLIENT_SECRET: zod_1.z.string().optional(),
+    GITHUB_CALLBACK_URL: zod_1.z.string().optional(),
+    // Frontend URL for OAuth redirects
+    CLIENT_URL: zod_1.z.string().default('http://localhost:5174'),
     // SSL/TLS
     DATABASE_SSL: zod_1.z.enum(['true', 'false']).default('false'),
     SSL_CERT_PATH: zod_1.z.string().optional(),

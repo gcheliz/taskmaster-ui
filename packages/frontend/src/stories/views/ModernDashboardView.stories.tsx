@@ -17,7 +17,8 @@ const meta = {
     },
     docs: {
       description: {
-        component: 'A modern, responsive dashboard built with dark theme atomic components featuring interactive widgets, statistics, and enhanced user experience.',
+        component:
+          'A modern, responsive dashboard built with dark theme atomic components featuring interactive widgets, statistics, and enhanced user experience.',
       },
     },
   },
@@ -122,7 +123,7 @@ export const Default: Story = {
     projectId: 'taskmaster-ui',
     projectTag: 'frontend',
   },
-  render: (args) => (
+  render: args => (
     <div className="min-h-screen">
       <ModernDashboardView {...args} />
     </div>
@@ -137,7 +138,7 @@ export const DarkTheme: Story = {
   parameters: {
     backgrounds: { default: 'light' },
   },
-  render: (args) => (
+  render: args => (
     <div className="">
       <div className="min-h-screen">
         <ModernDashboardView {...args} />
@@ -151,7 +152,7 @@ export const LoadingState: Story = {
     projectId: 'taskmaster-ui',
     projectTag: 'frontend',
   },
-  render: (args) => {
+  render: args => {
     // Mock loading state
     const mockUseDashboardLoading = () => ({
       data: null,
@@ -181,13 +182,15 @@ export const ErrorState: Story = {
     projectId: 'invalid-project',
     projectTag: 'frontend',
   },
-  render: (args) => {
+  render: args => {
     // Mock error state
     const mockUseDashboardError = () => ({
       data: null,
       health: null,
       loading: false,
-      error: new Error('Failed to load dashboard data. Please check your network connection.'),
+      error: new Error(
+        'Failed to load dashboard data. Please check your network connection.'
+      ),
       lastUpdated: null,
       refresh: async () => {},
       refreshHealth: async () => {},
@@ -211,7 +214,7 @@ export const EmptyState: Story = {
     projectId: 'empty-project',
     projectTag: 'frontend',
   },
-  render: (args) => {
+  render: args => {
     // Mock empty state
     const mockUseDashboardEmpty = () => ({
       data: null,
@@ -241,7 +244,7 @@ export const HighActivityProject: Story = {
     projectId: 'high-activity-project',
     projectTag: 'frontend',
   },
-  render: (args) => {
+  render: args => {
     // Mock high activity data
     const mockUseDashboardHighActivity = () => ({
       data: {
@@ -302,7 +305,7 @@ export const ResponsiveDemo: Story = {
     projectId: 'responsive-demo',
     projectTag: 'frontend',
   },
-  render: (args) => (
+  render: args => (
     <div className="space-y-8">
       <div className="text-center p-4">
         <h2 className="text-2xl font-bold text-secondary-900 dark:text-secondary-100 mb-4">
@@ -312,7 +315,7 @@ export const ResponsiveDemo: Story = {
           The dashboard adapts to different screen sizes automatically
         </p>
       </div>
-      
+
       {/* Desktop View */}
       <div className="border-2 border-dashed border-secondary-300 dark:border-secondary-600 rounded-lg p-4">
         <h3 className="text-lg font-semibold text-secondary-900 dark:text-secondary-100 mb-4">

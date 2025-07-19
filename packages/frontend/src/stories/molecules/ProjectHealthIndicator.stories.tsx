@@ -15,7 +15,8 @@ const meta = {
     },
     docs: {
       description: {
-        component: 'A comprehensive project health indicator component that displays health scores, trends, breakdowns, and issues.',
+        component:
+          'A comprehensive project health indicator component that displays health scores, trends, breakdowns, and issues.',
       },
     },
   },
@@ -227,7 +228,7 @@ export const DarkTheme: Story = {
   parameters: {
     backgrounds: { default: 'light' },
   },
-  render: (args) => (
+  render: args => (
     <div className="">
       <ProjectHealthIndicator {...args} />
     </div>
@@ -242,7 +243,7 @@ export const AllHealthLevels: Story = {
     showIssues: true,
     maxIssues: 3,
   },
-  render: (args) => (
+  render: args => (
     <div className="space-y-8">
       <div className="text-center">
         <h2 className="text-2xl font-bold text-secondary-900 dark:text-secondary-100 mb-4">
@@ -252,7 +253,7 @@ export const AllHealthLevels: Story = {
           Different health statuses and their visual representations
         </p>
       </div>
-      
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div>
           <h3 className="text-lg font-semibold text-secondary-900 dark:text-secondary-100 mb-4">
@@ -260,21 +261,21 @@ export const AllHealthLevels: Story = {
           </h3>
           <ProjectHealthIndicator {...args} health={mockHealthExcellent} />
         </div>
-        
+
         <div>
           <h3 className="text-lg font-semibold text-secondary-900 dark:text-secondary-100 mb-4">
             Good Health
           </h3>
           <ProjectHealthIndicator {...args} health={mockHealthGood} />
         </div>
-        
+
         <div>
           <h3 className="text-lg font-semibold text-secondary-900 dark:text-secondary-100 mb-4">
             Fair Health
           </h3>
           <ProjectHealthIndicator {...args} health={mockHealthFair} />
         </div>
-        
+
         <div>
           <h3 className="text-lg font-semibold text-secondary-900 dark:text-secondary-100 mb-4">
             Needs Attention

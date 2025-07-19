@@ -9,7 +9,8 @@ const tabsListVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-secondary-100 text-secondary-600 dark:bg-surface-800 dark:text-secondary-400',
+        default:
+          'bg-secondary-100 text-secondary-600 dark:bg-surface-800 dark:text-secondary-400',
         line: 'border-b border-secondary-200 dark:border-surface-700 bg-transparent',
         pills: 'bg-secondary-100 p-1 dark:bg-surface-800',
         card: 'bg-white border border-secondary-200 shadow-sm dark:bg-surface-900 dark:border-surface-700',
@@ -42,8 +43,7 @@ const tabsTriggerVariants = cva(
         line: 'border-b-2 border-transparent rounded-none hover:bg-secondary-50 dark:hover:bg-surface-800/50 data-[state=active]:border-primary-500 data-[state=active]:text-primary-600 dark:data-[state=active]:border-primary-400 dark:data-[state=active]:text-primary-400',
         pills:
           'hover:bg-secondary-50 dark:hover:bg-surface-700 data-[state=active]:bg-white data-[state=active]:text-secondary-950 data-[state=active]:shadow-sm dark:data-[state=active]:bg-surface-700 dark:data-[state=active]:text-secondary-100',
-        card:
-          'hover:bg-secondary-50 dark:hover:bg-surface-800 data-[state=active]:bg-primary-50 data-[state=active]:text-primary-700 data-[state=active]:border-primary-200 dark:data-[state=active]:bg-primary-900/20 dark:data-[state=active]:text-primary-300 dark:data-[state=active]:border-primary-700',
+        card: 'hover:bg-secondary-50 dark:hover:bg-surface-800 data-[state=active]:bg-primary-50 data-[state=active]:text-primary-700 data-[state=active]:border-primary-200 dark:data-[state=active]:bg-primary-900/20 dark:data-[state=active]:text-primary-300 dark:data-[state=active]:border-primary-700',
       },
       size: {
         sm: 'text-xs px-2 py-1',
@@ -130,7 +130,13 @@ const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(
 
     return (
       <TabsContext.Provider
-        value={{ activeTab, setActiveTab: handleTabChange, variant, size, responsive }}
+        value={{
+          activeTab,
+          setActiveTab: handleTabChange,
+          variant,
+          size,
+          responsive,
+        }}
       >
         <div ref={ref} className={cn(tabsVariants({ className }))} {...props}>
           {children}
@@ -151,8 +157,22 @@ export interface TabsListProps
 }
 
 const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
-  ({ className, variant: propVariant, size: propSize, responsive: propResponsive, showMobileDropdown = false, ...props }, ref) => {
-    const { variant: contextVariant, size: contextSize, responsive: contextResponsive } = useTabsContext();
+  (
+    {
+      className,
+      variant: propVariant,
+      size: propSize,
+      responsive: propResponsive,
+      showMobileDropdown = false,
+      ...props
+    },
+    ref
+  ) => {
+    const {
+      variant: contextVariant,
+      size: contextSize,
+      responsive: contextResponsive,
+    } = useTabsContext();
     const variant = propVariant || contextVariant;
     const size = propSize || contextSize;
     const responsive = propResponsive || contextResponsive;
@@ -192,7 +212,9 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
       <div
         ref={ref}
         role="tablist"
-        className={cn(tabsListVariants({ variant, size, responsive, className }))}
+        className={cn(
+          tabsListVariants({ variant, size, responsive, className })
+        )}
         onKeyDown={handleKeyDown}
         {...props}
       />
@@ -216,7 +238,19 @@ export interface TabsTriggerProps
 }
 
 const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
-  ({ className, variant: propVariant, size: propSize, value, icon: Icon, badge, children, ...props }, ref) => {
+  (
+    {
+      className,
+      variant: propVariant,
+      size: propSize,
+      value,
+      icon: Icon,
+      badge,
+      children,
+      ...props
+    },
+    ref
+  ) => {
     const {
       activeTab,
       setActiveTab,
@@ -275,7 +309,10 @@ export interface TabsContentProps
 }
 
 const TabsContent = React.forwardRef<HTMLDivElement, TabsContentProps>(
-  ({ className, size: propSize, value, animate = true, children, ...props }, ref) => {
+  (
+    { className, size: propSize, value, animate = true, children, ...props },
+    ref
+  ) => {
     const { activeTab, size: contextSize } = useTabsContext();
     const size = propSize || contextSize;
     const isActive = activeTab === value;

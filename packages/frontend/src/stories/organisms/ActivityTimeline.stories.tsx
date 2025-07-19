@@ -180,13 +180,17 @@ export const OnlyCommits: Story = {
 
 export const OnlyTaskUpdates: Story = {
   args: {
-    activities: sampleActivities.filter(activity => activity.type === 'task_update'),
+    activities: sampleActivities.filter(
+      activity => activity.type === 'task_update'
+    ),
   },
 };
 
 export const OnlyProjectUpdates: Story = {
   args: {
-    activities: sampleActivities.filter(activity => activity.type === 'project_update'),
+    activities: sampleActivities.filter(
+      activity => activity.type === 'project_update'
+    ),
   },
 };
 

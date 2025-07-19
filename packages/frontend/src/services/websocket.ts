@@ -21,7 +21,10 @@ class TaskMasterWebSocketService implements WebSocketService {
   private socket: WebSocket | null = null;
   private config: WebSocketConfig | null = null;
   private state: WebSocketState = WebSocketState.DISCONNECTED;
-  private eventListeners: Map<WebSocketEventType, Set<(...args: any[]) => void>> = new Map();
+  private eventListeners: Map<
+    WebSocketEventType,
+    Set<(...args: any[]) => void>
+  > = new Map();
   private reconnectTimer: NodeJS.Timeout | null = null;
   private heartbeatTimer: NodeJS.Timeout | null = null;
   private reconnectAttempts: number = 0;
@@ -48,9 +51,9 @@ class TaskMasterWebSocketService implements WebSocketService {
     return new Promise((resolve, reject) => {
       try {
         this.setState(WebSocketState.CONNECTING);
-        
+
         this.socket = new WebSocket(config.url, config.protocols);
-        
+
         this.socket.onopen = () => {
           console.log('✅ WebSocket connected');
           this.setState(WebSocketState.CONNECTED);
@@ -60,22 +63,25 @@ class TaskMasterWebSocketService implements WebSocketService {
           resolve();
         };
 
-        this.socket.onmessage = (event) => {
+        this.socket.onmessage = event => {
           this.handleMessage(event);
         };
 
-        this.socket.onerror = (error) => {
+        this.socket.onerror = error => {
           console.error('❌ WebSocket error:', error);
           this.setState(WebSocketState.ERROR);
           reject(new ConnectionError('Failed to connect to WebSocket', error));
         };
 
-        this.socket.onclose = (event) => {
+        this.socket.onclose = event => {
           console.log('🔌 WebSocket disconnected:', event.code, event.reason);
           this.setState(WebSocketState.DISCONNECTED);
           this.stopHeartbeat();
-          
-          if (event.code !== 1000 && this.reconnectAttempts < this.maxReconnectAttempts) {
+
+          if (
+            event.code !== 1000 &&
+            this.reconnectAttempts < this.maxReconnectAttempts
+          ) {
             this.attemptReconnect();
           }
         };
@@ -88,7 +94,6 @@ class TaskMasterWebSocketService implements WebSocketService {
             reject(new ConnectionError('Connection timeout'));
           }
         }, timeout);
-
       } catch (error) {
         this.setState(WebSocketState.ERROR);
         reject(new ConnectionError('Failed to initialize WebSocket', error));
@@ -106,7 +111,7 @@ class TaskMasterWebSocketService implements WebSocketService {
     }
 
     this.stopHeartbeat();
-    
+
     if (this.socket) {
       this.socket.close(1000, 'User disconnected');
       this.socket = null;
@@ -166,7 +171,10 @@ class TaskMasterWebSocketService implements WebSocketService {
   /**
    * Unsubscribe from WebSocket events
    */
-  unsubscribe(eventType: WebSocketEventType, callback?: (...args: any[]) => void): void {
+  unsubscribe(
+    eventType: WebSocketEventType,
+    callback?: (...args: any[]) => void
+  ): void {
     if (!this.eventListeners.has(eventType)) {
       return;
     }
@@ -225,7 +233,10 @@ class TaskMasterWebSocketService implements WebSocketService {
     }
   }
 
-  private notifyStateChange(previousState: WebSocketState, newState: WebSocketState): void {
+  private notifyStateChange(
+    previousState: WebSocketState,
+    newState: WebSocketState
+  ): void {
     this.emit(WebSocketEventType.CONNECT, {
       previousState,
       newState,
@@ -249,7 +260,7 @@ class TaskMasterWebSocketService implements WebSocketService {
   private emit(eventType: WebSocketEventType, payload: any): void {
     const listeners = this.eventListeners.get(eventType);
     if (listeners) {
-      listeners.forEach((callback) => {
+      listeners.forEach(callback => {
         try {
           callback(payload);
         } catch (error) {
@@ -262,13 +273,18 @@ class TaskMasterWebSocketService implements WebSocketService {
   private setupEventListeners(): void {
     // Handle user presence updates
     this.subscribe(WebSocketEventType.USER_JOINED, (payload: any) => {
-      if (payload.user && !this.connectedUsers.find(u => u.id === payload.user.id)) {
+      if (
+        payload.user &&
+        !this.connectedUsers.find(u => u.id === payload.user.id)
+      ) {
         this.connectedUsers.push(payload.user);
       }
     });
 
     this.subscribe(WebSocketEventType.USER_LEFT, (payload: any) => {
-      this.connectedUsers = this.connectedUsers.filter(u => u.id !== payload.userId);
+      this.connectedUsers = this.connectedUsers.filter(
+        u => u.id !== payload.userId
+      );
     });
 
     // Handle connection events
@@ -292,9 +308,14 @@ class TaskMasterWebSocketService implements WebSocketService {
     this.reconnectAttempts++;
     this.setState(WebSocketState.RECONNECTING);
 
-    const delay = Math.min(this.reconnectDelay * Math.pow(2, this.reconnectAttempts - 1), 30000);
-    
-    console.log(`🔄 Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`);
+    const delay = Math.min(
+      this.reconnectDelay * Math.pow(2, this.reconnectAttempts - 1),
+      30000
+    );
+
+    console.log(
+      `🔄 Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`
+    );
 
     this.reconnectTimer = setTimeout(async () => {
       if (this.config) {

@@ -3,21 +3,18 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '../../../utils/cn';
 import { ChevronDownIcon } from './Icon';
 
-const breadcrumbVariants = cva(
-  'flex items-center space-x-2 text-sm',
-  {
-    variants: {
-      size: {
-        sm: 'text-xs',
-        md: 'text-sm',
-        lg: 'text-base',
-      },
+const breadcrumbVariants = cva('flex items-center space-x-2 text-sm', {
+  variants: {
+    size: {
+      sm: 'text-xs',
+      md: 'text-sm',
+      lg: 'text-base',
     },
-    defaultVariants: {
-      size: 'md',
-    },
-  }
-);
+  },
+  defaultVariants: {
+    size: 'md',
+  },
+});
 
 const breadcrumbLinkVariants = cva(
   'inline-flex items-center font-medium transition-all duration-200 ease-in-out hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-100 dark:focus-visible:ring-offset-surface-900 disabled:pointer-events-none disabled:opacity-50 transform-gpu',
@@ -28,8 +25,7 @@ const breadcrumbLinkVariants = cva(
           'text-secondary-600 hover:text-secondary-900 dark:text-secondary-400 dark:hover:text-secondary-100',
         primary:
           'text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300',
-        current:
-          'text-secondary-900 dark:text-secondary-100 cursor-default',
+        current: 'text-secondary-900 dark:text-secondary-100 cursor-default',
       },
       size: {
         sm: 'text-xs',

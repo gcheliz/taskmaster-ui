@@ -15,7 +15,8 @@ const meta = {
     },
     docs: {
       description: {
-        component: 'A responsive statistics grid component that displays key project metrics with interactive cards and progress indicators.',
+        component:
+          'A responsive statistics grid component that displays key project metrics with interactive cards and progress indicators.',
       },
     },
   },
@@ -201,7 +202,7 @@ export const DarkTheme: Story = {
   parameters: {
     backgrounds: { default: 'light' },
   },
-  render: (args) => (
+  render: args => (
     <div className="">
       <StatisticsGrid {...args} />
     </div>
@@ -216,17 +217,18 @@ export const ResponsiveDemo: Story = {
     showHealthIndicator: true,
     showProgressBars: true,
   },
-  render: (args) => (
+  render: args => (
     <div className="space-y-8">
       <div className="text-center">
         <h2 className="text-2xl font-bold text-secondary-900 dark:text-secondary-100 mb-4">
           Responsive Statistics Grid Demo
         </h2>
         <p className="text-secondary-600 dark:text-secondary-400 mb-6">
-          The grid adapts from 1 column (mobile) to 2 columns (tablet) to 4 columns (desktop)
+          The grid adapts from 1 column (mobile) to 2 columns (tablet) to 4
+          columns (desktop)
         </p>
       </div>
-      
+
       {/* Mobile View */}
       <div className="border-2 border-dashed border-secondary-300 dark:border-secondary-600 rounded-lg p-4">
         <h3 className="text-lg font-semibold text-secondary-900 dark:text-secondary-100 mb-4">

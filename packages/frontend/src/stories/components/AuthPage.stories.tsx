@@ -16,7 +16,10 @@ const meta: Meta<typeof AuthPage> = {
       default: 'light',
       values: [
         { name: 'light', value: '#ffffff' },
-        { name: 'gradient', value: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' },
+        {
+          name: 'gradient',
+          value: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        },
       ],
     },
   },
@@ -70,7 +73,8 @@ export const CustomBackground: Story = {
   args: {
     defaultTab: 'login',
     showSocialLogins: true,
-    backgroundImage: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&auto=format&fit=crop&w=2574&q=80',
+    backgroundImage:
+      'https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&auto=format&fit=crop&w=2574&q=80',
   },
 };
 
@@ -82,11 +86,13 @@ export const GlassmorphismShowcase: Story = {
     defaultTab: 'login',
     showSocialLogins: true,
   },
-  render: (args) => (
-    <div style={{
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      minHeight: '100vh',
-    }}>
+  render: args => (
+    <div
+      style={{
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        minHeight: '100vh',
+      }}
+    >
       <AuthPage {...args} />
     </div>
   ),

@@ -264,35 +264,52 @@ export const DarkThemeVariants: Story = {
   render: () => (
     <div className="">
       <div className="bg-white p-6 rounded-lg space-y-4">
-        <h3 className="text-slate-900 text-lg font-semibold mb-4">Dark Theme Checkboxes</h3>
+        <h3 className="text-slate-900 text-lg font-semibold mb-4">
+          Dark Theme Checkboxes
+        </h3>
         <div className="space-y-4">
           <div className="flex items-center space-x-3">
             <Checkbox id="dark-checkbox-1" />
-            <Label htmlFor="dark-checkbox-1" className="text-slate-900 cursor-pointer">
+            <Label
+              htmlFor="dark-checkbox-1"
+              className="text-slate-900 cursor-pointer"
+            >
               Unchecked
             </Label>
           </div>
           <div className="flex items-center space-x-3">
             <Checkbox id="dark-checkbox-2" checked />
-            <Label htmlFor="dark-checkbox-2" className="text-slate-900 cursor-pointer">
+            <Label
+              htmlFor="dark-checkbox-2"
+              className="text-slate-900 cursor-pointer"
+            >
               Checked
             </Label>
           </div>
           <div className="flex items-center space-x-3">
             <Checkbox id="dark-checkbox-3" indeterminate />
-            <Label htmlFor="dark-checkbox-3" className="text-slate-900 cursor-pointer">
+            <Label
+              htmlFor="dark-checkbox-3"
+              className="text-slate-900 cursor-pointer"
+            >
               Indeterminate
             </Label>
           </div>
           <div className="flex items-center space-x-3">
             <Checkbox id="dark-checkbox-4" error checked />
-            <Label htmlFor="dark-checkbox-4" className="text-slate-900 cursor-pointer">
+            <Label
+              htmlFor="dark-checkbox-4"
+              className="text-slate-900 cursor-pointer"
+            >
               Error State
             </Label>
           </div>
           <div className="flex items-center space-x-3">
             <Checkbox id="dark-checkbox-5" success checked />
-            <Label htmlFor="dark-checkbox-5" className="text-slate-900 cursor-pointer">
+            <Label
+              htmlFor="dark-checkbox-5"
+              className="text-slate-900 cursor-pointer"
+            >
               Success State
             </Label>
           </div>
@@ -308,7 +325,9 @@ export const AccessibilityTest: Story = {
     <div className="space-y-6">
       <div className="space-y-2">
         <h3 className="text-lg font-semibold">Keyboard Navigation</h3>
-        <p className="text-sm text-secondary-600">Use Tab to navigate, Space to toggle</p>
+        <p className="text-sm text-secondary-600">
+          Use Tab to navigate, Space to toggle
+        </p>
         <div className="space-y-2">
           <div className="flex items-center space-x-2">
             <Checkbox id="accessible-checkbox-1" />
@@ -328,13 +347,20 @@ export const AccessibilityTest: Story = {
         <h3 className="text-lg font-semibold">Screen Reader Support</h3>
         <div className="space-y-2">
           <div className="flex items-center space-x-2">
-            <Checkbox id="sr-checkbox" aria-describedby="sr-checkbox-description" />
+            <Checkbox
+              id="sr-checkbox"
+              aria-describedby="sr-checkbox-description"
+            />
             <Label htmlFor="sr-checkbox" className="cursor-pointer">
               Accept terms and conditions
             </Label>
           </div>
-          <p id="sr-checkbox-description" className="text-sm text-secondary-600 ml-6">
-            By checking this box, you agree to our terms of service and privacy policy
+          <p
+            id="sr-checkbox-description"
+            className="text-sm text-secondary-600 ml-6"
+          >
+            By checking this box, you agree to our terms of service and privacy
+            policy
           </p>
         </div>
       </div>
@@ -342,7 +368,10 @@ export const AccessibilityTest: Story = {
         <h3 className="text-lg font-semibold">Focus Indicators</h3>
         <div className="space-y-2">
           <div className="flex items-center space-x-2">
-            <Checkbox id="focus-checkbox" className="focus-visible:ring-4 focus-visible:ring-primary-500" />
+            <Checkbox
+              id="focus-checkbox"
+              className="focus-visible:ring-4 focus-visible:ring-primary-500"
+            />
             <Label htmlFor="focus-checkbox" className="cursor-pointer">
               Enhanced focus indicator
             </Label>
@@ -389,7 +418,9 @@ export const ResponsiveDesign: Story = {
     <div className="space-y-6">
       <div className="space-y-2">
         <h3 className="text-lg font-semibold">Mobile Touch Targets</h3>
-        <p className="text-sm text-secondary-600">Checkboxes are optimized for touch interfaces</p>
+        <p className="text-sm text-secondary-600">
+          Checkboxes are optimized for touch interfaces
+        </p>
         <div className="space-y-3">
           <div className="flex items-center space-x-3">
             <Checkbox id="mobile-checkbox-1" size="lg" />

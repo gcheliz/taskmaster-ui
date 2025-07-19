@@ -78,13 +78,16 @@ export const TaskBoardWithSearch: React.FC<TaskBoardWithSearchProps> = ({
     if (!data) return undefined;
 
     // Group filtered tasks by status
-    const tasksByStatus = filteredTasks.reduce((acc, task) => {
-      if (!acc[task.status]) {
-        acc[task.status] = [];
-      }
-      acc[task.status].push(task);
-      return acc;
-    }, {} as Record<string, Task[]>);
+    const tasksByStatus = filteredTasks.reduce(
+      (acc, task) => {
+        if (!acc[task.status]) {
+          acc[task.status] = [];
+        }
+        acc[task.status].push(task);
+        return acc;
+      },
+      {} as Record<string, Task[]>
+    );
 
     // Update columns with filtered tasks
     const updatedColumns = data.columns.map(column => ({
@@ -119,11 +122,20 @@ export const TaskBoardWithSearch: React.FC<TaskBoardWithSearchProps> = ({
           {hasAnyActive && (
             <div className="flex items-center justify-between bg-slate-900 border border-slate-800 rounded-lg px-4 py-3">
               <div className="flex items-center space-x-3">
-                <Icon icon={SearchResultIcon} size="sm" className="text-slate-400" />
+                <Icon
+                  icon={SearchResultIcon}
+                  size="sm"
+                  className="text-slate-400"
+                />
                 <div className="text-sm">
                   <span className="text-slate-300">
-                    Showing <span className="font-medium text-white">{filteredCount}</span> of{' '}
-                    <span className="font-medium text-white">{totalCount}</span> tasks
+                    Showing{' '}
+                    <span className="font-medium text-white">
+                      {filteredCount}
+                    </span>{' '}
+                    of{' '}
+                    <span className="font-medium text-white">{totalCount}</span>{' '}
+                    tasks
                   </span>
                   {filteredCount !== totalCount && (
                     <span className="text-slate-400 ml-2">
@@ -156,11 +168,18 @@ export const TaskBoardWithSearch: React.FC<TaskBoardWithSearchProps> = ({
         {filteredCount === 0 && hasAnyActive ? (
           <div className="text-center py-12">
             <div className="w-24 h-24 mx-auto mb-4 opacity-25">
-              <Icon icon={MagnifyingGlassIcon} size="2xl" className="text-slate-400" />
+              <Icon
+                icon={MagnifyingGlassIcon}
+                size="2xl"
+                className="text-slate-400"
+              />
             </div>
-            <h3 className="text-lg font-medium text-slate-300 mb-2">No tasks found</h3>
+            <h3 className="text-lg font-medium text-slate-300 mb-2">
+              No tasks found
+            </h3>
             <p className="text-slate-500 mb-4">
-              No tasks match your search criteria. Try adjusting your filters or search terms.
+              No tasks match your search criteria. Try adjusting your filters or
+              search terms.
             </p>
             <button
               onClick={clearAll}
@@ -178,10 +197,7 @@ export const TaskBoardWithSearch: React.FC<TaskBoardWithSearchProps> = ({
           <TaskBoard
             {...taskBoardProps}
             data={filteredBoardData}
-            className={cn(
-              hasAnyActive && 'opacity-95',
-              className
-            )}
+            className={cn(hasAnyActive && 'opacity-95', className)}
           />
         )}
       </div>

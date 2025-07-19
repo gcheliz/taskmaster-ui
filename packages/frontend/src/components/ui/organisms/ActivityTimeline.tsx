@@ -1,8 +1,20 @@
 import React, { useState, useMemo } from 'react';
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../atoms/Card';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from '../atoms/Card';
 import { Button } from '../atoms/Button';
 import { Badge } from '../atoms/Badge';
-import { Icon, TimeIcon, SettingsIcon, DuplicateIcon, ArchiveIcon } from '../atoms/Icon';
+import {
+  Icon,
+  TimeIcon,
+  SettingsIcon,
+  DuplicateIcon,
+  ArchiveIcon,
+} from '../atoms/Icon';
 import { Spinner } from '../atoms/Spinner';
 import { TimelineItem } from '../molecules/TimelineItem';
 
@@ -40,7 +52,7 @@ const ActivityTimeline: React.FC<ActivityTimelineProps> = ({
   groupByDate = false,
   onRefresh,
   onViewAll,
-  className = ''
+  className = '',
 }) => {
   const [filterType, setFilterType] = useState<string>('all');
   const [refreshing, setRefreshing] = useState(false);
@@ -56,7 +68,8 @@ const ActivityTimeline: React.FC<ActivityTimelineProps> = ({
 
     // Sort by timestamp (newest first)
     filtered = filtered.sort(
-      (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+      (a, b) =>
+        new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
     );
 
     // Limit items
@@ -85,7 +98,7 @@ const ActivityTimeline: React.FC<ActivityTimelineProps> = ({
 
   const handleRefresh = async () => {
     if (!onRefresh) return;
-    
+
     setRefreshing(true);
     try {
       await onRefresh();
@@ -120,8 +133,16 @@ const ActivityTimeline: React.FC<ActivityTimelineProps> = ({
   const activityTypes = [
     { key: 'all', label: 'All', count: getFilterCount('all') },
     { key: 'commit', label: 'Commits', count: getFilterCount('commit') },
-    { key: 'task_update', label: 'Tasks', count: getFilterCount('task_update') },
-    { key: 'project_update', label: 'Updates', count: getFilterCount('project_update') },
+    {
+      key: 'task_update',
+      label: 'Tasks',
+      count: getFilterCount('task_update'),
+    },
+    {
+      key: 'project_update',
+      label: 'Updates',
+      count: getFilterCount('project_update'),
+    },
   ];
 
   // Loading state
@@ -146,7 +167,12 @@ const ActivityTimeline: React.FC<ActivityTimelineProps> = ({
     return (
       <Card variant="elevated" className={className}>
         <CardContent className="text-center py-12">
-          <Icon icon={ArchiveIcon} size="2xl" color="error" className="mx-auto mb-4" />
+          <Icon
+            icon={ArchiveIcon}
+            size="2xl"
+            color="error"
+            className="mx-auto mb-4"
+          />
           <h3 className="text-lg font-semibold text-error-600 dark:text-error-400 mb-2">
             Activity Error
           </h3>
@@ -174,7 +200,12 @@ const ActivityTimeline: React.FC<ActivityTimelineProps> = ({
               <span>Recent Activity</span>
             </CardTitle>
             {onRefresh && (
-              <Button variant="outline" size="sm" onClick={handleRefresh} disabled={refreshing}>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleRefresh}
+                disabled={refreshing}
+              >
                 {refreshing ? (
                   <Spinner size="sm" className="mr-2" />
                 ) : (
@@ -186,13 +217,18 @@ const ActivityTimeline: React.FC<ActivityTimelineProps> = ({
           </div>
         </CardHeader>
         <CardContent className="text-center py-12">
-          <Icon icon={ArchiveIcon} size="2xl" color="muted" className="mx-auto mb-4" />
+          <Icon
+            icon={ArchiveIcon}
+            size="2xl"
+            color="muted"
+            className="mx-auto mb-4"
+          />
           <h3 className="text-lg font-semibold text-secondary-900 dark:text-secondary-100 mb-2">
             No Recent Activity
           </h3>
           <p className="text-secondary-600 dark:text-secondary-400">
-            {filterType === 'all' 
-              ? 'No recent activities to display' 
+            {filterType === 'all'
+              ? 'No recent activities to display'
               : `No ${filterType.replace('_', ' ')} activities found`}
           </p>
         </CardContent>
@@ -212,7 +248,12 @@ const ActivityTimeline: React.FC<ActivityTimelineProps> = ({
             </Badge>
           </CardTitle>
           {onRefresh && (
-            <Button variant="outline" size="sm" onClick={handleRefresh} disabled={refreshing}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleRefresh}
+              disabled={refreshing}
+            >
               {refreshing ? (
                 <Spinner size="sm" className="mr-2" />
               ) : (
@@ -228,9 +269,11 @@ const ActivityTimeline: React.FC<ActivityTimelineProps> = ({
           <div className="flex flex-wrap items-center gap-2 mt-4">
             <div className="flex items-center space-x-1 mr-4">
               <Icon icon={SettingsIcon} size="sm" color="muted" />
-              <span className="text-sm text-secondary-600 dark:text-secondary-400">Filter:</span>
+              <span className="text-sm text-secondary-600 dark:text-secondary-400">
+                Filter:
+              </span>
             </div>
-            {activityTypes.map((type) => (
+            {activityTypes.map(type => (
               <Button
                 key={type.key}
                 variant={filterType === type.key ? 'primary' : 'outline'}
@@ -254,14 +297,17 @@ const ActivityTimeline: React.FC<ActivityTimelineProps> = ({
         {groupByDate ? (
           // Grouped by date
           <div className="space-y-6">
-            {(groupedActivities as { date: string; items: ActivityItem[] }[]).map((group, groupIndex) => (
+            {(
+              groupedActivities as { date: string; items: ActivityItem[] }[]
+            ).map((group, groupIndex) => (
               <div key={groupIndex} className="space-y-4">
                 <div className="flex items-center space-x-2">
                   <h4 className="text-sm font-semibold text-secondary-900 dark:text-secondary-100">
                     {formatDate(group.date)}
                   </h4>
                   <Badge variant="secondary" size="sm">
-                    {group.items.length} {group.items.length === 1 ? 'activity' : 'activities'}
+                    {group.items.length}{' '}
+                    {group.items.length === 1 ? 'activity' : 'activities'}
                   </Badge>
                 </div>
                 <div className="space-y-4">

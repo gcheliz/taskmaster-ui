@@ -15,11 +15,11 @@ import {
 } from '../../components/ui/molecules/Card';
 import { Badge } from '../../components/ui/atoms/Badge';
 import { Button } from '../../components/ui/atoms/Button';
-import { 
-  HomeFilledIcon, 
+import {
+  HomeFilledIcon,
   TaskIcon,
   UserCircleIcon,
-  SettingsIcon
+  SettingsIcon,
 } from '../../components/ui/atoms/Icon';
 
 const meta: Meta<typeof Tabs> = {
@@ -489,7 +489,7 @@ export const WithIconsAndBadges: Story = {
         <h3 className="text-lg font-semibold text-slate-900">
           Navigation Tabs with Icons
         </h3>
-        
+
         <div className="space-y-8">
           <div>
             <h4 className="text-sm font-medium text-slate-700 mb-4">
@@ -552,7 +552,7 @@ export const WithIconsAndBadges: Story = {
               </TabsContent>
             </Tabs>
           </div>
-          
+
           <div>
             <h4 className="text-sm font-medium text-slate-700 mb-4">
               Line Variant

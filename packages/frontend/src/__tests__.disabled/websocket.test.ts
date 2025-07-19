@@ -3,7 +3,14 @@
  * Tests for real-time collaboration functionality
  */
 
-import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
+import {
+  describe,
+  it,
+  expect,
+  jest,
+  beforeEach,
+  afterEach,
+} from '@jest/globals';
 import { webSocketService } from '../services/websocket';
 import { WebSocketEventType, WebSocketState } from '../types/websocket';
 
@@ -20,7 +27,7 @@ class MockWebSocket {
   constructor(url: string, protocols?: string[]) {
     this.url = url;
     this.protocol = protocols?.[0] || '';
-    
+
     // Simulate async connection
     setTimeout(() => {
       this.readyState = WebSocket.OPEN;
@@ -72,7 +79,9 @@ describe('WebSocket Service', () => {
         },
       };
 
-      await expect(webSocketService.connect(config)).rejects.toThrow('Connection timeout');
+      await expect(webSocketService.connect(config)).rejects.toThrow(
+        'Connection timeout'
+      );
     });
 
     it('should disconnect cleanly', async () => {
@@ -120,7 +129,7 @@ describe('WebSocket Service', () => {
       );
 
       unsubscribe();
-      
+
       // Event should not be triggered after unsubscribe
       // Note: This would need additional mocking to fully test
     });
@@ -150,7 +159,9 @@ describe('WebSocket Service', () => {
         timestamp: new Date().toISOString(),
       };
 
-      expect(() => webSocketService.send(message)).toThrow('WebSocket not connected');
+      expect(() => webSocketService.send(message)).toThrow(
+        'WebSocket not connected'
+      );
     });
   });
 
@@ -184,12 +195,12 @@ describe('WebSocket Service', () => {
       };
 
       const connectPromise = webSocketService.connect(config);
-      
+
       // State should be connecting during connection attempt
       expect(webSocketService.getState()).toBe(WebSocketState.CONNECTING);
-      
+
       await connectPromise;
-      
+
       // State should be connected after successful connection
       expect(webSocketService.getState()).toBe(WebSocketState.CONNECTED);
     });
@@ -229,8 +240,10 @@ describe('WebSocket Error Handling', () => {
 
     // Simulate invalid JSON message
     const mockSocket = webSocketService as any;
-    const invalidMessage = new MessageEvent('message', { data: 'invalid json' });
-    
+    const invalidMessage = new MessageEvent('message', {
+      data: 'invalid json',
+    });
+
     // This would need to be tested through the actual WebSocket instance
     // For now, we'll test that the service handles it gracefully
     expect(() => {

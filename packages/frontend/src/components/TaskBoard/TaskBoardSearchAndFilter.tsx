@@ -30,7 +30,9 @@ interface TaskBoardSearchAndFilterProps {
   compact?: boolean;
 }
 
-export const TaskBoardSearchAndFilter: React.FC<TaskBoardSearchAndFilterProps> = ({
+export const TaskBoardSearchAndFilter: React.FC<
+  TaskBoardSearchAndFilterProps
+> = ({
   searchQuery,
   onSearchChange,
   filters,
@@ -80,10 +82,12 @@ export const TaskBoardSearchAndFilter: React.FC<TaskBoardSearchAndFilterProps> =
   return (
     <div className={cn('space-y-4', className)}>
       {/* Search and Controls Row */}
-      <div className={cn(
-        'flex flex-col space-y-3',
-        'sm:flex-row sm:items-center sm:justify-between sm:space-y-0 sm:space-x-4'
-      )}>
+      <div
+        className={cn(
+          'flex flex-col space-y-3',
+          'sm:flex-row sm:items-center sm:justify-between sm:space-y-0 sm:space-x-4'
+        )}
+      >
         {/* Search Input */}
         <div className="flex-1 max-w-md">
           <TaskBoardSearch
@@ -98,13 +102,18 @@ export const TaskBoardSearchAndFilter: React.FC<TaskBoardSearchAndFilterProps> =
           {/* Active Indicators */}
           {hasActiveSearch && (
             <Badge variant="secondary" size="sm">
-              Search: "{searchQuery.length > 20 ? searchQuery.slice(0, 20) + '...' : searchQuery}"
+              Search: "
+              {searchQuery.length > 20
+                ? searchQuery.slice(0, 20) + '...'
+                : searchQuery}
+              "
             </Badge>
           )}
-          
+
           {hasActiveFilters && (
             <Badge variant="primary" size="sm">
-              {activeFilterCount} {activeFilterCount === 1 ? 'Filter' : 'Filters'}
+              {activeFilterCount}{' '}
+              {activeFilterCount === 1 ? 'Filter' : 'Filters'}
             </Badge>
           )}
 
@@ -162,7 +171,9 @@ export const TaskBoardSearchAndFilter: React.FC<TaskBoardSearchAndFilterProps> =
         <div className="sm:hidden">
           <div className="bg-slate-900 border border-slate-800 rounded-lg p-3">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-medium text-slate-300">Active Filters</span>
+              <span className="text-xs font-medium text-slate-300">
+                Active Filters
+              </span>
               <button
                 onClick={handleClearAll}
                 className="text-xs text-slate-400 hover:text-slate-300"

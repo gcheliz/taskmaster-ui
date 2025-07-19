@@ -14,6 +14,104 @@ datasource db {
 }
 
 // Core Models
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  avatar    String?
+  provider  String?  // 'local', 'google', 'github'
+  providerId String? // OAuth provider user ID
+  password  String?  // For local auth, hashed
+  emailVerified Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // User preferences and settings (legacy)
+  preferences Json?
+  
+  // Relations
+  projects   UserProject[]
+  settings   UserSettings?
+  
+  // Performance indexes
+  @@index([provider, providerId])            // OAuth lookup
+  @@index([createdAt])                       // Order by creation date
+  @@map("users")
+}
+
+model UserSettings {
+  id     String @id @default(cuid())
+  userId String @unique
+  
+  // Profile settings
+  firstName String?
+  lastName  String?
+  bio       String?
+  jobTitle  String?
+  company   String?
+  location  String?
+  website   String?
+  timezone  String? @default("UTC")
+  language  String? @default("en")
+  
+  // Appearance settings
+  theme           String?  @default("light") // 'light', 'dark', 'system'
+  colorScheme     String?  @default("blue")
+  fontSize        String?  @default("md")    // 'sm', 'md', 'lg'
+  density         String?  @default("comfortable") // 'compact', 'comfortable', 'spacious'
+  animations      Boolean? @default(true)
+  glassmorphism   Boolean? @default(true)
+  
+  // Notification settings
+  emailNotifications      Boolean? @default(true)
+  pushNotifications       Boolean? @default(true)
+  slackNotifications      Boolean? @default(false)
+  desktopNotifications    Boolean? @default(true)
+  notificationSettings    Json?    // Detailed notification preferences
+  
+  // Integration settings
+  integrationSettings Json? // OAuth connections, webhooks, etc.
+  
+  // Security settings
+  twoFactorEnabled    Boolean? @default(false)
+  loginNotifications  Boolean? @default(true)
+  securitySettings    Json?    // Detailed security preferences
+  
+  // Dashboard preferences
+  dashboardLayout     String?  @default("grid") // 'grid', 'list'
+  cardsPerRow         Int?     @default(3)
+  showQuickActions    Boolean? @default(true)
+  
+  // Accessibility
+  highContrast        Boolean? @default(false)
+  reducedMotion       Boolean? @default(false)
+  focusIndicators     Boolean? @default(true)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@map("user_settings")
+}
+
+model UserProject {
+  id        String   @id @default(cuid())
+  userId    String
+  projectId String
+  role      String   @default("member") // 'owner', 'admin', 'member', 'viewer'
+  createdAt DateTime @default(now())
+  
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, projectId])
+  @@index([userId])
+  @@index([projectId])
+  @@map("user_projects")
+}
+
 model Project {
   id          String   @id @default(cuid())
   name        String   @unique
@@ -24,6 +122,7 @@ model Project {
   
   repositories Repository[]
   tasks        Task[]
+  users        UserProject[]
   
   // Performance indexes
   @@index([createdAt])                       // Order by creation date

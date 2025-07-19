@@ -56,15 +56,7 @@ export interface SelectProps
 
 const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
   (
-    {
-      className,
-      variant,
-      selectSize,
-      error,
-      success,
-      children,
-      ...props
-    },
+    { className, variant, selectSize, error, success, children, ...props },
     ref
   ) => {
     // Determine variant based on state

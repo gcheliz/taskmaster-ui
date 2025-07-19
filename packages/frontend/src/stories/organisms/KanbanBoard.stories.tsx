@@ -32,7 +32,8 @@ const sampleTasks = [
   {
     id: 1,
     title: 'Implement user authentication',
-    description: 'Add login and registration functionality with JWT tokens and proper session management',
+    description:
+      'Add login and registration functionality with JWT tokens and proper session management',
     status: 'in-progress' as const,
     priority: 'high' as const,
     complexity: 7,
@@ -65,7 +66,8 @@ const sampleTasks = [
   {
     id: 3,
     title: 'Database optimization',
-    description: 'Improve query performance for large datasets and add proper indexing',
+    description:
+      'Improve query performance for large datasets and add proper indexing',
     status: 'pending' as const,
     priority: 'urgent' as const,
     complexity: 8,
@@ -93,7 +95,8 @@ const sampleTasks = [
   {
     id: 5,
     title: 'Code review',
-    description: 'Review pull requests from team members and ensure code quality',
+    description:
+      'Review pull requests from team members and ensure code quality',
     status: 'pending' as const,
     priority: 'low' as const,
     complexity: 2,
@@ -107,7 +110,8 @@ const sampleTasks = [
   {
     id: 6,
     title: 'Setup CI/CD pipeline',
-    description: 'Configure automated testing and deployment with proper monitoring',
+    description:
+      'Configure automated testing and deployment with proper monitoring',
     status: 'done' as const,
     priority: 'high' as const,
     complexity: 6,
@@ -239,15 +243,25 @@ export const ManyTasks: Story = {
         id: i + 100,
         title: `Generated Task ${i + 1}`,
         description: `This is a generated task for testing purposes - Task ${i + 1}`,
-        status: (['pending', 'in-progress', 'done', 'blocked', 'deferred'][i % 5]) as 'pending' | 'in-progress' | 'done' | 'blocked' | 'deferred',
-        priority: (['low', 'medium', 'high', 'urgent'][i % 4]) as 'low' | 'medium' | 'high' | 'urgent',
+        status: ['pending', 'in-progress', 'done', 'blocked', 'deferred'][
+          i % 5
+        ] as 'pending' | 'in-progress' | 'done' | 'blocked' | 'deferred',
+        priority: ['low', 'medium', 'high', 'urgent'][i % 4] as
+          | 'low'
+          | 'medium'
+          | 'high'
+          | 'urgent',
         complexity: (i % 10) + 1,
         estimatedHours: (i % 20) + 1,
-        assignedTo: ['John Doe', 'Jane Smith', 'Bob Johnson', 'Alice Brown'][i % 4],
+        assignedTo: ['John Doe', 'Jane Smith', 'Bob Johnson', 'Alice Brown'][
+          i % 4
+        ],
         tags: ['tag1', 'tag2', 'tag3'].slice(0, (i % 3) + 1),
-        createdAt: new Date(Date.now() - (i * 24 * 60 * 60 * 1000)).toISOString(),
-        updatedAt: new Date(Date.now() - (i * 12 * 60 * 60 * 1000)).toISOString(),
-        dueDate: new Date(Date.now() + ((i + 1) * 24 * 60 * 60 * 1000)).toISOString(),
+        createdAt: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString(),
+        updatedAt: new Date(Date.now() - i * 12 * 60 * 60 * 1000).toISOString(),
+        dueDate: new Date(
+          Date.now() + (i + 1) * 24 * 60 * 60 * 1000
+        ).toISOString(),
       })),
     ],
     loading: false,
@@ -276,7 +290,9 @@ export const OnlyCompletedTasks: Story = {
 
 export const HighPriorityOnly: Story = {
   args: {
-    tasks: sampleTasks.filter(task => task.priority === 'high' || task.priority === 'urgent'),
+    tasks: sampleTasks.filter(
+      task => task.priority === 'high' || task.priority === 'urgent'
+    ),
     loading: false,
     showSearch: true,
     showFilters: true,
@@ -293,7 +309,8 @@ export const WithRefreshAction: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Includes refresh functionality - click the refresh button to see the action.',
+        story:
+          'Includes refresh functionality - click the refresh button to see the action.',
       },
     },
   },
@@ -309,7 +326,8 @@ export const Interactive: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Fully interactive Kanban board with drag-and-drop. Try dragging tasks between columns, searching, filtering, clicking tasks, and adding new tasks.',
+        story:
+          'Fully interactive Kanban board with drag-and-drop. Try dragging tasks between columns, searching, filtering, clicking tasks, and adding new tasks.',
       },
     },
   },
@@ -325,12 +343,13 @@ export const DragAndDropDemo: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Demonstrates drag-and-drop functionality. Drag tasks between columns to change their status. Includes keyboard accessibility support - use Tab to focus tasks, Space to pick up, and Arrow keys to move between columns.',
+        story:
+          'Demonstrates drag-and-drop functionality. Drag tasks between columns to change their status. Includes keyboard accessibility support - use Tab to focus tasks, Space to pick up, and Arrow keys to move between columns.',
       },
     },
   },
   decorators: [
-    (Story) => (
+    Story => (
       <div style={{ height: '100vh', padding: '20px' }}>
         <Story />
       </div>
@@ -351,7 +370,8 @@ export const Mobile: Story = {
     },
     docs: {
       description: {
-        story: 'Kanban board optimized for mobile devices with horizontal scrolling.',
+        story:
+          'Kanban board optimized for mobile devices with horizontal scrolling.',
       },
     },
   },

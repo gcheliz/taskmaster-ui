@@ -41,22 +41,19 @@ const cardVariants = cva(
   }
 );
 
-const cardHeaderVariants = cva(
-  'flex items-center justify-between space-x-2',
-  {
-    variants: {
-      size: {
-        sm: 'mb-3',
-        md: 'mb-4',
-        lg: 'mb-5',
-        xl: 'mb-6',
-      },
+const cardHeaderVariants = cva('flex items-center justify-between space-x-2', {
+  variants: {
+    size: {
+      sm: 'mb-3',
+      md: 'mb-4',
+      lg: 'mb-5',
+      xl: 'mb-6',
     },
-    defaultVariants: {
-      size: 'md',
-    },
-  }
-);
+  },
+  defaultVariants: {
+    size: 'md',
+  },
+});
 
 const cardTitleVariants = cva(
   'font-semibold leading-none tracking-tight text-secondary-900 dark:text-secondary-100',
@@ -92,39 +89,33 @@ const cardDescriptionVariants = cva(
   }
 );
 
-const cardContentVariants = cva(
-  'text-secondary-700 dark:text-secondary-300',
-  {
-    variants: {
-      size: {
-        sm: 'text-sm',
-        md: 'text-base',
-        lg: 'text-lg',
-        xl: 'text-xl',
-      },
+const cardContentVariants = cva('text-secondary-700 dark:text-secondary-300', {
+  variants: {
+    size: {
+      sm: 'text-sm',
+      md: 'text-base',
+      lg: 'text-lg',
+      xl: 'text-xl',
     },
-    defaultVariants: {
-      size: 'md',
-    },
-  }
-);
+  },
+  defaultVariants: {
+    size: 'md',
+  },
+});
 
-const cardFooterVariants = cva(
-  'flex items-center justify-between space-x-2',
-  {
-    variants: {
-      size: {
-        sm: 'mt-3',
-        md: 'mt-4',
-        lg: 'mt-5',
-        xl: 'mt-6',
-      },
+const cardFooterVariants = cva('flex items-center justify-between space-x-2', {
+  variants: {
+    size: {
+      sm: 'mt-3',
+      md: 'mt-4',
+      lg: 'mt-5',
+      xl: 'mt-6',
     },
-    defaultVariants: {
-      size: 'md',
-    },
-  }
-);
+  },
+  defaultVariants: {
+    size: 'md',
+  },
+});
 
 export interface CardProps
   extends React.HTMLAttributes<HTMLDivElement>,

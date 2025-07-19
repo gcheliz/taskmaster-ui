@@ -38,17 +38,12 @@ const DraggableCard = React.forwardRef<HTMLDivElement, DraggableCardProps>(
     },
     ref
   ) => {
-    const {
-      attributes,
-      listeners,
-      setNodeRef,
-      transform,
-      isDragging,
-    } = useDraggable({
-      id,
-      data,
-      disabled,
-    });
+    const { attributes, listeners, setNodeRef, transform, isDragging } =
+      useDraggable({
+        id,
+        data,
+        disabled,
+      });
 
     const dragStyle = {
       transform: CSS.Translate.toString(transform),

@@ -54,24 +54,18 @@ export interface TextareaProps
 }
 
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
-  (
-    {
-      className,
-      variant,
-      textareaSize,
-      error,
-      success,
-      ...props
-    },
-    ref
-  ) => {
+  ({ className, variant, textareaSize, error, success, ...props }, ref) => {
     // Determine variant based on state
     const computedVariant = error ? 'error' : success ? 'success' : variant;
 
     return (
       <textarea
         className={cn(
-          textareaVariants({ variant: computedVariant, textareaSize, className })
+          textareaVariants({
+            variant: computedVariant,
+            textareaSize,
+            className,
+          })
         )}
         ref={ref}
         {...props}

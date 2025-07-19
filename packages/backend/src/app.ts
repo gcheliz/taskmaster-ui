@@ -1,6 +1,9 @@
 import express, { Application } from 'express';
 import cors from 'cors';
+import session from 'express-session';
+import passport from './config/passport';
 import healthRoutes from './routes/healthRoutes';
+import authRoutes from './routes/authRoutes';
 import { createRepositoryRoutes } from './routes/repositoryRoutes';
 import projectRoutes from './routes/projectRoutes';
 import realtimeRoutes from './routes/realtimeRoutes';
@@ -9,6 +12,7 @@ import commandRoutes from './routes/commandRoutes';
 import prdRoutes from './routes/prdRoutes';
 import dashboardRoutes from './routes/dashboardRoutes';
 import performanceRoutes from './routes/performanceRoutes';
+import settingsRoutes from './routes/settingsRoutes';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 import DatabaseService from './services/database';
 import {
@@ -56,6 +60,24 @@ app.use(
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+// Session configuration for OAuth
+app.use(
+  session({
+    secret: env.SESSION_SECRET || 'your-session-secret-change-in-production',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: env.NODE_ENV === 'production',
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    },
+  })
+);
+
+// Passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
+
 // Security headers
 app.use((req, res, next) => {
   res.header('X-Content-Type-Options', 'nosniff');
@@ -75,6 +97,7 @@ app.use((req, res, next) => {
 
 // Routes
 app.use('/', healthRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api/repositories', createRepositoryRoutes());
 app.use('/api/projects', projectRoutes);
 app.use('/api/realtime', realtimeRoutes);
@@ -83,6 +106,7 @@ app.use('/api/commands', commandRoutes);
 app.use('/api/prd', prdRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/performance', performanceRoutes);
+app.use('/api/settings', settingsRoutes);
 
 // Error handling middleware
 app.use(notFoundHandler);

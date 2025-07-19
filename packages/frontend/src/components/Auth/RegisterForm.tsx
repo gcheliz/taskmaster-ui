@@ -6,7 +6,7 @@ import { Label } from '../ui/atoms/Label';
 import { Checkbox } from '../ui/atoms/Checkbox';
 import { SocialLoginButtons } from './SocialLoginButtons';
 import { PasswordStrengthIndicator } from './PasswordStrengthIndicator';
-import { 
+import {
   Icon,
   EyeIcon,
   EyeSlashIcon,
@@ -139,15 +139,15 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
 
     setIsLoading(true);
-    
+
     try {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
+
       // Mock successful registration
       const mockToken = 'mock-jwt-token-' + Date.now();
       onSuccess?.({
@@ -162,17 +162,17 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
     }
   };
 
-  const handleInputChange = (field: keyof FormData) => (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
-    setFormData(prev => ({ ...prev, [field]: value }));
-    
-    // Clear errors when user starts typing
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
-    }
-  };
+  const handleInputChange =
+    (field: keyof FormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value =
+        e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+      setFormData(prev => ({ ...prev, [field]: value }));
+
+      // Clear errors when user starts typing
+      if (errors[field]) {
+        setErrors(prev => ({ ...prev, [field]: '' }));
+      }
+    };
 
   return (
     <div className={cn('space-y-6', className)}>
@@ -180,13 +180,15 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       {showSocialLogins && (
         <>
           <SocialLoginButtons onSuccess={onSuccess} />
-          
+
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
               <span className="w-full border-t border-slate-200" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-white px-2 text-slate-500">Or create account with email</span>
+              <span className="bg-white px-2 text-slate-500">
+                Or create account with email
+              </span>
             </div>
           </div>
         </>
@@ -207,7 +209,9 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               value={formData.name}
               onChange={handleInputChange('name')}
               error={!!errors.name}
-              leftIcon={<Icon icon={UserIcon} size="sm" className="text-slate-400" />}
+              leftIcon={
+                <Icon icon={UserIcon} size="sm" className="text-slate-400" />
+              }
               className={cn(
                 'pl-10 bg-white/60 backdrop-blur-sm',
                 'border-slate-200/60',
@@ -234,7 +238,13 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               value={formData.email}
               onChange={handleInputChange('email')}
               error={!!errors.email}
-              leftIcon={<Icon icon={EnvelopeIcon} size="sm" className="text-slate-400" />}
+              leftIcon={
+                <Icon
+                  icon={EnvelopeIcon}
+                  size="sm"
+                  className="text-slate-400"
+                />
+              }
               className={cn(
                 'pl-10 bg-white/60 backdrop-blur-sm',
                 'border-slate-200/60',
@@ -250,7 +260,10 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 
         {/* Password Field */}
         <div className="space-y-2">
-          <Label htmlFor="password" className="text-sm font-medium text-slate-700">
+          <Label
+            htmlFor="password"
+            className="text-sm font-medium text-slate-700"
+          >
             Password
           </Label>
           <div className="relative">
@@ -261,7 +274,13 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               value={formData.password}
               onChange={handleInputChange('password')}
               error={!!errors.password}
-              leftIcon={<Icon icon={LockClosedIcon} size="sm" className="text-slate-400" />}
+              leftIcon={
+                <Icon
+                  icon={LockClosedIcon}
+                  size="sm"
+                  className="text-slate-400"
+                />
+              }
               className={cn(
                 'pl-10 pr-10 bg-white/60 backdrop-blur-sm',
                 'border-slate-200/60',
@@ -274,19 +293,16 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               onClick={() => setShowPassword(!showPassword)}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
             >
-              <Icon 
-                icon={showPassword ? EyeSlashIcon : EyeIcon} 
-                size="sm" 
-              />
+              <Icon icon={showPassword ? EyeSlashIcon : EyeIcon} size="sm" />
             </button>
             {errors.password && (
               <p className="text-xs text-red-500 mt-1">{errors.password}</p>
             )}
           </div>
-          
+
           {/* Password Strength Indicator */}
           {formData.password && (
-            <PasswordStrengthIndicator 
+            <PasswordStrengthIndicator
               password={formData.password}
               strength={passwordStrength}
             />
@@ -295,7 +311,10 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 
         {/* Confirm Password Field */}
         <div className="space-y-2">
-          <Label htmlFor="confirmPassword" className="text-sm font-medium text-slate-700">
+          <Label
+            htmlFor="confirmPassword"
+            className="text-sm font-medium text-slate-700"
+          >
             Confirm Password
           </Label>
           <div className="relative">
@@ -306,7 +325,13 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               value={formData.confirmPassword}
               onChange={handleInputChange('confirmPassword')}
               error={!!errors.confirmPassword}
-              leftIcon={<Icon icon={LockClosedIcon} size="sm" className="text-slate-400" />}
+              leftIcon={
+                <Icon
+                  icon={LockClosedIcon}
+                  size="sm"
+                  className="text-slate-400"
+                />
+              }
               className={cn(
                 'pl-10 pr-10 bg-white/60 backdrop-blur-sm',
                 'border-slate-200/60',
@@ -319,13 +344,15 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
             >
-              <Icon 
-                icon={showConfirmPassword ? EyeSlashIcon : EyeIcon} 
-                size="sm" 
+              <Icon
+                icon={showConfirmPassword ? EyeSlashIcon : EyeIcon}
+                size="sm"
               />
             </button>
             {errors.confirmPassword && (
-              <p className="text-xs text-red-500 mt-1">{errors.confirmPassword}</p>
+              <p className="text-xs text-red-500 mt-1">
+                {errors.confirmPassword}
+              </p>
             )}
           </div>
         </div>
@@ -339,13 +366,22 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               onChange={handleInputChange('acceptTerms')}
               className="mt-0.5"
             />
-            <Label htmlFor="acceptTerms" className="text-sm text-slate-600 leading-relaxed">
+            <Label
+              htmlFor="acceptTerms"
+              className="text-sm text-slate-600 leading-relaxed"
+            >
               I agree to the{' '}
-              <a href="#" className="text-blue-600 hover:text-blue-700 underline">
+              <a
+                href="#"
+                className="text-blue-600 hover:text-blue-700 underline"
+              >
                 Terms of Service
               </a>{' '}
               and{' '}
-              <a href="#" className="text-blue-600 hover:text-blue-700 underline">
+              <a
+                href="#"
+                className="text-blue-600 hover:text-blue-700 underline"
+              >
                 Privacy Policy
               </a>
             </Label>

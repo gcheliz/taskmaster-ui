@@ -55,7 +55,7 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({
   onTaskClick,
   onAddTask,
   showAddButton = true,
-  className = ''
+  className = '',
 }) => {
   const taskCount = tasks.length;
   const isOverLimit = limit && taskCount > limit;
@@ -110,7 +110,10 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({
   };
 
   const formatColumnTitle = (columnTitle: string) => {
-    return columnTitle.charAt(0).toUpperCase() + columnTitle.slice(1).replace(/-/g, ' ');
+    return (
+      columnTitle.charAt(0).toUpperCase() +
+      columnTitle.slice(1).replace(/-/g, ' ')
+    );
   };
 
   const handleAddTask = () => {
@@ -124,8 +127,8 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({
       data-column-id={id}
       data-status={status}
     >
-      <Card 
-        variant="outline" 
+      <Card
+        variant="outline"
         className={`
           flex-1 flex flex-col bg-surface-50 dark:bg-surface-900 transition-all duration-200
           ${isOver ? 'bg-primary-50 dark:bg-primary-900/20 border-primary-300 dark:border-primary-600' : ''}
@@ -140,17 +143,21 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({
               </span>
             </CardTitle>
             <div className="flex items-center space-x-2">
-              <Badge 
-                variant={getStatusColor(status) as 'primary' | 'secondary' | 'success' | 'warning' | 'error'} 
+              <Badge
+                variant={
+                  getStatusColor(status) as
+                    | 'primary'
+                    | 'secondary'
+                    | 'success'
+                    | 'warning'
+                    | 'error'
+                }
                 size="sm"
               >
                 {taskCount}
               </Badge>
               {limit && (
-                <Badge 
-                  variant={isOverLimit ? 'error' : 'secondary'} 
-                  size="sm"
-                >
+                <Badge variant={isOverLimit ? 'error' : 'secondary'} size="sm">
                   {limit}
                 </Badge>
               )}
@@ -186,7 +193,7 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({
                 </div>
               </div>
             ) : (
-              tasks.map((task) => (
+              tasks.map(task => (
                 <KanbanTaskCard
                   key={task.id}
                   id={task.id}

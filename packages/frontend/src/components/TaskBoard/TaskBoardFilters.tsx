@@ -24,21 +24,26 @@ interface TaskBoardFiltersProps {
   onToggleCollapse?: (collapsed: boolean) => void;
 }
 
-const PRIORITY_OPTIONS: { value: TaskPriority; label: string; variant: string }[] = [
+const PRIORITY_OPTIONS: {
+  value: TaskPriority;
+  label: string;
+  variant: string;
+}[] = [
   { value: 'low', label: 'Low', variant: 'success' },
   { value: 'medium', label: 'Medium', variant: 'warning' },
   { value: 'high', label: 'High', variant: 'error' },
   { value: 'urgent', label: 'Urgent', variant: 'error' },
 ];
 
-const STATUS_OPTIONS: { value: TaskStatus; label: string; variant: string }[] = [
-  { value: 'pending', label: 'To Do', variant: 'pending' },
-  { value: 'in-progress', label: 'In Progress', variant: 'in-progress' },
-  { value: 'done', label: 'Done', variant: 'done' },
-  { value: 'blocked', label: 'Blocked', variant: 'blocked' },
-  { value: 'cancelled', label: 'Cancelled', variant: 'secondary' },
-  { value: 'deferred', label: 'Deferred', variant: 'deferred' },
-];
+const STATUS_OPTIONS: { value: TaskStatus; label: string; variant: string }[] =
+  [
+    { value: 'pending', label: 'To Do', variant: 'pending' },
+    { value: 'in-progress', label: 'In Progress', variant: 'in-progress' },
+    { value: 'done', label: 'Done', variant: 'done' },
+    { value: 'blocked', label: 'Blocked', variant: 'blocked' },
+    { value: 'cancelled', label: 'Cancelled', variant: 'secondary' },
+    { value: 'deferred', label: 'Deferred', variant: 'deferred' },
+  ];
 
 export const TaskBoardFilters: React.FC<TaskBoardFiltersProps> = ({
   filters,
@@ -53,7 +58,7 @@ export const TaskBoardFilters: React.FC<TaskBoardFiltersProps> = ({
     const newPriorities = currentPriorities.includes(priority)
       ? currentPriorities.filter(p => p !== priority)
       : [...currentPriorities, priority];
-    
+
     onChange({
       ...filters,
       priority: newPriorities.length > 0 ? newPriorities : undefined,
@@ -65,7 +70,7 @@ export const TaskBoardFilters: React.FC<TaskBoardFiltersProps> = ({
     const newStatuses = currentStatuses.includes(status)
       ? currentStatuses.filter(s => s !== status)
       : [...currentStatuses, status];
-    
+
     onChange({
       ...filters,
       status: newStatuses.length > 0 ? newStatuses : undefined,
@@ -77,7 +82,7 @@ export const TaskBoardFilters: React.FC<TaskBoardFiltersProps> = ({
     const newAssignees = currentAssignees.includes(assignee)
       ? currentAssignees.filter(a => a !== assignee)
       : [...currentAssignees, assignee];
-    
+
     onChange({
       ...filters,
       assignedTo: newAssignees.length > 0 ? newAssignees : undefined,
@@ -88,12 +93,17 @@ export const TaskBoardFilters: React.FC<TaskBoardFiltersProps> = ({
     onChange({});
   };
 
-  const hasActiveFilters = Object.values(filters).some(value => 
+  const hasActiveFilters = Object.values(filters).some(value =>
     Array.isArray(value) ? value.length > 0 : value !== undefined
   );
 
   return (
-    <div className={cn('bg-slate-900 border border-slate-800 rounded-lg', className)}>
+    <div
+      className={cn(
+        'bg-slate-900 border border-slate-800 rounded-lg',
+        className
+      )}
+    >
       {/* Filter Header */}
       <div className="flex items-center justify-between p-4 border-b border-slate-800">
         <div className="flex items-center space-x-2">
@@ -105,7 +115,7 @@ export const TaskBoardFilters: React.FC<TaskBoardFiltersProps> = ({
             </Badge>
           )}
         </div>
-        
+
         <div className="flex items-center space-x-2">
           {hasActiveFilters && (
             <button
@@ -143,8 +153,9 @@ export const TaskBoardFilters: React.FC<TaskBoardFiltersProps> = ({
               Priority
             </label>
             <div className="flex flex-wrap gap-2">
-              {PRIORITY_OPTIONS.map((option) => {
-                const isSelected = filters.priority?.includes(option.value) || false;
+              {PRIORITY_OPTIONS.map(option => {
+                const isSelected =
+                  filters.priority?.includes(option.value) || false;
                 return (
                   <button
                     key={option.value}
@@ -169,8 +180,9 @@ export const TaskBoardFilters: React.FC<TaskBoardFiltersProps> = ({
               Status
             </label>
             <div className="flex flex-wrap gap-2">
-              {STATUS_OPTIONS.map((option) => {
-                const isSelected = filters.status?.includes(option.value) || false;
+              {STATUS_OPTIONS.map(option => {
+                const isSelected =
+                  filters.status?.includes(option.value) || false;
                 return (
                   <button
                     key={option.value}
@@ -196,8 +208,9 @@ export const TaskBoardFilters: React.FC<TaskBoardFiltersProps> = ({
                 Assigned To
               </label>
               <div className="flex flex-wrap gap-2">
-                {availableAssignees.map((assignee) => {
-                  const isSelected = filters.assignedTo?.includes(assignee) || false;
+                {availableAssignees.map(assignee => {
+                  const isSelected =
+                    filters.assignedTo?.includes(assignee) || false;
                   return (
                     <button
                       key={assignee}
@@ -224,7 +237,7 @@ export const TaskBoardFilters: React.FC<TaskBoardFiltersProps> = ({
                 Active Tags
               </label>
               <div className="flex flex-wrap gap-2">
-                {filters.tags.map((tag) => (
+                {filters.tags.map(tag => (
                   <Badge
                     key={tag}
                     variant="outline"

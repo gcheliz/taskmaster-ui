@@ -1,20 +1,10 @@
 import React, { useState } from 'react';
 import { useDashboard } from '../../hooks/useDashboard';
-import { 
-  Card, 
-  CardHeader, 
-  CardTitle, 
-  CardContent
-} from '../ui/atoms/Card';
+import { Card, CardHeader, CardTitle, CardContent } from '../ui/atoms/Card';
 import { Button } from '../ui/atoms/Button';
 import { Badge } from '../ui/atoms/Badge';
-import { 
-  Tabs, 
-  TabsList, 
-  TabsTrigger, 
-  TabsContent 
-} from '../ui/molecules/Tabs';
-import { 
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '../ui/molecules/Tabs';
+import {
   Icon,
   HomeFilledIcon,
   TaskIcon,
@@ -28,13 +18,13 @@ import {
   SettingsIcon,
   DuplicateIcon,
   ArchiveIcon,
-  PlusIcon
+  PlusIcon,
 } from '../ui/atoms/Icon';
 import { Spinner } from '../ui/atoms/Spinner';
-import { 
-  Breadcrumb, 
-  BreadcrumbLink, 
-  BreadcrumbSeparator 
+import {
+  Breadcrumb,
+  BreadcrumbLink,
+  BreadcrumbSeparator,
 } from '../ui/atoms/BreadcrumbLink';
 import { ActivityTimeline } from '../ui/organisms/ActivityTimeline';
 import { QuickActionsGrid } from '../ui/organisms/QuickActionsGrid';
@@ -59,7 +49,7 @@ const WelcomeHeader: React.FC<WelcomeHeaderProps> = ({
   projectPath,
   lastUpdated,
   userAvatar,
-  userName = 'User'
+  userName = 'User',
 }) => {
   const formatTime = (dateString: string) => {
     return new Date(dateString).toLocaleString();
@@ -88,8 +78,8 @@ const WelcomeHeader: React.FC<WelcomeHeaderProps> = ({
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               {userAvatar ? (
-                <img 
-                  src={userAvatar} 
+                <img
+                  src={userAvatar}
                   alt={userName}
                   className="w-12 h-12 rounded-full border-2 border-primary-200 dark:border-primary-700"
                 />
@@ -167,7 +157,7 @@ interface StatisticsGridProps {
 const StatisticsGrid: React.FC<StatisticsGridProps> = ({
   taskMetrics,
   insights,
-  health
+  health,
 }) => {
   const getHealthColor = (status: string) => {
     switch (status) {
@@ -230,7 +220,7 @@ const StatisticsGrid: React.FC<StatisticsGridProps> = ({
             {formatPercentage(taskMetrics.completionRate)}
           </div>
           <div className="w-full bg-secondary-200 dark:bg-surface-700 rounded-full h-2 mb-2">
-            <div 
+            <div
               className="bg-success-500 h-2 rounded-full transition-all duration-500"
               style={{ width: `${taskMetrics.completionRate}%` }}
             />
@@ -273,7 +263,11 @@ const StatisticsGrid: React.FC<StatisticsGridProps> = ({
             <CardTitle className="text-sm font-medium text-secondary-600 dark:text-secondary-400">
               Project Health
             </CardTitle>
-            <Icon icon={StarFilledIcon} size="lg" color={health ? getHealthColor(health.status) as any : 'muted'} />
+            <Icon
+              icon={StarFilledIcon}
+              size="lg"
+              color={health ? (getHealthColor(health.status) as any) : 'muted'}
+            />
           </div>
         </CardHeader>
         <CardContent>
@@ -281,8 +275,10 @@ const StatisticsGrid: React.FC<StatisticsGridProps> = ({
             {health ? Math.round(health.score) : '--'}
           </div>
           <div className="flex items-center space-x-2">
-            <Badge 
-              variant={health ? getHealthColor(health.status) as any : 'secondary'} 
+            <Badge
+              variant={
+                health ? (getHealthColor(health.status) as any) : 'secondary'
+              }
               size="sm"
             >
               {health ? health.status.replace('-', ' ') : 'Unknown'}
@@ -297,19 +293,20 @@ const StatisticsGrid: React.FC<StatisticsGridProps> = ({
   );
 };
 
-
 /**
  * Modern Dashboard View Component
- * 
+ *
  * A comprehensive dashboard built with the new dark theme atomic components,
  * featuring responsive design, interactive widgets, and enhanced user experience.
  */
 export const ModernDashboardView: React.FC<ModernDashboardViewProps> = ({
   projectId,
   projectTag,
-  className = ''
+  className = '',
 }) => {
-  const [activeTab, setActiveTab] = useState<'overview' | 'analytics' | 'activity'>('overview');
+  const [activeTab, setActiveTab] = useState<
+    'overview' | 'analytics' | 'activity'
+  >('overview');
   const [refreshing, setRefreshing] = useState(false);
 
   const {
@@ -321,18 +318,18 @@ export const ModernDashboardView: React.FC<ModernDashboardViewProps> = ({
     refresh,
     clearError,
     isStale,
-    retryCount
+    retryCount,
   } = useDashboard({
     projectId,
     projectTag,
     refreshInterval: 30000,
     autoRefresh: true,
-    onError: (error) => {
+    onError: error => {
       console.error('Dashboard error:', error);
     },
-    onDataUpdate: (data) => {
+    onDataUpdate: data => {
       console.log('Dashboard data updated:', data);
-    }
+    },
   });
 
   const handleRefresh = async () => {
@@ -397,7 +394,7 @@ export const ModernDashboardView: React.FC<ModernDashboardViewProps> = ({
       variant: 'primary',
       shortcut: 'Ctrl+N',
       category: 'task',
-      onClick: handleCreateTask
+      onClick: handleCreateTask,
     },
     {
       id: 'view-reports',
@@ -408,7 +405,7 @@ export const ModernDashboardView: React.FC<ModernDashboardViewProps> = ({
       variant: 'outline',
       shortcut: 'Ctrl+R',
       category: 'project',
-      onClick: handleViewReports
+      onClick: handleViewReports,
     },
     {
       id: 'manage-team',
@@ -419,11 +416,11 @@ export const ModernDashboardView: React.FC<ModernDashboardViewProps> = ({
       variant: 'outline',
       badge: {
         text: 'Admin',
-        variant: 'warning'
+        variant: 'warning',
       },
       shortcut: 'Ctrl+T',
       category: 'team',
-      onClick: handleManageTeam
+      onClick: handleManageTeam,
     },
     {
       id: 'export-data',
@@ -434,7 +431,7 @@ export const ModernDashboardView: React.FC<ModernDashboardViewProps> = ({
       variant: 'outline',
       shortcut: 'Ctrl+E',
       category: 'system',
-      onClick: handleExportData
+      onClick: handleExportData,
     },
     {
       id: 'add-member',
@@ -444,7 +441,7 @@ export const ModernDashboardView: React.FC<ModernDashboardViewProps> = ({
       iconColor: 'success',
       variant: 'outline',
       category: 'team',
-      onClick: handleAddMember
+      onClick: handleAddMember,
     },
     {
       id: 'project-settings',
@@ -454,14 +451,16 @@ export const ModernDashboardView: React.FC<ModernDashboardViewProps> = ({
       iconColor: 'muted',
       variant: 'outline',
       category: 'system',
-      onClick: handleProjectSettings
-    }
+      onClick: handleProjectSettings,
+    },
   ];
 
   // Loading State
   if (loading && !data) {
     return (
-      <div className={`min-h-screen flex items-center justify-center bg-surface-50 dark:bg-surface-950 ${className}`}>
+      <div
+        className={`min-h-screen flex items-center justify-center bg-surface-50 dark:bg-surface-950 ${className}`}
+      >
         <Card variant="elevated" className="w-96">
           <CardContent className="text-center py-12">
             <Spinner size="lg" className="mx-auto mb-4" />
@@ -480,10 +479,17 @@ export const ModernDashboardView: React.FC<ModernDashboardViewProps> = ({
   // Error State
   if (error && !data) {
     return (
-      <div className={`min-h-screen flex items-center justify-center bg-surface-50 dark:bg-surface-950 ${className}`}>
+      <div
+        className={`min-h-screen flex items-center justify-center bg-surface-50 dark:bg-surface-950 ${className}`}
+      >
         <Card variant="elevated" className="w-96">
           <CardContent className="text-center py-12">
-            <Icon icon={WarningIcon} size="2xl" color="error" className="mx-auto mb-4" />
+            <Icon
+              icon={WarningIcon}
+              size="2xl"
+              color="error"
+              className="mx-auto mb-4"
+            />
             <h3 className="text-lg font-semibold text-error-600 dark:text-error-400 mb-2">
               Dashboard Error
             </h3>
@@ -507,10 +513,17 @@ export const ModernDashboardView: React.FC<ModernDashboardViewProps> = ({
   // Empty State
   if (!data) {
     return (
-      <div className={`min-h-screen flex items-center justify-center bg-surface-50 dark:bg-surface-950 ${className}`}>
+      <div
+        className={`min-h-screen flex items-center justify-center bg-surface-50 dark:bg-surface-950 ${className}`}
+      >
         <Card variant="elevated" className="w-96">
           <CardContent className="text-center py-12">
-            <Icon icon={ArchiveIcon} size="2xl" color="muted" className="mx-auto mb-4" />
+            <Icon
+              icon={ArchiveIcon}
+              size="2xl"
+              color="muted"
+              className="mx-auto mb-4"
+            />
             <h3 className="text-lg font-semibold text-secondary-900 dark:text-secondary-100 mb-2">
               No Dashboard Data
             </h3>
@@ -527,7 +540,9 @@ export const ModernDashboardView: React.FC<ModernDashboardViewProps> = ({
   }
 
   return (
-    <div className={`min-h-screen bg-surface-50 dark:bg-surface-950 ${className}`}>
+    <div
+      className={`min-h-screen bg-surface-50 dark:bg-surface-950 ${className}`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Welcome Header */}
         <WelcomeHeader
@@ -555,7 +570,11 @@ export const ModernDashboardView: React.FC<ModernDashboardViewProps> = ({
         />
 
         {/* Main Content Tabs */}
-        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="w-full">
+        <Tabs
+          value={activeTab}
+          onValueChange={value => setActiveTab(value as any)}
+          className="w-full"
+        >
           <Card variant="elevated">
             <CardHeader>
               <div className="flex items-center justify-between">
@@ -593,7 +612,11 @@ export const ModernDashboardView: React.FC<ModernDashboardViewProps> = ({
                 <TabsTrigger value="analytics" icon={NotificationIcon}>
                   Analytics
                 </TabsTrigger>
-                <TabsTrigger value="activity" icon={TimeIcon} badge={data.recentActivity?.length || 0}>
+                <TabsTrigger
+                  value="activity"
+                  icon={TimeIcon}
+                  badge={data.recentActivity?.length || 0}
+                >
                   Activity
                 </TabsTrigger>
               </TabsList>
@@ -607,28 +630,39 @@ export const ModernDashboardView: React.FC<ModernDashboardViewProps> = ({
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
-                        {Object.entries(data.taskMetrics.statusBreakdown).map(([status, count]) => (
-                          <div key={status} className="flex items-center space-x-4">
-                            <div className="w-20 text-sm font-medium text-secondary-900 dark:text-secondary-100 capitalize">
-                              {status.replace('-', ' ')}
+                        {Object.entries(data.taskMetrics.statusBreakdown).map(
+                          ([status, count]) => (
+                            <div
+                              key={status}
+                              className="flex items-center space-x-4"
+                            >
+                              <div className="w-20 text-sm font-medium text-secondary-900 dark:text-secondary-100 capitalize">
+                                {status.replace('-', ' ')}
+                              </div>
+                              <div className="flex-1 bg-secondary-200 dark:bg-surface-700 rounded-full h-2">
+                                <div
+                                  className="h-2 rounded-full transition-all duration-500"
+                                  style={{
+                                    width: `${(count / data.taskMetrics.total) * 100}%`,
+                                    backgroundColor:
+                                      status === 'done'
+                                        ? '#22c55e'
+                                        : status === 'in-progress'
+                                          ? '#3b82f6'
+                                          : status === 'pending'
+                                            ? '#f59e0b'
+                                            : status === 'blocked'
+                                              ? '#ef4444'
+                                              : '#6b7280',
+                                  }}
+                                />
+                              </div>
+                              <div className="w-12 text-sm font-semibold text-secondary-900 dark:text-secondary-100 text-right">
+                                {count}
+                              </div>
                             </div>
-                            <div className="flex-1 bg-secondary-200 dark:bg-surface-700 rounded-full h-2">
-                              <div
-                                className="h-2 rounded-full transition-all duration-500"
-                                style={{
-                                  width: `${(count / data.taskMetrics.total) * 100}%`,
-                                  backgroundColor: status === 'done' ? '#22c55e' : 
-                                                 status === 'in-progress' ? '#3b82f6' :
-                                                 status === 'pending' ? '#f59e0b' :
-                                                 status === 'blocked' ? '#ef4444' : '#6b7280'
-                                }}
-                              />
-                            </div>
-                            <div className="w-12 text-sm font-semibold text-secondary-900 dark:text-secondary-100 text-right">
-                              {count}
-                            </div>
-                          </div>
-                        ))}
+                          )
+                        )}
                       </div>
                     </CardContent>
                   </Card>
@@ -638,15 +672,27 @@ export const ModernDashboardView: React.FC<ModernDashboardViewProps> = ({
                     <Card variant="outline">
                       <CardHeader>
                         <CardTitle className="flex items-center space-x-2">
-                          <Icon icon={StarFilledIcon} size="md" color="warning" />
+                          <Icon
+                            icon={StarFilledIcon}
+                            size="md"
+                            color="warning"
+                          />
                           <span>Recommendations</span>
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
                         <div className="space-y-3">
                           {data.insights.recommendations.map((rec, index) => (
-                            <div key={index} className="flex items-start space-x-3 p-3 bg-warning-50 dark:bg-warning-900/20 rounded-lg border-l-4 border-warning-500">
-                              <Icon icon={StarFilledIcon} size="sm" color="warning" className="mt-0.5" />
+                            <div
+                              key={index}
+                              className="flex items-start space-x-3 p-3 bg-warning-50 dark:bg-warning-900/20 rounded-lg border-l-4 border-warning-500"
+                            >
+                              <Icon
+                                icon={StarFilledIcon}
+                                size="sm"
+                                color="warning"
+                                className="mt-0.5"
+                              />
                               <p className="text-sm text-secondary-700 dark:text-secondary-300">
                                 {rec}
                               </p>
@@ -668,12 +714,18 @@ export const ModernDashboardView: React.FC<ModernDashboardViewProps> = ({
                     </CardHeader>
                     <CardContent>
                       <div className="text-center py-12">
-                        <Icon icon={NotificationIcon} size="2xl" color="muted" className="mx-auto mb-4" />
+                        <Icon
+                          icon={NotificationIcon}
+                          size="2xl"
+                          color="muted"
+                          className="mx-auto mb-4"
+                        />
                         <h3 className="text-lg font-semibold text-secondary-900 dark:text-secondary-100 mb-2">
                           Analytics Coming Soon
                         </h3>
                         <p className="text-secondary-600 dark:text-secondary-400">
-                          Advanced analytics and insights will be available in the next update.
+                          Advanced analytics and insights will be available in
+                          the next update.
                         </p>
                       </div>
                     </CardContent>

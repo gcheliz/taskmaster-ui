@@ -118,10 +118,7 @@ export const WithDescription: Story = {
 export const WithHelpText: Story = {
   render: args => (
     <div className="space-y-2">
-      <Label
-        htmlFor="textarea-with-help"
-        helpText="Maximum 500 characters"
-      >
+      <Label htmlFor="textarea-with-help" helpText="Maximum 500 characters">
         Comments
       </Label>
       <Textarea
@@ -157,11 +154,7 @@ export const ErrorState: Story = {
 export const SuccessState: Story = {
   render: args => (
     <div className="space-y-2">
-      <Label
-        htmlFor="success-textarea"
-        success
-        description="Looks good!"
-      >
+      <Label htmlFor="success-textarea" success description="Looks good!">
         Valid Input
       </Label>
       <Textarea
@@ -260,7 +253,9 @@ export const DarkThemeVariants: Story = {
   render: () => (
     <div className="">
       <div className="bg-white p-6 rounded-lg space-y-4">
-        <h3 className="text-slate-900 text-lg font-semibold mb-4">Dark Theme Textarea</h3>
+        <h3 className="text-slate-900 text-lg font-semibold mb-4">
+          Dark Theme Textarea
+        </h3>
         <div className="space-y-4">
           <div className="space-y-2">
             <Label className="text-slate-900">Default Textarea</Label>
@@ -286,20 +281,32 @@ export const AccessibilityTest: Story = {
     <div className="space-y-6">
       <div className="space-y-2">
         <h3 className="text-lg font-semibold">Keyboard Navigation</h3>
-        <p className="text-sm text-secondary-600">Use Tab to navigate, Enter for new lines</p>
+        <p className="text-sm text-secondary-600">
+          Use Tab to navigate, Enter for new lines
+        </p>
         <div className="space-y-2">
           <Label htmlFor="accessible-textarea-1">First Textarea</Label>
-          <Textarea id="accessible-textarea-1" placeholder="Tab to next textarea" />
+          <Textarea
+            id="accessible-textarea-1"
+            placeholder="Tab to next textarea"
+          />
         </div>
         <div className="space-y-2">
           <Label htmlFor="accessible-textarea-2">Second Textarea</Label>
-          <Textarea id="accessible-textarea-2" placeholder="Continue navigation" />
+          <Textarea
+            id="accessible-textarea-2"
+            placeholder="Continue navigation"
+          />
         </div>
       </div>
       <div className="space-y-2">
         <h3 className="text-lg font-semibold">Screen Reader Labels</h3>
         <div className="space-y-2">
-          <Label htmlFor="sr-textarea" required description="This field is required for form submission">
+          <Label
+            htmlFor="sr-textarea"
+            required
+            description="This field is required for form submission"
+          >
             Required Field
           </Label>
           <Textarea
@@ -307,7 +314,10 @@ export const AccessibilityTest: Story = {
             placeholder="Enter required information"
             aria-describedby="sr-textarea-description"
           />
-          <p id="sr-textarea-description" className="text-sm text-secondary-600">
+          <p
+            id="sr-textarea-description"
+            className="text-sm text-secondary-600"
+          >
             This description provides additional context for screen readers
           </p>
         </div>
@@ -362,7 +372,9 @@ export const ResponsiveDesign: Story = {
     <div className="space-y-6">
       <div className="space-y-2">
         <h3 className="text-lg font-semibold">Mobile First Design</h3>
-        <p className="text-sm text-secondary-600">Textareas are optimized for mobile touch targets</p>
+        <p className="text-sm text-secondary-600">
+          Textareas are optimized for mobile touch targets
+        </p>
         <div className="space-y-2">
           <Label>Mobile Friendly Textarea</Label>
           <Textarea placeholder="Easy to tap and type" textareaSize="lg" />

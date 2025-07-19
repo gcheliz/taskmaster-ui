@@ -251,10 +251,15 @@ export const TaskModal: React.FC<TaskModalProps> = ({
   }
 
   return (
-    <div className={`fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 ${className}`} onClick={handleBackdropClick}>
+    <div
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 ${className}`}
+      onClick={handleBackdropClick}
+    >
       <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-hidden flex flex-col">
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-900">{getModalTitle()}</h2>
+          <h2 className="text-xl font-semibold text-gray-900">
+            {getModalTitle()}
+          </h2>
           <button
             className="inline-flex items-center justify-center w-8 h-8 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
             onClick={handleClose}
@@ -268,7 +273,9 @@ export const TaskModal: React.FC<TaskModalProps> = ({
         <div className="flex-1 overflow-y-auto p-6">
           {error && (
             <div className="flex items-center gap-3 p-4 mb-6 bg-red-50 border border-red-200 rounded-lg">
-              <span className="text-red-500" aria-hidden="true">⚠️</span>
+              <span className="text-red-500" aria-hidden="true">
+                ⚠️
+              </span>
               <span className="flex-1 text-sm text-red-700">{error}</span>
               <button
                 className="text-red-400 hover:text-red-600 transition-colors"
@@ -283,7 +290,10 @@ export const TaskModal: React.FC<TaskModalProps> = ({
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Title */}
             <div className="space-y-2">
-              <label htmlFor="task-title" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="task-title"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Title *
               </label>
               <input
@@ -298,13 +308,18 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                 data-testid="task-title-input"
               />
               {validationErrors.title && (
-                <span className="text-sm text-red-600">{validationErrors.title}</span>
+                <span className="text-sm text-red-600">
+                  {validationErrors.title}
+                </span>
               )}
             </div>
 
             {/* Description */}
             <div className="space-y-2">
-              <label htmlFor="task-description" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="task-description"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Description *
               </label>
               <textarea
@@ -328,7 +343,10 @@ export const TaskModal: React.FC<TaskModalProps> = ({
             {/* Priority and Status Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label htmlFor="task-priority" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="task-priority"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Priority *
                 </label>
                 <select
@@ -707,7 +725,9 @@ export const TaskModal: React.FC<TaskModalProps> = ({
             >
               {isLoading ? (
                 <>
-                  <span className="animate-spin" aria-hidden="true">⏳</span>
+                  <span className="animate-spin" aria-hidden="true">
+                    ⏳
+                  </span>
                   {isCreateMode ? 'Creating...' : 'Saving...'}
                 </>
               ) : (
@@ -726,7 +746,9 @@ export const TaskModal: React.FC<TaskModalProps> = ({
             >
               {isLoading ? (
                 <>
-                  <span className="animate-spin" aria-hidden="true">⏳</span>
+                  <span className="animate-spin" aria-hidden="true">
+                    ⏳
+                  </span>
                   Deleting...
                 </>
               ) : (

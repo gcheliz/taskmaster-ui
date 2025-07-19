@@ -26,7 +26,7 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
   showAvatar = true,
   showTimestamp = true,
   isLast = false,
-  className = ''
+  className = '',
 }) => {
   const getActivityIcon = (activityType: string) => {
     switch (activityType) {
@@ -41,7 +41,9 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
     }
   };
 
-  const getActivityColor = (activityType: string): 'success' | 'primary' | 'warning' | 'error' | 'secondary' => {
+  const getActivityColor = (
+    activityType: string
+  ): 'success' | 'primary' | 'warning' | 'error' | 'secondary' => {
     switch (activityType) {
       case 'commit':
         return 'success';
@@ -54,7 +56,9 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
     }
   };
 
-  const getBadgeVariant = (activityType: string): 'success' | 'primary' | 'warning' | 'error' | 'secondary' => {
+  const getBadgeVariant = (
+    activityType: string
+  ): 'success' | 'primary' | 'warning' | 'error' | 'secondary' => {
     switch (activityType) {
       case 'commit':
         return 'success';
@@ -98,7 +102,9 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
   };
 
   const formatActivityType = (activityType: string) => {
-    return activityType.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+    return activityType
+      .replace('_', ' ')
+      .replace(/\b\w/g, l => l.toUpperCase());
   };
 
   return (
@@ -106,9 +112,9 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
       {/* Timeline indicator */}
       <div className="flex flex-col items-center">
         <div className="flex items-center justify-center w-8 h-8 rounded-full bg-surface-100 dark:bg-surface-800 border-2 border-surface-200 dark:border-surface-700">
-          <Icon 
-            icon={getActivityIcon(type)} 
-            size="sm" 
+          <Icon
+            icon={getActivityIcon(type)}
+            size="sm"
             color={getActivityColor(type)}
           />
         </div>
@@ -119,7 +125,10 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
 
       {/* Content */}
       <div className="flex-1 min-w-0">
-        <Card variant="outline" className="hover:shadow-md transition-shadow duration-200">
+        <Card
+          variant="outline"
+          className="hover:shadow-md transition-shadow duration-200"
+        >
           <CardContent className="p-4">
             <div className="flex items-start justify-between">
               <div className="flex-1 min-w-0">
@@ -138,9 +147,7 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
                           {getAuthorInitials(author)}
                         </div>
                       )}
-                      <span className="font-medium">
-                        {author}
-                      </span>
+                      <span className="font-medium">{author}</span>
                     </div>
                   )}
 
@@ -153,9 +160,7 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
                   {showTimestamp && (
                     <div className="flex items-center space-x-1">
                       <Icon icon={TimeIcon} size="xs" color="muted" />
-                      <span>
-                        {formatTimestamp(timestamp)}
-                      </span>
+                      <span>{formatTimestamp(timestamp)}</span>
                     </div>
                   )}
                 </div>
@@ -164,12 +169,19 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
                 {details && Object.keys(details).length > 0 && (
                   <div className="mt-3 pt-2 border-t border-surface-200 dark:border-surface-700">
                     <div className="text-xs text-secondary-500 dark:text-secondary-500 space-y-1">
-                      {Object.entries(details).slice(0, 3).map(([key, value]) => (
-                        <div key={key} className="flex items-center space-x-2">
-                          <span className="font-medium capitalize">{key}:</span>
-                          <span className="font-mono">{String(value)}</span>
-                        </div>
-                      ))}
+                      {Object.entries(details)
+                        .slice(0, 3)
+                        .map(([key, value]) => (
+                          <div
+                            key={key}
+                            className="flex items-center space-x-2"
+                          >
+                            <span className="font-medium capitalize">
+                              {key}:
+                            </span>
+                            <span className="font-mono">{String(value)}</span>
+                          </div>
+                        ))}
                     </div>
                   </div>
                 )}

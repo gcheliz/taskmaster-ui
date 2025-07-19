@@ -35,7 +35,14 @@ const meta: Meta<typeof Button> = {
     },
     variant: {
       control: { type: 'select' },
-      options: ['primary', 'secondary', 'outline', 'ghost', 'link', 'destructive'],
+      options: [
+        'primary',
+        'secondary',
+        'outline',
+        'ghost',
+        'link',
+        'destructive',
+      ],
       description: 'Button variant',
     },
     size: {
@@ -202,7 +209,9 @@ export const DarkThemeVariants: Story = {
   render: () => (
     <div className="">
       <div className="bg-white p-6 rounded-lg space-y-4">
-        <h3 className="text-slate-900 text-lg font-semibold mb-4">Dark Theme Variants</h3>
+        <h3 className="text-slate-900 text-lg font-semibold mb-4">
+          Dark Theme Variants
+        </h3>
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
           <Button variant="primary">Primary</Button>
           <Button variant="secondary">Secondary</Button>
@@ -222,7 +231,9 @@ export const AccessibilityTest: Story = {
     <div className="space-y-6">
       <div className="space-y-2">
         <h3 className="text-lg font-semibold">Keyboard Navigation Test</h3>
-        <p className="text-sm text-secondary-600">Use Tab to navigate, Enter/Space to activate</p>
+        <p className="text-sm text-secondary-600">
+          Use Tab to navigate, Enter/Space to activate
+        </p>
         <div className="flex gap-2">
           <Button variant="primary">First Button</Button>
           <Button variant="secondary">Second Button</Button>

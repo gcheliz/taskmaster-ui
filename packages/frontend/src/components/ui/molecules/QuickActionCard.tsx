@@ -10,8 +10,20 @@ export interface QuickActionCardProps {
   title: string;
   description?: string;
   icon: IconType;
-  iconColor?: 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'muted';
-  variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'outline';
+  iconColor?:
+    | 'primary'
+    | 'secondary'
+    | 'success'
+    | 'warning'
+    | 'error'
+    | 'muted';
+  variant?:
+    | 'primary'
+    | 'secondary'
+    | 'success'
+    | 'warning'
+    | 'error'
+    | 'outline';
   badge?: {
     text: string;
     variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'error';
@@ -35,7 +47,7 @@ const QuickActionCard: React.FC<QuickActionCardProps> = ({
   loading = false,
   shortcut,
   onClick,
-  className = ''
+  className = '',
 }) => {
   const getCardVariant = () => {
     if (variant === 'primary') return 'elevated';
@@ -112,9 +124,9 @@ const QuickActionCard: React.FC<QuickActionCardProps> = ({
         <div className="flex flex-col items-center text-center space-y-3">
           {/* Icon */}
           <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700">
-            <Icon 
-              icon={icon} 
-              size="lg" 
+            <Icon
+              icon={icon}
+              size="lg"
               color={getIconColorForVariant()}
               className={loading ? 'animate-pulse' : ''}
             />
@@ -134,8 +146,8 @@ const QuickActionCard: React.FC<QuickActionCardProps> = ({
 
           {/* Badge */}
           {badge && (
-            <Badge 
-              variant={badge.variant || 'secondary'} 
+            <Badge
+              variant={badge.variant || 'secondary'}
               size="sm"
               className="animate-in fade-in-50 duration-300"
             >

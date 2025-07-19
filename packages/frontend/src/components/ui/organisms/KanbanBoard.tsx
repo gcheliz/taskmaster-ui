@@ -2,7 +2,14 @@ import React, { useState, useMemo, useCallback } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '../atoms/Card';
 import { Button } from '../atoms/Button';
 import { Badge } from '../atoms/Badge';
-import { Icon, TaskIcon, ArchiveIcon, DuplicateIcon, SettingsIcon, PlusIcon } from '../atoms/Icon';
+import {
+  Icon,
+  TaskIcon,
+  ArchiveIcon,
+  DuplicateIcon,
+  SettingsIcon,
+  PlusIcon,
+} from '../atoms/Icon';
 import { Input } from '../atoms/Input';
 import { Spinner } from '../atoms/Spinner';
 import { KanbanColumn, type KanbanTask } from '../molecules/KanbanColumn';
@@ -24,7 +31,11 @@ export interface KanbanBoardProps {
   error?: string;
   onTaskClick?: (taskId: number) => void;
   onAddTask?: (status: TaskStatus) => void;
-  onTaskMove?: (taskId: number, fromStatus: TaskStatus, toStatus: TaskStatus) => void;
+  onTaskMove?: (
+    taskId: number,
+    fromStatus: TaskStatus,
+    toStatus: TaskStatus
+  ) => void;
   onRefresh?: () => void;
   showSearch?: boolean;
   showFilters?: boolean;
@@ -78,23 +89,24 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
   onRefresh,
   showSearch = true,
   showFilters = true,
-  className = ''
+  className = '',
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedPriority, setSelectedPriority] = useState<TaskPriority | 'all'>('all');
+  const [selectedPriority, setSelectedPriority] = useState<
+    TaskPriority | 'all'
+  >('all');
   const [refreshing, setRefreshing] = useState(false);
   const [activeTask, setActiveTask] = useState<KanbanTask | null>(null);
 
   // Handle task move between columns
-  const handleTaskMove = useCallback((
-    taskId: number,
-    fromStatus: TaskStatus,
-    toStatus: TaskStatus
-  ) => {
-    if (onTaskMove) {
-      onTaskMove(taskId, fromStatus, toStatus);
-    }
-  }, [onTaskMove]);
+  const handleTaskMove = useCallback(
+    (taskId: number, fromStatus: TaskStatus, toStatus: TaskStatus) => {
+      if (onTaskMove) {
+        onTaskMove(taskId, fromStatus, toStatus);
+      }
+    },
+    [onTaskMove]
+  );
 
   // Filter tasks based on search and filters
   const filteredTasks = useMemo(() => {
@@ -102,10 +114,13 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
 
     // Apply search filter
     if (searchTerm) {
-      filtered = filtered.filter(task =>
-        task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        task.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        task.tags?.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+      filtered = filtered.filter(
+        task =>
+          task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          task.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          task.tags?.some(tag =>
+            tag.toLowerCase().includes(searchTerm.toLowerCase())
+          )
       );
     }
 
@@ -120,7 +135,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
   // Group tasks by status for each column
   const tasksByStatus = useMemo(() => {
     const grouped: Record<string, KanbanTask[]> = {};
-    
+
     DEFAULT_COLUMNS.forEach(column => {
       grouped[column.id] = [];
     });
@@ -154,10 +169,13 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
   }, [filteredTasks]);
 
   // Handle drag start to track active task
-  const handleDragStart = useCallback((taskId: number) => {
-    const task = filteredTasks.find(t => t.id === taskId);
-    setActiveTask(task || null);
-  }, [filteredTasks]);
+  const handleDragStart = useCallback(
+    (taskId: number) => {
+      const task = filteredTasks.find(t => t.id === taskId);
+      setActiveTask(task || null);
+    },
+    [filteredTasks]
+  );
 
   // Handle drag end to clear active task
   const handleDragEnd = useCallback(() => {
@@ -166,7 +184,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
 
   const handleRefresh = async () => {
     if (!onRefresh) return;
-    
+
     setRefreshing(true);
     try {
       await onRefresh();
@@ -211,7 +229,12 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
     return (
       <Card variant="elevated" className={className}>
         <CardContent className="text-center py-12">
-          <Icon icon={ArchiveIcon} size="2xl" color="error" className="mx-auto mb-4" />
+          <Icon
+            icon={ArchiveIcon}
+            size="2xl"
+            color="error"
+            className="mx-auto mb-4"
+          />
           <h3 className="text-lg font-semibold text-error-600 dark:text-error-400 mb-2">
             Failed to Load Board
           </h3>
@@ -241,13 +264,18 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
                 {getTotalTaskCount()} tasks
               </Badge>
             </CardTitle>
-            
+
             <div className="flex items-center space-x-2">
               <Badge variant="success" size="sm">
                 {getCompletionPercentage()}% Complete
               </Badge>
               {onRefresh && (
-                <Button variant="outline" size="sm" onClick={handleRefresh} disabled={refreshing}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleRefresh}
+                  disabled={refreshing}
+                >
                   {refreshing ? (
                     <Spinner size="sm" className="mr-2" />
                   ) : (
@@ -268,12 +296,16 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
               {showSearch && (
                 <div className="flex-1">
                   <div className="relative">
-                    <Icon icon={PlusIcon} size="sm" className="absolute left-3 top-1/2 transform -translate-y-1/2 text-secondary-400" />
+                    <Icon
+                      icon={PlusIcon}
+                      size="sm"
+                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-secondary-400"
+                    />
                     <Input
                       type="text"
                       placeholder="Search tasks..."
                       value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
+                      onChange={e => setSearchTerm(e.target.value)}
                       className="pl-10"
                     />
                   </div>
@@ -286,7 +318,11 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
                   <Icon icon={SettingsIcon} size="sm" color="muted" />
                   <select
                     value={selectedPriority}
-                    onChange={(e) => setSelectedPriority(e.target.value as TaskPriority | 'all')}
+                    onChange={e =>
+                      setSelectedPriority(
+                        e.target.value as TaskPriority | 'all'
+                      )
+                    }
                     className="px-3 py-2 border border-surface-200 dark:border-surface-700 rounded-md bg-surface-100 dark:bg-surface-800 text-sm"
                   >
                     <option value="all">All Priorities</option>
@@ -308,11 +344,13 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
           onTaskMove={handleTaskMove}
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
-          dragOverlay={<KanbanDragOverlay task={activeTask} isActive={!!activeTask} />}
+          dragOverlay={
+            <KanbanDragOverlay task={activeTask} isActive={!!activeTask} />
+          }
           className="drag-drop-kanban"
         >
           <div className="flex space-x-4 overflow-x-auto pb-4 min-h-[600px]">
-            {DEFAULT_COLUMNS.map((column) => (
+            {DEFAULT_COLUMNS.map(column => (
               <KanbanColumn
                 key={column.id}
                 id={column.id}
@@ -335,13 +373,18 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
       {filteredTasks.length === 0 && !loading && (
         <Card variant="outline" className="mt-6">
           <CardContent className="text-center py-12">
-            <Icon icon={ArchiveIcon} size="2xl" color="muted" className="mx-auto mb-4" />
+            <Icon
+              icon={ArchiveIcon}
+              size="2xl"
+              color="muted"
+              className="mx-auto mb-4"
+            />
             <h3 className="text-lg font-semibold text-secondary-900 dark:text-secondary-100 mb-2">
               No Tasks Found
             </h3>
             <p className="text-secondary-600 dark:text-secondary-400 mb-6">
-              {searchTerm || selectedPriority !== 'all' 
-                ? 'No tasks match your current filters.' 
+              {searchTerm || selectedPriority !== 'all'
+                ? 'No tasks match your current filters.'
                 : 'Get started by adding your first task.'}
             </p>
             {onAddTask && (

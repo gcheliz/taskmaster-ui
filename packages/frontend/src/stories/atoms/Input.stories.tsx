@@ -325,7 +325,9 @@ export const DarkThemeVariants: Story = {
   render: () => (
     <div className="">
       <div className="bg-white p-6 rounded-lg space-y-4">
-        <h3 className="text-slate-900 text-lg font-semibold mb-4">Dark Theme Form Elements</h3>
+        <h3 className="text-slate-900 text-lg font-semibold mb-4">
+          Dark Theme Form Elements
+        </h3>
         <div className="space-y-4">
           <div className="space-y-2">
             <Label className="text-slate-900">Default Input</Label>
@@ -359,7 +361,9 @@ export const AccessibilityTest: Story = {
     <div className="space-y-6">
       <div className="space-y-2">
         <h3 className="text-lg font-semibold">Keyboard Navigation</h3>
-        <p className="text-sm text-secondary-600">Use Tab to navigate, Enter to submit</p>
+        <p className="text-sm text-secondary-600">
+          Use Tab to navigate, Enter to submit
+        </p>
         <div className="space-y-2">
           <Label htmlFor="accessible-input-1">First Input</Label>
           <Input id="accessible-input-1" placeholder="Tab to next input" />
@@ -372,7 +376,11 @@ export const AccessibilityTest: Story = {
       <div className="space-y-2">
         <h3 className="text-lg font-semibold">Screen Reader Labels</h3>
         <div className="space-y-2">
-          <Label htmlFor="sr-input" required description="This field is required for form submission">
+          <Label
+            htmlFor="sr-input"
+            required
+            description="This field is required for form submission"
+          >
             Required Field
           </Label>
           <Input
@@ -435,7 +443,9 @@ export const ResponsiveDesign: Story = {
     <div className="space-y-6">
       <div className="space-y-2">
         <h3 className="text-lg font-semibold">Mobile First Design</h3>
-        <p className="text-sm text-secondary-600">Inputs are optimized for mobile touch targets</p>
+        <p className="text-sm text-secondary-600">
+          Inputs are optimized for mobile touch targets
+        </p>
         <div className="space-y-2">
           <Label>Mobile Friendly Input</Label>
           <Input placeholder="Easy to tap and type" inputSize="lg" />

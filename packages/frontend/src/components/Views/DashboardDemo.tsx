@@ -7,7 +7,7 @@ import { Icon, HomeFilledIcon, TaskIcon, CompleteIcon } from '../ui/atoms/Icon';
 
 /**
  * Dashboard Demo Component
- * 
+ *
  * A demo page showcasing the new ModernDashboardView with mock data
  * and theme switching capabilities.
  */

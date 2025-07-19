@@ -65,8 +65,11 @@ export const useTaskSearch = ({
           task.description,
           task.details,
           ...(task.tags || []),
-        ].filter(Boolean).join(' ').toLowerCase();
-        
+        ]
+          .filter(Boolean)
+          .join(' ')
+          .toLowerCase();
+
         return searchableText.includes(searchTerm);
       });
     }
@@ -86,7 +89,7 @@ export const useTaskSearch = ({
   const totalCount = tasks.length;
 
   const hasActiveSearch = searchQuery.trim().length > 0;
-  const hasActiveFilters = Object.values(filters).some(value => 
+  const hasActiveFilters = Object.values(filters).some(value =>
     Array.isArray(value) ? value.length > 0 : value !== undefined
   );
 

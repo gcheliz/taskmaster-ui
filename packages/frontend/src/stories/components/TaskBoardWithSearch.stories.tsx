@@ -19,7 +19,8 @@ const mockTasks = [
   {
     id: 2,
     title: 'Setup database schema',
-    description: 'Design and implement the database structure for the application',
+    description:
+      'Design and implement the database structure for the application',
     status: 'in-progress' as const,
     priority: 'high' as const,
     assignedTo: 'Jane Smith',
@@ -43,7 +44,8 @@ const mockTasks = [
   {
     id: 4,
     title: 'Write API documentation',
-    description: 'Document all API endpoints with examples and response schemas',
+    description:
+      'Document all API endpoints with examples and response schemas',
     status: 'pending' as const,
     priority: 'low' as const,
     assignedTo: 'Sarah Johnson',
@@ -287,7 +289,7 @@ export const JohnDoeTasks: Story = {
 };
 
 export const InteractiveDemo: Story = {
-  render: (args) => (
+  render: args => (
     <div className="min-h-screen bg-white p-6">
       <div className="max-w-7xl mx-auto space-y-6">
         <div className="text-center">
@@ -295,7 +297,8 @@ export const InteractiveDemo: Story = {
             TaskBoard with Search & Filter
           </h1>
           <p className="text-slate-600">
-            Try searching for tasks or applying filters to see the board update in real-time
+            Try searching for tasks or applying filters to see the board update
+            in real-time
           </p>
         </div>
         <TaskBoardWithSearch {...args} />
@@ -309,7 +312,7 @@ export const LightTheme: Story = {
   parameters: {
     backgrounds: { default: 'light' },
   },
-  render: (args) => (
+  render: args => (
     <div className="min-h-screen bg-white p-6">
       <TaskBoardWithSearch {...args} />
     </div>

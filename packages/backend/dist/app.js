@@ -5,7 +5,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
+const express_session_1 = __importDefault(require("express-session"));
+const passport_1 = __importDefault(require("./config/passport"));
 const healthRoutes_1 = __importDefault(require("./routes/healthRoutes"));
+const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
 const repositoryRoutes_1 = require("./routes/repositoryRoutes");
 const projectRoutes_1 = __importDefault(require("./routes/projectRoutes"));
 const realtimeRoutes_1 = __importDefault(require("./routes/realtimeRoutes"));
@@ -14,6 +17,7 @@ const commandRoutes_1 = __importDefault(require("./routes/commandRoutes"));
 const prdRoutes_1 = __importDefault(require("./routes/prdRoutes"));
 const dashboardRoutes_1 = __importDefault(require("./routes/dashboardRoutes"));
 const performanceRoutes_1 = __importDefault(require("./routes/performanceRoutes"));
+const settingsRoutes_1 = __importDefault(require("./routes/settingsRoutes"));
 const errorHandler_1 = require("./middleware/errorHandler");
 const database_1 = __importDefault(require("./services/database"));
 const environment_1 = require("./config/environment");
@@ -48,6 +52,20 @@ app.use((0, cors_1.default)({
 }));
 app.use(express_1.default.json({ limit: '10mb' }));
 app.use(express_1.default.urlencoded({ extended: true, limit: '10mb' }));
+// Session configuration for OAuth
+app.use((0, express_session_1.default)({
+    secret: environment_1.env.SESSION_SECRET || 'your-session-secret-change-in-production',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: environment_1.env.NODE_ENV === 'production',
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    },
+}));
+// Passport middleware
+app.use(passport_1.default.initialize());
+app.use(passport_1.default.session());
 // Security headers
 app.use((req, res, next) => {
     res.header('X-Content-Type-Options', 'nosniff');
@@ -61,6 +79,7 @@ app.use((req, res, next) => {
 });
 // Routes
 app.use('/', healthRoutes_1.default);
+app.use('/api/auth', authRoutes_1.default);
 app.use('/api/repositories', (0, repositoryRoutes_1.createRepositoryRoutes)());
 app.use('/api/projects', projectRoutes_1.default);
 app.use('/api/realtime', realtimeRoutes_1.default);
@@ -69,6 +88,7 @@ app.use('/api/commands', commandRoutes_1.default);
 app.use('/api/prd', prdRoutes_1.default);
 app.use('/api/dashboard', dashboardRoutes_1.default);
 app.use('/api/performance', performanceRoutes_1.default);
+app.use('/api/settings', settingsRoutes_1.default);
 // Error handling middleware
 app.use(errorHandler_1.notFoundHandler);
 app.use(errorHandler_1.errorHandler);

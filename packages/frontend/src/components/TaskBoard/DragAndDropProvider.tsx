@@ -84,28 +84,31 @@ export const DragAndDropProvider: React.FC<DragAndDropProviderProps> = ({
   );
 
   // Handle drag start
-  const handleDragStart = useCallback((event: DragStartEvent) => {
-    const { active } = event;
-    setActiveId(active.id as string);
+  const handleDragStart = useCallback(
+    (event: DragStartEvent) => {
+      const { active } = event;
+      setActiveId(active.id as string);
 
-    // Add visual feedback
-    document.body.style.cursor = 'grabbing';
+      // Add visual feedback
+      document.body.style.cursor = 'grabbing';
 
-    const activeData = active.data.current as DragData;
-    if (activeData && activeData.type === 'task') {
-      announceToScreenReader(
-        `Started moving task ${activeData.taskId} from ${activeData.status}`,
-        'polite'
-      );
-      
-      // Call the onDragStart callback
-      if (onDragStart) {
-        onDragStart(activeData.taskId);
+      const activeData = active.data.current as DragData;
+      if (activeData && activeData.type === 'task') {
+        announceToScreenReader(
+          `Started moving task ${activeData.taskId} from ${activeData.status}`,
+          'polite'
+        );
+
+        // Call the onDragStart callback
+        if (onDragStart) {
+          onDragStart(activeData.taskId);
+        }
       }
-    }
 
-    console.log('Drag started:', active.id);
-  }, [onDragStart]);
+      console.log('Drag started:', active.id);
+    },
+    [onDragStart]
+  );
 
   // Handle drag over (for visual feedback)
   const handleDragOver = useCallback((event: DragOverEvent) => {
@@ -190,7 +193,7 @@ export const DragAndDropProvider: React.FC<DragAndDropProviderProps> = ({
     document.body.style.cursor = '';
     announceToScreenReader('Task move cancelled', 'polite');
     console.log('Drag cancelled');
-    
+
     // Call the onDragEnd callback
     if (onDragEnd) {
       onDragEnd();

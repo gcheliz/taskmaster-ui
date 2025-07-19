@@ -68,7 +68,11 @@
     "docker:clean": "docker-compose down -v --remove-orphans && docker system prune -f",
     "docker:reset": "pnpm run docker:clean && pnpm run docker:build",
     "storybook": "pnpm --filter=frontend run storybook",
-    "storybook:build": "pnpm --filter=frontend run build-storybook"
+    "storybook:build": "pnpm --filter=frontend run build-storybook",
+    "tunnel:start": "nohup lt --port 6006 --subdomain taskmaster-storybook > /tmp/storybook-tunnel.log 2>&1 & nohup lt --port 8080 --subdomain taskmaster-frontend > /tmp/frontend-tunnel.log 2>&1 & sleep 5 && echo 'Tunnels started. URLs:' && cat /tmp/storybook-tunnel.log && cat /tmp/frontend-tunnel.log",
+    "tunnel:stop": "pkill -f 'lt --port' && echo 'All tunnels stopped'",
+    "tunnel:status": "ps aux | grep 'lt --port' | grep -v grep",
+    "tunnel:logs": "echo 'Storybook tunnel:' && cat /tmp/storybook-tunnel.log && echo 'Frontend tunnel:' && cat /tmp/frontend-tunnel.log"
   },
   "repository": {
     "type": "git",
@@ -101,7 +105,6 @@
     }
   },
   "dependencies": {
-    "@heroicons/react": "^2.2.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "tailwind-merge": "^3.3.1"

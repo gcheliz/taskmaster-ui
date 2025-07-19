@@ -170,11 +170,7 @@ export const ErrorState: Story = {
 export const SuccessState: Story = {
   render: args => (
     <div className="space-y-2">
-      <Label
-        htmlFor="success-select"
-        success
-        description="Great choice!"
-      >
+      <Label htmlFor="success-select" success description="Great choice!">
         Valid Selection
       </Label>
       <Select id="success-select" success value="option1" {...args}>
@@ -265,10 +261,7 @@ export const FormExample: Story = {
       </div>
 
       <div className="space-y-2">
-        <Label
-          htmlFor="form-assignee"
-          helpText="Leave blank to auto-assign"
-        >
+        <Label htmlFor="form-assignee" helpText="Leave blank to auto-assign">
           Assignee (Optional)
         </Label>
         <Select id="form-assignee">
@@ -290,7 +283,9 @@ export const DarkThemeVariants: Story = {
   render: () => (
     <div className="">
       <div className="bg-white p-6 rounded-lg space-y-4">
-        <h3 className="text-slate-900 text-lg font-semibold mb-4">Dark Theme Select</h3>
+        <h3 className="text-slate-900 text-lg font-semibold mb-4">
+          Dark Theme Select
+        </h3>
         <div className="space-y-4">
           <div className="space-y-2">
             <Label className="text-slate-900">Default Select</Label>
@@ -328,7 +323,9 @@ export const AccessibilityTest: Story = {
     <div className="space-y-6">
       <div className="space-y-2">
         <h3 className="text-lg font-semibold">Keyboard Navigation</h3>
-        <p className="text-sm text-secondary-600">Use Tab to navigate, Arrow keys to select</p>
+        <p className="text-sm text-secondary-600">
+          Use Tab to navigate, Arrow keys to select
+        </p>
         <div className="space-y-2">
           <Label htmlFor="accessible-select-1">First Select</Label>
           <Select id="accessible-select-1">
@@ -349,13 +346,14 @@ export const AccessibilityTest: Story = {
       <div className="space-y-2">
         <h3 className="text-lg font-semibold">Screen Reader Labels</h3>
         <div className="space-y-2">
-          <Label htmlFor="sr-select" required description="This field is required for form submission">
+          <Label
+            htmlFor="sr-select"
+            required
+            description="This field is required for form submission"
+          >
             Required Field
           </Label>
-          <Select
-            id="sr-select"
-            aria-describedby="sr-select-description"
-          >
+          <Select id="sr-select" aria-describedby="sr-select-description">
             <option value="">Select required option</option>
             <option value="option1">Option 1</option>
             <option value="option2">Option 2</option>
@@ -430,7 +428,9 @@ export const ResponsiveDesign: Story = {
     <div className="space-y-6">
       <div className="space-y-2">
         <h3 className="text-lg font-semibold">Mobile First Design</h3>
-        <p className="text-sm text-secondary-600">Selects are optimized for mobile touch targets</p>
+        <p className="text-sm text-secondary-600">
+          Selects are optimized for mobile touch targets
+        </p>
         <div className="space-y-2">
           <Label>Mobile Friendly Select</Label>
           <Select selectSize="lg">

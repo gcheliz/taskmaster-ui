@@ -15,7 +15,14 @@ const meta: Meta<typeof KanbanTaskCard> = {
     },
     status: {
       control: 'select',
-      options: ['pending', 'in-progress', 'done', 'blocked', 'cancelled', 'deferred'],
+      options: [
+        'pending',
+        'in-progress',
+        'done',
+        'blocked',
+        'cancelled',
+        'deferred',
+      ],
     },
     complexity: {
       control: { type: 'range', min: 1, max: 10, step: 1 },
@@ -128,7 +135,15 @@ export const NoAssignee: Story = {
 export const ManyTags: Story = {
   args: {
     ...sampleTask,
-    tags: ['react', 'typescript', 'ui', 'components', 'storybook', 'testing', 'responsive'],
+    tags: [
+      'react',
+      'typescript',
+      'ui',
+      'components',
+      'storybook',
+      'testing',
+      'responsive',
+    ],
     title: 'Task with many tags',
     description: 'This task has multiple tags to test overflow behavior',
   },
@@ -150,7 +165,8 @@ export const ComplexTask: Story = {
     complexity: 10,
     estimatedHours: 40,
     title: 'Highly complex task',
-    description: 'This is a very complex task that requires significant time and effort',
+    description:
+      'This is a very complex task that requires significant time and effort',
     subtasks: [
       { id: 1, title: 'Research phase', status: 'done' as const },
       { id: 2, title: 'Design phase', status: 'in-progress' as const },

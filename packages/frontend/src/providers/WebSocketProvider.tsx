@@ -6,10 +6,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useWebSocket } from '../hooks/useWebSocket';
-import {
-  WebSocketState,
-  WebSocketEventType,
-} from '../types/websocket';
+import { WebSocketState, WebSocketEventType } from '../types/websocket';
 import type { User, WebSocketConfig } from '../types/websocket';
 
 interface WebSocketContextType {
@@ -23,7 +20,9 @@ interface WebSocketContextType {
   reconnect: () => void;
 }
 
-const WebSocketContext = createContext<WebSocketContextType | undefined>(undefined);
+const WebSocketContext = createContext<WebSocketContextType | undefined>(
+  undefined
+);
 
 interface WebSocketProviderProps {
   children: ReactNode;
@@ -81,7 +80,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
   useEffect(() => {
     if (!isInitialized && isConnected) {
       setIsInitialized(true);
-      
+
       // Send initial presence update
       if (currentUser) {
         send({
@@ -146,7 +145,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
   // Handle mouse movement for cursor tracking
   useEffect(() => {
     let mouseMoveTimer: NodeJS.Timeout;
-    
+
     const handleMouseMove = (event: MouseEvent) => {
       if (currentUser && isConnected) {
         // Throttle cursor updates to avoid overwhelming the server
@@ -215,7 +214,9 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
 export const useWebSocketContext = (): WebSocketContextType => {
   const context = useContext(WebSocketContext);
   if (context === undefined) {
-    throw new Error('useWebSocketContext must be used within a WebSocketProvider');
+    throw new Error(
+      'useWebSocketContext must be used within a WebSocketProvider'
+    );
   }
   return context;
 };

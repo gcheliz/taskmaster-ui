@@ -13,7 +13,7 @@ export interface KanbanDragOverlayProps {
 
 /**
  * Drag Overlay Component for Kanban Board
- * 
+ *
  * Provides visual feedback during drag operations by showing a ghost version
  * of the task card being dragged. The overlay follows the cursor and provides
  * clear visual indication of the drag state.
@@ -21,14 +21,14 @@ export interface KanbanDragOverlayProps {
 export const KanbanDragOverlay: React.FC<KanbanDragOverlayProps> = ({
   task,
   isActive,
-  className = ''
+  className = '',
 }) => {
   if (!task || !isActive) {
     return null;
   }
 
   return (
-    <div 
+    <div
       className={`kanban-drag-overlay ${className}`}
       style={{
         transform: 'rotate(5deg)',

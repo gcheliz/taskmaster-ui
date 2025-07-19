@@ -44,11 +44,11 @@ export const TaskBoardSearch: React.FC<TaskBoardSearchProps> = ({
             )}
           />
         </div>
-        
+
         <input
           type="text"
           value={value}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={e => onChange(e.target.value)}
           placeholder={placeholder}
           className={cn(
             'w-full bg-slate-800 text-slate-300 border border-slate-700',
@@ -58,7 +58,7 @@ export const TaskBoardSearch: React.FC<TaskBoardSearchProps> = ({
             'hover:border-slate-600 transition-colors'
           )}
         />
-        
+
         {value && (
           <button
             onClick={handleClear}
@@ -72,7 +72,7 @@ export const TaskBoardSearch: React.FC<TaskBoardSearchProps> = ({
           </button>
         )}
       </div>
-      
+
       {isLoading && (
         <div className="absolute top-full left-0 mt-1 text-xs text-slate-500">
           Searching...

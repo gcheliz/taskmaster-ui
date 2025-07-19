@@ -20,11 +20,9 @@ export interface PasswordStrengthIndicatorProps {
   className?: string;
 }
 
-export const PasswordStrengthIndicator: React.FC<PasswordStrengthIndicatorProps> = ({
-  password,
-  strength,
-  className,
-}) => {
+export const PasswordStrengthIndicator: React.FC<
+  PasswordStrengthIndicatorProps
+> = ({ password, strength, className }) => {
   const getStrengthLevel = (score: number) => {
     if (score < 25) return { label: 'Weak', color: 'red' };
     if (score < 50) return { label: 'Fair', color: 'orange' };
@@ -91,12 +89,19 @@ export const PasswordStrengthIndicator: React.FC<PasswordStrengthIndicatorProps>
       {/* Strength Bar */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <span className="text-xs font-medium text-slate-600">Password Strength</span>
-          <span className={cn('text-xs font-medium', getTextColor(strengthLevel.color))}>
+          <span className="text-xs font-medium text-slate-600">
+            Password Strength
+          </span>
+          <span
+            className={cn(
+              'text-xs font-medium',
+              getTextColor(strengthLevel.color)
+            )}
+          >
             {strengthLevel.label}
           </span>
         </div>
-        
+
         <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
           <div
             className={cn(
@@ -113,25 +118,29 @@ export const PasswordStrengthIndicator: React.FC<PasswordStrengthIndicatorProps>
       <div className="grid grid-cols-1 gap-1">
         {requirements.map((req, index) => (
           <div key={index} className="flex items-center space-x-2">
-            <div className={cn(
-              'flex items-center justify-center w-4 h-4 rounded-full transition-all duration-300',
-              req.met 
-                ? 'bg-green-100 text-green-600' 
-                : 'bg-slate-100 text-slate-400'
-            )}>
-              <Icon 
-                icon={req.met ? CheckIcon : XMarkIcon} 
-                size="xs" 
+            <div
+              className={cn(
+                'flex items-center justify-center w-4 h-4 rounded-full transition-all duration-300',
+                req.met
+                  ? 'bg-green-100 text-green-600'
+                  : 'bg-slate-100 text-slate-400'
+              )}
+            >
+              <Icon
+                icon={req.met ? CheckIcon : XMarkIcon}
+                size="xs"
                 className={cn(
                   'transition-all duration-300',
                   req.met ? 'text-green-600' : 'text-slate-400'
                 )}
               />
             </div>
-            <span className={cn(
-              'text-xs transition-colors duration-300',
-              req.met ? 'text-green-600' : 'text-slate-500'
-            )}>
+            <span
+              className={cn(
+                'text-xs transition-colors duration-300',
+                req.met ? 'text-green-600' : 'text-slate-500'
+              )}
+            >
               {req.label}
             </span>
           </div>
@@ -141,7 +150,9 @@ export const PasswordStrengthIndicator: React.FC<PasswordStrengthIndicatorProps>
       {/* Additional Feedback */}
       {strength.feedback.length > 0 && strength.score < 100 && (
         <div className="p-2 bg-slate-50 rounded-md border border-slate-200">
-          <p className="text-xs text-slate-600 mb-1">To improve your password:</p>
+          <p className="text-xs text-slate-600 mb-1">
+            To improve your password:
+          </p>
           <ul className="text-xs text-slate-500 space-y-0.5">
             {strength.feedback.map((feedback, index) => (
               <li key={index} className="flex items-center space-x-1">

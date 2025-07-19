@@ -1,14 +1,11 @@
 packages:
-  - 'packages/*'
-  
-# Optional: Define package relationships for better dependency resolution
+  - packages/*
+
 catalog:
-  # Shared dependencies across workspaces
-  typescript: ^5.3.3
   eslint: ^8.56.0
-  prettier: ^3.1.1
-  
-# Optional: Configure pnpm settings
+  prettier: ^3.6.2
+  typescript: ^5.3.3
+
 settings:
   auto-install-peers: true
   dedupe-peer-dependents: true

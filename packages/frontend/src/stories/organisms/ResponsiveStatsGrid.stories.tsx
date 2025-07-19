@@ -15,7 +15,8 @@ const meta = {
     },
     docs: {
       description: {
-        component: 'A comprehensive responsive statistics grid organism that combines statistics and health indicators with interactive view modes.',
+        component:
+          'A comprehensive responsive statistics grid organism that combines statistics and health indicators with interactive view modes.',
       },
     },
   },
@@ -114,7 +115,7 @@ export const Default: Story = {
     lastUpdated: new Date(),
     onRefresh: () => console.log('Refresh clicked'),
   },
-  render: (args) => (
+  render: args => (
     <div className="p-8 min-h-screen">
       <ResponsiveStatsGrid {...args} />
     </div>
@@ -132,7 +133,7 @@ export const LoadingState: Story = {
     lastUpdated: new Date(),
     onRefresh: () => console.log('Refresh clicked'),
   },
-  render: (args) => (
+  render: args => (
     <div className="p-8 min-h-screen">
       <ResponsiveStatsGrid {...args} />
     </div>
@@ -185,7 +186,7 @@ export const HighPerformanceProject: Story = {
     lastUpdated: new Date(),
     onRefresh: () => console.log('Refresh clicked'),
   },
-  render: (args) => (
+  render: args => (
     <div className="p-8 min-h-screen">
       <ResponsiveStatsGrid {...args} />
     </div>
@@ -244,7 +245,7 @@ export const ProblematicProject: Story = {
     lastUpdated: new Date(),
     onRefresh: () => console.log('Refresh clicked'),
   },
-  render: (args) => (
+  render: args => (
     <div className="p-8 min-h-screen">
       <ResponsiveStatsGrid {...args} />
     </div>
@@ -262,7 +263,7 @@ export const WithoutHealthDetails: Story = {
     lastUpdated: new Date(),
     onRefresh: () => console.log('Refresh clicked'),
   },
-  render: (args) => (
+  render: args => (
     <div className="p-8 min-h-screen">
       <ResponsiveStatsGrid {...args} />
     </div>
@@ -280,7 +281,7 @@ export const WithoutTaskBreakdown: Story = {
     lastUpdated: new Date(),
     onRefresh: () => console.log('Refresh clicked'),
   },
-  render: (args) => (
+  render: args => (
     <div className="p-8 min-h-screen">
       <ResponsiveStatsGrid {...args} />
     </div>
@@ -301,7 +302,7 @@ export const DarkTheme: Story = {
   parameters: {
     backgrounds: { default: 'light' },
   },
-  render: (args) => (
+  render: args => (
     <div className="">
       <div className="p-8 min-h-screen bg-white">
         <ResponsiveStatsGrid {...args} />
@@ -321,17 +322,18 @@ export const ResponsiveDemo: Story = {
     lastUpdated: new Date(),
     onRefresh: () => console.log('Refresh clicked'),
   },
-  render: (args) => (
+  render: args => (
     <div className="space-y-8 p-4">
       <div className="text-center">
         <h2 className="text-2xl font-bold text-secondary-900 dark:text-secondary-100 mb-4">
           Responsive Statistics Grid Demo
         </h2>
         <p className="text-secondary-600 dark:text-secondary-400 mb-6">
-          The grid adapts to different screen sizes and provides overview and detailed views
+          The grid adapts to different screen sizes and provides overview and
+          detailed views
         </p>
       </div>
-      
+
       {/* Desktop View */}
       <div className="border-2 border-dashed border-secondary-300 dark:border-secondary-600 rounded-lg p-4">
         <h3 className="text-lg font-semibold text-secondary-900 dark:text-secondary-100 mb-4">

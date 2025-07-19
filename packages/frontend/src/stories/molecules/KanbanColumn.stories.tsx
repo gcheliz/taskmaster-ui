@@ -11,7 +11,14 @@ const meta: Meta<typeof KanbanColumn> = {
   argTypes: {
     status: {
       control: 'select',
-      options: ['pending', 'in-progress', 'done', 'blocked', 'cancelled', 'deferred'],
+      options: [
+        'pending',
+        'in-progress',
+        'done',
+        'blocked',
+        'cancelled',
+        'deferred',
+      ],
     },
     color: {
       control: 'select',
@@ -115,7 +122,8 @@ export const TodoColumn: Story = {
       {
         id: 4,
         title: 'Write unit tests',
-        description: 'Add comprehensive test coverage for authentication module',
+        description:
+          'Add comprehensive test coverage for authentication module',
         status: 'pending' as const,
         priority: 'medium' as const,
         complexity: 5,
@@ -168,8 +176,16 @@ export const DoneColumn: Story = {
         dueDate: '2024-01-15T23:59:59Z',
         subtasks: [
           { id: 1, title: 'Setup GitHub Actions', status: 'done' as const },
-          { id: 2, title: 'Configure testing pipeline', status: 'done' as const },
-          { id: 3, title: 'Setup deployment pipeline', status: 'done' as const },
+          {
+            id: 2,
+            title: 'Configure testing pipeline',
+            status: 'done' as const,
+          },
+          {
+            id: 3,
+            title: 'Setup deployment pipeline',
+            status: 'done' as const,
+          },
         ],
       },
       {

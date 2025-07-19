@@ -11,7 +11,12 @@ export interface User {
   color?: string;
 }
 
-export type TaskStatus = 'pending' | 'in-progress' | 'done' | 'blocked' | 'deferred';
+export type TaskStatus =
+  | 'pending'
+  | 'in-progress'
+  | 'done'
+  | 'blocked'
+  | 'deferred';
 
 export interface Task {
   id: string;
@@ -59,32 +64,33 @@ export const WebSocketEventType = {
   DISCONNECT: 'disconnect',
   ERROR: 'error',
   RECONNECT: 'reconnect',
-  
+
   // Task Events
   TASK_CREATED: 'task:created',
   TASK_UPDATED: 'task:updated',
   TASK_DELETED: 'task:deleted',
   TASK_MOVED: 'task:moved',
   TASK_ASSIGNED: 'task:assigned',
-  
+
   // User Presence Events
   USER_JOINED: 'user:joined',
   USER_LEFT: 'user:left',
   USER_PRESENCE_UPDATE: 'user:presence:update',
   USER_CURSOR_MOVE: 'user:cursor:move',
-  
+
   // Board Events
   BOARD_UPDATED: 'board:updated',
   BOARD_LOCKED: 'board:locked',
   BOARD_UNLOCKED: 'board:unlocked',
-  
+
   // Collaboration Events
   COLLABORATION_START: 'collaboration:start',
   COLLABORATION_END: 'collaboration:end',
   BULK_UPDATE: 'bulk:update',
 } as const;
 
-export type WebSocketEventType = typeof WebSocketEventType[keyof typeof WebSocketEventType];
+export type WebSocketEventType =
+  (typeof WebSocketEventType)[keyof typeof WebSocketEventType];
 
 // WebSocket Message Interfaces
 export interface WebSocketMessage<T = any> {
@@ -163,7 +169,8 @@ export const WebSocketState = {
   ERROR: 'error',
 } as const;
 
-export type WebSocketState = typeof WebSocketState[keyof typeof WebSocketState];
+export type WebSocketState =
+  (typeof WebSocketState)[keyof typeof WebSocketState];
 
 // WebSocket Configuration
 export interface WebSocketConfig {
@@ -186,7 +193,10 @@ export interface WebSocketService {
     eventType: WebSocketEventType,
     callback: (payload: T) => void
   ): () => void;
-  unsubscribe(eventType: WebSocketEventType, callback?: (...args: any[]) => void): void;
+  unsubscribe(
+    eventType: WebSocketEventType,
+    callback?: (...args: any[]) => void
+  ): void;
   getState(): WebSocketState;
   getConnectedUsers(): User[];
   getCurrentUser(): User | null;
@@ -231,12 +241,8 @@ export interface UseUserPresenceReturn {
 export class WebSocketError extends Error {
   code?: string;
   details?: any;
-  
-  constructor(
-    message: string,
-    code?: string,
-    details?: any
-  ) {
+
+  constructor(message: string, code?: string, details?: any) {
     super(message);
     this.name = 'WebSocketError';
     this.code = code;

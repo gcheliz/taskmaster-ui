@@ -1,6 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { QuickActionsGrid } from '../../components/ui/organisms/QuickActionsGrid';
-import { TaskIcon, NotificationIcon, UserCircleIcon, DuplicateIcon, PlusIcon, SettingsIcon, ArchiveIcon } from '../../components/ui/atoms/Icon';
+import {
+  TaskIcon,
+  NotificationIcon,
+  UserCircleIcon,
+  DuplicateIcon,
+  PlusIcon,
+  SettingsIcon,
+  ArchiveIcon,
+} from '../../components/ui/atoms/Icon';
 import type { QuickAction } from '../../components/ui/organisms/QuickActionsGrid';
 
 const meta: Meta<typeof QuickActionsGrid> = {
@@ -34,7 +42,7 @@ const sampleActions: QuickAction[] = [
     variant: 'primary',
     shortcut: 'Ctrl+N',
     category: 'task',
-    onClick: () => console.log('Create task clicked')
+    onClick: () => console.log('Create task clicked'),
   },
   {
     id: 'view-reports',
@@ -45,7 +53,7 @@ const sampleActions: QuickAction[] = [
     variant: 'outline',
     shortcut: 'Ctrl+R',
     category: 'project',
-    onClick: () => console.log('View reports clicked')
+    onClick: () => console.log('View reports clicked'),
   },
   {
     id: 'manage-team',
@@ -56,11 +64,11 @@ const sampleActions: QuickAction[] = [
     variant: 'outline',
     badge: {
       text: 'Admin',
-      variant: 'warning'
+      variant: 'warning',
     },
     shortcut: 'Ctrl+T',
     category: 'team',
-    onClick: () => console.log('Manage team clicked')
+    onClick: () => console.log('Manage team clicked'),
   },
   {
     id: 'export-data',
@@ -71,7 +79,7 @@ const sampleActions: QuickAction[] = [
     variant: 'outline',
     shortcut: 'Ctrl+E',
     category: 'system',
-    onClick: () => console.log('Export data clicked')
+    onClick: () => console.log('Export data clicked'),
   },
   {
     id: 'add-member',
@@ -81,7 +89,7 @@ const sampleActions: QuickAction[] = [
     iconColor: 'success',
     variant: 'outline',
     category: 'team',
-    onClick: () => console.log('Add member clicked')
+    onClick: () => console.log('Add member clicked'),
   },
   {
     id: 'project-settings',
@@ -91,7 +99,7 @@ const sampleActions: QuickAction[] = [
     iconColor: 'muted',
     variant: 'outline',
     category: 'system',
-    onClick: () => console.log('Project settings clicked')
+    onClick: () => console.log('Project settings clicked'),
   },
   {
     id: 'archive-project',
@@ -102,8 +110,8 @@ const sampleActions: QuickAction[] = [
     variant: 'outline',
     category: 'project',
     disabled: true,
-    onClick: () => console.log('Archive project clicked')
-  }
+    onClick: () => console.log('Archive project clicked'),
+  },
 ];
 
 export const Default: Story = {
@@ -208,7 +216,7 @@ export const MixedVariants: Story = {
         icon: TaskIcon,
         iconColor: 'primary',
         variant: 'primary',
-        onClick: () => console.log('Primary action clicked')
+        onClick: () => console.log('Primary action clicked'),
       },
       {
         id: 'success-action',
@@ -217,7 +225,7 @@ export const MixedVariants: Story = {
         icon: PlusIcon,
         iconColor: 'success',
         variant: 'success',
-        onClick: () => console.log('Success action clicked')
+        onClick: () => console.log('Success action clicked'),
       },
       {
         id: 'warning-action',
@@ -226,7 +234,7 @@ export const MixedVariants: Story = {
         icon: SettingsIcon,
         iconColor: 'warning',
         variant: 'warning',
-        onClick: () => console.log('Warning action clicked')
+        onClick: () => console.log('Warning action clicked'),
       },
       {
         id: 'error-action',
@@ -235,8 +243,8 @@ export const MixedVariants: Story = {
         icon: ArchiveIcon,
         iconColor: 'error',
         variant: 'error',
-        onClick: () => console.log('Error action clicked')
-      }
+        onClick: () => console.log('Error action clicked'),
+      },
     ],
   },
 };
@@ -247,8 +255,8 @@ export const WithBadgesAndShortcuts: Story = {
       ...action,
       badge: action.badge || {
         text: 'Available',
-        variant: 'secondary' as const
-      }
+        variant: 'secondary' as const,
+      },
     })),
     title: 'Enhanced Actions',
     description: 'All actions with badges and shortcuts',

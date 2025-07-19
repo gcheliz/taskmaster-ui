@@ -12,9 +12,12 @@ const radioVariants = cva(
         lg: 'h-5 w-5 min-h-[1.25rem] min-w-[1.25rem]',
       },
       variant: {
-        default: 'border-secondary-300 text-primary-600 dark:border-secondary-600 dark:text-primary-500 hover:shadow-primary-500/25 dark:hover:shadow-primary-400/25',
-        error: 'border-error-500 text-error-600 dark:border-error-600 dark:text-error-500 hover:shadow-error-500/25 dark:hover:shadow-error-400/25',
-        success: 'border-success-500 text-success-600 dark:border-success-600 dark:text-success-500 hover:shadow-success-500/25 dark:hover:shadow-success-400/25',
+        default:
+          'border-secondary-300 text-primary-600 dark:border-secondary-600 dark:text-primary-500 hover:shadow-primary-500/25 dark:hover:shadow-primary-400/25',
+        error:
+          'border-error-500 text-error-600 dark:border-error-600 dark:text-error-500 hover:shadow-error-500/25 dark:hover:shadow-error-400/25',
+        success:
+          'border-success-500 text-success-600 dark:border-success-600 dark:text-success-500 hover:shadow-success-500/25 dark:hover:shadow-success-400/25',
       },
     },
     defaultVariants: {

@@ -24,7 +24,7 @@ const meta: Meta<typeof CollaborativeTaskBoard> = {
   },
   tags: ['autodocs'],
   decorators: [
-    (Story) => (
+    Story => (
       <WebSocketProvider
         wsUrl="ws://localhost:8080"
         autoConnect={false}
@@ -89,7 +89,8 @@ const mockTasks: Task[] = [
   {
     id: 'task-3',
     title: 'Set up CI/CD pipeline',
-    description: 'Configure GitHub Actions for automated testing and deployment',
+    description:
+      'Configure GitHub Actions for automated testing and deployment',
     status: 'pending',
     priority: 'medium',
     assignee: {
@@ -198,16 +199,29 @@ export const HighActivityBoard: Story = {
         id: `task-${i + 6}`,
         title: `Task ${i + 6}`,
         description: `Description for task ${i + 6}`,
-        status: ['pending', 'in-progress', 'done', 'blocked'][i % 4] as Task['status'],
+        status: ['pending', 'in-progress', 'done', 'blocked'][
+          i % 4
+        ] as Task['status'],
         priority: ['low', 'medium', 'high'][i % 3] as Task['priority'],
         assignee: {
           id: `user-${(i % 4) + 1}`,
-          name: ['John Doe', 'Jane Smith', 'Mike Johnson', 'Sarah Wilson'][i % 4],
-          email: ['john@example.com', 'jane@example.com', 'mike@example.com', 'sarah@example.com'][i % 4],
+          name: ['John Doe', 'Jane Smith', 'Mike Johnson', 'Sarah Wilson'][
+            i % 4
+          ],
+          email: [
+            'john@example.com',
+            'jane@example.com',
+            'mike@example.com',
+            'sarah@example.com',
+          ][i % 4],
           color: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444'][i % 4],
         },
-        createdAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
-        updatedAt: new Date(Date.now() - Math.random() * 24 * 60 * 60 * 1000).toISOString(),
+        createdAt: new Date(
+          Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000
+        ).toISOString(),
+        updatedAt: new Date(
+          Date.now() - Math.random() * 24 * 60 * 60 * 1000
+        ).toISOString(),
         position: Math.floor(i / 4),
         column: ['pending', 'in-progress', 'done', 'blocked'][i % 4],
         complexity: Math.floor(Math.random() * 10) + 1,

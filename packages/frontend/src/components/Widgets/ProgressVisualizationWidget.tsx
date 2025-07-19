@@ -197,37 +197,57 @@ export const ProgressVisualizationWidget: React.FC<
   // No data state
   if (filteredData.length === 0) {
     return (
-      <div className={`bg-white rounded-lg p-6 shadow-sm border border-gray-200 ${className}`}>
+      <div
+        className={`bg-white rounded-lg p-6 shadow-sm border border-gray-200 ${className}`}
+      >
         <div className="text-center py-12">
           <div className="text-4xl mb-4">📈</div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">No Progress Data</h3>
-          <p className="text-sm text-gray-600">No progress data available for the selected time range</p>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            No Progress Data
+          </h3>
+          <p className="text-sm text-gray-600">
+            No progress data available for the selected time range
+          </p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className={`bg-white rounded-lg p-6 shadow-sm border border-gray-200 ${className}`}>
+    <div
+      className={`bg-white rounded-lg p-6 shadow-sm border border-gray-200 ${className}`}
+    >
       {/* Header */}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-900">Progress Over Time</h3>
+          <h3 className="text-lg font-semibold text-gray-900">
+            Progress Over Time
+          </h3>
           {metrics && (
             <div className="flex items-center gap-6">
               <div className="text-center">
-                <div className="text-lg font-semibold text-gray-900">{metrics.totalCompleted}</div>
-                <div className="text-xs text-gray-500 uppercase tracking-wide">completed</div>
+                <div className="text-lg font-semibold text-gray-900">
+                  {metrics.totalCompleted}
+                </div>
+                <div className="text-xs text-gray-500 uppercase tracking-wide">
+                  completed
+                </div>
               </div>
               <div className="text-center">
-                <div className="text-lg font-semibold text-gray-900">{metrics.avgVelocity}</div>
-                <div className="text-xs text-gray-500 uppercase tracking-wide">avg velocity</div>
+                <div className="text-lg font-semibold text-gray-900">
+                  {metrics.avgVelocity}
+                </div>
+                <div className="text-xs text-gray-500 uppercase tracking-wide">
+                  avg velocity
+                </div>
               </div>
               <div className="text-center">
                 <div className="text-lg font-semibold text-gray-900">
                   {formatPercentage(metrics.avgCompletionRate)}
                 </div>
-                <div className="text-xs text-gray-500 uppercase tracking-wide">avg rate</div>
+                <div className="text-xs text-gray-500 uppercase tracking-wide">
+                  avg rate
+                </div>
               </div>
             </div>
           )}

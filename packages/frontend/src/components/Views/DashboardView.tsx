@@ -29,14 +29,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const [refreshing, setRefreshing] = useState(false);
 
   // Hook for dashboard data
-  const {
-    data,
-    loading,
-    error,
-    lastUpdated,
-    isStale,
-    refresh,
-  } = useDashboard({
+  const { data, loading, error, lastUpdated, isStale, refresh } = useDashboard({
     projectId,
     projectTag,
     autoRefresh: true,
@@ -78,7 +71,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     return (
       <div className={`flex items-center justify-center min-h-96 ${className}`}>
         <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md">
-          <h3 className="text-lg font-medium text-red-800 mb-2">Error Loading Dashboard</h3>
+          <h3 className="text-lg font-medium text-red-800 mb-2">
+            Error Loading Dashboard
+          </h3>
           <p className="text-sm text-red-700">{error.message}</p>
           <button
             onClick={handleRefresh}
@@ -96,8 +91,12 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     return (
       <div className={`flex items-center justify-center min-h-96 ${className}`}>
         <div className="text-center">
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No Data Available</h3>
-          <p className="text-gray-600 mb-4">No dashboard data found for this project.</p>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">
+            No Data Available
+          </h3>
+          <p className="text-gray-600 mb-4">
+            No dashboard data found for this project.
+          </p>
           <button
             onClick={handleRefresh}
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
@@ -183,31 +182,44 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-sm font-medium text-gray-600">Total Tasks</h3>
+                  <h3 className="text-sm font-medium text-gray-600">
+                    Total Tasks
+                  </h3>
                   <div className="text-2xl">📋</div>
                 </div>
-                <div className="text-3xl font-bold text-gray-900 mb-2">{data.taskMetrics.total}</div>
+                <div className="text-3xl font-bold text-gray-900 mb-2">
+                  {data.taskMetrics.total}
+                </div>
                 <div className="text-sm text-gray-500">
-                  {data.taskMetrics.pending} pending, {data.taskMetrics.inProgress} in progress
+                  {data.taskMetrics.pending} pending,{' '}
+                  {data.taskMetrics.inProgress} in progress
                 </div>
               </div>
 
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-sm font-medium text-gray-600">Completed</h3>
+                  <h3 className="text-sm font-medium text-gray-600">
+                    Completed
+                  </h3>
                   <div className="text-2xl">✅</div>
                 </div>
                 <div className="text-3xl font-bold text-gray-900 mb-2">
                   {data.taskMetrics.completed}
                 </div>
                 <div className="text-sm text-gray-500">
-                  {((data.taskMetrics.completed / data.taskMetrics.total) * 100).toFixed(1)}% completion rate
+                  {(
+                    (data.taskMetrics.completed / data.taskMetrics.total) *
+                    100
+                  ).toFixed(1)}
+                  % completion rate
                 </div>
               </div>
 
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-sm font-medium text-gray-600">Avg Time</h3>
+                  <h3 className="text-sm font-medium text-gray-600">
+                    Avg Time
+                  </h3>
                   <div className="text-2xl">⏱️</div>
                 </div>
                 <div className="text-3xl font-bold text-gray-900 mb-2">
@@ -220,7 +232,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-sm font-medium text-gray-600">Productivity</h3>
+                  <h3 className="text-sm font-medium text-gray-600">
+                    Productivity
+                  </h3>
                   <div className="text-2xl">🎯</div>
                 </div>
                 <div className="text-3xl font-bold text-gray-900 mb-2">
@@ -235,13 +249,19 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             {/* Charts */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Task Completion</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  Task Completion
+                </h3>
                 <TaskCompletionChart data={data.taskMetrics} />
               </div>
 
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Progress Overview</h3>
-                <ProgressVisualizationWidget data={data.chartData.taskCompletionTrend} />
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  Progress Overview
+                </h3>
+                <ProgressVisualizationWidget
+                  data={data.chartData.taskCompletionTrend}
+                />
               </div>
             </div>
           </div>
@@ -250,8 +270,12 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         {activeTab === 'analytics' && (
           <div className="space-y-6">
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Analytics Dashboard</h3>
-              <p className="text-gray-600">Advanced analytics features coming soon...</p>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Analytics Dashboard
+              </h3>
+              <p className="text-gray-600">
+                Advanced analytics features coming soon...
+              </p>
             </div>
           </div>
         )}
@@ -259,7 +283,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         {activeTab === 'activity' && (
           <div className="space-y-6">
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Recent Activity
+              </h3>
               <RecentActivityFeedWidget activities={data.recentActivity} />
             </div>
           </div>

@@ -43,20 +43,24 @@ export const AuthPage: React.FC<AuthPageProps> = ({
   };
 
   return (
-    <div 
+    <div
       className={cn(
         'min-h-screen flex items-center justify-center p-4',
         'bg-gradient-to-br from-blue-50 via-white to-purple-50',
         backgroundImage && 'bg-cover bg-center bg-no-repeat',
         className
       )}
-      style={backgroundImage ? { backgroundImage: `url(${backgroundImage})` } : undefined}
+      style={
+        backgroundImage
+          ? { backgroundImage: `url(${backgroundImage})` }
+          : undefined
+      }
     >
       {/* Glassmorphism Background Overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 via-purple-400/5 to-pink-400/10 backdrop-blur-sm" />
-      
+
       {/* Auth Container with Glassmorphism */}
-      <div 
+      <div
         className={cn(
           'relative w-full max-w-md mx-auto',
           // Glassmorphism effects
@@ -87,21 +91,23 @@ export const AuthPage: React.FC<AuthPageProps> = ({
         </div>
 
         {/* Auth Tabs */}
-        <Tabs 
-          defaultValue={defaultTab} 
+        <Tabs
+          defaultValue={defaultTab}
           value={activeTab}
-          onValueChange={(value) => setActiveTab(value as 'login' | 'register')}
+          onValueChange={value => setActiveTab(value as 'login' | 'register')}
           variant="pills"
           className="w-full"
         >
-          <TabsList className={cn(
-            'grid w-full grid-cols-2 mb-6',
-            // Enhanced glassmorphism for tabs
-            'bg-slate-100/60 backdrop-blur-md',
-            'border border-white/30',
-            'shadow-inner shadow-black/5'
-          )}>
-            <TabsTrigger 
+          <TabsList
+            className={cn(
+              'grid w-full grid-cols-2 mb-6',
+              // Enhanced glassmorphism for tabs
+              'bg-slate-100/60 backdrop-blur-md',
+              'border border-white/30',
+              'shadow-inner shadow-black/5'
+            )}
+          >
+            <TabsTrigger
               value="login"
               className={cn(
                 'data-[state=active]:bg-white/90 data-[state=active]:shadow-md',
@@ -111,7 +117,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({
             >
               Sign In
             </TabsTrigger>
-            <TabsTrigger 
+            <TabsTrigger
               value="register"
               className={cn(
                 'data-[state=active]:bg-white/90 data-[state=active]:shadow-md',
@@ -124,15 +130,15 @@ export const AuthPage: React.FC<AuthPageProps> = ({
           </TabsList>
 
           <TabsContent value="login" className="space-y-4">
-            <LoginForm 
-              onSuccess={(data) => handleAuthSuccess('login', data)}
+            <LoginForm
+              onSuccess={data => handleAuthSuccess('login', data)}
               showSocialLogins={showSocialLogins}
             />
           </TabsContent>
 
           <TabsContent value="register" className="space-y-4">
-            <RegisterForm 
-              onSuccess={(data) => handleAuthSuccess('register', data)}
+            <RegisterForm
+              onSuccess={data => handleAuthSuccess('register', data)}
               showSocialLogins={showSocialLogins}
             />
           </TabsContent>

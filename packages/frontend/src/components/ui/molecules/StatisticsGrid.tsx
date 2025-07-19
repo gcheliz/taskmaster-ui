@@ -1,7 +1,13 @@
 import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '../atoms/Card';
 import { Badge } from '../atoms/Badge';
-import { Icon, TaskIcon, CompleteIcon, TimeIcon, StarFilledIcon } from '../atoms/Icon';
+import {
+  Icon,
+  TaskIcon,
+  CompleteIcon,
+  TimeIcon,
+  StarFilledIcon,
+} from '../atoms/Icon';
 
 export interface TaskMetrics {
   total: number;
@@ -43,9 +49,11 @@ const StatisticsGrid: React.FC<StatisticsGridProps> = ({
   health,
   className = '',
   showHealthIndicator = true,
-  showProgressBars = true
+  showProgressBars = true,
 }) => {
-  const getHealthColor = (status: string): 'success' | 'primary' | 'warning' | 'error' | 'secondary' => {
+  const getHealthColor = (
+    status: string
+  ): 'success' | 'primary' | 'warning' | 'error' | 'secondary' => {
     switch (status) {
       case 'excellent':
         return 'success';
@@ -74,69 +82,117 @@ const StatisticsGrid: React.FC<StatisticsGridProps> = ({
       title: 'Total Tasks',
       value: taskMetrics.total,
       icon: TaskIcon,
-      color: 'primary' as 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'muted',
+      color: 'primary' as
+        | 'primary'
+        | 'secondary'
+        | 'success'
+        | 'warning'
+        | 'error'
+        | 'muted',
       badges: [
-        { variant: 'success' as const, text: `${taskMetrics.completed} completed` },
-        { variant: 'secondary' as const, text: `${taskMetrics.inProgress} active` }
+        {
+          variant: 'success' as const,
+          text: `${taskMetrics.completed} completed`,
+        },
+        {
+          variant: 'secondary' as const,
+          text: `${taskMetrics.inProgress} active`,
+        },
       ],
-      description: 'Total number of tasks in the project'
+      description: 'Total number of tasks in the project',
     },
     {
       id: 'completion-rate',
       title: 'Completion Rate',
       value: formatPercentage(taskMetrics.completionRate),
       icon: CompleteIcon,
-      color: 'success' as 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'muted',
-      progressBar: showProgressBars ? {
-        percentage: taskMetrics.completionRate,
-        color: 'success'
-      } : undefined,
+      color: 'success' as
+        | 'primary'
+        | 'secondary'
+        | 'success'
+        | 'warning'
+        | 'error'
+        | 'muted',
+      progressBar: showProgressBars
+        ? {
+            percentage: taskMetrics.completionRate,
+            color: 'success',
+          }
+        : undefined,
       description: `${taskMetrics.pending} pending tasks`,
-      badges: []
+      badges: [],
     },
     {
       id: 'estimated-hours',
       title: 'Estimated Hours',
       value: `${insights.totalEstimatedHours}h`,
       icon: TimeIcon,
-      color: 'warning' as 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'muted',
+      color: 'warning' as
+        | 'primary'
+        | 'secondary'
+        | 'success'
+        | 'warning'
+        | 'error'
+        | 'muted',
       badges: [
-        { variant: 'warning' as const, text: `Avg: ${insights.averageTaskComplexity.toFixed(1)}` },
-        { variant: 'secondary' as const, text: `${taskMetrics.blocked} blocked` }
+        {
+          variant: 'warning' as const,
+          text: `Avg: ${insights.averageTaskComplexity.toFixed(1)}`,
+        },
+        {
+          variant: 'secondary' as const,
+          text: `${taskMetrics.blocked} blocked`,
+        },
       ],
-      description: 'Total estimated work hours'
-    }
+      description: 'Total estimated work hours',
+    },
   ];
 
   // Add health indicator if enabled
   if (showHealthIndicator) {
     const healthVariant = health ? getHealthColor(health.status) : 'secondary';
-    
-    const healthBadgeVariant = healthVariant === 'error' ? 'warning' as const : 
-                              healthVariant === 'primary' ? 'success' as const : 
-                              'secondary' as const;
+
+    const healthBadgeVariant =
+      healthVariant === 'error'
+        ? ('warning' as const)
+        : healthVariant === 'primary'
+          ? ('success' as const)
+          : ('secondary' as const);
     const healthBadges = [
-      { 
-        variant: healthBadgeVariant, 
-        text: health ? getHealthStatusText(health.status) : 'Unknown'
+      {
+        variant: healthBadgeVariant,
+        text: health ? getHealthStatusText(health.status) : 'Unknown',
       },
-      { variant: 'secondary' as const, text: `Score: ${formatPercentage(insights.productivityScore)}` }
+      {
+        variant: 'secondary' as const,
+        text: `Score: ${formatPercentage(insights.productivityScore)}`,
+      },
     ];
-    
+
     (statCards as any).push({
       id: 'project-health',
       title: 'Project Health',
       value: health ? Math.round(health.score).toString() : '--',
       icon: StarFilledIcon,
-      color: healthVariant as 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'muted',
+      color: healthVariant as
+        | 'primary'
+        | 'secondary'
+        | 'success'
+        | 'warning'
+        | 'error'
+        | 'muted',
       badges: healthBadges,
-      description: health?.lastChecked ? `Last checked: ${new Date(health.lastChecked).toLocaleDateString()}` : 'Project health metrics'
+      description: health?.lastChecked
+        ? `Last checked: ${new Date(health.lastChecked).toLocaleDateString()}`
+        : 'Project health metrics',
     });
   }
 
   return (
-    <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ${className}`}>
-      {statCards.map((card) => (
+    <div
+      className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ${className}`}
+    >
+      {statCards.map(card => (
         <Card
           key={card.id}
           variant="elevated"
@@ -147,10 +203,10 @@ const StatisticsGrid: React.FC<StatisticsGridProps> = ({
               <CardTitle className="text-sm font-medium text-secondary-600 dark:text-secondary-400">
                 {card.title}
               </CardTitle>
-              <Icon 
-                icon={card.icon} 
-                size="lg" 
-                color={card.color} 
+              <Icon
+                icon={card.icon}
+                size="lg"
+                color={card.color}
                 className="opacity-80 hover:opacity-100 transition-opacity"
               />
             </div>
@@ -159,16 +215,19 @@ const StatisticsGrid: React.FC<StatisticsGridProps> = ({
             <div className="text-3xl font-bold text-secondary-900 dark:text-secondary-100 mb-2">
               {card.value}
             </div>
-            
+
             {/* Progress Bar */}
             {card.progressBar && (
               <div className="w-full bg-secondary-200 dark:bg-surface-700 rounded-full h-2 mb-2">
-                <div 
+                <div
                   className={`h-2 rounded-full transition-all duration-500 ${
-                    card.progressBar.color === 'success' ? 'bg-success-500' :
-                    card.progressBar.color === 'warning' ? 'bg-warning-500' :
-                    card.progressBar.color === 'error' ? 'bg-error-500' :
-                    'bg-primary-500'
+                    card.progressBar.color === 'success'
+                      ? 'bg-success-500'
+                      : card.progressBar.color === 'warning'
+                        ? 'bg-warning-500'
+                        : card.progressBar.color === 'error'
+                          ? 'bg-error-500'
+                          : 'bg-primary-500'
                   }`}
                   style={{ width: `${card.progressBar.percentage}%` }}
                 />
@@ -179,9 +238,9 @@ const StatisticsGrid: React.FC<StatisticsGridProps> = ({
             {card.badges.length > 0 && (
               <div className="flex items-center space-x-2 mb-2">
                 {card.badges.map((badge, index) => (
-                  <Badge 
+                  <Badge
                     key={index}
-                    variant={badge.variant} 
+                    variant={badge.variant}
                     size="sm"
                     className="animate-in fade-in-50 duration-300"
                     style={{ animationDelay: `${index * 100}ms` }}

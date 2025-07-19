@@ -5,7 +5,7 @@ import { Input } from '../ui/atoms/Input';
 import { Label } from '../ui/atoms/Label';
 import { Checkbox } from '../ui/atoms/Checkbox';
 import { SocialLoginButtons } from './SocialLoginButtons';
-import { 
+import {
   Icon,
   EyeIcon,
   EyeSlashIcon,
@@ -66,15 +66,15 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
 
     setIsLoading(true);
-    
+
     try {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500));
-      
+
       // Mock successful login
       const mockToken = 'mock-jwt-token-' + Date.now();
       onSuccess?.({
@@ -88,17 +88,18 @@ export const LoginForm: React.FC<LoginFormProps> = ({
     }
   };
 
-  const handleInputChange = (field: keyof typeof formData) => (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
-    setFormData(prev => ({ ...prev, [field]: value }));
-    
-    // Clear errors when user starts typing
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
-    }
-  };
+  const handleInputChange =
+    (field: keyof typeof formData) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value =
+        e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+      setFormData(prev => ({ ...prev, [field]: value }));
+
+      // Clear errors when user starts typing
+      if (errors[field]) {
+        setErrors(prev => ({ ...prev, [field]: '' }));
+      }
+    };
 
   return (
     <div className={cn('space-y-6', className)}>
@@ -106,13 +107,15 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       {showSocialLogins && (
         <>
           <SocialLoginButtons onSuccess={onSuccess} />
-          
+
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
               <span className="w-full border-t border-slate-200" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-white px-2 text-slate-500">Or continue with email</span>
+              <span className="bg-white px-2 text-slate-500">
+                Or continue with email
+              </span>
             </div>
           </div>
         </>
@@ -133,7 +136,9 @@ export const LoginForm: React.FC<LoginFormProps> = ({
               value={formData.email}
               onChange={handleInputChange('email')}
               error={!!errors.email}
-              leftIcon={<Icon icon={UserIcon} size="sm" className="text-slate-400" />}
+              leftIcon={
+                <Icon icon={UserIcon} size="sm" className="text-slate-400" />
+              }
               className={cn(
                 'pl-10 bg-white/60 backdrop-blur-sm',
                 'border-slate-200/60',
@@ -149,7 +154,10 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 
         {/* Password Field */}
         <div className="space-y-2">
-          <Label htmlFor="password" className="text-sm font-medium text-slate-700">
+          <Label
+            htmlFor="password"
+            className="text-sm font-medium text-slate-700"
+          >
             Password
           </Label>
           <div className="relative">
@@ -160,7 +168,13 @@ export const LoginForm: React.FC<LoginFormProps> = ({
               value={formData.password}
               onChange={handleInputChange('password')}
               error={!!errors.password}
-              leftIcon={<Icon icon={LockClosedIcon} size="sm" className="text-slate-400" />}
+              leftIcon={
+                <Icon
+                  icon={LockClosedIcon}
+                  size="sm"
+                  className="text-slate-400"
+                />
+              }
               className={cn(
                 'pl-10 pr-10 bg-white/60 backdrop-blur-sm',
                 'border-slate-200/60',
@@ -173,10 +187,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
               onClick={() => setShowPassword(!showPassword)}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
             >
-              <Icon 
-                icon={showPassword ? EyeSlashIcon : EyeIcon} 
-                size="sm" 
-              />
+              <Icon icon={showPassword ? EyeSlashIcon : EyeIcon} size="sm" />
             </button>
             {errors.password && (
               <p className="text-xs text-red-500 mt-1">{errors.password}</p>
@@ -196,8 +207,8 @@ export const LoginForm: React.FC<LoginFormProps> = ({
               Remember me
             </Label>
           </div>
-          <a 
-            href="#" 
+          <a
+            href="#"
             className="text-sm text-blue-600 hover:text-blue-700 hover:underline transition-colors"
           >
             Forgot password?

@@ -1,6 +1,16 @@
 import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '../atoms/Card';
-import { Icon, StarFilledIcon, TaskIcon, NotificationIcon, UserCircleIcon, DuplicateIcon, PlusIcon, SettingsIcon, ArchiveIcon } from '../atoms/Icon';
+import {
+  Icon,
+  StarFilledIcon,
+  TaskIcon,
+  NotificationIcon,
+  UserCircleIcon,
+  DuplicateIcon,
+  PlusIcon,
+  SettingsIcon,
+  ArchiveIcon,
+} from '../atoms/Icon';
 import { Spinner } from '../atoms/Spinner';
 import { QuickActionCard } from '../molecules/QuickActionCard';
 // Using the icon type from the Icon component props
@@ -11,8 +21,20 @@ export interface QuickAction {
   title: string;
   description?: string;
   icon: IconType;
-  iconColor?: 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'muted';
-  variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'outline';
+  iconColor?:
+    | 'primary'
+    | 'secondary'
+    | 'success'
+    | 'warning'
+    | 'error'
+    | 'muted';
+  variant?:
+    | 'primary'
+    | 'secondary'
+    | 'success'
+    | 'warning'
+    | 'error'
+    | 'outline';
   badge?: {
     text: string;
     variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'error';
@@ -44,7 +66,7 @@ const DEFAULT_ACTIONS: QuickAction[] = [
     variant: 'primary',
     shortcut: 'Ctrl+N',
     category: 'task',
-    onClick: () => console.log('Create task clicked')
+    onClick: () => console.log('Create task clicked'),
   },
   {
     id: 'view-reports',
@@ -55,7 +77,7 @@ const DEFAULT_ACTIONS: QuickAction[] = [
     variant: 'outline',
     shortcut: 'Ctrl+R',
     category: 'project',
-    onClick: () => console.log('View reports clicked')
+    onClick: () => console.log('View reports clicked'),
   },
   {
     id: 'manage-team',
@@ -66,11 +88,11 @@ const DEFAULT_ACTIONS: QuickAction[] = [
     variant: 'outline',
     badge: {
       text: 'Admin',
-      variant: 'warning'
+      variant: 'warning',
     },
     shortcut: 'Ctrl+T',
     category: 'team',
-    onClick: () => console.log('Manage team clicked')
+    onClick: () => console.log('Manage team clicked'),
   },
   {
     id: 'export-data',
@@ -81,7 +103,7 @@ const DEFAULT_ACTIONS: QuickAction[] = [
     variant: 'outline',
     shortcut: 'Ctrl+E',
     category: 'system',
-    onClick: () => console.log('Export data clicked')
+    onClick: () => console.log('Export data clicked'),
   },
   {
     id: 'add-member',
@@ -91,7 +113,7 @@ const DEFAULT_ACTIONS: QuickAction[] = [
     iconColor: 'success',
     variant: 'outline',
     category: 'team',
-    onClick: () => console.log('Add member clicked')
+    onClick: () => console.log('Add member clicked'),
   },
   {
     id: 'project-settings',
@@ -101,7 +123,7 @@ const DEFAULT_ACTIONS: QuickAction[] = [
     iconColor: 'muted',
     variant: 'outline',
     category: 'system',
-    onClick: () => console.log('Project settings clicked')
+    onClick: () => console.log('Project settings clicked'),
   },
   {
     id: 'archive-project',
@@ -112,8 +134,8 @@ const DEFAULT_ACTIONS: QuickAction[] = [
     variant: 'outline',
     category: 'project',
     disabled: true,
-    onClick: () => console.log('Archive project clicked')
-  }
+    onClick: () => console.log('Archive project clicked'),
+  },
 ];
 
 const QuickActionsGrid: React.FC<QuickActionsGridProps> = ({
@@ -124,7 +146,7 @@ const QuickActionsGrid: React.FC<QuickActionsGridProps> = ({
   maxItems,
   columns = 4,
   showCategories = false,
-  className = ''
+  className = '',
 }) => {
   const [loadingActions, setLoadingActions] = useState<Set<string>>(new Set());
 
@@ -134,7 +156,7 @@ const QuickActionsGrid: React.FC<QuickActionsGridProps> = ({
     if (action.disabled || loadingActions.has(action.id)) return;
 
     setLoadingActions(prev => new Set(prev).add(action.id));
-    
+
     try {
       await action.onClick?.();
     } finally {
@@ -153,7 +175,7 @@ const QuickActionsGrid: React.FC<QuickActionsGridProps> = ({
       3: 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3',
       4: 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4',
       5: 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5',
-      6: 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6'
+      6: 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6',
     };
     return columnClasses[columns] || columnClasses[4];
   };
@@ -202,7 +224,12 @@ const QuickActionsGrid: React.FC<QuickActionsGridProps> = ({
           </CardTitle>
         </CardHeader>
         <CardContent className="text-center py-12">
-          <Icon icon={ArchiveIcon} size="2xl" color="muted" className="mx-auto mb-4" />
+          <Icon
+            icon={ArchiveIcon}
+            size="2xl"
+            color="muted"
+            className="mx-auto mb-4"
+          />
           <h3 className="text-lg font-semibold text-secondary-900 dark:text-secondary-100 mb-2">
             No Actions Available
           </h3>
@@ -231,28 +258,30 @@ const QuickActionsGrid: React.FC<QuickActionsGridProps> = ({
         {showCategories ? (
           // Grouped by categories
           <div className="space-y-8">
-            {Object.entries(groupActionsByCategory()).map(([category, categoryActions]) => (
-              <div key={category} className="space-y-4">
-                <h3 className="text-sm font-semibold text-secondary-900 dark:text-secondary-100 uppercase tracking-wide">
-                  {formatCategoryName(category)}
-                </h3>
-                <div className={`grid ${getGridColumns()} gap-4`}>
-                  {categoryActions.map((action) => (
-                    <QuickActionCard
-                      key={action.id}
-                      {...action}
-                      loading={loadingActions.has(action.id)}
-                      onClick={() => handleActionClick(action)}
-                    />
-                  ))}
+            {Object.entries(groupActionsByCategory()).map(
+              ([category, categoryActions]) => (
+                <div key={category} className="space-y-4">
+                  <h3 className="text-sm font-semibold text-secondary-900 dark:text-secondary-100 uppercase tracking-wide">
+                    {formatCategoryName(category)}
+                  </h3>
+                  <div className={`grid ${getGridColumns()} gap-4`}>
+                    {categoryActions.map(action => (
+                      <QuickActionCard
+                        key={action.id}
+                        {...action}
+                        loading={loadingActions.has(action.id)}
+                        onClick={() => handleActionClick(action)}
+                      />
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              )
+            )}
           </div>
         ) : (
           // Simple grid layout
           <div className={`grid ${getGridColumns()} gap-4`}>
-            {displayedActions.map((action) => (
+            {displayedActions.map(action => (
               <QuickActionCard
                 key={action.id}
                 {...action}

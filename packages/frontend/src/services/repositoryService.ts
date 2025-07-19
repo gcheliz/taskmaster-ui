@@ -60,6 +60,132 @@ export interface RepositoryDetailsResponse {
   }>;
 }
 
+export interface RepositoryHealthMetrics {
+  score: number; // 0-100 health score
+  issues: Array<{
+    severity: 'low' | 'medium' | 'high' | 'critical';
+    type: 'security' | 'performance' | 'quality' | 'maintenance';
+    message: string;
+    file?: string;
+    line?: number;
+  }>;
+  metrics: {
+    codeQuality: {
+      score: number;
+      complexity: number;
+      duplication: number;
+      maintainabilityIndex: number;
+    };
+    security: {
+      score: number;
+      vulnerabilities: number;
+      outdatedDependencies: number;
+    };
+    performance: {
+      score: number;
+      bundleSize: number;
+      buildTime: number;
+    };
+    testing: {
+      score: number;
+      coverage: number;
+      testsCount: number;
+      passRate: number;
+    };
+  };
+  trends: {
+    period: string;
+    data: Array<{
+      date: string;
+      score: number;
+      commits: number;
+      contributors: number;
+    }>;
+  };
+}
+
+export interface RepositoryStatistics {
+  commits: {
+    total: number;
+    thisWeek: number;
+    thisMonth: number;
+    byAuthor: Array<{
+      author: string;
+      count: number;
+      percentage: number;
+    }>;
+    byDay: Array<{
+      date: string;
+      count: number;
+    }>;
+  };
+  contributors: {
+    total: number;
+    active: number;
+    list: Array<{
+      name: string;
+      email: string;
+      commits: number;
+      linesAdded: number;
+      linesRemoved: number;
+      lastActivity: string;
+    }>;
+  };
+  files: {
+    total: number;
+    byExtension: Array<{
+      extension: string;
+      count: number;
+      size: number;
+    }>;
+    largest: Array<{
+      path: string;
+      size: number;
+      lines: number;
+    }>;
+  };
+  activity: {
+    frequency: 'high' | 'medium' | 'low';
+    lastPush: string;
+    averageCommitsPerWeek: number;
+    peakHour: number;
+    peakDay: string;
+  };
+}
+
+export interface RepositoryIntegrationStatus {
+  ci: {
+    provider: string | null;
+    status: 'passing' | 'failing' | 'pending' | 'unknown';
+    lastRun: string | null;
+    branch: string | null;
+    buildNumber: string | null;
+    url: string | null;
+  };
+  deployment: {
+    environment: string | null;
+    status: 'deployed' | 'deploying' | 'failed' | 'unknown';
+    version: string | null;
+    lastDeploy: string | null;
+    url: string | null;
+  };
+  codeQuality: {
+    provider: string | null;
+    score: number | null;
+    grade: string | null;
+    coverage: number | null;
+    lastScan: string | null;
+    url: string | null;
+  };
+  security: {
+    provider: string | null;
+    vulnerabilities: number | null;
+    lastScan: string | null;
+    score: number | null;
+    url: string | null;
+  };
+}
+
 /**
  * Repository Service
  *
@@ -350,6 +476,305 @@ export class RepositoryService {
       body: JSON.stringify({ message, author }),
     });
   }
+
+  // Enhanced Git API methods for advanced repository management
+
+  /**
+   * Get repository health metrics including code quality, security, and performance scores
+   */
+  static async getRepositoryHealth(
+    repositoryId: string
+  ): Promise<ApiResponse<RepositoryHealthMetrics>> {
+    return this.fetchApi(`/api/repositories/${repositoryId}/health`);
+  }
+
+  /**
+   * Get detailed repository statistics including commits, contributors, and activity data
+   */
+  static async getRepositoryStatistics(
+    repositoryId: string,
+    period: '7d' | '30d' | '90d' | '1y' = '30d'
+  ): Promise<ApiResponse<RepositoryStatistics>> {
+    return this.fetchApi(
+      `/api/repositories/${repositoryId}/statistics?period=${period}`
+    );
+  }
+
+  /**
+   * Get integration status for CI/CD, deployment, code quality, and security tools
+   */
+  static async getRepositoryIntegrations(
+    repositoryId: string
+  ): Promise<ApiResponse<RepositoryIntegrationStatus>> {
+    return this.fetchApi(`/api/repositories/${repositoryId}/integrations`);
+  }
+
+  /**
+   * Refresh repository data and trigger re-analysis
+   */
+  static async refreshRepository(
+    repositoryId: string,
+    includeAnalysis: boolean = true
+  ): Promise<
+    ApiResponse<{ success: boolean; message: string; updatedAt: string }>
+  > {
+    return this.fetchApi(`/api/repositories/${repositoryId}/refresh`, {
+      method: 'POST',
+      body: JSON.stringify({ includeAnalysis }),
+    });
+  }
+
+  /**
+   * Get repository tags with metadata
+   */
+  static async getRepositoryTags(
+    repositoryId: string,
+    limit: number = 20
+  ): Promise<
+    ApiResponse<
+      Array<{
+        name: string;
+        hash: string;
+        date: string;
+        author: {
+          name: string;
+          email: string;
+        };
+        message: string;
+        isAnnotated: boolean;
+      }>
+    >
+  > {
+    return this.fetchApi(
+      `/api/repositories/${repositoryId}/tags?limit=${limit}`
+    );
+  }
+
+  /**
+   * Get repository file tree structure
+   */
+  static async getRepositoryTree(
+    repositoryId: string,
+    branch?: string,
+    path?: string
+  ): Promise<
+    ApiResponse<{
+      tree: Array<{
+        path: string;
+        type: 'file' | 'directory';
+        size: number;
+        lastModified: string;
+        permissions: string;
+      }>;
+      branch: string;
+      path: string;
+    }>
+  > {
+    const params = new URLSearchParams();
+    if (branch) params.append('branch', branch);
+    if (path) params.append('path', path);
+
+    return this.fetchApi(`/api/repositories/${repositoryId}/tree?${params}`);
+  }
+
+  /**
+   * Get file content from repository
+   */
+  static async getFileContent(
+    repositoryId: string,
+    filePath: string,
+    branch?: string
+  ): Promise<
+    ApiResponse<{
+      content: string;
+      encoding: string;
+      size: number;
+      path: string;
+      branch: string;
+    }>
+  > {
+    const params = new URLSearchParams({ path: filePath });
+    if (branch) params.append('branch', branch);
+
+    return this.fetchApi(`/api/repositories/${repositoryId}/file?${params}`);
+  }
+
+  /**
+   * Search code within repository
+   */
+  static async searchCode(
+    repositoryId: string,
+    query: string,
+    options: {
+      branch?: string;
+      fileType?: string;
+      caseSensitive?: boolean;
+      wholeWord?: boolean;
+      regex?: boolean;
+      maxResults?: number;
+    } = {}
+  ): Promise<
+    ApiResponse<{
+      results: Array<{
+        file: string;
+        line: number;
+        column: number;
+        match: string;
+        context: string;
+      }>;
+      query: string;
+      totalMatches: number;
+      searchTime: number;
+    }>
+  > {
+    return this.fetchApi(`/api/repositories/${repositoryId}/search`, {
+      method: 'POST',
+      body: JSON.stringify({ query, ...options }),
+    });
+  }
+
+  /**
+   * Get repository diff between branches or commits
+   */
+  static async getRepositoryDiff(
+    repositoryId: string,
+    base: string,
+    head: string,
+    options: {
+      context?: number;
+      ignoreWhitespace?: boolean;
+      wordDiff?: boolean;
+    } = {}
+  ): Promise<
+    ApiResponse<{
+      diff: string;
+      stats: {
+        additions: number;
+        deletions: number;
+        files: number;
+      };
+      files: Array<{
+        path: string;
+        status: 'added' | 'modified' | 'deleted' | 'renamed';
+        additions: number;
+        deletions: number;
+        patch: string;
+      }>;
+    }>
+  > {
+    return this.fetchApi(`/api/repositories/${repositoryId}/diff`, {
+      method: 'POST',
+      body: JSON.stringify({ base, head, ...options }),
+    });
+  }
+
+  /**
+   * Get blame information for a file
+   */
+  static async getFileBlame(
+    repositoryId: string,
+    filePath: string,
+    branch?: string
+  ): Promise<
+    ApiResponse<{
+      lines: Array<{
+        lineNumber: number;
+        content: string;
+        commit: {
+          hash: string;
+          author: {
+            name: string;
+            email: string;
+          };
+          date: string;
+          message: string;
+        };
+      }>;
+      file: string;
+      branch: string;
+    }>
+  > {
+    const params = new URLSearchParams({ path: filePath });
+    if (branch) params.append('branch', branch);
+
+    return this.fetchApi(`/api/repositories/${repositoryId}/blame?${params}`);
+  }
+
+  /**
+   * Watch repository for real-time updates via WebSocket
+   */
+  static watchRepository(
+    repositoryId: string,
+    onUpdate: (data: {
+      type: 'commit' | 'branch' | 'status' | 'health';
+      repository: string;
+      data: unknown;
+      timestamp: string;
+    }) => void,
+    onError?: (error: Error) => void
+  ): () => void {
+    const wsUrl = `${API_BASE_URL.replace('http', 'ws')}/api/repositories/${repositoryId}/watch`;
+    const ws = new WebSocket(wsUrl);
+
+    ws.onmessage = event => {
+      try {
+        const data = JSON.parse(event.data);
+        onUpdate(data);
+      } catch (_error) {
+        onError?.(new Error('Failed to parse WebSocket message'));
+      }
+    };
+
+    ws.onerror = () => {
+      onError?.(new Error('WebSocket connection error'));
+    };
+
+    ws.onclose = () => {
+      console.log('Repository watch connection closed');
+    };
+
+    // Return cleanup function
+    return () => {
+      ws.close();
+    };
+  }
+
+  /**
+   * Get repository insights and recommendations
+   */
+  static async getRepositoryInsights(repositoryId: string): Promise<
+    ApiResponse<{
+      recommendations: Array<{
+        type: 'performance' | 'security' | 'quality' | 'maintenance';
+        priority: 'low' | 'medium' | 'high' | 'critical';
+        title: string;
+        description: string;
+        actionable: boolean;
+        estimatedImpact: string;
+        resources: Array<{
+          title: string;
+          url: string;
+          type: 'documentation' | 'tool' | 'tutorial';
+        }>;
+      }>;
+      trends: {
+        activity: 'increasing' | 'stable' | 'decreasing';
+        quality: 'improving' | 'stable' | 'declining';
+        security: 'improving' | 'stable' | 'declining';
+      };
+      milestones: Array<{
+        type: 'commit' | 'release' | 'contributor' | 'issue';
+        title: string;
+        description: string;
+        date: string;
+        significant: boolean;
+      }>;
+    }>
+  > {
+    return this.fetchApi(`/api/repositories/${repositoryId}/insights`);
+  }
 }
+
+// Types are already exported above with their interface declarations
 
 export default RepositoryService;

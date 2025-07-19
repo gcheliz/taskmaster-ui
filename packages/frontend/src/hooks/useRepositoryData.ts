@@ -4,6 +4,11 @@ import type {
   RepositoryMetadataData,
   BranchInfo,
 } from '../components/Repository';
+import type {
+  RepositoryHealthMetrics,
+  RepositoryStatistics,
+  RepositoryIntegrationStatus,
+} from '../services/repositoryService';
 
 export interface UseRepositoryDataOptions {
   /** Repository ID to fetch data for */
@@ -300,6 +305,452 @@ export const useRepositoryActions = ({
     pushToRemote,
     isActionLoading,
     currentAction,
+  };
+};
+
+// Enhanced Repository Management Hooks
+
+export interface UseRepositoryHealthOptions {
+  /** Repository ID */
+  repositoryId: string;
+  /** Auto-refresh interval in milliseconds (0 to disable) */
+  refreshInterval?: number;
+  /** Whether to fetch data immediately on mount */
+  autoFetch?: boolean;
+}
+
+export interface UseRepositoryHealthReturn {
+  /** Repository health metrics */
+  health: RepositoryHealthMetrics | null;
+  /** Loading state */
+  isLoading: boolean;
+  /** Error message */
+  error: string | null;
+  /** Whether data is currently being refreshed */
+  isRefreshing: boolean;
+  /** Manually refresh health data */
+  refresh: () => Promise<void>;
+  /** Clear error state */
+  clearError: () => void;
+  /** Last successful fetch timestamp */
+  lastFetch: Date | null;
+}
+
+/**
+ * Hook for managing repository health metrics
+ */
+export const useRepositoryHealth = ({
+  repositoryId,
+  refreshInterval = 300000, // 5 minutes default for health checks
+  autoFetch = true,
+}: UseRepositoryHealthOptions): UseRepositoryHealthReturn => {
+  const [health, setHealth] = useState<RepositoryHealthMetrics | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [lastFetch, setLastFetch] = useState<Date | null>(null);
+
+  const fetchHealth = useCallback(
+    async (isRefresh = false) => {
+      if (isRefresh) {
+        setIsRefreshing(true);
+      } else {
+        setIsLoading(true);
+      }
+
+      setError(null);
+
+      try {
+        const response =
+          await RepositoryService.getRepositoryHealth(repositoryId);
+
+        if (response.success && response.data) {
+          setHealth(response.data);
+          setLastFetch(new Date());
+        } else {
+          setError(response.error || 'Failed to fetch repository health');
+        }
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : 'An unexpected error occurred'
+        );
+      } finally {
+        setIsLoading(false);
+        setIsRefreshing(false);
+      }
+    },
+    [repositoryId]
+  );
+
+  const refresh = useCallback(async () => {
+    await fetchHealth(true);
+  }, [fetchHealth]);
+
+  const clearError = useCallback(() => {
+    setError(null);
+  }, []);
+
+  useEffect(() => {
+    if (autoFetch && repositoryId) {
+      fetchHealth();
+    }
+  }, [fetchHealth, autoFetch, repositoryId]);
+
+  useEffect(() => {
+    if (refreshInterval > 0 && repositoryId) {
+      const interval = setInterval(() => {
+        fetchHealth(true);
+      }, refreshInterval);
+
+      return () => clearInterval(interval);
+    }
+  }, [fetchHealth, refreshInterval, repositoryId]);
+
+  return {
+    health,
+    isLoading,
+    error,
+    isRefreshing,
+    refresh,
+    clearError,
+    lastFetch,
+  };
+};
+
+export interface UseRepositoryStatisticsOptions {
+  /** Repository ID */
+  repositoryId: string;
+  /** Statistics period */
+  period?: '7d' | '30d' | '90d' | '1y';
+  /** Auto-refresh interval in milliseconds (0 to disable) */
+  refreshInterval?: number;
+  /** Whether to fetch data immediately on mount */
+  autoFetch?: boolean;
+}
+
+export interface UseRepositoryStatisticsReturn {
+  /** Repository statistics */
+  statistics: RepositoryStatistics | null;
+  /** Loading state */
+  isLoading: boolean;
+  /** Error message */
+  error: string | null;
+  /** Whether data is currently being refreshed */
+  isRefreshing: boolean;
+  /** Change the statistics period */
+  setPeriod: (period: '7d' | '30d' | '90d' | '1y') => void;
+  /** Manually refresh statistics */
+  refresh: () => Promise<void>;
+  /** Clear error state */
+  clearError: () => void;
+  /** Last successful fetch timestamp */
+  lastFetch: Date | null;
+}
+
+/**
+ * Hook for managing repository statistics
+ */
+export const useRepositoryStatistics = ({
+  repositoryId,
+  period = '30d',
+  refreshInterval = 600000, // 10 minutes default for statistics
+  autoFetch = true,
+}: UseRepositoryStatisticsOptions): UseRepositoryStatisticsReturn => {
+  const [statistics, setStatistics] = useState<RepositoryStatistics | null>(
+    null
+  );
+  const [currentPeriod, setCurrentPeriod] = useState(period);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [lastFetch, setLastFetch] = useState<Date | null>(null);
+
+  const fetchStatistics = useCallback(
+    async (isRefresh = false) => {
+      if (isRefresh) {
+        setIsRefreshing(true);
+      } else {
+        setIsLoading(true);
+      }
+
+      setError(null);
+
+      try {
+        const response = await RepositoryService.getRepositoryStatistics(
+          repositoryId,
+          currentPeriod
+        );
+
+        if (response.success && response.data) {
+          setStatistics(response.data);
+          setLastFetch(new Date());
+        } else {
+          setError(response.error || 'Failed to fetch repository statistics');
+        }
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : 'An unexpected error occurred'
+        );
+      } finally {
+        setIsLoading(false);
+        setIsRefreshing(false);
+      }
+    },
+    [repositoryId, currentPeriod]
+  );
+
+  const setPeriod = useCallback((newPeriod: '7d' | '30d' | '90d' | '1y') => {
+    setCurrentPeriod(newPeriod);
+  }, []);
+
+  const refresh = useCallback(async () => {
+    await fetchStatistics(true);
+  }, [fetchStatistics]);
+
+  const clearError = useCallback(() => {
+    setError(null);
+  }, []);
+
+  useEffect(() => {
+    if (autoFetch && repositoryId) {
+      fetchStatistics();
+    }
+  }, [fetchStatistics, autoFetch, repositoryId]);
+
+  useEffect(() => {
+    if (refreshInterval > 0 && repositoryId) {
+      const interval = setInterval(() => {
+        fetchStatistics(true);
+      }, refreshInterval);
+
+      return () => clearInterval(interval);
+    }
+  }, [fetchStatistics, refreshInterval, repositoryId]);
+
+  return {
+    statistics,
+    isLoading,
+    error,
+    isRefreshing,
+    setPeriod,
+    refresh,
+    clearError,
+    lastFetch,
+  };
+};
+
+export interface UseRepositoryIntegrationsOptions {
+  /** Repository ID */
+  repositoryId: string;
+  /** Auto-refresh interval in milliseconds (0 to disable) */
+  refreshInterval?: number;
+  /** Whether to fetch data immediately on mount */
+  autoFetch?: boolean;
+}
+
+export interface UseRepositoryIntegrationsReturn {
+  /** Repository integration status */
+  integrations: RepositoryIntegrationStatus | null;
+  /** Loading state */
+  isLoading: boolean;
+  /** Error message */
+  error: string | null;
+  /** Whether data is currently being refreshed */
+  isRefreshing: boolean;
+  /** Manually refresh integration status */
+  refresh: () => Promise<void>;
+  /** Clear error state */
+  clearError: () => void;
+  /** Last successful fetch timestamp */
+  lastFetch: Date | null;
+}
+
+/**
+ * Hook for managing repository integration status
+ */
+export const useRepositoryIntegrations = ({
+  repositoryId,
+  refreshInterval = 120000, // 2 minutes default for integrations
+  autoFetch = true,
+}: UseRepositoryIntegrationsOptions): UseRepositoryIntegrationsReturn => {
+  const [integrations, setIntegrations] =
+    useState<RepositoryIntegrationStatus | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [lastFetch, setLastFetch] = useState<Date | null>(null);
+
+  const fetchIntegrations = useCallback(
+    async (isRefresh = false) => {
+      if (isRefresh) {
+        setIsRefreshing(true);
+      } else {
+        setIsLoading(true);
+      }
+
+      setError(null);
+
+      try {
+        const response =
+          await RepositoryService.getRepositoryIntegrations(repositoryId);
+
+        if (response.success && response.data) {
+          setIntegrations(response.data);
+          setLastFetch(new Date());
+        } else {
+          setError(response.error || 'Failed to fetch repository integrations');
+        }
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : 'An unexpected error occurred'
+        );
+      } finally {
+        setIsLoading(false);
+        setIsRefreshing(false);
+      }
+    },
+    [repositoryId]
+  );
+
+  const refresh = useCallback(async () => {
+    await fetchIntegrations(true);
+  }, [fetchIntegrations]);
+
+  const clearError = useCallback(() => {
+    setError(null);
+  }, []);
+
+  useEffect(() => {
+    if (autoFetch && repositoryId) {
+      fetchIntegrations();
+    }
+  }, [fetchIntegrations, autoFetch, repositoryId]);
+
+  useEffect(() => {
+    if (refreshInterval > 0 && repositoryId) {
+      const interval = setInterval(() => {
+        fetchIntegrations(true);
+      }, refreshInterval);
+
+      return () => clearInterval(interval);
+    }
+  }, [fetchIntegrations, refreshInterval, repositoryId]);
+
+  return {
+    integrations,
+    isLoading,
+    error,
+    isRefreshing,
+    refresh,
+    clearError,
+    lastFetch,
+  };
+};
+
+export interface UseRepositoryRealtimeOptions {
+  /** Repository ID */
+  repositoryId: string;
+  /** Whether to start watching immediately */
+  autoWatch?: boolean;
+  /** Callback for repository updates */
+  onUpdate?: (data: {
+    type: 'commit' | 'branch' | 'status' | 'health';
+    repository: string;
+    data: unknown;
+    timestamp: string;
+  }) => void;
+  /** Callback for errors */
+  onError?: (error: Error) => void;
+}
+
+export interface UseRepositoryRealtimeReturn {
+  /** Whether the WebSocket connection is active */
+  isConnected: boolean;
+  /** Connection error */
+  connectionError: string | null;
+  /** Start watching repository updates */
+  startWatching: () => void;
+  /** Stop watching repository updates */
+  stopWatching: () => void;
+  /** Latest update received */
+  latestUpdate: unknown;
+  /** Connection status */
+  connectionStatus: 'disconnected' | 'connecting' | 'connected' | 'error';
+}
+
+/**
+ * Hook for real-time repository updates via WebSocket
+ */
+export const useRepositoryRealtime = ({
+  repositoryId,
+  autoWatch = true,
+  onUpdate,
+  onError,
+}: UseRepositoryRealtimeOptions): UseRepositoryRealtimeReturn => {
+  const [isConnected, setIsConnected] = useState(false);
+  const [connectionError, setConnectionError] = useState<string | null>(null);
+  const [latestUpdate, setLatestUpdate] = useState<unknown>(null);
+  const [connectionStatus, setConnectionStatus] = useState<
+    'disconnected' | 'connecting' | 'connected' | 'error'
+  >('disconnected');
+  const [cleanup, setCleanup] = useState<(() => void) | null>(null);
+
+  const startWatching = useCallback(() => {
+    if (cleanup) {
+      cleanup();
+    }
+
+    setConnectionStatus('connecting');
+    setConnectionError(null);
+
+    const cleanupFn = RepositoryService.watchRepository(
+      repositoryId,
+      data => {
+        setLatestUpdate(data);
+        setIsConnected(true);
+        setConnectionStatus('connected');
+        onUpdate?.(data);
+      },
+      error => {
+        setConnectionError(error.message);
+        setIsConnected(false);
+        setConnectionStatus('error');
+        onError?.(error);
+      }
+    );
+
+    setCleanup(() => cleanupFn);
+  }, [repositoryId, onUpdate, onError, cleanup]);
+
+  const stopWatching = useCallback(() => {
+    if (cleanup) {
+      cleanup();
+      setCleanup(null);
+    }
+    setIsConnected(false);
+    setConnectionStatus('disconnected');
+    setConnectionError(null);
+  }, [cleanup]);
+
+  useEffect(() => {
+    if (autoWatch && repositoryId) {
+      startWatching();
+    }
+
+    return () => {
+      if (cleanup) {
+        cleanup();
+      }
+    };
+  }, [autoWatch, repositoryId, startWatching, cleanup]);
+
+  return {
+    isConnected,
+    connectionError,
+    startWatching,
+    stopWatching,
+    latestUpdate,
+    connectionStatus,
   };
 };
 

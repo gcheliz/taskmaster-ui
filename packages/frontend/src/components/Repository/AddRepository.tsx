@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { validateRepositoryPath } from '../../utils/security';
-import './AddRepository.css';
 
 export interface AddRepositoryProps {
   onRepositoryAdd?: (repositoryPath: string) => Promise<void>;

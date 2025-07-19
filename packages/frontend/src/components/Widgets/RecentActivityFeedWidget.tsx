@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import './RecentActivityFeedWidget.css';
 
 export interface ActivityItem {
   id: string;

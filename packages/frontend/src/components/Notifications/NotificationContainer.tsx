@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNotification } from '../../contexts/NotificationContext';
 import { NotificationCard } from './NotificationCard';
-import './NotificationContainer.css';
 
 export interface NotificationContainerProps {
   position?:

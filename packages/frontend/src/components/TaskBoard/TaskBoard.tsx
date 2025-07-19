@@ -2,7 +2,6 @@ import React from 'react';
 import type { TaskBoardData, TaskStatus } from '../../types/task';
 import { TaskColumn } from './TaskColumn';
 import { DragAndDropProvider } from './DragAndDropProvider';
-import './TaskBoard.css';
 
 export interface TaskBoardProps {
   /** Task board data containing columns and tasks */

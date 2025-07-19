@@ -1,5 +1,4 @@
 import React from 'react';
-import './BranchList.css';
 
 export interface BranchInfo {
   name: string;

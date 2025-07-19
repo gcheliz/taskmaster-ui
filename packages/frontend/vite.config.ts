@@ -5,9 +5,9 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   server: {
-    port: 3000,
+    port: 5173,
     host: process.env.DOCKER_ENV === 'true' ? '0.0.0.0' : false, // Allow external access in Docker
-    strictPort: true,
+    strictPort: false,
     proxy: {
       '/api': {
         target: 'http://localhost:3001',
@@ -44,11 +44,7 @@ export default defineConfig({
   },
   css: {
     // CSS optimization configuration
-    postcss: {
-      plugins: [
-        // Additional PostCSS plugins can be added here
-      ],
-    },
+    postcss: './postcss.config.js',
   },
   define: {
     // Remove process.env access in production

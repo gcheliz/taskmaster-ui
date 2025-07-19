@@ -1,5 +1,4 @@
 import React from 'react';
-import './ProjectList.css';
 
 export interface Project {
   id: string;

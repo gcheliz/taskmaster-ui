@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import type { Task, TaskStatus, TaskPriority } from '../../types/task';
-import './TaskModal.css';
 
 export type TaskModalMode = 'create' | 'edit' | 'view';
 
@@ -252,12 +251,12 @@ export const TaskModal: React.FC<TaskModalProps> = ({
   }
 
   return (
-    <div className={`task-modal ${className}`} onClick={handleBackdropClick}>
-      <div className="task-modal__content">
-        <div className="task-modal__header">
-          <h2 className="modal-title">{getModalTitle()}</h2>
+    <div className={`fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 ${className}`} onClick={handleBackdropClick}>
+      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-hidden flex flex-col">
+        <div className="flex items-center justify-between p-6 border-b border-gray-200">
+          <h2 className="text-xl font-semibold text-gray-900">{getModalTitle()}</h2>
           <button
-            className="modal-close-button"
+            className="inline-flex items-center justify-center w-8 h-8 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
             onClick={handleClose}
             disabled={isLoading}
             aria-label="Close modal"
@@ -266,13 +265,13 @@ export const TaskModal: React.FC<TaskModalProps> = ({
           </button>
         </div>
 
-        <div className="task-modal__body">
+        <div className="flex-1 overflow-y-auto p-6">
           {error && (
-            <div className="error-banner">
-              <span className="error-icon">⚠️</span>
-              <span className="error-message">{error}</span>
+            <div className="flex items-center gap-3 p-4 mb-6 bg-red-50 border border-red-200 rounded-lg">
+              <span className="text-red-500" aria-hidden="true">⚠️</span>
+              <span className="flex-1 text-sm text-red-700">{error}</span>
               <button
-                className="error-dismiss"
+                className="text-red-400 hover:text-red-600 transition-colors"
                 onClick={() => setError(null)}
                 aria-label="Dismiss error"
               >
@@ -281,10 +280,10 @@ export const TaskModal: React.FC<TaskModalProps> = ({
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="task-form">
+          <form onSubmit={handleSubmit} className="space-y-6">
             {/* Title */}
-            <div className="form-group">
-              <label htmlFor="task-title" className="form-label">
+            <div className="space-y-2">
+              <label htmlFor="task-title" className="block text-sm font-medium text-gray-700">
                 Title *
               </label>
               <input
@@ -292,27 +291,27 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                 type="text"
                 value={formData.title || ''}
                 onChange={e => updateFormData('title', e.target.value)}
-                className={`form-input ${validationErrors.title ? 'error' : ''}`}
+                className={`block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${validationErrors.title ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
                 placeholder="Enter task title..."
                 disabled={isLoading || isReadOnly}
                 maxLength={100}
                 data-testid="task-title-input"
               />
               {validationErrors.title && (
-                <span className="form-error">{validationErrors.title}</span>
+                <span className="text-sm text-red-600">{validationErrors.title}</span>
               )}
             </div>
 
             {/* Description */}
-            <div className="form-group">
-              <label htmlFor="task-description" className="form-label">
+            <div className="space-y-2">
+              <label htmlFor="task-description" className="block text-sm font-medium text-gray-700">
                 Description *
               </label>
               <textarea
                 id="task-description"
                 value={formData.description || ''}
                 onChange={e => updateFormData('description', e.target.value)}
-                className={`form-textarea ${validationErrors.description ? 'error' : ''}`}
+                className={`block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical ${validationErrors.description ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
                 placeholder="Enter task description..."
                 disabled={isLoading || isReadOnly}
                 rows={4}
@@ -320,23 +319,23 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                 data-testid="task-description-input"
               />
               {validationErrors.description && (
-                <span className="form-error">
+                <span className="text-sm text-red-600">
                   {validationErrors.description}
                 </span>
               )}
             </div>
 
             {/* Priority and Status Row */}
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="task-priority" className="form-label">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label htmlFor="task-priority" className="block text-sm font-medium text-gray-700">
                   Priority *
                 </label>
                 <select
                   id="task-priority"
                   value={formData.priority || 'medium'}
                   onChange={e => updateFormData('priority', e.target.value)}
-                  className={`form-select ${validationErrors.priority ? 'error' : ''}`}
+                  className={`block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${validationErrors.priority ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
                   disabled={isLoading || isReadOnly}
                   data-testid="task-priority-select"
                 >
@@ -347,19 +346,19 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                   ))}
                 </select>
                 {validationErrors.priority && (
-                  <span className="form-error">
+                  <span className="text-sm text-red-600">
                     {validationErrors.priority}
                   </span>
                 )}
                 {formData.priority && (
-                  <div className="priority-indicator">
+                  <div className="flex items-center gap-2 mt-2">
                     <span
-                      className="priority-dot"
+                      className="w-3 h-3 rounded-full"
                       style={{
                         backgroundColor: getPriorityColor(formData.priority),
                       }}
                     />
-                    <span className="priority-label">
+                    <span className="text-sm text-gray-600">
                       {
                         TASK_PRIORITIES.find(p => p.value === formData.priority)
                           ?.label
@@ -676,10 +675,10 @@ export const TaskModal: React.FC<TaskModalProps> = ({
           </form>
         </div>
 
-        <div className="task-modal__footer">
+        <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200 bg-gray-50">
           <button
             type="button"
-            className="button button--secondary"
+            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             onClick={handleClose}
             disabled={isLoading}
           >
@@ -689,7 +688,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
           {isReadOnly && onEdit && (
             <button
               type="button"
-              className="button button--primary"
+              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               onClick={onEdit}
               disabled={isLoading}
               data-testid="task-edit-button"
@@ -701,14 +700,14 @@ export const TaskModal: React.FC<TaskModalProps> = ({
           {!isReadOnly && (
             <button
               type="submit"
-              className="button button--primary"
+              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               onClick={handleSubmit}
               disabled={isLoading}
               data-testid="task-save-button"
             >
               {isLoading ? (
                 <>
-                  <span className="button-spinner">⏳</span>
+                  <span className="animate-spin" aria-hidden="true">⏳</span>
                   {isCreateMode ? 'Creating...' : 'Saving...'}
                 </>
               ) : (
@@ -720,14 +719,14 @@ export const TaskModal: React.FC<TaskModalProps> = ({
           {isEditMode && onDelete && task?.id && (
             <button
               type="button"
-              className="button button--danger"
+              className="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50"
               onClick={handleDelete}
               disabled={isLoading}
               data-testid="task-delete-button"
             >
               {isLoading ? (
                 <>
-                  <span className="button-spinner">⏳</span>
+                  <span className="animate-spin" aria-hidden="true">⏳</span>
                   Deleting...
                 </>
               ) : (

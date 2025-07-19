@@ -4,7 +4,6 @@ import { TaskBoardWithFilters } from '../TaskBoard/TaskBoardWithFilters';
 import { KanbanBoard } from '../ui/organisms/KanbanBoard';
 import type { TaskStatus } from '../../types/task';
 import { useTaskData } from '../../hooks/useTaskData';
-import './TaskBoardView.css';
 
 export interface TaskBoardViewProps {
   className?: string;

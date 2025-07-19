@@ -12,7 +12,6 @@ import { useRealtimeTaskData } from '../../hooks/useRealtimeTaskData';
 import { useTaskUpdates } from '../../hooks/useTaskUpdates';
 import { useNotification } from '../../contexts/NotificationContext';
 import { taskService } from '../../services/taskService';
-import './TaskBoardManager.css';
 
 export interface TaskBoardManagerProps {
   /** Repository path to load tasks from */

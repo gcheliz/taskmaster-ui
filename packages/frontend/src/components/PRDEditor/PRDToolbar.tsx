@@ -1,6 +1,5 @@
 import React from 'react';
 import { Editor } from '@tiptap/react';
-import './PRDToolbar.css';
 
 export interface PRDToolbarProps {
   /** TipTap editor instance */

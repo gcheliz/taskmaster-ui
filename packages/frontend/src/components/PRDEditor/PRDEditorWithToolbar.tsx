@@ -16,7 +16,6 @@ import {
   loadPRDData,
   isLocalStorageAvailable,
 } from './utils/localStorage';
-import './PRDEditorWithToolbar.css';
 
 export interface PRDEditorWithToolbarProps {
   /** Initial content for the editor */

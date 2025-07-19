@@ -8,7 +8,6 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import { NotificationContainer } from './components/Notifications';
 import { AppRoutes } from './routes/AppRoutes';
 import { initializeKeyboardDetection } from './utils/keyboard';
-import './App.css';
 
 function App() {
   // Initialize keyboard navigation detection

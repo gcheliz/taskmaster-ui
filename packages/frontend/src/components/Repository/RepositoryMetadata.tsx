@@ -1,5 +1,4 @@
 import React from 'react';
-import './RepositoryMetadata.css';
 
 export interface CommitInfo {
   hash: string;

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import type { Notification } from '../../contexts/NotificationContext';
-import './NotificationCard.css';
 
 export interface NotificationCardProps {
   notification: Notification;

@@ -3,7 +3,6 @@ import { TerminalContainer } from '../Terminal/TerminalContainer';
 import { CommandWorkspace } from '../Commands/CommandWorkspace';
 import { useRepository } from '../../contexts/RepositoryContext';
 import { useNotification } from '../../contexts/NotificationContext';
-import './TerminalView.css';
 
 export interface TerminalViewProps {
   /** Additional CSS class */

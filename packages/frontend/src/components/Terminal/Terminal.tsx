@@ -3,7 +3,6 @@ import { Terminal as XTerminal } from '@xterm/xterm';
 import { FitAddon } from '@xterm/addon-fit';
 import { WebLinksAddon } from '@xterm/addon-web-links';
 import '@xterm/xterm/css/xterm.css';
-import './Terminal.css';
 
 export interface TerminalProps {
   /** Terminal session ID */

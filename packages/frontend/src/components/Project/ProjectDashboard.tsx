@@ -5,7 +5,6 @@ import { useProjectOperations } from '../../hooks/useProjectOperations';
 import { useRepository } from '../../contexts/RepositoryContext';
 import type { Project } from './ProjectList';
 import type { ProjectResponse } from '../../services/api';
-import './ProjectDashboard.css';
 
 export interface ProjectDashboardProps {
   /** Additional CSS class name */

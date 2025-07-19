@@ -1,5 +1,4 @@
 import React from 'react';
-import './RepositoryManagementView.css';
 import { AddRepository } from '../Repository';
 import { useRepositoryOperations } from '../../hooks/useRepositoryOperations';
 import { useRepository } from '../../contexts/RepositoryContext';

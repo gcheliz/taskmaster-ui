@@ -2,7 +2,6 @@ import React, { useState, useCallback } from 'react';
 import { FilterSortControls } from './FilterSortControls';
 import { useTaskFiltersIntegration } from '../../hooks/useTaskFiltersIntegration';
 import type { FilterOptions, SortOptions } from './FilterSortControls';
-import './TaskBoardWithFilters.css';
 
 export interface TaskBoardWithFiltersProps {
   repositoryPath: string;

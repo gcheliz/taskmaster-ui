@@ -80,7 +80,7 @@ export const PasswordStrengthIndicator: React.FC<PasswordStrengthIndicatorProps>
     },
     {
       label: 'One number or special character',
-      met: /[\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password),
+      met: /[\d!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password),
     },
   ];
 

@@ -6,7 +6,6 @@ import type {
 } from '../../types/task';
 import { TaskCard } from './TaskCard';
 import type { DropData } from './DragAndDropProvider';
-import './TaskColumn.css';
 
 export interface TaskColumnProps {
   /** Column data including title, status, and tasks */
@@ -90,29 +89,29 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
   return (
     <section
       ref={setNodeRef}
-      className={`task-column ${isOver ? 'drag-over' : ''} ${className}`}
+      className={`bg-gray-50 rounded-lg p-4 min-h-96 flex flex-col ${isOver ? 'bg-blue-50 border-2 border-blue-300 border-dashed' : 'border border-gray-200'} ${className}`}
       style={{ '--column-color': color } as React.CSSProperties}
       role="region"
       aria-labelledby={`column-title-${status}`}
       aria-describedby={`column-count-${status}`}
       data-status={status}
     >
-      <header className="task-column__header">
-        <div className="column-title-section">
-          <h3 id={`column-title-${status}`} className="column-title">
-            <span className="column-icon" aria-hidden="true">
+      <header className="mb-4">
+        <div className="flex items-center justify-between">
+          <h3 id={`column-title-${status}`} className="font-semibold text-gray-900 text-lg flex items-center gap-2">
+            <span className="text-xl" aria-hidden="true">
               {getStatusIcon(status)}
             </span>
             {title}
           </h3>
           <div
             id={`column-count-${status}`}
-            className={`column-count ${isOverLimit ? 'over-limit' : ''}`}
+            className={`inline-flex items-center gap-1 px-2 py-1 text-xs rounded-full ${isOverLimit ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-700'}`}
             aria-label={`${taskCount} task${taskCount !== 1 ? 's' : ''} in ${title.toLowerCase()}${limit ? `, limit ${limit}` : ''}`}
           >
             <span aria-hidden="true">{taskCount}</span>
             {limit && (
-              <span className="column-limit" aria-hidden="true">
+              <span className="text-gray-500" aria-hidden="true">
                 /{limit}
               </span>
             )}
@@ -127,12 +126,12 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
 
         {showCreateButton && (
           <button
-            className="column-create-button"
+            className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-500 hover:bg-blue-600 text-white transition-colors"
             onClick={handleCreateTask}
             aria-label={`Create new task in ${title.toLowerCase()}`}
             title={`Create task in ${title}`}
           >
-            <span className="button-icon" aria-hidden="true">
+            <span className="text-sm" aria-hidden="true">
               ➕
             </span>
             <span className="sr-only">Create task</span>
@@ -141,21 +140,21 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
       </header>
 
       <div
-        className="task-column__content"
+        className="flex-1 overflow-y-auto"
         role="group"
         aria-labelledby={`column-title-${status}`}
       >
         {tasks.length === 0 ? (
-          <div className="column-empty" role="status" aria-live="polite">
-            <div className="empty-message">
-              <span className="empty-icon" aria-hidden="true">
+          <div className="flex flex-col items-center justify-center h-32 text-center" role="status" aria-live="polite">
+            <div className="flex flex-col items-center gap-2 mb-4">
+              <span className="text-3xl opacity-50" aria-hidden="true">
                 {getStatusIcon(status)}
               </span>
-              <span className="empty-text">No {title.toLowerCase()} tasks</span>
+              <span className="text-sm text-gray-500">No {title.toLowerCase()} tasks</span>
             </div>
             {showCreateButton && (
               <button
-                className="empty-create-button"
+                className="px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-md hover:bg-blue-100 transition-colors"
                 onClick={handleCreateTask}
                 aria-label={`Create first task in ${title.toLowerCase()}`}
               >
@@ -165,7 +164,7 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
           </div>
         ) : (
           <div
-            className="task-cards"
+            className="space-y-3 overflow-y-auto"
             role="group"
             aria-label={`${taskCount} task${taskCount !== 1 ? 's' : ''} in ${title.toLowerCase()}`}
           >

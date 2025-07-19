@@ -3,7 +3,6 @@ import { useDraggable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
 import type { Task } from '../../types/task';
 import type { DragData } from './DragAndDropProvider';
-import './TaskCard.css';
 
 export interface TaskCardProps {
   /** Task data to display */
@@ -140,13 +139,16 @@ export const TaskCard: React.FC<TaskCardProps> = ({
     <div
       ref={setNodeRef}
       className={`
-        task-card 
-        ${task.priority}-priority 
-        ${compact ? 'compact' : ''} 
-        ${isOverdue ? 'overdue' : ''} 
-        ${isDueSoon ? 'due-soon' : ''}
-        ${isDragging ? 'dragging' : ''}
-        ${isDraggable ? 'draggable' : ''}
+        bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow cursor-grab active:cursor-grabbing
+        ${task.priority === 'urgent' ? 'border-l-4 border-l-red-500' : ''}
+        ${task.priority === 'high' ? 'border-l-4 border-l-orange-500' : ''}
+        ${task.priority === 'medium' ? 'border-l-4 border-l-yellow-500' : ''}
+        ${task.priority === 'low' ? 'border-l-4 border-l-green-500' : ''}
+        ${compact ? 'p-2' : ''} 
+        ${isOverdue ? 'bg-red-50 border-red-300' : ''} 
+        ${isDueSoon ? 'bg-yellow-50 border-yellow-300' : ''}
+        ${isDragging ? 'opacity-50 scale-95' : ''}
+        ${isDraggable ? 'cursor-grab hover:cursor-grab' : 'cursor-default'}
         ${className}
       `.trim()}
       onClick={handleTaskClick}
@@ -160,53 +162,53 @@ export const TaskCard: React.FC<TaskCardProps> = ({
       {...mergedAttributes}
       {...listeners}
     >
-      <div className="task-card__header">
-        <div className="task-title-section">
-          <h4 className="task-title">{task.title}</h4>
-          <div className="task-meta-row">
-            <span className="task-id">#{task.id}</span>
-            <span className="task-status-badge">
-              <span className="status-icon">{getStatusIcon(task.status)}</span>
-              <span className="status-text">{task.status}</span>
+      <div className="flex justify-between items-start mb-2">
+        <div className="flex-1 min-w-0">
+          <h4 className="font-semibold text-gray-900 text-sm leading-tight truncate">{task.title}</h4>
+          <div className="flex items-center gap-2 mt-1">
+            <span className="text-xs text-gray-500 font-mono">#{task.id}</span>
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs rounded-full bg-gray-100 text-gray-700">
+              <span className="text-xs" aria-hidden="true">{getStatusIcon(task.status)}</span>
+              <span className="font-medium">{task.status}</span>
             </span>
           </div>
         </div>
-        <div className="task-priority">
-          <span className="priority-icon" title={`${task.priority} priority`}>
+        <div className="flex-shrink-0 ml-2">
+          <span className="text-lg" title={`${task.priority} priority`}>
             {getPriorityIcon(task.priority)}
           </span>
         </div>
       </div>
 
       {showFullDetails && task.description && (
-        <div className="task-card__description">
-          <p id={`task-${task.id}-description`} className="task-description">
+        <div className="mb-3">
+          <p id={`task-${task.id}-description`} className="text-sm text-gray-600 leading-relaxed">
             {task.description}
           </p>
         </div>
       )}
 
       {showFullDetails && (
-        <div className="task-card__metadata">
-          <div className="task-metadata-row">
+        <div className="space-y-2 mb-3">
+          <div className="flex items-center gap-3 flex-wrap">
             {task.estimatedHours && (
-              <div className="task-meta-item">
-                <span className="meta-icon">⏱️</span>
-                <span className="meta-value">{task.estimatedHours}h</span>
+              <div className="flex items-center gap-1 text-xs text-gray-500">
+                <span className="text-xs" aria-hidden="true">⏱️</span>
+                <span className="font-medium">{task.estimatedHours}h</span>
               </div>
             )}
 
             {task.complexity && (
-              <div className="task-meta-item">
-                <span className="meta-icon">🔧</span>
-                <span className="meta-value">{task.complexity}/10</span>
+              <div className="flex items-center gap-1 text-xs text-gray-500">
+                <span className="text-xs" aria-hidden="true">🔧</span>
+                <span className="font-medium">{task.complexity}/10</span>
               </div>
             )}
 
             {task.subtasks && task.subtasks.length > 0 && (
-              <div className="task-meta-item">
-                <span className="meta-icon">📋</span>
-                <span className="meta-value">
+              <div className="flex items-center gap-1 text-xs text-gray-500">
+                <span className="text-xs" aria-hidden="true">📋</span>
+                <span className="font-medium">
                   {task.subtasks.filter(st => st.status === 'done').length}/
                   {task.subtasks.length}
                 </span>
@@ -215,23 +217,23 @@ export const TaskCard: React.FC<TaskCardProps> = ({
           </div>
 
           {task.assignedTo && (
-            <div className="task-assignee">
-              <span className="assignee-icon">👤</span>
-              <span className="assignee-name">{task.assignedTo}</span>
+            <div className="flex items-center gap-1 text-xs text-gray-600">
+              <span className="text-xs" aria-hidden="true">👤</span>
+              <span className="font-medium">{task.assignedTo}</span>
             </div>
           )}
         </div>
       )}
 
       {showFullDetails && task.tags && task.tags.length > 0 && (
-        <div className="task-card__tags">
+        <div className="flex items-center gap-1 flex-wrap mb-2">
           {task.tags.slice(0, compact ? 2 : 3).map((tag, index) => (
-            <span key={index} className="task-tag">
+            <span key={index} className="inline-block px-2 py-0.5 text-xs font-medium bg-blue-100 text-blue-800 rounded-md">
               {tag}
             </span>
           ))}
           {task.tags.length > (compact ? 2 : 3) && (
-            <span className="task-tag more-tags">
+            <span className="inline-block px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-600 rounded-md">
               +{task.tags.length - (compact ? 2 : 3)}
             </span>
           )}
@@ -240,19 +242,19 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
       {showFullDetails && task.dueDate && (
         <div
-          className={`task-card__due-date ${isOverdue ? 'overdue' : isDueSoon ? 'due-soon' : ''}`}
+          className={`flex items-center gap-1 text-xs ${isOverdue ? 'text-red-600 font-semibold' : isDueSoon ? 'text-yellow-600 font-semibold' : 'text-gray-500'}`}
         >
-          <span className="due-icon">📅</span>
-          <span className="due-date">
+          <span className="text-xs" aria-hidden="true">📅</span>
+          <span className="font-medium">
             Due: {new Date(task.dueDate).toLocaleDateString()}
           </span>
         </div>
       )}
 
       {showFullDetails && task.dependencies && task.dependencies.length > 0 && (
-        <div className="task-card__dependencies">
-          <span className="dependencies-icon">🔗</span>
-          <span className="dependencies-text">
+        <div className="flex items-center gap-1 text-xs text-gray-500">
+          <span className="text-xs" aria-hidden="true">🔗</span>
+          <span className="font-medium">
             Depends on: {task.dependencies.join(', ')}
           </span>
         </div>

@@ -88,7 +88,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
     }
 
     // Number or special character
-    if (/[\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+    if (/[\d!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)) {
       score += 25;
     } else {
       feedback.push('One number or special character');

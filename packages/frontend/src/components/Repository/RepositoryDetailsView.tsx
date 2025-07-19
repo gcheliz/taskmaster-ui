@@ -5,7 +5,6 @@ import {
   useRepositoryData,
   useRepositoryActions,
 } from '../../hooks/useRepositoryData';
-import './RepositoryDetailsView.css';
 
 export interface RepositoryDetailsViewProps {
   /** Repository ID to display */

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { RepositoryService } from '../../services/repositoryService';
 import { validateProjectName } from '../../utils/security';
-import './CreateProjectModal.css';
 
 export interface Repository {
   id: string;

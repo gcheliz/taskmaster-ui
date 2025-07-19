@@ -12,7 +12,6 @@ import {
   YAxis,
   CartesianGrid,
 } from 'recharts';
-import './TaskCompletionChart.css';
 
 export interface TaskCompletionChartProps {
   data: {

@@ -1,5 +1,4 @@
 import React from 'react';
-import './FilterSortControls.css';
 
 export interface FilterOptions {
   priority: 'all' | 'high' | 'medium' | 'low';

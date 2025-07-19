@@ -14,3 +14,16 @@ export type { BranchListProps, BranchInfo } from './BranchList';
 
 export { RepositoryDetailsView } from './RepositoryDetailsView';
 export type { RepositoryDetailsViewProps } from './RepositoryDetailsView';
+
+export { RepositoryCard } from './RepositoryCard';
+export type { RepositoryCardProps, RepositoryCardData, RepositoryCardEnhancedData } from './RepositoryCard';
+
+export { RepositoryCardCompact } from './RepositoryCardCompact';
+export type { RepositoryCardCompactProps } from './RepositoryCardCompact';
+
+export { RepositoryGrid } from './RepositoryGrid';
+export type { 
+  RepositoryGridProps, 
+  RepositorySortOption, 
+  RepositoryFilterOption 
+} from './RepositoryGrid';

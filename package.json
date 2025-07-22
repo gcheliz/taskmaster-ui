@@ -72,7 +72,15 @@
     "tunnel:start": "nohup lt --port 6006 --subdomain taskmaster-storybook > /tmp/storybook-tunnel.log 2>&1 & nohup lt --port 8080 --subdomain taskmaster-frontend > /tmp/frontend-tunnel.log 2>&1 & sleep 5 && echo 'Tunnels started. URLs:' && cat /tmp/storybook-tunnel.log && cat /tmp/frontend-tunnel.log",
     "tunnel:stop": "pkill -f 'lt --port' && echo 'All tunnels stopped'",
     "tunnel:status": "ps aux | grep 'lt --port' | grep -v grep",
-    "tunnel:logs": "echo 'Storybook tunnel:' && cat /tmp/storybook-tunnel.log && echo 'Frontend tunnel:' && cat /tmp/frontend-tunnel.log"
+    "tunnel:logs": "echo 'Storybook tunnel:' && cat /tmp/storybook-tunnel.log && echo 'Frontend tunnel:' && cat /tmp/frontend-tunnel.log",
+    "type-check": "pnpm --filter=backend run type-check && pnpm --filter=frontend run type-check",
+    "test:coverage": "pnpm --filter=backend run test:coverage && pnpm --filter=frontend run test:coverage",
+    "build:prod": "NODE_ENV=production pnpm run build",
+    "validate": "pnpm run type-check && pnpm run lint && pnpm run test",
+    "security:audit": "pnpm audit --audit-level moderate",
+    "deps:update": "pnpm update --latest --recursive",
+    "precommit": "pnpm run type-check && pnpm run lint",
+    "prepare": "node -e \"try { require('husky').install() } catch (e) { console.log('Husky not installed') }\""
   },
   "repository": {
     "type": "git",

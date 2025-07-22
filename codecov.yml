@@ -1,0 +1,57 @@
+# Codecov Configuration for TaskMaster UI
+# Documentation: https://docs.codecov.com/docs/codecov-yaml
+
+coverage:
+  status:
+    project:
+      default:
+        target: 80%
+        threshold: 2%
+        informational: false
+    patch:
+      default:
+        target: 70%
+        threshold: 5%
+        informational: false
+
+  range: 50..90
+
+comment:
+  layout: "reach, diff, flags, files"
+  behavior: default
+  require_changes: false
+  require_base: no
+  require_head: yes
+
+ignore:
+  - "**/*.test.ts"
+  - "**/*.test.tsx"
+  - "**/*.spec.ts"
+  - "**/*.spec.tsx"  
+  - "**/stories/**"
+  - "**/*.stories.*"
+  - "**/storybook-static/**"
+  - "**/dist/**"
+  - "**/build/**"
+  - "**/coverage/**"
+  - "**/.next/**"
+  - "**/node_modules/**"
+  - "packages/frontend/src/stories/**"
+  - "packages/**/generated/**"
+  - "e2e/**"
+  - "playwright.config.ts"
+  - "*.config.js"
+  - "*.config.ts"
+
+flags:
+  frontend:
+    paths:
+      - packages/frontend/
+    carryforward: true
+  backend:
+    paths:
+      - packages/backend/
+    carryforward: true
+
+github_checks:
+  annotations: true

@@ -10,15 +10,15 @@ const modalOverlayVariants = cva(
 );
 
 const modalContentVariants = cva(
-  'fixed left-1/2 top-1/2 z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border border-secondary-200 bg-white p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg',
+  'fixed left-1/2 top-1/2 z-50 grid w-full translate-x-[-50%] translate-y-[-50%] gap-4 border border-secondary-200 bg-white shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg p-4 sm:p-6 m-4 sm:m-0',
   {
     variants: {
       size: {
-        sm: 'max-w-md',
-        md: 'max-w-lg',
-        lg: 'max-w-2xl',
-        xl: 'max-w-4xl',
-        full: 'max-w-[95vw] max-h-[95vh]',
+        sm: 'max-w-sm sm:max-w-md max-h-[90vh] sm:max-h-[95vh]',
+        md: 'max-w-md sm:max-w-lg max-h-[90vh] sm:max-h-[95vh]',
+        lg: 'max-w-lg sm:max-w-2xl max-h-[90vh] sm:max-h-[95vh]',
+        xl: 'max-w-xl sm:max-w-4xl max-h-[90vh] sm:max-h-[95vh]',
+        full: 'max-w-[calc(100vw-2rem)] sm:max-w-[95vw] max-h-[90vh] sm:max-h-[95vh]',
       },
     },
     defaultVariants: {
@@ -40,7 +40,7 @@ const modalDescriptionVariants = cva('text-sm text-secondary-600');
 const modalBodyVariants = cva('flex-1 overflow-y-auto');
 
 const modalFooterVariants = cva(
-  'flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2'
+  'flex flex-col space-y-2 sm:flex-row-reverse sm:space-y-0 sm:space-x-2 sm:space-x-reverse sm:justify-start pt-4 border-t border-secondary-100'
 );
 
 export interface ModalProps {
@@ -344,7 +344,7 @@ const ModalClose = React.forwardRef<
       ref={ref}
       variant="ghost"
       size="sm"
-      className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
+      className="absolute right-2 top-2 sm:right-4 sm:top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground touch-target"
       onClick={event => {
         onOpenChange(false);
         onClick?.(event);

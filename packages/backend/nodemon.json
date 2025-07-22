@@ -2,9 +2,11 @@
   "watch": ["src", "prisma/schema.prisma"],
   "ext": "ts,prisma",
   "ignore": ["src/**/*.test.ts", "src/**/*.spec.ts", "node_modules", "dist", "src/generated"],
-  "exec": "ts-node src/index.ts",
+  "exec": "NODE_PATH=/app/node_modules:/app/packages/backend/node_modules ts-node --transpile-only src/index.ts",
   "env": {
-    "NODE_ENV": "development"
+    "NODE_ENV": "development",
+    "TS_NODE_PROJECT": "./tsconfig.json",
+    "TS_NODE_TRANSPILE_ONLY": "true"
   },
   "delay": 1000,
   "verbose": true,

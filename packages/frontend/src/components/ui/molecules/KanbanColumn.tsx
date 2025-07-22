@@ -123,7 +123,7 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({
   return (
     <div
       ref={setNodeRef}
-      className={`kanban-column flex flex-col h-full min-w-[300px] max-w-[350px] ${className}`}
+      className={`kanban-column flex flex-col h-full w-full ${className}`}
       data-column-id={id}
       data-status={status}
     >
@@ -172,7 +172,7 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({
               variant="outline"
               size="sm"
               onClick={handleAddTask}
-              className="w-full justify-center text-xs py-2 border-dashed border-2 hover:border-solid transition-all"
+              className="w-full justify-center text-xs py-3 border-dashed border-2 hover:border-solid transition-all touch-target"
             >
               <Icon icon={PlusIcon} size="sm" className="mr-2" />
               Add Task

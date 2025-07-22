@@ -1,20 +1,20 @@
 {
   "models": {
     "main": {
-      "provider": "gemini-cli",
-      "modelId": "gemini-2.5-pro",
+      "provider": "anthropic",
+      "modelId": "claude-3-5-sonnet-20241022",
       "maxTokens": 65536,
       "temperature": 0.2
     },
     "research": {
-      "provider": "gemini-cli",
-      "modelId": "gemini-2.5-pro",
+      "provider": "anthropic", 
+      "modelId": "claude-3-5-sonnet-20241022",
       "maxTokens": 65536,
       "temperature": 0.1
     },
     "fallback": {
-      "provider": "gemini-cli",
-      "modelId": "gemini-2.5-flash",
+      "provider": "anthropic",
+      "modelId": "claude-3-5-sonnet-20241022",
       "maxTokens": 65536,
       "temperature": 0.2
     }

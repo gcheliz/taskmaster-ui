@@ -9,6 +9,8 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import { NotificationContainer } from './components/Notifications';
 import { AppRoutes } from './routes/AppRoutes';
 import { initializeKeyboardDetection } from './utils/keyboard';
+import { AppErrorBoundary } from './components/ErrorBoundary/AppErrorBoundary';
+import { WebSocketErrorBoundary } from './components/ErrorBoundary';
 
 // Create a client for React Query
 const queryClient = new QueryClient({
@@ -37,22 +39,26 @@ function App() {
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <ThemeProvider>
-          <NotificationProvider>
-            <WebSocketProvider config={{ autoConnect: true }}>
-              <RepositoryProvider>
-                <AppLayout>
-                  <AppRoutes />
-                </AppLayout>
-                <NotificationContainer position="top-right" />
-              </RepositoryProvider>
-            </WebSocketProvider>
-          </NotificationProvider>
-        </ThemeProvider>
-      </BrowserRouter>
-    </QueryClientProvider>
+    <AppErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <ThemeProvider>
+            <NotificationProvider>
+              <WebSocketErrorBoundary>
+                <WebSocketProvider config={{ autoConnect: true }}>
+                  <RepositoryProvider>
+                    <AppLayout>
+                      <AppRoutes />
+                    </AppLayout>
+                    <NotificationContainer position="top-right" />
+                  </RepositoryProvider>
+                </WebSocketProvider>
+              </WebSocketErrorBoundary>
+            </NotificationProvider>
+          </ThemeProvider>
+        </BrowserRouter>
+      </QueryClientProvider>
+    </AppErrorBoundary>
   );
 }
 

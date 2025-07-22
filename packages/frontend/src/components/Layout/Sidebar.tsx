@@ -4,24 +4,64 @@ import { cn } from '../../utils/cn';
 
 export interface SidebarProps {
   className?: string;
+  open?: boolean;
+  onClose?: () => void;
+  isMobile?: boolean;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ className = '' }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ 
+  className = '', 
+  open = false,
+  onClose,
+  isMobile = false
+}) => {
   return (
     <aside
+      id="sidebar-nav"
       className={cn(
-        'w-64 bg-slate-900 border-r border-slate-800 p-4',
+        'fixed top-16 left-0 z-50 h-full w-64 bg-slate-900 border-r border-slate-800 p-4 transition-transform duration-300 ease-in-out',
+        // Desktop: Always visible, positioned normally
+        'lg:translate-x-0 lg:static lg:z-auto lg:top-0',
+        // Mobile: Transform based on open state
+        isMobile ? (open ? 'translate-x-0' : '-translate-x-full') : '',
         className
       )}
       role="navigation"
       aria-label="Main navigation"
     >
+      {/* Close button for mobile */}
+      {isMobile && (
+        <div className="flex justify-between items-center mb-4 lg:hidden">
+          <h2 className="text-lg font-semibold text-white">Navigation</h2>
+          <button
+            onClick={onClose}
+            className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-md transition-colors"
+            aria-label="Close navigation menu"
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+      )}
+
       <nav className="space-y-2">
         <NavLink
           to="/dashboard"
+          onClick={isMobile ? onClose : undefined}
           className={({ isActive }) =>
             cn(
-              'flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors',
+              'flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors touch-target',
               isActive
                 ? 'bg-accent-primary text-white'
                 : 'text-slate-300 hover:bg-slate-800 hover:text-white'
@@ -46,9 +86,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ className = '' }) => {
 
         <NavLink
           to="/task-board"
+          onClick={isMobile ? onClose : undefined}
           className={({ isActive }) =>
             cn(
-              'flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors',
+              'flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors touch-target',
               isActive
                 ? 'bg-accent-primary text-white'
                 : 'text-slate-300 hover:bg-slate-800 hover:text-white'
@@ -73,9 +114,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ className = '' }) => {
 
         <NavLink
           to="/repository-management"
+          onClick={isMobile ? onClose : undefined}
           className={({ isActive }) =>
             cn(
-              'flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors',
+              'flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors touch-target',
               isActive
                 ? 'bg-accent-primary text-white'
                 : 'text-slate-300 hover:bg-slate-800 hover:text-white'
@@ -93,16 +135,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ className = '' }) => {
               strokeLinejoin="round"
               strokeWidth="2"
               d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"
-            ></path>
+            />
           </svg>
           <span className="font-medium">Repositories</span>
         </NavLink>
 
         <NavLink
           to="/terminal"
+          onClick={isMobile ? onClose : undefined}
           className={({ isActive }) =>
             cn(
-              'flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors',
+              'flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors touch-target',
               isActive
                 ? 'bg-accent-primary text-white'
                 : 'text-slate-300 hover:bg-slate-800 hover:text-white'
@@ -120,16 +163,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ className = '' }) => {
               strokeLinejoin="round"
               strokeWidth="2"
               d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-            ></path>
+            />
           </svg>
           <span className="font-medium">Terminal</span>
         </NavLink>
 
         <NavLink
           to="/settings"
+          onClick={isMobile ? onClose : undefined}
           className={({ isActive }) =>
             cn(
-              'flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors',
+              'flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors touch-target',
               isActive
                 ? 'bg-accent-primary text-white'
                 : 'text-slate-300 hover:bg-slate-800 hover:text-white'

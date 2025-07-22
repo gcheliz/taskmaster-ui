@@ -549,6 +549,37 @@ export default {
           padding: theme('spacing.6'),
         },
         
+        // Touch target utilities for mobile
+        '.touch-target': {
+          minHeight: '44px', // iOS minimum touch target size
+          minWidth: '44px',
+          '@media (pointer: coarse)': {
+            minHeight: '48px', // Android minimum touch target size
+            minWidth: '48px',
+          },
+        },
+        
+        // Responsive utilities
+        '.hide-scrollbar': {
+          '-ms-overflow-style': 'none',
+          'scrollbar-width': 'none',
+          '&::-webkit-scrollbar': {
+            display: 'none',
+          },
+        },
+        
+        '.mobile-only': {
+          '@media (min-width: 768px)': {
+            display: 'none !important',
+          },
+        },
+        
+        '.desktop-only': {
+          '@media (max-width: 767px)': {
+            display: 'none !important',
+          },
+        },
+
         // Accessibility utilities
         '.sr-only': {
           position: 'absolute',

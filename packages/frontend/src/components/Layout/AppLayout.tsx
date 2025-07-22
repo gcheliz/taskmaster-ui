@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { Footer } from './Footer';
@@ -13,6 +13,27 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
   children,
   className,
 }) => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect mobile viewport and manage sidebar state
+  useEffect(() => {
+    const checkMobile = () => {
+      const mobile = window.innerWidth < 1024; // lg breakpoint
+      setIsMobile(mobile);
+      if (!mobile && sidebarOpen) {
+        setSidebarOpen(false); // Close mobile sidebar when switching to desktop
+      }
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, [sidebarOpen]);
+
+  // Close sidebar when clicking overlay
+  const closeSidebar = () => setSidebarOpen(false);
+
   return (
     <div
       className={cn('dark min-h-screen bg-slate-950 text-slate-50', className)}
@@ -35,18 +56,40 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
         </a>
       </div>
 
-      <Header />
+      <Header 
+        onMenuClick={() => setSidebarOpen(!sidebarOpen)}
+        isMobile={isMobile}
+      />
 
-      <div className="flex min-h-screen">
-        <Sidebar />
+      {/* Mobile sidebar overlay */}
+      {isMobile && sidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black bg-opacity-50 transition-opacity duration-300 lg:hidden"
+          onClick={closeSidebar}
+          aria-hidden="true"
+        />
+      )}
+
+      <div className="flex min-h-screen pt-16"> {/* Account for fixed header height */}
+        <Sidebar 
+          open={sidebarOpen}
+          onClose={closeSidebar}
+          isMobile={isMobile}
+        />
 
         <main
           id="main-content"
-          className="flex-1 bg-slate-950 overflow-auto"
+          className={cn(
+            'flex-1 bg-slate-950 overflow-auto transition-all duration-300',
+            // Add left margin for desktop sidebar when not mobile
+            !isMobile && 'lg:ml-64',
+            // Full width on mobile or when sidebar is closed
+            isMobile || !sidebarOpen ? 'ml-0' : ''
+          )}
           tabIndex={-1}
           role="main"
         >
-          <div className="p-6">{children}</div>
+          <div className="p-4 sm:p-6">{children}</div>
         </main>
       </div>
 

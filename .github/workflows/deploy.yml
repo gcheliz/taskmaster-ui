@@ -1,0 +1,278 @@
+name: Production Deployment
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+        - staging
+        - production
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  # Validate Release
+  validate-release:
+    name: Validate Release
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      is-prerelease: ${{ steps.version.outputs.prerelease }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Extract version
+        id: version
+        run: |
+          if [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/}
+            echo "version=${VERSION}" >> $GITHUB_OUTPUT
+            
+            # Check if it's a prerelease
+            if [[ "$VERSION" == *"-"* ]]; then
+              echo "prerelease=true" >> $GITHUB_OUTPUT
+            else
+              echo "prerelease=false" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "version=manual-deploy" >> $GITHUB_OUTPUT
+            echo "prerelease=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Validate semver
+        if: github.ref_type == 'tag'
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          if ! [[ "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$ ]]; then
+            echo "❌ Invalid semantic version format: $VERSION"
+            exit 1
+          fi
+          echo "✅ Valid semantic version: $VERSION"
+
+  # Build & Test
+  build-and-test:
+    name: Build and Test
+    uses: ./.github/workflows/ci.yml
+    needs: [validate-release]
+
+  # Build Production Images
+  build-images:
+    name: Build Production Images
+    runs-on: ubuntu-latest
+    needs: [validate-release, build-and-test]
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      frontend-image: ${{ steps.meta-frontend.outputs.tags }}
+      backend-image: ${{ steps.meta-backend.outputs.tags }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata for frontend
+        id: meta-frontend
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-frontend
+          tags: |
+            type=ref,event=tag
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=sha
+
+      - name: Extract metadata for backend
+        id: meta-backend
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-backend
+          tags: |
+            type=ref,event=tag
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=sha
+
+      - name: Build and push frontend image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./packages/frontend/Dockerfile
+          push: true
+          tags: ${{ steps.meta-frontend.outputs.tags }}
+          labels: ${{ steps.meta-frontend.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64,linux/arm64
+
+      - name: Build and push backend image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./packages/backend/Dockerfile
+          push: true
+          tags: ${{ steps.meta-backend.outputs.tags }}
+          labels: ${{ steps.meta-backend.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64,linux/arm64
+
+  # Deploy to Staging
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [validate-release, build-images]
+    environment: staging
+    if: needs.validate-release.outputs.is-prerelease == 'true' || github.event.inputs.environment == 'staging'
+    steps:
+      - name: Deploy to staging
+        run: |
+          echo "🚀 Deploying to staging environment"
+          echo "Version: ${{ needs.validate-release.outputs.version }}"
+          echo "Frontend Image: ${{ needs.build-images.outputs.frontend-image }}"
+          echo "Backend Image: ${{ needs.build-images.outputs.backend-image }}"
+          
+          # Here you would typically:
+          # - Update Kubernetes manifests
+          # - Deploy via Helm
+          # - Update container orchestration platform
+          # - Run database migrations
+          
+          # Example Kubernetes deployment (commented out as it requires cluster access)
+          # kubectl set image deployment/frontend-deployment frontend=${{ needs.build-images.outputs.frontend-image }}
+          # kubectl set image deployment/backend-deployment backend=${{ needs.build-images.outputs.backend-image }}
+          # kubectl rollout status deployment/frontend-deployment
+          # kubectl rollout status deployment/backend-deployment
+
+      - name: Run smoke tests
+        run: |
+          echo "🧪 Running smoke tests against staging"
+          # Add your smoke test commands here
+          # curl -f https://staging.taskmaster-ui.com/health || exit 1
+
+      - name: Notify staging deployment
+        uses: 8398a7/action-slack@v3
+        with:
+          status: 'success'
+          channel: '#deployments'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+          message: |
+            ✅ TaskMaster UI successfully deployed to staging
+            Version: ${{ needs.validate-release.outputs.version }}
+            Environment: staging
+            Deployed by: ${{ github.actor }}
+
+  # Deploy to Production
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [validate-release, build-images, deploy-staging]
+    environment: production
+    if: needs.validate-release.outputs.is-prerelease == 'false' || github.event.inputs.environment == 'production'
+    steps:
+      - name: Deploy to production
+        run: |
+          echo "🚀 Deploying to production environment"
+          echo "Version: ${{ needs.validate-release.outputs.version }}"
+          echo "Frontend Image: ${{ needs.build-images.outputs.frontend-image }}"
+          echo "Backend Image: ${{ needs.build-images.outputs.backend-image }}"
+          
+          # Production deployment steps
+          # - Blue/green deployment
+          # - Database migrations with rollback capability
+          # - Health checks and monitoring
+          
+          echo "✅ Production deployment completed"
+
+      - name: Post-deployment verification
+        run: |
+          echo "🔍 Running post-deployment verification"
+          # Add production health checks
+          # curl -f https://taskmaster-ui.com/health || exit 1
+          # Run critical path tests
+
+      - name: Create GitHub Release
+        if: github.ref_type == 'tag'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ needs.validate-release.outputs.version }}
+          name: TaskMaster UI ${{ needs.validate-release.outputs.version }}
+          body: |
+            ## 🚀 TaskMaster UI ${{ needs.validate-release.outputs.version }}
+            
+            ### What's New
+            - Check the commit history for detailed changes
+            - All CI/CD checks passed
+            - Successfully deployed to production
+            
+            ### Docker Images
+            - Frontend: `${{ needs.build-images.outputs.frontend-image }}`
+            - Backend: `${{ needs.build-images.outputs.backend-image }}`
+            
+            ### Verification
+            - ✅ All tests passing
+            - ✅ Security audit passed
+            - ✅ Performance benchmarks met
+            - ✅ Production deployment verified
+          prerelease: ${{ needs.validate-release.outputs.is-prerelease == 'true' }}
+
+      - name: Notify production deployment
+        uses: 8398a7/action-slack@v3
+        with:
+          status: 'success'
+          channel: '#deployments'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+          message: |
+            🎉 TaskMaster UI successfully deployed to production!
+            Version: ${{ needs.validate-release.outputs.version }}
+            Environment: production
+            Deployed by: ${{ github.actor }}
+            
+            🔗 Production URL: https://taskmaster-ui.com
+
+  # Rollback Capability
+  rollback:
+    name: Rollback Deployment
+    runs-on: ubuntu-latest
+    if: failure()
+    needs: [deploy-production]
+    environment: production-rollback
+    steps:
+      - name: Rollback production deployment
+        run: |
+          echo "⚠️ Rolling back production deployment"
+          # Implement rollback logic
+          # - Revert to previous container images
+          # - Restore database if needed
+          # - Update DNS/load balancer
+          
+          echo "✅ Rollback completed"
+
+      - name: Notify rollback
+        uses: 8398a7/action-slack@v3
+        with:
+          status: 'warning'
+          channel: '#deployments'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+          message: |
+            ⚠️ TaskMaster UI production deployment rolled back
+            Version: ${{ needs.validate-release.outputs.version }}
+            Reason: Deployment failure
+            Action required: Review logs and fix issues

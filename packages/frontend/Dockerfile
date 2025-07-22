@@ -72,8 +72,14 @@ CMD ["nginx", "-g", "daemon off;"]
 FROM base AS development
 WORKDIR /app/packages/frontend
 
+# Create symlinks for pnpm workspace
+RUN cd /app/packages/frontend && \
+    mkdir -p node_modules && \
+    ln -sf /app/node_modules/.pnpm node_modules/.pnpm && \
+    ln -sf /app/node_modules/.bin node_modules/.bin
+
 # Expose Vite dev server port
 EXPOSE 5173
 
 # Start development server
-CMD ["pnpm", "dev", "--host", "0.0.0.0"]
+CMD ["sh", "-c", "cd /app && pnpm --filter=frontend run dev --host 0.0.0.0"]

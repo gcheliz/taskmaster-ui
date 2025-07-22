@@ -3,18 +3,35 @@ import { SimpleDashboardView } from '../components/Views/SimpleDashboardView';
 import { SimpleRepositoryView } from '../components/Views/SimpleRepositoryView';
 import { SimpleTaskBoardView } from '../components/Views/SimpleTaskBoardView';
 import { SimpleTerminalView } from '../components/Views/SimpleTerminalView';
+import { RouteErrorBoundary, RepositoryErrorBoundary, TerminalErrorBoundary } from '../components/ErrorBoundary';
 
 export function AppRoutes() {
   return (
-    <Routes>
-      <Route path="/" element={<Navigate to="/dashboard" replace />} />
-      <Route path="/dashboard" element={<SimpleDashboardView />} />
-      <Route path="/repository-management" element={<SimpleRepositoryView />} />
-      <Route path="/task-board" element={<SimpleTaskBoardView />} />
-      <Route path="/terminal" element={<SimpleTerminalView />} />
-      <Route path="/settings" element={<SettingsView />} />
-      <Route path="*" element={<Navigate to="/dashboard" replace />} />
-    </Routes>
+    <RouteErrorBoundary>
+      <Routes>
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/dashboard" element={<SimpleDashboardView />} />
+        <Route 
+          path="/repository-management" 
+          element={
+            <RepositoryErrorBoundary>
+              <SimpleRepositoryView />
+            </RepositoryErrorBoundary>
+          } 
+        />
+        <Route path="/task-board" element={<SimpleTaskBoardView />} />
+        <Route 
+          path="/terminal" 
+          element={
+            <TerminalErrorBoundary>
+              <SimpleTerminalView />
+            </TerminalErrorBoundary>
+          } 
+        />
+        <Route path="/settings" element={<SettingsView />} />
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      </Routes>
+    </RouteErrorBoundary>
   );
 }
 

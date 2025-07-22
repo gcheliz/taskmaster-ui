@@ -21,11 +21,11 @@ const buttonVariants = cva(
           'bg-error-600 text-white hover:bg-error-700 focus-visible:ring-error-500 dark:bg-error-700 dark:hover:bg-error-600 dark:focus-visible:ring-error-400 hover:shadow-error-500/25 dark:hover:shadow-error-400/25',
       },
       size: {
-        sm: 'h-8 rounded-md px-3 text-xs min-w-[2rem]',
-        md: 'h-10 px-4 py-2 min-w-[2.5rem]',
-        lg: 'h-11 rounded-md px-8 min-w-[3rem]',
-        xl: 'h-12 rounded-md px-10 text-base min-w-[3.5rem]',
-        icon: 'h-10 w-10 min-w-[2.5rem]',
+        sm: 'h-9 sm:h-8 rounded-md px-3 text-xs min-w-[3rem] sm:min-w-[2rem] touch-target',
+        md: 'h-11 sm:h-10 px-4 py-2 min-w-[3.5rem] sm:min-w-[2.5rem] touch-target',
+        lg: 'h-12 sm:h-11 rounded-md px-8 min-w-[4rem] sm:min-w-[3rem] touch-target',
+        xl: 'h-14 sm:h-12 rounded-md px-10 text-base min-w-[4.5rem] sm:min-w-[3.5rem] touch-target',
+        icon: 'h-11 w-11 sm:h-10 sm:w-10 min-w-[2.75rem] sm:min-w-[2.5rem] touch-target',
       },
     },
     defaultVariants: {

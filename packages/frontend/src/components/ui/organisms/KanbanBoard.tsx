@@ -291,10 +291,10 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
         {/* Search and Filter Bar */}
         {(showSearch || showFilters) && (
           <CardContent className="pt-0">
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               {/* Search */}
               {showSearch && (
-                <div className="flex-1">
+                <div className="flex-1 min-w-0">
                   <div className="relative">
                     <Icon
                       icon={PlusIcon}
@@ -306,7 +306,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
                       placeholder="Search tasks..."
                       value={searchTerm}
                       onChange={e => setSearchTerm(e.target.value)}
-                      className="pl-10"
+                      className="pl-10 w-full"
                     />
                   </div>
                 </div>
@@ -314,8 +314,13 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
 
               {/* Filters */}
               {showFilters && (
-                <div className="flex items-center space-x-2">
-                  <Icon icon={SettingsIcon} size="sm" color="muted" />
+                <div className="flex items-center space-x-2 flex-shrink-0">
+                  <Icon 
+                    icon={SettingsIcon} 
+                    size="sm" 
+                    color="muted" 
+                    className="hidden xs:block" 
+                  />
                   <select
                     value={selectedPriority}
                     onChange={e =>
@@ -323,7 +328,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
                         e.target.value as TaskPriority | 'all'
                       )
                     }
-                    className="px-3 py-2 border border-surface-200 dark:border-surface-700 rounded-md bg-surface-100 dark:bg-surface-800 text-sm"
+                    className="px-3 py-2 border border-surface-200 dark:border-surface-700 rounded-md bg-surface-100 dark:bg-surface-800 text-sm w-full sm:w-auto min-w-[120px] touch-target"
                   >
                     <option value="all">All Priorities</option>
                     <option value="urgent">Urgent</option>
@@ -349,7 +354,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
           }
           className="drag-drop-kanban"
         >
-          <div className="flex space-x-4 overflow-x-auto pb-4 min-h-[600px]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6 lg:gap-4">
             {DEFAULT_COLUMNS.map(column => (
               <KanbanColumn
                 key={column.id}
@@ -362,7 +367,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
                 onTaskClick={onTaskClick}
                 onAddTask={onAddTask}
                 showAddButton={true}
-                className="flex-shrink-0"
+                className="min-h-[400px] sm:min-h-[500px] lg:min-h-[600px]"
               />
             ))}
           </div>

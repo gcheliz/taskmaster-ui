@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { ErrorTestComponent } from '../ErrorBoundary/ErrorTestComponent';
 
 export const SimpleDashboardView: React.FC = () => {
   const [count, setCount] = useState(0);
@@ -113,6 +114,9 @@ export const SimpleDashboardView: React.FC = () => {
             </div>
           </div>
         </div>
+        
+        {/* Error Boundary Testing Component (Development Only) */}
+        <ErrorTestComponent />
       </div>
     </div>
   );

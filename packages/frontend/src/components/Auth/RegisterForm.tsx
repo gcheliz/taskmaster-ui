@@ -1,9 +1,14 @@
 import React, { useState, useMemo } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import * as zxcvbn from 'zxcvbn';
 import { cn } from '../../utils/cn';
 import { Button } from '../ui/atoms/Button';
 import { Input } from '../ui/atoms/Input';
 import { Label } from '../ui/atoms/Label';
 import { Checkbox } from '../ui/atoms/Checkbox';
+import { Select } from '../ui/atoms/Select';
 import { SocialLoginButtons } from './SocialLoginButtons';
 import { PasswordStrengthIndicator } from './PasswordStrengthIndicator';
 import {
@@ -13,13 +18,14 @@ import {
   UserIcon,
   LockClosedIcon,
   EnvelopeIcon,
+  BriefcaseIcon,
 } from '../ui/atoms/Icon';
 
 export interface RegisterFormProps {
   /**
    * Callback when registration is successful
    */
-  onSuccess?: (data: { email: string; name: string; token: string }) => void;
+  onSuccess?: (data: { email: string; name: string; role: string; token: string }) => void;
   /**
    * Whether to show social login options
    * @default true
@@ -31,117 +37,100 @@ export interface RegisterFormProps {
   className?: string;
 }
 
-interface FormData {
-  name: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-  acceptTerms: boolean;
-  newsletter: boolean;
-}
+// User roles available for registration
+const USER_ROLES = [
+  { value: 'developer', label: 'Developer' },
+  { value: 'project-manager', label: 'Project Manager' },
+  { value: 'designer', label: 'Designer' },
+  { value: 'qa-engineer', label: 'QA Engineer' },
+  { value: 'devops-engineer', label: 'DevOps Engineer' },
+  { value: 'product-owner', label: 'Product Owner' },
+  { value: 'scrum-master', label: 'Scrum Master' },
+  { value: 'other', label: 'Other' },
+] as const;
+
+// Zod schema for form validation
+const registerSchema = z.object({
+  name: z.string()
+    .min(2, 'Name must be at least 2 characters')
+    .max(50, 'Name must be less than 50 characters')
+    .regex(/^[a-zA-Z\s'-]+$/, 'Name can only contain letters, spaces, hyphens, and apostrophes'),
+  email: z.string()
+    .email('Please enter a valid email address')
+    .max(100, 'Email must be less than 100 characters'),
+  role: z.string()
+    .min(1, 'Please select your role'),
+  password: z.string()
+    .min(8, 'Password must be at least 8 characters')
+    .refine((password) => {
+      const result = zxcvbn(password);
+      return result.score >= 3;
+    }, 'Password is too weak. Please create a stronger password.'),
+  confirmPassword: z.string(),
+  acceptTerms: z.boolean()
+    .refine((value) => value === true, 'You must accept the Terms of Service'),
+  newsletter: z.boolean().optional(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: 'Passwords do not match',
+  path: ['confirmPassword'],
+});
+
+type FormData = z.infer<typeof registerSchema>;
 
 export const RegisterForm: React.FC<RegisterFormProps> = ({
   onSuccess,
   showSocialLogins = true,
   className,
 }) => {
-  const [formData, setFormData] = useState<FormData>({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    acceptTerms: false,
-    newsletter: false,
-  });
-  const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // Calculate password strength
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors, isValid, touchedFields },
+    setError,
+  } = useForm<FormData>({
+    resolver: zodResolver(registerSchema),
+    mode: 'onBlur',
+    defaultValues: {
+      name: '',
+      email: '',
+      role: '',
+      password: '',
+      confirmPassword: '',
+      acceptTerms: false,
+      newsletter: false,
+    },
+  });
+
+  const watchedPassword = watch('password', '');
+
+  // Calculate password strength using zxcvbn
   const passwordStrength = useMemo(() => {
-    const password = formData.password;
-    if (!password) return { score: 0, feedback: [] };
+    if (!watchedPassword) return { score: 0, feedback: [] };
 
-    let score = 0;
-    const feedback: string[] = [];
+    const result = zxcvbn(watchedPassword);
+    
+    // Convert zxcvbn score (0-4) to percentage (0-100)
+    const score = (result.score / 4) * 100;
+    
+    // Get feedback from zxcvbn
+    const feedback = [
+      ...(result.feedback.warning ? [result.feedback.warning] : []),
+      ...result.feedback.suggestions,
+    ];
 
-    // Length check
-    if (password.length >= 8) {
-      score += 25;
-    } else {
-      feedback.push('At least 8 characters');
-    }
+    return { 
+      score: Math.round(score), 
+      feedback,
+      zxcvbnResult: result,
+    };
+  }, [watchedPassword]);
 
-    // Uppercase check
-    if (/[A-Z]/.test(password)) {
-      score += 25;
-    } else {
-      feedback.push('One uppercase letter');
-    }
-
-    // Lowercase check
-    if (/[a-z]/.test(password)) {
-      score += 25;
-    } else {
-      feedback.push('One lowercase letter');
-    }
-
-    // Number or special character
-    if (/[\d!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)) {
-      score += 25;
-    } else {
-      feedback.push('One number or special character');
-    }
-
-    return { score, feedback };
-  }, [formData.password]);
-
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {};
-
-    // Name validation
-    if (!formData.name.trim()) {
-      newErrors.name = 'Full name is required';
-    } else if (formData.name.trim().length < 2) {
-      newErrors.name = 'Name must be at least 2 characters';
-    }
-
-    // Email validation
-    if (!formData.email) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
-    }
-
-    // Password validation
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (passwordStrength.score < 75) {
-      newErrors.password = 'Password is too weak';
-    }
-
-    // Confirm password validation
-    if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'Please confirm your password';
-    } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
-    }
-
-    // Terms acceptance
-    if (!formData.acceptTerms) {
-      newErrors.acceptTerms = 'You must accept the terms and conditions';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!validateForm()) return;
-
+  const onSubmit = async (data: FormData) => {
     setIsLoading(true);
 
     try {
@@ -151,35 +140,34 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       // Mock successful registration
       const mockToken = 'mock-jwt-token-' + Date.now();
       onSuccess?.({
-        email: formData.email,
-        name: formData.name,
+        email: data.email,
+        name: data.name,
+        role: data.role,
         token: mockToken,
       });
     } catch (error) {
-      setErrors({ submit: 'Registration failed. Please try again.' });
+      setError('root', { 
+        type: 'manual', 
+        message: 'Registration failed. Please try again.' 
+      });
     } finally {
       setIsLoading(false);
     }
   };
-
-  const handleInputChange =
-    (field: keyof FormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value =
-        e.target.type === 'checkbox' ? e.target.checked : e.target.value;
-      setFormData(prev => ({ ...prev, [field]: value }));
-
-      // Clear errors when user starts typing
-      if (errors[field]) {
-        setErrors(prev => ({ ...prev, [field]: '' }));
-      }
-    };
 
   return (
     <div className={cn('space-y-6', className)}>
       {/* Social Login Section */}
       {showSocialLogins && (
         <>
-          <SocialLoginButtons onSuccess={onSuccess} />
+          <SocialLoginButtons 
+            onSuccess={onSuccess ? (data) => onSuccess({
+              email: data.email,
+              name: data.name,
+              role: 'other', // Default role for social login
+              token: data.token,
+            }) : undefined} 
+          />
 
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
@@ -195,7 +183,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       )}
 
       {/* Registration Form */}
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Full Name Field */}
         <div className="space-y-2">
           <Label htmlFor="name" className="text-sm font-medium text-slate-700">
@@ -206,8 +194,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               id="name"
               type="text"
               placeholder="Enter your full name"
-              value={formData.name}
-              onChange={handleInputChange('name')}
+              {...register('name')}
               error={!!errors.name}
               leftIcon={
                 <Icon icon={UserIcon} size="sm" className="text-slate-400" />
@@ -220,7 +207,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               )}
             />
             {errors.name && (
-              <p className="text-xs text-red-500 mt-1">{errors.name}</p>
+              <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>
             )}
           </div>
         </div>
@@ -235,8 +222,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               id="email"
               type="email"
               placeholder="Enter your email"
-              value={formData.email}
-              onChange={handleInputChange('email')}
+              {...register('email')}
               error={!!errors.email}
               leftIcon={
                 <Icon
@@ -253,7 +239,41 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               )}
             />
             {errors.email && (
-              <p className="text-xs text-red-500 mt-1">{errors.email}</p>
+              <p className="text-xs text-red-500 mt-1">{errors.email.message}</p>
+            )}
+          </div>
+        </div>
+
+        {/* Role Selection Field */}
+        <div className="space-y-2">
+          <Label htmlFor="role" className="text-sm font-medium text-slate-700">
+            Your Role
+          </Label>
+          <div className="relative">
+            <select
+              id="role"
+              {...register('role')}
+              className={cn(
+                'flex h-10 w-full items-center justify-between rounded-md border px-3 py-2 text-sm transition-all duration-200 ease-in-out',
+                'pl-10 bg-white/60 backdrop-blur-sm',
+                'border-slate-200/60',
+                'focus:bg-white/80 focus:border-blue-300 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none',
+                'disabled:cursor-not-allowed disabled:opacity-50',
+                errors.role && 'border-red-300 focus:border-red-500 focus:ring-red-500'
+              )}
+            >
+              <option value="">Select your role...</option>
+              {USER_ROLES.map((role) => (
+                <option key={role.value} value={role.value}>
+                  {role.label}
+                </option>
+              ))}
+            </select>
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+              <Icon icon={BriefcaseIcon} size="sm" />
+            </div>
+            {errors.role && (
+              <p className="text-xs text-red-500 mt-1">{errors.role.message}</p>
             )}
           </div>
         </div>
@@ -271,8 +291,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               id="password"
               type={showPassword ? 'text' : 'password'}
               placeholder="Create a strong password"
-              value={formData.password}
-              onChange={handleInputChange('password')}
+              {...register('password')}
               error={!!errors.password}
               leftIcon={
                 <Icon
@@ -296,14 +315,14 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               <Icon icon={showPassword ? EyeSlashIcon : EyeIcon} size="sm" />
             </button>
             {errors.password && (
-              <p className="text-xs text-red-500 mt-1">{errors.password}</p>
+              <p className="text-xs text-red-500 mt-1">{errors.password.message}</p>
             )}
           </div>
 
           {/* Password Strength Indicator */}
-          {formData.password && (
+          {watchedPassword && (
             <PasswordStrengthIndicator
-              password={formData.password}
+              password={watchedPassword}
               strength={passwordStrength}
             />
           )}
@@ -322,8 +341,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               id="confirmPassword"
               type={showConfirmPassword ? 'text' : 'password'}
               placeholder="Confirm your password"
-              value={formData.confirmPassword}
-              onChange={handleInputChange('confirmPassword')}
+              {...register('confirmPassword')}
               error={!!errors.confirmPassword}
               leftIcon={
                 <Icon
@@ -351,7 +369,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
             </button>
             {errors.confirmPassword && (
               <p className="text-xs text-red-500 mt-1">
-                {errors.confirmPassword}
+                {errors.confirmPassword.message}
               </p>
             )}
           </div>
@@ -362,8 +380,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
           <div className="flex items-start space-x-2">
             <Checkbox
               id="acceptTerms"
-              checked={formData.acceptTerms}
-              onChange={handleInputChange('acceptTerms')}
+              {...register('acceptTerms')}
               className="mt-0.5"
             />
             <Label
@@ -387,14 +404,13 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
             </Label>
           </div>
           {errors.acceptTerms && (
-            <p className="text-xs text-red-500">{errors.acceptTerms}</p>
+            <p className="text-xs text-red-500">{errors.acceptTerms.message}</p>
           )}
 
           <div className="flex items-center space-x-2">
             <Checkbox
               id="newsletter"
-              checked={formData.newsletter}
-              onChange={handleInputChange('newsletter')}
+              {...register('newsletter')}
             />
             <Label htmlFor="newsletter" className="text-sm text-slate-600">
               Send me product updates and newsletters
@@ -403,9 +419,9 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         </div>
 
         {/* Submit Error */}
-        {errors.submit && (
+        {errors.root && (
           <div className="p-3 bg-red-50 border border-red-200 rounded-md">
-            <p className="text-sm text-red-600">{errors.submit}</p>
+            <p className="text-sm text-red-600">{errors.root.message}</p>
           </div>
         )}
 
@@ -413,6 +429,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         <Button
           type="submit"
           loading={isLoading}
+          disabled={isLoading || !isValid}
           className={cn(
             'w-full',
             'bg-gradient-to-r from-purple-600 to-pink-600',

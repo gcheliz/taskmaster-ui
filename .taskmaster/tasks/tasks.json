@@ -680,7 +680,7 @@
         "description": "Create a modern authentication interface with tabbed login/registration, social authentication (GitHub, Google), role-based registration, password strength indicators, terms of service agreements, and animated background effects with glassmorphism design.",
         "details": "Implement the authentication page based on the provided HTML mockups, incorporating a tabbed interface and modern security features. The implementation will be broken down into several key areas:\n\n1.  **UI & Component Structure:**\n    *   Use atomic components from Task #58 to build the page.\n    *   Create a main `AuthPage` organism containing a tab component to switch between 'Login' and 'Registration' forms.\n    *   Implement the glassmorphism effect using CSS `backdrop-filter: blur()` and a semi-transparent background. The animated background can be achieved with a lightweight library like `particles.js` or custom CSS animations.\n\n2.  **Form Handling & Validation:**\n    *   Utilize a robust form management library like `React Hook Form` paired with `Zod` for schema-based validation to handle form state, validation, and submission efficiently.\n    *   Implement real-time, client-side validation for fields like email format and password requirements.\n\n3.  **Social Authentication (OAuth 2.0):**\n    *   Integrate 'Login with Google' and 'Login with GitHub' buttons.\n    *   On click, redirect the user to the respective provider's OAuth consent screen.\n    *   Create a callback route in the application (e.g., `/auth/callback`) to handle the redirect from the provider, capture the authorization code, and send it to the backend API for token exchange and session creation.\n\n4.  **Registration Features:**\n    *   **Password Strength:** Integrate a library like `zxcvbn` to analyze password strength in real-time. Display feedback to the user via a multi-colored progress bar and textual hints (e.g., 'Weak', 'Good', 'Strong').\n    *   **Role Selection:** Include a dropdown or radio button group in the registration form for users to select their role (e.g., 'Developer', 'Project Manager').\n    *   **Terms of Service:** Add a mandatory checkbox with a link to the Terms of Service. The 'Register' button should remain disabled until this box is checked.",
         "testStrategy": "1.  **Unit Tests (Jest/Vitest + React Testing Library):**\n    *   Test the `AuthPage` tab component to ensure correct content is rendered on tab switch.\n    *   Unit test form input components, mocking user input to verify validation logic (e.g., invalid email format, password mismatch) and error message display.\n    *   Mock the `zxcvbn` library to test the `PasswordStrengthIndicator` component, asserting that it displays the correct visual state for different password inputs.\n    *   Verify that the registration form's submit button is disabled/enabled based on the 'Terms of Service' checkbox state.\n\n2.  **Integration Tests (using Mock Service Worker - MSW):**\n    *   Mock the backend authentication API endpoints (`/login`, `/register`, `/oauth/callback`).\n    *   Test the full user flow for both email/password login and registration, asserting that correct data is sent to the mock API and the UI reacts appropriately to success or error responses.\n    *   Test the OAuth flow by mocking the window.location redirect and simulating the provider's callback with a dummy authorization code, ensuring the code is correctly sent to the backend.\n\n3.  **End-to-End Tests (Cypress/Playwright):**\n    *   Write a test script that simulates a new user registering via the form, including role selection and ToS agreement.\n    *   Write a test script for a user logging in with valid and invalid credentials.\n    *   Visually test the animated background and glassmorphism effects using visual regression testing to prevent unintended style changes.\n    *   Verify the social login buttons redirect to the correct external URLs.",
-        "status": "pending",
+        "status": "done",
         "dependencies": [
           57,
           58,
@@ -694,7 +694,7 @@
             "description": "Create the foundational UI for the authentication page, including the main component, a tabbed interface to switch between login and registration, and the specified visual effects like glassmorphism and an animated background.",
             "dependencies": [],
             "details": "Construct the main `AuthPage` organism using atomic components from Task #58. Implement a tab component that toggles the display of Login and Registration form containers. Apply the glassmorphism effect using CSS `backdrop-filter: blur()` and a semi-transparent background. Integrate a lightweight library like `particles.js` or use custom CSS animations for the background effect.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Unit test the tab component with React Testing Library to ensure it correctly renders and switches content on user interaction. Manually verify or use visual regression testing to confirm the glassmorphism and animated background effects are implemented correctly across supported browsers."
           },
           {
@@ -705,7 +705,7 @@
               1
             ],
             "details": "Utilize `React Hook Form` for efficient form state management and `Zod` to define validation schemas for both forms. Implement real-time, client-side validation for fields such as email format, password requirements, and required fields. Display clear error messages to the user upon validation failure. The submission logic should be prepared for future API integration.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Write unit tests for the form components, mocking user input to verify that validation rules (e.g., invalid email, empty password) trigger the expected error messages. Test that the `onSubmit` handler is only called when the form data is valid."
           },
           {
@@ -716,7 +716,7 @@
               2
             ],
             "details": "Integrate a library like `zxcvbn` to analyze password strength as the user types, providing visual feedback via a multi-colored progress bar and text hints. Add a dropdown or radio button group for users to select their role (e.g., 'Developer', 'Project Manager'). Implement a mandatory 'Terms of Service' checkbox that must be checked to enable the 'Register' button.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Unit test the password strength component by providing various password inputs and asserting the correct visual and textual feedback. Test the conditional logic for the 'Register' button, ensuring it is disabled until the ToS checkbox is checked and the form is valid. Verify role selection is captured in the form state."
           },
           {
@@ -727,7 +727,7 @@
               1
             ],
             "details": "Add 'Login with Google' and 'Login with GitHub' buttons to the UI. Configure the `onClick` events to redirect the user to the respective provider's OAuth consent screen. Create a dedicated callback route (e.g., `/auth/callback`) in the application to handle the redirect from the provider, capture the authorization code from the URL parameters, and prepare to send it to the backend API for token exchange.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Unit test the social login buttons to confirm they redirect to the correct provider URLs. Use integration tests with mocked providers (e.g., using `msw`) to simulate the full OAuth callback flow, verifying that the application correctly handles the redirect and extracts the authorization code."
           }
         ]
@@ -796,7 +796,7 @@
     ],
     "metadata": {
       "created": "2025-07-15T21:22:03.992Z",
-      "updated": "2025-07-22T20:12:37.862Z",
+      "updated": "2025-07-22T21:53:10.650Z",
       "description": "Tasks for taskmaster-ui context"
     }
   }

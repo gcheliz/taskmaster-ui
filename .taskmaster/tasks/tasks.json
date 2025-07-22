@@ -285,7 +285,7 @@
         "dependencies": [
           51
         ],
-        "status": "in-progress",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -304,7 +304,7 @@
               1
             ],
             "details": "Establish a communication channel (e.g., WebSocket) to a backend process running the TaskMaster CLI. Send the command from the UI to the CLI upon submission (e.g., pressing Enter). Stream stdout and stderr from the CLI back to the terminal UI in real-time. Implement basic session management for starting and stopping the CLI process.",
-            "status": "in-progress",
+            "status": "done",
             "testStrategy": "Integration tests to verify command execution and I/O streaming. Test cases should include successful commands, commands with errors, and long-running commands to ensure the stream remains responsive."
           },
           {
@@ -315,7 +315,7 @@
               2
             ],
             "details": "Store a list of executed commands in the front-end state for the current session. Implement event listeners for the Up and Down arrow keys to cycle through the command history, populating the input line with the selected command.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Unit tests for the history state management logic (adding new commands, navigating, handling boundary conditions like an empty history). End-to-end tests simulating a user entering multiple commands and using arrow keys to recall them."
           },
           {
@@ -326,7 +326,7 @@
               2
             ],
             "details": "Create a mechanism to fetch a list of available TaskMaster commands. When the user presses the Tab key, the system will suggest completions for the current word. If multiple completions are available, display them to the user. This may require a new API endpoint to provide command metadata.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Unit tests for the autocomplete suggestion logic. Integration tests to verify the fetching of command lists and the interaction between the front-end and the suggestion service. Manual testing for usability and responsiveness."
           }
         ]
@@ -796,7 +796,7 @@
     ],
     "metadata": {
       "created": "2025-07-15T21:22:03.992Z",
-      "updated": "2025-07-22T16:54:37.764Z",
+      "updated": "2025-07-22T17:14:04.528Z",
       "description": "Tasks for taskmaster-ui context"
     }
   }

@@ -1,6 +1,9 @@
 import React, { useCallback } from 'react';
 import { EnhancedRepositoryView } from './EnhancedRepositoryView';
-import { useRepositoryList, useRepositoryDetails } from '../../hooks/useRepositoryList';
+import {
+  useRepositoryList,
+  useRepositoryDetails,
+} from '../../hooks/useRepositoryList';
 import { Spinner } from '../ui/atoms/Spinner';
 import { Alert } from '../ui/molecules/Alert';
 import type { RepositoryCardProps } from '../Repository/RepositoryCard';
@@ -62,13 +65,15 @@ const mockRepositories: RepositoryCardProps['repository'][] = [
   {
     id: 'repo-1',
     name: 'taskmaster-ui',
-    description: 'Advanced task management UI with React and TypeScript. Features include real-time updates, drag-and-drop functionality, and comprehensive Git integration.',
+    description:
+      'Advanced task management UI with React and TypeScript. Features include real-time updates, drag-and-drop functionality, and comprehensive Git integration.',
     path: '/Users/developer/projects/taskmaster-ui',
     currentBranch: 'main',
     lastCommit: {
       hash: 'a1b2c3d4e5f6',
       date: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
-      message: 'feat: implement repository management interface with atomic components',
+      message:
+        'feat: implement repository management interface with atomic components',
       author: {
         name: 'Sarah Johnson',
         email: 'sarah.johnson@taskmaster.dev',
@@ -93,7 +98,8 @@ const mockRepositories: RepositoryCardProps['repository'][] = [
   {
     id: 'repo-2',
     name: 'api-gateway',
-    description: 'Microservices API gateway with authentication, rate limiting, and monitoring capabilities.',
+    description:
+      'Microservices API gateway with authentication, rate limiting, and monitoring capabilities.',
     path: '/Users/developer/projects/api-gateway',
     currentBranch: 'develop',
     lastCommit: {
@@ -124,7 +130,8 @@ const mockRepositories: RepositoryCardProps['repository'][] = [
   {
     id: 'repo-3',
     name: 'mobile-app',
-    description: 'Cross-platform mobile application for task management on iOS and Android devices.',
+    description:
+      'Cross-platform mobile application for task management on iOS and Android devices.',
     path: '/Users/developer/projects/mobile-app',
     currentBranch: 'feature/offline-sync',
     lastCommit: {
@@ -155,7 +162,8 @@ const mockRepositories: RepositoryCardProps['repository'][] = [
   {
     id: 'repo-4',
     name: 'analytics-engine',
-    description: 'Data analytics and reporting engine for task performance metrics and team productivity insights.',
+    description:
+      'Data analytics and reporting engine for task performance metrics and team productivity insights.',
     path: '/Users/developer/projects/analytics-engine',
     currentBranch: 'main',
     lastCommit: {
@@ -186,7 +194,8 @@ const mockRepositories: RepositoryCardProps['repository'][] = [
   {
     id: 'repo-5',
     name: 'cli-tools',
-    description: 'Command-line interface tools and utilities for developers working with TaskMaster ecosystem.',
+    description:
+      'Command-line interface tools and utilities for developers working with TaskMaster ecosystem.',
     path: '/Users/developer/projects/cli-tools',
     currentBranch: 'main',
     lastCommit: {
@@ -217,7 +226,8 @@ const mockRepositories: RepositoryCardProps['repository'][] = [
   {
     id: 'repo-6',
     name: 'documentation',
-    description: 'Comprehensive documentation site with user guides, API references, and developer resources.',
+    description:
+      'Comprehensive documentation site with user guides, API references, and developer resources.',
     path: '/Users/developer/projects/documentation',
     currentBranch: 'content/api-v2',
     lastCommit: {
@@ -248,9 +258,9 @@ export interface RepositoryManagementDemoViewProps {
   className?: string;
 }
 
-export const RepositoryManagementDemoView: React.FC<RepositoryManagementDemoViewProps> = ({ 
-  className 
-}) => {
+export const RepositoryManagementDemoView: React.FC<
+  RepositoryManagementDemoViewProps
+> = ({ className }) => {
   // Fetch the list of repositories using React Query
   const {
     repositories: repositoryList,
@@ -264,7 +274,7 @@ export const RepositoryManagementDemoView: React.FC<RepositoryManagementDemoView
 
   // For demonstration purposes, we'll fetch details for up to 6 repositories
   const limitedRepositoryList = repositoryList.slice(0, 6);
-  
+
   const repositoryDetailsQueries = limitedRepositoryList.map(repo => ({
     id: repo.id,
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -274,18 +284,24 @@ export const RepositoryManagementDemoView: React.FC<RepositoryManagementDemoView
     }),
   }));
 
-  const handleRepositoryClick = useCallback((repository: RepositoryCardProps['repository']) => {
-    console.log('Repository clicked:', repository.name);
-  }, []);
+  const handleRepositoryClick = useCallback(
+    (repository: RepositoryCardProps['repository']) => {
+      console.log('Repository clicked:', repository.name);
+    },
+    []
+  );
 
-  const handleRepositoryRefresh = useCallback(async (repositoryId: string) => {
-    console.log('Refreshing repository:', repositoryId);
-    // Find the specific repository details query and refetch it
-    const query = repositoryDetailsQueries.find(q => q.id === repositoryId);
-    if (query?.details) {
-      await query.details.refetch();
-    }
-  }, [repositoryDetailsQueries]);
+  const handleRepositoryRefresh = useCallback(
+    async (repositoryId: string) => {
+      console.log('Refreshing repository:', repositoryId);
+      // Find the specific repository details query and refetch it
+      const query = repositoryDetailsQueries.find(q => q.id === repositoryId);
+      if (query?.details) {
+        await query.details.refetch();
+      }
+    },
+    [repositoryDetailsQueries]
+  );
 
   const handleRepositoryDetails = useCallback((repositoryId: string) => {
     console.log('Viewing repository details:', repositoryId);
@@ -307,26 +323,37 @@ export const RepositoryManagementDemoView: React.FC<RepositoryManagementDemoView
   }, [refetchList, repositoryDetailsQueries]);
 
   // Transform repository list items to full repository data
-  const repositories: RepositoryCardProps['repository'][] = limitedRepositoryList.length > 0 
-    ? limitedRepositoryList.map(listItem => {
-        const detailsQuery = repositoryDetailsQueries.find(q => q.id === listItem.id);
-        const details = detailsQuery?.details.data;
-        return transformToRepositoryData(listItem, details);
-      })
-    : mockRepositories; // Fallback to mock data for demo purposes when no real repositories
+  const repositories: RepositoryCardProps['repository'][] =
+    limitedRepositoryList.length > 0
+      ? limitedRepositoryList.map(listItem => {
+          const detailsQuery = repositoryDetailsQueries.find(
+            q => q.id === listItem.id
+          );
+          const details = detailsQuery?.details.data;
+          return transformToRepositoryData(listItem, details);
+        })
+      : mockRepositories; // Fallback to mock data for demo purposes when no real repositories
 
   // Determine overall loading state
-  const isLoadingDetails = repositoryDetailsQueries.some(q => q.details.isLoading);
-  const isLoading = isLoadingList || (limitedRepositoryList.length > 0 && isLoadingDetails);
+  const isLoadingDetails = repositoryDetailsQueries.some(
+    q => q.details.isLoading
+  );
+  const isLoading =
+    isLoadingList || (limitedRepositoryList.length > 0 && isLoadingDetails);
 
   // Determine error state
   const detailsErrors = repositoryDetailsQueries
     .map(q => q.details.error)
     .filter(Boolean);
-  const error = listError || (detailsErrors.length > 0 ? detailsErrors[0]?.message : null);
+  const error =
+    listError || (detailsErrors.length > 0 ? detailsErrors[0]?.message : null);
 
   // Show loading spinner while initially loading the repository list
-  if (isLoadingList && limitedRepositoryList.length === 0 && repositoryList.length === 0) {
+  if (
+    isLoadingList &&
+    limitedRepositoryList.length === 0 &&
+    repositoryList.length === 0
+  ) {
     return (
       <div className={cn('repository-management-demo-view', className)}>
         <div className="flex items-center justify-center min-h-96">
@@ -352,13 +379,14 @@ export const RepositoryManagementDemoView: React.FC<RepositoryManagementDemoView
           <Alert variant="info">
             <p className="font-medium">Demo Mode</p>
             <p className="mt-1 text-sm">
-              No connected repositories found. Showing demo data to showcase the interface features.
-              Connect some repositories to see real data here.
+              No connected repositories found. Showing demo data to showcase the
+              interface features. Connect some repositories to see real data
+              here.
             </p>
           </Alert>
         </div>
       )}
-      
+
       <EnhancedRepositoryView
         repositories={repositories}
         isLoading={isLoading && !usingMockData}

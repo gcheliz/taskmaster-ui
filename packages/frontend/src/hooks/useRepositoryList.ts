@@ -1,5 +1,8 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { RepositoryService, type ApiResponse } from '../services/repositoryService';
+import {
+  RepositoryService,
+  type ApiResponse,
+} from '../services/repositoryService';
 
 export interface RepositoryListItem {
   id: string;
@@ -89,18 +92,18 @@ export const useRepositoryList = ({
   };
 
   // Extract repositories from API response or provide empty array
-  const repositories: RepositoryListItem[] = 
+  const repositories: RepositoryListItem[] =
     apiResponse?.success && apiResponse.data ? apiResponse.data : [];
 
   // Extract error message from API response or network error
-  const errorMessage: string | null = 
-    apiResponse?.success === false 
-      ? apiResponse.error || 'Failed to fetch repositories' 
+  const errorMessage: string | null =
+    apiResponse?.success === false
+      ? apiResponse.error || 'Failed to fetch repositories'
       : error
-      ? error instanceof Error 
-        ? error.message 
-        : 'An unexpected error occurred'
-      : null;
+        ? error instanceof Error
+          ? error.message
+          : 'An unexpected error occurred'
+        : null;
 
   return {
     repositories,
@@ -131,7 +134,8 @@ export const useRepositoryDetails = (
   return useQuery({
     queryKey: ['repository', repositoryId, 'details'],
     queryFn: async () => {
-      const response = await RepositoryService.getRepositoryDetails(repositoryId);
+      const response =
+        await RepositoryService.getRepositoryDetails(repositoryId);
       if (!response.success) {
         throw new Error(response.error || 'Failed to fetch repository details');
       }

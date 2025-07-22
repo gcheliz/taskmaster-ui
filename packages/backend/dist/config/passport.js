@@ -43,7 +43,9 @@ if (environment_1.env.GOOGLE_CLIENT_ID && environment_1.env.GOOGLE_CLIENT_SECRET
                 provider: 'google',
                 providerId: profile.id,
                 email: profile.emails?.[0]?.value || '',
-                name: profile.displayName || profile.name?.givenName + ' ' + profile.name?.familyName || '',
+                name: profile.displayName ||
+                    profile.name?.givenName + ' ' + profile.name?.familyName ||
+                    '',
                 avatar: profile.photos?.[0]?.value,
             });
             const passportUser = {

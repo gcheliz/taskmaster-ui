@@ -270,7 +270,7 @@
               2
             ],
             "details": "Design and implement a view, accessible from the repository card, that presents repository health metrics. This includes creating visualizations like a commit frequency chart (e.g., a bar chart of commits per week) and summary statistics. The view will aggregate data fetched by the API service to generate these insights.",
-            "status": "pending",
+            "status": "in-progress",
             "testStrategy": "Unit test the data aggregation and calculation logic for the health metrics. Write end-to-end tests to simulate a user navigating from the repository list to the health dashboard and verify that the correct charts and data are displayed."
           }
         ]
@@ -796,7 +796,7 @@
     ],
     "metadata": {
       "created": "2025-07-15T21:22:03.992Z",
-      "updated": "2025-07-22T16:24:53.510Z",
+      "updated": "2025-07-22T16:28:18.020Z",
       "description": "Tasks for taskmaster-ui context"
     }
   }

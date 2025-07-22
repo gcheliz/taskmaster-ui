@@ -78,7 +78,10 @@ class AuthController {
                 });
             }
             // Authenticate user
-            const result = await authService_1.default.loginWithCredentials({ email, password });
+            const result = await authService_1.default.loginWithCredentials({
+                email,
+                password,
+            });
             res.json({
                 success: true,
                 data: result,
@@ -194,7 +197,7 @@ class AuthController {
     static async logout(req, res) {
         try {
             // For session-based auth
-            req.logout((err) => {
+            req.logout(err => {
                 if (err) {
                     console.error('Logout error:', err);
                 }

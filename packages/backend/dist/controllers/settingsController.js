@@ -47,7 +47,13 @@ const updateSettingsSchema = zod_1.z.object({
     focusIndicators: zod_1.z.boolean().optional(),
 });
 const updateCategorySchema = zod_1.z.object({
-    category: zod_1.z.enum(['profile', 'appearance', 'notifications', 'integrations', 'security']),
+    category: zod_1.z.enum([
+        'profile',
+        'appearance',
+        'notifications',
+        'integrations',
+        'security',
+    ]),
     data: zod_1.z.any(),
 });
 class SettingsController {
@@ -323,7 +329,13 @@ class SettingsController {
                 });
             }
             const { category } = req.params;
-            if (!['profile', 'appearance', 'notifications', 'integrations', 'security'].includes(category)) {
+            if (![
+                'profile',
+                'appearance',
+                'notifications',
+                'integrations',
+                'security',
+            ].includes(category)) {
                 return res.status(400).json({
                     success: false,
                     error: {

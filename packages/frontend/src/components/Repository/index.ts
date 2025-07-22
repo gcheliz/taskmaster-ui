@@ -30,3 +30,6 @@ export type {
 
 export { CommitHistoryModal } from './CommitHistoryModal';
 export type { CommitHistoryModalProps, CommitData } from './CommitHistoryModal';
+
+export { RepositoryHealthModal } from './RepositoryHealthModal';
+export type { RepositoryHealthModalProps } from './RepositoryHealthModal';

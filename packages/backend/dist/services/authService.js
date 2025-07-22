@@ -45,7 +45,7 @@ class AuthService {
      * Create a new user
      */
     static async createUser(data) {
-        const { email, name, password, provider = 'local', providerId, avatar, emailVerified = false } = data;
+        const { email, name, password, provider = 'local', providerId, avatar, emailVerified = false, } = data;
         // Check if user already exists
         const existingUser = await prisma.user.findUnique({
             where: { email },

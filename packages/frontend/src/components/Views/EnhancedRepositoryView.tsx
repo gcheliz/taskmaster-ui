@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { cn } from '../../utils/cn';
 import { RepositoryGrid } from '../Repository/RepositoryGrid';
 import { CommitHistoryModal } from '../Repository/CommitHistoryModal';
+import { RepositoryHealthModal } from '../Repository/RepositoryHealthModal';
 import type { RepositoryCardProps } from '../Repository/RepositoryCard';
 
 export interface EnhancedRepositoryViewProps {
@@ -32,6 +33,12 @@ export interface CommitHistoryModalState {
   branchName?: string;
 }
 
+export interface HealthModalState {
+  isOpen: boolean;
+  repositoryId: string | null;
+  repositoryName: string | null;
+}
+
 export const EnhancedRepositoryView: React.FC<EnhancedRepositoryViewProps> = ({
   repositories,
   isLoading = false,
@@ -52,6 +59,12 @@ export const EnhancedRepositoryView: React.FC<EnhancedRepositoryViewProps> = ({
     branchName: undefined,
   });
 
+  const [healthModal, setHealthModal] = useState<HealthModalState>({
+    isOpen: false,
+    repositoryId: null,
+    repositoryName: null,
+  });
+
   const handleRepositoryCommits = useCallback((repositoryId: string) => {
     const repository = repositories.find(repo => repo.id === repositoryId);
     if (repository) {
@@ -70,6 +83,25 @@ export const EnhancedRepositoryView: React.FC<EnhancedRepositoryViewProps> = ({
       repositoryId: null,
       repositoryName: null,
       branchName: undefined,
+    });
+  }, []);
+
+  const handleRepositoryDetails = useCallback((repositoryId: string) => {
+    const repository = repositories.find(repo => repo.id === repositoryId);
+    if (repository) {
+      setHealthModal({
+        isOpen: true,
+        repositoryId,
+        repositoryName: repository.name,
+      });
+    }
+  }, [repositories]);
+
+  const handleHealthModalClose = useCallback(() => {
+    setHealthModal({
+      isOpen: false,
+      repositoryId: null,
+      repositoryName: null,
     });
   }, []);
 
@@ -139,7 +171,7 @@ export const EnhancedRepositoryView: React.FC<EnhancedRepositoryViewProps> = ({
           sortable={true}
           onRepositoryClick={onRepositoryClick}
           onRepositoryRefresh={onRepositoryRefresh}
-          onRepositoryDetails={onRepositoryDetails}
+          onRepositoryDetails={handleRepositoryDetails}
           onRepositoryCommits={handleRepositoryCommits}
           onRepositoryManage={onRepositoryManage}
           onRefreshAll={onRefreshAll}
@@ -152,6 +184,14 @@ export const EnhancedRepositoryView: React.FC<EnhancedRepositoryViewProps> = ({
           repositoryId={commitHistoryModal.repositoryId || ''}
           repositoryName={commitHistoryModal.repositoryName || ''}
           branchName={commitHistoryModal.branchName}
+        />
+
+        {/* Repository Health Dashboard Modal */}
+        <RepositoryHealthModal
+          open={healthModal.isOpen}
+          onOpenChange={handleHealthModalClose}
+          repositoryId={healthModal.repositoryId || ''}
+          repositoryName={healthModal.repositoryName || ''}
         />
       </div>
     </div>

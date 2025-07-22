@@ -28,7 +28,7 @@ class SettingsService {
                 where: { userId },
             });
             if (!settings) {
-                settings = await this.createUserSettings({ userId });
+                settings = (await this.createUserSettings({ userId }));
             }
             return settings;
         }

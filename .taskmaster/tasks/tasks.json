@@ -611,7 +611,7 @@
               2
             ],
             "details": "Implement the 'Sync' button to trigger a manual data re-fetch for a specific repository. Create and integrate a 'New Branch' modal, managing its visibility and form state with the chosen state management library. Implement the API call for creating a new branch on form submission. Connect the 'View Commits' button to navigate to a commit history page. Centralize the repository list and their individual states (e.g., syncing, error) in the global store.",
-            "status": "pending",
+            "status": "in-progress",
             "testStrategy": "Use React Testing Library to test user interactions, such as clicking the 'New Branch' button to verify the modal opens. Mock API calls to test that 'Sync' and 'New Branch' actions trigger the correct network requests and that the application state is updated accordingly."
           }
         ]
@@ -796,7 +796,7 @@
     ],
     "metadata": {
       "created": "2025-07-15T21:22:03.992Z",
-      "updated": "2025-07-22T19:47:49.607Z",
+      "updated": "2025-07-22T20:01:11.999Z",
       "description": "Tasks for taskmaster-ui context"
     }
   }

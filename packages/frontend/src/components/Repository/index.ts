@@ -49,3 +49,6 @@ export type {
   RepositoryHealthIndicatorProps,
   HealthScoreCompactProps,
 } from './RepositoryHealthIndicator';
+
+export { NewBranchModal } from './NewBranchModal';
+export type { NewBranchModalProps } from './NewBranchModal';

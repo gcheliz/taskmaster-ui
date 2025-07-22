@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { cn } from '../../utils/cn';
 import { Card, CardContent } from '../ui/molecules/Card';
 import { Badge } from '../ui/atoms/Badge';
@@ -15,6 +15,10 @@ import {
   useRepositoryIntegrations,
   useRepositoryRealtime,
 } from '../../hooks/useRepositoryData';
+import {
+  useRepositoryState,
+  useRepositoryActions,
+} from '../../stores/repositoryStore';
 import type {
   RepositoryHealthMetrics,
   RepositoryStatistics,
@@ -108,6 +112,20 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = ({
 }) => {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
+  // Get centralized repository state
+  const repositoryState = useRepositoryState(repository.id);
+  const {
+    syncRepository,
+    openNewBranchModal,
+    openCommitHistory,
+    initializeRepository,
+  } = useRepositoryActions();
+
+  // Initialize repository state on mount
+  useEffect(() => {
+    initializeRepository(repository.id);
+  }, [repository.id, initializeRepository]);
+
   // Conditionally fetch enhanced data based on props
   const { health, isLoading: healthLoading } = useRepositoryHealth({
     repositoryId: repository.id,
@@ -135,13 +153,32 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = ({
   });
 
   const handleRefresh = async () => {
-    setIsRefreshing(true);
-    try {
-      onRefresh?.(repository.id);
-      // Add a small delay for visual feedback
-      await new Promise(resolve => setTimeout(resolve, 1000));
-    } finally {
-      setIsRefreshing(false);
+    // Use centralized sync functionality
+    await syncRepository(repository.id);
+
+    // Also call the original onRefresh callback if provided
+    if (onRefresh) {
+      setIsRefreshing(true);
+      try {
+        onRefresh(repository.id);
+        // Add a small delay for visual feedback
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      } finally {
+        setIsRefreshing(false);
+      }
+    }
+  };
+
+  const handleNewBranch = () => {
+    openNewBranchModal(repository.id);
+  };
+
+  const handleViewCommits = () => {
+    if (onViewCommits) {
+      onViewCommits(repository.id);
+    } else {
+      // Use centralized commit history functionality
+      openCommitHistory(repository.id);
     }
   };
 
@@ -430,38 +467,93 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = ({
           </div>
         )}
 
-        {/* Action Buttons */}
-        <div className="flex items-center space-x-2 pt-4 border-t border-gray-200">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={e => {
-              e.stopPropagation();
-              onViewDetails?.(repository.id);
-            }}
-          >
-            Details
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={e => {
-              e.stopPropagation();
-              onViewCommits?.(repository.id);
-            }}
-          >
-            Commits
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={e => {
-              e.stopPropagation();
-              onManage?.(repository.id);
-            }}
-          >
-            Manage
-          </Button>
+        {/* Quick Actions */}
+        <div className="space-y-3 pt-4 border-t border-gray-200">
+          {/* Primary Actions Row */}
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={e => {
+                e.stopPropagation();
+                handleRefresh();
+              }}
+              disabled={repositoryState?.isSyncing || isRefreshing}
+              className="flex-1"
+            >
+              {repositoryState?.isSyncing || isRefreshing ? (
+                <>
+                  <Spinner size="sm" className="mr-1" />
+                  Syncing...
+                </>
+              ) : (
+                'Sync'
+              )}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={e => {
+                e.stopPropagation();
+                handleNewBranch();
+              }}
+              className="flex-1"
+            >
+              New Branch
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={e => {
+                e.stopPropagation();
+                handleViewCommits();
+              }}
+              className="flex-1"
+            >
+              Commits
+            </Button>
+          </div>
+
+          {/* Error Display */}
+          {repositoryState?.error && (
+            <div className="px-3 py-2 bg-red-50 border border-red-200 rounded-md">
+              <p className="text-xs text-red-600">{repositoryState.error}</p>
+            </div>
+          )}
+
+          {/* Last Sync Time */}
+          {repositoryState?.lastSyncTime && (
+            <div className="text-xs text-gray-500 text-center">
+              Last synced:{' '}
+              {new Date(repositoryState.lastSyncTime).toLocaleTimeString()}
+            </div>
+          )}
+
+          {/* Secondary Actions Row */}
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={e => {
+                e.stopPropagation();
+                onViewDetails?.(repository.id);
+              }}
+              className="flex-1"
+            >
+              Details
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={e => {
+                e.stopPropagation();
+                onManage?.(repository.id);
+              }}
+              className="flex-1"
+            >
+              Manage
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>

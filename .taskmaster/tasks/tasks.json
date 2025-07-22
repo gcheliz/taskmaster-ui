@@ -246,7 +246,7 @@
               1
             ],
             "details": "Create a responsive card component that displays repository name, description, and key statistics (e.g., stars, forks). Implement a visual indicator for Git integration status (e.g., 'Connected', 'Syncing', 'Error'). Add a color-coded badge for the main branch status (e.g., green for 'up-to-date', yellow for 'ahead', red for 'diverged').",
-            "status": "in-progress",
+            "status": "done",
             "testStrategy": "Use unit tests to verify the component's logic, particularly the conditional rendering and color-coding based on props. Employ visual regression testing to ensure the card's appearance is consistent across different states and screen sizes."
           },
           {
@@ -258,7 +258,7 @@
               2
             ],
             "details": "Upon user interaction with a repository card, trigger a view that lists commits chronologically. Each list item should display the commit hash, author, date, and message. Implement pagination or an infinite scroll mechanism to handle repositories with extensive commit histories. This view will use the service from subtask 1.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Conduct integration tests to ensure that selecting a repository correctly fetches and displays its commit history. Unit test the pagination or infinite scroll logic to handle data loading and state management correctly."
           },
           {
@@ -796,7 +796,7 @@
     ],
     "metadata": {
       "created": "2025-07-15T21:22:03.992Z",
-      "updated": "2025-07-19T05:39:15.371Z",
+      "updated": "2025-07-22T16:24:53.510Z",
       "description": "Tasks for taskmaster-ui context"
     }
   }

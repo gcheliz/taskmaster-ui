@@ -27,3 +27,6 @@ export type {
   RepositorySortOption, 
   RepositoryFilterOption 
 } from './RepositoryGrid';
+
+export { CommitHistoryModal } from './CommitHistoryModal';
+export type { CommitHistoryModalProps, CommitData } from './CommitHistoryModal';

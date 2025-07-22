@@ -330,3 +330,87 @@
 .taskmaster-terminal .terminal-controls .terminal-button--kill:hover {
   background: rgba(245, 101, 101, 0.3);
 }
+
+/* Command History Status Indicator */
+.command-history-indicator {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  z-index: 1001;
+  animation: slideIn 0.2s ease-out;
+}
+
+.history-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #2d3748;
+  border: 1px solid #4a5568;
+  border-radius: 20px;
+  padding: 6px 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.history-icon {
+  font-size: 14px;
+}
+
+.history-text {
+  color: #68d391;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.history-hint {
+  color: #a0aec0;
+  font-size: 11px;
+  font-style: italic;
+}
+
+/* Light theme for history indicator */
+.taskmaster-terminal.terminal-container--light .command-history-indicator .history-status {
+  background: #ffffff;
+  border-color: #e2e8f0;
+  color: #2d3748;
+}
+
+.taskmaster-terminal.terminal-container--light .command-history-indicator .history-text {
+  color: #38a169;
+}
+
+.taskmaster-terminal.terminal-container--light .command-history-indicator .history-hint {
+  color: #4a5568;
+}
+
+/* Animation for history indicator */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Responsive adjustments for history indicator */
+@media (max-width: 768px) {
+  .command-history-indicator {
+    top: 5px;
+    right: 10px;
+  }
+  
+  .history-status {
+    padding: 4px 8px;
+    gap: 6px;
+  }
+  
+  .history-text {
+    font-size: 11px;
+  }
+  
+  .history-hint {
+    display: none;
+  }
+}

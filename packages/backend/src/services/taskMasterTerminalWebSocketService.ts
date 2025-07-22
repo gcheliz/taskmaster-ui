@@ -462,13 +462,9 @@ export class TaskMasterTerminalWebSocketService {
     }
 
     // Simple mock authentication - in production, verify JWT token
-    try {
-      // TODO: Implement proper JWT verification
-      return { id: 'user-1', email: 'user@example.com' };
-    } catch (error) {
-      logger.error('Failed to authenticate WebSocket connection:', {}, error instanceof Error ? error : new Error('Unknown error'));
-      return null;
-    }
+    // TODO: Implement proper JWT verification
+    // For now, return mock user data
+    return { id: 'user-1', email: 'user@example.com' };
   }
 
   /**

@@ -365,11 +365,7 @@ export const InteractiveDragDemo: Story = {
                     <div className="flex items-center justify-between">
                       <h4 className="font-medium text-sm">{task.title}</h4>
                       <Badge
-                        variant={
-                          task.priority === 'high'
-                            ? 'error'
-                            : 'warning'
-                        }
+                        variant={task.priority === 'high' ? 'error' : 'warning'}
                         size="sm"
                       >
                         {task.priority}

@@ -62,7 +62,7 @@ class TaskMasterTerminalWebSocketService {
                 this.handleConnectionClose(connectionId);
             });
             // Handle errors
-            ws.on('error', (error) => {
+            ws.on('error', error => {
                 logger_1.logger.error(`TaskMaster terminal WebSocket error for connection ${connectionId}:`, {}, error instanceof Error ? error : new Error('Unknown error'));
                 this.handleConnectionClose(connectionId);
             });
@@ -236,7 +236,7 @@ class TaskMasterTerminalWebSocketService {
      */
     setupEventListeners() {
         // Listen for terminal output
-        taskMasterTerminalService_1.taskMasterTerminalService.on('output', (output) => {
+        taskMasterTerminalService_1.taskMasterTerminalService.on('output', output => {
             const connectionId = this.sessionToConnection.get(output.sessionId);
             if (connectionId) {
                 const ws = this.connections.get(connectionId);
@@ -250,10 +250,10 @@ class TaskMasterTerminalWebSocketService {
             }
         });
         // Listen for session events
-        taskMasterTerminalService_1.taskMasterTerminalService.on('session-created', (data) => {
+        taskMasterTerminalService_1.taskMasterTerminalService.on('session-created', data => {
             // Already handled in create session handler
         });
-        taskMasterTerminalService_1.taskMasterTerminalService.on('session-closed', (data) => {
+        taskMasterTerminalService_1.taskMasterTerminalService.on('session-closed', data => {
             const connectionId = this.sessionToConnection.get(data.sessionId);
             if (connectionId) {
                 const ws = this.connections.get(connectionId);
@@ -275,7 +275,7 @@ class TaskMasterTerminalWebSocketService {
             }
         });
         // Listen for TaskMaster-specific events
-        taskMasterTerminalService_1.taskMasterTerminalService.on('taskmaster-state-changed', (data) => {
+        taskMasterTerminalService_1.taskMasterTerminalService.on('taskmaster-state-changed', data => {
             const connectionId = this.sessionToConnection.get(data.sessionId);
             if (connectionId) {
                 const ws = this.connections.get(connectionId);
@@ -342,7 +342,8 @@ class TaskMasterTerminalWebSocketService {
     async authenticateConnection(req) {
         // Extract token from query string or headers
         const url = new URL(req.url || '', `http://${req.headers.host}`);
-        const token = url.searchParams.get('token') || req.headers.authorization?.replace('Bearer ', '');
+        const token = url.searchParams.get('token') ||
+            req.headers.authorization?.replace('Bearer ', '');
         if (!token) {
             return null;
         }
@@ -364,8 +365,7 @@ class TaskMasterTerminalWebSocketService {
         return {
             activeConnections: this.connections.size,
             activeSessions: this.sessionToConnection.size,
-            totalSessions: Array.from(this.connectionToSessions.values())
-                .reduce((total, sessions) => total + sessions.size, 0),
+            totalSessions: Array.from(this.connectionToSessions.values()).reduce((total, sessions) => total + sessions.size, 0),
         };
     }
     /**

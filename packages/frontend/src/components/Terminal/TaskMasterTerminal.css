@@ -4,10 +4,10 @@
   position: relative;
   width: 100%;
   height: 100%;
-  font-family: 'Courier New', 'SF Mono', Monaco, Inconsolata, 'Fira Code', 
-               'Fira Mono', 'Droid Sans Mono', 'Liberation Mono', Menlo, 
-               Consolas, 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 
-               'Courier New', monospace;
+  font-family:
+    'Courier New', 'SF Mono', Monaco, Inconsolata, 'Fira Code', 'Fira Mono',
+    'Droid Sans Mono', 'Liberation Mono', Menlo, Consolas, 'DejaVu Sans Mono',
+    'Bitstream Vera Sans Mono', 'Courier New', monospace;
 }
 
 .taskmaster-terminal {
@@ -220,15 +220,15 @@
     right: 10px;
     max-width: none;
   }
-  
+
   .suggestions-header {
     padding: 10px 12px;
   }
-  
+
   .suggestion-item {
     padding: 10px 12px;
   }
-  
+
   .suggestions-hint {
     display: none;
   }
@@ -247,7 +247,8 @@
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {
@@ -368,17 +369,23 @@
 }
 
 /* Light theme for history indicator */
-.taskmaster-terminal.terminal-container--light .command-history-indicator .history-status {
+.taskmaster-terminal.terminal-container--light
+  .command-history-indicator
+  .history-status {
   background: #ffffff;
   border-color: #e2e8f0;
   color: #2d3748;
 }
 
-.taskmaster-terminal.terminal-container--light .command-history-indicator .history-text {
+.taskmaster-terminal.terminal-container--light
+  .command-history-indicator
+  .history-text {
   color: #38a169;
 }
 
-.taskmaster-terminal.terminal-container--light .command-history-indicator .history-hint {
+.taskmaster-terminal.terminal-container--light
+  .command-history-indicator
+  .history-hint {
   color: #4a5568;
 }
 
@@ -400,16 +407,16 @@
     top: 5px;
     right: 10px;
   }
-  
+
   .history-status {
     padding: 4px 8px;
     gap: 6px;
   }
-  
+
   .history-text {
     font-size: 11px;
   }
-  
+
   .history-hint {
     display: none;
   }
@@ -492,40 +499,56 @@
 }
 
 /* Light theme for tab completion indicator */
-.taskmaster-terminal.terminal-container--light .tab-completion-indicator .completion-status {
+.taskmaster-terminal.terminal-container--light
+  .tab-completion-indicator
+  .completion-status {
   background: #ffffff;
   border-color: #e2e8f0;
   color: #2d3748;
 }
 
-.taskmaster-terminal.terminal-container--light .tab-completion-indicator .completion-options {
+.taskmaster-terminal.terminal-container--light
+  .tab-completion-indicator
+  .completion-options {
   background: #f7fafc;
   border-color: #e2e8f0;
 }
 
-.taskmaster-terminal.terminal-container--light .tab-completion-indicator .completion-text {
+.taskmaster-terminal.terminal-container--light
+  .tab-completion-indicator
+  .completion-text {
   color: #3182ce;
 }
 
-.taskmaster-terminal.terminal-container--light .tab-completion-indicator .completion-icon {
+.taskmaster-terminal.terminal-container--light
+  .tab-completion-indicator
+  .completion-icon {
   color: #3182ce;
 }
 
-.taskmaster-terminal.terminal-container--light .tab-completion-indicator .completion-hint {
+.taskmaster-terminal.terminal-container--light
+  .tab-completion-indicator
+  .completion-hint {
   color: #4a5568;
 }
 
-.taskmaster-terminal.terminal-container--light .tab-completion-indicator .completion-option {
+.taskmaster-terminal.terminal-container--light
+  .tab-completion-indicator
+  .completion-option {
   background: #e2e8f0;
   color: #2d3748;
 }
 
-.taskmaster-terminal.terminal-container--light .tab-completion-indicator .completion-option:hover {
+.taskmaster-terminal.terminal-container--light
+  .tab-completion-indicator
+  .completion-option:hover {
   background: #667eea;
   color: white;
 }
 
-.taskmaster-terminal.terminal-container--light .tab-completion-indicator .completion-option.active {
+.taskmaster-terminal.terminal-container--light
+  .tab-completion-indicator
+  .completion-option.active {
   background: #667eea;
   color: white;
   border-color: #7c3aed;
@@ -550,25 +573,25 @@
     left: 10px;
     right: 10px;
   }
-  
+
   .completion-status {
     padding: 6px 10px;
     gap: 6px;
   }
-  
+
   .completion-text {
     font-size: 11px;
   }
-  
+
   .completion-hint {
     display: none;
   }
-  
+
   .completion-options {
     padding: 6px 10px;
     gap: 3px;
   }
-  
+
   .completion-option {
     padding: 3px 6px;
     font-size: 10px;

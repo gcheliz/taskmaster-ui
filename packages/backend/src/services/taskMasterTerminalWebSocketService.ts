@@ -5,20 +5,31 @@ import { taskMasterTerminalService } from './taskMasterTerminalService';
 import authMiddleware from '../middleware/auth';
 
 export interface TaskMasterTerminalWebSocketMessage {
-  type: 'create-session' | 'command' | 'input' | 'resize' | 'kill' | 'close-session';
+  type:
+    | 'create-session'
+    | 'command'
+    | 'input'
+    | 'resize'
+    | 'kill'
+    | 'close-session';
   sessionId?: string;
   data?: any;
 }
 
 export interface TaskMasterTerminalWebSocketResponse {
-  type: 'session-created' | 'output' | 'session-closed' | 'error' | 'suggestions';
+  type:
+    | 'session-created'
+    | 'output'
+    | 'session-closed'
+    | 'error'
+    | 'suggestions';
   sessionId?: string;
   data?: any;
 }
 
 /**
  * TaskMaster Terminal WebSocket Service
- * 
+ *
  * Provides real-time communication for TaskMaster terminal sessions.
  * Features:
  * - Real-time command execution and output streaming
@@ -41,7 +52,7 @@ export class TaskMasterTerminalWebSocketService {
    */
   async handleConnection(ws: WebSocket, req: IncomingMessage): Promise<void> {
     const connectionId = this.generateConnectionId();
-    
+
     try {
       // Authenticate the WebSocket connection
       const user = await this.authenticateConnection(req);
@@ -54,7 +65,9 @@ export class TaskMasterTerminalWebSocketService {
       this.connections.set(connectionId, ws);
       this.connectionToSessions.set(connectionId, new Set());
 
-      logger.info(`TaskMaster terminal WebSocket connection established: ${connectionId} (user: ${user.id})`);
+      logger.info(
+        `TaskMaster terminal WebSocket connection established: ${connectionId} (user: ${user.id})`
+      );
 
       // Send welcome message
       this.sendMessage(ws, {
@@ -66,12 +79,18 @@ export class TaskMasterTerminalWebSocketService {
       });
 
       // Handle messages
-      ws.on('message', async (rawMessage) => {
+      ws.on('message', async rawMessage => {
         try {
-          const message = JSON.parse(rawMessage.toString()) as TaskMasterTerminalWebSocketMessage;
+          const message = JSON.parse(
+            rawMessage.toString()
+          ) as TaskMasterTerminalWebSocketMessage;
           await this.handleMessage(connectionId, ws, message);
         } catch (error) {
-          logger.error(`Failed to parse TaskMaster terminal WebSocket message: ${error}`, {}, error instanceof Error ? error : new Error('Unknown error'));
+          logger.error(
+            `Failed to parse TaskMaster terminal WebSocket message: ${error}`,
+            {},
+            error instanceof Error ? error : new Error('Unknown error')
+          );
           this.sendError(ws, 'Invalid message format', undefined);
         }
       });
@@ -82,13 +101,20 @@ export class TaskMasterTerminalWebSocketService {
       });
 
       // Handle errors
-      ws.on('error', (error) => {
-        logger.error(`TaskMaster terminal WebSocket error for connection ${connectionId}:`, {}, error instanceof Error ? error : new Error('Unknown error'));
+      ws.on('error', error => {
+        logger.error(
+          `TaskMaster terminal WebSocket error for connection ${connectionId}:`,
+          {},
+          error instanceof Error ? error : new Error('Unknown error')
+        );
         this.handleConnectionClose(connectionId);
       });
-
     } catch (error) {
-      logger.error(`Failed to handle TaskMaster terminal WebSocket connection:`, {}, error instanceof Error ? error : new Error('Unknown error'));
+      logger.error(
+        `Failed to handle TaskMaster terminal WebSocket connection:`,
+        {},
+        error instanceof Error ? error : new Error('Unknown error')
+      );
       ws.close(1011, 'Server error');
     }
   }
@@ -132,7 +158,11 @@ export class TaskMasterTerminalWebSocketService {
           break;
       }
     } catch (error) {
-      logger.error(`Failed to handle TaskMaster terminal WebSocket message:`, {}, error instanceof Error ? error : new Error('Unknown error'));
+      logger.error(
+        `Failed to handle TaskMaster terminal WebSocket message:`,
+        {},
+        error instanceof Error ? error : new Error('Unknown error')
+      );
       this.sendError(
         ws,
         error instanceof Error ? error.message : 'Message handling failed',
@@ -175,7 +205,9 @@ export class TaskMasterTerminalWebSocketService {
         },
       });
 
-      logger.info(`TaskMaster terminal session created via WebSocket: ${sessionId}`);
+      logger.info(
+        `TaskMaster terminal session created via WebSocket: ${sessionId}`
+      );
     } catch (error) {
       this.sendError(
         ws,
@@ -310,7 +342,7 @@ export class TaskMasterTerminalWebSocketService {
 
     try {
       taskMasterTerminalService.closeSession(sessionId);
-      
+
       // Remove session associations
       this.sessionToConnection.delete(sessionId);
       const sessions = this.connectionToSessions.get(connectionId);
@@ -325,7 +357,6 @@ export class TaskMasterTerminalWebSocketService {
           message: 'Session closed successfully',
         },
       });
-
     } catch (error) {
       this.sendError(
         ws,
@@ -340,7 +371,7 @@ export class TaskMasterTerminalWebSocketService {
    */
   private setupEventListeners(): void {
     // Listen for terminal output
-    taskMasterTerminalService.on('output', (output) => {
+    taskMasterTerminalService.on('output', output => {
       const connectionId = this.sessionToConnection.get(output.sessionId);
       if (connectionId) {
         const ws = this.connections.get(connectionId);
@@ -355,11 +386,11 @@ export class TaskMasterTerminalWebSocketService {
     });
 
     // Listen for session events
-    taskMasterTerminalService.on('session-created', (data) => {
+    taskMasterTerminalService.on('session-created', data => {
       // Already handled in create session handler
     });
 
-    taskMasterTerminalService.on('session-closed', (data) => {
+    taskMasterTerminalService.on('session-closed', data => {
       const connectionId = this.sessionToConnection.get(data.sessionId);
       if (connectionId) {
         const ws = this.connections.get(connectionId);
@@ -372,7 +403,7 @@ export class TaskMasterTerminalWebSocketService {
             },
           });
         }
-        
+
         // Clean up associations
         this.sessionToConnection.delete(data.sessionId);
         const sessions = this.connectionToSessions.get(connectionId);
@@ -383,7 +414,7 @@ export class TaskMasterTerminalWebSocketService {
     });
 
     // Listen for TaskMaster-specific events
-    taskMasterTerminalService.on('taskmaster-state-changed', (data) => {
+    taskMasterTerminalService.on('taskmaster-state-changed', data => {
       const connectionId = this.sessionToConnection.get(data.sessionId);
       if (connectionId) {
         const ws = this.connections.get(connectionId);
@@ -406,7 +437,9 @@ export class TaskMasterTerminalWebSocketService {
    * Handle connection close
    */
   private handleConnectionClose(connectionId: string): void {
-    logger.info(`TaskMaster terminal WebSocket connection closed: ${connectionId}`);
+    logger.info(
+      `TaskMaster terminal WebSocket connection closed: ${connectionId}`
+    );
 
     // Close all sessions associated with this connection
     const sessions = this.connectionToSessions.get(connectionId);
@@ -416,7 +449,11 @@ export class TaskMasterTerminalWebSocketService {
           taskMasterTerminalService.closeSession(sessionId);
           this.sessionToConnection.delete(sessionId);
         } catch (error) {
-          logger.error(`Failed to close session ${sessionId} on connection close:`, {}, error instanceof Error ? error : new Error('Unknown error'));
+          logger.error(
+            `Failed to close session ${sessionId} on connection close:`,
+            {},
+            error instanceof Error ? error : new Error('Unknown error')
+          );
         }
       }
     }
@@ -429,7 +466,10 @@ export class TaskMasterTerminalWebSocketService {
   /**
    * Send message to WebSocket client
    */
-  private sendMessage(ws: WebSocket, message: TaskMasterTerminalWebSocketResponse): void {
+  private sendMessage(
+    ws: WebSocket,
+    message: TaskMasterTerminalWebSocketResponse
+  ): void {
     if (ws.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify(message));
     }
@@ -455,7 +495,9 @@ export class TaskMasterTerminalWebSocketService {
   private async authenticateConnection(req: IncomingMessage): Promise<any> {
     // Extract token from query string or headers
     const url = new URL(req.url || '', `http://${req.headers.host}`);
-    const token = url.searchParams.get('token') || req.headers.authorization?.replace('Bearer ', '');
+    const token =
+      url.searchParams.get('token') ||
+      req.headers.authorization?.replace('Bearer ', '');
 
     if (!token) {
       return null;
@@ -485,8 +527,10 @@ export class TaskMasterTerminalWebSocketService {
     return {
       activeConnections: this.connections.size,
       activeSessions: this.sessionToConnection.size,
-      totalSessions: Array.from(this.connectionToSessions.values())
-        .reduce((total, sessions) => total + sessions.size, 0),
+      totalSessions: Array.from(this.connectionToSessions.values()).reduce(
+        (total, sessions) => total + sessions.size,
+        0
+      ),
     };
   }
 
@@ -506,7 +550,11 @@ export class TaskMasterTerminalWebSocketService {
       try {
         taskMasterTerminalService.closeSession(sessionId);
       } catch (error) {
-        logger.error(`Failed to close session ${sessionId} during cleanup:`, {}, error instanceof Error ? error : new Error('Unknown error'));
+        logger.error(
+          `Failed to close session ${sessionId} during cleanup:`,
+          {},
+          error instanceof Error ? error : new Error('Unknown error')
+        );
       }
     }
 
@@ -518,4 +566,5 @@ export class TaskMasterTerminalWebSocketService {
 }
 
 // Singleton instance
-export const taskMasterTerminalWebSocketService = new TaskMasterTerminalWebSocketService();
+export const taskMasterTerminalWebSocketService =
+  new TaskMasterTerminalWebSocketService();

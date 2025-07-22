@@ -9,7 +9,8 @@ const mockCommits: CommitData[] = [
   {
     hash: 'a1b2c3d4e5f6789012345678901234567890abcd',
     date: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
-    message: 'Fix: Resolve issue with repository card loading state\n\n- Added proper loading spinners\n- Fixed async data handling\n- Updated error boundaries',
+    message:
+      'Fix: Resolve issue with repository card loading state\n\n- Added proper loading spinners\n- Fixed async data handling\n- Updated error boundaries',
     author: {
       name: 'John Doe',
       email: 'john.doe@example.com',
@@ -27,7 +28,8 @@ const mockCommits: CommitData[] = [
   {
     hash: 'c3d4e5f678901234567890123456789012abcdef',
     date: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(), // 12 hours ago
-    message: 'Refactor: Improve repository service error handling\n\nEnhanced error messages and retry logic for better user experience.',
+    message:
+      'Refactor: Improve repository service error handling\n\nEnhanced error messages and retry logic for better user experience.',
     author: {
       name: 'Bob Johnson',
       email: 'bob.johnson@example.com',
@@ -45,7 +47,8 @@ const mockCommits: CommitData[] = [
   {
     hash: 'e5f67890123456789012345678901abcdef23456',
     date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(), // 3 days ago
-    message: 'Docs: Add comprehensive API documentation\n\n- Document all service methods\n- Add usage examples\n- Include integration patterns\n- Update README with new features',
+    message:
+      'Docs: Add comprehensive API documentation\n\n- Document all service methods\n- Add usage examples\n- Include integration patterns\n- Update README with new features',
     author: {
       name: 'Charlie Brown',
       email: 'charlie.brown@example.com',
@@ -64,13 +67,17 @@ const mockCommits: CommitData[] = [
 
 // Mock the RepositoryService for Storybook
 const mockRepositoryService = {
-  getCommitHistory: async (repositoryId: string, limit: number = 50, branchName?: string) => {
+  getCommitHistory: async (
+    repositoryId: string,
+    limit: number = 50,
+    branchName?: string
+  ) => {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
+
     // Simulate pagination
     const commits = mockCommits.slice(0, limit);
-    
+
     return {
       success: true,
       data: commits,
@@ -138,12 +145,8 @@ const ModalDemo = (args: any) => {
       <Button onClick={() => setIsOpen(true)} variant="primary">
         Open Commit History Modal
       </Button>
-      
-      <CommitHistoryModal
-        {...args}
-        open={isOpen}
-        onOpenChange={setIsOpen}
-      />
+
+      <CommitHistoryModal {...args} open={isOpen} onOpenChange={setIsOpen} />
     </div>
   );
 };
@@ -162,7 +165,8 @@ export const WithLongBranchName: Story = {
   args: {
     repositoryId: 'repo-456',
     repositoryName: 'my-awesome-project',
-    branchName: 'feature/implement-advanced-commit-history-with-search-and-pagination',
+    branchName:
+      'feature/implement-advanced-commit-history-with-search-and-pagination',
   },
 };
 
@@ -188,7 +192,7 @@ export const AlwaysOpen: Story = {
 
 // Story showing error state (mock a failed API call)
 export const WithError: Story = {
-  render: (args) => {
+  render: args => {
     const [isOpen, setIsOpen] = useState(false);
 
     // Override the mock service to simulate an error
@@ -197,7 +201,8 @@ export const WithError: Story = {
         await new Promise(resolve => setTimeout(resolve, 1000));
         return {
           success: false,
-          error: 'Failed to fetch commit history. Repository may be unreachable or you may not have permission.',
+          error:
+            'Failed to fetch commit history. Repository may be unreachable or you may not have permission.',
         };
       },
     };
@@ -207,12 +212,8 @@ export const WithError: Story = {
         <Button onClick={() => setIsOpen(true)} variant="primary">
           Open Modal (Error State)
         </Button>
-        
-        <CommitHistoryModal
-          {...args}
-          open={isOpen}
-          onOpenChange={setIsOpen}
-        />
+
+        <CommitHistoryModal {...args} open={isOpen} onOpenChange={setIsOpen} />
       </div>
     );
   },
@@ -225,7 +226,7 @@ export const WithError: Story = {
 
 // Story showing loading state
 export const LoadingState: Story = {
-  render: (args) => {
+  render: args => {
     const [isOpen, setIsOpen] = useState(false);
 
     // Override the mock service to simulate slow loading
@@ -244,12 +245,8 @@ export const LoadingState: Story = {
         <Button onClick={() => setIsOpen(true)} variant="primary">
           Open Modal (Slow Loading)
         </Button>
-        
-        <CommitHistoryModal
-          {...args}
-          open={isOpen}
-          onOpenChange={setIsOpen}
-        />
+
+        <CommitHistoryModal {...args} open={isOpen} onOpenChange={setIsOpen} />
       </div>
     );
   },
@@ -262,7 +259,7 @@ export const LoadingState: Story = {
 
 // Story showing empty state (no commits)
 export const EmptyRepository: Story = {
-  render: (args) => {
+  render: args => {
     const [isOpen, setIsOpen] = useState(false);
 
     // Override the mock service to return no commits
@@ -281,12 +278,8 @@ export const EmptyRepository: Story = {
         <Button onClick={() => setIsOpen(true)} variant="primary">
           Open Modal (Empty Repository)
         </Button>
-        
-        <CommitHistoryModal
-          {...args}
-          open={isOpen}
-          onOpenChange={setIsOpen}
-        />
+
+        <CommitHistoryModal {...args} open={isOpen} onOpenChange={setIsOpen} />
       </div>
     );
   },

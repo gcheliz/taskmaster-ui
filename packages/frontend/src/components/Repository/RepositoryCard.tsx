@@ -114,15 +114,16 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = ({
     autoFetch: showDetails,
   });
 
-  const { integrations, isLoading: integrationsLoading } = useRepositoryIntegrations({
-    repositoryId: repository.id,
-    autoFetch: showIntegrations,
-  });
+  const { integrations, isLoading: integrationsLoading } =
+    useRepositoryIntegrations({
+      repositoryId: repository.id,
+      autoFetch: showIntegrations,
+    });
 
   const { isConnected, latestUpdate } = useRepositoryRealtime({
     repositoryId: repository.id,
     autoWatch: enableRealtime,
-    onUpdate: (data) => {
+    onUpdate: data => {
       // Handle real-time updates
       console.log('Repository update:', data);
     },
@@ -139,21 +140,27 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = ({
     }
   };
 
-  const getHealthBadgeVariant = (score?: number): 'success' | 'warning' | 'error' | 'secondary' => {
+  const getHealthBadgeVariant = (
+    score?: number
+  ): 'success' | 'warning' | 'error' | 'secondary' => {
     if (!score) return 'secondary';
     if (score >= 80) return 'success';
     if (score >= 60) return 'warning';
     return 'error';
   };
 
-  const getBranchStatusVariant = (status: typeof repository.status): 'success' | 'warning' | 'error' | 'secondary' => {
+  const getBranchStatusVariant = (
+    status: typeof repository.status
+  ): 'success' | 'warning' | 'error' | 'secondary' => {
     if (!status.isClean) return 'error';
     if (status.ahead && status.ahead > 0) return 'warning';
     if (status.behind && status.behind > 0) return 'warning';
     return 'success';
   };
 
-  const getIntegrationStatusVariant = (status?: string): 'success' | 'warning' | 'error' | 'secondary' => {
+  const getIntegrationStatusVariant = (
+    status?: string
+  ): 'success' | 'warning' | 'error' | 'secondary' => {
     switch (status) {
       case 'passing':
       case 'deployed':
@@ -179,12 +186,14 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = ({
   const formatLastCommitDate = (date: string): string => {
     const commitDate = new Date(date);
     const now = new Date();
-    const diffInHours = (now.getTime() - commitDate.getTime()) / (1000 * 60 * 60);
+    const diffInHours =
+      (now.getTime() - commitDate.getTime()) / (1000 * 60 * 60);
 
     if (diffInHours < 1) return 'Just now';
     if (diffInHours < 24) return `${Math.floor(diffInHours)}h ago`;
     if (diffInHours < 24 * 7) return `${Math.floor(diffInHours / 24)}d ago`;
-    if (diffInHours < 24 * 30) return `${Math.floor(diffInHours / (24 * 7))}w ago`;
+    if (diffInHours < 24 * 30)
+      return `${Math.floor(diffInHours / (24 * 7))}w ago`;
     return commitDate.toLocaleDateString();
   };
 
@@ -214,7 +223,9 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = ({
                 'w-2 h-2 rounded-full',
                 isConnected ? 'bg-green-500' : 'bg-gray-400'
               )}
-              title={isConnected ? 'Real-time connected' : 'Real-time disconnected'}
+              title={
+                isConnected ? 'Real-time connected' : 'Real-time disconnected'
+              }
             />
           </div>
         )}
@@ -254,7 +265,9 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = ({
                 <span className="flex items-center">
                   <span
                     className="w-3 h-3 rounded-full mr-1"
-                    style={{ backgroundColor: getLanguageColor(repository.language) }}
+                    style={{
+                      backgroundColor: getLanguageColor(repository.language),
+                    }}
                   />
                   {repository.language}
                 </span>
@@ -271,9 +284,7 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = ({
                   {repository.forkCount}
                 </span>
               )}
-              {repository.size && (
-                <span>{formatSize(repository.size)}</span>
-              )}
+              {repository.size && <span>{formatSize(repository.size)}</span>}
             </div>
           </div>
 
@@ -282,7 +293,7 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = ({
             <Button
               variant="ghost"
               size="sm"
-              onClick={(e) => {
+              onClick={e => {
                 e.stopPropagation();
                 handleRefresh();
               }}
@@ -326,7 +337,8 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = ({
             {repository.lastCommit.message}
           </p>
           <p className="text-xs text-gray-500">
-            by {repository.lastCommit.author.name} • {repository.lastCommit.hash.substring(0, 7)}
+            by {repository.lastCommit.author.name} •{' '}
+            {repository.lastCommit.hash.substring(0, 7)}
           </p>
         </div>
 
@@ -362,7 +374,9 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = ({
             )}
             {integrations.deployment.status !== 'unknown' && (
               <Badge
-                variant={getIntegrationStatusVariant(integrations.deployment.status)}
+                variant={getIntegrationStatusVariant(
+                  integrations.deployment.status
+                )}
                 size="sm"
                 title={`Deploy: ${integrations.deployment.status}`}
               >
@@ -371,7 +385,11 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = ({
             )}
             {integrations.security.vulnerabilities !== null && (
               <Badge
-                variant={integrations.security.vulnerabilities === 0 ? 'success' : 'error'}
+                variant={
+                  integrations.security.vulnerabilities === 0
+                    ? 'success'
+                    : 'error'
+                }
                 size="sm"
                 title={`Security: ${integrations.security.vulnerabilities} vulnerabilities`}
               >
@@ -394,7 +412,7 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = ({
           <Button
             variant="outline"
             size="sm"
-            onClick={(e) => {
+            onClick={e => {
               e.stopPropagation();
               onViewDetails?.(repository.id);
             }}
@@ -404,7 +422,7 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = ({
           <Button
             variant="outline"
             size="sm"
-            onClick={(e) => {
+            onClick={e => {
               e.stopPropagation();
               onViewCommits?.(repository.id);
             }}
@@ -414,7 +432,7 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = ({
           <Button
             variant="outline"
             size="sm"
-            onClick={(e) => {
+            onClick={e => {
               e.stopPropagation();
               onManage?.(repository.id);
             }}
@@ -458,20 +476,50 @@ const StarIcon: React.FC<{ className?: string }> = ({ className }) => (
 );
 
 const ForkIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16l-4-4m0 0l4-4m-4 4h18" />
+  <svg
+    className={className}
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M7 16l-4-4m0 0l4-4m-4 4h18"
+    />
   </svg>
 );
 
 const BranchIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l3 3-3 3m5 0h3" />
+  <svg
+    className={className}
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M8 9l3 3-3 3m5 0h3"
+    />
   </svg>
 );
 
 const RefreshIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+  <svg
+    className={className}
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+    />
   </svg>
 );
 

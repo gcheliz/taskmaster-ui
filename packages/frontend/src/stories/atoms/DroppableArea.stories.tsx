@@ -8,13 +8,16 @@ import { Badge } from '../../components/ui/atoms/Badge';
 import {
   Icon,
   PlusIcon,
-  FolderIcon,
-  InboxIcon,
   ArchiveIcon,
   TrashIcon,
   CheckIcon,
-  ClockIcon,
+  TimeIcon,
 } from '../../components/ui/atoms/Icon';
+
+// Create missing icon aliases for compatibility
+const ClockIcon = TimeIcon;
+const FolderIcon = ArchiveIcon; // Use ArchiveIcon as folder substitute
+const InboxIcon = ArchiveIcon; // Use ArchiveIcon as inbox substitute
 
 const meta: Meta<typeof DroppableArea> = {
   title: 'Atoms/DroppableArea',
@@ -62,7 +65,7 @@ const meta: Meta<typeof DroppableArea> = {
     },
   },
   decorators: [
-    (Story) => (
+    Story => (
       <DndContext collisionDetection={closestCenter}>
         <div className="p-8">
           <Story />
@@ -88,7 +91,9 @@ export const WithCustomPlaceholder: Story = {
     placeholder: (
       <div className="text-center">
         <Icon icon={InboxIcon} size="lg" className="text-secondary-400 mb-2" />
-        <p className="font-medium text-secondary-600">Drop tasks to get started</p>
+        <p className="font-medium text-secondary-600">
+          Drop tasks to get started
+        </p>
         <p className="text-sm text-secondary-500 mt-1">
           Drag task cards from the sidebar
         </p>
@@ -212,7 +217,7 @@ export const InteractiveDropDemo: Story = {
 
     const handleDragEnd = (event: any) => {
       const { active, over } = event;
-      
+
       if (over && over.id === 'interactive-drop-zone') {
         const itemId = active.id;
         if (!droppedItems.includes(itemId)) {
@@ -236,14 +241,18 @@ export const InteractiveDropDemo: Story = {
                 <DraggableCard
                   key={item.id}
                   id={item.id}
-                  variant="outlined"
+                  variant="outline"
                   className={droppedItems.includes(item.id) ? 'opacity-50' : ''}
                 >
                   <div className="flex items-center gap-3">
-                    <div className={`w-3 h-3 rounded-full bg-${item.color}-500`} />
+                    <div
+                      className={`w-3 h-3 rounded-full bg-${item.color}-500`}
+                    />
                     <span className="font-medium">{item.title}</span>
                     {droppedItems.includes(item.id) && (
-                      <Badge variant="success" size="sm">Dropped</Badge>
+                      <Badge variant="success" size="sm">
+                        Dropped
+                      </Badge>
                     )}
                   </div>
                 </DraggableCard>
@@ -261,7 +270,7 @@ export const InteractiveDropDemo: Story = {
                 </Button>
               )}
             </div>
-            
+
             <DroppableArea
               id="interactive-drop-zone"
               variant="highlighted"
@@ -270,7 +279,11 @@ export const InteractiveDropDemo: Story = {
               placeholder={
                 droppedItems.length === 0 ? (
                   <div className="text-center">
-                    <Icon icon={InboxIcon} size="lg" className="text-blue-400 mb-2" />
+                    <Icon
+                      icon={InboxIcon}
+                      size="lg"
+                      className="text-blue-400 mb-2"
+                    />
                     <p className="font-medium text-blue-600">Drop items here</p>
                     <p className="text-sm text-blue-500 mt-1">
                       Drag tasks from the left column
@@ -282,9 +295,14 @@ export const InteractiveDropDemo: Story = {
               {droppedItems.length > 0 && (
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 mb-3">
-                    <Icon icon={CheckIcon} size="sm" className="text-green-500" />
+                    <Icon
+                      icon={CheckIcon}
+                      size="sm"
+                      className="text-green-500"
+                    />
                     <span className="font-medium text-green-700">
-                      {droppedItems.length} item{droppedItems.length > 1 ? 's' : ''} received
+                      {droppedItems.length} item
+                      {droppedItems.length > 1 ? 's' : ''} received
                     </span>
                   </div>
                   {droppedItems.map(itemId => {
@@ -295,9 +313,13 @@ export const InteractiveDropDemo: Story = {
                         className="bg-green-50 border border-green-200 rounded-lg p-3"
                       >
                         <div className="flex items-center gap-3">
-                          <div className={`w-3 h-3 rounded-full bg-${item.color}-500`} />
+                          <div
+                            className={`w-3 h-3 rounded-full bg-${item.color}-500`}
+                          />
                           <span className="font-medium">{item.title}</span>
-                          <Badge variant="success" size="sm">Received</Badge>
+                          <Badge variant="success" size="sm">
+                            Received
+                          </Badge>
                         </div>
                       </div>
                     ) : null;
@@ -385,7 +407,11 @@ export const FileUploadZones: Story = {
           size="lg"
           placeholder={
             <div className="text-center">
-              <Icon icon={FolderIcon} size="xl" className="text-secondary-400 mb-3" />
+              <Icon
+                icon={FolderIcon}
+                size="xl"
+                className="text-secondary-400 mb-3"
+              />
               <p className="font-medium text-secondary-700 mb-1">
                 Drop documents here
               </p>
@@ -411,12 +437,8 @@ export const FileUploadZones: Story = {
               <div className="w-16 h-16 mx-auto mb-3 border-2 border-dashed border-blue-300 rounded-lg flex items-center justify-center">
                 <Icon icon={PlusIcon} size="lg" className="text-blue-400" />
               </div>
-              <p className="font-medium text-blue-700 mb-1">
-                Drop images here
-              </p>
-              <p className="text-sm text-blue-600">
-                PNG, JPG, GIF up to 10MB
-              </p>
+              <p className="font-medium text-blue-700 mb-1">Drop images here</p>
+              <p className="text-sm text-blue-600">PNG, JPG, GIF up to 10MB</p>
             </div>
           }
         />
@@ -451,7 +473,7 @@ export const DragStatesShowcase: Story = {
 
         <div>
           <h3 className="font-semibold mb-3">Hover State Simulation</h3>
-          <div 
+          <div
             className="relative"
             onMouseEnter={() => setIsOver(true)}
             onMouseLeave={() => setIsOver(false)}
@@ -460,7 +482,9 @@ export const DragStatesShowcase: Story = {
               id="hover-state"
               variant="default"
               className={isOver ? 'border-primary-400 bg-primary-100/50' : ''}
-              placeholder={isOver ? "Drop items now!" : "Hover to see drop state"}
+              placeholder={
+                isOver ? 'Drop items now!' : 'Hover to see drop state'
+              }
             />
           </div>
         </div>
@@ -485,7 +509,8 @@ export const AccessibilityExample: Story = {
       <div>
         <h3 className="font-semibold mb-3">Keyboard Navigation Support</h3>
         <p className="text-sm text-secondary-600 mb-4">
-          Drop zones should be announced to screen readers and support keyboard interactions
+          Drop zones should be announced to screen readers and support keyboard
+          interactions
         </p>
       </div>
 
@@ -498,7 +523,11 @@ export const AccessibilityExample: Story = {
         tabIndex={0}
         placeholder={
           <div className="text-center">
-            <Icon icon={InboxIcon} size="lg" className="text-secondary-400 mb-2" />
+            <Icon
+              icon={InboxIcon}
+              size="lg"
+              className="text-secondary-400 mb-2"
+            />
             <p className="font-medium text-secondary-700">Project Tasks</p>
             <p className="text-sm text-secondary-500 mt-1">
               Drop or press Enter to add tasks
@@ -516,7 +545,11 @@ export const AccessibilityExample: Story = {
         tabIndex={0}
         placeholder={
           <div className="text-center">
-            <Icon icon={ArchiveIcon} size="lg" className="text-secondary-400 mb-2" />
+            <Icon
+              icon={ArchiveIcon}
+              size="lg"
+              className="text-secondary-400 mb-2"
+            />
             <p className="font-medium text-secondary-700">Archive</p>
             <p className="text-sm text-secondary-500 mt-1">
               Drop completed tasks to archive
@@ -543,9 +576,11 @@ export const RealWorldExample: Story = {
         <div className="bg-secondary-50 rounded-lg p-4">
           <div className="flex items-center justify-between mb-4">
             <h4 className="font-semibold text-secondary-800">To Do</h4>
-            <Badge variant="secondary" size="sm">3</Badge>
+            <Badge variant="secondary" size="sm">
+              3
+            </Badge>
           </div>
-          
+
           <DroppableArea
             id="todo-real"
             variant="minimal"
@@ -557,13 +592,17 @@ export const RealWorldExample: Story = {
               <div className="bg-white rounded-lg p-4 border border-secondary-200 shadow-sm">
                 <div className="flex items-start justify-between mb-2">
                   <h5 className="font-medium text-sm">Setup CI/CD pipeline</h5>
-                  <Badge variant="high-priority" size="xs">High</Badge>
+                  <Badge variant="error" size="sm">
+                    High
+                  </Badge>
                 </div>
                 <p className="text-xs text-secondary-600 mb-3">
                   Configure GitHub Actions for automated testing and deployment
                 </p>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-secondary-500">Due: Mar 20</span>
+                  <span className="text-xs text-secondary-500">
+                    Due: Mar 20
+                  </span>
                   <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center">
                     <span className="text-xs text-white">JD</span>
                   </div>
@@ -572,14 +611,20 @@ export const RealWorldExample: Story = {
 
               <div className="bg-white rounded-lg p-4 border border-secondary-200 shadow-sm">
                 <div className="flex items-start justify-between mb-2">
-                  <h5 className="font-medium text-sm">Design user onboarding</h5>
-                  <Badge variant="medium-priority" size="xs">Medium</Badge>
+                  <h5 className="font-medium text-sm">
+                    Design user onboarding
+                  </h5>
+                  <Badge variant="warning" size="sm">
+                    Medium
+                  </Badge>
                 </div>
                 <p className="text-xs text-secondary-600 mb-3">
                   Create wireframes and user flow for new user experience
                 </p>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-secondary-500">Due: Mar 25</span>
+                  <span className="text-xs text-secondary-500">
+                    Due: Mar 25
+                  </span>
                   <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center">
                     <span className="text-xs text-white">AM</span>
                   </div>
@@ -593,9 +638,11 @@ export const RealWorldExample: Story = {
         <div className="bg-blue-50 rounded-lg p-4">
           <div className="flex items-center justify-between mb-4">
             <h4 className="font-semibold text-blue-800">In Progress</h4>
-            <Badge variant="info" size="sm">2</Badge>
+            <Badge variant="primary" size="sm">
+              2
+            </Badge>
           </div>
-          
+
           <DroppableArea
             id="progress-real"
             variant="highlighted"
@@ -604,7 +651,11 @@ export const RealWorldExample: Story = {
             className="min-h-[400px]"
             placeholder={
               <div className="text-center">
-                <Icon icon={ClockIcon} size="lg" className="text-blue-400 mb-3" />
+                <Icon
+                  icon={ClockIcon}
+                  size="lg"
+                  className="text-blue-400 mb-3"
+                />
                 <p className="font-medium text-blue-600">Active Work</p>
                 <p className="text-sm text-blue-500 mt-1">
                   Drop tasks being worked on
@@ -618,9 +669,11 @@ export const RealWorldExample: Story = {
         <div className="bg-green-50 rounded-lg p-4">
           <div className="flex items-center justify-between mb-4">
             <h4 className="font-semibold text-green-800">Done</h4>
-            <Badge variant="success" size="sm">1</Badge>
+            <Badge variant="success" size="sm">
+              1
+            </Badge>
           </div>
-          
+
           <DroppableArea
             id="done-real"
             variant="minimal"
@@ -634,10 +687,14 @@ export const RealWorldExample: Story = {
                   <h5 className="font-medium text-sm line-through">
                     Setup project structure
                   </h5>
-                  <Badge variant="success" size="xs">Done</Badge>
+                  <Badge variant="success" size="sm">
+                    Done
+                  </Badge>
                 </div>
                 <div className="flex items-center justify-between mt-3">
-                  <span className="text-xs text-secondary-500">Completed Mar 10</span>
+                  <span className="text-xs text-secondary-500">
+                    Completed Mar 10
+                  </span>
                   <Icon icon={CheckIcon} size="sm" className="text-green-500" />
                 </div>
               </div>

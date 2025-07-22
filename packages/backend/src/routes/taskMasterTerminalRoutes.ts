@@ -7,12 +7,12 @@ const router = Router();
 
 /**
  * TaskMaster Terminal API Routes
- * 
+ *
  * Provides REST API endpoints for TaskMaster-integrated terminal sessions.
  * All routes require authentication and are rate-limited for security.
  */
 
-// Apply authentication middleware to all routes  
+// Apply authentication middleware to all routes
 router.use(authMiddleware.authenticateJWT);
 
 // TODO: Add rate limiting - currently disabled due to type conflicts
@@ -114,7 +114,10 @@ router.use(authMiddleware.authenticateJWT);
  *       500:
  *         description: Internal server error
  */
-router.post('/sessions', taskMasterTerminalController.createSession.bind(taskMasterTerminalController));
+router.post(
+  '/sessions',
+  taskMasterTerminalController.createSession.bind(taskMasterTerminalController)
+);
 
 /**
  * @swagger
@@ -146,7 +149,12 @@ router.post('/sessions', taskMasterTerminalController.createSession.bind(taskMas
  *                       type: integer
  *                       example: 3
  */
-router.get('/sessions', taskMasterTerminalController.getActiveSessions.bind(taskMasterTerminalController));
+router.get(
+  '/sessions',
+  taskMasterTerminalController.getActiveSessions.bind(
+    taskMasterTerminalController
+  )
+);
 
 /**
  * @swagger
@@ -179,7 +187,10 @@ router.get('/sessions', taskMasterTerminalController.getActiveSessions.bind(task
  *       404:
  *         description: Session not found
  */
-router.get('/sessions/:sessionId', taskMasterTerminalController.getSession.bind(taskMasterTerminalController));
+router.get(
+  '/sessions/:sessionId',
+  taskMasterTerminalController.getSession.bind(taskMasterTerminalController)
+);
 
 /**
  * @swagger
@@ -234,7 +245,10 @@ router.get('/sessions/:sessionId', taskMasterTerminalController.getSession.bind(
  *       404:
  *         description: Session not found
  */
-router.post('/sessions/:sessionId/commands', taskMasterTerminalController.executeCommand.bind(taskMasterTerminalController));
+router.post(
+  '/sessions/:sessionId/commands',
+  taskMasterTerminalController.executeCommand.bind(taskMasterTerminalController)
+);
 
 /**
  * @swagger
@@ -284,7 +298,12 @@ router.post('/sessions/:sessionId/commands', taskMasterTerminalController.execut
  *                       type: string
  *                       example: "task-master li"
  */
-router.get('/sessions/:sessionId/suggestions', taskMasterTerminalController.getCommandSuggestions.bind(taskMasterTerminalController));
+router.get(
+  '/sessions/:sessionId/suggestions',
+  taskMasterTerminalController.getCommandSuggestions.bind(
+    taskMasterTerminalController
+  )
+);
 
 /**
  * @swagger
@@ -345,7 +364,12 @@ router.get('/sessions/:sessionId/suggestions', taskMasterTerminalController.getC
  *                       type: integer
  *                       example: 0
  */
-router.get('/sessions/:sessionId/history', taskMasterTerminalController.getCommandHistory.bind(taskMasterTerminalController));
+router.get(
+  '/sessions/:sessionId/history',
+  taskMasterTerminalController.getCommandHistory.bind(
+    taskMasterTerminalController
+  )
+);
 
 /**
  * @swagger
@@ -383,7 +407,10 @@ router.get('/sessions/:sessionId/history', taskMasterTerminalController.getComma
  *       404:
  *         description: Session not found or no running process
  */
-router.post('/sessions/:sessionId/input', taskMasterTerminalController.sendInput.bind(taskMasterTerminalController));
+router.post(
+  '/sessions/:sessionId/input',
+  taskMasterTerminalController.sendInput.bind(taskMasterTerminalController)
+);
 
 /**
  * @swagger
@@ -406,7 +433,10 @@ router.post('/sessions/:sessionId/input', taskMasterTerminalController.sendInput
  *       404:
  *         description: Session not found or no running process
  */
-router.post('/sessions/:sessionId/kill', taskMasterTerminalController.killProcess.bind(taskMasterTerminalController));
+router.post(
+  '/sessions/:sessionId/kill',
+  taskMasterTerminalController.killProcess.bind(taskMasterTerminalController)
+);
 
 /**
  * @swagger
@@ -453,7 +483,10 @@ router.post('/sessions/:sessionId/kill', taskMasterTerminalController.killProces
  *       404:
  *         description: Session not found
  */
-router.post('/sessions/:sessionId/resize', taskMasterTerminalController.resizeTerminal.bind(taskMasterTerminalController));
+router.post(
+  '/sessions/:sessionId/resize',
+  taskMasterTerminalController.resizeTerminal.bind(taskMasterTerminalController)
+);
 
 /**
  * @swagger
@@ -500,7 +533,10 @@ router.post('/sessions/:sessionId/resize', taskMasterTerminalController.resizeTe
  *                       type: boolean
  *                       example: true
  */
-router.get('/sessions/:sessionId/environment', taskMasterTerminalController.getEnvironment.bind(taskMasterTerminalController));
+router.get(
+  '/sessions/:sessionId/environment',
+  taskMasterTerminalController.getEnvironment.bind(taskMasterTerminalController)
+);
 
 /**
  * @swagger
@@ -523,6 +559,9 @@ router.get('/sessions/:sessionId/environment', taskMasterTerminalController.getE
  *       404:
  *         description: Session not found
  */
-router.delete('/sessions/:sessionId', taskMasterTerminalController.closeSession.bind(taskMasterTerminalController));
+router.delete(
+  '/sessions/:sessionId',
+  taskMasterTerminalController.closeSession.bind(taskMasterTerminalController)
+);
 
 export default router;

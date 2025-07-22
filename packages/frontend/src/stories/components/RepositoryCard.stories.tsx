@@ -9,7 +9,8 @@ const meta: Meta<typeof RepositoryCard> = {
     layout: 'padded',
     docs: {
       description: {
-        component: 'A comprehensive repository card component with Git integration status, health metrics, and real-time updates.',
+        component:
+          'A comprehensive repository card component with Git integration status, health metrics, and real-time updates.',
       },
     },
   },
@@ -51,7 +52,8 @@ type Story = StoryObj<typeof RepositoryCard>;
 const sampleRepository: RepositoryCardProps['repository'] = {
   id: 'repo-1',
   name: 'taskmaster-ui',
-  description: 'A modern task management interface built with React and TypeScript',
+  description:
+    'A modern task management interface built with React and TypeScript',
   path: '/Users/user/projects/taskmaster-ui',
   currentBranch: 'main',
   lastCommit: {
@@ -262,7 +264,8 @@ export const InteractiveExample: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'An interactive repository card with all features enabled. Click the action buttons to see the interactions.',
+        story:
+          'An interactive repository card with all features enabled. Click the action buttons to see the interactions.',
       },
     },
   },

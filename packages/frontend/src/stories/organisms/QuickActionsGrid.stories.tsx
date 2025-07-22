@@ -12,10 +12,16 @@ import {
 import type { QuickAction } from '../../components/ui/organisms/QuickActionsGrid';
 
 const meta: Meta<typeof QuickActionsGrid> = {
-  title: 'UI/Organisms/QuickActionsGrid',
+  title: 'Organisms/QuickActionsGrid',
   component: QuickActionsGrid,
   parameters: {
     layout: 'padded',
+    docs: {
+      description: {
+        component:
+          'A quick actions grid organism that combines multiple button atoms and icon atoms to create an actionable dashboard interface. Assembles various action molecules with responsive grid layout to provide users with immediate access to common project operations. Demonstrates atomic design principles through systematic composition.',
+      },
+    },
   },
   tags: ['autodocs'],
   argTypes: {

@@ -16,7 +16,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'A comprehensive responsive statistics grid organism that combines statistics and health indicators with interactive view modes.',
+          'A comprehensive responsive statistics grid organism that assembles multiple StatisticCard molecules and HealthIndicator atoms to create a complete project analytics dashboard. Combines data visualization molecules with responsive layout patterns to deliver actionable project insights. Exemplifies atomic design composition at the organism level.',
       },
     },
   },

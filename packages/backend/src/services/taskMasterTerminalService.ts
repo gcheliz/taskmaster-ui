@@ -43,7 +43,7 @@ export interface TaskMasterTerminalOutput {
 
 /**
  * TaskMaster Terminal Service
- * 
+ *
  * Specialized terminal service that provides seamless integration with TaskMaster CLI.
  * Features:
  * - TaskMaster CLI command detection and execution
@@ -60,17 +60,27 @@ export class TaskMasterTerminalService extends EventEmitter {
   private cleanupInterval: NodeJS.Timeout | undefined;
 
   // TaskMaster CLI commands that require special handling
-  private readonly TASKMASTER_COMMANDS = new Set([
-    'task-master',
-    'taskmaster',
-  ]);
+  private readonly TASKMASTER_COMMANDS = new Set(['task-master', 'taskmaster']);
 
   // TaskMaster CLI operations
   private readonly TASKMASTER_OPERATIONS = new Set([
-    'init', 'list', 'next', 'show', 'set-status', 'add-task', 'expand',
-    'update-task', 'update-subtask', 'analyze-complexity', 'complexity-report',
-    'add-dependency', 'move', 'validate-dependencies', 'generate', 'models',
-    'parse-prd'
+    'init',
+    'list',
+    'next',
+    'show',
+    'set-status',
+    'add-task',
+    'expand',
+    'update-task',
+    'update-subtask',
+    'analyze-complexity',
+    'complexity-report',
+    'add-dependency',
+    'move',
+    'validate-dependencies',
+    'generate',
+    'models',
+    'parse-prd',
   ]);
 
   constructor(taskMasterService?: TaskMasterService) {
@@ -84,8 +94,8 @@ export class TaskMasterTerminalService extends EventEmitter {
    * Create a new TaskMaster terminal session
    */
   createSession(
-    workingDirectory?: string, 
-    repositoryPath?: string, 
+    workingDirectory?: string,
+    repositoryPath?: string,
     projectTag?: string
   ): string {
     const sessionId = uuidv4();
@@ -106,7 +116,10 @@ export class TaskMasterTerminalService extends EventEmitter {
     }
 
     // Setup TaskMaster environment
-    const environment = this.setupTaskMasterEnvironment(cwd, detectedProjectTag);
+    const environment = this.setupTaskMasterEnvironment(
+      cwd,
+      detectedProjectTag
+    );
 
     const session: TaskMasterTerminalSession = {
       id: sessionId,
@@ -123,7 +136,9 @@ export class TaskMasterTerminalService extends EventEmitter {
     };
 
     this.sessions.set(sessionId, session);
-    logger.info(`Created TaskMaster terminal session ${sessionId} in ${cwd} (project: ${detectedProjectTag})`);
+    logger.info(
+      `Created TaskMaster terminal session ${sessionId} in ${cwd} (project: ${detectedProjectTag})`
+    );
 
     // Emit session created event
     this.emit('session-created', {
@@ -145,7 +160,9 @@ export class TaskMasterTerminalService extends EventEmitter {
     }
 
     if (!session.isActive) {
-      throw new Error(`TaskMaster terminal session is not active: ${sessionId}`);
+      throw new Error(
+        `TaskMaster terminal session is not active: ${sessionId}`
+      );
     }
 
     // Update last activity and add to history
@@ -158,7 +175,7 @@ export class TaskMasterTerminalService extends EventEmitter {
     }
 
     const isTaskMasterCommand = this.isTaskMasterCommand(command);
-    
+
     // Create command object
     const cmdObject: TaskMasterTerminalCommand = {
       command,
@@ -182,13 +199,13 @@ export class TaskMasterTerminalService extends EventEmitter {
    * Execute TaskMaster CLI command with enhanced integration
    */
   private async executeTaskMasterCommand(
-    session: TaskMasterTerminalSession, 
+    session: TaskMasterTerminalSession,
     command: string
   ): Promise<void> {
     try {
       // Parse and enhance the command
       const enhancedCommand = this.enhanceTaskMasterCommand(command, session);
-      
+
       logger.info(`Executing TaskMaster command: ${enhancedCommand}`);
 
       // Execute through TaskMaster service for better integration
@@ -219,18 +236,22 @@ export class TaskMasterTerminalService extends EventEmitter {
           projectTag: session.projectTag,
         });
       }
-
     } catch (error) {
       const errorOutput: TaskMasterTerminalOutput = {
         type: 'stderr',
-        data: error instanceof Error ? error.message : 'TaskMaster command failed',
+        data:
+          error instanceof Error ? error.message : 'TaskMaster command failed',
         sessionId: session.id,
         timestamp: new Date(),
         isTaskMasterOutput: true,
       };
-      
+
       this.emit('output', errorOutput);
-      logger.error(`TaskMaster command failed: ${command}`, {}, error instanceof Error ? error : new Error('Unknown error'));
+      logger.error(
+        `TaskMaster command failed: ${command}`,
+        {},
+        error instanceof Error ? error : new Error('Unknown error')
+      );
     }
   }
 
@@ -253,7 +274,7 @@ export class TaskMasterTerminalService extends EventEmitter {
 
       session.process = childProcess;
 
-      childProcess.stdout?.on('data', (data) => {
+      childProcess.stdout?.on('data', data => {
         const output: TaskMasterTerminalOutput = {
           type: 'stdout',
           data: data.toString(),
@@ -263,7 +284,7 @@ export class TaskMasterTerminalService extends EventEmitter {
         this.emit('output', output);
       });
 
-      childProcess.stderr?.on('data', (data) => {
+      childProcess.stderr?.on('data', data => {
         const output: TaskMasterTerminalOutput = {
           type: 'stderr',
           data: data.toString(),
@@ -273,27 +294,27 @@ export class TaskMasterTerminalService extends EventEmitter {
         this.emit('output', output);
       });
 
-      childProcess.on('close', (code) => {
+      childProcess.on('close', code => {
         const output: TaskMasterTerminalOutput = {
           type: 'exit',
           data: `Process exited with code ${code}`,
           sessionId: session.id,
           timestamp: new Date(),
         };
-        
+
         this.emit('output', output);
         session.process = undefined;
         resolve();
       });
 
-      childProcess.on('error', (error) => {
+      childProcess.on('error', error => {
         const errorOutput: TaskMasterTerminalOutput = {
           type: 'stderr',
           data: `Command failed: ${error.message}`,
           sessionId: session.id,
           timestamp: new Date(),
         };
-        
+
         this.emit('output', errorOutput);
         session.process = undefined;
         reject(error);
@@ -326,7 +347,7 @@ export class TaskMasterTerminalService extends EventEmitter {
     command: string,
     environment: Record<string, string>
   ): Promise<{ output: string; parsed: any; success: boolean }> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const args = command.split(' ');
       const childProcess = spawn(args[0], args.slice(1), {
         cwd: workingDirectory,
@@ -337,18 +358,18 @@ export class TaskMasterTerminalService extends EventEmitter {
       let stdout = '';
       let stderr = '';
 
-      childProcess.stdout?.on('data', (data) => {
+      childProcess.stdout?.on('data', data => {
         stdout += data.toString();
       });
 
-      childProcess.stderr?.on('data', (data) => {
+      childProcess.stderr?.on('data', data => {
         stderr += data.toString();
       });
 
-      childProcess.on('close', (code) => {
+      childProcess.on('close', code => {
         const output = stdout + stderr;
         const parsed = taskMasterOutputParser.parseOutput(output, command);
-        
+
         resolve({
           output,
           parsed,
@@ -356,7 +377,7 @@ export class TaskMasterTerminalService extends EventEmitter {
         });
       });
 
-      childProcess.on('error', (error) => {
+      childProcess.on('error', error => {
         resolve({
           output: `Error executing TaskMaster CLI: ${error.message}`,
           parsed: null,
@@ -369,30 +390,38 @@ export class TaskMasterTerminalService extends EventEmitter {
   /**
    * Get TaskMaster command suggestions based on current input
    */
-  getTaskMasterSuggestions(sessionId: string, partialCommand: string): string[] {
+  getTaskMasterSuggestions(
+    sessionId: string,
+    partialCommand: string
+  ): string[] {
     const session = this.sessions.get(sessionId);
     if (!session) return [];
 
     const suggestions: string[] = [];
-    
+
     // Command completion
     if (partialCommand.startsWith('task-master ')) {
       const operation = partialCommand.substring(12).trim();
-      
+
       for (const op of this.TASKMASTER_OPERATIONS) {
         if (op.startsWith(operation)) {
           suggestions.push(`task-master ${op}`);
         }
       }
-    } else if (partialCommand === 'task-master' || 'task-master'.startsWith(partialCommand)) {
+    } else if (
+      partialCommand === 'task-master' ||
+      'task-master'.startsWith(partialCommand)
+    ) {
       suggestions.push('task-master');
     }
 
     // History-based suggestions
     const historySuggestions = session.commandHistory
-      .filter(cmd => cmd.startsWith(partialCommand) && !suggestions.includes(cmd))
+      .filter(
+        cmd => cmd.startsWith(partialCommand) && !suggestions.includes(cmd)
+      )
       .slice(-5);
-    
+
     suggestions.push(...historySuggestions);
 
     return suggestions;
@@ -469,7 +498,9 @@ export class TaskMasterTerminalService extends EventEmitter {
     }
 
     // Future: Implement PTY resize
-    logger.info(`Terminal resize requested for session ${sessionId}: ${cols}x${rows}`);
+    logger.info(
+      `Terminal resize requested for session ${sessionId}: ${cols}x${rows}`
+    );
   }
 
   // Private helper methods
@@ -487,13 +518,13 @@ export class TaskMasterTerminalService extends EventEmitter {
     try {
       // Look for .taskmaster/config.json or tasks.json
       const taskMasterDir = path.join(workingDirectory, '.taskmaster');
-      
+
       if (fs.existsSync(taskMasterDir)) {
         const tasksJsonPath = path.join(taskMasterDir, 'tasks', 'tasks.json');
-        
+
         if (fs.existsSync(tasksJsonPath)) {
           const tasksData = JSON.parse(fs.readFileSync(tasksJsonPath, 'utf8'));
-          
+
           // Extract project tag from tasks.json structure
           const projectTags = Object.keys(tasksData);
           if (projectTags.length > 0) {
@@ -511,7 +542,7 @@ export class TaskMasterTerminalService extends EventEmitter {
   }
 
   private setupTaskMasterEnvironment(
-    workingDirectory: string, 
+    workingDirectory: string,
     projectTag?: string
   ): Record<string, string> {
     const env: Record<string, string> = {
@@ -538,10 +569,16 @@ export class TaskMasterTerminalService extends EventEmitter {
 
   private isStateChangingCommand(command: string): boolean {
     const stateChangingOps = new Set([
-      'set-status', 'add-task', 'expand', 'update-task', 'update-subtask',
-      'add-dependency', 'move', 'init'
+      'set-status',
+      'add-task',
+      'expand',
+      'update-task',
+      'update-subtask',
+      'add-dependency',
+      'move',
+      'init',
     ]);
-    
+
     const parts = command.split(' ');
     return parts.length > 1 && stateChangingOps.has(parts[1]);
   }
@@ -585,11 +622,11 @@ export class TaskMasterTerminalService extends EventEmitter {
   }
 
   private setupTaskMasterServiceEvents(): void {
-    this.taskMasterService.on('task-updated', (data) => {
+    this.taskMasterService.on('task-updated', data => {
       this.emit('taskmaster-task-updated', data);
     });
 
-    this.taskMasterService.on('error', (error) => {
+    this.taskMasterService.on('error', error => {
       this.emit('taskmaster-error', error);
     });
   }

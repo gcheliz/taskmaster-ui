@@ -397,7 +397,7 @@
         "dependencies": [
           52
         ],
-        "status": "in-progress",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -427,7 +427,7 @@
               2
             ],
             "details": "Build components by composing atoms, such as a Search Form (Input + Button) or a User Profile Snippet (Avatar + Name). The Storybook stories for molecules should demonstrate how the component is assembled and document the props that control the molecule's behavior, distinct from the props of its constituent atoms.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Peer review of the component composition to ensure correct use of atoms. Manual verification in Storybook that the molecule's interactive examples cover its primary use cases and that its documentation is clear."
           },
           {
@@ -438,7 +438,7 @@
               3
             ],
             "details": "Assemble organisms like a Page Header (Logo + Navigation Molecule + User Profile Molecule) or a Product Card Grid. Storybook documentation should provide interactive examples demonstrating the organism's layout and state management. Include detailed usage guidelines on how the organism fits within a page template.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Peer review of the organism's structure and data flow. Manual testing of the organism in Storybook across different viewport sizes to check for responsiveness. Verify that documentation clearly explains the organism's role and props."
           }
         ]
@@ -796,7 +796,7 @@
     ],
     "metadata": {
       "created": "2025-07-15T21:22:03.992Z",
-      "updated": "2025-07-22T17:51:13.885Z",
+      "updated": "2025-07-22T19:05:29.047Z",
       "description": "Tasks for taskmaster-ui context"
     }
   }

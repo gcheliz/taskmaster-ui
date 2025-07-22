@@ -5,7 +5,11 @@ import { Badge } from '../ui/atoms/Badge';
 import { Button } from '../ui/atoms/Button';
 import type { RepositoryCardProps } from './RepositoryCard';
 
-export interface RepositoryCardCompactProps extends Omit<RepositoryCardProps, 'size' | 'showDetails' | 'showHealth' | 'showIntegrations'> {
+export interface RepositoryCardCompactProps
+  extends Omit<
+    RepositoryCardProps,
+    'size' | 'showDetails' | 'showHealth' | 'showIntegrations'
+  > {
   /** Whether to show minimal information only */
   minimal?: boolean;
 }
@@ -28,7 +32,8 @@ export const RepositoryCardCompact: React.FC<RepositoryCardCompactProps> = ({
   const formatLastCommitDate = (date: string): string => {
     const commitDate = new Date(date);
     const now = new Date();
-    const diffInHours = (now.getTime() - commitDate.getTime()) / (1000 * 60 * 60);
+    const diffInHours =
+      (now.getTime() - commitDate.getTime()) / (1000 * 60 * 60);
 
     if (diffInHours < 1) return 'now';
     if (diffInHours < 24) return `${Math.floor(diffInHours)}h`;
@@ -75,7 +80,7 @@ export const RepositoryCardCompact: React.FC<RepositoryCardCompactProps> = ({
                 </Badge>
               )}
             </div>
-            
+
             {!minimal && repository.description && (
               <p className="text-xs text-gray-600 line-clamp-1 mb-2">
                 {repository.description}
@@ -98,7 +103,9 @@ export const RepositoryCardCompact: React.FC<RepositoryCardCompactProps> = ({
               <span className="flex items-center">
                 <span
                   className="w-2 h-2 rounded-full mr-1"
-                  style={{ backgroundColor: getLanguageColor(repository.language) }}
+                  style={{
+                    backgroundColor: getLanguageColor(repository.language),
+                  }}
                 />
                 {repository.language}
               </span>
@@ -114,18 +121,23 @@ export const RepositoryCardCompact: React.FC<RepositoryCardCompactProps> = ({
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center space-x-1">
             <BranchIcon className="w-3 h-3 text-gray-400" />
-            <span className="text-xs text-gray-600">{repository.currentBranch}</span>
+            <span className="text-xs text-gray-600">
+              {repository.currentBranch}
+            </span>
             <span
-              className={cn('w-1.5 h-1.5 rounded-full', getBranchStatusColor(repository.status))}
+              className={cn(
+                'w-1.5 h-1.5 rounded-full',
+                getBranchStatusColor(repository.status)
+              )}
               title={repository.status.isClean ? 'Clean' : 'Modified'}
             />
           </div>
-          
+
           {!minimal && (
             <Button
               variant="ghost"
               size="sm"
-              onClick={(e) => {
+              onClick={e => {
                 e.stopPropagation();
                 onViewDetails?.(repository.id);
               }}
@@ -151,8 +163,18 @@ export const RepositoryCardCompact: React.FC<RepositoryCardCompactProps> = ({
 
 // Simple branch icon
 const BranchIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l3 3-3 3m5 0h3" />
+  <svg
+    className={className}
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M8 9l3 3-3 3m5 0h3"
+    />
   </svg>
 );
 

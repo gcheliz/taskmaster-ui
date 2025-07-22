@@ -43,8 +43,18 @@ export interface RepositoryGridProps {
   className?: string;
 }
 
-export type RepositorySortOption = 'name' | 'updated' | 'stars' | 'health' | 'size';
-export type RepositoryFilterOption = 'all' | 'private' | 'public' | 'forked' | 'source';
+export type RepositorySortOption =
+  | 'name'
+  | 'updated'
+  | 'stars'
+  | 'health'
+  | 'size';
+export type RepositoryFilterOption =
+  | 'all'
+  | 'private'
+  | 'public'
+  | 'forked'
+  | 'source';
 
 export const RepositoryGrid: React.FC<RepositoryGridProps> = ({
   repositories,
@@ -105,7 +115,10 @@ export const RepositoryGrid: React.FC<RepositoryGridProps> = ({
         case 'name':
           return a.name.localeCompare(b.name);
         case 'updated':
-          return new Date(b.lastCommit.date).getTime() - new Date(a.lastCommit.date).getTime();
+          return (
+            new Date(b.lastCommit.date).getTime() -
+            new Date(a.lastCommit.date).getTime()
+          );
         case 'stars':
           return (b.starCount || 0) - (a.starCount || 0);
         case 'size':
@@ -165,7 +178,7 @@ export const RepositoryGrid: React.FC<RepositoryGridProps> = ({
               </Badge>
             )}
           </h2>
-          
+
           {enableRealtime && (
             <Badge variant="success" size="sm">
               <span className="w-1.5 h-1.5 bg-green-500 rounded-full mr-1" />
@@ -228,7 +241,7 @@ export const RepositoryGrid: React.FC<RepositoryGridProps> = ({
                 type="text"
                 placeholder="Search repositories..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={e => setSearchQuery(e.target.value)}
                 className="w-full"
               />
             </div>
@@ -238,7 +251,9 @@ export const RepositoryGrid: React.FC<RepositoryGridProps> = ({
             {filterable && (
               <Select
                 value={filterBy}
-                onChange={(e) => setFilterBy(e.target.value as RepositoryFilterOption)}
+                onChange={e =>
+                  setFilterBy(e.target.value as RepositoryFilterOption)
+                }
               >
                 <option value="all">All Repositories</option>
                 <option value="private">Private</option>
@@ -249,7 +264,9 @@ export const RepositoryGrid: React.FC<RepositoryGridProps> = ({
             {sortable && (
               <Select
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as RepositorySortOption)}
+                onChange={e =>
+                  setSortBy(e.target.value as RepositorySortOption)
+                }
               >
                 <option value="updated">Recently Updated</option>
                 <option value="name">Name</option>
@@ -271,15 +288,19 @@ export const RepositoryGrid: React.FC<RepositoryGridProps> = ({
         <div className="text-center py-12">
           <div className="text-gray-400 mb-4">
             <FolderIcon className="w-16 h-16 mx-auto mb-4" />
-            <p className="text-lg font-medium text-gray-900">No repositories found</p>
+            <p className="text-lg font-medium text-gray-900">
+              No repositories found
+            </p>
             <p className="text-sm text-gray-500 mt-1">
-              {searchQuery ? 'Try adjusting your search criteria' : 'Start by adding a repository'}
+              {searchQuery
+                ? 'Try adjusting your search criteria'
+                : 'Start by adding a repository'}
             </p>
           </div>
         </div>
       ) : (
         <div className={cn('grid gap-6', getGridColumns())}>
-          {filteredAndSortedRepositories.map((repository) =>
+          {filteredAndSortedRepositories.map(repository =>
             layout === 'compact' ? (
               <RepositoryCardCompact
                 key={repository.id}
@@ -318,7 +339,9 @@ export const RepositoryGrid: React.FC<RepositoryGridProps> = ({
             <Button
               variant="outline"
               size="sm"
-              onClick={() => pagination.onPageChange(pagination.currentPage - 1)}
+              onClick={() =>
+                pagination.onPageChange(pagination.currentPage - 1)
+              }
               disabled={pagination.currentPage === 1}
             >
               Previous
@@ -326,7 +349,9 @@ export const RepositoryGrid: React.FC<RepositoryGridProps> = ({
             <Button
               variant="outline"
               size="sm"
-              onClick={() => pagination.onPageChange(pagination.currentPage + 1)}
+              onClick={() =>
+                pagination.onPageChange(pagination.currentPage + 1)
+              }
               disabled={pagination.currentPage === pagination.totalPages}
             >
               Next
@@ -340,38 +365,98 @@ export const RepositoryGrid: React.FC<RepositoryGridProps> = ({
 
 // Simple SVG icons
 const GridIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+  <svg
+    className={className}
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+    />
   </svg>
 );
 
 const ListIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+  <svg
+    className={className}
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M4 6h16M4 10h16M4 14h16M4 18h16"
+    />
   </svg>
 );
 
 const CompactIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z" />
+  <svg
+    className={className}
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z"
+    />
   </svg>
 );
 
 const RefreshIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+  <svg
+    className={className}
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+    />
   </svg>
 );
 
 const ExclamationIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.464 0L4.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
+  <svg
+    className={className}
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.464 0L4.34 16.5c-.77.833.192 2.5 1.732 2.5z"
+    />
   </svg>
 );
 
 const FolderIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+  <svg
+    className={className}
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
+    />
   </svg>
 );
 

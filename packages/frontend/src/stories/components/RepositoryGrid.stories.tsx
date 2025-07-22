@@ -9,7 +9,8 @@ const meta: Meta<typeof RepositoryGrid> = {
     layout: 'fullscreen',
     docs: {
       description: {
-        component: 'A comprehensive repository grid component with search, filtering, sorting, and multiple layout options.',
+        component:
+          'A comprehensive repository grid component with search, filtering, sorting, and multiple layout options.',
       },
     },
   },
@@ -61,7 +62,8 @@ const sampleRepositories: RepositoryGridProps['repositories'] = [
   {
     id: 'repo-1',
     name: 'taskmaster-ui',
-    description: 'A modern task management interface built with React and TypeScript',
+    description:
+      'A modern task management interface built with React and TypeScript',
     path: '/Users/user/projects/taskmaster-ui',
     currentBranch: 'main',
     lastCommit: {
@@ -89,7 +91,8 @@ const sampleRepositories: RepositoryGridProps['repositories'] = [
   {
     id: 'repo-2',
     name: 'internal-tools',
-    description: 'Internal development tools and utilities for the engineering team',
+    description:
+      'Internal development tools and utilities for the engineering team',
     path: '/Users/user/projects/internal-tools',
     currentBranch: 'develop',
     lastCommit: {
@@ -117,7 +120,8 @@ const sampleRepositories: RepositoryGridProps['repositories'] = [
   {
     id: 'repo-3',
     name: 'api-gateway',
-    description: 'Microservices API gateway with authentication and rate limiting',
+    description:
+      'Microservices API gateway with authentication and rate limiting',
     path: '/Users/user/projects/api-gateway',
     currentBranch: 'main',
     lastCommit: {
@@ -145,7 +149,8 @@ const sampleRepositories: RepositoryGridProps['repositories'] = [
   {
     id: 'repo-4',
     name: 'legacy-system',
-    description: 'Legacy system requiring maintenance and gradual modernization',
+    description:
+      'Legacy system requiring maintenance and gradual modernization',
     path: '/Users/user/projects/legacy-system',
     currentBranch: 'master',
     lastCommit: {
@@ -329,7 +334,8 @@ export const ErrorState: Story = {
     filterable: true,
     sortable: true,
     isLoading: false,
-    error: 'Failed to connect to Git service. Please check your connection and try again.',
+    error:
+      'Failed to connect to Git service. Please check your connection and try again.',
   },
 };
 
@@ -379,7 +385,8 @@ export const InteractiveExample: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'An interactive repository grid with all features enabled. Try searching, filtering, and clicking on repositories.',
+        story:
+          'An interactive repository grid with all features enabled. Try searching, filtering, and clicking on repositories.',
       },
     },
   },

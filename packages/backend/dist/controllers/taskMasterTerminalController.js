@@ -312,7 +312,10 @@ class TaskMasterTerminalController {
         try {
             const { sessionId } = req.params;
             const { cols, rows } = req.body;
-            if (!cols || !rows || typeof cols !== 'number' || typeof rows !== 'number') {
+            if (!cols ||
+                !rows ||
+                typeof cols !== 'number' ||
+                typeof rows !== 'number') {
                 res.status(400).json({
                     success: false,
                     error: {

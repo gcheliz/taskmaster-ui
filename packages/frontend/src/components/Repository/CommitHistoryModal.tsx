@@ -86,11 +86,12 @@ export const CommitHistoryModal: React.FC<CommitHistoryModalProps> = ({
     }
 
     const query = searchQuery.toLowerCase();
-    const filtered = state.commits.filter(commit =>
-      commit.message.toLowerCase().includes(query) ||
-      commit.author.name.toLowerCase().includes(query) ||
-      commit.author.email.toLowerCase().includes(query) ||
-      commit.hash.toLowerCase().includes(query)
+    const filtered = state.commits.filter(
+      commit =>
+        commit.message.toLowerCase().includes(query) ||
+        commit.author.name.toLowerCase().includes(query) ||
+        commit.author.email.toLowerCase().includes(query) ||
+        commit.hash.toLowerCase().includes(query)
     );
     setFilteredCommits(filtered);
   }, [searchQuery, state.commits]);
@@ -113,16 +114,24 @@ export const CommitHistoryModal: React.FC<CommitHistoryModalProps> = ({
 
       try {
         const currentPage = reset ? 1 : state.page;
-        
+
         // Check for Storybook mock service first
         const mockService = (window as any).__STORYBOOK_REPOSITORY_SERVICE__;
-        const response = mockService 
-          ? await mockService.getCommitHistory(repositoryId, COMMITS_PER_PAGE, branchName)
-          : await RepositoryService.getCommitHistory(repositoryId, COMMITS_PER_PAGE, branchName);
+        const response = mockService
+          ? await mockService.getCommitHistory(
+              repositoryId,
+              COMMITS_PER_PAGE,
+              branchName
+            )
+          : await RepositoryService.getCommitHistory(
+              repositoryId,
+              COMMITS_PER_PAGE,
+              branchName
+            );
 
         if (response.success && response.data) {
           const newCommits = response.data;
-          
+
           setState(prev => ({
             ...prev,
             commits: reset ? newCommits : [...prev.commits, ...newCommits],
@@ -142,7 +151,10 @@ export const CommitHistoryModal: React.FC<CommitHistoryModalProps> = ({
       } catch (error) {
         setState(prev => ({
           ...prev,
-          error: error instanceof Error ? error.message : 'Failed to load commit history',
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Failed to load commit history',
           isLoading: false,
         }));
       }
@@ -169,7 +181,8 @@ export const CommitHistoryModal: React.FC<CommitHistoryModalProps> = ({
     if (diffInHours < 1) return 'Just now';
     if (diffInHours < 24) return `${Math.floor(diffInHours)}h ago`;
     if (diffInHours < 24 * 7) return `${Math.floor(diffInHours / 24)}d ago`;
-    if (diffInHours < 24 * 30) return `${Math.floor(diffInHours / (24 * 7))}w ago`;
+    if (diffInHours < 24 * 30)
+      return `${Math.floor(diffInHours / (24 * 7))}w ago`;
     return date.toLocaleDateString();
   };
 
@@ -184,16 +197,24 @@ export const CommitHistoryModal: React.FC<CommitHistoryModalProps> = ({
 
   const getCommitMessagePreview = (message: string): string => {
     const firstLine = message.split('\n')[0];
-    return firstLine.length > 80 ? firstLine.substring(0, 77) + '...' : firstLine;
+    return firstLine.length > 80
+      ? firstLine.substring(0, 77) + '...'
+      : firstLine;
   };
 
-  const highlightSearchText = (text: string, query: string): React.ReactNode => {
+  const highlightSearchText = (
+    text: string,
+    query: string
+  ): React.ReactNode => {
     if (!query.trim()) return text;
 
     const parts = text.split(new RegExp(`(${query})`, 'gi'));
     return parts.map((part, index) =>
       part.toLowerCase() === query.toLowerCase() ? (
-        <mark key={index} className="bg-yellow-200 text-yellow-800 px-1 rounded">
+        <mark
+          key={index}
+          className="bg-yellow-200 text-yellow-800 px-1 rounded"
+        >
           {part}
         </mark>
       ) : (
@@ -230,7 +251,7 @@ export const CommitHistoryModal: React.FC<CommitHistoryModalProps> = ({
                 type="text"
                 placeholder="Search commits by message, author, or hash..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={e => setSearchQuery(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
@@ -254,7 +275,8 @@ export const CommitHistoryModal: React.FC<CommitHistoryModalProps> = ({
             <span>{state.total} commits loaded</span>
             {searchQuery && (
               <span>
-                {filteredCommits.length} match{filteredCommits.length !== 1 ? 'es' : ''}
+                {filteredCommits.length} match
+                {filteredCommits.length !== 1 ? 'es' : ''}
               </span>
             )}
             {state.hasMore && <span>More available</span>}
@@ -266,12 +288,22 @@ export const CommitHistoryModal: React.FC<CommitHistoryModalProps> = ({
             <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
               <div className="flex">
                 <div className="text-red-400">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  <svg
+                    className="w-5 h-5"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                 </div>
                 <div className="ml-3">
-                  <h3 className="text-sm font-medium text-red-800">Error loading commits</h3>
+                  <h3 className="text-sm font-medium text-red-800">
+                    Error loading commits
+                  </h3>
                   <p className="text-sm text-red-700 mt-1">{state.error}</p>
                   <Button
                     variant="outline"
@@ -296,24 +328,34 @@ export const CommitHistoryModal: React.FC<CommitHistoryModalProps> = ({
           {!state.isLoading && filteredCommits.length === 0 && !state.error && (
             <div className="text-center py-12">
               <div className="text-gray-400 mb-4">
-                <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                <svg
+                  className="w-12 h-12 mx-auto"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
                 </svg>
               </div>
               <h3 className="text-lg font-medium text-gray-900 mb-2">
                 {searchQuery ? 'No matching commits found' : 'No commits found'}
               </h3>
               <p className="text-gray-500">
-                {searchQuery 
+                {searchQuery
                   ? 'Try adjusting your search query or check a different branch.'
-                  : 'This repository doesn\'t have any commits yet.'}
+                  : "This repository doesn't have any commits yet."}
               </p>
             </div>
           )}
 
           {/* Commit List */}
           <div className="space-y-3">
-            {filteredCommits.map((commit) => (
+            {filteredCommits.map(commit => (
               <div
                 key={commit.hash}
                 className="bg-gray-50/50 rounded-lg p-4 hover:bg-gray-100/50 transition-colors"
@@ -322,7 +364,10 @@ export const CommitHistoryModal: React.FC<CommitHistoryModalProps> = ({
                   <div className="flex-1 min-w-0 pr-4">
                     <div className="flex items-center space-x-2 mb-1">
                       <h4 className="text-sm font-medium text-gray-900 truncate">
-                        {highlightSearchText(getCommitMessagePreview(commit.message), searchQuery)}
+                        {highlightSearchText(
+                          getCommitMessagePreview(commit.message),
+                          searchQuery
+                        )}
                       </h4>
                       {commit.message.includes('\n') && (
                         <Badge variant="secondary" size="sm">
@@ -332,7 +377,8 @@ export const CommitHistoryModal: React.FC<CommitHistoryModalProps> = ({
                     </div>
                     <div className="flex items-center space-x-3 text-xs text-gray-500">
                       <span>
-                        by {highlightSearchText(commit.author.name, searchQuery)}
+                        by{' '}
+                        {highlightSearchText(commit.author.name, searchQuery)}
                       </span>
                       <span>{formatDate(commit.date)}</span>
                       <button
@@ -340,7 +386,10 @@ export const CommitHistoryModal: React.FC<CommitHistoryModalProps> = ({
                         className="font-mono text-blue-600 hover:text-blue-800 hover:underline transition-colors"
                         title="Click to copy commit hash"
                       >
-                        {highlightSearchText(commit.hash.substring(0, 7), searchQuery)}
+                        {highlightSearchText(
+                          commit.hash.substring(0, 7),
+                          searchQuery
+                        )}
                       </button>
                     </div>
                   </div>
@@ -407,8 +456,18 @@ export const CommitHistoryModal: React.FC<CommitHistoryModalProps> = ({
 
 // Simple refresh icon component
 const RefreshIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+  <svg
+    className={className}
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+    />
   </svg>
 );
 

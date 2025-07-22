@@ -2,7 +2,10 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
 import { RepositoryHealthModal } from '../../components/Repository/RepositoryHealthModal';
 import { Button } from '../../components/ui/atoms/Button';
-import type { RepositoryHealthMetrics, RepositoryStatistics } from '../../services/repositoryService';
+import type {
+  RepositoryHealthMetrics,
+  RepositoryStatistics,
+} from '../../services/repositoryService';
 
 // Mock repository health data for Storybook
 const mockHealthData: RepositoryHealthMetrics = {
@@ -11,7 +14,8 @@ const mockHealthData: RepositoryHealthMetrics = {
     {
       severity: 'medium',
       type: 'security',
-      message: 'Outdated dependency detected: axios@0.21.1 has known security vulnerabilities',
+      message:
+        'Outdated dependency detected: axios@0.21.1 has known security vulnerabilities',
       file: 'package.json',
       line: 24,
     },
@@ -133,7 +137,9 @@ const mockStatisticsData: RepositoryStatistics = {
         commits: 324,
         linesAdded: 12450,
         linesRemoved: 3240,
-        lastActivity: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+        lastActivity: new Date(
+          Date.now() - 2 * 24 * 60 * 60 * 1000
+        ).toISOString(),
       },
       {
         name: 'Jane Smith',
@@ -141,7 +147,9 @@ const mockStatisticsData: RepositoryStatistics = {
         commits: 298,
         linesAdded: 9870,
         linesRemoved: 2100,
-        lastActivity: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+        lastActivity: new Date(
+          Date.now() - 1 * 24 * 60 * 60 * 1000
+        ).toISOString(),
       },
     ],
   },
@@ -370,7 +378,10 @@ const mockPerfectData: RepositoryHealthMetrics = {
 };
 
 // Mock services for Storybook
-const createMockService = (healthData: RepositoryHealthMetrics, statisticsData: RepositoryStatistics) => ({
+const createMockService = (
+  healthData: RepositoryHealthMetrics,
+  statisticsData: RepositoryStatistics
+) => ({
   getRepositoryHealth: async (repositoryId: string) => {
     await new Promise(resolve => setTimeout(resolve, 1000));
     return {
@@ -447,29 +458,31 @@ export default meta;
 type Story = StoryObj<typeof RepositoryHealthModal>;
 
 // Interactive story for healthy repository
-const HealthyRepositoryDemo = (args: any, healthData: RepositoryHealthMetrics) => {
+const HealthyRepositoryDemo = (
+  args: any,
+  healthData: RepositoryHealthMetrics
+) => {
   const [isOpen, setIsOpen] = useState(false);
 
   // Set up mock service
-  (window as any).__STORYBOOK_REPOSITORY_SERVICE__ = createMockService(healthData, mockStatisticsData);
+  (window as any).__STORYBOOK_REPOSITORY_SERVICE__ = createMockService(
+    healthData,
+    mockStatisticsData
+  );
 
   return (
     <div>
       <Button onClick={() => setIsOpen(true)} variant="primary">
         Open Health Dashboard
       </Button>
-      
-      <RepositoryHealthModal
-        {...args}
-        open={isOpen}
-        onOpenChange={setIsOpen}
-      />
+
+      <RepositoryHealthModal {...args} open={isOpen} onOpenChange={setIsOpen} />
     </div>
   );
 };
 
 export const HealthyRepository: Story = {
-  render: (args) => HealthyRepositoryDemo(args, mockHealthData),
+  render: args => HealthyRepositoryDemo(args, mockHealthData),
   args: {
     repositoryId: 'healthy-repo',
     repositoryName: 'Healthy Repository',
@@ -477,7 +490,7 @@ export const HealthyRepository: Story = {
 };
 
 export const UnhealthyRepository: Story = {
-  render: (args) => HealthyRepositoryDemo(args, mockUnhealthyData),
+  render: args => HealthyRepositoryDemo(args, mockUnhealthyData),
   args: {
     repositoryId: 'unhealthy-repo',
     repositoryName: 'Project with Issues',
@@ -485,7 +498,7 @@ export const UnhealthyRepository: Story = {
 };
 
 export const PerfectRepository: Story = {
-  render: (args) => HealthyRepositoryDemo(args, mockPerfectData),
+  render: args => HealthyRepositoryDemo(args, mockPerfectData),
   args: {
     repositoryId: 'perfect-repo',
     repositoryName: 'Perfect Repository',
@@ -500,16 +513,19 @@ export const AlwaysOpen: Story = {
     repositoryId: 'demo-repo',
     repositoryName: 'Demo Repository',
   },
-  render: (args) => {
+  render: args => {
     // Set up mock service
-    (window as any).__STORYBOOK_REPOSITORY_SERVICE__ = createMockService(mockHealthData, mockStatisticsData);
+    (window as any).__STORYBOOK_REPOSITORY_SERVICE__ = createMockService(
+      mockHealthData,
+      mockStatisticsData
+    );
     return <RepositoryHealthModal {...args} />;
   },
 };
 
 // Story showing error state
 export const WithError: Story = {
-  render: (args) => {
+  render: args => {
     const [isOpen, setIsOpen] = useState(false);
 
     // Override the mock service to simulate an error
@@ -518,7 +534,8 @@ export const WithError: Story = {
         await new Promise(resolve => setTimeout(resolve, 1000));
         return {
           success: false,
-          error: 'Failed to fetch repository health data. The analysis service may be temporarily unavailable.',
+          error:
+            'Failed to fetch repository health data. The analysis service may be temporarily unavailable.',
         };
       },
       getRepositoryStatistics: async () => {
@@ -535,7 +552,7 @@ export const WithError: Story = {
         <Button onClick={() => setIsOpen(true)} variant="primary">
           Open Dashboard (Error State)
         </Button>
-        
+
         <RepositoryHealthModal
           {...args}
           open={isOpen}
@@ -552,7 +569,7 @@ export const WithError: Story = {
 
 // Story showing loading state
 export const LoadingState: Story = {
-  render: (args) => {
+  render: args => {
     const [isOpen, setIsOpen] = useState(false);
 
     // Override the mock service to simulate slow loading
@@ -578,7 +595,7 @@ export const LoadingState: Story = {
         <Button onClick={() => setIsOpen(true)} variant="primary">
           Open Dashboard (Slow Loading)
         </Button>
-        
+
         <RepositoryHealthModal
           {...args}
           open={isOpen}
@@ -595,7 +612,7 @@ export const LoadingState: Story = {
 
 // Story showing empty data state
 export const NoHealthData: Story = {
-  render: (args) => {
+  render: args => {
     const [isOpen, setIsOpen] = useState(false);
 
     // Override the mock service to return no health data
@@ -621,7 +638,7 @@ export const NoHealthData: Story = {
         <Button onClick={() => setIsOpen(true)} variant="primary">
           Open Dashboard (No Data)
         </Button>
-        
+
         <RepositoryHealthModal
           {...args}
           open={isOpen}

@@ -61,16 +61,26 @@ class TaskMasterTerminalService extends events_1.EventEmitter {
         this.maxSessions = 20;
         this.sessionTimeout = 60 * 60 * 1000; // 60 minutes for TaskMaster work
         // TaskMaster CLI commands that require special handling
-        this.TASKMASTER_COMMANDS = new Set([
-            'task-master',
-            'taskmaster',
-        ]);
+        this.TASKMASTER_COMMANDS = new Set(['task-master', 'taskmaster']);
         // TaskMaster CLI operations
         this.TASKMASTER_OPERATIONS = new Set([
-            'init', 'list', 'next', 'show', 'set-status', 'add-task', 'expand',
-            'update-task', 'update-subtask', 'analyze-complexity', 'complexity-report',
-            'add-dependency', 'move', 'validate-dependencies', 'generate', 'models',
-            'parse-prd'
+            'init',
+            'list',
+            'next',
+            'show',
+            'set-status',
+            'add-task',
+            'expand',
+            'update-task',
+            'update-subtask',
+            'analyze-complexity',
+            'complexity-report',
+            'add-dependency',
+            'move',
+            'validate-dependencies',
+            'generate',
+            'models',
+            'parse-prd',
         ]);
         this.taskMasterService = taskMasterService || new taskMasterService_1.TaskMasterService();
         this.setupCleanupInterval();
@@ -209,7 +219,7 @@ class TaskMasterTerminalService extends events_1.EventEmitter {
                 shell: true,
             });
             session.process = childProcess;
-            childProcess.stdout?.on('data', (data) => {
+            childProcess.stdout?.on('data', data => {
                 const output = {
                     type: 'stdout',
                     data: data.toString(),
@@ -218,7 +228,7 @@ class TaskMasterTerminalService extends events_1.EventEmitter {
                 };
                 this.emit('output', output);
             });
-            childProcess.stderr?.on('data', (data) => {
+            childProcess.stderr?.on('data', data => {
                 const output = {
                     type: 'stderr',
                     data: data.toString(),
@@ -227,7 +237,7 @@ class TaskMasterTerminalService extends events_1.EventEmitter {
                 };
                 this.emit('output', output);
             });
-            childProcess.on('close', (code) => {
+            childProcess.on('close', code => {
                 const output = {
                     type: 'exit',
                     data: `Process exited with code ${code}`,
@@ -238,7 +248,7 @@ class TaskMasterTerminalService extends events_1.EventEmitter {
                 session.process = undefined;
                 resolve();
             });
-            childProcess.on('error', (error) => {
+            childProcess.on('error', error => {
                 const errorOutput = {
                     type: 'stderr',
                     data: `Command failed: ${error.message}`,
@@ -268,7 +278,7 @@ class TaskMasterTerminalService extends events_1.EventEmitter {
      * Execute TaskMaster CLI command using the command executor
      */
     async executeTaskMasterCLI(workingDirectory, command, environment) {
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
             const args = command.split(' ');
             const childProcess = (0, child_process_1.spawn)(args[0], args.slice(1), {
                 cwd: workingDirectory,
@@ -277,13 +287,13 @@ class TaskMasterTerminalService extends events_1.EventEmitter {
             });
             let stdout = '';
             let stderr = '';
-            childProcess.stdout?.on('data', (data) => {
+            childProcess.stdout?.on('data', data => {
                 stdout += data.toString();
             });
-            childProcess.stderr?.on('data', (data) => {
+            childProcess.stderr?.on('data', data => {
                 stderr += data.toString();
             });
-            childProcess.on('close', (code) => {
+            childProcess.on('close', code => {
                 const output = stdout + stderr;
                 const parsed = taskMasterOutputParser_1.taskMasterOutputParser.parseOutput(output, command);
                 resolve({
@@ -292,7 +302,7 @@ class TaskMasterTerminalService extends events_1.EventEmitter {
                     success: code === 0,
                 });
             });
-            childProcess.on('error', (error) => {
+            childProcess.on('error', error => {
                 resolve({
                     output: `Error executing TaskMaster CLI: ${error.message}`,
                     parsed: null,
@@ -318,7 +328,8 @@ class TaskMasterTerminalService extends events_1.EventEmitter {
                 }
             }
         }
-        else if (partialCommand === 'task-master' || 'task-master'.startsWith(partialCommand)) {
+        else if (partialCommand === 'task-master' ||
+            'task-master'.startsWith(partialCommand)) {
             suggestions.push('task-master');
         }
         // History-based suggestions
@@ -443,8 +454,14 @@ class TaskMasterTerminalService extends events_1.EventEmitter {
     }
     isStateChangingCommand(command) {
         const stateChangingOps = new Set([
-            'set-status', 'add-task', 'expand', 'update-task', 'update-subtask',
-            'add-dependency', 'move', 'init'
+            'set-status',
+            'add-task',
+            'expand',
+            'update-task',
+            'update-subtask',
+            'add-dependency',
+            'move',
+            'init',
         ]);
         const parts = command.split(' ');
         return parts.length > 1 && stateChangingOps.has(parts[1]);
@@ -481,10 +498,10 @@ class TaskMasterTerminalService extends events_1.EventEmitter {
         }, 60000); // Check every minute
     }
     setupTaskMasterServiceEvents() {
-        this.taskMasterService.on('task-updated', (data) => {
+        this.taskMasterService.on('task-updated', data => {
             this.emit('taskmaster-task-updated', data);
         });
-        this.taskMasterService.on('error', (error) => {
+        this.taskMasterService.on('error', error => {
             this.emit('taskmaster-error', error);
         });
     }

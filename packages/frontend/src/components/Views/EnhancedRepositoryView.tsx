@@ -52,12 +52,13 @@ export const EnhancedRepositoryView: React.FC<EnhancedRepositoryViewProps> = ({
   onRefreshAll,
   className,
 }) => {
-  const [commitHistoryModal, setCommitHistoryModal] = useState<CommitHistoryModalState>({
-    isOpen: false,
-    repositoryId: null,
-    repositoryName: null,
-    branchName: undefined,
-  });
+  const [commitHistoryModal, setCommitHistoryModal] =
+    useState<CommitHistoryModalState>({
+      isOpen: false,
+      repositoryId: null,
+      repositoryName: null,
+      branchName: undefined,
+    });
 
   const [healthModal, setHealthModal] = useState<HealthModalState>({
     isOpen: false,
@@ -65,17 +66,20 @@ export const EnhancedRepositoryView: React.FC<EnhancedRepositoryViewProps> = ({
     repositoryName: null,
   });
 
-  const handleRepositoryCommits = useCallback((repositoryId: string) => {
-    const repository = repositories.find(repo => repo.id === repositoryId);
-    if (repository) {
-      setCommitHistoryModal({
-        isOpen: true,
-        repositoryId,
-        repositoryName: repository.name,
-        branchName: repository.currentBranch,
-      });
-    }
-  }, [repositories]);
+  const handleRepositoryCommits = useCallback(
+    (repositoryId: string) => {
+      const repository = repositories.find(repo => repo.id === repositoryId);
+      if (repository) {
+        setCommitHistoryModal({
+          isOpen: true,
+          repositoryId,
+          repositoryName: repository.name,
+          branchName: repository.currentBranch,
+        });
+      }
+    },
+    [repositories]
+  );
 
   const handleCommitHistoryClose = useCallback(() => {
     setCommitHistoryModal({
@@ -86,16 +90,19 @@ export const EnhancedRepositoryView: React.FC<EnhancedRepositoryViewProps> = ({
     });
   }, []);
 
-  const handleRepositoryDetails = useCallback((repositoryId: string) => {
-    const repository = repositories.find(repo => repo.id === repositoryId);
-    if (repository) {
-      setHealthModal({
-        isOpen: true,
-        repositoryId,
-        repositoryName: repository.name,
-      });
-    }
-  }, [repositories]);
+  const handleRepositoryDetails = useCallback(
+    (repositoryId: string) => {
+      const repository = repositories.find(repo => repo.id === repositoryId);
+      if (repository) {
+        setHealthModal({
+          isOpen: true,
+          repositoryId,
+          repositoryName: repository.name,
+        });
+      }
+    },
+    [repositories]
+  );
 
   const handleHealthModalClose = useCallback(() => {
     setHealthModal({
@@ -112,12 +119,15 @@ export const EnhancedRepositoryView: React.FC<EnhancedRepositoryViewProps> = ({
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-2xl font-semibold text-gray-900">Repository Dashboard</h1>
+              <h1 className="text-2xl font-semibold text-gray-900">
+                Repository Dashboard
+              </h1>
               <p className="text-gray-600 mt-1">
-                Monitor and manage your Git repositories with detailed insights and commit history
+                Monitor and manage your Git repositories with detailed insights
+                and commit history
               </p>
             </div>
-            
+
             {enableRealtime && (
               <div className="flex items-center space-x-2 text-sm text-green-600">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
@@ -130,24 +140,26 @@ export const EnhancedRepositoryView: React.FC<EnhancedRepositoryViewProps> = ({
           {repositories.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="bg-blue-50 rounded-lg p-4">
-                <div className="text-2xl font-semibold text-blue-600">{repositories.length}</div>
+                <div className="text-2xl font-semibold text-blue-600">
+                  {repositories.length}
+                </div>
                 <div className="text-sm text-blue-700">Total Repositories</div>
               </div>
-              
+
               <div className="bg-green-50 rounded-lg p-4">
                 <div className="text-2xl font-semibold text-green-600">
                   {repositories.filter(repo => repo.status.isClean).length}
                 </div>
                 <div className="text-sm text-green-700">Clean Repositories</div>
               </div>
-              
+
               <div className="bg-yellow-50 rounded-lg p-4">
                 <div className="text-2xl font-semibold text-yellow-600">
                   {repositories.filter(repo => !repo.status.isClean).length}
                 </div>
                 <div className="text-sm text-yellow-700">With Changes</div>
               </div>
-              
+
               <div className="bg-purple-50 rounded-lg p-4">
                 <div className="text-2xl font-semibold text-purple-600">
                   {repositories.filter(repo => repo.isPrivate).length}

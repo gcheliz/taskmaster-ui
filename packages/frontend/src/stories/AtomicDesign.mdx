@@ -1,4 +1,4 @@
-import { Meta } from '@storybook/blocks'
+import { Meta } from '@storybook/blocks';
 
 <Meta title="Design System/Atomic Design" />
 
@@ -13,13 +13,15 @@ Atomic Design is a methodology that breaks user interfaces down into their basic
 ## Our Component Hierarchy
 
 ### ⚛️ Atoms
+
 **Basic building blocks of our interface**
 
 Atoms are the smallest functional units in our design system. They cannot be broken down further without losing their meaning.
 
 **Examples in our system:**
+
 - `Button` - All button variants and states
-- `Input` - Form input fields 
+- `Input` - Form input fields
 - `Label` - Text labels for form elements
 - `Icon` - SVG icons and iconography
 - `Badge` - Status and notification badges
@@ -32,17 +34,20 @@ Atoms are the smallest functional units in our design system. They cannot be bro
 - `Spinner` - Loading indicators
 
 **Key characteristics:**
+
 - Single responsibility
 - No dependencies on other components
 - Highly reusable
 - Consistent styling and behavior
 
 ### 🧬 Molecules
+
 **Simple groups of atoms functioning together**
 
 Molecules are relatively simple groups of UI elements functioning together as a unit. They're generally made up of 2-4 atoms and have a specific purpose.
 
 **Examples in our system:**
+
 - `FormField` - Label + Input + validation
 - `Modal` - Overlay container with content
 - `Dropdown` - Trigger + menu items
@@ -60,17 +65,20 @@ Molecules are relatively simple groups of UI elements functioning together as a 
 - `TimelineItem` - Event timeline entries
 
 **Key characteristics:**
+
 - Composed of 2-4 atoms
 - Single, clear purpose
 - Self-contained functionality
 - Reusable across contexts
 
 ### 🦠 Organisms
+
 **Complex components composed of molecules and atoms**
 
 Organisms are more complex UI components composed of groups of molecules and/or atoms. These form distinct sections of an interface.
 
 **Examples in our system:**
+
 - `ActivityTimeline` - Complete timeline with multiple items
 - `KanbanBoard` - Full task board with columns and cards
 - `QuickActionsGrid` - Grid of action cards
@@ -81,6 +89,7 @@ Organisms are more complex UI components composed of groups of molecules and/or 
 - `Footer` - Application footer with links
 
 **Key characteristics:**
+
 - Made up of molecules and atoms
 - Form distinct interface sections
 - Handle complex interactions
@@ -133,6 +142,7 @@ stories/
 ## Development Guidelines
 
 ### When Building Atoms
+
 - ✅ **Do**: Focus on single responsibility
 - ✅ **Do**: Include all possible variants and states
 - ✅ **Do**: Provide comprehensive prop documentation
@@ -141,6 +151,7 @@ stories/
 - ❌ **Don't**: Make assumptions about usage context
 
 ### When Building Molecules
+
 - ✅ **Do**: Compose existing atoms when possible
 - ✅ **Do**: Handle related state management
 - ✅ **Do**: Include validation and error states
@@ -149,6 +160,7 @@ stories/
 - ❌ **Don't**: Make molecules too complex (max 4 atoms)
 
 ### When Building Organisms
+
 - ✅ **Do**: Use existing molecules and atoms
 - ✅ **Do**: Handle complex interactions and workflows
 - ✅ **Do**: Include comprehensive examples
@@ -161,6 +173,7 @@ stories/
 Every component must include comprehensive Storybook stories with:
 
 ### Required Stories
+
 - **Default** - Basic usage example
 - **All Variants** - Every visual variant
 - **All Sizes** - Every size option (if applicable)
@@ -168,6 +181,7 @@ Every component must include comprehensive Storybook stories with:
 - **Accessibility Test** - Keyboard navigation and screen readers
 
 ### Optional Stories
+
 - **Dark Theme** - Dark mode variants (if applicable)
 - **Error States** - Error handling and validation
 - **Loading States** - Async state management
@@ -189,18 +203,21 @@ All components must meet WCAG 2.1 AA compliance:
 Each component level has specific testing requirements:
 
 ### Atoms
+
 - Unit tests for all props and variants
 - Accessibility tests (axe-core)
 - Visual regression tests
 - Interaction tests
 
 ### Molecules
+
 - Integration tests for atom composition
 - Form validation tests (if applicable)
 - User workflow tests
 - State management tests
 
 ### Organisms
+
 - End-to-end workflow tests
 - Performance tests for complex interactions
 - Cross-browser compatibility tests
@@ -209,16 +226,19 @@ Each component level has specific testing requirements:
 ## Naming Conventions
 
 ### Component Names
+
 - Use PascalCase: `FormField`, `KanbanBoard`
 - Be descriptive but concise
 - Avoid abbreviations: `Button` not `Btn`
 
 ### Story Names
+
 - Use descriptive titles: `"With Left Icon"` not `"Icon"`
 - Group related stories: `"Interactive States"`
 - Use consistent naming across components
 
 ### Props
+
 - Use camelCase: `onClick`, `isDisabled`
 - Boolean props should start with `is`, `has`, or `can`
 - Event handlers should start with `on`
@@ -245,18 +265,21 @@ When refactoring existing components to atomic design:
 ## Benefits
 
 ### For Developers
+
 - **Consistency**: Shared component library reduces code duplication
 - **Maintainability**: Changes to atoms propagate through the system
 - **Testability**: Isolated components are easier to test
 - **Collaboration**: Clear structure improves team communication
 
 ### For Designers
+
 - **System Thinking**: Encourages systematic approach to design
 - **Reusability**: Design patterns can be reused across products
 - **Scalability**: New features built from existing components
 - **Documentation**: Living style guide with interactive examples
 
 ### For Users
+
 - **Consistency**: Familiar patterns across the application
 - **Performance**: Optimized, reusable components
 - **Accessibility**: Built-in accessibility features

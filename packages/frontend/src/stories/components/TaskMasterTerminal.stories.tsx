@@ -95,13 +95,15 @@ A specialized terminal component designed for TaskMaster CLI integration. Featur
     },
   },
   decorators: [
-    (Story) => (
-      <div style={{ 
-        width: '100%', 
-        height: '600px',
-        background: 'var(--color-background, #f8fafc)',
-        padding: '20px',
-      }}>
+    Story => (
+      <div
+        style={{
+          width: '100%',
+          height: '600px',
+          background: 'var(--color-background, #f8fafc)',
+          padding: '20px',
+        }}
+      >
         <Story />
       </div>
     ),
@@ -187,13 +189,15 @@ Fullscreen terminal mode for intensive CLI work. Perfect for:
     },
   },
   decorators: [
-    (Story) => (
-      <div style={{ 
-        width: '100vw', 
-        height: '100vh',
-        background: 'var(--color-background, #1a1a1a)',
-        overflow: 'hidden',
-      }}>
+    Story => (
+      <div
+        style={{
+          width: '100vw',
+          height: '100vh',
+          background: 'var(--color-background, #1a1a1a)',
+          overflow: 'hidden',
+        }}
+      >
         <Story />
       </div>
     ),
@@ -289,14 +293,16 @@ Reduced history size and dimensions while maintaining full functionality.
     },
   },
   decorators: [
-    (Story) => (
-      <div style={{ 
-        width: '600px', 
-        height: '400px',
-        background: 'var(--color-background, #f8fafc)',
-        padding: '20px',
-        margin: '0 auto',
-      }}>
+    Story => (
+      <div
+        style={{
+          width: '600px',
+          height: '400px',
+          background: 'var(--color-background, #f8fafc)',
+          padding: '20px',
+          margin: '0 auto',
+        }}
+      >
         <Story />
       </div>
     ),
@@ -320,7 +326,7 @@ Shows how the terminal integrates with TaskMaster CLI backend services.
       },
     },
   },
-  render: (args) => {
+  render: args => {
     // In a real implementation, this would connect to a mock service
     return <TaskMasterTerminal {...args} />;
   },

@@ -13,7 +13,7 @@ const router = (0, express_1.Router)();
  * Provides REST API endpoints for TaskMaster-integrated terminal sessions.
  * All routes require authentication and are rate-limited for security.
  */
-// Apply authentication middleware to all routes  
+// Apply authentication middleware to all routes
 router.use(auth_1.default.authenticateJWT);
 // TODO: Add rate limiting - currently disabled due to type conflicts
 /**

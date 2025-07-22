@@ -6,6 +6,12 @@ const meta: Meta<typeof KanbanBoard> = {
   component: KanbanBoard,
   parameters: {
     layout: 'fullscreen',
+    docs: {
+      description: {
+        component:
+          'A complex kanban board organism that orchestrates multiple molecules and atoms to create a complete task management interface. Assembles KanbanColumn molecules, KanbanTaskCard molecules, drag-and-drop functionality, and filtering components. Represents the pinnacle of atomic design hierarchy for project task visualization.',
+      },
+    },
   },
   tags: ['autodocs'],
   argTypes: {

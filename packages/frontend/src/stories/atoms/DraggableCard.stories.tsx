@@ -7,12 +7,18 @@ import { Button } from '../../components/ui/atoms/Button';
 import { Badge } from '../../components/ui/atoms/Badge';
 import {
   Icon,
-  GripVerticalIcon,
-  StarIcon,
+  DragHandleIcon,
+  StarFilledIcon,
   CheckIcon,
-  ClockIcon,
-  AlertTriangleIcon,
+  TimeIcon,
+  WarningIcon,
 } from '../../components/ui/atoms/Icon';
+
+// Create missing icon aliases for compatibility
+const ClockIcon = TimeIcon;
+const GripVerticalIcon = DragHandleIcon;
+const AlertTriangleIcon = WarningIcon;
+const StarIcon = StarFilledIcon;
 
 const meta: Meta<typeof DraggableCard> = {
   title: 'Atoms/DraggableCard',
@@ -51,7 +57,7 @@ const meta: Meta<typeof DraggableCard> = {
     // Card props
     variant: {
       control: { type: 'select' },
-      options: ['elevated', 'outlined', 'filled'],
+      options: ['default', 'elevated', 'outline', 'ghost'],
       description: 'Card visual variant',
     },
     size: {
@@ -59,14 +65,9 @@ const meta: Meta<typeof DraggableCard> = {
       options: ['sm', 'md', 'lg'],
       description: 'Card size',
     },
-    padding: {
-      control: { type: 'select' },
-      options: ['none', 'sm', 'md', 'lg'],
-      description: 'Internal padding',
-    },
   },
   decorators: [
-    (Story) => (
+    Story => (
       <DndContext collisionDetection={closestCenter}>
         <div className="p-8">
           <Story />
@@ -103,7 +104,7 @@ export const WithTaskContent: Story = {
           <h3 className="font-semibold text-sm leading-tight">
             Implement user authentication system
           </h3>
-          <Badge variant="high-priority" size="sm">
+          <Badge variant="error" size="sm">
             High
           </Badge>
         </div>
@@ -112,7 +113,7 @@ export const WithTaskContent: Story = {
         </p>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Icon icon={ClockIcon} size="xs" className="text-secondary-500" />
+            <Icon icon={ClockIcon} size="sm" className="text-secondary-500" />
             <span className="text-xs text-secondary-500">Due: Mar 15</span>
           </div>
           <div className="flex items-center gap-1">
@@ -136,7 +137,11 @@ export const WithCustomHandle: Story = {
           data-drag-handle
           className="flex-shrink-0 cursor-grab hover:bg-secondary-100 p-1 rounded active:cursor-grabbing"
         >
-          <Icon icon={GripVerticalIcon} size="sm" className="text-secondary-400" />
+          <Icon
+            icon={GripVerticalIcon}
+            size="sm"
+            className="text-secondary-400"
+          />
         </div>
         <div className="flex-1">
           <h3 className="font-semibold mb-2">Card with Drag Handle</h3>
@@ -198,13 +203,13 @@ export const DifferentVariants: Story = {
           <p className="text-sm text-secondary-600">With shadow</p>
         </div>
       </DraggableCard>
-      <DraggableCard id="outlined-card" variant="outlined">
+      <DraggableCard id="outlined-card" variant="outline">
         <div className="text-center">
           <h4 className="font-medium mb-2">Outlined Card</h4>
           <p className="text-sm text-secondary-600">With border</p>
         </div>
       </DraggableCard>
-      <DraggableCard id="filled-card" variant="filled">
+      <DraggableCard id="filled-card" variant="ghost">
         <div className="text-center">
           <h4 className="font-medium mb-2">Filled Card</h4>
           <p className="text-sm text-secondary-600">With background</p>
@@ -221,16 +226,24 @@ export const KanbanTaskCards: Story = {
         id="task-todo"
         data={{ status: 'todo', priority: 'high' }}
         size="md"
-        variant="outlined"
+        variant="outline"
       >
         <div className="space-y-3">
           <div className="flex items-start justify-between">
             <h3 className="font-semibold text-sm">Design system components</h3>
-            <Badge variant="high-priority" size="sm">High</Badge>
+            <Badge variant="error" size="sm">
+              High
+            </Badge>
           </div>
           <div className="flex items-center gap-2">
-            <Icon icon={AlertTriangleIcon} size="xs" className="text-warning-500" />
-            <span className="text-xs text-secondary-600">Blocked by dependencies</span>
+            <Icon
+              icon={AlertTriangleIcon}
+              size="sm"
+              className="text-warning-500"
+            />
+            <span className="text-xs text-secondary-600">
+              Blocked by dependencies
+            </span>
           </div>
         </div>
       </DraggableCard>
@@ -239,15 +252,17 @@ export const KanbanTaskCards: Story = {
         id="task-progress"
         data={{ status: 'in-progress', priority: 'medium' }}
         size="md"
-        variant="filled"
+        variant="default"
       >
         <div className="space-y-3">
           <div className="flex items-start justify-between">
             <h3 className="font-semibold text-sm">API integration</h3>
-            <Badge variant="medium-priority" size="sm">Medium</Badge>
+            <Badge variant="warning" size="sm">
+              Medium
+            </Badge>
           </div>
           <div className="flex items-center gap-2">
-            <Icon icon={ClockIcon} size="xs" className="text-blue-500" />
+            <Icon icon={ClockIcon} size="sm" className="text-blue-500" />
             <span className="text-xs text-secondary-600">In progress</span>
           </div>
         </div>
@@ -262,10 +277,12 @@ export const KanbanTaskCards: Story = {
         <div className="space-y-3">
           <div className="flex items-start justify-between">
             <h3 className="font-semibold text-sm">Setup project structure</h3>
-            <Badge variant="success" size="sm">Done</Badge>
+            <Badge variant="success" size="sm">
+              Done
+            </Badge>
           </div>
           <div className="flex items-center gap-2">
-            <Icon icon={CheckIcon} size="xs" className="text-success-500" />
+            <Icon icon={CheckIcon} size="sm" className="text-success-500" />
             <span className="text-xs text-secondary-600">Completed</span>
           </div>
         </div>
@@ -295,10 +312,16 @@ export const InteractiveDragDemo: Story = {
 
         // Move item between lists
         if (overId === 'todo-zone') {
-          setTodoItems(prev => [...prev.filter(id => id !== activeId), activeId]);
+          setTodoItems(prev => [
+            ...prev.filter(id => id !== activeId),
+            activeId,
+          ]);
           setDoneItems(prev => prev.filter(id => id !== activeId));
         } else if (overId === 'done-zone') {
-          setDoneItems(prev => [...prev.filter(id => id !== activeId), activeId]);
+          setDoneItems(prev => [
+            ...prev.filter(id => id !== activeId),
+            activeId,
+          ]);
           setTodoItems(prev => prev.filter(id => id !== activeId));
         }
       }
@@ -337,12 +360,16 @@ export const InteractiveDragDemo: Story = {
                     key={itemId}
                     id={itemId}
                     data={{ status: 'todo' }}
-                    variant="outlined"
+                    variant="outline"
                   >
                     <div className="flex items-center justify-between">
                       <h4 className="font-medium text-sm">{task.title}</h4>
-                      <Badge 
-                        variant={task.priority === 'high' ? 'high-priority' : 'medium-priority'} 
+                      <Badge
+                        variant={
+                          task.priority === 'high'
+                            ? 'error'
+                            : 'warning'
+                        }
                         size="sm"
                       >
                         {task.priority}
@@ -371,11 +398,13 @@ export const InteractiveDragDemo: Story = {
                     key={itemId}
                     id={itemId}
                     data={{ status: 'done' }}
-                    variant="filled"
+                    variant="default"
                   >
                     <div className="flex items-center justify-between">
                       <h4 className="font-medium text-sm">{task.title}</h4>
-                      <Badge variant="success" size="sm">Done</Badge>
+                      <Badge variant="success" size="sm">
+                        Done
+                      </Badge>
                     </div>
                   </DraggableCard>
                 );
@@ -386,12 +415,18 @@ export const InteractiveDragDemo: Story = {
 
         <DragOverlay>
           {activeId ? (
-            <DraggableCard id={activeId} variant="elevated" className="shadow-2xl">
+            <DraggableCard
+              id={activeId}
+              variant="elevated"
+              className="shadow-2xl"
+            >
               <div className="flex items-center justify-between">
                 <h4 className="font-medium text-sm">
                   {getTaskContent(activeId).title}
                 </h4>
-                <Badge variant="info" size="sm">Dragging</Badge>
+                <Badge variant="primary" size="sm">
+                  Dragging
+                </Badge>
               </div>
             </DraggableCard>
           ) : null}
@@ -406,23 +441,33 @@ export const DragStatesShowcase: Story = {
     <div className="space-y-6">
       <div>
         <h3 className="font-semibold mb-3">Normal State</h3>
-        <DraggableCard id="normal-state" variant="outlined">
+        <DraggableCard id="normal-state" variant="outline">
           <div className="text-center py-2">
             <p className="font-medium">Ready to drag</p>
-            <p className="text-sm text-secondary-600 mt-1">Hover to see grab cursor</p>
+            <p className="text-sm text-secondary-600 mt-1">
+              Hover to see grab cursor
+            </p>
           </div>
         </DraggableCard>
       </div>
 
       <div>
         <h3 className="font-semibold mb-3">With Drag Handle</h3>
-        <DraggableCard id="handle-state" handle="[data-handle]" variant="outlined">
+        <DraggableCard
+          id="handle-state"
+          handle="[data-handle]"
+          variant="outline"
+        >
           <div className="flex items-center gap-3">
             <div
               data-handle
               className="p-2 hover:bg-secondary-100 rounded cursor-grab active:cursor-grabbing"
             >
-              <Icon icon={GripVerticalIcon} size="sm" className="text-secondary-400" />
+              <Icon
+                icon={GripVerticalIcon}
+                size="sm"
+                className="text-secondary-400"
+              />
             </div>
             <div>
               <p className="font-medium">Drag handle only</p>
@@ -434,10 +479,12 @@ export const DragStatesShowcase: Story = {
 
       <div>
         <h3 className="font-semibold mb-3">Disabled State</h3>
-        <DraggableCard id="disabled-state" disabled variant="outlined">
+        <DraggableCard id="disabled-state" disabled variant="outline">
           <div className="text-center py-2">
             <p className="font-medium">Cannot be dragged</p>
-            <p className="text-sm text-secondary-600 mt-1">Disabled interaction</p>
+            <p className="text-sm text-secondary-600 mt-1">
+              Disabled interaction
+            </p>
           </div>
         </DraggableCard>
       </div>
@@ -451,12 +498,13 @@ export const AccessibilityExample: Story = {
       <div>
         <h3 className="font-semibold mb-3">Keyboard Navigation</h3>
         <p className="text-sm text-secondary-600 mb-4">
-          Use Space to start dragging, arrow keys to move, Space to drop, Escape to cancel
+          Use Space to start dragging, arrow keys to move, Space to drop, Escape
+          to cancel
         </p>
         <div className="space-y-3">
           <DraggableCard
             id="accessible-1"
-            variant="outlined"
+            variant="outline"
             tabIndex={0}
             role="button"
             aria-label="Task: Review code changes. Press space to start dragging"
@@ -472,7 +520,7 @@ export const AccessibilityExample: Story = {
 
           <DraggableCard
             id="accessible-2"
-            variant="outlined"
+            variant="outline"
             tabIndex={0}
             role="button"
             aria-label="Task: Update test cases. Press space to start dragging"
@@ -481,7 +529,9 @@ export const AccessibilityExample: Story = {
               <Icon icon={CheckIcon} size="sm" className="text-green-500" />
               <div>
                 <h4 className="font-medium text-sm">Update test cases</h4>
-                <p className="text-xs text-secondary-600">Medium priority task</p>
+                <p className="text-xs text-secondary-600">
+                  Medium priority task
+                </p>
               </div>
             </div>
           </DraggableCard>
@@ -495,38 +545,43 @@ export const RealWorldExample: Story = {
   render: () => (
     <div className="space-y-4 max-w-sm">
       <h3 className="font-semibold mb-4">Project Tasks</h3>
-      
+
       <DraggableCard
         id="real-task-1"
-        data={{ 
-          type: 'task', 
+        data={{
+          type: 'task',
           id: 'TASK-123',
           priority: 'high',
           assignee: 'john.doe@company.com',
-          dueDate: '2024-03-15'
+          dueDate: '2024-03-15',
         }}
-        variant="outlined"
+        variant="outline"
       >
         <div className="space-y-3">
           <div className="flex items-start justify-between">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-xs font-mono text-secondary-500">TASK-123</span>
-                <Badge variant="high-priority" size="xs">High</Badge>
+                <span className="text-xs font-mono text-secondary-500">
+                  TASK-123
+                </span>
+                <Badge variant="error" size="sm">
+                  High
+                </Badge>
               </div>
               <h4 className="font-medium text-sm leading-tight">
                 Implement real-time notifications system
               </h4>
             </div>
           </div>
-          
+
           <p className="text-xs text-secondary-600 leading-relaxed">
-            Set up WebSocket connections for real-time push notifications across all user sessions
+            Set up WebSocket connections for real-time push notifications across
+            all user sessions
           </p>
-          
+
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Icon icon={ClockIcon} size="xs" className="text-secondary-400" />
+              <Icon icon={ClockIcon} size="sm" className="text-secondary-400" />
               <span className="text-xs text-secondary-500">Due Mar 15</span>
             </div>
             <div className="flex items-center gap-1">
@@ -535,7 +590,7 @@ export const RealWorldExample: Story = {
               </div>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-2 pt-2 border-t border-secondary-100">
             <Button variant="ghost" size="sm" className="text-xs h-6 px-2">
               View Details
@@ -549,38 +604,42 @@ export const RealWorldExample: Story = {
 
       <DraggableCard
         id="real-task-2"
-        data={{ 
-          type: 'task', 
+        data={{
+          type: 'task',
           id: 'TASK-124',
           priority: 'medium',
           assignee: 'jane.smith@company.com',
-          dueDate: '2024-03-20'
+          dueDate: '2024-03-20',
         }}
-        variant="filled"
+        variant="default"
       >
         <div className="space-y-3">
           <div className="flex items-start justify-between">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-xs font-mono text-secondary-500">TASK-124</span>
-                <Badge variant="medium-priority" size="xs">Medium</Badge>
+                <span className="text-xs font-mono text-secondary-500">
+                  TASK-124
+                </span>
+                <Badge variant="warning" size="sm">
+                  Medium
+                </Badge>
               </div>
               <h4 className="font-medium text-sm leading-tight">
                 Optimize database query performance
               </h4>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-2">
             <div className="w-full bg-secondary-200 rounded-full h-1.5">
               <div className="bg-blue-500 h-1.5 rounded-full w-3/4"></div>
             </div>
             <span className="text-xs text-secondary-600">75%</span>
           </div>
-          
+
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Icon icon={ClockIcon} size="xs" className="text-secondary-400" />
+              <Icon icon={ClockIcon} size="sm" className="text-secondary-400" />
               <span className="text-xs text-secondary-500">Due Mar 20</span>
             </div>
             <div className="flex items-center gap-1">

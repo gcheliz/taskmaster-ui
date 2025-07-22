@@ -15,13 +15,24 @@ export interface TaskMasterTerminalSession {
 }
 
 export interface TaskMasterTerminalWebSocketMessage {
-  type: 'create-session' | 'command' | 'input' | 'resize' | 'kill' | 'close-session';
+  type:
+    | 'create-session'
+    | 'command'
+    | 'input'
+    | 'resize'
+    | 'kill'
+    | 'close-session';
   sessionId?: string;
   data?: any;
 }
 
 export interface TaskMasterTerminalWebSocketResponse {
-  type: 'session-created' | 'output' | 'session-closed' | 'error' | 'suggestions';
+  type:
+    | 'session-created'
+    | 'output'
+    | 'session-closed'
+    | 'error'
+    | 'suggestions';
   sessionId?: string;
   data?: any;
 }
@@ -60,7 +71,7 @@ export interface TaskMasterCommandHistoryResponse {
 
 /**
  * TaskMaster Terminal Service
- * 
+ *
  * Frontend service for TaskMaster terminal integration with enhanced CLI features.
  * Provides both REST API and WebSocket communication for real-time terminal interaction.
  */
@@ -86,13 +97,16 @@ export class TaskMasterTerminalService {
     request: CreateTaskMasterTerminalSessionRequest
   ): Promise<CreateTaskMasterTerminalSessionResponse> {
     try {
-      const response = await fetch(`${this.baseUrl}/taskmaster-terminal/sessions`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(request),
-      });
+      const response = await fetch(
+        `${this.baseUrl}/taskmaster-terminal/sessions`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(request),
+        }
+      );
 
       if (!response.ok) {
         throw new ApiError(
@@ -155,9 +169,12 @@ export class TaskMasterTerminalService {
    */
   async getActiveSessions(): Promise<TaskMasterTerminalSession[]> {
     try {
-      const response = await fetch(`${this.baseUrl}/taskmaster-terminal/sessions`, {
-        method: 'GET',
-      });
+      const response = await fetch(
+        `${this.baseUrl}/taskmaster-terminal/sessions`,
+        {
+          method: 'GET',
+        }
+      );
 
       if (!response.ok) {
         throw new ApiError(
@@ -214,11 +231,7 @@ export class TaskMasterTerminalService {
       if (error instanceof ApiError) {
         throw error;
       }
-      throw new ApiError(
-        'NETWORK_ERROR',
-        'Failed to execute command',
-        500
-      );
+      throw new ApiError('NETWORK_ERROR', 'Failed to execute command', 500);
     }
   }
 
@@ -296,11 +309,7 @@ export class TaskMasterTerminalService {
       if (error instanceof ApiError) {
         throw error;
       }
-      throw new ApiError(
-        'NETWORK_ERROR',
-        'Failed to get command history',
-        500
-      );
+      throw new ApiError('NETWORK_ERROR', 'Failed to get command history', 500);
     }
   }
 
@@ -331,11 +340,7 @@ export class TaskMasterTerminalService {
       if (error instanceof ApiError) {
         throw error;
       }
-      throw new ApiError(
-        'NETWORK_ERROR',
-        'Failed to send input',
-        500
-      );
+      throw new ApiError('NETWORK_ERROR', 'Failed to send input', 500);
     }
   }
 
@@ -362,11 +367,7 @@ export class TaskMasterTerminalService {
       if (error instanceof ApiError) {
         throw error;
       }
-      throw new ApiError(
-        'NETWORK_ERROR',
-        'Failed to kill process',
-        500
-      );
+      throw new ApiError('NETWORK_ERROR', 'Failed to kill process', 500);
     }
   }
 
@@ -401,11 +402,7 @@ export class TaskMasterTerminalService {
       if (error instanceof ApiError) {
         throw error;
       }
-      throw new ApiError(
-        'NETWORK_ERROR',
-        'Failed to resize terminal',
-        500
-      );
+      throw new ApiError('NETWORK_ERROR', 'Failed to resize terminal', 500);
     }
   }
 
@@ -440,11 +437,7 @@ export class TaskMasterTerminalService {
       if (error instanceof ApiError) {
         throw error;
       }
-      throw new ApiError(
-        'NETWORK_ERROR',
-        'Failed to get environment',
-        500
-      );
+      throw new ApiError('NETWORK_ERROR', 'Failed to get environment', 500);
     }
   }
 
@@ -471,11 +464,7 @@ export class TaskMasterTerminalService {
       if (error instanceof ApiError) {
         throw error;
       }
-      throw new ApiError(
-        'NETWORK_ERROR',
-        'Failed to close session',
-        500
-      );
+      throw new ApiError('NETWORK_ERROR', 'Failed to close session', 500);
     }
   }
 
@@ -483,10 +472,10 @@ export class TaskMasterTerminalService {
    * Create WebSocket connection for real-time communication
    */
   createWebSocket(token?: string): WebSocket {
-    const url = token 
+    const url = token
       ? `${this.websocketUrl}?token=${encodeURIComponent(token)}`
       : this.websocketUrl;
-    
+
     return new WebSocket(url);
   }
 
@@ -507,7 +496,7 @@ export class TaskMasterTerminalService {
         projectTag,
       },
     };
-    
+
     ws.send(JSON.stringify(message));
   }
 
@@ -524,24 +513,20 @@ export class TaskMasterTerminalService {
       sessionId,
       data: { command },
     };
-    
+
     ws.send(JSON.stringify(message));
   }
 
   /**
    * Send input via WebSocket
    */
-  sendWebSocketInput(
-    ws: WebSocket,
-    sessionId: string,
-    input: string
-  ): void {
+  sendWebSocketInput(ws: WebSocket, sessionId: string, input: string): void {
     const message: TaskMasterTerminalWebSocketMessage = {
       type: 'input',
       sessionId,
       data: { input },
     };
-    
+
     ws.send(JSON.stringify(message));
   }
 
@@ -559,7 +544,7 @@ export class TaskMasterTerminalService {
       sessionId,
       data: { cols, rows },
     };
-    
+
     ws.send(JSON.stringify(message));
   }
 
@@ -571,7 +556,7 @@ export class TaskMasterTerminalService {
       type: 'kill',
       sessionId,
     };
-    
+
     ws.send(JSON.stringify(message));
   }
 
@@ -583,7 +568,7 @@ export class TaskMasterTerminalService {
       type: 'close-session',
       sessionId,
     };
-    
+
     ws.send(JSON.stringify(message));
   }
 }

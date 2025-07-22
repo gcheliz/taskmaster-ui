@@ -1,15 +1,17 @@
-import { Meta } from '@storybook/blocks'
+import { Meta } from '@storybook/blocks';
 
 <Meta title="Welcome" />
 
-<div style={{ 
-  background: 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)',
-  padding: '3rem 2rem',
-  borderRadius: '1rem',
-  color: 'white',
-  marginBottom: '2rem',
-  textAlign: 'center'
-}}>
+<div
+  style={{
+    background: 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)',
+    padding: '3rem 2rem',
+    borderRadius: '1rem',
+    color: 'white',
+    marginBottom: '2rem',
+    textAlign: 'center',
+  }}
+>
   <h1 style={{ fontSize: '3rem', margin: '0 0 1rem 0', fontWeight: 'bold' }}>
     TaskMaster UI
   </h1>
@@ -50,25 +52,31 @@ TaskMaster UI is a modern, accessible, and comprehensive design system built for
     </a>
   </div>
 
-  <div style={{ 
-    padding: '1.5rem', 
-    border: '1px solid #e2e8f0', 
+<div
+  style={{
+    padding: '1.5rem',
+    border: '1px solid #e2e8f0',
     borderRadius: '0.75rem',
-    backgroundColor: '#f8fafc'
-  }}>
-    <h3 style={{ margin: '0 0 1rem 0', color: '#10B981' }}>⚛️ Atomic Design</h3>
-    <p style={{ margin: '0 0 1rem 0', fontSize: '0.875rem', lineHeight: '1.5' }}>
-      Learn about our component architecture based on Atomic Design principles: Atoms, Molecules, and Organisms.
-    </p>
-    <a href="?path=/docs/design-system-atomic-design--docs" style={{ 
-      color: '#10B981', 
-      textDecoration: 'none', 
+    backgroundColor: '#f8fafc',
+  }}
+>
+  <h3 style={{ margin: '0 0 1rem 0', color: '#10B981' }}>⚛️ Atomic Design</h3>
+  <p style={{ margin: '0 0 1rem 0', fontSize: '0.875rem', lineHeight: '1.5' }}>
+    Learn about our component architecture based on Atomic Design principles:
+    Atoms, Molecules, and Organisms.
+  </p>
+  <a
+    href="?path=/docs/design-system-atomic-design--docs"
+    style={{
+      color: '#10B981',
+      textDecoration: 'none',
       fontWeight: '500',
-      fontSize: '0.875rem'
-    }}>
-      Learn Atomic Design →
-    </a>
-  </div>
+      fontSize: '0.875rem',
+    }}
+  >
+    Learn Atomic Design →
+  </a>
+</div>
 
   <div style={{ 
     padding: '1.5rem', 
@@ -96,7 +104,9 @@ TaskMaster UI is a modern, accessible, and comprehensive design system built for
 Our design system is organized into three levels following Atomic Design methodology:
 
 ### ⚛️ Atoms (15+ Components)
+
 Basic building blocks that cannot be broken down further:
+
 - **Button** - All button variants with comprehensive states
 - **Input** - Form inputs with validation and icons
 - **Label** - Accessible form labels
@@ -106,7 +116,9 @@ Basic building blocks that cannot be broken down further:
 - **And more...**
 
 ### 🧬 Molecules (12+ Components)
+
 Simple combinations of atoms working together:
+
 - **FormField** - Complete form field with label and validation
 - **Modal** - Dialog overlays with backdrop and controls
 - **Dropdown** - Interactive menu systems
@@ -116,7 +128,9 @@ Simple combinations of atoms working together:
 - **And more...**
 
 ### 🦠 Organisms (4+ Components)
+
 Complex UI sections composed of molecules and atoms:
+
 - **KanbanBoard** - Full task management board
 - **ActivityTimeline** - Event timeline with interactions
 - **QuickActionsGrid** - Dashboard action panels
@@ -125,55 +139,81 @@ Complex UI sections composed of molecules and atoms:
 
 ## ✨ Key Features
 
-<div style={{ 
-  display: 'grid', 
-  gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
-  gap: '1rem',
-  margin: '2rem 0'
-}}>
+<div
+  style={{
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+    gap: '1rem',
+    margin: '2rem 0',
+  }}
+>
   {[
     {
       icon: '♿',
       title: 'Accessibility First',
-      description: 'WCAG 2.1 AA compliant with keyboard navigation, screen reader support, and proper focus management.'
+      description:
+        'WCAG 2.1 AA compliant with keyboard navigation, screen reader support, and proper focus management.',
     },
     {
       icon: '🎨',
       title: 'Design Tokens',
-      description: 'Consistent design language with comprehensive color, typography, spacing, and animation systems.'
+      description:
+        'Consistent design language with comprehensive color, typography, spacing, and animation systems.',
     },
     {
       icon: '📱',
       title: 'Responsive',
-      description: 'Mobile-first design with flexible layouts that work across all device sizes and orientations.'
+      description:
+        'Mobile-first design with flexible layouts that work across all device sizes and orientations.',
     },
     {
       icon: '⚡',
       title: 'Performance',
-      description: 'Optimized bundle sizes, tree-shakeable components, and efficient rendering patterns.'
+      description:
+        'Optimized bundle sizes, tree-shakeable components, and efficient rendering patterns.',
     },
     {
       icon: '🧪',
       title: 'Well Tested',
-      description: 'Comprehensive unit tests, accessibility tests, and visual regression testing coverage.'
+      description:
+        'Comprehensive unit tests, accessibility tests, and visual regression testing coverage.',
     },
     {
       icon: '🔧',
       title: 'Developer DX',
-      description: 'TypeScript support, comprehensive documentation, and excellent IDE integration.'
-    }
+      description:
+        'TypeScript support, comprehensive documentation, and excellent IDE integration.',
+    },
   ].map((feature, index) => (
-    <div key={index} style={{ 
-      padding: '1rem', 
-      border: '1px solid #e2e8f0', 
-      borderRadius: '0.5rem',
-      textAlign: 'center'
-    }}>
-      <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>{feature.icon}</div>
-      <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '0.875rem', fontWeight: '600' }}>
+    <div
+      key={index}
+      style={{
+        padding: '1rem',
+        border: '1px solid #e2e8f0',
+        borderRadius: '0.5rem',
+        textAlign: 'center',
+      }}
+    >
+      <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>
+        {feature.icon}
+      </div>
+      <h4
+        style={{
+          margin: '0 0 0.5rem 0',
+          fontSize: '0.875rem',
+          fontWeight: '600',
+        }}
+      >
         {feature.title}
       </h4>
-      <p style={{ margin: '0', fontSize: '0.75rem', lineHeight: '1.4', color: '#64748b' }}>
+      <p
+        style={{
+          margin: '0',
+          fontSize: '0.75rem',
+          lineHeight: '1.4',
+          color: '#64748b',
+        }}
+      >
         {feature.description}
       </p>
     </div>
@@ -193,7 +233,7 @@ Complex UI sections composed of molecules and atoms:
 ### For Designers
 
 1. **Use Design Tokens**: Reference the token system for colors, spacing, and typography
-2. **Think Systematically**: Consider how designs fit into the atomic hierarchy  
+2. **Think Systematically**: Consider how designs fit into the atomic hierarchy
 3. **Maintain Consistency**: Use existing components before designing new ones
 4. **Document Patterns**: Include usage notes and interaction specs
 5. **Test Accessibility**: Ensure designs meet WCAG guidelines
@@ -214,7 +254,7 @@ Each component includes comprehensive documentation:
 - **React 18** - Modern React with hooks and concurrent features
 - **TypeScript** - Type safety and excellent developer experience
 - **Tailwind CSS** - Utility-first CSS framework with design tokens
-- **Storybook 8** - Component documentation and development environment  
+- **Storybook 8** - Component documentation and development environment
 - **Vite** - Fast build tool with hot module replacement
 - **Testing Library** - Comprehensive testing utilities
 - **Class Variance Authority** - Type-safe component variants
@@ -222,7 +262,7 @@ Each component includes comprehensive documentation:
 ## 🎯 Getting Started
 
 1. **Explore Design Tokens** - Understanding our design language
-2. **Learn Atomic Design** - Component architecture principles  
+2. **Learn Atomic Design** - Component architecture principles
 3. **Browse Components** - Interactive examples and code
 4. **Read Guidelines** - Best practices and usage patterns
 5. **Build Something** - Start with atoms and compose upward
@@ -236,21 +276,31 @@ Each component includes comprehensive documentation:
 
 ---
 
-<div style={{ 
-  textAlign: 'center', 
-  padding: '2rem', 
-  backgroundColor: '#f8fafc',
-  borderRadius: '0.75rem',
-  margin: '2rem 0'
-}}>
+<div
+  style={{
+    textAlign: 'center',
+    padding: '2rem',
+    backgroundColor: '#f8fafc',
+    borderRadius: '0.75rem',
+    margin: '2rem 0',
+  }}
+>
   <h3 style={{ margin: '0 0 1rem 0' }}>Ready to Build?</h3>
   <p style={{ margin: '0 0 1.5rem 0', color: '#64748b' }}>
-    Start exploring our components and build amazing user interfaces with TaskMaster UI.
+    Start exploring our components and build amazing user interfaces with
+    TaskMaster UI.
   </p>
-  <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-    <a 
+  <div
+    style={{
+      display: 'flex',
+      gap: '1rem',
+      justifyContent: 'center',
+      flexWrap: 'wrap',
+    }}
+  >
+    <a
       href="?path=/docs/design-system-design-tokens--docs"
-      style={{ 
+      style={{
         display: 'inline-block',
         padding: '0.75rem 1.5rem',
         backgroundColor: '#3B82F6',
@@ -258,14 +308,14 @@ Each component includes comprehensive documentation:
         textDecoration: 'none',
         borderRadius: '0.5rem',
         fontWeight: '500',
-        fontSize: '0.875rem'
+        fontSize: '0.875rem',
       }}
     >
       View Design Tokens
     </a>
-    <a 
+    <a
       href="?path=/docs/atoms-button--docs"
-      style={{ 
+      style={{
         display: 'inline-block',
         padding: '0.75rem 1.5rem',
         backgroundColor: 'white',
@@ -274,7 +324,7 @@ Each component includes comprehensive documentation:
         borderRadius: '0.5rem',
         fontWeight: '500',
         fontSize: '0.875rem',
-        border: '1px solid #3B82F6'
+        border: '1px solid #3B82F6',
       }}
     >
       Browse Components

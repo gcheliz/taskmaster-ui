@@ -7,13 +7,15 @@ const mockRepositories: RepositoryCardProps['repository'][] = [
   {
     id: 'repo-1',
     name: 'taskmaster-ui',
-    description: 'Modern React application for task management with Git integration',
+    description:
+      'Modern React application for task management with Git integration',
     path: '/Users/dev/projects/taskmaster-ui',
     currentBranch: 'main',
     lastCommit: {
       hash: 'a1b2c3d4e5f6789012345678901234567890abcd',
       date: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-      message: 'Implement detailed commit history view with search and pagination',
+      message:
+        'Implement detailed commit history view with search and pagination',
       author: {
         name: 'John Developer',
         email: 'john@example.com',
@@ -165,7 +167,8 @@ const mockCommits = [
   {
     hash: 'a1b2c3d4e5f6789012345678901234567890abcd',
     date: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-    message: 'Fix: Resolve issue with repository card loading state\n\n- Added proper loading spinners\n- Fixed async data handling\n- Updated error boundaries',
+    message:
+      'Fix: Resolve issue with repository card loading state\n\n- Added proper loading spinners\n- Fixed async data handling\n- Updated error boundaries',
     author: {
       name: 'John Doe',
       email: 'john.doe@example.com',
@@ -192,7 +195,11 @@ const mockCommits = [
 ];
 
 const mockRepositoryService = {
-  getCommitHistory: async (repositoryId: string, limit: number = 50, branchName?: string) => {
+  getCommitHistory: async (
+    repositoryId: string,
+    limit: number = 50,
+    branchName?: string
+  ) => {
     await new Promise(resolve => setTimeout(resolve, 1000));
     return {
       success: true,
@@ -263,10 +270,10 @@ export const Default: Story = {
     error: null,
     showEnhanced: true,
     enableRealtime: true,
-    onRepositoryClick: (repo) => console.log('Repository clicked:', repo.name),
-    onRepositoryRefresh: (id) => console.log('Refresh repository:', id),
-    onRepositoryDetails: (id) => console.log('View details:', id),
-    onRepositoryManage: (id) => console.log('Manage repository:', id),
+    onRepositoryClick: repo => console.log('Repository clicked:', repo.name),
+    onRepositoryRefresh: id => console.log('Refresh repository:', id),
+    onRepositoryDetails: id => console.log('View details:', id),
+    onRepositoryManage: id => console.log('Manage repository:', id),
     onRefreshAll: () => console.log('Refresh all repositories'),
   },
 };
@@ -285,7 +292,8 @@ export const ErrorState: Story = {
   args: {
     repositories: [],
     isLoading: false,
-    error: 'Failed to load repositories. Please check your connection and try again.',
+    error:
+      'Failed to load repositories. Please check your connection and try again.',
     showEnhanced: true,
     enableRealtime: false,
   },

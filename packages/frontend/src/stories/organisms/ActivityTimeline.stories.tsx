@@ -3,10 +3,16 @@ import { ActivityTimeline } from '../../components/ui/organisms/ActivityTimeline
 import type { ActivityItem } from '../../components/ui/organisms/ActivityTimeline';
 
 const meta: Meta<typeof ActivityTimeline> = {
-  title: 'UI/Organisms/ActivityTimeline',
+  title: 'Organisms/ActivityTimeline',
   component: ActivityTimeline,
   parameters: {
     layout: 'padded',
+    docs: {
+      description: {
+        component:
+          'A comprehensive activity timeline organism that assembles multiple molecules and atoms to display project activity feeds. Combines avatar atoms, text molecules, and filtering components to create a complete activity tracking interface. Built with atomic design principles for consistent user experience across activity displays.',
+      },
+    },
   },
   tags: ['autodocs'],
   argTypes: {

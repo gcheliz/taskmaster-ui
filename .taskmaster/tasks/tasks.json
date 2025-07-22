@@ -600,7 +600,7 @@
               2
             ],
             "details": "Fetch detailed data for primary branches (e.g., main, develop). Implement the logic to compare local/remote branch states to assign a status (e.g., up-to-date, ahead/behind, conflict) and apply the corresponding color-coded UI indicator. Define and implement the algorithm for the repository health score, which will be calculated from metrics like branch staleness, PR age, and commit frequency. Display this score using a visual indicator on the card.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Unit test the pure functions responsible for calculating branch status and repository health scores with various data inputs to ensure correctness. Test the related UI components to verify they render the correct colors and visuals based on the calculated data."
           },
           {
@@ -796,7 +796,7 @@
     ],
     "metadata": {
       "created": "2025-07-15T21:22:03.992Z",
-      "updated": "2025-07-22T19:37:38.454Z",
+      "updated": "2025-07-22T19:47:49.607Z",
       "description": "Tasks for taskmaster-ui context"
     }
   }

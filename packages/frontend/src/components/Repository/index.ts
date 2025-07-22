@@ -37,3 +37,15 @@ export type { CommitHistoryModalProps, CommitData } from './CommitHistoryModal';
 
 export { RepositoryHealthModal } from './RepositoryHealthModal';
 export type { RepositoryHealthModalProps } from './RepositoryHealthModal';
+
+export { BranchStatusIndicator } from './BranchStatusIndicator';
+export type { BranchStatusIndicatorProps } from './BranchStatusIndicator';
+
+export {
+  RepositoryHealthIndicator,
+  HealthScoreCompact,
+} from './RepositoryHealthIndicator';
+export type {
+  RepositoryHealthIndicatorProps,
+  HealthScoreCompactProps,
+} from './RepositoryHealthIndicator';

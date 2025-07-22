@@ -4,6 +4,11 @@ import { Card, CardContent } from '../ui/molecules/Card';
 import { Badge } from '../ui/atoms/Badge';
 import { Button } from '../ui/atoms/Button';
 import { Spinner } from '../ui/atoms/Spinner';
+import { BranchStatusIndicator } from './BranchStatusIndicator';
+import {
+  RepositoryHealthIndicator,
+  HealthScoreCompact,
+} from './RepositoryHealthIndicator';
 import {
   useRepositoryHealth,
   useRepositoryStatistics,
@@ -309,26 +314,44 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = ({
           </div>
         </div>
 
-        {/* Branch Status */}
+        {/* Branch Status with New Indicator */}
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <span className="text-sm text-gray-600">
-              <BranchIcon className="w-4 h-4 inline mr-1" />
+            <span className="text-sm text-gray-600 flex items-center">
+              <BranchIcon className="w-4 h-4 mr-1" />
               {repository.currentBranch}
             </span>
-            <Badge
-              variant={getBranchStatusVariant(repository.status)}
+            <BranchStatusIndicator
+              ahead={repository.status.ahead}
+              behind={repository.status.behind}
+              isClean={repository.status.isClean}
+              conflicted={repository.status.conflicted}
+              lastCommitDate={repository.lastCommit.date}
+              showDetails={false}
               size="sm"
-            >
-              {repository.status.isClean ? 'Clean' : 'Modified'}
-              {repository.status.ahead ? ` +${repository.status.ahead}` : ''}
-              {repository.status.behind ? ` -${repository.status.behind}` : ''}
-            </Badge>
+            />
           </div>
 
-          <span className="text-xs text-gray-500">
-            {formatLastCommitDate(repository.lastCommit.date)}
-          </span>
+          {/* Health Score Display */}
+          {showHealth && (
+            <HealthScoreCompact
+              score={health?.score || 75}
+              level={
+                health?.score
+                  ? health.score >= 90
+                    ? 'excellent'
+                    : health.score >= 75
+                      ? 'good'
+                      : health.score >= 60
+                        ? 'fair'
+                        : health.score >= 40
+                          ? 'poor'
+                          : 'critical'
+                  : 'fair'
+              }
+              size="sm"
+            />
+          )}
         </div>
 
         {/* Last Commit */}

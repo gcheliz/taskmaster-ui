@@ -564,7 +564,7 @@
         "description": "Create a comprehensive Git repository management interface featuring a repository overview, connection status, detailed Git statistics, branch status indicators, health monitoring, and quick actions for common Git operations.",
         "details": "Implement the repository management page based on the provided HTML mockups. The page will display a collection of 'Repository Cards', each representing a connected Git repository. \n\n1.  **Component Development:** Utilize the atomic components from Task #52 to construct the page. The primary component will be a 'RepositoryCard' molecule/organism.\n2.  **Repository Card Structure:**\n    *   **Header:** Display the repository name and a connection status badge ('Connected', 'Error', 'Syncing').\n    *   **Git Statistics:** Fetch and display key metrics like total commits, number of branches, and open pull requests, using icons for visual clarity.\n    *   **Branch Status:** List primary branches (e.g., main, develop) with color-coded status indicators (e.g., green for up-to-date, yellow for ahead/behind, red for conflict).\n    *   **Repository Health:** Implement a visual health score/indicator based on metrics like branch staleness, PR age, and commit frequency.\n    *   **Quick Actions:** Include a button group for 'Sync', 'New Branch' (triggering a modal), and 'View Commits'.\n3.  **API Integration:** Connect the frontend to the Git API endpoints established in Task #55. Use a data-fetching library like SWR or React Query to handle asynchronous operations, caching, and real-time updates (via polling or re-fetch on focus).\n4.  **State Management:** Employ a centralized state management solution (e.g., Zustand, Redux Toolkit) to manage the list of repositories, their individual states (loading, error, data), and the UI state for modals and forms.",
         "testStrategy": "1.  **Unit Tests (Jest/Vitest + React Testing Library):**\n    *   Test the `RepositoryCard` component with mocked props for all possible states (e.g., different connection statuses, branch health indicators) to verify correct rendering.\n    *   Unit test the logic for determining branch status colors and repository health scores.\n    *   Test form validation and submission logic within the 'New Branch' modal.\n2.  **Integration Tests (Mock Service Worker):**\n    *   Mock the Git API to simulate various scenarios, including successful data fetching, API errors, and empty states.\n    *   Verify that the page correctly renders a list of repositories from the mocked API.\n    *   Test that clicking 'Sync' or other quick actions triggers the correct API requests with appropriate payloads.\n3.  **End-to-End Tests (Cypress/Playwright):**\n    *   Create a test workflow that navigates to the page, asserts that repository cards are visible and contain data.\n    *   Simulate user interaction with quick actions, such as filling out and submitting the 'New Branch' form, and verify the UI updates accordingly.\n4.  **Visual Regression Testing (Chromatic/Percy):**\n    *   Capture and approve snapshots of the `RepositoryCard` component and the full page layout in various states to prevent unintended UI changes.",
-        "status": "in-progress",
+        "status": "done",
         "dependencies": [
           52,
           55,
@@ -611,7 +611,7 @@
               2
             ],
             "details": "Implement the 'Sync' button to trigger a manual data re-fetch for a specific repository. Create and integrate a 'New Branch' modal, managing its visibility and form state with the chosen state management library. Implement the API call for creating a new branch on form submission. Connect the 'View Commits' button to navigate to a commit history page. Centralize the repository list and their individual states (e.g., syncing, error) in the global store.",
-            "status": "in-progress",
+            "status": "done",
             "testStrategy": "Use React Testing Library to test user interactions, such as clicking the 'New Branch' button to verify the modal opens. Mock API calls to test that 'Sync' and 'New Branch' actions trigger the correct network requests and that the application state is updated accordingly."
           }
         ]
@@ -622,7 +622,7 @@
         "description": "Create an embedded terminal interface that integrates with the TaskMaster CLI, providing authentic terminal aesthetics, command history, shortcuts, and real-time command execution based on the provided mockups.",
         "details": "Implement the embedded terminal page using `xterm.js` for core terminal emulation and WebSockets for real-time communication with the backend TaskMaster CLI process.\n\n1.  **Technology Selection:**\n    *   Utilize `xterm.js` as the core library for rendering the terminal UI.\n    *   Use the `xterm-addon-fit` to make the terminal responsive to its container size.\n    *   Implement a WebSocket connection (`ws` or `socket.io`) to handle the real-time, bidirectional communication between the client and the server-side CLI process.\n\n2.  **Component Development:**\n    *   Create a `Terminal` organism component that encapsulates the `xterm.js` instance and its lifecycle (initialization, connection, disposal).\n    *   This component will manage the WebSocket connection, sending user input and receiving command output.\n    *   Use atomic components from Task #52 for any surrounding UI elements like session tabs or control buttons.\n\n3.  **Feature Implementation:**\n    *   **Authentic Aesthetics:** Configure `xterm.js` with a custom theme (colors, font, font size) to match the project's dark theme (Task #52) and the HTML mockups. Implement a blinking block cursor for an authentic feel.\n    *   **CLI Integration:** On component mount, establish a WebSocket connection. User input (ending with the Enter key) is sent over the socket. Data received from the socket is written directly to the `xterm.js` instance.\n    *   **Command History:** Implement a client-side buffer to store a history of executed commands. Handle the Up and Down arrow key presses to navigate this history and populate the input line.\n    *   **Quick Command Shortcuts:** Implement key bindings for common actions. Use `xterm.js`'s `onKey` event handler to capture key presses for shortcuts like `Ctrl+L` (clear screen) and `Ctrl+C` (send interrupt signal over WebSocket).\n    *   **Session Management:** The parent component should manage an array of active terminal sessions. Each session will have its own `Terminal` component instance and a corresponding WebSocket connection. Implement a tabbed interface to switch between sessions.",
         "testStrategy": "1.  **Unit Tests (Jest/Vitest + React Testing Library):**\n    *   Test the `Terminal` component by mocking the `xterm.js` library and the WebSocket API.\n    *   Verify that the component correctly initializes `xterm.js` on mount.\n    *   Simulate user key presses and assert that commands are sent through the mocked WebSocket.\n    *   Simulate receiving messages from the mocked WebSocket and assert that the `xterm.write` method is called with the correct data.\n    *   Unit test the command history logic: adding new commands, preventing duplicates, and navigating with arrow keys.\n\n2.  **Integration Tests (Cypress/Playwright):**\n    *   Create tests against a mocked WebSocket server that echoes commands or returns predefined responses.\n    *   Write a test that types a command, presses Enter, and verifies that the expected response from the mock server is rendered in the terminal.\n    *   Test keyboard shortcuts like `Ctrl+L` to ensure the terminal view is cleared.\n\n3.  **End-to-End Tests:**\n    *   Run a test against a live development server. Execute a simple, non-destructive CLI command (e.g., `help`, `--version`) and validate that the output is correct and properly formatted.\n\n4.  **Visual Regression Testing:**\n    *   Create a Storybook story for the `Terminal` component. Use Chromatic or a similar tool to capture snapshots and prevent unintended visual changes to the terminal's theme, cursor, and font.",
-        "status": "pending",
+        "status": "done",
         "dependencies": [
           52,
           58,
@@ -636,7 +636,7 @@
             "description": "Create the foundational `Terminal` organism component. This subtask focuses on initializing an `xterm.js` instance and establishing a stable WebSocket connection to the backend TaskMaster CLI process for basic, real-time data exchange.",
             "dependencies": [],
             "details": "Implement a React component that encapsulates an `xterm.js` instance using a `ref`. On component mount, initialize the terminal and establish a WebSocket connection. Implement the core data flow: `term.onData` will send user keystrokes to the socket, and `socket.onmessage` will write received data from the backend to the terminal. Handle WebSocket lifecycle events (open, close, error) to ensure connection stability.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Unit test the `Terminal` component by mocking `xterm.js` and the WebSocket API. Verify that the component initializes the terminal on mount, attempts to connect via WebSocket, and correctly handles sending and receiving basic messages."
           },
           {
@@ -647,7 +647,7 @@
               1
             ],
             "details": "Define and apply a custom theme object to the `xterm.js` instance with colors for background, foreground, cursor, and selection, aligning with Task #52. Set the font family, font size, and a blinking block cursor style. Integrate and configure the `xterm-addon-fit` to make the terminal automatically resize. Use a `ResizeObserver` on the terminal's parent container to call the `fit()` method on dimension changes.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Use visual regression testing in Storybook to confirm the theme and font are applied correctly. Unit test to ensure the `fit` addon is loaded and its `fit()` method is called when the container resizes."
           },
           {
@@ -658,7 +658,7 @@
               1
             ],
             "details": "Implement a client-side buffer (array) to store a history of commands submitted with the Enter key. Use the `xterm.js` `onKey` event handler to capture Up and Down arrow key presses, navigate the history buffer, and update the current input line. Also in `onKey`, implement shortcuts like `Ctrl+L` to call `term.clear()` and `Ctrl+C` to send a special interrupt signal over the WebSocket.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Unit test the `onKey` event handler logic. Simulate key press events (Up Arrow, Down Arrow, Ctrl+L, Ctrl+C) and assert that the correct actions are performed, such as history navigation, calling `term.clear()`, or sending an interrupt message via the mocked WebSocket."
           },
           {
@@ -669,7 +669,7 @@
               1
             ],
             "details": "Develop a `TerminalManager` parent component that manages an array of active sessions in its state. Utilize the atomic tab components from Task #52 for the UI. Each tab will correspond to a unique `Terminal` component instance, each with its own WebSocket connection. Implement logic to add new tabs (creating a new session), switch between tabs (showing/hiding the correct terminal), and close tabs (disposing of the `xterm.js` instance and closing its WebSocket).",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Using React Testing Library, test the `TerminalManager` component. Verify that adding a tab creates a new `Terminal` instance. Simulate tab clicks and assert that the correct terminal content is displayed. Test that closing a tab correctly removes it and triggers cleanup."
           }
         ]
@@ -796,7 +796,7 @@
     ],
     "metadata": {
       "created": "2025-07-15T21:22:03.992Z",
-      "updated": "2025-07-22T20:01:11.999Z",
+      "updated": "2025-07-22T20:12:37.862Z",
       "description": "Tasks for taskmaster-ui context"
     }
   }

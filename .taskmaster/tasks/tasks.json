@@ -227,7 +227,7 @@
         "dependencies": [
           52
         ],
-        "status": "in-progress",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -270,7 +270,7 @@
               2
             ],
             "details": "Design and implement a view, accessible from the repository card, that presents repository health metrics. This includes creating visualizations like a commit frequency chart (e.g., a bar chart of commits per week) and summary statistics. The view will aggregate data fetched by the API service to generate these insights.",
-            "status": "in-progress",
+            "status": "done",
             "testStrategy": "Unit test the data aggregation and calculation logic for the health metrics. Write end-to-end tests to simulate a user navigating from the repository list to the health dashboard and verify that the correct charts and data are displayed."
           }
         ]
@@ -285,7 +285,7 @@
         "dependencies": [
           51
         ],
-        "status": "pending",
+        "status": "in-progress",
         "subtasks": [
           {
             "id": 1,
@@ -293,7 +293,7 @@
             "description": "Create the fundamental front-end component for the embedded terminal, focusing on visual fidelity and basic input handling.",
             "dependencies": [],
             "details": "Implement a terminal view using a monospace font. Create a blinking cursor to indicate the input position. Handle user keyboard input to display text on the command line. This subtask is purely visual and does not include command execution.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Component unit tests for text rendering and cursor behavior. Visual regression tests to ensure the terminal's look and feel matches design specifications."
           },
           {
@@ -796,7 +796,7 @@
     ],
     "metadata": {
       "created": "2025-07-15T21:22:03.992Z",
-      "updated": "2025-07-22T16:28:18.020Z",
+      "updated": "2025-07-22T16:44:48.606Z",
       "description": "Tasks for taskmaster-ui context"
     }
   }

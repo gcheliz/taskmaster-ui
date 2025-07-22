@@ -397,7 +397,7 @@
         "dependencies": [
           52
         ],
-        "status": "pending",
+        "status": "in-progress",
         "subtasks": [
           {
             "id": 1,
@@ -405,7 +405,7 @@
             "description": "Create the foundational directory structure for Atomic Design (atoms, molecules, organisms) and document the core design tokens in Storybook.",
             "dependencies": [],
             "details": "Create directories for `/atoms`, `/molecules`, and `/organisms` within the component library source. Use Storybook's MDX or a dedicated addon to create documentation pages for global design tokens, including color palettes, typography scales, spacing units, and border radii.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Peer review of the new directory structure. Manually verify in Storybook that a 'Design Tokens' section exists and accurately displays all color, typography, and spacing values."
           },
           {
@@ -796,7 +796,7 @@
     ],
     "metadata": {
       "created": "2025-07-15T21:22:03.992Z",
-      "updated": "2025-07-22T17:20:51.013Z",
+      "updated": "2025-07-22T17:25:55.687Z",
       "description": "Tasks for taskmaster-ui context"
     }
   }

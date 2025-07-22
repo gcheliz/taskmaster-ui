@@ -2,6 +2,7 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { Terminal as XTerminal } from '@xterm/xterm';
 import { Terminal } from './Terminal';
 import { useTerminal } from '../../hooks/useTerminal';
+import { taskMasterTerminalService } from '../../services/taskMasterTerminalService';
 
 export interface TaskMasterTerminalProps {
   /** Working directory for the terminal */
@@ -170,6 +171,26 @@ export const TaskMasterTerminal: React.FC<TaskMasterTerminalProps> = ({
 
     return allSuggestions.slice(0, 10); // Limit to 10 suggestions
   }, [currentInput, enableTaskMasterSuggestions, enableCommandHistory, commandHistory]);
+
+  // Fetch backend suggestions for TaskMaster commands
+  const fetchBackendSuggestions = useCallback(async (partialCommand: string) => {
+    if (!session?.id || !partialCommand.startsWith('task-master')) {
+      return;
+    }
+
+    try {
+      const backendSuggestions = await taskMasterTerminalService.getCommandSuggestions(
+        session.id, 
+        { partialCommand }
+      );
+      
+      // Merge with local suggestions (backend suggestions take priority)
+      // This would require refactoring suggestions state to be async
+      console.log('Backend suggestions:', backendSuggestions);
+    } catch (error) {
+      console.warn('Failed to fetch backend suggestions:', error);
+    }
+  }, [session?.id]);
 
   // Enhanced execute command with TaskMaster-specific features
   const executeCommand = useCallback(async (command: string) => {

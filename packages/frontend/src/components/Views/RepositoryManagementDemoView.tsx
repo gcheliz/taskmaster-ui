@@ -1,8 +1,63 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { EnhancedRepositoryView } from './EnhancedRepositoryView';
+import { useRepositoryList, useRepositoryDetails } from '../../hooks/useRepositoryList';
+import { Spinner } from '../ui/atoms/Spinner';
+import { Alert } from '../ui/molecules/Alert';
 import type { RepositoryCardProps } from '../Repository/RepositoryCard';
+import { cn } from '../../utils/cn';
 
-// Mock repository data to showcase all features
+// Transform repository list item to full repository data
+const transformToRepositoryData = (
+  listItem: { id: string; path: string; name: string },
+  details?: any
+): RepositoryCardProps['repository'] => {
+  // Create base repository data with fallbacks for when details aren't loaded
+  const baseData: RepositoryCardProps['repository'] = {
+    id: listItem.id,
+    name: listItem.name,
+    path: listItem.path,
+    description: `Repository at ${listItem.path}`,
+    currentBranch: 'main', // Default fallback
+    lastCommit: {
+      hash: 'loading...',
+      date: new Date().toISOString(),
+      message: 'Loading commit information...',
+      author: {
+        name: 'Loading...',
+        email: 'loading@example.com',
+      },
+    },
+    status: {
+      isClean: true,
+      staged: 0,
+      unstaged: 0,
+      untracked: 0,
+      conflicted: 0,
+      ahead: 0,
+      behind: 0,
+    },
+    language: 'Unknown',
+    isPrivate: false,
+    size: 0,
+  };
+
+  // If we have detailed data, merge it in
+  if (details) {
+    return {
+      ...baseData,
+      currentBranch: details.currentBranch || baseData.currentBranch,
+      lastCommit: details.lastCommit || baseData.lastCommit,
+      status: details.status || baseData.status,
+      description: details.description || baseData.description,
+      // Add any additional properties from details
+      ...details,
+    };
+  }
+
+  return baseData;
+};
+
+// Mock data fallback for when no repositories are connected
 const mockRepositories: RepositoryCardProps['repository'][] = [
   {
     id: 'repo-1',
@@ -196,40 +251,128 @@ export interface RepositoryManagementDemoViewProps {
 export const RepositoryManagementDemoView: React.FC<RepositoryManagementDemoViewProps> = ({ 
   className 
 }) => {
-  const handleRepositoryClick = (repository: RepositoryCardProps['repository']) => {
+  // Fetch the list of repositories using React Query
+  const {
+    repositories: repositoryList,
+    isLoading: isLoadingList,
+    error: listError,
+    refetch: refetchList,
+  } = useRepositoryList({
+    refetchInterval: 30000, // Refetch every 30 seconds
+    refetchOnWindowFocus: true,
+  });
+
+  // For demonstration purposes, we'll fetch details for up to 6 repositories
+  const limitedRepositoryList = repositoryList.slice(0, 6);
+  
+  const repositoryDetailsQueries = limitedRepositoryList.map(repo => ({
+    id: repo.id,
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    details: useRepositoryDetails(repo.id, {
+      enabled: limitedRepositoryList.length > 0,
+      refetchInterval: 60000, // Refresh details every minute
+    }),
+  }));
+
+  const handleRepositoryClick = useCallback((repository: RepositoryCardProps['repository']) => {
     console.log('Repository clicked:', repository.name);
-  };
+  }, []);
 
-  const handleRepositoryRefresh = (repositoryId: string) => {
+  const handleRepositoryRefresh = useCallback(async (repositoryId: string) => {
     console.log('Refreshing repository:', repositoryId);
-  };
+    // Find the specific repository details query and refetch it
+    const query = repositoryDetailsQueries.find(q => q.id === repositoryId);
+    if (query?.details) {
+      await query.details.refetch();
+    }
+  }, [repositoryDetailsQueries]);
 
-  const handleRepositoryDetails = (repositoryId: string) => {
+  const handleRepositoryDetails = useCallback((repositoryId: string) => {
     console.log('Viewing repository details:', repositoryId);
-  };
+  }, []);
 
-  const handleRepositoryManage = (repositoryId: string) => {
+  const handleRepositoryManage = useCallback((repositoryId: string) => {
     console.log('Managing repository:', repositoryId);
-  };
+  }, []);
 
-  const handleRefreshAll = () => {
+  const handleRefreshAll = useCallback(async () => {
     console.log('Refreshing all repositories');
-  };
+    await refetchList();
+    // Refresh all detail queries
+    for (const query of repositoryDetailsQueries) {
+      if (query.details) {
+        await query.details.refetch();
+      }
+    }
+  }, [refetchList, repositoryDetailsQueries]);
+
+  // Transform repository list items to full repository data
+  const repositories: RepositoryCardProps['repository'][] = limitedRepositoryList.length > 0 
+    ? limitedRepositoryList.map(listItem => {
+        const detailsQuery = repositoryDetailsQueries.find(q => q.id === listItem.id);
+        const details = detailsQuery?.details.data;
+        return transformToRepositoryData(listItem, details);
+      })
+    : mockRepositories; // Fallback to mock data for demo purposes when no real repositories
+
+  // Determine overall loading state
+  const isLoadingDetails = repositoryDetailsQueries.some(q => q.details.isLoading);
+  const isLoading = isLoadingList || (limitedRepositoryList.length > 0 && isLoadingDetails);
+
+  // Determine error state
+  const detailsErrors = repositoryDetailsQueries
+    .map(q => q.details.error)
+    .filter(Boolean);
+  const error = listError || (detailsErrors.length > 0 ? detailsErrors[0]?.message : null);
+
+  // Show loading spinner while initially loading the repository list
+  if (isLoadingList && limitedRepositoryList.length === 0 && repositoryList.length === 0) {
+    return (
+      <div className={cn('repository-management-demo-view', className)}>
+        <div className="flex items-center justify-center min-h-96">
+          <div className="text-center">
+            <Spinner size="lg" className="mx-auto mb-4" />
+            <p className="text-gray-600">Loading repositories...</p>
+            <p className="text-sm text-gray-500 mt-2">
+              Checking for connected repositories or falling back to demo data
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show a notice if we're using mock data
+  const usingMockData = repositoryList.length === 0;
 
   return (
-    <EnhancedRepositoryView
-      repositories={mockRepositories}
-      isLoading={false}
-      error={null}
-      showEnhanced={true}
-      enableRealtime={true}
-      onRepositoryClick={handleRepositoryClick}
-      onRepositoryRefresh={handleRepositoryRefresh}
-      onRepositoryDetails={handleRepositoryDetails}
-      onRepositoryManage={handleRepositoryManage}
-      onRefreshAll={handleRefreshAll}
-      className={className}
-    />
+    <div className={cn('repository-management-demo-view', className)}>
+      {usingMockData && (
+        <div className="mb-4">
+          <Alert variant="info">
+            <p className="font-medium">Demo Mode</p>
+            <p className="mt-1 text-sm">
+              No connected repositories found. Showing demo data to showcase the interface features.
+              Connect some repositories to see real data here.
+            </p>
+          </Alert>
+        </div>
+      )}
+      
+      <EnhancedRepositoryView
+        repositories={repositories}
+        isLoading={isLoading && !usingMockData}
+        error={error}
+        showEnhanced={true}
+        enableRealtime={!usingMockData}
+        onRepositoryClick={handleRepositoryClick}
+        onRepositoryRefresh={handleRepositoryRefresh}
+        onRepositoryDetails={handleRepositoryDetails}
+        onRepositoryManage={handleRepositoryManage}
+        onRefreshAll={handleRefreshAll}
+        className={className}
+      />
+    </div>
   );
 };
 

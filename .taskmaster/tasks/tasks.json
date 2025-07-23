@@ -917,7 +917,7 @@
             "title": "Board Layout Implementation with 5 Columns",
             "description": "Create a 5-column kanban board layout (To Do, In Progress, Review, Testing, Done) with responsive design. Implement column headers with task counts, column borders, and proper spacing. Use CSS Grid or Flexbox for layout structure. Include empty state messages for columns without tasks. Ensure mobile responsiveness with horizontal scrolling.",
             "details": "",
-            "status": "in-progress",
+            "status": "done",
             "dependencies": [],
             "parentTaskId": 67
           },
@@ -926,7 +926,7 @@
             "title": "Task Card Component with Full Metadata Display",
             "description": "Create a comprehensive task card component displaying all metadata: title, description preview, priority indicator (colored border), complexity dots, assignee avatar, progress bar, due date with countdown, labels/tags, and task ID. Implement hover states, truncation for long text, and responsive sizing. Include status badges and optional attachment indicators.",
             "details": "",
-            "status": "pending",
+            "status": "done",
             "dependencies": [],
             "parentTaskId": 67
           },
@@ -1375,7 +1375,7 @@
     ],
     "metadata": {
       "created": "2025-07-15T21:22:03.992Z",
-      "updated": "2025-07-23T01:20:05.095Z",
+      "updated": "2025-07-23T06:35:23.773Z",
       "description": "Tasks for taskmaster-ui context"
     }
   }

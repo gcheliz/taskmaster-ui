@@ -8,7 +8,7 @@ import { RoleGuard } from './RoleGuard'
 // Lazy load all route components
 const SimpleDashboardView = lazy(() => import('../components/Views/SimpleDashboardView').then(m => ({ default: m.SimpleDashboardView })))
 const SimpleRepositoryView = lazy(() => import('../components/Views/SimpleRepositoryView').then(m => ({ default: m.SimpleRepositoryView })))
-const SimpleTaskBoardView = lazy(() => import('../components/Views/SimpleTaskBoardView').then(m => ({ default: m.SimpleTaskBoardView })))
+const TaskBoard = lazy(() => import('../pages/TaskBoard'))
 const SimpleTerminalView = lazy(() => import('../components/Views/SimpleTerminalView').then(m => ({ default: m.SimpleTerminalView })))
 const LoginPage = lazy(() => import('../pages/Login'))
 const NotFoundPage = lazy(() => import('../pages/NotFound'))
@@ -42,7 +42,7 @@ export const routeConfig: RouteObject[] = [
             path: 'task-board',
             element: (
               <Suspense fallback={<LoadingScreen message="Loading tasks..." />}>
-                <SimpleTaskBoardView />
+                <TaskBoard />
               </Suspense>
             ),
           },

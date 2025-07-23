@@ -8,77 +8,106 @@ import {
   Download,
   Moon,
   Sun,
-  Monitor
+  Monitor,
+  Save,
+  Key,
+  LogOut,
+  User,
+  Mail,
+  Smartphone,
+  Volume2,
+  Check
 } from 'lucide-react';
 
 const Settings: React.FC = () => {
   return (
     <div className="space-y-8">
       {/* Page Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-white">Settings</h1>
-        <p className="text-slate-400 mt-2">Configure your TaskMaster UI preferences</p>
+      <div className="mb-8">
+        <h1 className="text-2xl font-semibold text-gray-900">Settings</h1>
+        <p className="text-gray-600 mt-1">Configure your TaskMaster UI preferences</p>
       </div>
 
-      {/* Settings Sections */}
-      <div className="space-y-6">
+      {/* Settings Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Appearance */}
-        <div className="bg-slate-800 border border-slate-700 rounded-xl p-6">
+        <div className="bg-white rounded-xl border border-gray-200 p-6">
           <div className="flex items-center space-x-3 mb-6">
-            <Palette className="w-5 h-5 text-accent-primary" />
-            <h2 className="text-xl font-semibold text-white">Appearance</h2>
+            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+              <Palette className="w-5 h-5 text-blue-600" />
+            </div>
+            <h2 className="text-xl font-semibold text-gray-900">Appearance</h2>
           </div>
           
-          <div className="space-y-4">
+          <div className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-3">
                 Theme
               </label>
-              <div className="grid grid-cols-3 gap-4">
-                <ThemeOption icon={<Sun />} label="Light" value="light" />
-                <ThemeOption icon={<Moon />} label="Dark" value="dark" selected />
+              <div className="grid grid-cols-3 gap-3">
+                <ThemeOption icon={<Sun />} label="Light" value="light" selected />
+                <ThemeOption icon={<Moon />} label="Dark" value="dark" />
                 <ThemeOption icon={<Monitor />} label="System" value="system" />
               </div>
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-3">
                 Accent Color
               </label>
               <div className="flex space-x-3">
                 <ColorOption color="bg-blue-500" selected />
                 <ColorOption color="bg-purple-500" />
                 <ColorOption color="bg-green-500" />
-                <ColorOption color="bg-orange-500" />
+                <ColorOption color="bg-amber-500" />
                 <ColorOption color="bg-pink-500" />
+                <ColorOption color="bg-red-500" />
               </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-3">
+                Font Size
+              </label>
+              <select className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <option>Small</option>
+                <option selected>Medium</option>
+                <option>Large</option>
+                <option>Extra Large</option>
+              </select>
             </div>
           </div>
         </div>
 
         {/* Notifications */}
-        <div className="bg-slate-800 border border-slate-700 rounded-xl p-6">
+        <div className="bg-white rounded-xl border border-gray-200 p-6">
           <div className="flex items-center space-x-3 mb-6">
-            <Bell className="w-5 h-5 text-accent-primary" />
-            <h2 className="text-xl font-semibold text-white">Notifications</h2>
+            <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
+              <Bell className="w-5 h-5 text-amber-600" />
+            </div>
+            <h2 className="text-xl font-semibold text-gray-900">Notifications</h2>
           </div>
           
           <div className="space-y-4">
             <ToggleSetting
+              icon={<Mail className="w-4 h-4" />}
               label="Email Notifications"
               description="Receive task updates via email"
               defaultChecked
             />
             <ToggleSetting
+              icon={<Smartphone className="w-4 h-4" />}
               label="Push Notifications"
               description="Get real-time updates in your browser"
               defaultChecked
             />
             <ToggleSetting
+              icon={<Volume2 className="w-4 h-4" />}
               label="Sound Alerts"
               description="Play sound for important notifications"
             />
             <ToggleSetting
+              icon={<Bell className="w-4 h-4" />}
               label="Task Reminders"
               description="Get reminded about upcoming deadlines"
               defaultChecked
@@ -87,97 +116,199 @@ const Settings: React.FC = () => {
         </div>
 
         {/* General */}
-        <div className="bg-slate-800 border border-slate-700 rounded-xl p-6">
+        <div className="bg-white rounded-xl border border-gray-200 p-6">
           <div className="flex items-center space-x-3 mb-6">
-            <Globe className="w-5 h-5 text-accent-primary" />
-            <h2 className="text-xl font-semibold text-white">General</h2>
+            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+              <Globe className="w-5 h-5 text-green-600" />
+            </div>
+            <h2 className="text-xl font-semibold text-gray-900">General</h2>
           </div>
           
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Language
               </label>
-              <select className="form-input">
+              <select className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 <option>English</option>
                 <option>Spanish</option>
                 <option>French</option>
                 <option>German</option>
+                <option>Japanese</option>
+                <option>Chinese (Simplified)</option>
               </select>
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Timezone
               </label>
-              <select className="form-input">
+              <select className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 <option>UTC-08:00 Pacific Time</option>
                 <option>UTC-05:00 Eastern Time</option>
                 <option>UTC+00:00 GMT</option>
                 <option>UTC+01:00 Central European Time</option>
+                <option>UTC+09:00 Japan Standard Time</option>
               </select>
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">
-                Auto-save Interval (seconds)
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Date Format
               </label>
-              <input
-                type="number"
-                defaultValue="30"
-                min="10"
-                max="300"
-                className="form-input"
-              />
+              <select className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <option>MM/DD/YYYY</option>
+                <option>DD/MM/YYYY</option>
+                <option>YYYY-MM-DD</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Auto-save Interval
+              </label>
+              <div className="flex items-center space-x-2">
+                <input
+                  type="number"
+                  defaultValue="30"
+                  min="10"
+                  max="300"
+                  step="10"
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+                <span className="text-sm text-gray-600">seconds</span>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Security */}
-        <div className="bg-slate-800 border border-slate-700 rounded-xl p-6">
+        <div className="bg-white rounded-xl border border-gray-200 p-6">
           <div className="flex items-center space-x-3 mb-6">
-            <Shield className="w-5 h-5 text-accent-primary" />
-            <h2 className="text-xl font-semibold text-white">Security</h2>
+            <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+              <Shield className="w-5 h-5 text-purple-600" />
+            </div>
+            <h2 className="text-xl font-semibold text-gray-900">Security</h2>
           </div>
           
           <div className="space-y-4">
             <ToggleSetting
+              icon={<Shield className="w-4 h-4" />}
               label="Two-Factor Authentication"
-              description="Add an extra layer of security to your account"
+              description="Add an extra layer of security"
             />
             <ToggleSetting
+              icon={<LogOut className="w-4 h-4" />}
               label="Session Timeout"
-              description="Automatically log out after 30 minutes of inactivity"
+              description="Auto logout after 30 min of inactivity"
               defaultChecked
             />
-            <div>
-              <button className="btn btn-secondary">
+            <ToggleSetting
+              icon={<User className="w-4 h-4" />}
+              label="Login Notifications"
+              description="Alert when account is accessed"
+              defaultChecked
+            />
+            
+            <div className="pt-4 space-y-3">
+              <button className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium flex items-center justify-center gap-2">
+                <Key className="w-4 h-4" />
                 Change Password
+              </button>
+              <button className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium flex items-center justify-center gap-2">
+                <Download className="w-4 h-4" />
+                Download Security Log
               </button>
             </div>
           </div>
         </div>
 
         {/* Developer */}
-        <div className="bg-slate-800 border border-slate-700 rounded-xl p-6">
+        <div className="bg-white rounded-xl border border-gray-200 p-6">
           <div className="flex items-center space-x-3 mb-6">
-            <Code2 className="w-5 h-5 text-accent-primary" />
-            <h2 className="text-xl font-semibold text-white">Developer</h2>
+            <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+              <Code2 className="w-5 h-5 text-red-600" />
+            </div>
+            <h2 className="text-xl font-semibold text-gray-900">Developer</h2>
           </div>
           
           <div className="space-y-4">
             <ToggleSetting
+              icon={<Code2 className="w-4 h-4" />}
               label="Debug Mode"
-              description="Show additional debugging information"
+              description="Show debugging information"
             />
             <ToggleSetting
+              icon={<Globe className="w-4 h-4" />}
               label="API Logging"
-              description="Log all API requests to console"
+              description="Log API requests to console"
             />
-            <div>
-              <button className="btn btn-secondary flex items-center space-x-2">
+            <ToggleSetting
+              icon={<Shield className="w-4 h-4" />}
+              label="Verbose Errors"
+              description="Show detailed error messages"
+            />
+            
+            <div className="pt-4 space-y-3">
+              <button className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium flex items-center justify-center gap-2">
                 <Download className="w-4 h-4" />
-                <span>Export Settings</span>
+                Export Settings
+              </button>
+              <button className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium flex items-center justify-center gap-2">
+                <Download className="w-4 h-4" />
+                Download Logs
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Account */}
+        <div className="bg-white rounded-xl border border-gray-200 p-6">
+          <div className="flex items-center space-x-3 mb-6">
+            <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+              <User className="w-5 h-5 text-indigo-600" />
+            </div>
+            <h2 className="text-xl font-semibold text-gray-900">Account</h2>
+          </div>
+          
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Display Name
+              </label>
+              <input
+                type="text"
+                defaultValue="Gonzalo"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Email Address
+              </label>
+              <input
+                type="email"
+                defaultValue="gonzalo@example.com"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Role
+              </label>
+              <input
+                type="text"
+                value="Administrator"
+                disabled
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-500"
+              />
+            </div>
+            
+            <div className="pt-4">
+              <button className="w-full px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors text-sm font-medium">
+                Delete Account
               </button>
             </div>
           </div>
@@ -185,8 +316,12 @@ const Settings: React.FC = () => {
       </div>
 
       {/* Save Button */}
-      <div className="flex justify-end">
-        <button className="btn btn-primary">
+      <div className="flex justify-end space-x-4">
+        <button className="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium">
+          Cancel
+        </button>
+        <button className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center gap-2">
+          <Save className="w-4 h-4" />
           Save Changes
         </button>
       </div>
@@ -202,17 +337,24 @@ const ThemeOption: React.FC<{
   selected?: boolean;
 }> = ({ icon, label, value, selected = false }) => (
   <button className={`
-    p-4 rounded-lg border-2 transition-all duration-200
+    p-4 rounded-lg border-2 transition-all duration-200 relative
     ${selected 
-      ? 'border-accent-primary bg-accent-primary/10' 
-      : 'border-slate-700 hover:border-slate-600'
+      ? 'border-blue-500 bg-blue-50' 
+      : 'border-gray-200 hover:border-gray-300 bg-white'
     }
   `}>
+    {selected && (
+      <div className="absolute top-2 right-2">
+        <div className="w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center">
+          <Check className="w-3 h-3 text-white" />
+        </div>
+      </div>
+    )}
     <div className="flex flex-col items-center space-y-2">
-      <div className={selected ? 'text-accent-primary' : 'text-slate-400'}>
+      <div className={selected ? 'text-blue-600' : 'text-gray-500'}>
         {icon}
       </div>
-      <span className={`text-sm font-medium ${selected ? 'text-white' : 'text-slate-400'}`}>
+      <span className={`text-sm font-medium ${selected ? 'text-gray-900' : 'text-gray-600'}`}>
         {label}
       </span>
     </div>
@@ -225,12 +367,12 @@ const ColorOption: React.FC<{
   selected?: boolean;
 }> = ({ color, selected = false }) => (
   <button className={`
-    w-8 h-8 rounded-full ${color} relative
-    ${selected ? 'ring-2 ring-white ring-offset-2 ring-offset-slate-800' : ''}
+    w-10 h-10 rounded-full ${color} relative transition-all duration-200
+    ${selected ? 'ring-2 ring-offset-2 ring-blue-500 ring-offset-white scale-110' : 'hover:scale-105'}
   `}>
     {selected && (
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="w-2 h-2 bg-white rounded-full" />
+        <Check className="w-4 h-4 text-white" />
       </div>
     )}
   </button>
@@ -238,27 +380,35 @@ const ColorOption: React.FC<{
 
 // Toggle Setting Component
 const ToggleSetting: React.FC<{
+  icon?: React.ReactNode;
   label: string;
   description: string;
   defaultChecked?: boolean;
-}> = ({ label, description, defaultChecked = false }) => {
+}> = ({ icon, label, description, defaultChecked = false }) => {
   const [checked, setChecked] = React.useState(defaultChecked);
   
   return (
-    <div className="flex items-center justify-between">
-      <div>
-        <p className="text-sm font-medium text-white">{label}</p>
-        <p className="text-xs text-slate-400">{description}</p>
+    <div className="flex items-center justify-between py-2">
+      <div className="flex items-start space-x-3">
+        {icon && (
+          <div className="text-gray-400 mt-0.5">
+            {icon}
+          </div>
+        )}
+        <div>
+          <p className="text-sm font-medium text-gray-900">{label}</p>
+          <p className="text-xs text-gray-500 mt-0.5">{description}</p>
+        </div>
       </div>
       <button
         onClick={() => setChecked(!checked)}
         className={`
           relative inline-flex h-6 w-11 items-center rounded-full transition-colors
-          ${checked ? 'bg-accent-primary' : 'bg-slate-700'}
+          ${checked ? 'bg-blue-600' : 'bg-gray-300'}
         `}
       >
         <span className={`
-          inline-block h-4 w-4 transform rounded-full bg-white transition-transform
+          inline-block h-4 w-4 transform rounded-full bg-white transition-transform shadow-sm
           ${checked ? 'translate-x-6' : 'translate-x-1'}
         `} />
       </button>

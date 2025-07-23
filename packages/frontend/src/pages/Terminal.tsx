@@ -113,10 +113,10 @@ const Terminal: React.FC = () => {
   return (
     <div className="p-8 h-full flex flex-col">
       {/* Page Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Terminal</h1>
-          <p className="text-gray-500 mt-2">Integrated command-line interface</p>
+          <h1 className="text-2xl font-semibold text-gray-900">Terminal</h1>
+          <p className="text-gray-600 mt-1">Integrated command-line interface</p>
         </div>
         
         {/* Terminal Controls */}

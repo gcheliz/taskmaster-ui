@@ -25,3 +25,6 @@ export type {
   UseWebSocketTaskUpdatesOptions,
   UseWebSocketTaskUpdatesResult,
 } from './useWebSocketTaskUpdates'
+
+export { useAriaAnnouncements } from './useAriaAnnouncements'
+export { useKeyboardShortcuts } from './useKeyboardShortcuts'

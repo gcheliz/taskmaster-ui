@@ -87,6 +87,11 @@ const Label = React.forwardRef<HTMLLabelElement, LabelProps>(
     // Determine variant based on state
     const computedVariant = error ? 'error' : success ? 'success' : variant
 
+    // Generate unique IDs for description and help text
+    const labelId = props.htmlFor
+    const descriptionId = labelId ? `${labelId}-description` : undefined
+    const helpTextId = labelId ? `${labelId}-help` : undefined
+
     return (
       <div className="space-y-1">
         <label
@@ -102,18 +107,28 @@ const Label = React.forwardRef<HTMLLabelElement, LabelProps>(
           {...props}
         >
           {children}
+          {required && <span className="sr-only">(required)</span>}
         </label>
         {description && (
           <p
+            id={descriptionId}
             className={cn(
               'text-xs',
               error ? 'text-error-600' : success ? 'text-success-600' : 'text-secondary-600'
             )}
+            role={error ? 'alert' : undefined}
           >
             {description}
           </p>
         )}
-        {helpText && <p className="text-xs text-secondary-500">{helpText}</p>}
+        {helpText && (
+          <p 
+            id={helpTextId}
+            className="text-xs text-secondary-500"
+          >
+            {helpText}
+          </p>
+        )}
       </div>
     )
   }

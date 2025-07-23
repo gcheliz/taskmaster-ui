@@ -3,6 +3,8 @@ import type { TaskBoardData, TaskStatus } from '../../types/task'
 import { TaskColumn } from './TaskColumn'
 import { DragAndDropProvider } from './DragAndDropProvider'
 import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts'
+import { AriaLiveRegion } from '../common/AriaLiveRegion'
+import { useAriaAnnouncements } from '../../hooks/useAriaAnnouncements'
 
 export interface TaskBoardProps {
   /** Task board data containing columns and tasks */
@@ -42,6 +44,7 @@ export const TaskBoard: React.FC<TaskBoardProps> = ({
   const boardRef = useRef<HTMLDivElement>(null)
   const currentColumnRef = useRef<number>(0)
   const currentCardRef = useRef<number>(0)
+  const { announcement, politeness, announceTaskMove, announceLoading } = useAriaAnnouncements()
 
   // Keyboard navigation for columns and cards
   const navigateColumns = (direction: 'left' | 'right') => {
@@ -122,6 +125,13 @@ export const TaskBoard: React.FC<TaskBoardProps> = ({
     currentColumnRef.current = 0
     currentCardRef.current = 0
   }, [data])
+
+  // Announce loading state changes
+  useEffect(() => {
+    if (isLoading) {
+      announceLoading(true, 'task board')
+    }
+  }, [isLoading, announceLoading])
   if (isLoading) {
     return (
       <main className={`task-board loading ${className}`} role="main" aria-label="Task Board">
@@ -213,9 +223,19 @@ export const TaskBoard: React.FC<TaskBoardProps> = ({
   const inProgressTasks = tasks.filter((task) => task.status === 'in-progress').length
   const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0
 
+  // Create enhanced onTaskMove handler with announcements
+  const handleTaskMove = (taskId: number, fromStatus: TaskStatus, toStatus: TaskStatus) => {
+    const task = data.tasks.find(t => t.id === taskId)
+    if (task) {
+      announceTaskMove(task.title, fromStatus, toStatus)
+    }
+    onTaskMove?.(taskId, fromStatus, toStatus)
+  }
+
   return (
-    <DragAndDropProvider onTaskMove={onTaskMove} className={className}>
+    <DragAndDropProvider onTaskMove={handleTaskMove} className={className}>
       <main className={`task-board ${className}`} role="main" aria-label="Task Board">
+        <AriaLiveRegion message={announcement} politeness={politeness} />
         <header className="task-board__header">
           <div className="header-main">
             <h2 className="task-board__title">

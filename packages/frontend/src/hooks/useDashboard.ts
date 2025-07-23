@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from 'react'
 import { apiService } from '../services/api'
 import type { DashboardData, ProjectHealthData } from '../services/api'
+import { USE_MOCK_DATA, MOCK_DELAY } from '../config/mockConfig'
+import { mockDashboardData, mockProjectHealth, simulateDelay } from '../services/mockData'
 
 export interface UseDashboardOptions {
   projectId: string
@@ -61,7 +63,14 @@ export const useDashboard = (options: UseDashboardOptions): UseDashboardReturn =
       setLoading(true)
       setError(null)
 
-      const dashboardData = await apiService.getDashboardData(projectId, projectTag)
+      let dashboardData: DashboardData
+      
+      if (USE_MOCK_DATA) {
+        await simulateDelay(MOCK_DELAY)
+        dashboardData = mockDashboardData
+      } else {
+        dashboardData = await apiService.getDashboardData(projectId, projectTag)
+      }
 
       setData(dashboardData)
       setLastUpdated(new Date())
@@ -81,7 +90,15 @@ export const useDashboard = (options: UseDashboardOptions): UseDashboardReturn =
   // Fetch health data
   const fetchHealthData = useCallback(async () => {
     try {
-      const healthData = await apiService.getProjectHealth(projectId, projectTag)
+      let healthData: ProjectHealthData
+      
+      if (USE_MOCK_DATA) {
+        await simulateDelay(MOCK_DELAY / 2) // Faster for secondary data
+        healthData = mockProjectHealth
+      } else {
+        healthData = await apiService.getProjectHealth(projectId, projectTag)
+      }
+      
       setHealth(healthData)
     } catch (err) {
       console.warn('Failed to fetch health data:', err)

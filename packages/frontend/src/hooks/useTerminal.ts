@@ -6,6 +6,8 @@ import {
   type TerminalWebSocketResponse,
 } from '../services/terminalService'
 import { useNotification } from '../contexts/NotificationContext'
+import { USE_MOCK_DATA, MOCK_DELAY } from '../config/mockConfig'
+import { mockTerminalSessions, simulateDelay } from '../services/mockData'
 
 export interface UseTerminalOptions {
   /** Working directory for the terminal */
@@ -105,6 +107,42 @@ export function useTerminal(options: UseTerminalOptions = {}): UseTerminalReturn
         setIsLoading(true)
         setError(null)
 
+        if (USE_MOCK_DATA) {
+          await simulateDelay(MOCK_DELAY)
+          
+          // Create a mock session
+          const mockSession: TerminalSession = {
+            id: `mock-session-${Date.now()}`,
+            workingDirectory: wd || workingDirectory,
+            repositoryPath: repo || repositoryPath,
+            shell: '/bin/bash',
+            isActive: true,
+            createdAt: new Date().toISOString(),
+            lastActivity: new Date().toISOString(),
+          }
+          
+          setSession(mockSession)
+          setCurrentDirectory(mockSession.workingDirectory)
+          
+          // Simulate terminal output
+          if (terminal) {
+            terminal.writeln(`[Mock Terminal Session ${mockSession.id}]`)
+            terminal.writeln(`Working directory: ${mockSession.workingDirectory}`)
+            terminal.writeln('')
+            terminal.write('$ ')
+          }
+          
+          if (showNotifications) {
+            showSuccess(
+              'Terminal Session Created',
+              notificationMessages.sessionCreated ||
+                `Mock session ${mockSession.id} created successfully`
+            )
+          }
+          
+          return
+        }
+
         const response = await terminalService.createSession({
           workingDirectory: wd || workingDirectory,
           repositoryPath: repo || repositoryPath,
@@ -137,11 +175,23 @@ export function useTerminal(options: UseTerminalOptions = {}): UseTerminalReturn
       showSuccess,
       showError,
       notificationMessages,
+      terminal,
     ]
   )
 
   // Connect to WebSocket
   const connectWebSocket = useCallback(() => {
+    if (USE_MOCK_DATA) {
+      // Skip WebSocket connection in mock mode
+      setConnectionState('connected')
+      
+      // Create mock session if autoCreate is enabled
+      if (autoCreate && !session) {
+        createSession(workingDirectory, repositoryPath)
+      }
+      return
+    }
+
     if (websocket?.readyState === WebSocket.OPEN) {
       return
     }
@@ -267,6 +317,7 @@ export function useTerminal(options: UseTerminalOptions = {}): UseTerminalReturn
     showError,
     showInfo,
     notificationMessages,
+    createSession,
   ])
 
   // Disconnect from WebSocket
@@ -288,6 +339,61 @@ export function useTerminal(options: UseTerminalOptions = {}): UseTerminalReturn
   // Execute command
   const executeCommand = useCallback(
     async (command: string) => {
+      if (USE_MOCK_DATA) {
+        if (!session) {
+          throw new Error('No active terminal session')
+        }
+
+        try {
+          setIsCommandRunning(true)
+          setCommandHistory((prev) => [...prev, command])
+
+          // Simulate command execution in terminal
+          if (terminal) {
+            terminal.writeln(command)
+            
+            // Simulate command output based on the command
+            await simulateDelay(300)
+            
+            if (command.startsWith('cd ')) {
+              const newDir = command.substring(3).trim()
+              setCurrentDirectory(newDir || workingDirectory)
+              terminal.writeln(`Changed directory to: ${newDir || workingDirectory}`)
+            } else if (command === 'pwd') {
+              terminal.writeln(currentDirectory)
+            } else if (command === 'ls') {
+              terminal.writeln('src/  package.json  README.md  node_modules/  dist/')
+            } else if (command.startsWith('git')) {
+              const mockGitOutput = mockTerminalSessions.find(s => s.name === 'Git Operations')
+              if (mockGitOutput) {
+                terminal.writeln(mockGitOutput.output)
+              } else {
+                terminal.writeln('git: command not found')
+              }
+            } else if (command === 'npm run dev' || command === 'pnpm run dev') {
+              const mockDevOutput = mockTerminalSessions.find(s => s.name === 'Frontend Dev')
+              if (mockDevOutput) {
+                terminal.writeln(mockDevOutput.output)
+              }
+            } else if (command === 'clear') {
+              terminal.clear()
+            } else {
+              // Generic command output
+              terminal.writeln(`[Mock] Executing: ${command}`)
+              terminal.writeln(`[Mock] Command completed successfully`)
+            }
+            
+            terminal.write('$ ')
+          }
+
+          setIsCommandRunning(false)
+          return
+        } catch (error) {
+          setIsCommandRunning(false)
+          throw error
+        }
+      }
+
       if (!websocket || !session) {
         throw new Error('No active terminal session')
       }
@@ -302,7 +408,7 @@ export function useTerminal(options: UseTerminalOptions = {}): UseTerminalReturn
         throw error
       }
     },
-    [websocket, session]
+    [websocket, session, terminal, currentDirectory, workingDirectory]
   )
 
   // Send input

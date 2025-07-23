@@ -5,6 +5,8 @@ import {
   type PersistedTerminalSession,
 } from '../services/terminalSessionManager'
 import { useNotification } from '../contexts/NotificationContext'
+import { USE_MOCK_DATA, MOCK_DELAY } from '../config/mockConfig'
+import { mockTerminalSessions, simulateDelay } from '../services/mockData'
 
 export interface TerminalSessionInfo {
   id: string
@@ -94,8 +96,42 @@ export function useTerminalSessions(
   })
 
   // Load sessions from persistence
-  const loadSessions = useCallback(() => {
+  const loadSessions = useCallback(async () => {
     try {
+      if (USE_MOCK_DATA) {
+        await simulateDelay(MOCK_DELAY)
+        
+        // Transform mock sessions to TerminalSessionInfo format
+        const sessionInfos: TerminalSessionInfo[] = mockTerminalSessions.map((mock, index) => ({
+          id: mock.id,
+          title: mock.name,
+          repositoryPath: index === 0 
+            ? '/Users/gonzalo/workspace/taskmaster-ui/packages/frontend'
+            : index === 1 
+              ? '/Users/gonzalo/workspace/taskmaster-ui/packages/backend'
+              : '/Users/gonzalo/workspace/taskmaster-ui',
+          workingDirectory: '/Users/gonzalo/workspace/taskmaster-ui',
+          isActive: mock.status === 'active',
+          createdAt: new Date(Date.now() - (index + 1) * 60 * 60 * 1000).toISOString(),
+          lastActivity: new Date().toISOString(),
+          settings: {
+            fontSize: 14,
+            theme: 'dark',
+            cursorStyle: 'block',
+            scrollback: 1000,
+          },
+        }))
+
+        setSessions(sessionInfos)
+
+        // Set active session if none is set
+        if (!activeSessionId && sessionInfos.length > 0) {
+          const activeSession = sessionInfos.find((s) => s.isActive) || sessionInfos[0]
+          setActiveSessionId(activeSession.id)
+        }
+        return
+      }
+
       const persistedSessions = terminalSessionManager.getPersistedSessions()
       const sessionInfos: TerminalSessionInfo[] = persistedSessions.map((session) => ({
         id: session.id,
@@ -131,6 +167,42 @@ export function useTerminalSessions(
         // Check session limit
         if (sessions.length >= maxSessions) {
           throw new Error(`Maximum of ${maxSessions} sessions allowed`)
+        }
+
+        if (USE_MOCK_DATA) {
+          await simulateDelay(MOCK_DELAY)
+          
+          // Generate session ID for mock
+          const sessionId = `mock-session-${Date.now()}`
+          const workingDir = workingDirectory || repositoryPath
+          const sessionTitle = title || `Terminal - ${repositoryPath.split('/').pop()}`
+
+          // Create session info
+          const sessionInfo: TerminalSessionInfo = {
+            id: sessionId,
+            title: sessionTitle,
+            repositoryPath,
+            workingDirectory: workingDir,
+            isActive: true,
+            createdAt: new Date().toISOString(),
+            lastActivity: new Date().toISOString(),
+            settings: {
+              fontSize: 14,
+              theme: 'dark',
+              cursorStyle: 'block',
+              scrollback: 1000,
+            },
+          }
+
+          // Update state
+          setSessions((prev) => [sessionInfo, ...prev])
+          setActiveSessionId(sessionId)
+
+          if (showNotifications) {
+            showSuccess('Terminal Session Created', `Created mock session for ${repositoryPath}`)
+          }
+
+          return sessionId
         }
 
         // Generate session ID and create backend session
@@ -190,6 +262,24 @@ export function useTerminalSessions(
       try {
         setIsLoading(true)
         setError(null)
+
+        if (USE_MOCK_DATA) {
+          await simulateDelay(MOCK_DELAY / 2)
+          
+          // Update state
+          setSessions((prev) => prev.filter((s) => s.id !== sessionId))
+
+          // Switch to another session if this was active
+          if (activeSessionId === sessionId) {
+            const remainingSessions = sessions.filter((s) => s.id !== sessionId)
+            setActiveSessionId(remainingSessions.length > 0 ? remainingSessions[0].id : null)
+          }
+
+          if (showNotifications) {
+            showSuccess('Terminal Session Closed', 'Mock session closed successfully')
+          }
+          return
+        }
 
         // Remove from persistence
         terminalSessionManager.removeSession(sessionId)
@@ -335,7 +425,14 @@ export function useTerminalSessions(
   }, [activeSession, terminalHook])
 
   // Get statistics
-  const statistics = terminalSessionManager.getSessionStatistics()
+  const statistics = USE_MOCK_DATA 
+    ? {
+        total: sessions.length,
+        active: sessions.filter(s => s.isActive).length,
+        inactive: sessions.filter(s => !s.isActive).length,
+        repositories: [...new Set(sessions.map(s => s.repositoryPath))],
+      }
+    : terminalSessionManager.getSessionStatistics()
 
   // Load sessions on mount
   useEffect(() => {

@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from 'react'
 import type { TasksData, TaskBoardData, TaskFilters, TaskSortOptions } from '../types/task'
 import { taskService } from '../services/taskService'
 import { ApiError } from '../services/api'
+import { USE_MOCK_DATA, MOCK_DELAY } from '../config/mockConfig'
+import { mockTasks, simulateDelay } from '../services/mockData'
 
 export interface UseTaskDataOptions {
   /** Repository path to load tasks from */
@@ -84,6 +86,39 @@ export function useTaskData(options: UseTaskDataOptions = {}): UseTaskDataReturn
     try {
       setIsLoading(true)
       setError(null)
+
+      if (USE_MOCK_DATA) {
+        await simulateDelay(MOCK_DELAY)
+        // Return mock tasks data
+        const mockTasksData: TasksData = {
+          tasks: mockTasks.map((task, index) => ({
+            id: index + 1,
+            title: task.title,
+            description: task.description,
+            status: task.status as any,
+            priority: task.priority as any,
+            complexity: Math.floor(Math.random() * 5) + 1,
+            tags: ['frontend', 'feature', 'ui'].slice(0, Math.floor(Math.random() * 3) + 1),
+            dependencies: [],
+            subtasks: [],
+            metadata: {
+              created: task.createdAt,
+              updated: task.updatedAt,
+              assignee: task.assignee,
+            },
+          })),
+          metadata: {
+            totalTasks: mockTasks.length,
+            completedTasks: mockTasks.filter(t => t.status === 'done').length,
+            inProgressTasks: mockTasks.filter(t => t.status === 'in-progress').length,
+            todoTasks: mockTasks.filter(t => t.status === 'todo').length,
+          },
+          projectTag: 'taskmaster-ui',
+          source: 'mock',
+        }
+        setTasksData(mockTasksData)
+        return
+      }
 
       const data = await loadFunction()
       setTasksData(data)

@@ -1,5 +1,7 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { RepositoryService, type ApiResponse } from '../services/repositoryService'
+import { USE_MOCK_DATA, MOCK_DELAY } from '../config/mockConfig'
+import { mockRepositories, simulateDelay } from '../services/mockData'
 
 export interface RepositoryListItem {
   id: string
@@ -65,6 +67,19 @@ export const useRepositoryList = ({
   } = useQuery({
     queryKey: repositoryListKeys.list(),
     queryFn: async (): Promise<ApiResponse<RepositoryListItem[]>> => {
+      if (USE_MOCK_DATA) {
+        await simulateDelay(MOCK_DELAY)
+        // Transform mock data to match the expected format
+        const repositories = mockRepositories.map(repo => ({
+          id: repo.id,
+          path: repo.path,
+          name: repo.name,
+        }))
+        return {
+          success: true,
+          data: repositories,
+        }
+      }
       const response = await RepositoryService.getRepositories()
       return response
     },

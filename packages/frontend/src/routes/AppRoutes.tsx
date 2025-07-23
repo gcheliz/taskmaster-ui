@@ -1,8 +1,8 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
-import DashboardIntegrated from '../pages/DashboardIntegrated'
+import Dashboard from '../pages/Dashboard'
 import Settings from '../pages/Settings'
-import { TaskBoardView } from '../components/Views/TaskBoardView'
-import Repository from '../pages/Repository'
+import TaskBoard from '../pages/TaskBoard'
+import Repositories from '../pages/Repositories'
 import Terminal from '../pages/Terminal'
 import TestPage from '../pages/TestPage'
 import Auth from '../pages/Auth'
@@ -19,12 +19,12 @@ export function AppRoutes() {
     <RouteErrorBoundary>
       <Routes>
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route path="/dashboard" element={<DashboardIntegrated />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route
           path="/repositories"
           element={
             <RepositoryErrorBoundary>
-              <Repository />
+              <Repositories />
             </RepositoryErrorBoundary>
           }
         />
@@ -32,7 +32,7 @@ export function AppRoutes() {
           path="/repository-management"
           element={
             <RepositoryErrorBoundary>
-              <Repository />
+              <Repositories />
             </RepositoryErrorBoundary>
           }
         />
@@ -40,7 +40,7 @@ export function AppRoutes() {
           path="/tasks"
           element={
             <RouteErrorBoundary>
-              <TaskBoardView />
+              <TaskBoard />
             </RouteErrorBoundary>
           }
         />
@@ -48,7 +48,7 @@ export function AppRoutes() {
           path="/task-board"
           element={
             <RouteErrorBoundary>
-              <TaskBoardView />
+              <TaskBoard />
             </RouteErrorBoundary>
           }
         />

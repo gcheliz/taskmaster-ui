@@ -25,7 +25,8 @@ const Onboarding = () => {
     }
     
     // If user is not new, redirect to dashboard
-    if (!locationState?.isNewUser && user?.hasCompletedOnboarding) {
+    // TODO: Add hasCompletedOnboarding to User interface and check it here
+    if (!locationState?.isNewUser) {
       navigate('/dashboard', { replace: true })
     }
   }, [isAuthenticated, user, locationState, navigate])

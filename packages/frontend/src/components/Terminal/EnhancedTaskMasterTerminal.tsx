@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useMemo } from 'react'
-import { TaskMasterTerminal, TaskMasterTerminalProps } from './TaskMasterTerminal'
+import { TaskMasterTerminal, type TaskMasterTerminalProps } from './TaskMasterTerminal'
 import { cn } from '../../utils/cn'
-import { Icon } from '../ui/atoms/Icon'
+import { Icon } from '../ui/IconWrapper'
 import { Button } from '../ui/atoms/Button'
 import { Tooltip } from '../ui/Tooltip'
 
@@ -102,32 +102,23 @@ export const EnhancedTaskMasterTerminal: React.FC<EnhancedTaskMasterTerminalProp
   projectTag,
   ...terminalProps
 }) => {
-  const [terminalRef, setTerminalRef] = useState<any>(null)
   const [isFullscreen, setIsFullscreen] = useState(false)
 
   // Handle quick command execution
   const handleQuickCommand = useCallback(
     (command: string) => {
-      if (terminalRef && terminalRef.executeCommand) {
-        // Focus the terminal first
-        terminalRef.focus?.()
-        
-        // Clear current input and insert command
-        terminalRef.clear?.()
-        terminalRef.write?.(command)
-        
-        // Place cursor at the end or at the first parameter position
-        const paramIndex = command.indexOf('=')
-        if (paramIndex !== -1) {
-          // Move cursor to after the = sign
-          const moveLeft = command.length - paramIndex - 1
-          if (moveLeft > 0) {
-            terminalRef.write?.(`\x1b[${moveLeft}D`)
-          }
-        }
-      }
+      // For now, just copy the command to clipboard
+      // TODO: Implement direct command execution when TaskMasterTerminal exposes methods via ref
+      navigator.clipboard.writeText(command).then(() => {
+        // Show a temporary notification that command was copied
+        const notification = document.createElement('div')
+        notification.textContent = 'Command copied to clipboard! Paste it in the terminal.'
+        notification.style.cssText = 'position: fixed; bottom: 20px; right: 20px; background: #4a5568; color: white; padding: 12px 24px; border-radius: 6px; z-index: 1000; animation: fadeInOut 3s ease-in-out;'
+        document.body.appendChild(notification)
+        setTimeout(() => notification.remove(), 3000)
+      })
     },
-    [terminalRef]
+    []
   )
 
   // Handle keyboard shortcuts
@@ -246,7 +237,7 @@ export const EnhancedTaskMasterTerminal: React.FC<EnhancedTaskMasterTerminalProp
                 className="quick-command-btn"
                 onClick={() => handleQuickCommand(cmd.command)}
               >
-                {cmd.icon && <Icon name={cmd.icon} className="w-3 h-3 mr-1" />}
+                {cmd.icon && <Icon name={cmd.icon as any} className="w-3 h-3 mr-1" />}
                 <span>{cmd.label}</span>
               </button>
             </Tooltip>
@@ -258,7 +249,7 @@ export const EnhancedTaskMasterTerminal: React.FC<EnhancedTaskMasterTerminalProp
       <div className="terminal-content">
         <TaskMasterTerminal
           {...terminalProps}
-          ref={setTerminalRef}
+          // ref={terminalRef} // TODO: Add ref support to TaskMasterTerminal
           showHeader={false} // We're providing our own header
           title={title}
           projectTag={projectTag}

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { cn } from '../../utils/cn'
 import { Button } from '../ui/atoms/Button'
 import { Card } from '../ui/molecules/Card'
-import { Icon } from '../ui/atoms/Icon'
+import { Icon } from '../ui/IconWrapper'
 import { motion, AnimatePresence } from 'framer-motion'
 
 export interface OnboardingFlowProps {

@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { SimpleDashboardView } from '../components/Views/SimpleDashboardView';
+// import { SimpleDashboardView } from '../components/Views/SimpleDashboardView';
+import Dashboard from '../pages/Dashboard';
 import { SimpleRepositoryView } from '../components/Views/SimpleRepositoryView';
 import { SimpleTaskBoardView } from '../components/Views/SimpleTaskBoardView';
 import { SimpleTerminalView } from '../components/Views/SimpleTerminalView';
@@ -10,7 +11,7 @@ export function AppRoutes() {
     <RouteErrorBoundary>
       <Routes>
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route path="/dashboard" element={<SimpleDashboardView />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route 
           path="/repository-management" 
           element={

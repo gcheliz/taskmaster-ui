@@ -150,7 +150,7 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
         onTaskClick(taskId);
       } else {
         // Open task modal in view mode
-        const task = currentTaskBoardData?.tasks.find(t => t.id === taskId);
+        const task = currentTaskBoardData?.tasks.find((t: any) => t.id === taskId);
         if (task) {
           setSelectedTask(task);
           setModalMode('view');

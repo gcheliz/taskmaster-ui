@@ -32,6 +32,13 @@ export default {
         'accent-info': '#06B6D4',      // Cyan - info states
         'accent-secondary': '#8B5CF6', // Violet - secondary actions
         
+        // Semantic colors for our components
+        semantic: {
+          success: '#10B981',
+          warning: '#F59E0B',
+          error: '#EF4444',
+        },
+        
         // Legacy color system (keeping for backwards compatibility)
         primary: {
           50: '#eff6ff',

@@ -19,6 +19,9 @@ import {
 } from 'lucide-react'
 import { useRepositoryList } from '../../hooks/useRepositoryList'
 import { useDebounce } from '../../hooks/useDebounce'
+import { repositoryBatchService } from '../../services/repositoryBatchService'
+import { RepositorySearch } from './RepositorySearch'
+import type { RepositoryFilters, RepositorySort } from './RepositorySearch'
 
 export interface RepositoryDashboardProps {
   onAddRepository?: () => void
@@ -115,15 +118,33 @@ export const RepositoryDashboard: React.FC<RepositoryDashboardProps> = ({
   }
 
   const handleBatchSync = async () => {
-    // Implement batch sync
-    console.log('Syncing repositories:', Array.from(selectedRepositories))
+    const ids = Array.from(selectedRepositories)
+    const result = await repositoryBatchService.batchSync(ids, {
+      includeRemote: true,
+      updateMetadata: true
+    })
+    
+    if (result.failed.length > 0) {
+      console.error('Failed to sync some repositories:', result.failed)
+    }
+    
     await refetch()
+    setSelectedRepositories(new Set())
   }
 
   const handleBatchRemove = async () => {
-    // Implement batch remove
-    console.log('Removing repositories:', Array.from(selectedRepositories))
-    selectedRepositories.forEach(id => onRepositoryRemove?.(id))
+    if (!window.confirm(`Are you sure you want to remove ${selectedRepositories.size} repositories?`)) {
+      return
+    }
+    
+    const ids = Array.from(selectedRepositories)
+    const result = await repositoryBatchService.batchRemove(ids)
+    
+    if (result.failed.length > 0) {
+      console.error('Failed to remove some repositories:', result.failed)
+    }
+    
+    await refetch()
     setSelectedRepositories(new Set())
   }
 

@@ -73,3 +73,9 @@ export type { PullRequestStatusProps } from './PullRequestStatus'
 
 export { GitSyncIndicator } from './GitSyncIndicator'
 export type { GitSyncIndicatorProps } from './GitSyncIndicator'
+
+export { RepositorySearch } from './RepositorySearch'
+export type { RepositorySearchProps, RepositoryFilters, RepositorySort } from './RepositorySearch'
+
+export { RepositoryManagementEnhanced } from './RepositoryManagementEnhanced'
+export type { RepositoryManagementEnhancedProps } from './RepositoryManagementEnhanced'

@@ -108,6 +108,19 @@ const TaskBoardContext = React.createContext<{
 } | null>(null);
 
 const TaskBoard: React.FC = () => {
+  // Add error boundary to catch any issues
+  React.useEffect(() => {
+    console.log('[TaskBoard] Component mounted');
+    const handleError = (event: ErrorEvent) => {
+      console.error('[TaskBoard] Runtime error:', event.error);
+    };
+    window.addEventListener('error', handleError);
+    return () => {
+      console.log('[TaskBoard] Component unmounting');
+      window.removeEventListener('error', handleError);
+    };
+  }, []);
+  
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
   const [showFilterMenu, setShowFilterMenu] = useState(false);
   const [showSortMenu, setShowSortMenu] = useState(false);
@@ -232,7 +245,7 @@ const TaskBoard: React.FC = () => {
     }
   ];
 
-  // WebSocket integration through useTaskCollaboration
+  // WebSocket integration through useTaskCollaboration - TEMPORARILY DISABLED
   const {
     tasks: wsTasksRaw,
     moveTask,
@@ -247,7 +260,7 @@ const TaskBoard: React.FC = () => {
     React.useMemo(() => initialTasks.map(convertToWebSocketTask), []),
     React.useMemo(() => ({
       url: process.env.VITE_WS_URL || 'ws://localhost:3001',
-      autoConnect: true,
+      autoConnect: false, // DISABLED for debugging
       user: {
         id: 'user-1',
         name: 'Gonzalo',
@@ -259,8 +272,8 @@ const TaskBoard: React.FC = () => {
   
   const wsError = taskError;
   
-  // Convert WebSocket tasks to local format
-  const tasks = wsTasksRaw.map(convertFromWebSocketTask);
+  // Convert WebSocket tasks to local format - use initial tasks when WS disabled
+  const tasks = wsTasksRaw.length > 0 ? wsTasksRaw.map(convertFromWebSocketTask) : initialTasks;
 
   const [columns, setColumns] = useState<Column[]>([
     { id: 'todo', title: 'To Do', color: 'bg-gray-500', tasks: [] },
@@ -861,7 +874,7 @@ const TaskBoard: React.FC = () => {
       )}
 
       {/* Kanban Board */}
-      <TaskBoardContext.Provider value={React.useMemo(() => ({ handleTaskClick, handleTaskEdit, isDraggingRef }), [handleTaskClick, handleTaskEdit])}>
+      <TaskBoardContext.Provider value={{ handleTaskClick, handleTaskEdit, isDraggingRef }}>
         <DndContext
           sensors={sensors}
           collisionDetection={closestCorners}

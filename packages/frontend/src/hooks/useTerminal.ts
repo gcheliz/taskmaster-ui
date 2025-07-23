@@ -361,14 +361,77 @@ export function useTerminal(options: UseTerminalOptions = {}): UseTerminalReturn
               terminal.writeln(`Changed directory to: ${newDir || workingDirectory}`)
             } else if (command === 'pwd') {
               terminal.writeln(currentDirectory)
-            } else if (command === 'ls') {
-              terminal.writeln('src/  package.json  README.md  node_modules/  dist/')
-            } else if (command.startsWith('git')) {
-              const mockGitOutput = mockTerminalSessions.find(s => s.name === 'Git Operations')
-              if (mockGitOutput) {
-                terminal.writeln(mockGitOutput.output)
+            } else if (command === 'ls' || command === 'ls -la' || command === 'ls -l') {
+              if (command.includes('-l')) {
+                terminal.writeln('total 96')
+                terminal.writeln('drwxr-xr-x  12 gonzalo  staff   384 Jan 23 10:15 .')
+                terminal.writeln('drwxr-xr-x  15 gonzalo  staff   480 Jan 23 09:30 ..')
+                terminal.writeln('-rw-r--r--   1 gonzalo  staff   215 Jan 23 08:45 .gitignore')
+                terminal.writeln('drwxr-xr-x   7 gonzalo  staff   224 Jan 23 10:00 .taskmaster')
+                terminal.writeln('-rw-r--r--   1 gonzalo  staff  1234 Jan 23 09:15 CLAUDE.md')
+                terminal.writeln('-rw-r--r--   1 gonzalo  staff  2048 Jan 23 08:30 README.md')
+                terminal.writeln('drwxr-xr-x  24 gonzalo  staff   768 Jan 23 10:10 dist')
+                terminal.writeln('drwxr-xr-x 450 gonzalo  staff 14400 Jan 23 09:45 node_modules')
+                terminal.writeln('-rw-r--r--   1 gonzalo  staff  3456 Jan 23 10:05 package.json')
+                terminal.writeln('-rw-r--r--   1 gonzalo  staff 89012 Jan 23 10:05 pnpm-lock.yaml')
+                terminal.writeln('drwxr-xr-x  18 gonzalo  staff   576 Jan 23 10:15 src')
+                terminal.writeln('-rw-r--r--   1 gonzalo  staff   789 Jan 23 08:30 vite.config.ts')
               } else {
-                terminal.writeln('git: command not found')
+                terminal.writeln('CLAUDE.md       README.md       dist/           package.json    src/')
+                terminal.writeln('.gitignore      .taskmaster/    node_modules/   pnpm-lock.yaml  vite.config.ts')
+              }
+            } else if (command === 'git status') {
+              terminal.writeln('On branch main')
+              terminal.writeln('Your branch is up to date with \'origin/main\'.')
+              terminal.writeln('')
+              terminal.writeln('Changes not staged for commit:')
+              terminal.writeln('  (use "git add <file>..." to update what will be committed)')
+              terminal.writeln('  (use "git restore <file>..." to discard changes in working directory)')
+              terminal.writeln('\tmodified:   src/hooks/useTerminal.ts')
+              terminal.writeln('\tmodified:   src/hooks/useTaskData.ts')
+              terminal.writeln('\tmodified:   src/services/mockData.ts')
+              terminal.writeln('')
+              terminal.writeln('no changes added to commit (use "git add" and/or "git commit -a")')
+            } else if (command === 'git log' || command === 'git log --oneline') {
+              if (command.includes('--oneline')) {
+                terminal.writeln('a1b2c3d (HEAD -> main) feat: Add repository search functionality')
+                terminal.writeln('d4e5f6g feat: Implement task board with mock data')
+                terminal.writeln('h7i8j9k fix: Terminal command execution in mock mode')
+                terminal.writeln('l0m1n2o refactor: Update dashboard to project planning view')
+                terminal.writeln('p3q4r5s docs: Update README with setup instructions')
+              } else {
+                terminal.writeln('commit a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6')
+                terminal.writeln('Author: Gonzalo Martinez <gonzalo@example.com>')
+                terminal.writeln('Date:   Thu Jan 23 10:15:00 2025 -0500')
+                terminal.writeln('')
+                terminal.writeln('    feat: Add repository search functionality')
+                terminal.writeln('')
+                terminal.writeln('commit d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9')
+                terminal.writeln('Author: Sarah Chen <sarah@example.com>')
+                terminal.writeln('Date:   Thu Jan 23 09:30:00 2025 -0500')
+                terminal.writeln('')
+                terminal.writeln('    feat: Implement task board with mock data')
+              }
+            } else if (command.startsWith('git')) {
+              // Handle other git commands
+              if (command === 'git branch') {
+                terminal.writeln('* main')
+                terminal.writeln('  develop')
+                terminal.writeln('  feature/dashboard-redesign')
+                terminal.writeln('  fix/auth-bug')
+              } else if (command === 'git diff') {
+                terminal.writeln('diff --git a/src/services/mockData.ts b/src/services/mockData.ts')
+                terminal.writeln('index abc123..def456 100644')
+                terminal.writeln('--- a/src/services/mockData.ts')
+                terminal.writeln('+++ b/src/services/mockData.ts')
+                terminal.writeln('@@ -254,7 +254,7 @@')
+                terminal.writeln('     title: \'Write API documentation\',')
+                terminal.writeln('     description: \'Document all REST endpoints with examples\',')
+                terminal.writeln('-    status: \'todo\',')
+                terminal.writeln('+    status: \'pending\',')
+                terminal.writeln('     priority: \'low\',')
+              } else {
+                terminal.writeln(`git: '${command.substring(4)}' is not a git command in mock mode`)
               }
             } else if (command === 'npm run dev' || command === 'pnpm run dev') {
               const mockDevOutput = mockTerminalSessions.find(s => s.name === 'Frontend Dev')

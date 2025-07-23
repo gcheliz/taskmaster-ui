@@ -24,14 +24,15 @@ const TaskBoard: React.FC = () => {
   }
 
   const columns = [
-    { id: 'todo', title: 'To Do', color: 'bg-gray-500' },
+    { id: 'pending', title: 'To Do', color: 'bg-gray-500' },
     { id: 'in-progress', title: 'In Progress', color: 'bg-blue-500' },
     { id: 'review', title: 'Review', color: 'bg-purple-500' },
     { id: 'done', title: 'Done', color: 'bg-green-500' },
   ]
 
   const getTasksForColumn = (columnId: string) => {
-    return taskBoardData?.columns[columnId]?.tasks || []
+    const column = taskBoardData?.columns?.find(col => col.id === columnId)
+    return column?.tasks || []
   }
 
   const getPriorityColor = (priority: string) => {

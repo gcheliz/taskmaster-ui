@@ -69,15 +69,10 @@ export const useRepositoryList = ({
     queryFn: async (): Promise<ApiResponse<RepositoryListItem[]>> => {
       if (USE_MOCK_DATA) {
         await simulateDelay(MOCK_DELAY)
-        // Transform mock data to match the expected format
-        const repositories = mockRepositories.map(repo => ({
-          id: repo.id,
-          path: repo.path,
-          name: repo.name,
-        }))
+        // Return full mock repository data
         return {
           success: true,
-          data: repositories,
+          data: mockRepositories,
         }
       }
       const response = await RepositoryService.getRepositories()

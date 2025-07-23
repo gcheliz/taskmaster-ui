@@ -111,7 +111,7 @@ export function useTaskData(options: UseTaskDataOptions = {}): UseTaskDataReturn
             totalTasks: mockTasks.length,
             completedTasks: mockTasks.filter(t => t.status === 'done').length,
             inProgressTasks: mockTasks.filter(t => t.status === 'in-progress').length,
-            todoTasks: mockTasks.filter(t => t.status === 'todo').length,
+            todoTasks: mockTasks.filter(t => t.status === 'pending').length,
           },
           projectTag: 'taskmaster-ui',
           source: 'mock',

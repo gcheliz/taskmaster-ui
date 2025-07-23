@@ -247,7 +247,7 @@ export const mockTasks = [
     id: 'task-4',
     title: 'Write API documentation',
     description: 'Document all REST endpoints with examples',
-    status: 'todo',
+    status: 'pending',
     priority: 'low',
     assignee: 'Mike Wilson',
     createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
@@ -257,11 +257,61 @@ export const mockTasks = [
     id: 'task-5',
     title: 'Optimize database queries',
     description: 'Improve performance of slow queries',
-    status: 'todo',
+    status: 'pending',
     priority: 'medium',
     assignee: 'Gonzalo Martinez',
     createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
     updatedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: 'task-6',
+    title: 'Set up CI/CD pipeline',
+    description: 'Configure GitHub Actions for automated testing and deployment',
+    status: 'pending',
+    priority: 'high',
+    assignee: 'Alex Johnson',
+    createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: 'task-7',
+    title: 'Implement search functionality',
+    description: 'Add full-text search capabilities to the application',
+    status: 'review',
+    priority: 'medium',
+    assignee: 'Sarah Chen',
+    createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: 'task-8',
+    title: 'Update user profile UI',
+    description: 'Redesign the user profile page with new components',
+    status: 'review',
+    priority: 'low',
+    assignee: 'Mike Wilson',
+    createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: 'task-9',
+    title: 'Add email notifications',
+    description: 'Implement email notifications for task updates',
+    status: 'done',
+    priority: 'medium',
+    assignee: 'Gonzalo Martinez',
+    createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: 'task-10',
+    title: 'Performance optimization',
+    description: 'Optimize React component rendering and bundle size',
+    status: 'in-progress',
+    priority: 'high',
+    assignee: 'Sarah Chen',
+    createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
   },
 ]
 
@@ -285,7 +335,7 @@ export const mockDashboardData: DashboardData = {
     statusBreakdown: {
       done: 89,
       'in-progress': 34,
-      todo: 28,
+      pending: 28,
       blocked: 3,
       deferred: 2,
     },
@@ -516,7 +566,7 @@ export const simulateDelay = (ms: number = 500) =>
 
 // Helper to get random mock data
 export const getRandomTasks = (count: number) => {
-  const statuses = ['todo', 'in-progress', 'done', 'blocked']
+  const statuses = ['pending', 'in-progress', 'done', 'blocked']
   const priorities = ['low', 'medium', 'high']
   const assignees = ['Gonzalo Martinez', 'Sarah Chen', 'Alex Johnson', 'Mike Wilson']
   

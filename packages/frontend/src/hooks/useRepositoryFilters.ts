@@ -124,29 +124,33 @@ export const useRepositoryFilters = ({
         case 'name':
           comparison = a.name.localeCompare(b.name)
           break
-        case 'lastUpdate':
+        case 'lastUpdate': {
           const dateA = new Date(a.lastUpdated || a.connectedAt).getTime()
           const dateB = new Date(b.lastUpdated || b.connectedAt).getTime()
           comparison = dateA - dateB
           break
-        case 'health':
+        }
+        case 'health': {
           // Assuming we have a health score
           const healthA = (a as any).healthScore || 0
           const healthB = (b as any).healthScore || 0
           comparison = healthA - healthB
           break
-        case 'activity':
+        }
+        case 'activity': {
           // Assuming we have activity metrics
           const activityA = (a as any).activityScore || 0
           const activityB = (b as any).activityScore || 0
           comparison = activityA - activityB
           break
-        case 'branchCount':
+        }
+        case 'branchCount': {
           // Assuming we have branch count
           const branchesA = (a as any).branchCount || 0
           const branchesB = (b as any).branchCount || 0
           comparison = branchesA - branchesB
           break
+        }
       }
 
       return sort.direction === 'asc' ? comparison : -comparison

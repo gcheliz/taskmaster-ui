@@ -668,14 +668,15 @@ const TaskBoard: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Page Header */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-semibold text-gray-900">Task Board</h1>
-            <p className="text-gray-600 mt-1">Drag and drop tasks between columns to update their status</p>
-          </div>
+    <div className="min-h-screen bg-white p-4 sm:p-6 md:p-8">
+      <div className="max-w-full space-y-6">
+        {/* Page Header */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-semibold text-gray-900">Task Board</h1>
+              <p className="text-gray-600 mt-1">Drag and drop tasks between columns to update their status</p>
+            </div>
           
           {/* Connection Status */}
           <div className="flex items-center space-x-4">
@@ -954,6 +955,7 @@ const TaskBoard: React.FC = () => {
           }}
         />
       )}
+      </div>
     </div>
   );
 };

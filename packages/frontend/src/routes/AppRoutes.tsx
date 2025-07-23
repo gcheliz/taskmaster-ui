@@ -18,7 +18,7 @@ export function AppRoutes() {
   return (
     <RouteErrorBoundary>
       <Routes>
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/" element={<Dashboard />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route
           path="/repositories"

@@ -111,7 +111,8 @@ const Terminal: React.FC = () => {
   }
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 h-full flex flex-col">
+    <div className="min-h-screen bg-white p-4 sm:p-6 lg:p-8">
+      <div className="h-full flex flex-col">
       {/* Page Header - Mobile responsive */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 sm:mb-6 lg:mb-8">
         <div>
@@ -199,6 +200,7 @@ const Terminal: React.FC = () => {
             />
           </div>
         </div>
+      </div>
       </div>
     </div>
   )

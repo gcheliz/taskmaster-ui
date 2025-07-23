@@ -20,7 +20,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       {/* Header */}
       <Header user={user} onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
 
@@ -30,15 +30,10 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
         {/* Content wrapper */}
-        <div className="flex-1 flex flex-col">
-          {/* Main content - Responsive padding */}
-          <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
-            <div className="max-w-7xl mx-auto">
-              {/* Mobile-optimized content wrapper */}
-              <div className="min-h-full">
-                {children || <Outlet />}
-              </div>
-            </div>
+        <div className="flex-1 flex flex-col bg-gray-50">
+          {/* Main content - Full width without extra padding */}
+          <main className="flex-1 overflow-y-auto">
+            {children || <Outlet />}
           </main>
 
           {/* Footer - Hidden on mobile to save space */}

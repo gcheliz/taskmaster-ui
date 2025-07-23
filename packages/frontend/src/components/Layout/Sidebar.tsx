@@ -8,9 +8,9 @@ interface SidebarProps {
 }
 
 const menuItems = [
-  { icon: LayoutGrid, label: 'Dashboard', path: '/dashboard' },
-  { icon: FolderGit2, label: 'Repositories', path: '/repository-management' },
-  { icon: ClipboardList, label: 'Task Board', path: '/task-board' },
+  { icon: LayoutGrid, label: 'Dashboard', path: '/' },
+  { icon: FolderGit2, label: 'Repositories', path: '/repositories' },
+  { icon: ClipboardList, label: 'Task Board', path: '/tasks' },
   { icon: Terminal, label: 'Terminal', path: '/terminal' },
   { icon: Settings, label: 'Settings', path: '/settings' },
 ]

@@ -129,7 +129,8 @@ const Repositories: React.FC = () => {
   }
 
   return (
-    <div className="space-y-4 sm:space-y-6">
+    <div className="min-h-screen bg-white p-4 sm:p-6 md:p-8">
+      <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6">
       {/* Header - Mobile responsive */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -384,10 +385,11 @@ const Repositories: React.FC = () => {
         </div>
       )}
 
-      {/* Add Repository Modal */}
-      <Modal open={showAddModal} onOpenChange={setShowAddModal}>
-        <AddRepository onRepositoryAdd={handleAddRepository} />
-      </Modal>
+        {/* Add Repository Modal */}
+        <Modal open={showAddModal} onOpenChange={setShowAddModal}>
+          <AddRepository onRepositoryAdd={handleAddRepository} />
+        </Modal>
+      </div>
     </div>
   )
 }

@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskMaster UI - Terminal Mockup</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'slate-950': '#020617',
+                        'accent-primary': '#3B82F6',
+                        'accent-success': '#10B981',
+                        'accent-warning': '#F59E0B',
+                        'accent-error': '#EF4444',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .terminal-content { 
+            font-family: 'JetBrains Mono', monospace;
+            background: #0F172A;
+            color: #F8FAFC;
+        }
+        .cursor { 
+            animation: blink 1s infinite; 
+            background: #10B981;
+            width: 8px;
+            height: 20px;
+            display: inline-block;
+        }
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        .terminal-line { margin-bottom: 4px; }
+        .prompt { color: #10B981; }
+        .command { color: #3B82F6; }
+        .output { color: #CBD5E1; }
+        .error { color: #EF4444; }
+        .success { color: #10B981; }
+        .warning { color: #F59E0B; }
+        .path { color: #8B5CF6; }
+        .comment { color: #64748B; }
+        .quick-command { transition: all 0.2s ease; }
+        .quick-command:hover { transform: translateY(-1px); }
+        .terminal-window {
+            background: linear-gradient(145deg, #0F172A 0%, #1E293B 100%);
+            border: 1px solid #334155;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-50">
+    <!-- Header -->
+    <header class="bg-slate-900 border-b border-slate-800 px-6 py-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-accent-primary rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                        </svg>
+                    </div>
+                    <h1 class="text-xl font-bold text-white">TaskMaster UI</h1>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-2 text-sm">
+                    <div class="w-2 h-2 bg-accent-success rounded-full"></div>
+                    <span class="text-accent-success">Terminal Connected</span>
+                </div>
+                
+                <!-- User Menu -->
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-accent-primary rounded-full flex items-center justify-center">
+                        <span class="text-sm font-medium text-white">GZ</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <nav class="w-64 bg-slate-900 border-r border-slate-800 p-4">
+            <div class="space-y-2">
+                <a href="#" class="flex items-center space-x-3 px-3 py-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
+                    </svg>
+                    <span>Dashboard</span>
+                </a>
+                
+                <a href="#" class="flex items-center space-x-3 px-3 py-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 7a2 2 0 012-2h10a2 2 0 012 2v2M7 7h10"></path>
+                    </svg>
+                    <span>Repository Management</span>
+                </a>
+                
+                <a href="#" class="flex items-center space-x-3 px-3 py-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                    <span>Task Board</span>
+                </a>
+                
+                <a href="#" class="flex items-center space-x-3 px-3 py-2 bg-accent-primary text-white rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    <span class="font-medium">Terminal</span>
+                </a>
+                
+                <a href="#" class="flex items-center space-x-3 px-3 py-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <span>Settings</span>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            <!-- Page Header -->
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h1 class="text-2xl font-bold text-white">💻 Terminal</h1>
+                    <p class="text-slate-400">Embedded terminal for command execution</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="px-4 py-2 bg-slate-700 text-slate-300 rounded-lg hover:bg-slate-600 transition-colors text-sm">
+                        <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                        Clear Terminal
+                    </button>
+                    <button class="px-4 py-2 bg-accent-primary text-white rounded-lg hover:bg-accent-primary/80 transition-colors text-sm">
+                        <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        New Session
+                    </button>
+                </div>
+            </div>
+
+            <!-- Terminal Window -->
+            <div class="terminal-window rounded-xl overflow-hidden mb-6">
+                <!-- Terminal Header -->
+                <div class="bg-slate-800 border-b border-slate-700 px-4 py-3 flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-3 h-3 bg-accent-error rounded-full"></div>
+                            <div class="w-3 h-3 bg-accent-warning rounded-full"></div>
+                            <div class="w-3 h-3 bg-accent-success rounded-full"></div>
+                        </div>
+                        <div class="text-slate-400 text-sm font-medium">TaskMaster Terminal</div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="text-slate-400 text-sm mono">Session: 1</div>
+                        <div class="w-2 h-2 bg-accent-success rounded-full"></div>
+                    </div>
+                </div>
+
+                <!-- Terminal Content -->
+                <div class="terminal-content p-4 h-96 overflow-y-auto">
+                    <!-- Initial setup -->
+                    <div class="terminal-line">
+                        <span class="prompt">gonzalo@taskmaster</span><span class="path">:~/workspace/taskmaster-ui</span><span class="prompt">$ </span>
+                    </div>
+
+                    <!-- TaskMaster commands -->
+                    <div class="terminal-line">
+                        <span class="prompt">gonzalo@taskmaster</span><span class="path">:~/workspace/taskmaster-ui</span><span class="prompt">$ </span>
+                        <span class="command">task-master list</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="success">🏷️ tag: taskmaster-ui</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="output">Listing tasks from: .taskmaster/tasks/tasks.json</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="success">✓ Done: 40  </span><span class="warning">► In Progress: 2  </span><span class="output">○ Pending: 8</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="success">📋 Active Tasks (10)</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="success">✅ Completed Tasks (40)</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="warning">🔄 In Progress (2)</span>
+                    </div>
+                    <div class="terminal-line"></div>
+
+                    <!-- Next task command -->
+                    <div class="terminal-line">
+                        <span class="prompt">gonzalo@taskmaster</span><span class="path">:~/workspace/taskmaster-ui</span><span class="prompt">$ </span>
+                        <span class="command">task-master next</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="success">🎯 Next Task: #41 - Implement User Authentication & Authorization</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="output">Priority: high  Dependencies: None  Complexity: ● 9</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="comment"># Set up backend and frontend for user registration, login, and session management</span>
+                    </div>
+                    <div class="terminal-line"></div>
+
+                    <!-- Git status -->
+                    <div class="terminal-line">
+                        <span class="prompt">gonzalo@taskmaster</span><span class="path">:~/workspace/taskmaster-ui</span><span class="prompt">$ </span>
+                        <span class="command">git status</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="output">On branch master</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="output">Your branch is ahead of 'origin/master' by 21 commits.</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="output">  (use "git push" to publish your local commits)</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="output">nothing to commit, working tree clean</span>
+                    </div>
+                    <div class="terminal-line"></div>
+
+                    <!-- Docker status -->
+                    <div class="terminal-line">
+                        <span class="prompt">gonzalo@taskmaster</span><span class="path">:~/workspace/taskmaster-ui</span><span class="prompt">$ </span>
+                        <span class="command">docker-compose ps</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="output">NAME                  IMAGE                     COMMAND                  SERVICE    STATUS</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="success">taskmaster-backend    taskmaster-ui-backend     "docker-entrypoint.s..."   backend    Up 2 hours (healthy)</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="success">taskmaster-frontend   taskmaster-ui-frontend    "docker-entrypoint.s..."   frontend   Up 2 hours (healthy)</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="success">taskmaster-postgres   postgres:15-alpine        "docker-entrypoint.s..."   postgres   Up 2 hours (healthy)</span>
+                    </div>
+                    <div class="terminal-line"></div>
+
+                    <!-- PNPM command -->
+                    <div class="terminal-line">
+                        <span class="prompt">gonzalo@taskmaster</span><span class="path">:~/workspace/taskmaster-ui</span><span class="prompt">$ </span>
+                        <span class="command">pnpm test</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="output">Running tests in workspace...</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="success">✓ packages/frontend/src/components/Button.test.tsx</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="success">✓ packages/frontend/src/components/TaskCard.test.tsx</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="success">✓ packages/backend/src/auth/auth.test.ts</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="success">All tests passed! 🎉</span>
+                    </div>
+                    <div class="terminal-line"></div>
+
+                    <!-- Current prompt -->
+                    <div class="terminal-line">
+                        <span class="prompt">gonzalo@taskmaster</span><span class="path">:~/workspace/taskmaster-ui</span><span class="prompt">$ </span>
+                        <span class="cursor"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Commands -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="bg-slate-800 border border-slate-700 rounded-xl p-6">
+                    <h2 class="text-xl font-semibold text-white mb-4">Quick Commands</h2>
+                    <div class="space-y-2">
+                        <button class="quick-command w-full flex items-center space-x-3 p-3 bg-slate-700 hover:bg-slate-600 rounded-lg transition-colors text-left">
+                            <div class="w-8 h-8 bg-accent-success/10 rounded-lg flex items-center justify-center">
+                                <svg class="w-4 h-4 text-accent-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="text-white font-medium text-sm">task-master list</div>
+                                <div class="text-slate-400 text-xs">Show all tasks</div>
+                            </div>
+                        </button>
+
+                        <button class="quick-command w-full flex items-center space-x-3 p-3 bg-slate-700 hover:bg-slate-600 rounded-lg transition-colors text-left">
+                            <div class="w-8 h-8 bg-accent-primary/10 rounded-lg flex items-center justify-center">
+                                <svg class="w-4 h-4 text-accent-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="text-white font-medium text-sm">task-master next</div>
+                                <div class="text-slate-400 text-xs">Get next task to work on</div>
+                            </div>
+                        </button>
+
+                        <button class="quick-command w-full flex items-center space-x-3 p-3 bg-slate-700 hover:bg-slate-600 rounded-lg transition-colors text-left">
+                            <div class="w-8 h-8 bg-accent-warning/10 rounded-lg flex items-center justify-center">
+                                <svg class="w-4 h-4 text-accent-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 7a2 2 0 012-2h10a2 2 0 012 2v2M7 7h10"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="text-white font-medium text-sm">git status</div>
+                                <div class="text-slate-400 text-xs">Check repository status</div>
+                            </div>
+                        </button>
+
+                        <button class="quick-command w-full flex items-center space-x-3 p-3 bg-slate-700 hover:bg-slate-600 rounded-lg transition-colors text-left">
+                            <div class="w-8 h-8 bg-purple-500/10 rounded-lg flex items-center justify-center">
+                                <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="text-white font-medium text-sm">pnpm test</div>
+                                <div class="text-slate-400 text-xs">Run all tests</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 border border-slate-700 rounded-xl p-6">
+                    <h2 class="text-xl font-semibold text-white mb-4">Terminal Info</h2>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-slate-400">Current Directory</span>
+                            <span class="text-white mono text-sm">~/workspace/taskmaster-ui</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-slate-400">Git Branch</span>
+                            <span class="text-accent-success text-sm">master</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-slate-400">Docker Status</span>
+                            <span class="text-accent-success text-sm">3 containers running</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-slate-400">Node Version</span>
+                            <span class="text-white text-sm">v18.19.0</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-slate-400">PNPM Version</span>
+                            <span class="text-white text-sm">v10.13.1</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 pt-4 border-t border-slate-700">
+                        <h3 class="text-white font-medium mb-3">Command History</h3>
+                        <div class="space-y-1">
+                            <div class="text-slate-400 text-sm mono">task-master list</div>
+                            <div class="text-slate-400 text-sm mono">task-master next</div>
+                            <div class="text-slate-400 text-sm mono">git status</div>
+                            <div class="text-slate-400 text-sm mono">docker-compose ps</div>
+                            <div class="text-slate-400 text-sm mono">pnpm test</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

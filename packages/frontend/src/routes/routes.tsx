@@ -4,10 +4,11 @@ import { ProtectedRoute } from './ProtectedRoute'
 import { lazy } from 'react'
 
 // Lazy load pages for better performance
-const DashboardPage = lazy(() => import('../pages/DashboardIntegrated'))
+const DashboardPage = lazy(() => import('../pages/Dashboard'))
 const TasksPage = lazy(() => import('../pages/Tasks'))
+const TaskBoardPage = lazy(() => import('../pages/TaskBoard'))
 const TaskDetailPage = lazy(() => import('../pages/TaskDetail'))
-const RepositoriesPage = lazy(() => import('../pages/RepositoriesIntegrated'))
+const RepositoriesPage = lazy(() => import('../pages/Repositories'))
 const TerminalPage = lazy(() => import('../pages/Terminal'))
 const AnalyticsPage = lazy(() => import('../pages/Analytics'))
 const TeamPage = lazy(() => import('../pages/Team'))
@@ -40,6 +41,10 @@ export const routes: RouteObject[] = [
           },
           {
             path: 'tasks',
+            element: <TaskBoardPage />,
+          },
+          {
+            path: 'tasks/list',
             children: [
               {
                 index: true,

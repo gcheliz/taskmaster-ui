@@ -1,16 +1,31 @@
 import { WebSocketServer, WebSocket } from 'ws';
 import { Server } from 'http';
+import { gitWebSocketService, GitWebSocketMessage } from './gitWebSocketService';
+
+interface ClientInfo {
+  id: string;
+  ws: WebSocket;
+}
 
 export class WebSocketService {
   private wss: WebSocketServer | null = null;
-  private clients: Set<WebSocket> = new Set();
+  private clients: Map<string, ClientInfo> = new Map();
+  private clientIdCounter = 0;
 
   public initialize(server: Server): void {
     this.wss = new WebSocketServer({ server });
+    
+    // Initialize Git WebSocket service
+    gitWebSocketService.initialize((message: GitWebSocketMessage) => {
+      this.broadcast(message);
+    });
 
     this.wss.on('connection', (ws: WebSocket, req) => {
-      console.log('New WebSocket connection established');
-      this.clients.add(ws);
+      const clientId = `client-${++this.clientIdCounter}`;
+      console.log(`New WebSocket connection established: ${clientId}`);
+      
+      const clientInfo: ClientInfo = { id: clientId, ws };
+      this.clients.set(clientId, clientInfo);
 
       // Send welcome message
       ws.send(
@@ -22,19 +37,28 @@ export class WebSocketService {
       );
 
       // Handle incoming messages
-      ws.on('message', data => {
+      ws.on('message', async data => {
         try {
           const message = JSON.parse(data.toString());
           console.log('Received message:', message);
 
-          // Echo back the message with timestamp
-          ws.send(
-            JSON.stringify({
-              type: 'echo',
-              data: message,
-              timestamp: new Date().toISOString(),
-            })
-          );
+          // Check if it's a Git-related message
+          if (message.type && message.type.startsWith('git-') || 
+              ['subscribe-repository', 'unsubscribe-repository', 'refresh-repository', 'get-repository-state'].includes(message.type)) {
+            const response = await gitWebSocketService.handleWebSocketMessage(clientId, message);
+            if (response) {
+              ws.send(JSON.stringify(response));
+            }
+          } else {
+            // Echo back the message with timestamp for other messages
+            ws.send(
+              JSON.stringify({
+                type: 'echo',
+                data: message,
+                timestamp: new Date().toISOString(),
+              })
+            );
+          }
         } catch (error) {
           console.error('Error parsing WebSocket message:', error);
           ws.send(
@@ -49,14 +73,14 @@ export class WebSocketService {
 
       // Handle disconnection
       ws.on('close', () => {
-        console.log('WebSocket connection closed');
-        this.clients.delete(ws);
+        console.log(`WebSocket connection closed: ${clientId}`);
+        this.clients.delete(clientId);
       });
 
       // Handle errors
       ws.on('error', error => {
-        console.error('WebSocket error:', error);
-        this.clients.delete(ws);
+        console.error(`WebSocket error for ${clientId}:`, error);
+        this.clients.delete(clientId);
       });
     });
 
@@ -75,9 +99,9 @@ export class WebSocketService {
       timestamp: new Date().toISOString(),
     });
 
-    this.clients.forEach(client => {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(data);
+    this.clients.forEach(clientInfo => {
+      if (clientInfo.ws.readyState === WebSocket.OPEN) {
+        clientInfo.ws.send(data);
       }
     });
   }
@@ -86,8 +110,11 @@ export class WebSocketService {
     return this.clients.size;
   }
 
-  public close(): void {
+  public async close(): Promise<void> {
     if (this.wss) {
+      // Shutdown Git WebSocket service
+      await gitWebSocketService.shutdown();
+      
       this.wss.close();
       this.wss = null;
       this.clients.clear();

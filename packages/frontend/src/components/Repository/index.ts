@@ -70,3 +70,6 @@ export type { BranchHealthVisualizationProps } from './BranchHealthVisualization
 
 export { PullRequestStatus } from './PullRequestStatus'
 export type { PullRequestStatusProps } from './PullRequestStatus'
+
+export { GitSyncIndicator } from './GitSyncIndicator'
+export type { GitSyncIndicatorProps } from './GitSyncIndicator'

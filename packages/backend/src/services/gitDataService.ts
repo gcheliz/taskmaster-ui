@@ -234,6 +234,21 @@ export class GitDataService {
   }
 
   /**
+   * Fetch updates from remote repository
+   */
+  async fetch(repositoryPath: string): Promise<void> {
+    const git = this.createGitInstance(repositoryPath);
+
+    try {
+      await git.fetch();
+    } catch (error) {
+      throw new Error(
+        `Failed to fetch from remote: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
+    }
+  }
+
+  /**
    * Validate that the path exists and is a Git repository
    */
   private async validateRepositoryPath(repositoryPath: string): Promise<void> {

@@ -19,6 +19,8 @@ const Auth = () => {
     try {
       if (type === 'login') {
         await login(data.email, data.password)
+        // Redirect to the intended page or dashboard
+        navigate(from, { replace: true })
       } else {
         await register({
           email: data.email,
@@ -26,10 +28,16 @@ const Auth = () => {
           name: data.name,
           role: data.role,
         })
+        // Redirect new users to onboarding
+        navigate('/onboarding', { 
+          replace: true,
+          state: {
+            userName: data.name,
+            userRole: data.role,
+            isNewUser: true
+          }
+        })
       }
-      
-      // Redirect to the intended page or dashboard
-      navigate(from, { replace: true })
     } catch (error) {
       console.error(`${type} failed:`, error)
       // Error handling is done in the form components

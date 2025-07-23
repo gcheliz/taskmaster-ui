@@ -20,6 +20,7 @@ const RegisterPage = lazy(() => import('../pages/Register'))
 const ForgotPasswordPage = lazy(() => import('../pages/ForgotPassword'))
 const ResetPasswordPage = lazy(() => import('../pages/ResetPassword'))
 const NotFoundPage = lazy(() => import('../pages/NotFound'))
+const OnboardingPage = lazy(() => import('../pages/Onboarding'))
 
 // Import the Auth page wrapper
 const AuthPageWrapper = lazy(() => import('../pages/Auth'))
@@ -83,6 +84,16 @@ export const routes: RouteObject[] = [
             element: <ProfilePage />,
           },
         ],
+      },
+    ],
+  },
+  {
+    path: '/onboarding',
+    element: <ProtectedRoute />,
+    children: [
+      {
+        index: true,
+        element: <OnboardingPage />,
       },
     ],
   },

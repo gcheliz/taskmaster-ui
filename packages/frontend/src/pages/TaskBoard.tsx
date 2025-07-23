@@ -248,7 +248,7 @@ const TaskBoard: React.FC = () => {
     React.useMemo(() => initialTasks.map(convertToWebSocketTask), []),
     React.useMemo(() => ({
       url: process.env.VITE_WS_URL || 'ws://localhost:3001',
-      autoConnect: true,
+      autoConnect: false, // Disabled until backend is running
       user: {
         id: 'user-1',
         name: 'Gonzalo',

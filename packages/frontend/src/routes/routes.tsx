@@ -21,6 +21,9 @@ const ForgotPasswordPage = lazy(() => import('../pages/ForgotPassword'))
 const ResetPasswordPage = lazy(() => import('../pages/ResetPassword'))
 const NotFoundPage = lazy(() => import('../pages/NotFound'))
 
+// Import the Auth page wrapper
+const AuthPageWrapper = lazy(() => import('../pages/Auth'))
+
 export const routes: RouteObject[] = [
   {
     path: '/',
@@ -84,25 +87,24 @@ export const routes: RouteObject[] = [
   },
   {
     path: '/auth',
-    element: <div className="min-h-screen bg-slate-950" />,
-    children: [
-      {
-        path: 'login',
-        element: <LoginPage />,
-      },
-      {
-        path: 'register',
-        element: <RegisterPage />,
-      },
-      {
-        path: 'forgot-password',
-        element: <ForgotPasswordPage />,
-      },
-      {
-        path: 'reset-password',
-        element: <ResetPasswordPage />,
-      },
-    ],
+    element: <AuthPageWrapper />,
+  },
+  {
+    path: '/auth/forgot-password',
+    element: <ForgotPasswordPage />,
+  },
+  {
+    path: '/auth/reset-password',
+    element: <ResetPasswordPage />,
+  },
+  // Legacy routes for backward compatibility - redirect to new auth page
+  {
+    path: '/auth/login',
+    element: <AuthPageWrapper />,
+  },
+  {
+    path: '/auth/register', 
+    element: <AuthPageWrapper />,
   },
   {
     path: '*',

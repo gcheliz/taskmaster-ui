@@ -1,0 +1,139 @@
+/* Custom component styles for Tailwind v4 */
+
+/* Base theme utilities */
+@theme {
+  /* Custom colors */
+  --color-accent-primary: #3B82F6;
+  --color-accent-success: #10B981;
+  --color-accent-warning: #F59E0B;
+  --color-accent-error: #EF4444;
+  --color-accent-info: #06B6D4;
+}
+
+/* Component utilities */
+@utility header {
+  background-color: white;
+  border-bottom: 1px solid rgb(229 231 235);
+  padding: 1rem 1.5rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+@utility sidebar {
+  width: 16rem;
+  background-color: rgb(249 250 251);
+  border-right: 1px solid rgb(229 231 235);
+  height: 100%;
+}
+
+@utility nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  transition: all 200ms;
+}
+
+@utility nav-link-active {
+  background-color: rgb(37 99 235);
+  color: white;
+  font-weight: 500;
+}
+
+@utility nav-link-inactive {
+  color: rgb(75 85 102);
+}
+
+@utility nav-link-inactive:hover {
+  background-color: rgb(229 231 235);
+  color: rgb(17 24 39);
+}
+
+/* Card components */
+@utility card {
+  background-color: white;
+  border-radius: 0.5rem;
+  border: 1px solid rgb(229 231 235);
+  padding: 1.5rem;
+}
+
+@utility card-hover {
+  transition: all 200ms;
+}
+
+@utility card-hover:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Button components */
+@utility button-primary {
+  background-color: rgb(37 99 235);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  transition: all 200ms;
+}
+
+@utility button-primary:hover {
+  background-color: rgb(29 78 216);
+}
+
+@utility button-secondary {
+  background-color: white;
+  color: rgb(75 85 102);
+  border: 1px solid rgb(229 231 235);
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  transition: all 200ms;
+}
+
+@utility button-secondary:hover {
+  background-color: rgb(249 250 251);
+  color: rgb(17 24 39);
+}
+
+/* Form components */
+@utility form-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid rgb(209 213 219);
+  border-radius: 0.375rem;
+  transition: all 200ms;
+}
+
+@utility form-input:focus {
+  outline: none;
+  border-color: rgb(37 99 235);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Status indicators */
+@utility status-active {
+  background-color: rgb(16 185 129);
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+@utility status-inactive {
+  background-color: rgb(156 163 175);
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+@utility status-error {
+  background-color: rgb(239 68 68);
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}

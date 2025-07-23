@@ -31,10 +31,10 @@ const DashboardIntegrated: React.FC = () => {
   const dashboardData = useDashboard({ projectId: 'default' })
   const [selectedRepository, setSelectedRepository] = useState<string | null>(null)
 
-  // Redirect to login if not authenticated
+  // Redirect to auth if not authenticated
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate('/login')
+      navigate('/auth')
     }
   }, [isAuthenticated, navigate])
 

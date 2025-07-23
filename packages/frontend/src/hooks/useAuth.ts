@@ -1,4 +1,6 @@
 import { useState, useCallback } from 'react'
+import { USE_MOCK_DATA } from '../config/mockConfig'
+import { mockUser } from '../services/mockData'
 
 // Mock auth hook - will be implemented properly in the authentication task
 interface User {
@@ -25,12 +27,20 @@ interface RegisterData {
 }
 
 export const useAuth = (): UseAuthReturn => {
-  const [user, setUser] = useState<User | null>({
+  // Use mock user data when mock mode is enabled
+  const initialUser = USE_MOCK_DATA ? {
+    id: mockUser.id,
+    name: mockUser.name,
+    email: mockUser.email,
+    role: mockUser.role as 'developer' | 'team_lead' | 'manager',
+  } : {
     id: '1',
     name: 'John Doe',
     email: 'john@example.com',
-    role: 'developer',
-  })
+    role: 'developer' as const,
+  }
+  
+  const [user, setUser] = useState<User | null>(initialUser)
   const [isLoading, setIsLoading] = useState(false)
 
   const login = useCallback(async (email: string, password: string) => {

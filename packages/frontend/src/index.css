@@ -1,9 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap");
 @import url("https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,300,400&display=swap");
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@import "./styles/components.css";
 
 /* Base styles */
 body {
@@ -13,7 +12,6 @@ body {
 }
 
 /* Custom components */
-@layer components {
   /* Header */
   .header {
     background-color: #ffffff;
@@ -317,10 +315,8 @@ body {
   .priority-low {
     border-left: 4px solid #6b7280;
   }
-}
 
 /* Animations */
-@layer utilities {
   .animate-fade-in {
     animation: fadeIn 0.3s ease-in-out;
   }
@@ -371,7 +367,6 @@ body {
       opacity: 1;
     }
   }
-}
 
 /* Pulse animation for notification dot */
 .pulse-dot {

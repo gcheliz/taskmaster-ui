@@ -1105,12 +1105,6 @@ const TaskCard: React.FC<{
         </div>
       )}
 
-      {/* Real-time Indicator */}
-      {task.updatedAt && new Date(task.updatedAt).getTime() > Date.now() - 3000 && (
-        <div className="mt-2 pl-6">
-          <span className="text-xs text-blue-600 animate-pulse">Just updated</span>
-        </div>
-      )}
     </div>
   );
 };

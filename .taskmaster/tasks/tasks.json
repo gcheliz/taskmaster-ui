@@ -962,7 +962,7 @@
             "title": "Add/Edit Task Modal with Form Validation",
             "description": "Build comprehensive task creation and editing modal with React Hook Form validation. Include fields: title (required), description (rich text editor), priority selector, complexity slider (1-5), assignee dropdown, due date picker, labels/tags input with autocomplete, subtasks checklist, and attachments upload. Implement real-time validation, error messages, and dirty form detection. Add save draft functionality and keyboard shortcuts (Ctrl+Enter to save).",
             "details": "",
-            "status": "pending",
+            "status": "in-progress",
             "dependencies": [],
             "parentTaskId": 67
           }
@@ -1375,7 +1375,7 @@
     ],
     "metadata": {
       "created": "2025-07-15T21:22:03.992Z",
-      "updated": "2025-07-23T07:47:32.712Z",
+      "updated": "2025-07-23T08:15:47.341Z",
       "description": "Tasks for taskmaster-ui context"
     }
   }

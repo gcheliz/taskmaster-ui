@@ -9,7 +9,9 @@ import {
   Wifi,
   WifiOff,
   X,
-  ChevronDown
+  ChevronDown,
+  Edit2,
+  MoreVertical
 } from 'lucide-react';
 import {
   DndContext,
@@ -35,6 +37,8 @@ import { CSS } from '@dnd-kit/utilities';
 import { useTaskCollaboration, useWebSocket } from '../hooks/useWebSocket';
 import { WebSocketState } from '../types/websocket';
 import type { Task as WebSocketTask } from '../types/websocket';
+import { TaskModal, type TaskModalMode } from '../components/TaskBoard/TaskModal';
+import type { Task as LocalTask } from '../types/task';
 
 interface Task extends Omit<WebSocketTask, 'status' | 'priority' | 'assignee'> {
   description: string; // Make required for UI
@@ -109,6 +113,11 @@ const TaskBoard: React.FC = () => {
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const filterRef = useRef<HTMLDivElement>(null);
   const sortRef = useRef<HTMLDivElement>(null);
+  
+  // Modal state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState<TaskModalMode>('create');
+  const [selectedTask, setSelectedTask] = useState<LocalTask | undefined>();
   
   // Initial tasks for demo purposes
   const initialTasks: Task[] = [
@@ -428,6 +437,114 @@ const TaskBoard: React.FC = () => {
     return undefined;
   };
 
+  // Handle task click for viewing details
+  const handleTaskClick = (task: Task) => {
+    const localTask: LocalTask = {
+      id: Number(task.id),
+      title: task.title,
+      description: task.description || '',
+      priority: task.priority as LocalTask['priority'],
+      status: (task.column === 'todo' ? 'pending' : task.column === 'in-progress' ? 'in-progress' : 'done') as LocalTask['status'],
+      assignedTo: task.assignee?.name,
+      createdAt: task.createdAt,
+      updatedAt: task.updatedAt,
+      tags: [],
+      dependencies: [],
+    };
+    setSelectedTask(localTask);
+    setModalMode('view');
+    setIsModalOpen(true);
+  };
+
+  // Handle task edit
+  const handleTaskEdit = (task: Task, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const localTask: LocalTask = {
+      id: Number(task.id),
+      title: task.title,
+      description: task.description || '',
+      priority: task.priority as LocalTask['priority'],
+      status: (task.column === 'todo' ? 'pending' : task.column === 'in-progress' ? 'in-progress' : 'done') as LocalTask['status'],
+      assignedTo: task.assignee?.name,
+      createdAt: task.createdAt,
+      updatedAt: task.updatedAt,
+      tags: [],
+      dependencies: [],
+    };
+    setSelectedTask(localTask);
+    setModalMode('edit');
+    setIsModalOpen(true);
+  };
+
+  // Handle new task creation
+  const handleAddTask = () => {
+    setSelectedTask(undefined);
+    setModalMode('create');
+    setIsModalOpen(true);
+  };
+
+  // Handle task save from modal
+  const handleTaskSave = async (taskData: Partial<LocalTask>) => {
+    if (modalMode === 'create') {
+      // Create new task
+      const newTask: Task = {
+        id: Date.now().toString(),
+        title: taskData.title || 'New Task',
+        description: taskData.description || '',
+        priority: (taskData.priority || 'medium') as Task['priority'],
+        complexity: 5,
+        assignee: taskData.assignedTo ? {
+          name: taskData.assignedTo,
+          initials: taskData.assignedTo.split(' ').map(n => n[0]).join('').toUpperCase(),
+          color: 'bg-' + ['blue', 'green', 'purple', 'amber', 'red'][Math.floor(Math.random() * 5)] + '-600',
+        } : {
+          name: 'Unassigned',
+          initials: 'NA',
+          color: 'bg-gray-400'
+        },
+        column: taskData.status === 'pending' ? 'todo' : taskData.status === 'in-progress' ? 'in-progress' : 'done',
+        position: 0, // Position will be managed by drag and drop
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      
+      // Send WebSocket update
+      if (isConnected && updateTask) {
+        const wsTask = convertToWebSocketTask(newTask);
+        updateTask(newTask.id, wsTask);
+      }
+    } else if (modalMode === 'edit' && selectedTask) {
+      // Update existing task
+      const taskToUpdate = tasks.find(t => t.id === selectedTask.id.toString());
+      if (taskToUpdate && isConnected && updateTask) {
+        const updates: Partial<WebSocketTask> = {
+          title: taskData.title,
+          description: taskData.description,
+          priority: taskData.priority as WebSocketTask['priority'],
+          assignee: taskData.assignedTo ? {
+            id: taskData.assignedTo.toLowerCase().replace(/\s/g, '-'),
+            name: taskData.assignedTo,
+            email: `${taskData.assignedTo.toLowerCase().replace(/\s/g, '.')}@example.com`,
+            color: taskToUpdate.assignee?.color
+          } : undefined,
+        };
+        
+        updateTask(selectedTask.id.toString(), updates);
+      }
+    }
+    setIsModalOpen(false);
+  };
+
+  // Handle task delete from modal
+  const handleTaskDelete = async (taskId: number) => {
+    // In a real app, this would call the WebSocket deleteTask method
+    // For now, we'll just update the task to a 'deleted' status
+    if (isConnected && updateTask) {
+      updateTask(taskId.toString(), { status: 'deferred' as WebSocketTask['status'] });
+    }
+    setIsModalOpen(false);
+  };
+
   // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -682,7 +799,10 @@ const TaskBoard: React.FC = () => {
             <span>•</span>
             <span>Done: {completedTasks}</span>
           </div>
-          <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium flex items-center gap-2">
+          <button 
+            onClick={handleAddTask}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium flex items-center gap-2"
+          >
             <Plus className="w-4 h-4" />
             Add Task
           </button>
@@ -722,35 +842,63 @@ const TaskBoard: React.FC = () => {
       )}
 
       {/* Kanban Board */}
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCorners}
-        onDragStart={handleDragStart}
-        onDragOver={handleDragOver}
-        onDragEnd={handleDragEnd}
-      >
-        <div className="overflow-x-auto">
-          <div className="flex space-x-6 pb-6" style={{ minWidth: '1200px' }}>
-            {columns.map((column) => (
-              <DroppableColumn key={column.id} column={column} />
-            ))}
-          </div>
-        </div>
-        
-        <DragOverlay
-          dropAnimation={{
-            sideEffects: defaultDropAnimationSideEffects({
-              styles: {
-                active: {
-                  opacity: '0.5',
-                },
-              },
-            }),
-          }}
+      <TaskBoardContext.Provider value={{ handleTaskClick, handleTaskEdit }}>
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCorners}
+          onDragStart={handleDragStart}
+          onDragOver={handleDragOver}
+          onDragEnd={handleDragEnd}
         >
-          {activeId ? <TaskCard task={getTaskById(activeId)!} isDragging /> : null}
-        </DragOverlay>
-      </DndContext>
+          <div className="overflow-x-auto">
+            <div className="flex space-x-6 pb-6" style={{ minWidth: '1200px' }}>
+              {columns.map((column) => (
+                <DroppableColumn key={column.id} column={column} />
+              ))}
+            </div>
+          </div>
+          
+          <DragOverlay
+            dropAnimation={{
+              sideEffects: defaultDropAnimationSideEffects({
+                styles: {
+                  active: {
+                    opacity: '0.5',
+                  },
+                },
+              }),
+            }}
+          >
+            {activeId ? <TaskCard task={getTaskById(activeId)!} isDragging /> : null}
+          </DragOverlay>
+        </DndContext>
+      </TaskBoardContext.Provider>
+      
+      {/* Task Modal */}
+      <TaskModal
+        isOpen={isModalOpen}
+        mode={modalMode}
+        task={selectedTask}
+        availableTasks={tasks.map(t => ({
+          id: Number(t.id),
+          title: t.title,
+          description: t.description || '',
+          priority: t.priority as LocalTask['priority'],
+          status: (t.column === 'todo' ? 'pending' : t.column === 'in-progress' ? 'in-progress' : 'done') as LocalTask['status'],
+          assignedTo: t.assignee?.name !== 'Unassigned' ? t.assignee?.name : undefined,
+          createdAt: t.createdAt,
+          updatedAt: t.updatedAt,
+          position: t.position,
+          tags: [],
+          dependencies: [],
+        }))}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleTaskSave}
+        onDelete={selectedTask ? handleTaskDelete : undefined}
+        onEdit={() => {
+          setModalMode('edit');
+        }}
+      />
     </div>
   );
 };
@@ -812,6 +960,7 @@ const DroppableColumn: React.FC<{ column: Column }> = ({ column }) => {
 
 // Sortable Task Card Wrapper
 const SortableTaskCard: React.FC<{ task: Task }> = ({ task }) => {
+  const context = React.useContext(TaskBoardContext);
   const {
     attributes,
     listeners,
@@ -829,7 +978,13 @@ const SortableTaskCard: React.FC<{ task: Task }> = ({ task }) => {
 
   return (
     <div ref={setNodeRef} style={style}>
-      <TaskCard task={task} attributes={attributes} listeners={listeners} />
+      <TaskCard 
+        task={task} 
+        attributes={attributes} 
+        listeners={listeners}
+        onClick={context?.handleTaskClick}
+        onEdit={context?.handleTaskEdit}
+      />
     </div>
   );
 };
@@ -840,7 +995,9 @@ const TaskCard: React.FC<{
   isDragging?: boolean;
   attributes?: any;
   listeners?: any;
-}> = ({ task, isDragging = false, attributes, listeners }) => {
+  onClick?: (task: Task) => void;
+  onEdit?: (task: Task, e: React.MouseEvent) => void;
+}> = ({ task, isDragging = false, attributes, listeners, onClick, onEdit }) => {
   const getPriorityStyles = (priority: string) => {
     switch (priority) {
       case 'high':
@@ -875,7 +1032,9 @@ const TaskCard: React.FC<{
   const priorityStyles = getPriorityStyles(task.priority);
 
   return (
-    <div className={`bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-grab active:cursor-grabbing ${priorityStyles.border} ${isDragging ? 'shadow-lg ring-2 ring-blue-500' : ''}`}>
+    <div 
+      onClick={() => onClick?.(task)}
+      className={`bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer group ${priorityStyles.border} ${isDragging ? 'shadow-lg ring-2 ring-blue-500' : ''}`}>
       <div className="flex items-start justify-between mb-2">
         <div className="flex items-start gap-2 flex-1">
           <div
@@ -888,6 +1047,13 @@ const TaskCard: React.FC<{
           <h4 className="text-gray-900 font-medium text-sm flex-1">{task.title}</h4>
         </div>
         <div className="flex items-center space-x-1">
+          <button
+            onClick={(e) => onEdit?.(task, e)}
+            className="opacity-0 group-hover:opacity-100 p-1 hover:bg-gray-100 rounded transition-opacity"
+            title="Edit task"
+          >
+            <Edit2 size={14} className="text-gray-500" />
+          </button>
           <span className={`px-2 py-1 rounded-full text-xs font-medium ${priorityStyles.badge}`}>
             {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
           </span>
@@ -933,5 +1099,11 @@ const TaskCard: React.FC<{
     </div>
   );
 };
+
+// Get the board context for task interactions
+const TaskBoardContext = React.createContext<{
+  handleTaskClick: (task: Task) => void;
+  handleTaskEdit: (task: Task, e: React.MouseEvent) => void;
+} | null>(null);
 
 export default TaskBoard;

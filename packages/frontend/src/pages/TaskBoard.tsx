@@ -104,6 +104,7 @@ const convertFromWebSocketTask = (task: WebSocketTask): Task => ({
 const TaskBoardContext = React.createContext<{
   handleTaskClick: (task: Task) => void;
   handleTaskEdit: (task: Task, e: React.MouseEvent) => void;
+  isDraggingRef: React.MutableRefObject<boolean>;
 } | null>(null);
 
 const TaskBoard: React.FC = () => {
@@ -119,6 +120,7 @@ const TaskBoard: React.FC = () => {
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const filterRef = useRef<HTMLDivElement>(null);
   const sortRef = useRef<HTMLDivElement>(null);
+  const isDraggingRef = useRef(false);
   
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -347,6 +349,7 @@ const TaskBoard: React.FC = () => {
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id);
+    isDraggingRef.current = true;
   };
 
   const handleDragOver = (event: DragOverEvent) => {
@@ -433,6 +436,10 @@ const TaskBoard: React.FC = () => {
     }
 
     setActiveId(null);
+    // Reset dragging state after a short delay to prevent click conflicts
+    setTimeout(() => {
+      isDraggingRef.current = false;
+    }, 100);
   };
 
   const getTaskById = (id: UniqueIdentifier): Task | undefined => {
@@ -848,7 +855,7 @@ const TaskBoard: React.FC = () => {
       )}
 
       {/* Kanban Board */}
-      <TaskBoardContext.Provider value={{ handleTaskClick, handleTaskEdit }}>
+      <TaskBoardContext.Provider value={{ handleTaskClick, handleTaskEdit, isDraggingRef }}>
         <DndContext
           sensors={sensors}
           collisionDetection={closestCorners}
@@ -1039,17 +1046,17 @@ const TaskCard: React.FC<{
 
   return (
     <div 
-      onClick={() => onClick?.(task)}
-      className={`bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer group ${priorityStyles.border} ${isDragging ? 'shadow-lg ring-2 ring-blue-500' : ''}`}>
+      {...attributes}
+      {...listeners}
+      onClick={(e) => {
+        // Prevent click when dragging
+        if (isDragging) return;
+        onClick?.(task);
+      }}
+      className={`bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-grab active:cursor-grabbing group select-none ${priorityStyles.border} ${isDragging ? 'shadow-lg ring-2 ring-blue-500' : ''}`}>
       <div className="flex items-start justify-between mb-2">
         <div className="flex items-start gap-2 flex-1">
-          <div
-            {...attributes}
-            {...listeners}
-            className="mt-1 cursor-grab active:cursor-grabbing"
-          >
-            <GripVertical className="w-4 h-4 text-gray-400" />
-          </div>
+          <GripVertical className="w-4 h-4 text-gray-400 mt-1" />
           <h4 className="text-gray-900 font-medium text-sm flex-1">{task.title}</h4>
         </div>
         <div className="flex items-center space-x-1">
@@ -1066,7 +1073,7 @@ const TaskCard: React.FC<{
         </div>
       </div>
       
-      <p className="text-gray-600 text-sm mb-3 pl-6">{task.description}</p>
+      <p className="text-gray-600 text-sm mb-3 pl-6 select-none">{task.description}</p>
       
       <div className="flex items-center justify-between pl-6">
         <div className="flex items-center space-x-2">

@@ -28,6 +28,7 @@ import { Card } from '../components/ui/molecules/Card'
 import { Badge } from '../components/ui/atoms/Badge'
 import { Button } from '../components/ui/atoms/Button'
 import { formatDistanceToNow } from 'date-fns'
+import { PageHeader } from '../components/Layout'
 
 const Repositories: React.FC = () => {
   const { repositories, isLoading, error, refetch } = useRepositoryList()
@@ -256,15 +257,11 @@ const Repositories: React.FC = () => {
   }
 
   return (
-    <div className="bg-white p-4 sm:p-6 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
-      {/* Minimalist Header */}
-      <div className="border-b border-gray-100 pb-6 mb-8">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-semibold text-gray-900">Repositories</h1>
-            <p className="text-sm text-gray-500 mt-1">{displayRepositories.length} connected • {displayRepositories.filter(r => r.status === 'active').length} active</p>
-          </div>
+    <>
+      <PageHeader 
+        title="Repositories" 
+        subtitle={`${displayRepositories.length} connected • ${displayRepositories.filter(r => r.status === 'active').length} active`}
+        actions={
           <div className="flex items-center gap-3">
             <Button
               variant="outline"
@@ -282,8 +279,10 @@ const Repositories: React.FC = () => {
               Add Repository
             </Button>
           </div>
-        </div>
-      </div>
+        }
+      />
+      <div className="bg-white p-4 sm:p-6 md:p-8">
+        <div className="max-w-7xl mx-auto space-y-6">
 
       {/* Search and Filter Bar */}
       <div className="bg-white rounded-xl border border-gray-200 p-4">
@@ -529,8 +528,9 @@ const Repositories: React.FC = () => {
       <Modal open={showAddModal} onOpenChange={setShowAddModal}>
         <AddRepository onRepositoryAdd={handleAddRepository} />
       </Modal>
+        </div>
       </div>
-    </div>
+    </>
   )
 }
 

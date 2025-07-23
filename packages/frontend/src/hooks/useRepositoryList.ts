@@ -7,6 +7,12 @@ export interface RepositoryListItem {
   id: string
   path: string
   name: string
+  status?: string
+  isGitRepository?: boolean
+  isTaskMasterProject?: boolean
+  gitBranch?: string
+  lastUpdated?: string
+  connectedAt?: string
 }
 
 export interface UseRepositoryListOptions {
@@ -72,7 +78,7 @@ export const useRepositoryList = ({
         // Return full mock repository data
         return {
           success: true,
-          data: mockRepositories,
+          data: mockRepositories as RepositoryListItem[],
         }
       }
       const response = await RepositoryService.getRepositories()

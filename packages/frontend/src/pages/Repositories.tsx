@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRepositoryList } from '../hooks/useRepositoryList'
 import { Spinner } from '../components/ui/atoms/Spinner'
 import { Modal } from '../components/ui/molecules/Modal'
 import { AddRepository } from '../components/Repository/AddRepository'
 import { useRepositoryOperations } from '../hooks/useRepositoryOperations'
+import { useQueryClient } from '@tanstack/react-query'
 import { 
   GitBranch, 
   Plus, 
@@ -17,9 +18,11 @@ import {
 } from 'lucide-react'
 
 const Repositories: React.FC = () => {
+  const queryClient = useQueryClient()
   const { repositories, isLoading, error, refetch } = useRepositoryList()
   const { connectRepository } = useRepositoryOperations()
   const [showAddModal, setShowAddModal] = useState(false)
+
 
   const handleAddRepository = async (path: string) => {
     try {
@@ -59,6 +62,7 @@ const Repositories: React.FC = () => {
     }
   }
 
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -73,7 +77,10 @@ const Repositories: React.FC = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Repositories</h1>
-          <p className="text-gray-600 mt-1">Manage your connected Git repositories</p>
+          <p className="text-gray-600 mt-1">
+            Manage your connected Git repositories 
+            {repositories.length > 0 && ` (${repositories.length} connected)`}
+          </p>
         </div>
         <div className="flex items-center gap-3">
           <button 
@@ -137,8 +144,9 @@ const Repositories: React.FC = () => {
       )}
 
       {/* Repository List */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {repositories.map((repo: any) => (
+      {repositories.length > 0 && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {repositories.map((repo: any) => (
           <div key={repo.id} className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-lg transition-shadow">
             <div className="flex items-start justify-between mb-4">
               <div className="flex-1">
@@ -199,8 +207,9 @@ const Repositories: React.FC = () => {
               </button>
             </div>
           </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* Empty State */}
       {repositories.length === 0 && !error && (

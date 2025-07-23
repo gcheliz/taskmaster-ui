@@ -1,9 +1,9 @@
 import React from 'react'
-import { 
-  GitBranch, 
-  Star, 
-  GitFork, 
-  Clock, 
+import {
+  GitBranch,
+  Star,
+  GitFork,
+  Clock,
   Plus,
   Search,
   Filter,
@@ -11,21 +11,21 @@ import {
   GitCommit,
   GitPullRequest,
   AlertCircle,
-  CheckCircle2
-} from 'lucide-react';
+  CheckCircle2,
+} from 'lucide-react'
 
 interface Repository {
-  id: string;
-  name: string;
-  description: string;
-  language: string;
-  stars: number;
-  forks: number;
-  lastUpdated: string;
-  status: 'active' | 'idle' | 'archived';
-  branches: number;
-  issues: number;
-  pullRequests: number;
+  id: string
+  name: string
+  description: string
+  language: string
+  stars: number
+  forks: number
+  lastUpdated: string
+  status: 'active' | 'idle' | 'archived'
+  branches: number
+  issues: number
+  pullRequests: number
 }
 
 const repositories: Repository[] = [
@@ -40,7 +40,7 @@ const repositories: Repository[] = [
     status: 'active',
     branches: 5,
     issues: 12,
-    pullRequests: 3
+    pullRequests: 3,
   },
   {
     id: '2',
@@ -53,7 +53,7 @@ const repositories: Repository[] = [
     status: 'active',
     branches: 3,
     issues: 5,
-    pullRequests: 1
+    pullRequests: 1,
   },
   {
     id: '3',
@@ -66,7 +66,7 @@ const repositories: Repository[] = [
     status: 'idle',
     branches: 2,
     issues: 8,
-    pullRequests: 0
+    pullRequests: 0,
   },
   {
     id: '4',
@@ -79,36 +79,36 @@ const repositories: Repository[] = [
     status: 'archived',
     branches: 1,
     issues: 15,
-    pullRequests: 0
-  }
-];
+    pullRequests: 0,
+  },
+]
 
 const Repositories = () => {
   const getLanguageColor = (language: string) => {
     const colors: Record<string, string> = {
-      'TypeScript': 'bg-blue-400',
-      'JavaScript': 'bg-yellow-400',
-      'Python': 'bg-green-400',
-      'Go': 'bg-cyan-400',
+      TypeScript: 'bg-blue-400',
+      JavaScript: 'bg-yellow-400',
+      Python: 'bg-green-400',
+      Go: 'bg-cyan-400',
       'React Native': 'bg-purple-400',
-      'Java': 'bg-orange-400',
-      'Ruby': 'bg-red-400'
-    };
-    return colors[language] || 'bg-gray-400';
-  };
+      Java: 'bg-orange-400',
+      Ruby: 'bg-red-400',
+    }
+    return colors[language] || 'bg-gray-400'
+  }
 
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'active':
-        return <CheckCircle2 className="w-4 h-4 text-green-500" />;
+        return <CheckCircle2 className="w-4 h-4 text-green-500" />
       case 'idle':
-        return <AlertCircle className="w-4 h-4 text-amber-500" />;
+        return <AlertCircle className="w-4 h-4 text-amber-500" />
       case 'archived':
-        return <Clock className="w-4 h-4 text-gray-400" />;
+        return <Clock className="w-4 h-4 text-gray-400" />
       default:
-        return null;
+        return null
     }
-  };
+  }
 
   return (
     <div className="p-8">
@@ -118,7 +118,7 @@ const Repositories = () => {
           <h1 className="text-3xl font-bold text-gray-900">Repositories</h1>
           <p className="text-gray-500 mt-2">Manage your Git repositories and integrations</p>
         </div>
-        
+
         <button className="btn btn-primary flex items-center space-x-2">
           <Plus className="w-4 h-4" />
           <span>Add Repository</span>
@@ -129,13 +129,13 @@ const Repositories = () => {
       <div className="flex items-center space-x-4 mb-6">
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <input 
-            type="text" 
-            placeholder="Search repositories..." 
+          <input
+            type="text"
+            placeholder="Search repositories..."
             className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
           />
         </div>
-        
+
         <button className="btn btn-secondary flex items-center space-x-2">
           <Filter className="w-4 h-4" />
           <span>Filter</span>

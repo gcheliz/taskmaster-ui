@@ -1,67 +1,67 @@
-import { create } from 'zustand';
-import { devtools, persist } from 'zustand/middleware';
-import { immer } from 'zustand/middleware/immer';
-import { RepositoryService } from '../services/repositoryService';
-import type { RepositoryCardEnhancedData } from '../components/Repository/RepositoryCard';
+import { create } from 'zustand'
+import { devtools, persist } from 'zustand/middleware'
+import { immer } from 'zustand/middleware/immer'
+import { RepositoryService } from '../services/repositoryService'
+import type { RepositoryCardEnhancedData } from '../components/Repository/RepositoryCard'
 
 export interface RepositoryState {
-  id: string;
-  isLoading: boolean;
-  isSyncing: boolean;
-  error: string | null;
-  lastSyncTime: number | null;
+  id: string
+  isLoading: boolean
+  isSyncing: boolean
+  error: string | null
+  lastSyncTime: number | null
 }
 
 export interface NewBranchModalState {
-  isOpen: boolean;
-  repositoryId: string | null;
-  isCreating: boolean;
-  error: string | null;
+  isOpen: boolean
+  repositoryId: string | null
+  isCreating: boolean
+  error: string | null
 }
 
 export interface RepositoryStore {
   // Repository states
-  repositories: Record<string, RepositoryState>;
+  repositories: Record<string, RepositoryState>
 
   // New Branch Modal state
-  newBranchModal: NewBranchModalState;
+  newBranchModal: NewBranchModalState
 
   // Navigation state
-  activeRepositoryId: string | null;
-  showCommitHistory: boolean;
-  commitHistoryRepositoryId: string | null;
+  activeRepositoryId: string | null
+  showCommitHistory: boolean
+  commitHistoryRepositoryId: string | null
 
   // Actions for repository management
-  setRepositoryLoading: (repositoryId: string, isLoading: boolean) => void;
-  setRepositorySyncing: (repositoryId: string, isSyncing: boolean) => void;
-  setRepositoryError: (repositoryId: string, error: string | null) => void;
-  updateLastSyncTime: (repositoryId: string) => void;
+  setRepositoryLoading: (repositoryId: string, isLoading: boolean) => void
+  setRepositorySyncing: (repositoryId: string, isSyncing: boolean) => void
+  setRepositoryError: (repositoryId: string, error: string | null) => void
+  updateLastSyncTime: (repositoryId: string) => void
 
   // Actions for syncing repositories
-  syncRepository: (repositoryId: string) => Promise<void>;
-  syncAllRepositories: () => Promise<void>;
+  syncRepository: (repositoryId: string) => Promise<void>
+  syncAllRepositories: () => Promise<void>
 
   // Actions for New Branch Modal
-  openNewBranchModal: (repositoryId: string) => void;
-  closeNewBranchModal: () => void;
-  setNewBranchCreating: (isCreating: boolean) => void;
-  setNewBranchError: (error: string | null) => void;
+  openNewBranchModal: (repositoryId: string) => void
+  closeNewBranchModal: () => void
+  setNewBranchCreating: (isCreating: boolean) => void
+  setNewBranchError: (error: string | null) => void
   createNewBranch: (
     repositoryId: string,
     branchName: string,
     fromBranch?: string
-  ) => Promise<boolean>;
+  ) => Promise<boolean>
 
   // Actions for Commit History
-  openCommitHistory: (repositoryId: string) => void;
-  closeCommitHistory: () => void;
+  openCommitHistory: (repositoryId: string) => void
+  closeCommitHistory: () => void
 
   // Actions for repository selection
-  setActiveRepository: (repositoryId: string | null) => void;
+  setActiveRepository: (repositoryId: string | null) => void
 
   // Utility actions
-  initializeRepository: (repositoryId: string) => void;
-  cleanup: () => void;
+  initializeRepository: (repositoryId: string) => void
+  cleanup: () => void
 }
 
 const initialNewBranchModalState: NewBranchModalState = {
@@ -69,7 +69,7 @@ const initialNewBranchModalState: NewBranchModalState = {
   repositoryId: null,
   isCreating: false,
   error: null,
-};
+}
 
 export const useRepositoryStore = create<RepositoryStore>()(
   devtools(
@@ -84,7 +84,7 @@ export const useRepositoryStore = create<RepositoryStore>()(
 
         // Repository state management
         setRepositoryLoading: (repositoryId: string, isLoading: boolean) =>
-          set(state => {
+          set((state) => {
             if (!state.repositories[repositoryId]) {
               state.repositories[repositoryId] = {
                 id: repositoryId,
@@ -92,13 +92,13 @@ export const useRepositoryStore = create<RepositoryStore>()(
                 isSyncing: false,
                 error: null,
                 lastSyncTime: null,
-              };
+              }
             }
-            state.repositories[repositoryId].isLoading = isLoading;
+            state.repositories[repositoryId].isLoading = isLoading
           }),
 
         setRepositorySyncing: (repositoryId: string, isSyncing: boolean) =>
-          set(state => {
+          set((state) => {
             if (!state.repositories[repositoryId]) {
               state.repositories[repositoryId] = {
                 id: repositoryId,
@@ -106,16 +106,16 @@ export const useRepositoryStore = create<RepositoryStore>()(
                 isSyncing: false,
                 error: null,
                 lastSyncTime: null,
-              };
+              }
             }
-            state.repositories[repositoryId].isSyncing = isSyncing;
+            state.repositories[repositoryId].isSyncing = isSyncing
             if (isSyncing) {
-              state.repositories[repositoryId].error = null;
+              state.repositories[repositoryId].error = null
             }
           }),
 
         setRepositoryError: (repositoryId: string, error: string | null) =>
-          set(state => {
+          set((state) => {
             if (!state.repositories[repositoryId]) {
               state.repositories[repositoryId] = {
                 id: repositoryId,
@@ -123,17 +123,17 @@ export const useRepositoryStore = create<RepositoryStore>()(
                 isSyncing: false,
                 error: null,
                 lastSyncTime: null,
-              };
+              }
             }
-            state.repositories[repositoryId].error = error;
+            state.repositories[repositoryId].error = error
             if (error) {
-              state.repositories[repositoryId].isSyncing = false;
-              state.repositories[repositoryId].isLoading = false;
+              state.repositories[repositoryId].isSyncing = false
+              state.repositories[repositoryId].isLoading = false
             }
           }),
 
         updateLastSyncTime: (repositoryId: string) =>
-          set(state => {
+          set((state) => {
             if (!state.repositories[repositoryId]) {
               state.repositories[repositoryId] = {
                 id: repositoryId,
@@ -141,145 +141,126 @@ export const useRepositoryStore = create<RepositoryStore>()(
                 isSyncing: false,
                 error: null,
                 lastSyncTime: null,
-              };
+              }
             }
-            state.repositories[repositoryId].lastSyncTime = Date.now();
-            state.repositories[repositoryId].isSyncing = false;
-            state.repositories[repositoryId].error = null;
+            state.repositories[repositoryId].lastSyncTime = Date.now()
+            state.repositories[repositoryId].isSyncing = false
+            state.repositories[repositoryId].error = null
           }),
 
         // Sync functionality
         syncRepository: async (repositoryId: string) => {
-          const {
-            setRepositorySyncing,
-            setRepositoryError,
-            updateLastSyncTime,
-          } = get();
+          const { setRepositorySyncing, setRepositoryError, updateLastSyncTime } = get()
 
           try {
-            setRepositorySyncing(repositoryId, true);
+            setRepositorySyncing(repositoryId, true)
 
             // Call the repository service to refresh data
-            const result = await RepositoryService.refreshRepository(
-              repositoryId,
-              true
-            );
+            const result = await RepositoryService.refreshRepository(repositoryId, true)
 
             if (!result.success) {
-              throw new Error(result.error || 'Failed to sync repository');
+              throw new Error(result.error || 'Failed to sync repository')
             }
 
-            updateLastSyncTime(repositoryId);
+            updateLastSyncTime(repositoryId)
 
             // Trigger a refetch of repository data (this will be handled by React Query)
             // The UI components using React Query will automatically update
           } catch (error) {
-            const errorMessage =
-              error instanceof Error ? error.message : 'Unknown sync error';
-            setRepositoryError(repositoryId, errorMessage);
+            const errorMessage = error instanceof Error ? error.message : 'Unknown sync error'
+            setRepositoryError(repositoryId, errorMessage)
           }
         },
 
         syncAllRepositories: async () => {
-          const { repositories, syncRepository } = get();
-          const repositoryIds = Object.keys(repositories);
+          const { repositories, syncRepository } = get()
+          const repositoryIds = Object.keys(repositories)
 
           // Sync repositories in parallel
           await Promise.allSettled(
-            repositoryIds.map(repositoryId => syncRepository(repositoryId))
-          );
+            repositoryIds.map((repositoryId) => syncRepository(repositoryId))
+          )
         },
 
         // New Branch Modal management
         openNewBranchModal: (repositoryId: string) =>
-          set(state => {
-            state.newBranchModal.isOpen = true;
-            state.newBranchModal.repositoryId = repositoryId;
-            state.newBranchModal.error = null;
+          set((state) => {
+            state.newBranchModal.isOpen = true
+            state.newBranchModal.repositoryId = repositoryId
+            state.newBranchModal.error = null
           }),
 
         closeNewBranchModal: () =>
-          set(state => {
-            state.newBranchModal = { ...initialNewBranchModalState };
+          set((state) => {
+            state.newBranchModal = { ...initialNewBranchModalState }
           }),
 
         setNewBranchCreating: (isCreating: boolean) =>
-          set(state => {
-            state.newBranchModal.isCreating = isCreating;
+          set((state) => {
+            state.newBranchModal.isCreating = isCreating
           }),
 
         setNewBranchError: (error: string | null) =>
-          set(state => {
-            state.newBranchModal.error = error;
+          set((state) => {
+            state.newBranchModal.error = error
             if (error) {
-              state.newBranchModal.isCreating = false;
+              state.newBranchModal.isCreating = false
             }
           }),
 
-        createNewBranch: async (
-          repositoryId: string,
-          branchName: string,
-          fromBranch?: string
-        ) => {
-          const {
-            setNewBranchCreating,
-            setNewBranchError,
-            closeNewBranchModal,
-          } = get();
+        createNewBranch: async (repositoryId: string, branchName: string, fromBranch?: string) => {
+          const { setNewBranchCreating, setNewBranchError, closeNewBranchModal } = get()
 
           try {
-            setNewBranchCreating(true);
-            setNewBranchError(null);
+            setNewBranchCreating(true)
+            setNewBranchError(null)
 
             const result = await RepositoryService.createBranch(
               repositoryId,
               branchName,
               fromBranch
-            );
+            )
 
             if (!result.success) {
-              throw new Error(result.error || 'Failed to create branch');
+              throw new Error(result.error || 'Failed to create branch')
             }
 
             // Close the modal on success
-            closeNewBranchModal();
+            closeNewBranchModal()
 
             // Trigger a sync to update the repository data
-            get().syncRepository(repositoryId);
+            get().syncRepository(repositoryId)
 
-            return true;
+            return true
           } catch (error) {
-            const errorMessage =
-              error instanceof Error
-                ? error.message
-                : 'Failed to create branch';
-            setNewBranchError(errorMessage);
-            return false;
+            const errorMessage = error instanceof Error ? error.message : 'Failed to create branch'
+            setNewBranchError(errorMessage)
+            return false
           }
         },
 
         // Commit History management
         openCommitHistory: (repositoryId: string) =>
-          set(state => {
-            state.showCommitHistory = true;
-            state.commitHistoryRepositoryId = repositoryId;
+          set((state) => {
+            state.showCommitHistory = true
+            state.commitHistoryRepositoryId = repositoryId
           }),
 
         closeCommitHistory: () =>
-          set(state => {
-            state.showCommitHistory = false;
-            state.commitHistoryRepositoryId = null;
+          set((state) => {
+            state.showCommitHistory = false
+            state.commitHistoryRepositoryId = null
           }),
 
         // Repository selection
         setActiveRepository: (repositoryId: string | null) =>
-          set(state => {
-            state.activeRepositoryId = repositoryId;
+          set((state) => {
+            state.activeRepositoryId = repositoryId
           }),
 
         // Utility functions
         initializeRepository: (repositoryId: string) =>
-          set(state => {
+          set((state) => {
             if (!state.repositories[repositoryId]) {
               state.repositories[repositoryId] = {
                 id: repositoryId,
@@ -287,23 +268,23 @@ export const useRepositoryStore = create<RepositoryStore>()(
                 isSyncing: false,
                 error: null,
                 lastSyncTime: null,
-              };
+              }
             }
           }),
 
         cleanup: () =>
-          set(state => {
-            state.repositories = {};
-            state.newBranchModal = { ...initialNewBranchModalState };
-            state.activeRepositoryId = null;
-            state.showCommitHistory = false;
-            state.commitHistoryRepositoryId = null;
+          set((state) => {
+            state.repositories = {}
+            state.newBranchModal = { ...initialNewBranchModalState }
+            state.activeRepositoryId = null
+            state.showCommitHistory = false
+            state.commitHistoryRepositoryId = null
           }),
       })),
       {
         name: 'repository-store',
         // Only persist non-sensitive state
-        partialize: state => ({
+        partialize: (state) => ({
           activeRepositoryId: state.activeRepositoryId,
           repositories: Object.fromEntries(
             Object.entries(state.repositories).map(([id, repo]) => [
@@ -323,49 +304,33 @@ export const useRepositoryStore = create<RepositoryStore>()(
       name: 'repository-store',
     }
   )
-);
+)
 
 // Selectors for common use cases
 export const useRepositoryState = (repositoryId: string) =>
-  useRepositoryStore(state => state.repositories[repositoryId]);
+  useRepositoryStore((state) => state.repositories[repositoryId])
 
-export const useNewBranchModal = () =>
-  useRepositoryStore(state => state.newBranchModal);
+export const useNewBranchModal = () => useRepositoryStore((state) => state.newBranchModal)
 
 export const useCommitHistory = () =>
-  useRepositoryStore(state => ({
+  useRepositoryStore((state) => ({
     showCommitHistory: state.showCommitHistory,
     repositoryId: state.commitHistoryRepositoryId,
-  }));
+  }))
 
-export const useActiveRepository = () =>
-  useRepositoryStore(state => state.activeRepositoryId);
+export const useActiveRepository = () => useRepositoryStore((state) => state.activeRepositoryId)
 
 // Action selectors
 export const useRepositoryActions = () => {
-  const syncRepository = useRepositoryStore(state => state.syncRepository);
-  const syncAllRepositories = useRepositoryStore(
-    state => state.syncAllRepositories
-  );
-  const openNewBranchModal = useRepositoryStore(
-    state => state.openNewBranchModal
-  );
-  const closeNewBranchModal = useRepositoryStore(
-    state => state.closeNewBranchModal
-  );
-  const createNewBranch = useRepositoryStore(state => state.createNewBranch);
-  const openCommitHistory = useRepositoryStore(
-    state => state.openCommitHistory
-  );
-  const closeCommitHistory = useRepositoryStore(
-    state => state.closeCommitHistory
-  );
-  const setActiveRepository = useRepositoryStore(
-    state => state.setActiveRepository
-  );
-  const initializeRepository = useRepositoryStore(
-    state => state.initializeRepository
-  );
+  const syncRepository = useRepositoryStore((state) => state.syncRepository)
+  const syncAllRepositories = useRepositoryStore((state) => state.syncAllRepositories)
+  const openNewBranchModal = useRepositoryStore((state) => state.openNewBranchModal)
+  const closeNewBranchModal = useRepositoryStore((state) => state.closeNewBranchModal)
+  const createNewBranch = useRepositoryStore((state) => state.createNewBranch)
+  const openCommitHistory = useRepositoryStore((state) => state.openCommitHistory)
+  const closeCommitHistory = useRepositoryStore((state) => state.closeCommitHistory)
+  const setActiveRepository = useRepositoryStore((state) => state.setActiveRepository)
+  const initializeRepository = useRepositoryStore((state) => state.initializeRepository)
 
   return {
     syncRepository,
@@ -377,5 +342,5 @@ export const useRepositoryActions = () => {
     closeCommitHistory,
     setActiveRepository,
     initializeRepository,
-  };
-};
+  }
+}

@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { FormField } from '../../components/ui/molecules/FormField';
-import { Icon, EyeIcon, CheckIcon } from '../../components/ui/atoms/Icon';
+import type { Meta, StoryObj } from '@storybook/react'
+import { FormField } from '../../components/ui/molecules/FormField'
+import { Icon, EyeIcon, CheckIcon } from '../../components/ui/atoms/Icon'
 
 const meta: Meta<typeof FormField> = {
   title: 'Molecules/FormField',
@@ -40,16 +40,16 @@ const meta: Meta<typeof FormField> = {
     },
   },
   decorators: [
-    Story => (
+    (Story) => (
       <div className="w-80">
         <Story />
       </div>
     ),
   ],
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {
@@ -57,7 +57,7 @@ export const Default: Story = {
     placeholder: 'Enter your email',
     type: 'email',
   },
-};
+}
 
 export const Required: Story = {
   args: {
@@ -66,7 +66,7 @@ export const Required: Story = {
     type: 'password',
     required: true,
   },
-};
+}
 
 export const WithDescription: Story = {
   args: {
@@ -74,18 +74,17 @@ export const WithDescription: Story = {
     placeholder: 'Enter username',
     description: 'Choose a unique username for your account',
   },
-};
+}
 
 export const WithHelpText: Story = {
   args: {
     label: 'Password',
     placeholder: 'Enter password',
     type: 'password',
-    helpText:
-      'Must be at least 8 characters with uppercase, lowercase, and numbers',
+    helpText: 'Must be at least 8 characters with uppercase, lowercase, and numbers',
     required: true,
   },
-};
+}
 
 export const WithError: Story = {
   args: {
@@ -95,7 +94,7 @@ export const WithError: Story = {
     error: 'Please enter a valid email address',
     value: 'invalid-email',
   },
-};
+}
 
 export const WithSuccess: Story = {
   args: {
@@ -104,7 +103,7 @@ export const WithSuccess: Story = {
     success: 'Username is available',
     value: 'john_doe',
   },
-};
+}
 
 export const WithLeftIcon: Story = {
   args: {
@@ -112,7 +111,7 @@ export const WithLeftIcon: Story = {
     placeholder: 'Search tasks...',
     leftIcon: <Icon icon={EyeIcon} size="sm" />,
   },
-};
+}
 
 export const WithRightIcon: Story = {
   args: {
@@ -121,7 +120,7 @@ export const WithRightIcon: Story = {
     rightIcon: <Icon icon={CheckIcon} size="sm" color="success" />,
     success: 'Valid input',
   },
-};
+}
 
 export const InlineVariant: Story = {
   args: {
@@ -129,7 +128,7 @@ export const InlineVariant: Story = {
     variant: 'inline',
     type: 'checkbox',
   },
-};
+}
 
 export const Disabled: Story = {
   args: {
@@ -138,30 +137,22 @@ export const Disabled: Story = {
     disabled: true,
     description: 'This field cannot be edited',
   },
-};
+}
 
 export const DifferentSizes: Story = {
   render: () => (
     <div className="space-y-6">
       <FormField label="Small Field" placeholder="Small input" inputSize="sm" />
-      <FormField
-        label="Medium Field"
-        placeholder="Medium input"
-        inputSize="md"
-      />
+      <FormField label="Medium Field" placeholder="Medium input" inputSize="md" />
       <FormField label="Large Field" placeholder="Large input" inputSize="lg" />
     </div>
   ),
-};
+}
 
 export const CompleteForm: Story = {
   render: () => (
     <form className="space-y-6 max-w-md">
-      <FormField
-        label="Full Name"
-        placeholder="Enter your full name"
-        required
-      />
+      <FormField label="Full Name" placeholder="Enter your full name" required />
 
       <FormField
         label="Email Address"
@@ -200,7 +191,7 @@ export const CompleteForm: Story = {
       />
     </form>
   ),
-};
+}
 
 export const ValidationStates: Story = {
   render: () => (
@@ -236,15 +227,13 @@ export const ValidationStates: Story = {
       />
     </div>
   ),
-};
+}
 
 export const AccessibilityExample: Story = {
   render: () => (
     <form className="space-y-6 max-w-md">
       <fieldset className="border border-secondary-200 rounded-lg p-4">
-        <legend className="px-2 text-sm font-medium">
-          Personal Information
-        </legend>
+        <legend className="px-2 text-sm font-medium">Personal Information</legend>
 
         <div className="space-y-4">
           <FormField
@@ -271,9 +260,7 @@ export const AccessibilityExample: Story = {
       </fieldset>
 
       <fieldset className="border border-secondary-200 rounded-lg p-4">
-        <legend className="px-2 text-sm font-medium">
-          Contact Information
-        </legend>
+        <legend className="px-2 text-sm font-medium">Contact Information</legend>
 
         <div className="space-y-4">
           <FormField
@@ -294,4 +281,4 @@ export const AccessibilityExample: Story = {
       </fieldset>
     </form>
   ),
-};
+}

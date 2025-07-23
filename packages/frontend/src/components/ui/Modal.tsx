@@ -4,23 +4,20 @@ import { createPortal } from 'react-dom'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '../../utils/cn'
 
-const modalVariants = cva(
-  'relative bg-white rounded-xl shadow-modal',
-  {
-    variants: {
-      size: {
-        sm: 'w-full max-w-sm',
-        md: 'w-full max-w-md',
-        lg: 'w-full max-w-lg',
-        xl: 'w-full max-w-xl',
-        full: 'w-full max-w-full m-4',
-      },
+const modalVariants = cva('relative bg-white rounded-xl shadow-modal', {
+  variants: {
+    size: {
+      sm: 'w-full max-w-sm',
+      md: 'w-full max-w-md',
+      lg: 'w-full max-w-lg',
+      xl: 'w-full max-w-xl',
+      full: 'w-full max-w-full m-4',
     },
-    defaultVariants: {
-      size: 'md',
-    },
-  }
-)
+  },
+  defaultVariants: {
+    size: 'md',
+  },
+})
 
 export interface ModalProps
   extends HTMLAttributes<HTMLDivElement>,
@@ -34,18 +31,21 @@ export interface ModalProps
 }
 
 const Modal = forwardRef<HTMLDivElement, ModalProps>(
-  ({ 
-    className, 
-    size,
-    isOpen,
-    onClose,
-    title,
-    description,
-    closeOnOverlayClick = true,
-    closeOnEscape = true,
-    children,
-    ...props 
-  }, ref) => {
+  (
+    {
+      className,
+      size,
+      isOpen,
+      onClose,
+      title,
+      description,
+      closeOnOverlayClick = true,
+      closeOnEscape = true,
+      children,
+      ...props
+    },
+    ref
+  ) => {
     const overlayRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
@@ -84,11 +84,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
         aria-labelledby={title ? 'modal-title' : undefined}
         aria-describedby={description ? 'modal-description' : undefined}
       >
-        <div
-          ref={ref}
-          className={cn(modalVariants({ size, className }))}
-          {...props}
-        >
+        <div ref={ref} className={cn(modalVariants({ size, className }))} {...props}>
           {(title || description) && (
             <div className="px-6 pt-6">
               {title && (
@@ -103,9 +99,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
               )}
             </div>
           )}
-          <div className="p-6">
-            {children}
-          </div>
+          <div className="p-6">{children}</div>
           <button
             onClick={onClose}
             className="absolute right-4 top-4 rounded-md p-1 text-secondary-400 hover:text-secondary-600 focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -135,22 +129,20 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
 
 Modal.displayName = 'Modal'
 
-export interface ModalFooterProps extends HTMLAttributes<HTMLDivElement> {}
+export type ModalFooterProps = HTMLAttributes<HTMLDivElement>
 
-const ModalFooter = forwardRef<HTMLDivElement, ModalFooterProps>(
-  ({ className, ...props }, ref) => {
-    return (
-      <div
-        ref={ref}
-        className={cn(
-          'flex items-center justify-end space-x-2 border-t border-secondary-200 px-6 py-4',
-          className
-        )}
-        {...props}
-      />
-    )
-  }
-)
+const ModalFooter = forwardRef<HTMLDivElement, ModalFooterProps>(({ className, ...props }, ref) => {
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        'flex items-center justify-end space-x-2 border-t border-secondary-200 px-6 py-4',
+        className
+      )}
+      {...props}
+    />
+  )
+})
 
 ModalFooter.displayName = 'ModalFooter'
 

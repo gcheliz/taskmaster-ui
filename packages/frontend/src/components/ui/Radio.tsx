@@ -2,8 +2,7 @@ import React, { forwardRef } from 'react'
 import type { InputHTMLAttributes } from 'react'
 import { cn } from '../../utils/cn'
 
-export interface RadioProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
+export interface RadioProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
   label?: string
 }
 
@@ -61,31 +60,15 @@ export interface RadioGroupProps {
 }
 
 const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
-  ({ 
-    name, 
-    value, 
-    onChange, 
-    options, 
-    error, 
-    label, 
-    orientation = 'vertical',
-    className 
-  }, ref) => {
+  ({ name, value, onChange, options, error, label, orientation = 'vertical', className }, ref) => {
     const groupId = `radio-group-${Math.random().toString(36).substr(2, 9)}`
     const errorId = `${groupId}-error`
 
     return (
       <div ref={ref} className={cn('space-y-2', className)}>
-        {label && (
-          <div className="text-sm font-medium text-secondary-700">
-            {label}
-          </div>
-        )}
+        {label && <div className="text-sm font-medium text-secondary-700">{label}</div>}
         <div
-          className={cn(
-            'space-y-2',
-            orientation === 'horizontal' && 'flex space-x-4 space-y-0'
-          )}
+          className={cn('space-y-2', orientation === 'horizontal' && 'flex space-x-4 space-y-0')}
           role="radiogroup"
           aria-labelledby={label ? groupId : undefined}
           aria-invalid={!!error}

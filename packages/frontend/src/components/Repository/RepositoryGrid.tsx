@@ -1,60 +1,50 @@
-import React, { useState, useMemo } from 'react';
-import { cn } from '../../utils/cn';
-import { Input } from '../ui/atoms/Input';
-import { Select } from '../ui/atoms/Select';
-import { Button } from '../ui/atoms/Button';
-import { Badge } from '../ui/atoms/Badge';
-import { Spinner } from '../ui/atoms/Spinner';
-import { RepositoryCard, type RepositoryCardProps } from './RepositoryCard';
-import { RepositoryCardCompact } from './RepositoryCardCompact';
+import React, { useState, useMemo } from 'react'
+import { cn } from '../../utils/cn'
+import { Input } from '../ui/atoms/Input'
+import { Select } from '../ui/atoms/Select'
+import { Button } from '../ui/atoms/Button'
+import { Badge } from '../ui/atoms/Badge'
+import { Spinner } from '../ui/atoms/Spinner'
+import { RepositoryCard, type RepositoryCardProps } from './RepositoryCard'
+import { RepositoryCardCompact } from './RepositoryCardCompact'
 
 export interface RepositoryGridProps {
   /** Array of repositories to display */
-  repositories: RepositoryCardProps['repository'][];
+  repositories: RepositoryCardProps['repository'][]
   /** Loading state */
-  isLoading?: boolean;
+  isLoading?: boolean
   /** Error message */
-  error?: string | null;
+  error?: string | null
   /** Grid layout type */
-  layout?: 'grid' | 'list' | 'compact';
+  layout?: 'grid' | 'list' | 'compact'
   /** Whether to show enhanced features */
-  showEnhanced?: boolean;
+  showEnhanced?: boolean
   /** Whether to enable real-time updates */
-  enableRealtime?: boolean;
+  enableRealtime?: boolean
   /** Search and filter options */
-  searchable?: boolean;
-  filterable?: boolean;
-  sortable?: boolean;
+  searchable?: boolean
+  filterable?: boolean
+  sortable?: boolean
   /** Pagination */
   pagination?: {
-    currentPage: number;
-    totalPages: number;
-    pageSize: number;
-    onPageChange: (page: number) => void;
-  };
+    currentPage: number
+    totalPages: number
+    pageSize: number
+    onPageChange: (page: number) => void
+  }
   /** Event handlers */
-  onRepositoryClick?: (repository: RepositoryCardProps['repository']) => void;
-  onRepositoryRefresh?: (repositoryId: string) => void;
-  onRepositoryDetails?: (repositoryId: string) => void;
-  onRepositoryCommits?: (repositoryId: string) => void;
-  onRepositoryManage?: (repositoryId: string) => void;
-  onRefreshAll?: () => void;
+  onRepositoryClick?: (repository: RepositoryCardProps['repository']) => void
+  onRepositoryRefresh?: (repositoryId: string) => void
+  onRepositoryDetails?: (repositoryId: string) => void
+  onRepositoryCommits?: (repositoryId: string) => void
+  onRepositoryManage?: (repositoryId: string) => void
+  onRefreshAll?: () => void
   /** Additional CSS classes */
-  className?: string;
+  className?: string
 }
 
-export type RepositorySortOption =
-  | 'name'
-  | 'updated'
-  | 'stars'
-  | 'health'
-  | 'size';
-export type RepositoryFilterOption =
-  | 'all'
-  | 'private'
-  | 'public'
-  | 'forked'
-  | 'source';
+export type RepositorySortOption = 'name' | 'updated' | 'stars' | 'health' | 'size'
+export type RepositoryFilterOption = 'all' | 'private' | 'public' | 'forked' | 'source'
 
 export const RepositoryGrid: React.FC<RepositoryGridProps> = ({
   repositories,
@@ -75,80 +65,77 @@ export const RepositoryGrid: React.FC<RepositoryGridProps> = ({
   onRefreshAll,
   className,
 }) => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState<RepositorySortOption>('updated');
-  const [filterBy, setFilterBy] = useState<RepositoryFilterOption>('all');
-  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('')
+  const [sortBy, setSortBy] = useState<RepositorySortOption>('updated')
+  const [filterBy, setFilterBy] = useState<RepositoryFilterOption>('all')
+  const [isRefreshing, setIsRefreshing] = useState(false)
 
   // Filter and sort repositories
   const filteredAndSortedRepositories = useMemo(() => {
-    let filtered = repositories;
+    let filtered = repositories
 
     // Apply search filter
     if (searchQuery) {
-      const query = searchQuery.toLowerCase();
+      const query = searchQuery.toLowerCase()
       filtered = filtered.filter(
-        repo =>
+        (repo) =>
           repo.name.toLowerCase().includes(query) ||
           repo.description?.toLowerCase().includes(query) ||
           repo.language?.toLowerCase().includes(query)
-      );
+      )
     }
 
     // Apply category filter
     if (filterBy !== 'all') {
-      filtered = filtered.filter(repo => {
+      filtered = filtered.filter((repo) => {
         switch (filterBy) {
           case 'private':
-            return repo.isPrivate;
+            return repo.isPrivate
           case 'public':
-            return !repo.isPrivate;
+            return !repo.isPrivate
           default:
-            return true;
+            return true
         }
-      });
+      })
     }
 
     // Apply sorting
     return filtered.sort((a, b) => {
       switch (sortBy) {
         case 'name':
-          return a.name.localeCompare(b.name);
+          return a.name.localeCompare(b.name)
         case 'updated':
-          return (
-            new Date(b.lastCommit.date).getTime() -
-            new Date(a.lastCommit.date).getTime()
-          );
+          return new Date(b.lastCommit.date).getTime() - new Date(a.lastCommit.date).getTime()
         case 'stars':
-          return (b.starCount || 0) - (a.starCount || 0);
+          return (b.starCount || 0) - (a.starCount || 0)
         case 'size':
-          return (b.size || 0) - (a.size || 0);
+          return (b.size || 0) - (a.size || 0)
         default:
-          return 0;
+          return 0
       }
-    });
-  }, [repositories, searchQuery, sortBy, filterBy]);
+    })
+  }, [repositories, searchQuery, sortBy, filterBy])
 
   const handleRefreshAll = async () => {
-    setIsRefreshing(true);
+    setIsRefreshing(true)
     try {
-      await onRefreshAll?.();
+      await onRefreshAll?.()
     } finally {
-      setIsRefreshing(false);
+      setIsRefreshing(false)
     }
-  };
+  }
 
   const getGridColumns = () => {
     switch (layout) {
       case 'list':
-        return 'grid-cols-1';
+        return 'grid-cols-1'
       case 'compact':
-        return 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5';
+        return 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5'
       case 'grid':
       default:
-        return 'grid-cols-1 lg:grid-cols-2 xl:grid-cols-3';
+        return 'grid-cols-1 lg:grid-cols-2 xl:grid-cols-3'
     }
-  };
+  }
 
   if (error) {
     return (
@@ -162,7 +149,7 @@ export const RepositoryGrid: React.FC<RepositoryGridProps> = ({
           Try Again
         </Button>
       </div>
-    );
+    )
   }
 
   return (
@@ -216,17 +203,8 @@ export const RepositoryGrid: React.FC<RepositoryGridProps> = ({
             </Button>
           </div>
 
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleRefreshAll}
-            disabled={isRefreshing}
-          >
-            {isRefreshing ? (
-              <Spinner size="sm" />
-            ) : (
-              <RefreshIcon className="w-4 h-4" />
-            )}
+          <Button variant="outline" size="sm" onClick={handleRefreshAll} disabled={isRefreshing}>
+            {isRefreshing ? <Spinner size="sm" /> : <RefreshIcon className="w-4 h-4" />}
             Refresh
           </Button>
         </div>
@@ -241,7 +219,7 @@ export const RepositoryGrid: React.FC<RepositoryGridProps> = ({
                 type="text"
                 placeholder="Search repositories..."
                 value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full"
               />
             </div>
@@ -251,9 +229,7 @@ export const RepositoryGrid: React.FC<RepositoryGridProps> = ({
             {filterable && (
               <Select
                 value={filterBy}
-                onChange={e =>
-                  setFilterBy(e.target.value as RepositoryFilterOption)
-                }
+                onChange={(e) => setFilterBy(e.target.value as RepositoryFilterOption)}
               >
                 <option value="all">All Repositories</option>
                 <option value="private">Private</option>
@@ -264,9 +240,7 @@ export const RepositoryGrid: React.FC<RepositoryGridProps> = ({
             {sortable && (
               <Select
                 value={sortBy}
-                onChange={e =>
-                  setSortBy(e.target.value as RepositorySortOption)
-                }
+                onChange={(e) => setSortBy(e.target.value as RepositorySortOption)}
               >
                 <option value="updated">Recently Updated</option>
                 <option value="name">Name</option>
@@ -288,19 +262,15 @@ export const RepositoryGrid: React.FC<RepositoryGridProps> = ({
         <div className="text-center py-12">
           <div className="text-gray-400 mb-4">
             <FolderIcon className="w-16 h-16 mx-auto mb-4" />
-            <p className="text-lg font-medium text-gray-900">
-              No repositories found
-            </p>
+            <p className="text-lg font-medium text-gray-900">No repositories found</p>
             <p className="text-sm text-gray-500 mt-1">
-              {searchQuery
-                ? 'Try adjusting your search criteria'
-                : 'Start by adding a repository'}
+              {searchQuery ? 'Try adjusting your search criteria' : 'Start by adding a repository'}
             </p>
           </div>
         </div>
       ) : (
         <div className={cn('grid gap-6', getGridColumns())}>
-          {filteredAndSortedRepositories.map(repository =>
+          {filteredAndSortedRepositories.map((repository) =>
             layout === 'compact' ? (
               <RepositoryCardCompact
                 key={repository.id}
@@ -339,9 +309,7 @@ export const RepositoryGrid: React.FC<RepositoryGridProps> = ({
             <Button
               variant="outline"
               size="sm"
-              onClick={() =>
-                pagination.onPageChange(pagination.currentPage - 1)
-              }
+              onClick={() => pagination.onPageChange(pagination.currentPage - 1)}
               disabled={pagination.currentPage === 1}
             >
               Previous
@@ -349,9 +317,7 @@ export const RepositoryGrid: React.FC<RepositoryGridProps> = ({
             <Button
               variant="outline"
               size="sm"
-              onClick={() =>
-                pagination.onPageChange(pagination.currentPage + 1)
-              }
+              onClick={() => pagination.onPageChange(pagination.currentPage + 1)}
               disabled={pagination.currentPage === pagination.totalPages}
             >
               Next
@@ -360,17 +326,12 @@ export const RepositoryGrid: React.FC<RepositoryGridProps> = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
 // Simple SVG icons
 const GridIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg
-    className={className}
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -378,15 +339,10 @@ const GridIcon: React.FC<{ className?: string }> = ({ className }) => (
       d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
     />
   </svg>
-);
+)
 
 const ListIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg
-    className={className}
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -394,15 +350,10 @@ const ListIcon: React.FC<{ className?: string }> = ({ className }) => (
       d="M4 6h16M4 10h16M4 14h16M4 18h16"
     />
   </svg>
-);
+)
 
 const CompactIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg
-    className={className}
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -410,15 +361,10 @@ const CompactIcon: React.FC<{ className?: string }> = ({ className }) => (
       d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z"
     />
   </svg>
-);
+)
 
 const RefreshIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg
-    className={className}
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -426,15 +372,10 @@ const RefreshIcon: React.FC<{ className?: string }> = ({ className }) => (
       d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
     />
   </svg>
-);
+)
 
 const ExclamationIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg
-    className={className}
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -442,15 +383,10 @@ const ExclamationIcon: React.FC<{ className?: string }> = ({ className }) => (
       d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.464 0L4.34 16.5c-.77.833.192 2.5 1.732 2.5z"
     />
   </svg>
-);
+)
 
 const FolderIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg
-    className={className}
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -458,6 +394,6 @@ const FolderIcon: React.FC<{ className?: string }> = ({ className }) => (
       d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
     />
   </svg>
-);
+)
 
-export default RepositoryGrid;
+export default RepositoryGrid

@@ -3,44 +3,38 @@ import type { ButtonHTMLAttributes } from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '../../utils/cn'
 
-const buttonVariants = cva(
-  'btn',
-  {
-    variants: {
-      variant: {
-        primary:
-          'btn-primary',
-        secondary:
-          'btn-secondary',
-        ghost:
-          'text-gray-700 hover:bg-gray-100 hover:text-gray-900 active:bg-gray-200 focus:ring-gray-500',
-        danger:
-          'bg-red-600 text-white hover:bg-red-700 active:bg-red-800 focus:ring-red-600 shadow-sm hover:shadow-md',
-        success:
-          'bg-green-600 text-white hover:bg-green-700 active:bg-green-800 focus:ring-green-600 shadow-sm hover:shadow-md',
-        warning:
-          'bg-amber-600 text-white hover:bg-amber-700 active:bg-amber-800 focus:ring-amber-600 shadow-sm hover:shadow-md',
-        link:
-          'text-blue-600 underline-offset-4 hover:underline hover:text-blue-700 active:text-blue-800 focus:ring-blue-600',
-      },
-      size: {
-        sm: 'h-8 px-3 text-xs',
-        md: 'h-10 px-5 text-sm',
-        lg: 'h-12 px-6 text-base',
-        icon: 'h-10 w-10',
-      },
-      fullWidth: {
-        true: 'w-full',
-        false: '',
-      },
+const buttonVariants = cva('btn', {
+  variants: {
+    variant: {
+      primary: 'btn-primary',
+      secondary: 'btn-secondary',
+      ghost:
+        'text-gray-700 hover:bg-gray-100 hover:text-gray-900 active:bg-gray-200 focus:ring-gray-500',
+      danger:
+        'bg-red-600 text-white hover:bg-red-700 active:bg-red-800 focus:ring-red-600 shadow-sm hover:shadow-md',
+      success:
+        'bg-green-600 text-white hover:bg-green-700 active:bg-green-800 focus:ring-green-600 shadow-sm hover:shadow-md',
+      warning:
+        'bg-amber-600 text-white hover:bg-amber-700 active:bg-amber-800 focus:ring-amber-600 shadow-sm hover:shadow-md',
+      link: 'text-blue-600 underline-offset-4 hover:underline hover:text-blue-700 active:text-blue-800 focus:ring-blue-600',
     },
-    defaultVariants: {
-      variant: 'primary',
-      size: 'md',
-      fullWidth: false,
+    size: {
+      sm: 'h-8 px-3 text-xs',
+      md: 'h-10 px-5 text-sm',
+      lg: 'h-12 px-6 text-base',
+      icon: 'h-10 w-10',
     },
-  }
-)
+    fullWidth: {
+      true: 'w-full',
+      false: '',
+    },
+  },
+  defaultVariants: {
+    variant: 'primary',
+    size: 'md',
+    fullWidth: false,
+  },
+})
 
 export interface ButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement>,
@@ -52,18 +46,21 @@ export interface ButtonProps
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ 
-    className, 
-    variant, 
-    size, 
-    fullWidth,
-    loading = false,
-    disabled,
-    leftIcon,
-    rightIcon,
-    children,
-    ...props 
-  }, ref) => {
+  (
+    {
+      className,
+      variant,
+      size,
+      fullWidth,
+      loading = false,
+      disabled,
+      leftIcon,
+      rightIcon,
+      children,
+      ...props
+    },
+    ref
+  ) => {
     return (
       <button
         className={cn(buttonVariants({ variant, size, fullWidth, className }))}

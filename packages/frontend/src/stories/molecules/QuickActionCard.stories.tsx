@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { QuickActionCard } from '../../components/ui/molecules/QuickActionCard';
+import type { Meta, StoryObj } from '@storybook/react'
+import { QuickActionCard } from '../../components/ui/molecules/QuickActionCard'
 import {
   TaskIcon,
   NotificationIcon,
@@ -8,7 +8,7 @@ import {
   PlusIcon,
   SettingsIcon,
   ArchiveIcon,
-} from '../../components/ui/atoms/Icon';
+} from '../../components/ui/atoms/Icon'
 
 const meta: Meta<typeof QuickActionCard> = {
   title: 'UI/Molecules/QuickActionCard',
@@ -20,14 +20,7 @@ const meta: Meta<typeof QuickActionCard> = {
   argTypes: {
     variant: {
       control: 'select',
-      options: [
-        'primary',
-        'secondary',
-        'success',
-        'warning',
-        'error',
-        'outline',
-      ],
+      options: ['primary', 'secondary', 'success', 'warning', 'error', 'outline'],
     },
     iconColor: {
       control: 'select',
@@ -36,10 +29,10 @@ const meta: Meta<typeof QuickActionCard> = {
     disabled: { control: 'boolean' },
     loading: { control: 'boolean' },
   },
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {
@@ -51,7 +44,7 @@ export const Default: Story = {
     variant: 'outline',
     onClick: () => console.log('Card clicked'),
   },
-};
+}
 
 export const Primary: Story = {
   args: {
@@ -63,7 +56,7 @@ export const Primary: Story = {
     variant: 'primary',
     onClick: () => console.log('Primary card clicked'),
   },
-};
+}
 
 export const WithBadge: Story = {
   args: {
@@ -79,7 +72,7 @@ export const WithBadge: Story = {
     },
     onClick: () => console.log('Manage team clicked'),
   },
-};
+}
 
 export const WithShortcut: Story = {
   args: {
@@ -92,7 +85,7 @@ export const WithShortcut: Story = {
     shortcut: 'Ctrl+E',
     onClick: () => console.log('Export data clicked'),
   },
-};
+}
 
 export const Success: Story = {
   args: {
@@ -104,7 +97,7 @@ export const Success: Story = {
     variant: 'success',
     onClick: () => console.log('Add member clicked'),
   },
-};
+}
 
 export const Warning: Story = {
   args: {
@@ -116,7 +109,7 @@ export const Warning: Story = {
     variant: 'warning',
     onClick: () => console.log('Project settings clicked'),
   },
-};
+}
 
 export const Error: Story = {
   args: {
@@ -128,7 +121,7 @@ export const Error: Story = {
     variant: 'error',
     onClick: () => console.log('Archive project clicked'),
   },
-};
+}
 
 export const Disabled: Story = {
   args: {
@@ -141,7 +134,7 @@ export const Disabled: Story = {
     disabled: true,
     onClick: () => console.log('This should not be called'),
   },
-};
+}
 
 export const Loading: Story = {
   args: {
@@ -154,7 +147,7 @@ export const Loading: Story = {
     loading: true,
     onClick: () => console.log('Loading action clicked'),
   },
-};
+}
 
 export const LongTitle: Story = {
   args: {
@@ -167,7 +160,7 @@ export const LongTitle: Story = {
     variant: 'outline',
     onClick: () => console.log('Long title clicked'),
   },
-};
+}
 
 export const NoDescription: Story = {
   args: {
@@ -178,7 +171,7 @@ export const NoDescription: Story = {
     variant: 'outline',
     onClick: () => console.log('Simple action clicked'),
   },
-};
+}
 
 export const WithShortcutAndBadge: Story = {
   args: {
@@ -195,4 +188,4 @@ export const WithShortcutAndBadge: Story = {
     },
     onClick: () => console.log('Complex action clicked'),
   },
-};
+}

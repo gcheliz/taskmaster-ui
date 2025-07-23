@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { StatisticsGrid } from '../../components/ui/molecules/StatisticsGrid';
+import type { Meta, StoryObj } from '@storybook/react'
+import { StatisticsGrid } from '../../components/ui/molecules/StatisticsGrid'
 
 const meta = {
   title: 'Molecules/StatisticsGrid',
@@ -47,10 +47,10 @@ const meta = {
       description: 'Additional CSS classes',
     },
   },
-} satisfies Meta<typeof StatisticsGrid>;
+} satisfies Meta<typeof StatisticsGrid>
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 const mockTaskMetrics = {
   total: 127,
@@ -66,7 +66,7 @@ const mockTaskMetrics = {
     pending: 12,
     blocked: 3,
   },
-};
+}
 
 const mockInsights = {
   totalEstimatedHours: 340,
@@ -77,17 +77,14 @@ const mockInsights = {
     'Current completion rate is above target - great work!',
     'Team productivity has increased by 15% this sprint',
   ],
-};
+}
 
 const mockHealth = {
   score: 87,
   status: 'good' as const,
   lastChecked: new Date().toISOString(),
-  issues: [
-    'Some tests are failing in the CI pipeline',
-    'Code coverage dropped below 80%',
-  ],
-};
+  issues: ['Some tests are failing in the CI pipeline', 'Code coverage dropped below 80%'],
+}
 
 export const Default: Story = {
   args: {
@@ -97,7 +94,7 @@ export const Default: Story = {
     showHealthIndicator: true,
     showProgressBars: true,
   },
-};
+}
 
 export const WithoutHealthIndicator: Story = {
   args: {
@@ -106,7 +103,7 @@ export const WithoutHealthIndicator: Story = {
     showHealthIndicator: false,
     showProgressBars: true,
   },
-};
+}
 
 export const WithoutProgressBars: Story = {
   args: {
@@ -116,7 +113,7 @@ export const WithoutProgressBars: Story = {
     showHealthIndicator: true,
     showProgressBars: false,
   },
-};
+}
 
 export const HighPerformanceProject: Story = {
   args: {
@@ -150,7 +147,7 @@ export const HighPerformanceProject: Story = {
     showHealthIndicator: true,
     showProgressBars: true,
   },
-};
+}
 
 export const ProblematicProject: Story = {
   args: {
@@ -189,7 +186,7 @@ export const ProblematicProject: Story = {
     showHealthIndicator: true,
     showProgressBars: true,
   },
-};
+}
 
 export const DarkTheme: Story = {
   args: {
@@ -202,12 +199,12 @@ export const DarkTheme: Story = {
   parameters: {
     backgrounds: { default: 'light' },
   },
-  render: args => (
+  render: (args) => (
     <div className="">
       <StatisticsGrid {...args} />
     </div>
   ),
-};
+}
 
 export const ResponsiveDemo: Story = {
   args: {
@@ -217,15 +214,14 @@ export const ResponsiveDemo: Story = {
     showHealthIndicator: true,
     showProgressBars: true,
   },
-  render: args => (
+  render: (args) => (
     <div className="space-y-8">
       <div className="text-center">
         <h2 className="text-2xl font-bold text-secondary-900 dark:text-secondary-100 mb-4">
           Responsive Statistics Grid Demo
         </h2>
         <p className="text-secondary-600 dark:text-secondary-400 mb-6">
-          The grid adapts from 1 column (mobile) to 2 columns (tablet) to 4
-          columns (desktop)
+          The grid adapts from 1 column (mobile) to 2 columns (tablet) to 4 columns (desktop)
         </p>
       </div>
 
@@ -260,4 +256,4 @@ export const ResponsiveDemo: Story = {
       </div>
     </div>
   ),
-};
+}

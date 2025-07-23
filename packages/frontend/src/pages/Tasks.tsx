@@ -15,7 +15,7 @@ const Tasks = () => {
           New Task
         </Button>
       </div>
-      
+
       <div className="bg-slate-800 rounded-lg shadow border border-slate-700 p-6">
         <p className="text-slate-400">Task list will be implemented here</p>
       </div>

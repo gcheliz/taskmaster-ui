@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import {
   PieChart,
   Pie,
@@ -11,30 +11,30 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-} from 'recharts';
+} from 'recharts'
 
 export interface TaskCompletionChartProps {
   data: {
-    total: number;
-    completed: number;
-    inProgress: number;
-    pending: number;
-    blocked: number;
-    deferred: number;
-  };
-  chartType?: 'pie' | 'donut' | 'bar';
-  showLegend?: boolean;
-  showTooltip?: boolean;
-  width?: number;
-  height?: number;
-  className?: string;
+    total: number
+    completed: number
+    inProgress: number
+    pending: number
+    blocked: number
+    deferred: number
+  }
+  chartType?: 'pie' | 'donut' | 'bar'
+  showLegend?: boolean
+  showTooltip?: boolean
+  width?: number
+  height?: number
+  className?: string
 }
 
 interface ChartDataItem {
-  name: string;
-  value: number;
-  color: string;
-  percentage: number;
+  name: string
+  value: number
+  color: string
+  percentage: number
 }
 
 /**
@@ -60,7 +60,7 @@ export const TaskCompletionChart: React.FC<TaskCompletionChartProps> = ({
     pending: '#f59e0b',
     blocked: '#ef4444',
     deferred: '#6b7280',
-  };
+  }
 
   // Prepare chart data
   const chartData: ChartDataItem[] = [
@@ -94,58 +94,52 @@ export const TaskCompletionChart: React.FC<TaskCompletionChartProps> = ({
       color: statusColors.deferred,
       percentage: data.total > 0 ? (data.deferred / data.total) * 100 : 0,
     },
-  ].filter(item => item.value > 0); // Only show non-zero values
+  ].filter((item) => item.value > 0) // Only show non-zero values
 
   // Custom tooltip component
   const CustomTooltip = ({
     active,
     payload,
   }: {
-    active?: boolean;
-    payload?: Array<{ payload: ChartDataItem }>;
+    active?: boolean
+    payload?: Array<{ payload: ChartDataItem }>
   }) => {
     if (active && payload && payload.length) {
-      const data = payload[0].payload;
+      const data = payload[0].payload
       return (
         <div className="chart-tooltip">
           <p className="tooltip-label">{data.name}</p>
           <p className="tooltip-value">
             <span className="tooltip-count">{data.value} tasks</span>
-            <span className="tooltip-percentage">
-              ({data.percentage.toFixed(1)}%)
-            </span>
+            <span className="tooltip-percentage">({data.percentage.toFixed(1)}%)</span>
           </p>
         </div>
-      );
+      )
     }
-    return null;
-  };
+    return null
+  }
 
   // Custom legend component
   const CustomLegend = ({
     payload,
   }: {
-    payload?: Array<{ color: string; value: string; payload: ChartDataItem }>;
+    payload?: Array<{ color: string; value: string; payload: ChartDataItem }>
   }) => {
     return (
       <ul className="chart-legend">
         {payload?.map((entry, index: number) => (
           <li key={`legend-${index}`} className="legend-item">
-            <span
-              className="legend-color"
-              style={{ backgroundColor: entry.color }}
-            />
+            <span className="legend-color" style={{ backgroundColor: entry.color }} />
             <span className="legend-label">{entry.value}</span>
             <span className="legend-value">{entry.payload.value}</span>
           </li>
         ))}
       </ul>
-    );
-  };
+    )
+  }
 
   // Calculate completion rate
-  const completionRate =
-    data.total > 0 ? (data.completed / data.total) * 100 : 0;
+  const completionRate = data.total > 0 ? (data.completed / data.total) * 100 : 0
 
   // No data state
   if (data.total === 0) {
@@ -157,7 +151,7 @@ export const TaskCompletionChart: React.FC<TaskCompletionChartProps> = ({
           <p>No task data available to display</p>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -187,10 +181,7 @@ export const TaskCompletionChart: React.FC<TaskCompletionChartProps> = ({
       <div className="chart-container" style={{ width, height }}>
         <ResponsiveContainer width="100%" height="100%">
           {chartType === 'bar' ? (
-            <BarChart
-              data={chartData}
-              margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-            >
+            <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
               <YAxis />
@@ -229,16 +220,11 @@ export const TaskCompletionChart: React.FC<TaskCompletionChartProps> = ({
         <div className="breakdown-grid">
           {chartData.map((item, index) => (
             <div key={index} className="breakdown-item">
-              <div
-                className="breakdown-indicator"
-                style={{ backgroundColor: item.color }}
-              />
+              <div className="breakdown-indicator" style={{ backgroundColor: item.color }} />
               <div className="breakdown-info">
                 <span className="breakdown-label">{item.name}</span>
                 <span className="breakdown-value">{item.value}</span>
-                <span className="breakdown-percentage">
-                  ({item.percentage.toFixed(1)}%)
-                </span>
+                <span className="breakdown-percentage">({item.percentage.toFixed(1)}%)</span>
               </div>
             </div>
           ))}
@@ -262,7 +248,7 @@ export const TaskCompletionChart: React.FC<TaskCompletionChartProps> = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default TaskCompletionChart;
+export default TaskCompletionChart

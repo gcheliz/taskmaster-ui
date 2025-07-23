@@ -3,44 +3,44 @@
  * Manages search query, filters, and filtered results
  */
 
-import { useState, useMemo, useCallback } from 'react';
-import type { Task, TaskFilters } from '../types/task';
-import { filterTasks } from '../types/task';
+import { useState, useMemo, useCallback } from 'react'
+import type { Task, TaskFilters } from '../types/task'
+import { filterTasks } from '../types/task'
 
 interface UseTaskSearchOptions {
   /** All available tasks */
-  tasks: Task[];
+  tasks: Task[]
   /** Initial search query */
-  initialSearch?: string;
+  initialSearch?: string
   /** Initial filters */
-  initialFilters?: TaskFilters;
+  initialFilters?: TaskFilters
   /** Debounce delay for search in milliseconds */
-  debounceMs?: number;
+  debounceMs?: number
 }
 
 interface UseTaskSearchReturn {
   /** Current search query */
-  searchQuery: string;
+  searchQuery: string
   /** Update search query */
-  setSearchQuery: (query: string) => void;
+  setSearchQuery: (query: string) => void
   /** Current filters */
-  filters: TaskFilters;
+  filters: TaskFilters
   /** Update filters */
-  setFilters: (filters: TaskFilters) => void;
+  setFilters: (filters: TaskFilters) => void
   /** Filtered tasks based on search and filters */
-  filteredTasks: Task[];
+  filteredTasks: Task[]
   /** Number of tasks matching the filters */
-  filteredCount: number;
+  filteredCount: number
   /** Total number of tasks */
-  totalCount: number;
+  totalCount: number
   /** Whether any filters are active */
-  hasActiveFilters: boolean;
+  hasActiveFilters: boolean
   /** Whether search is active */
-  hasActiveSearch: boolean;
+  hasActiveSearch: boolean
   /** Clear all filters and search */
-  clearAll: () => void;
+  clearAll: () => void
   /** Reset to initial state */
-  reset: () => void;
+  reset: () => void
 }
 
 export const useTaskSearch = ({
@@ -49,29 +49,24 @@ export const useTaskSearch = ({
   initialFilters = {},
   debounceMs = 300,
 }: UseTaskSearchOptions): UseTaskSearchReturn => {
-  const [searchQuery, setSearchQuery] = useState(initialSearch);
-  const [filters, setFilters] = useState<TaskFilters>(initialFilters);
+  const [searchQuery, setSearchQuery] = useState(initialSearch)
+  const [filters, setFilters] = useState<TaskFilters>(initialFilters)
 
   // Memoized filtered tasks
   const filteredTasks = useMemo(() => {
-    let filtered = tasks;
+    let filtered = tasks
 
     // Apply search filter
     if (searchQuery.trim()) {
-      const searchTerm = searchQuery.toLowerCase().trim();
-      filtered = filtered.filter(task => {
-        const searchableText = [
-          task.title,
-          task.description,
-          task.details,
-          ...(task.tags || []),
-        ]
+      const searchTerm = searchQuery.toLowerCase().trim()
+      filtered = filtered.filter((task) => {
+        const searchableText = [task.title, task.description, task.details, ...(task.tags || [])]
           .filter(Boolean)
           .join(' ')
-          .toLowerCase();
+          .toLowerCase()
 
-        return searchableText.includes(searchTerm);
-      });
+        return searchableText.includes(searchTerm)
+      })
     }
 
     // Apply other filters
@@ -79,29 +74,29 @@ export const useTaskSearch = ({
       filtered = filterTasks(filtered, {
         ...filters,
         search: undefined, // Don't double-apply search
-      });
+      })
     }
 
-    return filtered;
-  }, [tasks, searchQuery, filters]);
+    return filtered
+  }, [tasks, searchQuery, filters])
 
-  const filteredCount = filteredTasks.length;
-  const totalCount = tasks.length;
+  const filteredCount = filteredTasks.length
+  const totalCount = tasks.length
 
-  const hasActiveSearch = searchQuery.trim().length > 0;
-  const hasActiveFilters = Object.values(filters).some(value =>
+  const hasActiveSearch = searchQuery.trim().length > 0
+  const hasActiveFilters = Object.values(filters).some((value) =>
     Array.isArray(value) ? value.length > 0 : value !== undefined
-  );
+  )
 
   const clearAll = useCallback(() => {
-    setSearchQuery('');
-    setFilters({});
-  }, []);
+    setSearchQuery('')
+    setFilters({})
+  }, [])
 
   const reset = useCallback(() => {
-    setSearchQuery(initialSearch);
-    setFilters(initialFilters);
-  }, [initialSearch, initialFilters]);
+    setSearchQuery(initialSearch)
+    setFilters(initialFilters)
+  }, [initialSearch, initialFilters])
 
   return {
     searchQuery,
@@ -115,5 +110,5 @@ export const useTaskSearch = ({
     hasActiveSearch,
     clearAll,
     reset,
-  };
-};
+  }
+}

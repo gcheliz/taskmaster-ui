@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { validateRepositoryPath } from '../../utils/security';
+import React, { useState } from 'react'
+import { validateRepositoryPath } from '../../utils/security'
 
 export interface AddRepositoryProps {
-  onRepositoryAdd?: (repositoryPath: string) => Promise<void>;
-  isLoading?: boolean;
-  error?: string | null;
-  className?: string;
-  clearOnSuccess?: boolean;
+  onRepositoryAdd?: (repositoryPath: string) => Promise<void>
+  isLoading?: boolean
+  error?: string | null
+  className?: string
+  clearOnSuccess?: boolean
 }
 
 export const AddRepository: React.FC<AddRepositoryProps> = ({
@@ -16,60 +16,59 @@ export const AddRepository: React.FC<AddRepositoryProps> = ({
   className = '',
   clearOnSuccess = true,
 }) => {
-  const [repositoryPath, setRepositoryPath] = useState('');
-  const [validationError, setValidationError] = useState<string | null>(null);
+  const [repositoryPath, setRepositoryPath] = useState('')
+  const [validationError, setValidationError] = useState<string | null>(null)
 
   const validatePath = (path: string): string | null => {
-    const result = validateRepositoryPath(path);
-    return result.isValid ? null : result.error || 'Invalid repository path';
-  };
+    const result = validateRepositoryPath(path)
+    return result.isValid ? null : result.error || 'Invalid repository path'
+  }
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newPath = event.target.value;
-    setRepositoryPath(newPath);
+    const newPath = event.target.value
+    setRepositoryPath(newPath)
 
     // Clear validation error when user starts typing
     if (validationError) {
-      setValidationError(null);
+      setValidationError(null)
     }
-  };
+  }
 
   const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
+    event.preventDefault()
 
-    const pathError = validatePath(repositoryPath);
+    const pathError = validatePath(repositoryPath)
     if (pathError) {
-      setValidationError(pathError);
-      return;
+      setValidationError(pathError)
+      return
     }
 
     // Clear any validation errors and call the callback
-    setValidationError(null);
+    setValidationError(null)
 
     try {
       // Get the sanitized path from validation
-      const validationResult = validateRepositoryPath(repositoryPath);
-      const sanitizedPath =
-        validationResult.sanitizedValue || repositoryPath.trim();
+      const validationResult = validateRepositoryPath(repositoryPath)
+      const sanitizedPath = validationResult.sanitizedValue || repositoryPath.trim()
 
-      await onRepositoryAdd?.(sanitizedPath);
+      await onRepositoryAdd?.(sanitizedPath)
 
       // Clear form on successful submission if clearOnSuccess is enabled
       if (clearOnSuccess) {
-        setRepositoryPath('');
+        setRepositoryPath('')
       }
     } catch (error) {
       // Error is handled by the parent component
-      console.error('Repository add failed:', error);
+      console.error('Repository add failed:', error)
     }
-  };
+  }
 
   const handleClear = () => {
-    setRepositoryPath('');
-    setValidationError(null);
-  };
+    setRepositoryPath('')
+    setValidationError(null)
+  }
 
-  const currentError = validationError || error;
+  const currentError = validationError || error
 
   return (
     <div className={`add-repository ${className}`.trim()}>
@@ -166,5 +165,5 @@ export const AddRepository: React.FC<AddRepositoryProps> = ({
         </ul>
       </div>
     </div>
-  );
-};
+  )
+}

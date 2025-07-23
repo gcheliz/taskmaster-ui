@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { useState } from 'react';
-import { CommitHistoryModal } from '../../components/Repository/CommitHistoryModal';
-import { Button } from '../../components/ui/atoms/Button';
-import type { CommitData } from '../../components/Repository/CommitHistoryModal';
+import type { Meta, StoryObj } from '@storybook/react'
+import { useState } from 'react'
+import { CommitHistoryModal } from '../../components/Repository/CommitHistoryModal'
+import { Button } from '../../components/ui/atoms/Button'
+import type { CommitData } from '../../components/Repository/CommitHistoryModal'
 
 // Mock commit history data for Storybook
 const mockCommits: CommitData[] = [
@@ -63,30 +63,26 @@ const mockCommits: CommitData[] = [
       email: 'admin@example.com',
     },
   },
-];
+]
 
 // Mock the RepositoryService for Storybook
 const mockRepositoryService = {
-  getCommitHistory: async (
-    repositoryId: string,
-    limit: number = 50,
-    branchName?: string
-  ) => {
+  getCommitHistory: async (repositoryId: string, limit: number = 50, branchName?: string) => {
     // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000))
 
     // Simulate pagination
-    const commits = mockCommits.slice(0, limit);
+    const commits = mockCommits.slice(0, limit)
 
     return {
       success: true,
       data: commits,
-    };
+    }
   },
-};
+}
 
 // Replace the actual service with our mock for Storybook
-(window as any).__STORYBOOK_REPOSITORY_SERVICE__ = mockRepositoryService;
+;(window as any).__STORYBOOK_REPOSITORY_SERVICE__ = mockRepositoryService
 
 const meta: Meta<typeof CommitHistoryModal> = {
   title: 'Components/Repository/CommitHistoryModal',
@@ -131,14 +127,14 @@ The modal integrates with the repository card system and can be triggered from t
       description: 'Branch name to filter commits (optional)',
     },
   },
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof CommitHistoryModal>;
+export default meta
+type Story = StoryObj<typeof CommitHistoryModal>
 
 // Interactive story that shows the modal in action
 const ModalDemo = (args: any) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false)
 
   return (
     <div>
@@ -148,8 +144,8 @@ const ModalDemo = (args: any) => {
 
       <CommitHistoryModal {...args} open={isOpen} onOpenChange={setIsOpen} />
     </div>
-  );
-};
+  )
+}
 
 export const Default: Story = {
   render: ModalDemo,
@@ -158,17 +154,16 @@ export const Default: Story = {
     repositoryName: 'taskmaster-ui',
     branchName: 'main',
   },
-};
+}
 
 export const WithLongBranchName: Story = {
   render: ModalDemo,
   args: {
     repositoryId: 'repo-456',
     repositoryName: 'my-awesome-project',
-    branchName:
-      'feature/implement-advanced-commit-history-with-search-and-pagination',
+    branchName: 'feature/implement-advanced-commit-history-with-search-and-pagination',
   },
-};
+}
 
 export const ProductionRepository: Story = {
   render: ModalDemo,
@@ -177,7 +172,7 @@ export const ProductionRepository: Story = {
     repositoryName: 'production-app',
     branchName: 'release/v2.1.0',
   },
-};
+}
 
 // Story that opens the modal automatically for easier development
 export const AlwaysOpen: Story = {
@@ -188,24 +183,24 @@ export const AlwaysOpen: Story = {
     repositoryName: 'Demo Repository',
     branchName: 'develop',
   },
-};
+}
 
 // Story showing error state (mock a failed API call)
 export const WithError: Story = {
-  render: args => {
-    const [isOpen, setIsOpen] = useState(false);
+  render: (args) => {
+    const [isOpen, setIsOpen] = useState(false)
 
     // Override the mock service to simulate an error
-    (window as any).__STORYBOOK_REPOSITORY_SERVICE__ = {
+    ;(window as any).__STORYBOOK_REPOSITORY_SERVICE__ = {
       getCommitHistory: async () => {
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 1000))
         return {
           success: false,
           error:
             'Failed to fetch commit history. Repository may be unreachable or you may not have permission.',
-        };
+        }
       },
-    };
+    }
 
     return (
       <div>
@@ -215,30 +210,30 @@ export const WithError: Story = {
 
         <CommitHistoryModal {...args} open={isOpen} onOpenChange={setIsOpen} />
       </div>
-    );
+    )
   },
   args: {
     repositoryId: 'error-repo',
     repositoryName: 'Error Repository',
     branchName: 'main',
   },
-};
+}
 
 // Story showing loading state
 export const LoadingState: Story = {
-  render: args => {
-    const [isOpen, setIsOpen] = useState(false);
+  render: (args) => {
+    const [isOpen, setIsOpen] = useState(false)
 
     // Override the mock service to simulate slow loading
-    (window as any).__STORYBOOK_REPOSITORY_SERVICE__ = {
+    ;(window as any).__STORYBOOK_REPOSITORY_SERVICE__ = {
       getCommitHistory: async () => {
-        await new Promise(resolve => setTimeout(resolve, 10000)); // 10 second delay
+        await new Promise((resolve) => setTimeout(resolve, 10000)) // 10 second delay
         return {
           success: true,
           data: mockCommits,
-        };
+        }
       },
-    };
+    }
 
     return (
       <div>
@@ -248,30 +243,30 @@ export const LoadingState: Story = {
 
         <CommitHistoryModal {...args} open={isOpen} onOpenChange={setIsOpen} />
       </div>
-    );
+    )
   },
   args: {
     repositoryId: 'slow-repo',
     repositoryName: 'Slow Repository',
     branchName: 'main',
   },
-};
+}
 
 // Story showing empty state (no commits)
 export const EmptyRepository: Story = {
-  render: args => {
-    const [isOpen, setIsOpen] = useState(false);
+  render: (args) => {
+    const [isOpen, setIsOpen] = useState(false)
 
     // Override the mock service to return no commits
-    (window as any).__STORYBOOK_REPOSITORY_SERVICE__ = {
+    ;(window as any).__STORYBOOK_REPOSITORY_SERVICE__ = {
       getCommitHistory: async () => {
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise((resolve) => setTimeout(resolve, 500))
         return {
           success: true,
           data: [],
-        };
+        }
       },
-    };
+    }
 
     return (
       <div>
@@ -281,11 +276,11 @@ export const EmptyRepository: Story = {
 
         <CommitHistoryModal {...args} open={isOpen} onOpenChange={setIsOpen} />
       </div>
-    );
+    )
   },
   args: {
     repositoryId: 'empty-repo',
     repositoryName: 'Empty Repository',
     branchName: 'main',
   },
-};
+}

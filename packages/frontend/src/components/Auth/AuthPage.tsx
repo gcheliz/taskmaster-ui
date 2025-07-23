@@ -1,32 +1,32 @@
-import React, { useState } from 'react';
-import { cn } from '../../utils/cn';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '../ui/molecules/Tabs';
-import { LoginForm } from './LoginForm';
-import { RegisterForm } from './RegisterForm';
+import React, { useState } from 'react'
+import { cn } from '../../utils/cn'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '../ui/molecules/Tabs'
+import { LoginForm } from './LoginForm'
+import { RegisterForm } from './RegisterForm'
 
 export interface AuthPageProps {
   /**
    * Default tab to show
    * @default 'login'
    */
-  defaultTab?: 'login' | 'register';
+  defaultTab?: 'login' | 'register'
   /**
    * Callback when auth action is completed
    */
-  onAuthSuccess?: (type: 'login' | 'register', data: any) => void;
+  onAuthSuccess?: (type: 'login' | 'register', data: any) => void
   /**
    * Whether to show social login options
    * @default true
    */
-  showSocialLogins?: boolean;
+  showSocialLogins?: boolean
   /**
    * Custom background image or gradient
    */
-  backgroundImage?: string;
+  backgroundImage?: string
   /**
    * Additional CSS classes
    */
-  className?: string;
+  className?: string
 }
 
 export const AuthPage: React.FC<AuthPageProps> = ({
@@ -36,11 +36,11 @@ export const AuthPage: React.FC<AuthPageProps> = ({
   backgroundImage,
   className,
 }) => {
-  const [activeTab, setActiveTab] = useState(defaultTab);
+  const [activeTab, setActiveTab] = useState(defaultTab)
 
   const handleAuthSuccess = (type: 'login' | 'register', data: any) => {
-    onAuthSuccess?.(type, data);
-  };
+    onAuthSuccess?.(type, data)
+  }
 
   return (
     <div
@@ -50,11 +50,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({
         backgroundImage && 'bg-cover bg-center bg-no-repeat',
         className
       )}
-      style={
-        backgroundImage
-          ? { backgroundImage: `url(${backgroundImage})` }
-          : undefined
-      }
+      style={backgroundImage ? { backgroundImage: `url(${backgroundImage})` } : undefined}
     >
       {/* Glassmorphism Background Overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 via-purple-400/5 to-pink-400/10 backdrop-blur-sm" />
@@ -82,19 +78,15 @@ export const AuthPage: React.FC<AuthPageProps> = ({
               <span className="text-white font-bold text-xl">TM</span>
             </div>
           </div>
-          <h1 className="text-2xl font-bold text-slate-900 mb-2">
-            Welcome to TaskMaster
-          </h1>
-          <p className="text-slate-600 text-sm">
-            Manage your projects with collaborative AI
-          </p>
+          <h1 className="text-2xl font-bold text-slate-900 mb-2">Welcome to TaskMaster</h1>
+          <p className="text-slate-600 text-sm">Manage your projects with collaborative AI</p>
         </div>
 
         {/* Auth Tabs */}
         <Tabs
           defaultValue={defaultTab}
           value={activeTab}
-          onValueChange={value => setActiveTab(value as 'login' | 'register')}
+          onValueChange={(value) => setActiveTab(value as 'login' | 'register')}
           variant="pills"
           className="w-full"
         >
@@ -131,14 +123,14 @@ export const AuthPage: React.FC<AuthPageProps> = ({
 
           <TabsContent value="login" className="space-y-4">
             <LoginForm
-              onSuccess={data => handleAuthSuccess('login', data)}
+              onSuccess={(data) => handleAuthSuccess('login', data)}
               showSocialLogins={showSocialLogins}
             />
           </TabsContent>
 
           <TabsContent value="register" className="space-y-4">
             <RegisterForm
-              onSuccess={data => handleAuthSuccess('register', data)}
+              onSuccess={(data) => handleAuthSuccess('register', data)}
               showSocialLogins={showSocialLogins}
             />
           </TabsContent>
@@ -164,7 +156,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({
       <div className="absolute bottom-10 right-10 w-32 h-32 bg-gradient-to-br from-pink-400/20 to-orange-400/20 rounded-full blur-xl" />
       <div className="absolute top-1/2 left-4 w-16 h-16 bg-gradient-to-br from-green-400/20 to-blue-400/20 rounded-full blur-xl" />
     </div>
-  );
-};
+  )
+}
 
-export default AuthPage;
+export default AuthPage

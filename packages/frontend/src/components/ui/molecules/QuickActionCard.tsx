@@ -1,38 +1,26 @@
-import React from 'react';
-import { Card, CardContent } from '../atoms/Card';
-import { Badge } from '../atoms/Badge';
-import { Icon } from '../atoms/Icon';
+import React from 'react'
+import { Card, CardContent } from '../atoms/Card'
+import { Badge } from '../atoms/Badge'
+import { Icon } from '../atoms/Icon'
 // Using the icon type from the Icon component props
-type IconType = React.ComponentType<React.SVGProps<SVGSVGElement>>;
+type IconType = React.ComponentType<React.SVGProps<SVGSVGElement>>
 
 export interface QuickActionCardProps {
-  id: string;
-  title: string;
-  description?: string;
-  icon: IconType;
-  iconColor?:
-    | 'primary'
-    | 'secondary'
-    | 'success'
-    | 'warning'
-    | 'error'
-    | 'muted';
-  variant?:
-    | 'primary'
-    | 'secondary'
-    | 'success'
-    | 'warning'
-    | 'error'
-    | 'outline';
+  id: string
+  title: string
+  description?: string
+  icon: IconType
+  iconColor?: 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'muted'
+  variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'outline'
   badge?: {
-    text: string;
-    variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'error';
-  };
-  disabled?: boolean;
-  loading?: boolean;
-  shortcut?: string;
-  onClick?: () => void;
-  className?: string;
+    text: string
+    variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'error'
+  }
+  disabled?: boolean
+  loading?: boolean
+  shortcut?: string
+  onClick?: () => void
+  className?: string
 }
 
 const QuickActionCard: React.FC<QuickActionCardProps> = ({
@@ -50,56 +38,56 @@ const QuickActionCard: React.FC<QuickActionCardProps> = ({
   className = '',
 }) => {
   const getCardVariant = () => {
-    if (variant === 'primary') return 'elevated';
-    return 'outline';
-  };
+    if (variant === 'primary') return 'elevated'
+    return 'outline'
+  }
 
   const getHoverClasses = () => {
-    if (disabled || loading) return '';
-    return 'hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] cursor-pointer';
-  };
+    if (disabled || loading) return ''
+    return 'hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] cursor-pointer'
+  }
 
   const getIconColorForVariant = () => {
-    if (variant === 'primary') return 'primary';
-    return iconColor;
-  };
+    if (variant === 'primary') return 'primary'
+    return iconColor
+  }
 
   const getBorderColor = () => {
     switch (variant) {
       case 'primary':
-        return 'border-primary-200 dark:border-primary-800';
+        return 'border-primary-200 dark:border-primary-800'
       case 'secondary':
-        return 'border-secondary-200 dark:border-secondary-800';
+        return 'border-secondary-200 dark:border-secondary-800'
       case 'success':
-        return 'border-success-200 dark:border-success-800';
+        return 'border-success-200 dark:border-success-800'
       case 'warning':
-        return 'border-warning-200 dark:border-warning-800';
+        return 'border-warning-200 dark:border-warning-800'
       case 'error':
-        return 'border-error-200 dark:border-error-800';
+        return 'border-error-200 dark:border-error-800'
       default:
-        return 'border-surface-200 dark:border-surface-700';
+        return 'border-surface-200 dark:border-surface-700'
     }
-  };
+  }
 
   const getBackgroundColor = () => {
     if (variant === 'primary') {
-      return 'bg-primary-50 dark:bg-primary-950';
+      return 'bg-primary-50 dark:bg-primary-950'
     }
-    return 'bg-surface-50 dark:bg-surface-900';
-  };
+    return 'bg-surface-50 dark:bg-surface-900'
+  }
 
   const handleClick = () => {
-    if (disabled || loading) return;
-    onClick?.();
-  };
+    if (disabled || loading) return
+    onClick?.()
+  }
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (disabled || loading) return;
+    if (disabled || loading) return
     if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      onClick?.();
+      event.preventDefault()
+      onClick?.()
     }
-  };
+  }
 
   return (
     <Card
@@ -173,7 +161,7 @@ const QuickActionCard: React.FC<QuickActionCardProps> = ({
         </div>
       </CardContent>
     </Card>
-  );
-};
+  )
+}
 
-export { QuickActionCard };
+export { QuickActionCard }

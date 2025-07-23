@@ -6,10 +6,7 @@ export interface RoleGuardProps {
   redirectTo?: string
 }
 
-export const RoleGuard: React.FC<RoleGuardProps> = ({
-  allowedRoles,
-  redirectTo = '/',
-}) => {
+export const RoleGuard: React.FC<RoleGuardProps> = ({ allowedRoles, redirectTo = '/' }) => {
   const { user, isLoading } = useAuth()
 
   if (isLoading) {

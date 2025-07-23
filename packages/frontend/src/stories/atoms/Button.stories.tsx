@@ -1,11 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { Button } from '../../components/ui/atoms/Button';
-import {
-  Icon,
-  PlusIcon,
-  CheckIcon,
-  TrashIcon,
-} from '../../components/ui/atoms/Icon';
+import type { Meta, StoryObj } from '@storybook/react'
+import { Button } from '../../components/ui/atoms/Button'
+import { Icon, PlusIcon, CheckIcon, TrashIcon } from '../../components/ui/atoms/Icon'
 
 const meta: Meta<typeof Button> = {
   title: 'Atoms/Button',
@@ -35,14 +30,7 @@ const meta: Meta<typeof Button> = {
     },
     variant: {
       control: { type: 'select' },
-      options: [
-        'primary',
-        'secondary',
-        'outline',
-        'ghost',
-        'link',
-        'destructive',
-      ],
+      options: ['primary', 'secondary', 'outline', 'ghost', 'link', 'destructive'],
       description: 'Button variant',
     },
     size: {
@@ -62,52 +50,52 @@ const meta: Meta<typeof Button> = {
       action: 'clicked',
     },
   },
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 export const Primary: Story = {
   args: {
     children: 'Primary Button',
     variant: 'primary',
   },
-};
+}
 
 export const Secondary: Story = {
   args: {
     children: 'Secondary Button',
     variant: 'secondary',
   },
-};
+}
 
 export const Outline: Story = {
   args: {
     children: 'Outline Button',
     variant: 'outline',
   },
-};
+}
 
 export const Ghost: Story = {
   args: {
     children: 'Ghost Button',
     variant: 'ghost',
   },
-};
+}
 
 export const Link: Story = {
   args: {
     children: 'Link Button',
     variant: 'link',
   },
-};
+}
 
 export const Destructive: Story = {
   args: {
     children: 'Delete',
     variant: 'destructive',
   },
-};
+}
 
 export const Loading: Story = {
   args: {
@@ -115,7 +103,7 @@ export const Loading: Story = {
     variant: 'primary',
     loading: true,
   },
-};
+}
 
 export const Disabled: Story = {
   args: {
@@ -123,7 +111,7 @@ export const Disabled: Story = {
     variant: 'primary',
     disabled: true,
   },
-};
+}
 
 export const WithLeftIcon: Story = {
   args: {
@@ -131,7 +119,7 @@ export const WithLeftIcon: Story = {
     variant: 'primary',
     leftIcon: <Icon icon={PlusIcon} size="sm" />,
   },
-};
+}
 
 export const WithRightIcon: Story = {
   args: {
@@ -139,7 +127,7 @@ export const WithRightIcon: Story = {
     variant: 'primary',
     rightIcon: <Icon icon={CheckIcon} size="sm" />,
   },
-};
+}
 
 export const IconOnly: Story = {
   args: {
@@ -148,7 +136,7 @@ export const IconOnly: Story = {
     children: <Icon icon={TrashIcon} size="sm" />,
     'aria-label': 'Delete item',
   },
-};
+}
 
 export const Sizes: Story = {
   render: () => (
@@ -159,7 +147,7 @@ export const Sizes: Story = {
       <Button size="xl">Extra Large</Button>
     </div>
   ),
-};
+}
 
 export const AllVariants: Story = {
   render: () => (
@@ -172,7 +160,7 @@ export const AllVariants: Story = {
       <Button variant="destructive">Destructive</Button>
     </div>
   ),
-};
+}
 
 export const InteractiveStates: Story = {
   render: () => (
@@ -182,10 +170,7 @@ export const InteractiveStates: Story = {
         <Button variant="primary" className="hover:bg-primary-700">
           Hover
         </Button>
-        <Button
-          variant="primary"
-          className="focus:ring-2 focus:ring-primary-500"
-        >
+        <Button variant="primary" className="focus:ring-2 focus:ring-primary-500">
           Focus
         </Button>
       </div>
@@ -199,7 +184,7 @@ export const InteractiveStates: Story = {
       </div>
     </div>
   ),
-};
+}
 
 // Dark theme specific stories
 export const DarkThemeVariants: Story = {
@@ -209,9 +194,7 @@ export const DarkThemeVariants: Story = {
   render: () => (
     <div className="">
       <div className="bg-white p-6 rounded-lg space-y-4">
-        <h3 className="text-slate-900 text-lg font-semibold mb-4">
-          Dark Theme Variants
-        </h3>
+        <h3 className="text-slate-900 text-lg font-semibold mb-4">Dark Theme Variants</h3>
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
           <Button variant="primary">Primary</Button>
           <Button variant="secondary">Secondary</Button>
@@ -223,7 +206,7 @@ export const DarkThemeVariants: Story = {
       </div>
     </div>
   ),
-};
+}
 
 // Accessibility testing story
 export const AccessibilityTest: Story = {
@@ -231,9 +214,7 @@ export const AccessibilityTest: Story = {
     <div className="space-y-6">
       <div className="space-y-2">
         <h3 className="text-lg font-semibold">Keyboard Navigation Test</h3>
-        <p className="text-sm text-secondary-600">
-          Use Tab to navigate, Enter/Space to activate
-        </p>
+        <p className="text-sm text-secondary-600">Use Tab to navigate, Enter/Space to activate</p>
         <div className="flex gap-2">
           <Button variant="primary">First Button</Button>
           <Button variant="secondary">Second Button</Button>
@@ -267,7 +248,7 @@ export const AccessibilityTest: Story = {
       </div>
     </div>
   ),
-};
+}
 
 // Micro-interactions showcase
 export const MicroInteractions: Story = {
@@ -300,4 +281,4 @@ export const MicroInteractions: Story = {
       </div>
     </div>
   ),
-};
+}

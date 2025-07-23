@@ -1,13 +1,13 @@
-import React from 'react';
-import { Editor } from '@tiptap/react';
+import React from 'react'
+import { Editor } from '@tiptap/react'
 
 export interface PRDToolbarProps {
   /** TipTap editor instance */
-  editor: Editor;
+  editor: Editor
   /** Whether the toolbar is disabled */
-  disabled?: boolean;
+  disabled?: boolean
   /** Additional CSS class name */
-  className?: string;
+  className?: string
 }
 
 /**
@@ -25,15 +25,15 @@ export const PRDToolbar: React.FC<PRDToolbarProps> = ({
   className = '',
 }) => {
   if (!editor) {
-    return null;
+    return null
   }
 
   const ToolbarButton: React.FC<{
-    onClick: () => void;
-    isActive?: boolean;
-    disabled?: boolean;
-    title: string;
-    children: React.ReactNode;
+    onClick: () => void
+    isActive?: boolean
+    disabled?: boolean
+    title: string
+    children: React.ReactNode
   }> = ({ onClick, isActive = false, disabled = false, title, children }) => (
     <button
       type="button"
@@ -44,7 +44,7 @@ export const PRDToolbar: React.FC<PRDToolbarProps> = ({
     >
       {children}
     </button>
-  );
+  )
 
   return (
     <div className={`prd-toolbar ${className} ${disabled ? 'disabled' : ''}`}>
@@ -86,19 +86,13 @@ export const PRDToolbar: React.FC<PRDToolbarProps> = ({
                         ? 'h6'
                         : 'p'
           }
-          onChange={e => {
-            const value = e.target.value;
+          onChange={(e) => {
+            const value = e.target.value
             if (value === 'p') {
-              editor.chain().focus().setParagraph().run();
+              editor.chain().focus().setParagraph().run()
             } else {
-              const level = parseInt(value.replace('h', '')) as
-                | 1
-                | 2
-                | 3
-                | 4
-                | 5
-                | 6;
-              editor.chain().focus().toggleHeading({ level }).run();
+              const level = parseInt(value.replace('h', '')) as 1 | 2 | 3 | 4 | 5 | 6
+              editor.chain().focus().toggleHeading({ level }).run()
             }
           }}
           disabled={disabled}
@@ -202,7 +196,7 @@ export const PRDToolbar: React.FC<PRDToolbarProps> = ({
         <span className="char-count">{editor.getText().length} chars</span>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default PRDToolbar;
+export default PRDToolbar

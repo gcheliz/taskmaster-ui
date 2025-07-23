@@ -1,21 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
 import {
   getStorageInfo,
   getAutosaveHistory,
   restoreFromHistory,
   clearPRDData,
-} from './utils/localStorage';
-import type { PRDEditorSaveData } from './utils/localStorage';
+} from './utils/localStorage'
+import type { PRDEditorSaveData } from './utils/localStorage'
 
 export interface PRDEditorSettingsProps {
   /** Whether the settings panel is open */
-  isOpen: boolean;
+  isOpen: boolean
   /** Callback to close the settings panel */
-  onClose: () => void;
+  onClose: () => void
   /** Callback when content is restored from history */
-  onRestoreContent?: (content: string, title?: string) => void;
+  onRestoreContent?: (content: string, title?: string) => void
   /** Additional CSS class name */
-  className?: string;
+  className?: string
 }
 
 /**
@@ -33,61 +33,53 @@ export const PRDEditorSettings: React.FC<PRDEditorSettingsProps> = ({
   onRestoreContent,
   className = '',
 }) => {
-  const [autosaveHistory, setAutosaveHistory] = useState<PRDEditorSaveData[]>(
-    []
-  );
+  const [autosaveHistory, setAutosaveHistory] = useState<PRDEditorSaveData[]>([])
   const [storageInfo, setStorageInfo] = useState({
     used: 0,
     available: 0,
     percentage: 0,
-  });
-  const [selectedHistoryItem, setSelectedHistoryItem] = useState<string | null>(
-    null
-  );
+  })
+  const [selectedHistoryItem, setSelectedHistoryItem] = useState<string | null>(null)
 
   // Load data when settings open
   useEffect(() => {
     if (isOpen) {
-      setAutosaveHistory(getAutosaveHistory());
-      setStorageInfo(getStorageInfo());
+      setAutosaveHistory(getAutosaveHistory())
+      setStorageInfo(getStorageInfo())
     }
-  }, [isOpen]);
+  }, [isOpen])
 
   const handleRestoreFromHistory = () => {
-    if (!selectedHistoryItem) return;
+    if (!selectedHistoryItem) return
 
-    const historyItem = restoreFromHistory(selectedHistoryItem);
+    const historyItem = restoreFromHistory(selectedHistoryItem)
     if (historyItem) {
-      onRestoreContent?.(historyItem.content, historyItem.title);
-      onClose();
+      onRestoreContent?.(historyItem.content, historyItem.title)
+      onClose()
     }
-  };
+  }
 
   const handleClearStorage = () => {
-    if (
-      confirm(
-        'Are you sure you want to clear all saved data? This action cannot be undone.'
-      )
-    ) {
-      clearPRDData();
-      setAutosaveHistory([]);
-      setStorageInfo({ used: 0, available: 0, percentage: 0 });
+    if (confirm('Are you sure you want to clear all saved data? This action cannot be undone.')) {
+      clearPRDData()
+      setAutosaveHistory([])
+      setStorageInfo({ used: 0, available: 0, percentage: 0 })
     }
-  };
+  }
 
   const formatTimestamp = (timestamp: string) => {
-    return new Date(timestamp).toLocaleString();
-  };
+    return new Date(timestamp).toLocaleString()
+  }
 
   const formatBytes = (bytes: number) => {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  };
+    if (bytes === 0) return '0 Bytes'
+    const k = 1024
+    const sizes = ['Bytes', 'KB', 'MB', 'GB']
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+  }
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   return (
     <div className={`prd-editor-settings ${className}`}>
@@ -126,19 +118,16 @@ export const PRDEditorSettings: React.FC<PRDEditorSettingsProps> = ({
               <p className="no-history">No auto-save history found.</p>
             ) : (
               <div className="history-list">
-                {autosaveHistory.map(item => (
+                {autosaveHistory.map((item) => (
                   <div
                     key={item.timestamp}
                     className={`history-item ${selectedHistoryItem === item.timestamp ? 'selected' : ''}`}
                     onClick={() => setSelectedHistoryItem(item.timestamp)}
                   >
                     <div className="history-info">
-                      <div className="history-title">
-                        {item.title || 'Untitled Document'}
-                      </div>
+                      <div className="history-title">{item.title || 'Untitled Document'}</div>
                       <div className="history-meta">
-                        {formatTimestamp(item.timestamp)} • {item.wordCount}{' '}
-                        words
+                        {formatTimestamp(item.timestamp)} • {item.wordCount} words
                       </div>
                     </div>
                     <div className="history-preview">
@@ -152,11 +141,7 @@ export const PRDEditorSettings: React.FC<PRDEditorSettingsProps> = ({
 
             {selectedHistoryItem && (
               <div className="history-actions">
-                <button
-                  type="button"
-                  onClick={handleRestoreFromHistory}
-                  className="restore-button"
-                >
+                <button type="button" onClick={handleRestoreFromHistory} className="restore-button">
                   Restore Selected Version
                 </button>
               </div>
@@ -167,17 +152,12 @@ export const PRDEditorSettings: React.FC<PRDEditorSettingsProps> = ({
           <div className="settings-section">
             <h4>Data Management</h4>
             <div className="data-actions">
-              <button
-                type="button"
-                onClick={handleClearStorage}
-                className="clear-button"
-              >
+              <button type="button" onClick={handleClearStorage} className="clear-button">
                 Clear All Data
               </button>
             </div>
             <p className="warning-text">
-              This will permanently delete all saved documents and auto-save
-              history.
+              This will permanently delete all saved documents and auto-save history.
             </p>
           </div>
         </div>
@@ -395,7 +375,7 @@ export const PRDEditorSettings: React.FC<PRDEditorSettingsProps> = ({
         }
       `}</style>
     </div>
-  );
-};
+  )
+}
 
-export default PRDEditorSettings;
+export default PRDEditorSettings

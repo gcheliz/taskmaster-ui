@@ -1,33 +1,27 @@
-import React from 'react';
+import React from 'react'
 
 export interface FilterOptions {
-  priority: 'all' | 'high' | 'medium' | 'low';
-  status: 'all' | 'pending' | 'in-progress' | 'done' | 'blocked' | 'deferred';
-  assignee: 'all' | string;
-  complexity: 'all' | 'low' | 'medium' | 'high';
+  priority: 'all' | 'high' | 'medium' | 'low'
+  status: 'all' | 'pending' | 'in-progress' | 'done' | 'blocked' | 'deferred'
+  assignee: 'all' | string
+  complexity: 'all' | 'low' | 'medium' | 'high'
 }
 
 export interface SortOptions {
-  sortBy:
-    | 'title'
-    | 'priority'
-    | 'status'
-    | 'created'
-    | 'updated'
-    | 'complexity';
-  sortOrder: 'asc' | 'desc';
+  sortBy: 'title' | 'priority' | 'status' | 'created' | 'updated' | 'complexity'
+  sortOrder: 'asc' | 'desc'
 }
 
 export interface FilterSortControlsProps {
-  filters: FilterOptions;
-  sorting: SortOptions;
-  availableAssignees: string[];
-  onFilterChange: (filters: FilterOptions) => void;
-  onSortChange: (sorting: SortOptions) => void;
-  onClearFilters: () => void;
-  taskCount: number;
-  filteredCount: number;
-  className?: string;
+  filters: FilterOptions
+  sorting: SortOptions
+  availableAssignees: string[]
+  onFilterChange: (filters: FilterOptions) => void
+  onSortChange: (sorting: SortOptions) => void
+  onClearFilters: () => void
+  taskCount: number
+  filteredCount: number
+  className?: string
 }
 
 /**
@@ -51,71 +45,71 @@ export const FilterSortControls: React.FC<FilterSortControlsProps> = ({
     onFilterChange({
       ...filters,
       [key]: value,
-    });
-  };
+    })
+  }
 
   const handleSortChange = (key: keyof SortOptions, value: string) => {
     onSortChange({
       ...sorting,
       [key]: value,
-    });
-  };
+    })
+  }
 
   const hasActiveFilters =
     filters.priority !== 'all' ||
     filters.status !== 'all' ||
     filters.assignee !== 'all' ||
-    filters.complexity !== 'all';
+    filters.complexity !== 'all'
 
   const getPriorityIcon = (priority: string) => {
     switch (priority) {
       case 'high':
-        return '🔴';
+        return '🔴'
       case 'medium':
-        return '🟡';
+        return '🟡'
       case 'low':
-        return '🟢';
+        return '🟢'
       default:
-        return '📋';
+        return '📋'
     }
-  };
+  }
 
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'pending':
-        return '⏳';
+        return '⏳'
       case 'in-progress':
-        return '🔄';
+        return '🔄'
       case 'done':
-        return '✅';
+        return '✅'
       case 'blocked':
-        return '❌';
+        return '❌'
       case 'deferred':
-        return '⏸️';
+        return '⏸️'
       default:
-        return '📋';
+        return '📋'
     }
-  };
+  }
 
   const getComplexityIcon = (complexity: string) => {
     switch (complexity) {
       case 'high':
-        return '🔥';
+        return '🔥'
       case 'medium':
-        return '⚡';
+        return '⚡'
       case 'low':
-        return '🌟';
+        return '🌟'
       default:
-        return '📊';
+        return '📊'
     }
-  };
+  }
 
   const getSortIcon = (field: string) => {
     if (sorting.sortBy === field) {
-      return sorting.sortOrder === 'asc' ? '↑' : '↓';
+      return sorting.sortOrder === 'asc' ? '↑' : '↓'
     }
-    return '↕️';
-  };
+    return '↕️'
+  }
 
   return (
     <div className={`filter-sort-controls ${className}`}>
@@ -152,16 +146,12 @@ export const FilterSortControls: React.FC<FilterSortControlsProps> = ({
               <select
                 id="priority-filter"
                 value={filters.priority}
-                onChange={e => handleFilterChange('priority', e.target.value)}
+                onChange={(e) => handleFilterChange('priority', e.target.value)}
                 className="filter-select"
               >
-                <option value="all">
-                  {getPriorityIcon('all')} All Priorities
-                </option>
+                <option value="all">{getPriorityIcon('all')} All Priorities</option>
                 <option value="high">{getPriorityIcon('high')} High</option>
-                <option value="medium">
-                  {getPriorityIcon('medium')} Medium
-                </option>
+                <option value="medium">{getPriorityIcon('medium')} Medium</option>
                 <option value="low">{getPriorityIcon('low')} Low</option>
               </select>
             </div>
@@ -172,23 +162,15 @@ export const FilterSortControls: React.FC<FilterSortControlsProps> = ({
               <select
                 id="status-filter"
                 value={filters.status}
-                onChange={e => handleFilterChange('status', e.target.value)}
+                onChange={(e) => handleFilterChange('status', e.target.value)}
                 className="filter-select"
               >
                 <option value="all">{getStatusIcon('all')} All Status</option>
-                <option value="pending">
-                  {getStatusIcon('pending')} Pending
-                </option>
-                <option value="in-progress">
-                  {getStatusIcon('in-progress')} In Progress
-                </option>
+                <option value="pending">{getStatusIcon('pending')} Pending</option>
+                <option value="in-progress">{getStatusIcon('in-progress')} In Progress</option>
                 <option value="done">{getStatusIcon('done')} Done</option>
-                <option value="blocked">
-                  {getStatusIcon('blocked')} Blocked
-                </option>
-                <option value="deferred">
-                  {getStatusIcon('deferred')} Deferred
-                </option>
+                <option value="blocked">{getStatusIcon('blocked')} Blocked</option>
+                <option value="deferred">{getStatusIcon('deferred')} Deferred</option>
               </select>
             </div>
 
@@ -198,11 +180,11 @@ export const FilterSortControls: React.FC<FilterSortControlsProps> = ({
               <select
                 id="assignee-filter"
                 value={filters.assignee}
-                onChange={e => handleFilterChange('assignee', e.target.value)}
+                onChange={(e) => handleFilterChange('assignee', e.target.value)}
                 className="filter-select"
               >
                 <option value="all">👥 All Assignees</option>
-                {availableAssignees.map(assignee => (
+                {availableAssignees.map((assignee) => (
                   <option key={assignee} value={assignee}>
                     👤 {assignee}
                   </option>
@@ -216,16 +198,12 @@ export const FilterSortControls: React.FC<FilterSortControlsProps> = ({
               <select
                 id="complexity-filter"
                 value={filters.complexity}
-                onChange={e => handleFilterChange('complexity', e.target.value)}
+                onChange={(e) => handleFilterChange('complexity', e.target.value)}
                 className="filter-select"
               >
-                <option value="all">
-                  {getComplexityIcon('all')} All Complexity
-                </option>
+                <option value="all">{getComplexityIcon('all')} All Complexity</option>
                 <option value="high">{getComplexityIcon('high')} High</option>
-                <option value="medium">
-                  {getComplexityIcon('medium')} Medium
-                </option>
+                <option value="medium">{getComplexityIcon('medium')} Medium</option>
                 <option value="low">{getComplexityIcon('low')} Low</option>
               </select>
             </div>
@@ -242,25 +220,15 @@ export const FilterSortControls: React.FC<FilterSortControlsProps> = ({
               <select
                 id="sort-by"
                 value={sorting.sortBy}
-                onChange={e => handleSortChange('sortBy', e.target.value)}
+                onChange={(e) => handleSortChange('sortBy', e.target.value)}
                 className="sort-select"
               >
                 <option value="title">📝 Title {getSortIcon('title')}</option>
-                <option value="priority">
-                  🎯 Priority {getSortIcon('priority')}
-                </option>
-                <option value="status">
-                  📊 Status {getSortIcon('status')}
-                </option>
-                <option value="created">
-                  📅 Created {getSortIcon('created')}
-                </option>
-                <option value="updated">
-                  🔄 Updated {getSortIcon('updated')}
-                </option>
-                <option value="complexity">
-                  ⚡ Complexity {getSortIcon('complexity')}
-                </option>
+                <option value="priority">🎯 Priority {getSortIcon('priority')}</option>
+                <option value="status">📊 Status {getSortIcon('status')}</option>
+                <option value="created">📅 Created {getSortIcon('created')}</option>
+                <option value="updated">🔄 Updated {getSortIcon('updated')}</option>
+                <option value="complexity">⚡ Complexity {getSortIcon('complexity')}</option>
               </select>
             </div>
 
@@ -270,7 +238,7 @@ export const FilterSortControls: React.FC<FilterSortControlsProps> = ({
               <select
                 id="sort-order"
                 value={sorting.sortOrder}
-                onChange={e => handleSortChange('sortOrder', e.target.value)}
+                onChange={(e) => handleSortChange('sortOrder', e.target.value)}
                 className="sort-select"
               >
                 <option value="asc">↑ Ascending</option>
@@ -338,7 +306,7 @@ export const FilterSortControls: React.FC<FilterSortControlsProps> = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default FilterSortControls;
+export default FilterSortControls

@@ -1,10 +1,13 @@
 # Molecular Components
 
-This directory contains molecular components that combine atomic components into useful UI patterns, following the atomic design methodology.
+This directory contains molecular components that combine atomic components into
+useful UI patterns, following the atomic design methodology.
 
 ## Overview
 
-Molecular components are combinations of atomic components that work together as a unit. They are more complex than atoms but still fairly basic and serve as the building blocks for organisms.
+Molecular components are combinations of atomic components that work together as
+a unit. They are more complex than atoms but still fairly basic and serve as the
+building blocks for organisms.
 
 ## Available Components
 
@@ -12,7 +15,8 @@ Molecular components are combinations of atomic components that work together as
 
 #### FormField
 
-A complete form field that combines Label and Input atoms with validation states.
+A complete form field that combines Label and Input atoms with validation
+states.
 
 **Features:**
 
@@ -25,16 +29,16 @@ A complete form field that combines Label and Input atoms with validation states
 **Usage:**
 
 ```tsx
-import { FormField } from '@/components/ui/molecules';
+import { FormField } from '@/components/ui/molecules'
 
-<FormField
+;<FormField
   label="Email Address"
   type="email"
   placeholder="Enter your email"
   helpText="We'll never share your email"
   error={errors.email}
   required
-/>;
+/>
 ```
 
 #### SearchField
@@ -71,9 +75,9 @@ import {
   CardDescription,
   CardContent,
   CardFooter,
-} from '@/components/ui/molecules';
+} from '@/components/ui/molecules'
 
-<Card>
+;<Card>
   <CardHeader>
     <CardTitle>Card Title</CardTitle>
     <CardDescription>Card description</CardDescription>
@@ -82,7 +86,7 @@ import {
   <CardFooter>
     <Button>Action</Button>
   </CardFooter>
-</Card>;
+</Card>
 ```
 
 ### Feedback Components
@@ -120,16 +124,16 @@ import {
   TabsList,
   TabsTrigger,
   TabsContent,
-} from '@/components/ui/molecules';
+} from '@/components/ui/molecules'
 
-<Tabs defaultValue="tab1">
+;<Tabs defaultValue="tab1">
   <TabsList>
     <TabsTrigger value="tab1">Tab 1</TabsTrigger>
     <TabsTrigger value="tab2">Tab 2</TabsTrigger>
   </TabsList>
   <TabsContent value="tab1">Content 1</TabsContent>
   <TabsContent value="tab2">Content 2</TabsContent>
-</Tabs>;
+</Tabs>
 ```
 
 #### Pagination
@@ -147,14 +151,14 @@ A component for navigating through multiple pages of content.
 **Usage:**
 
 ```tsx
-import { CompletePagination } from '@/components/ui/molecules';
+import { CompletePagination } from '@/components/ui/molecules'
 
-<CompletePagination
+;<CompletePagination
   currentPage={currentPage}
   totalPages={totalPages}
   onPageChange={setCurrentPage}
   maxVisiblePages={5}
-/>;
+/>
 ```
 
 ### Overlay Components
@@ -183,9 +187,9 @@ import {
   ModalTitle,
   ModalBody,
   ModalFooter,
-} from '@/components/ui/molecules';
+} from '@/components/ui/molecules'
 
-<Modal open={open} onOpenChange={setOpen}>
+;<Modal open={open} onOpenChange={setOpen}>
   <ModalTrigger>Open Modal</ModalTrigger>
   <ModalContent>
     <ModalHeader>
@@ -196,7 +200,7 @@ import {
       <Button onClick={() => setOpen(false)}>Close</Button>
     </ModalFooter>
   </ModalContent>
-</Modal>;
+</Modal>
 ```
 
 ### Interactive Components
@@ -223,35 +227,39 @@ import {
   DropdownTrigger,
   DropdownContent,
   DropdownItem,
-} from '@/components/ui/molecules';
+} from '@/components/ui/molecules'
 
-<Dropdown>
+;<Dropdown>
   <DropdownTrigger>Open Menu</DropdownTrigger>
   <DropdownContent>
     <DropdownItem>Option 1</DropdownItem>
     <DropdownItem>Option 2</DropdownItem>
     <DropdownItem>Option 3</DropdownItem>
   </DropdownContent>
-</Dropdown>;
+</Dropdown>
 ```
 
 ## Design Principles
 
 ### Composition
 
-All molecular components are designed to be composable, allowing you to combine them in different ways while maintaining consistency.
+All molecular components are designed to be composable, allowing you to combine
+them in different ways while maintaining consistency.
 
 ### Accessibility
 
-Every component includes proper ARIA attributes, keyboard navigation, and focus management to ensure they are accessible to all users.
+Every component includes proper ARIA attributes, keyboard navigation, and focus
+management to ensure they are accessible to all users.
 
 ### Flexibility
 
-Components support both controlled and uncontrolled modes, allowing you to use them in different patterns depending on your needs.
+Components support both controlled and uncontrolled modes, allowing you to use
+them in different patterns depending on your needs.
 
 ### Type Safety
 
-All components are fully typed with TypeScript, providing excellent developer experience and catching errors at compile time.
+All components are fully typed with TypeScript, providing excellent developer
+experience and catching errors at compile time.
 
 ## Styling
 

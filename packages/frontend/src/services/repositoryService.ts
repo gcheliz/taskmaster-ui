@@ -1,189 +1,185 @@
-import type {
-  RepositoryMetadataData,
-  BranchInfo,
-} from '../components/Repository';
+import type { RepositoryMetadataData, BranchInfo } from '../components/Repository'
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001'
 
 export interface ApiResponse<T> {
-  success: boolean;
-  data?: T;
-  error?: string;
+  success: boolean
+  data?: T
+  error?: string
 }
 
 export interface RepositoryDetailsResponse {
-  name: string;
-  path: string;
-  currentBranch: string;
+  name: string
+  path: string
+  currentBranch: string
   lastCommit: {
-    hash: string;
-    date: string;
-    message: string;
+    hash: string
+    date: string
+    message: string
     author: {
-      name: string;
-      email: string;
-    };
-  };
+      name: string
+      email: string
+    }
+  }
   status: {
-    isClean: boolean;
-    staged: number;
-    unstaged: number;
-    untracked: number;
-    conflicted: number;
-    ahead?: number;
-    behind?: number;
-  };
+    isClean: boolean
+    staged: number
+    unstaged: number
+    untracked: number
+    conflicted: number
+    ahead?: number
+    behind?: number
+  }
   remotes: Array<{
-    name: string;
-    url: string;
-  }>;
+    name: string
+    url: string
+  }>
   branches: Array<{
-    name: string;
-    isLocal: boolean;
-    isRemote: boolean;
-    isCurrent: boolean;
+    name: string
+    isLocal: boolean
+    isRemote: boolean
+    isCurrent: boolean
     lastCommit: {
-      hash: string;
-      date: string;
-      message: string;
+      hash: string
+      date: string
+      message: string
       author: {
-        name: string;
-        email: string;
-      };
-    };
+        name: string
+        email: string
+      }
+    }
     tracking?: {
-      remote: string;
-      ahead?: number;
-      behind?: number;
-    };
-  }>;
+      remote: string
+      ahead?: number
+      behind?: number
+    }
+  }>
 }
 
 export interface RepositoryHealthMetrics {
-  score: number; // 0-100 health score
+  score: number // 0-100 health score
   issues: Array<{
-    severity: 'low' | 'medium' | 'high' | 'critical';
-    type: 'security' | 'performance' | 'quality' | 'maintenance';
-    message: string;
-    file?: string;
-    line?: number;
-  }>;
+    severity: 'low' | 'medium' | 'high' | 'critical'
+    type: 'security' | 'performance' | 'quality' | 'maintenance'
+    message: string
+    file?: string
+    line?: number
+  }>
   metrics: {
     codeQuality: {
-      score: number;
-      complexity: number;
-      duplication: number;
-      maintainabilityIndex: number;
-    };
+      score: number
+      complexity: number
+      duplication: number
+      maintainabilityIndex: number
+    }
     security: {
-      score: number;
-      vulnerabilities: number;
-      outdatedDependencies: number;
-    };
+      score: number
+      vulnerabilities: number
+      outdatedDependencies: number
+    }
     performance: {
-      score: number;
-      bundleSize: number;
-      buildTime: number;
-    };
+      score: number
+      bundleSize: number
+      buildTime: number
+    }
     testing: {
-      score: number;
-      coverage: number;
-      testsCount: number;
-      passRate: number;
-    };
-  };
+      score: number
+      coverage: number
+      testsCount: number
+      passRate: number
+    }
+  }
   trends: {
-    period: string;
+    period: string
     data: Array<{
-      date: string;
-      score: number;
-      commits: number;
-      contributors: number;
-    }>;
-  };
+      date: string
+      score: number
+      commits: number
+      contributors: number
+    }>
+  }
 }
 
 export interface RepositoryStatistics {
   commits: {
-    total: number;
-    thisWeek: number;
-    thisMonth: number;
+    total: number
+    thisWeek: number
+    thisMonth: number
     byAuthor: Array<{
-      author: string;
-      count: number;
-      percentage: number;
-    }>;
+      author: string
+      count: number
+      percentage: number
+    }>
     byDay: Array<{
-      date: string;
-      count: number;
-    }>;
-  };
+      date: string
+      count: number
+    }>
+  }
   contributors: {
-    total: number;
-    active: number;
+    total: number
+    active: number
     list: Array<{
-      name: string;
-      email: string;
-      commits: number;
-      linesAdded: number;
-      linesRemoved: number;
-      lastActivity: string;
-    }>;
-  };
+      name: string
+      email: string
+      commits: number
+      linesAdded: number
+      linesRemoved: number
+      lastActivity: string
+    }>
+  }
   files: {
-    total: number;
+    total: number
     byExtension: Array<{
-      extension: string;
-      count: number;
-      size: number;
-    }>;
+      extension: string
+      count: number
+      size: number
+    }>
     largest: Array<{
-      path: string;
-      size: number;
-      lines: number;
-    }>;
-  };
+      path: string
+      size: number
+      lines: number
+    }>
+  }
   activity: {
-    frequency: 'high' | 'medium' | 'low';
-    lastPush: string;
-    averageCommitsPerWeek: number;
-    peakHour: number;
-    peakDay: string;
-  };
+    frequency: 'high' | 'medium' | 'low'
+    lastPush: string
+    averageCommitsPerWeek: number
+    peakHour: number
+    peakDay: string
+  }
 }
 
 export interface RepositoryIntegrationStatus {
   ci: {
-    provider: string | null;
-    status: 'passing' | 'failing' | 'pending' | 'unknown';
-    lastRun: string | null;
-    branch: string | null;
-    buildNumber: string | null;
-    url: string | null;
-  };
+    provider: string | null
+    status: 'passing' | 'failing' | 'pending' | 'unknown'
+    lastRun: string | null
+    branch: string | null
+    buildNumber: string | null
+    url: string | null
+  }
   deployment: {
-    environment: string | null;
-    status: 'deployed' | 'deploying' | 'failed' | 'unknown';
-    version: string | null;
-    lastDeploy: string | null;
-    url: string | null;
-  };
+    environment: string | null
+    status: 'deployed' | 'deploying' | 'failed' | 'unknown'
+    version: string | null
+    lastDeploy: string | null
+    url: string | null
+  }
   codeQuality: {
-    provider: string | null;
-    score: number | null;
-    grade: string | null;
-    coverage: number | null;
-    lastScan: string | null;
-    url: string | null;
-  };
+    provider: string | null
+    score: number | null
+    grade: string | null
+    coverage: number | null
+    lastScan: string | null
+    url: string | null
+  }
   security: {
-    provider: string | null;
-    vulnerabilities: number | null;
-    lastScan: string | null;
-    score: number | null;
-    url: string | null;
-  };
+    provider: string | null
+    vulnerabilities: number | null
+    lastScan: string | null
+    score: number | null
+    url: string | null
+  }
 }
 
 /**
@@ -206,30 +202,26 @@ export class RepositoryService {
           ...options.headers,
         },
         ...options,
-      });
+      })
 
       if (!response.ok) {
-        const errorData = await response
-          .json()
-          .catch(() => ({ error: 'Unknown error' }));
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }))
         return {
           success: false,
-          error:
-            errorData.error ||
-            `HTTP ${response.status}: ${response.statusText}`,
-        };
+          error: errorData.error || `HTTP ${response.status}: ${response.statusText}`,
+        }
       }
 
-      const data = await response.json();
+      const data = await response.json()
       return {
         success: true,
         data,
-      };
+      }
     } catch (error) {
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Network error',
-      };
+      }
     }
   }
 
@@ -242,19 +234,17 @@ export class RepositoryService {
     return this.fetchApi('/api/repositories/validate', {
       method: 'POST',
       body: JSON.stringify({ path }),
-    });
+    })
   }
 
   /**
    * Add a repository to the system
    */
-  static async addRepository(
-    path: string
-  ): Promise<ApiResponse<{ id: string; path: string }>> {
+  static async addRepository(path: string): Promise<ApiResponse<{ id: string; path: string }>> {
     return this.fetchApi('/api/repositories', {
       method: 'POST',
       body: JSON.stringify({ path }),
-    });
+    })
   }
 
   /**
@@ -263,18 +253,16 @@ export class RepositoryService {
   static async getRepositories(): Promise<
     ApiResponse<Array<{ id: string; path: string; name: string }>>
   > {
-    return this.fetchApi('/api/repositories');
+    return this.fetchApi('/api/repositories')
   }
 
   /**
    * Remove a repository from the system
    */
-  static async removeRepository(
-    id: string
-  ): Promise<ApiResponse<{ success: boolean }>> {
+  static async removeRepository(id: string): Promise<ApiResponse<{ success: boolean }>> {
     return this.fetchApi(`/api/repositories/${id}`, {
       method: 'DELETE',
-    });
+    })
   }
 
   /**
@@ -283,36 +271,34 @@ export class RepositoryService {
   static async getRepositoryDetails(
     repositoryId: string
   ): Promise<ApiResponse<RepositoryDetailsResponse>> {
-    return this.fetchApi(`/api/repositories/${repositoryId}/details`);
+    return this.fetchApi(`/api/repositories/${repositoryId}/details`)
   }
 
   /**
    * Extract repository metadata from detailed response
    */
-  static extractRepositoryMetadata(
-    details: RepositoryDetailsResponse
-  ): RepositoryMetadataData {
+  static extractRepositoryMetadata(details: RepositoryDetailsResponse): RepositoryMetadataData {
     return {
       name: details.name,
       path: details.path,
       currentBranch: details.currentBranch,
       lastCommit: details.lastCommit,
       status: details.status,
-    };
+    }
   }
 
   /**
    * Extract branch information from detailed response
    */
   static extractBranchInfo(details: RepositoryDetailsResponse): BranchInfo[] {
-    return details.branches.map(branch => ({
+    return details.branches.map((branch) => ({
       name: branch.name,
       isLocal: branch.isLocal,
       isRemote: branch.isRemote,
       isCurrent: branch.isCurrent,
       lastCommit: branch.lastCommit,
       tracking: branch.tracking,
-    }));
+    }))
   }
 
   /**
@@ -325,7 +311,7 @@ export class RepositoryService {
     return this.fetchApi(`/api/repositories/${repositoryId}/checkout`, {
       method: 'POST',
       body: JSON.stringify({ branchName }),
-    });
+    })
   }
 
   /**
@@ -339,7 +325,7 @@ export class RepositoryService {
     return this.fetchApi(`/api/repositories/${repositoryId}/branches`, {
       method: 'POST',
       body: JSON.stringify({ branchName, fromBranch }),
-    });
+    })
   }
 
   /**
@@ -356,7 +342,7 @@ export class RepositoryService {
         method: 'DELETE',
         body: JSON.stringify({ force }),
       }
-    );
+    )
   }
 
   /**
@@ -367,7 +353,7 @@ export class RepositoryService {
   ): Promise<ApiResponse<{ success: boolean; message: string }>> {
     return this.fetchApi(`/api/repositories/${repositoryId}/fetch`, {
       method: 'POST',
-    });
+    })
   }
 
   /**
@@ -378,7 +364,7 @@ export class RepositoryService {
   ): Promise<ApiResponse<{ success: boolean; message: string }>> {
     return this.fetchApi(`/api/repositories/${repositoryId}/pull`, {
       method: 'POST',
-    });
+    })
   }
 
   /**
@@ -392,7 +378,7 @@ export class RepositoryService {
     return this.fetchApi(`/api/repositories/${repositoryId}/push`, {
       method: 'POST',
       body: JSON.stringify({ branchName, setUpstream }),
-    });
+    })
   }
 
   /**
@@ -405,22 +391,22 @@ export class RepositoryService {
   ): Promise<
     ApiResponse<
       Array<{
-        hash: string;
-        date: string;
-        message: string;
+        hash: string
+        date: string
+        message: string
         author: {
-          name: string;
-          email: string;
-        };
+          name: string
+          email: string
+        }
       }>
     >
   > {
     const params = new URLSearchParams({
       limit: limit.toString(),
       ...(branchName && { branch: branchName }),
-    });
+    })
 
-    return this.fetchApi(`/api/repositories/${repositoryId}/commits?${params}`);
+    return this.fetchApi(`/api/repositories/${repositoryId}/commits?${params}`)
   }
 
   /**
@@ -428,13 +414,13 @@ export class RepositoryService {
    */
   static async getFileChanges(repositoryId: string): Promise<
     ApiResponse<{
-      staged: Array<{ path: string; status: string }>;
-      unstaged: Array<{ path: string; status: string }>;
-      untracked: Array<{ path: string }>;
-      conflicted: Array<{ path: string }>;
+      staged: Array<{ path: string; status: string }>
+      unstaged: Array<{ path: string; status: string }>
+      untracked: Array<{ path: string }>
+      conflicted: Array<{ path: string }>
     }>
   > {
-    return this.fetchApi(`/api/repositories/${repositoryId}/changes`);
+    return this.fetchApi(`/api/repositories/${repositoryId}/changes`)
   }
 
   /**
@@ -447,7 +433,7 @@ export class RepositoryService {
     return this.fetchApi(`/api/repositories/${repositoryId}/stage`, {
       method: 'POST',
       body: JSON.stringify({ filePaths }),
-    });
+    })
   }
 
   /**
@@ -460,7 +446,7 @@ export class RepositoryService {
     return this.fetchApi(`/api/repositories/${repositoryId}/unstage`, {
       method: 'POST',
       body: JSON.stringify({ filePaths }),
-    });
+    })
   }
 
   /**
@@ -474,7 +460,7 @@ export class RepositoryService {
     return this.fetchApi(`/api/repositories/${repositoryId}/commit`, {
       method: 'POST',
       body: JSON.stringify({ message, author }),
-    });
+    })
   }
 
   // Enhanced Git API methods for advanced repository management
@@ -485,7 +471,7 @@ export class RepositoryService {
   static async getRepositoryHealth(
     repositoryId: string
   ): Promise<ApiResponse<RepositoryHealthMetrics>> {
-    return this.fetchApi(`/api/repositories/${repositoryId}/health`);
+    return this.fetchApi(`/api/repositories/${repositoryId}/health`)
   }
 
   /**
@@ -495,9 +481,7 @@ export class RepositoryService {
     repositoryId: string,
     period: '7d' | '30d' | '90d' | '1y' = '30d'
   ): Promise<ApiResponse<RepositoryStatistics>> {
-    return this.fetchApi(
-      `/api/repositories/${repositoryId}/statistics?period=${period}`
-    );
+    return this.fetchApi(`/api/repositories/${repositoryId}/statistics?period=${period}`)
   }
 
   /**
@@ -506,7 +490,7 @@ export class RepositoryService {
   static async getRepositoryIntegrations(
     repositoryId: string
   ): Promise<ApiResponse<RepositoryIntegrationStatus>> {
-    return this.fetchApi(`/api/repositories/${repositoryId}/integrations`);
+    return this.fetchApi(`/api/repositories/${repositoryId}/integrations`)
   }
 
   /**
@@ -515,13 +499,11 @@ export class RepositoryService {
   static async refreshRepository(
     repositoryId: string,
     includeAnalysis: boolean = true
-  ): Promise<
-    ApiResponse<{ success: boolean; message: string; updatedAt: string }>
-  > {
+  ): Promise<ApiResponse<{ success: boolean; message: string; updatedAt: string }>> {
     return this.fetchApi(`/api/repositories/${repositoryId}/refresh`, {
       method: 'POST',
       body: JSON.stringify({ includeAnalysis }),
-    });
+    })
   }
 
   /**
@@ -533,21 +515,19 @@ export class RepositoryService {
   ): Promise<
     ApiResponse<
       Array<{
-        name: string;
-        hash: string;
-        date: string;
+        name: string
+        hash: string
+        date: string
         author: {
-          name: string;
-          email: string;
-        };
-        message: string;
-        isAnnotated: boolean;
+          name: string
+          email: string
+        }
+        message: string
+        isAnnotated: boolean
       }>
     >
   > {
-    return this.fetchApi(
-      `/api/repositories/${repositoryId}/tags?limit=${limit}`
-    );
+    return this.fetchApi(`/api/repositories/${repositoryId}/tags?limit=${limit}`)
   }
 
   /**
@@ -560,21 +540,21 @@ export class RepositoryService {
   ): Promise<
     ApiResponse<{
       tree: Array<{
-        path: string;
-        type: 'file' | 'directory';
-        size: number;
-        lastModified: string;
-        permissions: string;
-      }>;
-      branch: string;
-      path: string;
+        path: string
+        type: 'file' | 'directory'
+        size: number
+        lastModified: string
+        permissions: string
+      }>
+      branch: string
+      path: string
     }>
   > {
-    const params = new URLSearchParams();
-    if (branch) params.append('branch', branch);
-    if (path) params.append('path', path);
+    const params = new URLSearchParams()
+    if (branch) params.append('branch', branch)
+    if (path) params.append('path', path)
 
-    return this.fetchApi(`/api/repositories/${repositoryId}/tree?${params}`);
+    return this.fetchApi(`/api/repositories/${repositoryId}/tree?${params}`)
   }
 
   /**
@@ -586,17 +566,17 @@ export class RepositoryService {
     branch?: string
   ): Promise<
     ApiResponse<{
-      content: string;
-      encoding: string;
-      size: number;
-      path: string;
-      branch: string;
+      content: string
+      encoding: string
+      size: number
+      path: string
+      branch: string
     }>
   > {
-    const params = new URLSearchParams({ path: filePath });
-    if (branch) params.append('branch', branch);
+    const params = new URLSearchParams({ path: filePath })
+    if (branch) params.append('branch', branch)
 
-    return this.fetchApi(`/api/repositories/${repositoryId}/file?${params}`);
+    return this.fetchApi(`/api/repositories/${repositoryId}/file?${params}`)
   }
 
   /**
@@ -606,31 +586,31 @@ export class RepositoryService {
     repositoryId: string,
     query: string,
     options: {
-      branch?: string;
-      fileType?: string;
-      caseSensitive?: boolean;
-      wholeWord?: boolean;
-      regex?: boolean;
-      maxResults?: number;
+      branch?: string
+      fileType?: string
+      caseSensitive?: boolean
+      wholeWord?: boolean
+      regex?: boolean
+      maxResults?: number
     } = {}
   ): Promise<
     ApiResponse<{
       results: Array<{
-        file: string;
-        line: number;
-        column: number;
-        match: string;
-        context: string;
-      }>;
-      query: string;
-      totalMatches: number;
-      searchTime: number;
+        file: string
+        line: number
+        column: number
+        match: string
+        context: string
+      }>
+      query: string
+      totalMatches: number
+      searchTime: number
     }>
   > {
     return this.fetchApi(`/api/repositories/${repositoryId}/search`, {
       method: 'POST',
       body: JSON.stringify({ query, ...options }),
-    });
+    })
   }
 
   /**
@@ -641,31 +621,31 @@ export class RepositoryService {
     base: string,
     head: string,
     options: {
-      context?: number;
-      ignoreWhitespace?: boolean;
-      wordDiff?: boolean;
+      context?: number
+      ignoreWhitespace?: boolean
+      wordDiff?: boolean
     } = {}
   ): Promise<
     ApiResponse<{
-      diff: string;
+      diff: string
       stats: {
-        additions: number;
-        deletions: number;
-        files: number;
-      };
+        additions: number
+        deletions: number
+        files: number
+      }
       files: Array<{
-        path: string;
-        status: 'added' | 'modified' | 'deleted' | 'renamed';
-        additions: number;
-        deletions: number;
-        patch: string;
-      }>;
+        path: string
+        status: 'added' | 'modified' | 'deleted' | 'renamed'
+        additions: number
+        deletions: number
+        patch: string
+      }>
     }>
   > {
     return this.fetchApi(`/api/repositories/${repositoryId}/diff`, {
       method: 'POST',
       body: JSON.stringify({ base, head, ...options }),
-    });
+    })
   }
 
   /**
@@ -678,26 +658,26 @@ export class RepositoryService {
   ): Promise<
     ApiResponse<{
       lines: Array<{
-        lineNumber: number;
-        content: string;
+        lineNumber: number
+        content: string
         commit: {
-          hash: string;
+          hash: string
           author: {
-            name: string;
-            email: string;
-          };
-          date: string;
-          message: string;
-        };
-      }>;
-      file: string;
-      branch: string;
+            name: string
+            email: string
+          }
+          date: string
+          message: string
+        }
+      }>
+      file: string
+      branch: string
     }>
   > {
-    const params = new URLSearchParams({ path: filePath });
-    if (branch) params.append('branch', branch);
+    const params = new URLSearchParams({ path: filePath })
+    if (branch) params.append('branch', branch)
 
-    return this.fetchApi(`/api/repositories/${repositoryId}/blame?${params}`);
+    return this.fetchApi(`/api/repositories/${repositoryId}/blame?${params}`)
   }
 
   /**
@@ -706,37 +686,37 @@ export class RepositoryService {
   static watchRepository(
     repositoryId: string,
     onUpdate: (data: {
-      type: 'commit' | 'branch' | 'status' | 'health';
-      repository: string;
-      data: unknown;
-      timestamp: string;
+      type: 'commit' | 'branch' | 'status' | 'health'
+      repository: string
+      data: unknown
+      timestamp: string
     }) => void,
     onError?: (error: Error) => void
   ): () => void {
-    const wsUrl = `${API_BASE_URL.replace('http', 'ws')}/api/repositories/${repositoryId}/watch`;
-    const ws = new WebSocket(wsUrl);
+    const wsUrl = `${API_BASE_URL.replace('http', 'ws')}/api/repositories/${repositoryId}/watch`
+    const ws = new WebSocket(wsUrl)
 
-    ws.onmessage = event => {
+    ws.onmessage = (event) => {
       try {
-        const data = JSON.parse(event.data);
-        onUpdate(data);
+        const data = JSON.parse(event.data)
+        onUpdate(data)
       } catch (_error) {
-        onError?.(new Error('Failed to parse WebSocket message'));
+        onError?.(new Error('Failed to parse WebSocket message'))
       }
-    };
+    }
 
     ws.onerror = () => {
-      onError?.(new Error('WebSocket connection error'));
-    };
+      onError?.(new Error('WebSocket connection error'))
+    }
 
     ws.onclose = () => {
-      console.log('Repository watch connection closed');
-    };
+      console.log('Repository watch connection closed')
+    }
 
     // Return cleanup function
     return () => {
-      ws.close();
-    };
+      ws.close()
+    }
   }
 
   /**
@@ -745,36 +725,36 @@ export class RepositoryService {
   static async getRepositoryInsights(repositoryId: string): Promise<
     ApiResponse<{
       recommendations: Array<{
-        type: 'performance' | 'security' | 'quality' | 'maintenance';
-        priority: 'low' | 'medium' | 'high' | 'critical';
-        title: string;
-        description: string;
-        actionable: boolean;
-        estimatedImpact: string;
+        type: 'performance' | 'security' | 'quality' | 'maintenance'
+        priority: 'low' | 'medium' | 'high' | 'critical'
+        title: string
+        description: string
+        actionable: boolean
+        estimatedImpact: string
         resources: Array<{
-          title: string;
-          url: string;
-          type: 'documentation' | 'tool' | 'tutorial';
-        }>;
-      }>;
+          title: string
+          url: string
+          type: 'documentation' | 'tool' | 'tutorial'
+        }>
+      }>
       trends: {
-        activity: 'increasing' | 'stable' | 'decreasing';
-        quality: 'improving' | 'stable' | 'declining';
-        security: 'improving' | 'stable' | 'declining';
-      };
+        activity: 'increasing' | 'stable' | 'decreasing'
+        quality: 'improving' | 'stable' | 'declining'
+        security: 'improving' | 'stable' | 'declining'
+      }
       milestones: Array<{
-        type: 'commit' | 'release' | 'contributor' | 'issue';
-        title: string;
-        description: string;
-        date: string;
-        significant: boolean;
-      }>;
+        type: 'commit' | 'release' | 'contributor' | 'issue'
+        title: string
+        description: string
+        date: string
+        significant: boolean
+      }>
     }>
   > {
-    return this.fetchApi(`/api/repositories/${repositoryId}/insights`);
+    return this.fetchApi(`/api/repositories/${repositoryId}/insights`)
   }
 }
 
 // Types are already exported above with their interface declarations
 
-export default RepositoryService;
+export default RepositoryService

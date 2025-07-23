@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react'
 import {
   Icon,
   CheckIcon,
@@ -9,7 +9,7 @@ import {
   EyeIcon,
   ChevronDownIcon,
   LoadingIcon,
-} from '../../components/ui/atoms/Icon';
+} from '../../components/ui/atoms/Icon'
 
 const meta: Meta<typeof Icon> = {
   title: 'Atoms/Icon',
@@ -56,22 +56,14 @@ const meta: Meta<typeof Icon> = {
     },
     color: {
       control: { type: 'select' },
-      options: [
-        'current',
-        'primary',
-        'secondary',
-        'success',
-        'warning',
-        'error',
-        'muted',
-      ],
+      options: ['current', 'primary', 'secondary', 'success', 'warning', 'error', 'muted'],
       description: 'The color of the icon',
     },
   },
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {
@@ -80,7 +72,7 @@ export const Default: Story = {
     color: 'current',
     'aria-label': 'Check mark',
   },
-};
+}
 
 export const Sizes: Story = {
   render: () => (
@@ -93,7 +85,7 @@ export const Sizes: Story = {
       <Icon icon={CheckIcon} size="2xl" aria-label="2X large check" />
     </div>
   ),
-};
+}
 
 export const Colors: Story = {
   render: () => (
@@ -107,18 +99,13 @@ export const Colors: Story = {
       <Icon icon={CheckIcon} color="muted" aria-label="Muted color" />
     </div>
   ),
-};
+}
 
 export const CommonIcons: Story = {
   render: () => (
     <div className="grid grid-cols-4 gap-6">
       <div className="flex flex-col items-center gap-2">
-        <Icon
-          icon={CheckIcon}
-          size="lg"
-          color="success"
-          aria-label="Check mark"
-        />
+        <Icon icon={CheckIcon} size="lg" color="success" aria-label="Check mark" />
         <span className="text-sm">Check</span>
       </div>
       <div className="flex flex-col items-center gap-2">
@@ -142,26 +129,16 @@ export const CommonIcons: Story = {
         <span className="text-sm">View</span>
       </div>
       <div className="flex flex-col items-center gap-2">
-        <Icon
-          icon={ChevronDownIcon}
-          size="lg"
-          color="secondary"
-          aria-label="Expand"
-        />
+        <Icon icon={ChevronDownIcon} size="lg" color="secondary" aria-label="Expand" />
         <span className="text-sm">Expand</span>
       </div>
       <div className="flex flex-col items-center gap-2">
-        <Icon
-          icon={LoadingIcon}
-          size="lg"
-          color="primary"
-          aria-label="Loading"
-        />
+        <Icon icon={LoadingIcon} size="lg" color="primary" aria-label="Loading" />
         <span className="text-sm">Loading</span>
       </div>
     </div>
   ),
-};
+}
 
 export const InButtons: Story = {
   render: () => (
@@ -184,27 +161,17 @@ export const InButtons: Story = {
       </button>
     </div>
   ),
-};
+}
 
 export const StatusIcons: Story = {
   render: () => (
     <div className="flex gap-6">
       <div className="flex items-center gap-2">
-        <Icon
-          icon={CheckIcon}
-          size="md"
-          color="success"
-          aria-label="Completed"
-        />
+        <Icon icon={CheckIcon} size="md" color="success" aria-label="Completed" />
         <span className="text-success-700">Completed</span>
       </div>
       <div className="flex items-center gap-2">
-        <Icon
-          icon={LoadingIcon}
-          size="md"
-          color="warning"
-          aria-label="In progress"
-        />
+        <Icon icon={LoadingIcon} size="md" color="warning" aria-label="In progress" />
         <span className="text-warning-700">In Progress</span>
       </div>
       <div className="flex items-center gap-2">
@@ -213,4 +180,4 @@ export const StatusIcons: Story = {
       </div>
     </div>
   ),
-};
+}

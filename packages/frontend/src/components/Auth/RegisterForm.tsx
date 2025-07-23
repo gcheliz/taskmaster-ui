@@ -1,16 +1,16 @@
-import React, { useState, useMemo } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import * as zxcvbn from 'zxcvbn';
-import { cn } from '../../utils/cn';
-import { Button } from '../ui/atoms/Button';
-import { Input } from '../ui/atoms/Input';
-import { Label } from '../ui/atoms/Label';
-import { Checkbox } from '../ui/atoms/Checkbox';
-import { Select } from '../ui/atoms/Select';
-import { SocialLoginButtons } from './SocialLoginButtons';
-import { PasswordStrengthIndicator } from './PasswordStrengthIndicator';
+import React, { useState, useMemo } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod'
+import * as zxcvbn from 'zxcvbn'
+import { cn } from '../../utils/cn'
+import { Button } from '../ui/atoms/Button'
+import { Input } from '../ui/atoms/Input'
+import { Label } from '../ui/atoms/Label'
+import { Checkbox } from '../ui/atoms/Checkbox'
+import { Select } from '../ui/atoms/Select'
+import { SocialLoginButtons } from './SocialLoginButtons'
+import { PasswordStrengthIndicator } from './PasswordStrengthIndicator'
 import {
   Icon,
   EyeIcon,
@@ -19,22 +19,22 @@ import {
   LockClosedIcon,
   EnvelopeIcon,
   BriefcaseIcon,
-} from '../ui/atoms/Icon';
+} from '../ui/atoms/Icon'
 
 export interface RegisterFormProps {
   /**
    * Callback when registration is successful
    */
-  onSuccess?: (data: { email: string; name: string; role: string; token: string }) => void;
+  onSuccess?: (data: { email: string; name: string; role: string; token: string }) => void
   /**
    * Whether to show social login options
    * @default true
    */
-  showSocialLogins?: boolean;
+  showSocialLogins?: boolean
   /**
    * Additional CSS classes
    */
-  className?: string;
+  className?: string
 }
 
 // User roles available for registration
@@ -47,44 +47,49 @@ const USER_ROLES = [
   { value: 'product-owner', label: 'Product Owner' },
   { value: 'scrum-master', label: 'Scrum Master' },
   { value: 'other', label: 'Other' },
-] as const;
+] as const
 
 // Zod schema for form validation
-const registerSchema = z.object({
-  name: z.string()
-    .min(2, 'Name must be at least 2 characters')
-    .max(50, 'Name must be less than 50 characters')
-    .regex(/^[a-zA-Z\s'-]+$/, 'Name can only contain letters, spaces, hyphens, and apostrophes'),
-  email: z.string()
-    .email('Please enter a valid email address')
-    .max(100, 'Email must be less than 100 characters'),
-  role: z.string()
-    .min(1, 'Please select your role'),
-  password: z.string()
-    .min(8, 'Password must be at least 8 characters')
-    .refine((password) => {
-      const result = zxcvbn(password);
-      return result.score >= 3;
-    }, 'Password is too weak. Please create a stronger password.'),
-  confirmPassword: z.string(),
-  acceptTerms: z.boolean()
-    .refine((value) => value === true, 'You must accept the Terms of Service'),
-  newsletter: z.boolean().optional(),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: 'Passwords do not match',
-  path: ['confirmPassword'],
-});
+const registerSchema = z
+  .object({
+    name: z
+      .string()
+      .min(2, 'Name must be at least 2 characters')
+      .max(50, 'Name must be less than 50 characters')
+      .regex(/^[a-zA-Z\s'-]+$/, 'Name can only contain letters, spaces, hyphens, and apostrophes'),
+    email: z
+      .string()
+      .email('Please enter a valid email address')
+      .max(100, 'Email must be less than 100 characters'),
+    role: z.string().min(1, 'Please select your role'),
+    password: z
+      .string()
+      .min(8, 'Password must be at least 8 characters')
+      .refine((password) => {
+        const result = zxcvbn(password)
+        return result.score >= 3
+      }, 'Password is too weak. Please create a stronger password.'),
+    confirmPassword: z.string(),
+    acceptTerms: z
+      .boolean()
+      .refine((value) => value === true, 'You must accept the Terms of Service'),
+    newsletter: z.boolean().optional(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  })
 
-type FormData = z.infer<typeof registerSchema>;
+type FormData = z.infer<typeof registerSchema>
 
 export const RegisterForm: React.FC<RegisterFormProps> = ({
   onSuccess,
   showSocialLogins = true,
   className,
 }) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   const {
     register,
@@ -104,69 +109,74 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       acceptTerms: false,
       newsletter: false,
     },
-  });
+  })
 
-  const watchedPassword = watch('password', '');
+  const watchedPassword = watch('password', '')
 
   // Calculate password strength using zxcvbn
   const passwordStrength = useMemo(() => {
-    if (!watchedPassword) return { score: 0, feedback: [] };
+    if (!watchedPassword) return { score: 0, feedback: [] }
 
-    const result = zxcvbn(watchedPassword);
-    
+    const result = zxcvbn(watchedPassword)
+
     // Convert zxcvbn score (0-4) to percentage (0-100)
-    const score = (result.score / 4) * 100;
-    
+    const score = (result.score / 4) * 100
+
     // Get feedback from zxcvbn
     const feedback = [
       ...(result.feedback.warning ? [result.feedback.warning] : []),
       ...result.feedback.suggestions,
-    ];
+    ]
 
-    return { 
-      score: Math.round(score), 
+    return {
+      score: Math.round(score),
       feedback,
       zxcvbnResult: result,
-    };
-  }, [watchedPassword]);
+    }
+  }, [watchedPassword])
 
   const onSubmit = async (data: FormData) => {
-    setIsLoading(true);
+    setIsLoading(true)
 
     try {
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000))
 
       // Mock successful registration
-      const mockToken = 'mock-jwt-token-' + Date.now();
+      const mockToken = 'mock-jwt-token-' + Date.now()
       onSuccess?.({
         email: data.email,
         name: data.name,
         role: data.role,
         token: mockToken,
-      });
+      })
     } catch (error) {
-      setError('root', { 
-        type: 'manual', 
-        message: 'Registration failed. Please try again.' 
-      });
+      setError('root', {
+        type: 'manual',
+        message: 'Registration failed. Please try again.',
+      })
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
     <div className={cn('space-y-6', className)}>
       {/* Social Login Section */}
       {showSocialLogins && (
         <>
-          <SocialLoginButtons 
-            onSuccess={onSuccess ? (data) => onSuccess({
-              email: data.email,
-              name: data.name,
-              role: 'other', // Default role for social login
-              token: data.token,
-            }) : undefined} 
+          <SocialLoginButtons
+            onSuccess={
+              onSuccess
+                ? (data) =>
+                    onSuccess({
+                      email: data.email,
+                      name: data.name,
+                      role: 'other', // Default role for social login
+                      token: data.token,
+                    })
+                : undefined
+            }
           />
 
           <div className="relative">
@@ -174,9 +184,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               <span className="w-full border-t border-slate-200" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-white px-2 text-slate-500">
-                Or create account with email
-              </span>
+              <span className="bg-white px-2 text-slate-500">Or create account with email</span>
             </div>
           </div>
         </>
@@ -196,9 +204,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               placeholder="Enter your full name"
               {...register('name')}
               error={!!errors.name}
-              leftIcon={
-                <Icon icon={UserIcon} size="sm" className="text-slate-400" />
-              }
+              leftIcon={<Icon icon={UserIcon} size="sm" className="text-slate-400" />}
               className={cn(
                 'pl-10 bg-white/60 backdrop-blur-sm',
                 'border-slate-200/60',
@@ -206,9 +212,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                 'transition-all duration-300'
               )}
             />
-            {errors.name && (
-              <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>
-            )}
+            {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>}
           </div>
         </div>
 
@@ -224,13 +228,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               placeholder="Enter your email"
               {...register('email')}
               error={!!errors.email}
-              leftIcon={
-                <Icon
-                  icon={EnvelopeIcon}
-                  size="sm"
-                  className="text-slate-400"
-                />
-              }
+              leftIcon={<Icon icon={EnvelopeIcon} size="sm" className="text-slate-400" />}
               className={cn(
                 'pl-10 bg-white/60 backdrop-blur-sm',
                 'border-slate-200/60',
@@ -238,9 +236,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                 'transition-all duration-300'
               )}
             />
-            {errors.email && (
-              <p className="text-xs text-red-500 mt-1">{errors.email.message}</p>
-            )}
+            {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email.message}</p>}
           </div>
         </div>
 
@@ -272,18 +268,13 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
             <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
               <Icon icon={BriefcaseIcon} size="sm" />
             </div>
-            {errors.role && (
-              <p className="text-xs text-red-500 mt-1">{errors.role.message}</p>
-            )}
+            {errors.role && <p className="text-xs text-red-500 mt-1">{errors.role.message}</p>}
           </div>
         </div>
 
         {/* Password Field */}
         <div className="space-y-2">
-          <Label
-            htmlFor="password"
-            className="text-sm font-medium text-slate-700"
-          >
+          <Label htmlFor="password" className="text-sm font-medium text-slate-700">
             Password
           </Label>
           <div className="relative">
@@ -293,13 +284,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               placeholder="Create a strong password"
               {...register('password')}
               error={!!errors.password}
-              leftIcon={
-                <Icon
-                  icon={LockClosedIcon}
-                  size="sm"
-                  className="text-slate-400"
-                />
-              }
+              leftIcon={<Icon icon={LockClosedIcon} size="sm" className="text-slate-400" />}
               className={cn(
                 'pl-10 pr-10 bg-white/60 backdrop-blur-sm',
                 'border-slate-200/60',
@@ -321,19 +306,13 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 
           {/* Password Strength Indicator */}
           {watchedPassword && (
-            <PasswordStrengthIndicator
-              password={watchedPassword}
-              strength={passwordStrength}
-            />
+            <PasswordStrengthIndicator password={watchedPassword} strength={passwordStrength} />
           )}
         </div>
 
         {/* Confirm Password Field */}
         <div className="space-y-2">
-          <Label
-            htmlFor="confirmPassword"
-            className="text-sm font-medium text-slate-700"
-          >
+          <Label htmlFor="confirmPassword" className="text-sm font-medium text-slate-700">
             Confirm Password
           </Label>
           <div className="relative">
@@ -343,13 +322,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               placeholder="Confirm your password"
               {...register('confirmPassword')}
               error={!!errors.confirmPassword}
-              leftIcon={
-                <Icon
-                  icon={LockClosedIcon}
-                  size="sm"
-                  className="text-slate-400"
-                />
-              }
+              leftIcon={<Icon icon={LockClosedIcon} size="sm" className="text-slate-400" />}
               className={cn(
                 'pl-10 pr-10 bg-white/60 backdrop-blur-sm',
                 'border-slate-200/60',
@@ -362,15 +335,10 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
             >
-              <Icon
-                icon={showConfirmPassword ? EyeSlashIcon : EyeIcon}
-                size="sm"
-              />
+              <Icon icon={showConfirmPassword ? EyeSlashIcon : EyeIcon} size="sm" />
             </button>
             {errors.confirmPassword && (
-              <p className="text-xs text-red-500 mt-1">
-                {errors.confirmPassword.message}
-              </p>
+              <p className="text-xs text-red-500 mt-1">{errors.confirmPassword.message}</p>
             )}
           </div>
         </div>
@@ -378,27 +346,14 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         {/* Terms and Newsletter */}
         <div className="space-y-3">
           <div className="flex items-start space-x-2">
-            <Checkbox
-              id="acceptTerms"
-              {...register('acceptTerms')}
-              className="mt-0.5"
-            />
-            <Label
-              htmlFor="acceptTerms"
-              className="text-sm text-slate-600 leading-relaxed"
-            >
+            <Checkbox id="acceptTerms" {...register('acceptTerms')} className="mt-0.5" />
+            <Label htmlFor="acceptTerms" className="text-sm text-slate-600 leading-relaxed">
               I agree to the{' '}
-              <a
-                href="#"
-                className="text-blue-600 hover:text-blue-700 underline"
-              >
+              <a href="#" className="text-blue-600 hover:text-blue-700 underline">
                 Terms of Service
               </a>{' '}
               and{' '}
-              <a
-                href="#"
-                className="text-blue-600 hover:text-blue-700 underline"
-              >
+              <a href="#" className="text-blue-600 hover:text-blue-700 underline">
                 Privacy Policy
               </a>
             </Label>
@@ -408,10 +363,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
           )}
 
           <div className="flex items-center space-x-2">
-            <Checkbox
-              id="newsletter"
-              {...register('newsletter')}
-            />
+            <Checkbox id="newsletter" {...register('newsletter')} />
             <Label htmlFor="newsletter" className="text-sm text-slate-600">
               Send me product updates and newsletters
             </Label>
@@ -454,7 +406,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         </p>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default RegisterForm;
+export default RegisterForm

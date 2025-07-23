@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { cn } from '../../utils/cn';
+import React, { useState, useEffect, useCallback } from 'react'
+import { cn } from '../../utils/cn'
 import {
   Modal,
   ModalContent,
@@ -9,47 +9,47 @@ import {
   ModalBody,
   ModalFooter,
   ModalClose,
-} from '../ui/molecules/Modal';
-import { Button } from '../ui/atoms/Button';
-import { Badge } from '../ui/atoms/Badge';
-import { Spinner } from '../ui/atoms/Spinner';
-import { RepositoryService } from '../../services/repositoryService';
+} from '../ui/molecules/Modal'
+import { Button } from '../ui/atoms/Button'
+import { Badge } from '../ui/atoms/Badge'
+import { Spinner } from '../ui/atoms/Spinner'
+import { RepositoryService } from '../../services/repositoryService'
 
 export interface CommitData {
-  hash: string;
-  date: string;
-  message: string;
+  hash: string
+  date: string
+  message: string
   author: {
-    name: string;
-    email: string;
-  };
+    name: string
+    email: string
+  }
 }
 
 export interface CommitHistoryModalProps {
   /** Whether the modal is open */
-  open: boolean;
+  open: boolean
   /** Callback when the modal open state changes */
-  onOpenChange: (open: boolean) => void;
+  onOpenChange: (open: boolean) => void
   /** Repository ID to fetch commits for */
-  repositoryId: string;
+  repositoryId: string
   /** Repository name for display */
-  repositoryName: string;
+  repositoryName: string
   /** Branch name to filter commits (optional) */
-  branchName?: string;
+  branchName?: string
   /** Additional CSS classes */
-  className?: string;
+  className?: string
 }
 
 export interface CommitHistoryState {
-  commits: CommitData[];
-  isLoading: boolean;
-  error: string | null;
-  hasMore: boolean;
-  page: number;
-  total: number;
+  commits: CommitData[]
+  isLoading: boolean
+  error: string | null
+  hasMore: boolean
+  page: number
+  total: number
 }
 
-const COMMITS_PER_PAGE = 50;
+const COMMITS_PER_PAGE = 50
 
 export const CommitHistoryModal: React.FC<CommitHistoryModalProps> = ({
   open,
@@ -66,41 +66,41 @@ export const CommitHistoryModal: React.FC<CommitHistoryModalProps> = ({
     hasMore: true,
     page: 1,
     total: 0,
-  });
+  })
 
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filteredCommits, setFilteredCommits] = useState<CommitData[]>([]);
+  const [searchQuery, setSearchQuery] = useState('')
+  const [filteredCommits, setFilteredCommits] = useState<CommitData[]>([])
 
   // Load initial commits when modal opens
   useEffect(() => {
     if (open && repositoryId) {
-      loadCommits(true);
+      loadCommits(true)
     }
-  }, [open, repositoryId, branchName]);
+  }, [open, repositoryId, branchName])
 
   // Filter commits based on search query
   useEffect(() => {
     if (!searchQuery.trim()) {
-      setFilteredCommits(state.commits);
-      return;
+      setFilteredCommits(state.commits)
+      return
     }
 
-    const query = searchQuery.toLowerCase();
+    const query = searchQuery.toLowerCase()
     const filtered = state.commits.filter(
-      commit =>
+      (commit) =>
         commit.message.toLowerCase().includes(query) ||
         commit.author.name.toLowerCase().includes(query) ||
         commit.author.email.toLowerCase().includes(query) ||
         commit.hash.toLowerCase().includes(query)
-    );
-    setFilteredCommits(filtered);
-  }, [searchQuery, state.commits]);
+    )
+    setFilteredCommits(filtered)
+  }, [searchQuery, state.commits])
 
   const loadCommits = useCallback(
     async (reset = false) => {
-      if (state.isLoading) return;
+      if (state.isLoading) return
 
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         isLoading: true,
         error: null,
@@ -110,29 +110,21 @@ export const CommitHistoryModal: React.FC<CommitHistoryModalProps> = ({
           hasMore: true,
           total: 0,
         }),
-      }));
+      }))
 
       try {
-        const currentPage = reset ? 1 : state.page;
+        const currentPage = reset ? 1 : state.page
 
         // Check for Storybook mock service first
-        const mockService = (window as any).__STORYBOOK_REPOSITORY_SERVICE__;
+        const mockService = (window as any).__STORYBOOK_REPOSITORY_SERVICE__
         const response = mockService
-          ? await mockService.getCommitHistory(
-              repositoryId,
-              COMMITS_PER_PAGE,
-              branchName
-            )
-          : await RepositoryService.getCommitHistory(
-              repositoryId,
-              COMMITS_PER_PAGE,
-              branchName
-            );
+          ? await mockService.getCommitHistory(repositoryId, COMMITS_PER_PAGE, branchName)
+          : await RepositoryService.getCommitHistory(repositoryId, COMMITS_PER_PAGE, branchName)
 
         if (response.success && response.data) {
-          const newCommits = response.data;
+          const newCommits = response.data
 
-          setState(prev => ({
+          setState((prev) => ({
             ...prev,
             commits: reset ? newCommits : [...prev.commits, ...newCommits],
             hasMore: newCommits.length === COMMITS_PER_PAGE,
@@ -140,88 +132,76 @@ export const CommitHistoryModal: React.FC<CommitHistoryModalProps> = ({
             total: reset ? newCommits.length : prev.total + newCommits.length,
             isLoading: false,
             error: null,
-          }));
+          }))
         } else {
-          setState(prev => ({
+          setState((prev) => ({
             ...prev,
             error: response.error || 'Failed to load commit history',
             isLoading: false,
-          }));
+          }))
         }
       } catch (error) {
-        setState(prev => ({
+        setState((prev) => ({
           ...prev,
-          error:
-            error instanceof Error
-              ? error.message
-              : 'Failed to load commit history',
+          error: error instanceof Error ? error.message : 'Failed to load commit history',
           isLoading: false,
-        }));
+        }))
       }
     },
     [repositoryId, branchName, state.isLoading, state.page]
-  );
+  )
 
   const handleLoadMore = () => {
     if (state.hasMore && !state.isLoading) {
-      loadCommits(false);
+      loadCommits(false)
     }
-  };
+  }
 
   const handleRefresh = () => {
-    setSearchQuery('');
-    loadCommits(true);
-  };
+    setSearchQuery('')
+    loadCommits(true)
+  }
 
   const formatDate = (dateString: string): string => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffInHours = (now.getTime() - date.getTime()) / (1000 * 60 * 60);
+    const date = new Date(dateString)
+    const now = new Date()
+    const diffInHours = (now.getTime() - date.getTime()) / (1000 * 60 * 60)
 
-    if (diffInHours < 1) return 'Just now';
-    if (diffInHours < 24) return `${Math.floor(diffInHours)}h ago`;
-    if (diffInHours < 24 * 7) return `${Math.floor(diffInHours / 24)}d ago`;
-    if (diffInHours < 24 * 30)
-      return `${Math.floor(diffInHours / (24 * 7))}w ago`;
-    return date.toLocaleDateString();
-  };
+    if (diffInHours < 1) return 'Just now'
+    if (diffInHours < 24) return `${Math.floor(diffInHours)}h ago`
+    if (diffInHours < 24 * 7) return `${Math.floor(diffInHours / 24)}d ago`
+    if (diffInHours < 24 * 30) return `${Math.floor(diffInHours / (24 * 7))}w ago`
+    return date.toLocaleDateString()
+  }
 
   const copyCommitHash = async (hash: string) => {
     try {
-      await navigator.clipboard.writeText(hash);
+      await navigator.clipboard.writeText(hash)
       // Could show a toast notification here
     } catch (error) {
-      console.error('Failed to copy commit hash:', error);
+      console.error('Failed to copy commit hash:', error)
     }
-  };
+  }
 
   const getCommitMessagePreview = (message: string): string => {
-    const firstLine = message.split('\n')[0];
-    return firstLine.length > 80
-      ? firstLine.substring(0, 77) + '...'
-      : firstLine;
-  };
+    const firstLine = message.split('\n')[0]
+    return firstLine.length > 80 ? firstLine.substring(0, 77) + '...' : firstLine
+  }
 
-  const highlightSearchText = (
-    text: string,
-    query: string
-  ): React.ReactNode => {
-    if (!query.trim()) return text;
+  const highlightSearchText = (text: string, query: string): React.ReactNode => {
+    if (!query.trim()) return text
 
-    const parts = text.split(new RegExp(`(${query})`, 'gi'));
+    const parts = text.split(new RegExp(`(${query})`, 'gi'))
     return parts.map((part, index) =>
       part.toLowerCase() === query.toLowerCase() ? (
-        <mark
-          key={index}
-          className="bg-yellow-200 text-yellow-800 px-1 rounded"
-        >
+        <mark key={index} className="bg-yellow-200 text-yellow-800 px-1 rounded">
           {part}
         </mark>
       ) : (
         part
       )
-    );
-  };
+    )
+  }
 
   return (
     <Modal open={open} onOpenChange={onOpenChange}>
@@ -229,9 +209,7 @@ export const CommitHistoryModal: React.FC<CommitHistoryModalProps> = ({
         <ModalHeader>
           <div className="flex items-center justify-between">
             <div>
-              <ModalTitle className="text-xl font-semibold">
-                Commit History
-              </ModalTitle>
+              <ModalTitle className="text-xl font-semibold">Commit History</ModalTitle>
               <ModalDescription className="mt-1">
                 {repositoryName}
                 {branchName && (
@@ -251,21 +229,12 @@ export const CommitHistoryModal: React.FC<CommitHistoryModalProps> = ({
                 type="text"
                 placeholder="Search commits by message, author, or hash..."
                 value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleRefresh}
-              disabled={state.isLoading}
-            >
-              {state.isLoading ? (
-                <Spinner size="sm" />
-              ) : (
-                <RefreshIcon className="w-4 h-4" />
-              )}
+            <Button variant="outline" size="sm" onClick={handleRefresh} disabled={state.isLoading}>
+              {state.isLoading ? <Spinner size="sm" /> : <RefreshIcon className="w-4 h-4" />}
               Refresh
             </Button>
           </div>
@@ -288,11 +257,7 @@ export const CommitHistoryModal: React.FC<CommitHistoryModalProps> = ({
             <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
               <div className="flex">
                 <div className="text-red-400">
-                  <svg
-                    className="w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                     <path
                       fillRule="evenodd"
                       d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
@@ -301,9 +266,7 @@ export const CommitHistoryModal: React.FC<CommitHistoryModalProps> = ({
                   </svg>
                 </div>
                 <div className="ml-3">
-                  <h3 className="text-sm font-medium text-red-800">
-                    Error loading commits
-                  </h3>
+                  <h3 className="text-sm font-medium text-red-800">Error loading commits</h3>
                   <p className="text-sm text-red-700 mt-1">{state.error}</p>
                   <Button
                     variant="outline"
@@ -355,7 +318,7 @@ export const CommitHistoryModal: React.FC<CommitHistoryModalProps> = ({
 
           {/* Commit List */}
           <div className="space-y-3">
-            {filteredCommits.map(commit => (
+            {filteredCommits.map((commit) => (
               <div
                 key={commit.hash}
                 className="bg-gray-50/50 rounded-lg p-4 hover:bg-gray-100/50 transition-colors"
@@ -364,10 +327,7 @@ export const CommitHistoryModal: React.FC<CommitHistoryModalProps> = ({
                   <div className="flex-1 min-w-0 pr-4">
                     <div className="flex items-center space-x-2 mb-1">
                       <h4 className="text-sm font-medium text-gray-900 truncate">
-                        {highlightSearchText(
-                          getCommitMessagePreview(commit.message),
-                          searchQuery
-                        )}
+                        {highlightSearchText(getCommitMessagePreview(commit.message), searchQuery)}
                       </h4>
                       {commit.message.includes('\n') && (
                         <Badge variant="secondary" size="sm">
@@ -376,20 +336,14 @@ export const CommitHistoryModal: React.FC<CommitHistoryModalProps> = ({
                       )}
                     </div>
                     <div className="flex items-center space-x-3 text-xs text-gray-500">
-                      <span>
-                        by{' '}
-                        {highlightSearchText(commit.author.name, searchQuery)}
-                      </span>
+                      <span>by {highlightSearchText(commit.author.name, searchQuery)}</span>
                       <span>{formatDate(commit.date)}</span>
                       <button
                         onClick={() => copyCommitHash(commit.hash)}
                         className="font-mono text-blue-600 hover:text-blue-800 hover:underline transition-colors"
                         title="Click to copy commit hash"
                       >
-                        {highlightSearchText(
-                          commit.hash.substring(0, 7),
-                          searchQuery
-                        )}
+                        {highlightSearchText(commit.hash.substring(0, 7), searchQuery)}
                       </button>
                     </div>
                   </div>
@@ -451,17 +405,12 @@ export const CommitHistoryModal: React.FC<CommitHistoryModalProps> = ({
         </ModalFooter>
       </ModalContent>
     </Modal>
-  );
-};
+  )
+}
 
 // Simple refresh icon component
 const RefreshIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg
-    className={className}
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -469,6 +418,6 @@ const RefreshIcon: React.FC<{ className?: string }> = ({ className }) => (
       d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
     />
   </svg>
-);
+)
 
-export default CommitHistoryModal;
+export default CommitHistoryModal

@@ -1,11 +1,11 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { useState } from 'react';
-import { RepositoryHealthModal } from '../../components/Repository/RepositoryHealthModal';
-import { Button } from '../../components/ui/atoms/Button';
+import type { Meta, StoryObj } from '@storybook/react'
+import { useState } from 'react'
+import { RepositoryHealthModal } from '../../components/Repository/RepositoryHealthModal'
+import { Button } from '../../components/ui/atoms/Button'
 import type {
   RepositoryHealthMetrics,
   RepositoryStatistics,
-} from '../../services/repositoryService';
+} from '../../services/repositoryService'
 
 // Mock repository health data for Storybook
 const mockHealthData: RepositoryHealthMetrics = {
@@ -14,8 +14,7 @@ const mockHealthData: RepositoryHealthMetrics = {
     {
       severity: 'medium',
       type: 'security',
-      message:
-        'Outdated dependency detected: axios@0.21.1 has known security vulnerabilities',
+      message: 'Outdated dependency detected: axios@0.21.1 has known security vulnerabilities',
       file: 'package.json',
       line: 24,
     },
@@ -103,7 +102,7 @@ const mockHealthData: RepositoryHealthMetrics = {
       },
     ],
   },
-};
+}
 
 const mockStatisticsData: RepositoryStatistics = {
   commits: {
@@ -137,9 +136,7 @@ const mockStatisticsData: RepositoryStatistics = {
         commits: 324,
         linesAdded: 12450,
         linesRemoved: 3240,
-        lastActivity: new Date(
-          Date.now() - 2 * 24 * 60 * 60 * 1000
-        ).toISOString(),
+        lastActivity: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
       },
       {
         name: 'Jane Smith',
@@ -147,9 +144,7 @@ const mockStatisticsData: RepositoryStatistics = {
         commits: 298,
         linesAdded: 9870,
         linesRemoved: 2100,
-        lastActivity: new Date(
-          Date.now() - 1 * 24 * 60 * 60 * 1000
-        ).toISOString(),
+        lastActivity: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
       },
     ],
   },
@@ -175,7 +170,7 @@ const mockStatisticsData: RepositoryStatistics = {
     peakHour: 14,
     peakDay: 'Tuesday',
   },
-};
+}
 
 // Mock unhealthy repository data
 const mockUnhealthyData: RepositoryHealthMetrics = {
@@ -298,7 +293,7 @@ const mockUnhealthyData: RepositoryHealthMetrics = {
       },
     ],
   },
-};
+}
 
 // Perfect repository data
 const mockPerfectData: RepositoryHealthMetrics = {
@@ -375,7 +370,7 @@ const mockPerfectData: RepositoryHealthMetrics = {
       },
     ],
   },
-};
+}
 
 // Mock services for Storybook
 const createMockService = (
@@ -383,20 +378,20 @@ const createMockService = (
   statisticsData: RepositoryStatistics
 ) => ({
   getRepositoryHealth: async (repositoryId: string) => {
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000))
     return {
       success: true,
       data: healthData,
-    };
+    }
   },
   getRepositoryStatistics: async (repositoryId: string, period: string) => {
-    await new Promise(resolve => setTimeout(resolve, 800));
+    await new Promise((resolve) => setTimeout(resolve, 800))
     return {
       success: true,
       data: statisticsData,
-    };
+    }
   },
-});
+})
 
 const meta: Meta<typeof RepositoryHealthModal> = {
   title: 'Components/Repository/RepositoryHealthModal',
@@ -452,23 +447,20 @@ The RepositoryHealthModal provides a comprehensive health dashboard for reposito
       description: 'Repository name for display',
     },
   },
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof RepositoryHealthModal>;
+export default meta
+type Story = StoryObj<typeof RepositoryHealthModal>
 
 // Interactive story for healthy repository
-const HealthyRepositoryDemo = (
-  args: any,
-  healthData: RepositoryHealthMetrics
-) => {
-  const [isOpen, setIsOpen] = useState(false);
+const HealthyRepositoryDemo = (args: any, healthData: RepositoryHealthMetrics) => {
+  const [isOpen, setIsOpen] = useState(false)
 
   // Set up mock service
-  (window as any).__STORYBOOK_REPOSITORY_SERVICE__ = createMockService(
+  ;(window as any).__STORYBOOK_REPOSITORY_SERVICE__ = createMockService(
     healthData,
     mockStatisticsData
-  );
+  )
 
   return (
     <div>
@@ -478,32 +470,32 @@ const HealthyRepositoryDemo = (
 
       <RepositoryHealthModal {...args} open={isOpen} onOpenChange={setIsOpen} />
     </div>
-  );
-};
+  )
+}
 
 export const HealthyRepository: Story = {
-  render: args => HealthyRepositoryDemo(args, mockHealthData),
+  render: (args) => HealthyRepositoryDemo(args, mockHealthData),
   args: {
     repositoryId: 'healthy-repo',
     repositoryName: 'Healthy Repository',
   },
-};
+}
 
 export const UnhealthyRepository: Story = {
-  render: args => HealthyRepositoryDemo(args, mockUnhealthyData),
+  render: (args) => HealthyRepositoryDemo(args, mockUnhealthyData),
   args: {
     repositoryId: 'unhealthy-repo',
     repositoryName: 'Project with Issues',
   },
-};
+}
 
 export const PerfectRepository: Story = {
-  render: args => HealthyRepositoryDemo(args, mockPerfectData),
+  render: (args) => HealthyRepositoryDemo(args, mockPerfectData),
   args: {
     repositoryId: 'perfect-repo',
     repositoryName: 'Perfect Repository',
   },
-};
+}
 
 // Story that opens the modal automatically for easier development
 export const AlwaysOpen: Story = {
@@ -513,39 +505,39 @@ export const AlwaysOpen: Story = {
     repositoryId: 'demo-repo',
     repositoryName: 'Demo Repository',
   },
-  render: args => {
+  render: (args) => {
     // Set up mock service
-    (window as any).__STORYBOOK_REPOSITORY_SERVICE__ = createMockService(
+    ;(window as any).__STORYBOOK_REPOSITORY_SERVICE__ = createMockService(
       mockHealthData,
       mockStatisticsData
-    );
-    return <RepositoryHealthModal {...args} />;
+    )
+    return <RepositoryHealthModal {...args} />
   },
-};
+}
 
 // Story showing error state
 export const WithError: Story = {
-  render: args => {
-    const [isOpen, setIsOpen] = useState(false);
+  render: (args) => {
+    const [isOpen, setIsOpen] = useState(false)
 
     // Override the mock service to simulate an error
-    (window as any).__STORYBOOK_REPOSITORY_SERVICE__ = {
+    ;(window as any).__STORYBOOK_REPOSITORY_SERVICE__ = {
       getRepositoryHealth: async () => {
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 1000))
         return {
           success: false,
           error:
             'Failed to fetch repository health data. The analysis service may be temporarily unavailable.',
-        };
+        }
       },
       getRepositoryStatistics: async () => {
-        await new Promise(resolve => setTimeout(resolve, 800));
+        await new Promise((resolve) => setTimeout(resolve, 800))
         return {
           success: false,
           error: 'Statistics service error',
-        };
+        }
       },
-    };
+    }
 
     return (
       <div>
@@ -553,42 +545,38 @@ export const WithError: Story = {
           Open Dashboard (Error State)
         </Button>
 
-        <RepositoryHealthModal
-          {...args}
-          open={isOpen}
-          onOpenChange={setIsOpen}
-        />
+        <RepositoryHealthModal {...args} open={isOpen} onOpenChange={setIsOpen} />
       </div>
-    );
+    )
   },
   args: {
     repositoryId: 'error-repo',
     repositoryName: 'Error Repository',
   },
-};
+}
 
 // Story showing loading state
 export const LoadingState: Story = {
-  render: args => {
-    const [isOpen, setIsOpen] = useState(false);
+  render: (args) => {
+    const [isOpen, setIsOpen] = useState(false)
 
     // Override the mock service to simulate slow loading
-    (window as any).__STORYBOOK_REPOSITORY_SERVICE__ = {
+    ;(window as any).__STORYBOOK_REPOSITORY_SERVICE__ = {
       getRepositoryHealth: async () => {
-        await new Promise(resolve => setTimeout(resolve, 10000)); // 10 second delay
+        await new Promise((resolve) => setTimeout(resolve, 10000)) // 10 second delay
         return {
           success: true,
           data: mockHealthData,
-        };
+        }
       },
       getRepositoryStatistics: async () => {
-        await new Promise(resolve => setTimeout(resolve, 8000));
+        await new Promise((resolve) => setTimeout(resolve, 8000))
         return {
           success: true,
           data: mockStatisticsData,
-        };
+        }
       },
-    };
+    }
 
     return (
       <div>
@@ -596,42 +584,38 @@ export const LoadingState: Story = {
           Open Dashboard (Slow Loading)
         </Button>
 
-        <RepositoryHealthModal
-          {...args}
-          open={isOpen}
-          onOpenChange={setIsOpen}
-        />
+        <RepositoryHealthModal {...args} open={isOpen} onOpenChange={setIsOpen} />
       </div>
-    );
+    )
   },
   args: {
     repositoryId: 'slow-repo',
     repositoryName: 'Slow Repository',
   },
-};
+}
 
 // Story showing empty data state
 export const NoHealthData: Story = {
-  render: args => {
-    const [isOpen, setIsOpen] = useState(false);
+  render: (args) => {
+    const [isOpen, setIsOpen] = useState(false)
 
     // Override the mock service to return no health data
-    (window as any).__STORYBOOK_REPOSITORY_SERVICE__ = {
+    ;(window as any).__STORYBOOK_REPOSITORY_SERVICE__ = {
       getRepositoryHealth: async () => {
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise((resolve) => setTimeout(resolve, 500))
         return {
           success: true,
           data: null,
-        };
+        }
       },
       getRepositoryStatistics: async () => {
-        await new Promise(resolve => setTimeout(resolve, 300));
+        await new Promise((resolve) => setTimeout(resolve, 300))
         return {
           success: true,
           data: mockStatisticsData,
-        };
+        }
       },
-    };
+    }
 
     return (
       <div>
@@ -639,16 +623,12 @@ export const NoHealthData: Story = {
           Open Dashboard (No Data)
         </Button>
 
-        <RepositoryHealthModal
-          {...args}
-          open={isOpen}
-          onOpenChange={setIsOpen}
-        />
+        <RepositoryHealthModal {...args} open={isOpen} onOpenChange={setIsOpen} />
       </div>
-    );
+    )
   },
   args: {
     repositoryId: 'empty-repo',
     repositoryName: 'Repository Without Health Data',
   },
-};
+}

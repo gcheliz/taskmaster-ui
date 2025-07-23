@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { ProjectHealthIndicator } from '../../components/ui/molecules/ProjectHealthIndicator';
+import type { Meta, StoryObj } from '@storybook/react'
+import { ProjectHealthIndicator } from '../../components/ui/molecules/ProjectHealthIndicator'
 
 const meta = {
   title: 'Molecules/ProjectHealthIndicator',
@@ -47,10 +47,10 @@ const meta = {
       description: 'Additional CSS classes',
     },
   },
-} satisfies Meta<typeof ProjectHealthIndicator>;
+} satisfies Meta<typeof ProjectHealthIndicator>
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 const mockHealthExcellent = {
   score: 95,
@@ -68,7 +68,7 @@ const mockHealthExcellent = {
     documentation: 96,
     performance: 98,
   },
-};
+}
 
 const mockHealthGood = {
   score: 82,
@@ -89,7 +89,7 @@ const mockHealthGood = {
     documentation: 82,
     performance: 83,
   },
-};
+}
 
 const mockHealthFair = {
   score: 65,
@@ -111,7 +111,7 @@ const mockHealthFair = {
     documentation: 70,
     performance: 67,
   },
-};
+}
 
 const mockHealthNeedsAttention = {
   score: 42,
@@ -135,7 +135,7 @@ const mockHealthNeedsAttention = {
     documentation: 48,
     performance: 43,
   },
-};
+}
 
 export const Excellent: Story = {
   args: {
@@ -145,7 +145,7 @@ export const Excellent: Story = {
     showIssues: true,
     maxIssues: 3,
   },
-};
+}
 
 export const Good: Story = {
   args: {
@@ -155,7 +155,7 @@ export const Good: Story = {
     showIssues: true,
     maxIssues: 3,
   },
-};
+}
 
 export const Fair: Story = {
   args: {
@@ -165,7 +165,7 @@ export const Fair: Story = {
     showIssues: true,
     maxIssues: 3,
   },
-};
+}
 
 export const NeedsAttention: Story = {
   args: {
@@ -175,7 +175,7 @@ export const NeedsAttention: Story = {
     showIssues: true,
     maxIssues: 3,
   },
-};
+}
 
 export const WithoutTrends: Story = {
   args: {
@@ -185,7 +185,7 @@ export const WithoutTrends: Story = {
     showIssues: true,
     maxIssues: 3,
   },
-};
+}
 
 export const WithoutBreakdown: Story = {
   args: {
@@ -195,7 +195,7 @@ export const WithoutBreakdown: Story = {
     showIssues: true,
     maxIssues: 3,
   },
-};
+}
 
 export const WithoutIssues: Story = {
   args: {
@@ -205,7 +205,7 @@ export const WithoutIssues: Story = {
     showIssues: false,
     maxIssues: 3,
   },
-};
+}
 
 export const MinimalView: Story = {
   args: {
@@ -215,7 +215,7 @@ export const MinimalView: Story = {
     showIssues: false,
     maxIssues: 3,
   },
-};
+}
 
 export const DarkTheme: Story = {
   args: {
@@ -228,12 +228,12 @@ export const DarkTheme: Story = {
   parameters: {
     backgrounds: { default: 'light' },
   },
-  render: args => (
+  render: (args) => (
     <div className="">
       <ProjectHealthIndicator {...args} />
     </div>
   ),
-};
+}
 
 export const AllHealthLevels: Story = {
   args: {
@@ -243,7 +243,7 @@ export const AllHealthLevels: Story = {
     showIssues: true,
     maxIssues: 3,
   },
-  render: args => (
+  render: (args) => (
     <div className="space-y-8">
       <div className="text-center">
         <h2 className="text-2xl font-bold text-secondary-900 dark:text-secondary-100 mb-4">
@@ -285,4 +285,4 @@ export const AllHealthLevels: Story = {
       </div>
     </div>
   ),
-};
+}

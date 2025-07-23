@@ -1,45 +1,41 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { useEditor, EditorContent } from '@tiptap/react';
-import { StarterKit } from '@tiptap/starter-kit';
-import { Bold } from '@tiptap/extension-bold';
-import { Italic } from '@tiptap/extension-italic';
-import { Underline } from '@tiptap/extension-underline';
-import { Heading } from '@tiptap/extension-heading';
-import { BulletList } from '@tiptap/extension-bullet-list';
-import { OrderedList } from '@tiptap/extension-ordered-list';
-import { ListItem } from '@tiptap/extension-list-item';
-import { Code } from '@tiptap/extension-code';
-import { Blockquote } from '@tiptap/extension-blockquote';
-import { PRDToolbar } from './PRDToolbar';
-import {
-  savePRDData,
-  loadPRDData,
-  isLocalStorageAvailable,
-} from './utils/localStorage';
+import React, { useCallback, useEffect, useState } from 'react'
+import { useEditor, EditorContent } from '@tiptap/react'
+import { StarterKit } from '@tiptap/starter-kit'
+import { Bold } from '@tiptap/extension-bold'
+import { Italic } from '@tiptap/extension-italic'
+import { Underline } from '@tiptap/extension-underline'
+import { Heading } from '@tiptap/extension-heading'
+import { BulletList } from '@tiptap/extension-bullet-list'
+import { OrderedList } from '@tiptap/extension-ordered-list'
+import { ListItem } from '@tiptap/extension-list-item'
+import { Code } from '@tiptap/extension-code'
+import { Blockquote } from '@tiptap/extension-blockquote'
+import { PRDToolbar } from './PRDToolbar'
+import { savePRDData, loadPRDData, isLocalStorageAvailable } from './utils/localStorage'
 
 export interface PRDEditorWithToolbarProps {
   /** Initial content for the editor */
-  initialContent?: string;
+  initialContent?: string
   /** Callback fired when content changes */
-  onContentChange?: (content: string) => void;
+  onContentChange?: (content: string) => void
   /** Whether the editor is in read-only mode */
-  readOnly?: boolean;
+  readOnly?: boolean
   /** Additional CSS class name */
-  className?: string;
+  className?: string
   /** Placeholder text when editor is empty */
-  placeholder?: string;
+  placeholder?: string
   /** Whether to enable auto-save functionality */
-  autoSave?: boolean;
+  autoSave?: boolean
   /** Auto-save interval in milliseconds */
-  autoSaveInterval?: number;
+  autoSaveInterval?: number
   /** Callback fired when auto-save occurs */
-  onAutoSave?: (content: string) => void;
+  onAutoSave?: (content: string) => void
   /** Whether to show the toolbar */
-  showToolbar?: boolean;
+  showToolbar?: boolean
   /** Title for the PRD document */
-  title?: string;
+  title?: string
   /** Callback fired when title changes */
-  onTitleChange?: (title: string) => void;
+  onTitleChange?: (title: string) => void
 }
 
 /**
@@ -68,12 +64,12 @@ export const PRDEditorWithToolbar: React.FC<PRDEditorWithToolbarProps> = ({
   title = '',
   onTitleChange,
 }) => {
-  const [content, setContent] = useState(initialContent);
-  const [documentTitle, setDocumentTitle] = useState(title);
-  const [isSaving, setIsSaving] = useState(false);
-  const [lastSaved, setLastSaved] = useState<Date | null>(null);
-  const [wordCount, setWordCount] = useState(0);
-  const [charCount, setCharCount] = useState(0);
+  const [content, setContent] = useState(initialContent)
+  const [documentTitle, setDocumentTitle] = useState(title)
+  const [isSaving, setIsSaving] = useState(false)
+  const [lastSaved, setLastSaved] = useState<Date | null>(null)
+  const [wordCount, setWordCount] = useState(0)
+  const [charCount, setCharCount] = useState(0)
 
   // Initialize TipTap editor with extensions
   const editor = useEditor({
@@ -132,43 +128,43 @@ export const PRDEditorWithToolbar: React.FC<PRDEditorWithToolbarProps> = ({
       },
     },
     onUpdate: ({ editor }) => {
-      const html = editor.getHTML();
-      const text = editor.getText();
+      const html = editor.getHTML()
+      const text = editor.getText()
 
-      setContent(html);
-      setWordCount(text.split(/\s+/).filter(word => word.length > 0).length);
-      setCharCount(text.length);
+      setContent(html)
+      setWordCount(text.split(/\s+/).filter((word) => word.length > 0).length)
+      setCharCount(text.length)
 
-      onContentChange?.(html);
+      onContentChange?.(html)
     },
     onCreate: ({ editor }) => {
       // Set initial content if provided
       if (initialContent) {
-        editor.commands.setContent(initialContent);
+        editor.commands.setContent(initialContent)
       }
 
       // Initialize word and character counts
-      const text = editor.getText();
-      setWordCount(text.split(/\s+/).filter(word => word.length > 0).length);
-      setCharCount(text.length);
+      const text = editor.getText()
+      setWordCount(text.split(/\s+/).filter((word) => word.length > 0).length)
+      setCharCount(text.length)
     },
-  });
+  })
 
   // Auto-save functionality
   useEffect(() => {
-    if (!autoSave || !editor || readOnly) return;
+    if (!autoSave || !editor || readOnly) return
 
     const saveTimer = setTimeout(() => {
-      handleAutoSave();
-    }, autoSaveInterval);
+      handleAutoSave()
+    }, autoSaveInterval)
 
-    return () => clearTimeout(saveTimer);
-  }, [content, documentTitle, autoSave, autoSaveInterval, editor, readOnly]);
+    return () => clearTimeout(saveTimer)
+  }, [content, documentTitle, autoSave, autoSaveInterval, editor, readOnly])
 
   const handleAutoSave = useCallback(async () => {
-    if (!editor || readOnly || !isLocalStorageAvailable()) return;
+    if (!editor || readOnly || !isLocalStorageAvailable()) return
 
-    setIsSaving(true);
+    setIsSaving(true)
 
     try {
       // Save to local storage using utility function
@@ -178,82 +174,74 @@ export const PRDEditorWithToolbar: React.FC<PRDEditorWithToolbarProps> = ({
         timestamp: new Date().toISOString(),
         wordCount,
         charCount,
-      });
+      })
 
       if (!saveSuccess) {
-        throw new Error('Failed to save to local storage');
+        throw new Error('Failed to save to local storage')
       }
 
       // Call external save callback if provided
       if (onAutoSave) {
-        await onAutoSave(content);
+        await onAutoSave(content)
       }
 
-      setLastSaved(new Date());
+      setLastSaved(new Date())
     } catch (error) {
-      console.error('Auto-save failed:', error);
+      console.error('Auto-save failed:', error)
       // Could show a user notification here
     } finally {
-      setIsSaving(false);
+      setIsSaving(false)
     }
-  }, [
-    editor,
-    content,
-    documentTitle,
-    wordCount,
-    charCount,
-    readOnly,
-    onAutoSave,
-  ]);
+  }, [editor, content, documentTitle, wordCount, charCount, readOnly, onAutoSave])
 
   // Load content from local storage on mount
   useEffect(() => {
-    if (!isLocalStorageAvailable() || initialContent || title) return;
+    if (!isLocalStorageAvailable() || initialContent || title) return
 
-    const savedData = loadPRDData();
+    const savedData = loadPRDData()
 
     if (savedData) {
       // Load content into editor
       if (savedData.content) {
-        editor?.commands.setContent(savedData.content);
-        setContent(savedData.content);
+        editor?.commands.setContent(savedData.content)
+        setContent(savedData.content)
       }
 
       // Load title
       if (savedData.title) {
-        setDocumentTitle(savedData.title);
+        setDocumentTitle(savedData.title)
       }
 
       // Load metadata
       if (savedData.timestamp) {
-        setLastSaved(new Date(savedData.timestamp));
+        setLastSaved(new Date(savedData.timestamp))
       }
 
       if (savedData.wordCount) {
-        setWordCount(savedData.wordCount);
+        setWordCount(savedData.wordCount)
       }
 
       if (savedData.charCount) {
-        setCharCount(savedData.charCount);
+        setCharCount(savedData.charCount)
       }
     }
-  }, [editor, initialContent, title]);
+  }, [editor, initialContent, title])
 
   // Handle title changes
   const handleTitleChange = useCallback(
     (newTitle: string) => {
-      setDocumentTitle(newTitle);
-      onTitleChange?.(newTitle);
+      setDocumentTitle(newTitle)
+      onTitleChange?.(newTitle)
     },
     [onTitleChange]
-  );
+  )
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      editor?.destroy();
-    };
-  }, [editor]);
+      editor?.destroy()
+    }
+  }, [editor])
 
   if (!editor) {
     return (
@@ -263,20 +251,18 @@ export const PRDEditorWithToolbar: React.FC<PRDEditorWithToolbarProps> = ({
           <span>Loading editor...</span>
         </div>
       </div>
-    );
+    )
   }
 
   return (
-    <div
-      className={`prd-editor-with-toolbar ${className} ${readOnly ? 'read-only' : ''}`}
-    >
+    <div className={`prd-editor-with-toolbar ${className} ${readOnly ? 'read-only' : ''}`}>
       {/* Document Header */}
       <div className="prd-editor__header">
         <div className="header-content">
           <input
             type="text"
             value={documentTitle}
-            onChange={e => handleTitleChange(e.target.value)}
+            onChange={(e) => handleTitleChange(e.target.value)}
             placeholder="Enter PRD title..."
             className="document-title-input"
             disabled={readOnly}
@@ -289,9 +275,7 @@ export const PRDEditorWithToolbar: React.FC<PRDEditorWithToolbarProps> = ({
               </span>
             )}
             {lastSaved && (
-              <span className="last-saved">
-                Last saved: {lastSaved.toLocaleTimeString()}
-              </span>
+              <span className="last-saved">Last saved: {lastSaved.toLocaleTimeString()}</span>
             )}
             {!readOnly && (
               <button
@@ -308,9 +292,7 @@ export const PRDEditorWithToolbar: React.FC<PRDEditorWithToolbarProps> = ({
       </div>
 
       {/* Toolbar */}
-      {showToolbar && !readOnly && (
-        <PRDToolbar editor={editor} disabled={isSaving} />
-      )}
+      {showToolbar && !readOnly && <PRDToolbar editor={editor} disabled={isSaving} />}
 
       {/* Editor Content */}
       <div className="prd-editor__content">
@@ -360,7 +342,7 @@ export const PRDEditorWithToolbar: React.FC<PRDEditorWithToolbarProps> = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default PRDEditorWithToolbar;
+export default PRDEditorWithToolbar

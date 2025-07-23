@@ -2,8 +2,7 @@ import React, { forwardRef } from 'react'
 import type { InputHTMLAttributes } from 'react'
 import { cn } from '../../utils/cn'
 
-export interface CheckboxProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
+export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
   label?: string
   error?: string
   indeterminate?: boolean

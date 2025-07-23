@@ -36,18 +36,10 @@ export interface InputProps
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ 
-    className, 
-    size, 
-    variant,
-    label,
-    error,
-    helperText,
-    leftIcon,
-    rightIcon,
-    id,
-    ...props 
-  }, ref) => {
+  (
+    { className, size, variant, label, error, helperText, leftIcon, rightIcon, id, ...props },
+    ref
+  ) => {
     const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`
     const errorId = `${inputId}-error`
     const helperId = `${inputId}-helper`
@@ -55,10 +47,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="space-y-2">
         {label && (
-          <label
-            htmlFor={inputId}
-            className="block text-sm font-medium text-secondary-700"
-          >
+          <label htmlFor={inputId} className="block text-sm font-medium text-secondary-700">
             {label}
           </label>
         )}
@@ -77,9 +66,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             )}
             ref={ref}
             aria-invalid={!!error}
-            aria-describedby={
-              error ? errorId : helperText ? helperId : undefined
-            }
+            aria-describedby={error ? errorId : helperText ? helperId : undefined}
             {...props}
           />
           {rightIcon && (

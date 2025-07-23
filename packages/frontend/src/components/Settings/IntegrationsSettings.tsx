@@ -1,79 +1,73 @@
-import React, { useState, useEffect } from 'react';
-import { cn } from '../../utils/cn';
-import { Button } from '../ui/atoms/Button';
-import { Toggle } from '../ui/atoms/Toggle';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from '../ui/molecules/Card';
-import { Badge } from '../ui/atoms/Badge';
-import { FormField } from '../ui/molecules/FormField';
-import { useSettings } from '../../contexts/SettingsContext';
+import React, { useState, useEffect } from 'react'
+import { cn } from '../../utils/cn'
+import { Button } from '../ui/atoms/Button'
+import { Toggle } from '../ui/atoms/Toggle'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/molecules/Card'
+import { Badge } from '../ui/atoms/Badge'
+import { FormField } from '../ui/molecules/FormField'
+import { useSettings } from '../../contexts/SettingsContext'
 
 export interface IntegrationsSettingsProps {
   /**
    * Callback when settings are saved
    */
-  onSave?: (settings: IntegrationsSettingsData) => void;
+  onSave?: (settings: IntegrationsSettingsData) => void
   /**
    * Additional CSS classes
    */
-  className?: string;
+  className?: string
 }
 
 export interface IntegrationsSettingsData {
   github: {
-    enabled: boolean;
-    connected: boolean;
-    username?: string;
-    repositories: string[];
-  };
+    enabled: boolean
+    connected: boolean
+    username?: string
+    repositories: string[]
+  }
   slack: {
-    enabled: boolean;
-    connected: boolean;
-    workspace?: string;
-    channels: string[];
-  };
+    enabled: boolean
+    connected: boolean
+    workspace?: string
+    channels: string[]
+  }
   jira: {
-    enabled: boolean;
-    connected: boolean;
-    server?: string;
-    project?: string;
-  };
+    enabled: boolean
+    connected: boolean
+    server?: string
+    project?: string
+  }
   gitlab: {
-    enabled: boolean;
-    connected: boolean;
-    server?: string;
-    groups: string[];
-  };
+    enabled: boolean
+    connected: boolean
+    server?: string
+    groups: string[]
+  }
   discord: {
-    enabled: boolean;
-    connected: boolean;
-    server?: string;
-    channels: string[];
-  };
+    enabled: boolean
+    connected: boolean
+    server?: string
+    channels: string[]
+  }
   webhooks: {
-    enabled: boolean;
+    enabled: boolean
     endpoints: Array<{
-      id: string;
-      name: string;
-      url: string;
-      events: string[];
-      active: boolean;
-    }>;
-  };
+      id: string
+      name: string
+      url: string
+      events: string[]
+      active: boolean
+    }>
+  }
 }
 
 interface Integration {
-  id: keyof IntegrationsSettingsData;
-  name: string;
-  description: string;
-  icon: React.ReactNode;
-  color: string;
-  category: 'development' | 'communication' | 'project-management' | 'custom';
+  id: keyof IntegrationsSettingsData
+  name: string
+  description: string
+  icon: React.ReactNode
+  color: string
+  category: 'development' | 'communication' | 'project-management' | 'custom'
 }
 
 const integrations: Integration[] = [
@@ -137,13 +131,13 @@ const integrations: Integration[] = [
       </svg>
     ),
   },
-];
+]
 
 export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({
   onSave,
   className,
 }) => {
-  const { state, updateCategory, getSetting } = useSettings();
+  const { state, updateCategory, getSetting } = useSettings()
   const [settings, setSettings] = useState<IntegrationsSettingsData>({
     github: {
       enabled: false,
@@ -179,24 +173,24 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({
       enabled: false,
       endpoints: [],
     },
-  });
+  })
 
   const [newWebhook, setNewWebhook] = useState({
     name: '',
     url: '',
     events: [] as string[],
-  });
+  })
 
-  const [showWebhookForm, setShowWebhookForm] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isSaved, setIsSaved] = useState(false);
+  const [showWebhookForm, setShowWebhookForm] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [isSaved, setIsSaved] = useState(false)
 
   // Load settings data when component mounts or settings change
   useEffect(() => {
     if (state.settings?.integrationSettings) {
-      setSettings(state.settings.integrationSettings);
+      setSettings(state.settings.integrationSettings)
     }
-  }, [state.settings]);
+  }, [state.settings])
 
   const handleToggleIntegration = async (
     integrationId: keyof IntegrationsSettingsData,
@@ -208,58 +202,56 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({
         ...settings[integrationId],
         enabled,
       },
-    };
+    }
 
-    setSettings(updatedSettings);
+    setSettings(updatedSettings)
 
     try {
-      await updateCategory('integrations', updatedSettings);
+      await updateCategory('integrations', updatedSettings)
     } catch (error) {
-      console.error('Failed to update integration settings:', error);
+      console.error('Failed to update integration settings:', error)
       // Revert on error
-      setSettings(prev => ({
+      setSettings((prev) => ({
         ...prev,
         [integrationId]: {
           ...prev[integrationId],
           enabled: !enabled,
         },
-      }));
+      }))
     }
-  };
+  }
 
   const handleConnect = (integrationId: string) => {
     // Simulate OAuth flow
-    console.log(`Connecting to ${integrationId}...`);
+    console.log(`Connecting to ${integrationId}...`)
     // In real app, this would trigger OAuth flow
-  };
+  }
 
-  const handleDisconnect = async (
-    integrationId: keyof IntegrationsSettingsData
-  ) => {
+  const handleDisconnect = async (integrationId: keyof IntegrationsSettingsData) => {
     const updatedSettings = {
       ...settings,
       [integrationId]: {
         ...settings[integrationId],
         connected: false,
       },
-    };
+    }
 
-    setSettings(updatedSettings);
+    setSettings(updatedSettings)
 
     try {
-      await updateCategory('integrations', updatedSettings);
+      await updateCategory('integrations', updatedSettings)
     } catch (error) {
-      console.error('Failed to disconnect integration:', error);
+      console.error('Failed to disconnect integration:', error)
       // Revert on error
-      setSettings(prev => ({
+      setSettings((prev) => ({
         ...prev,
         [integrationId]: {
           ...prev[integrationId],
           connected: true,
         },
-      }));
+      }))
     }
-  };
+  }
 
   const handleAddWebhook = async () => {
     if (newWebhook.name && newWebhook.url) {
@@ -267,7 +259,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({
         id: Date.now().toString(),
         ...newWebhook,
         active: true,
-      };
+      }
 
       const updatedSettings = {
         ...settings,
@@ -275,156 +267,137 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({
           ...settings.webhooks,
           endpoints: [...settings.webhooks.endpoints, webhook],
         },
-      };
+      }
 
-      setSettings(updatedSettings);
+      setSettings(updatedSettings)
 
       try {
-        await updateCategory('integrations', updatedSettings);
-        setNewWebhook({ name: '', url: '', events: [] });
-        setShowWebhookForm(false);
+        await updateCategory('integrations', updatedSettings)
+        setNewWebhook({ name: '', url: '', events: [] })
+        setShowWebhookForm(false)
       } catch (error) {
-        console.error('Failed to add webhook:', error);
+        console.error('Failed to add webhook:', error)
         // Revert on error
-        setSettings(settings);
+        setSettings(settings)
       }
     }
-  };
+  }
 
   const handleSave = async () => {
-    setIsLoading(true);
+    setIsLoading(true)
     try {
-      await updateCategory('integrations', settings);
-      onSave?.(settings);
-      setIsSaved(true);
-      setTimeout(() => setIsSaved(false), 3000);
+      await updateCategory('integrations', settings)
+      onSave?.(settings)
+      setIsSaved(true)
+      setTimeout(() => setIsSaved(false), 3000)
     } catch (error) {
-      console.error('Failed to save integration settings:', error);
+      console.error('Failed to save integration settings:', error)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   const categoryLabels = {
     development: 'Development',
     communication: 'Communication',
     'project-management': 'Project Management',
     custom: 'Custom',
-  };
+  }
 
   const groupedIntegrations = integrations.reduce(
     (acc, integration) => {
       if (!acc[integration.category]) {
-        acc[integration.category] = [];
+        acc[integration.category] = []
       }
-      acc[integration.category].push(integration);
-      return acc;
+      acc[integration.category].push(integration)
+      return acc
     },
     {} as Record<string, Integration[]>
-  );
+  )
 
   return (
     <div className={cn('space-y-6', className)}>
       {/* Integration Categories */}
-      {Object.entries(groupedIntegrations).map(
-        ([category, categoryIntegrations]) => (
-          <Card
-            key={category}
-            className="bg-white/50 backdrop-blur-sm border border-white/30"
-          >
-            <CardHeader>
-              <CardTitle className="text-lg">
-                {categoryLabels[category as keyof typeof categoryLabels]}
-              </CardTitle>
-              <CardDescription>
-                Connect and manage your {category.replace('-', ' ')} tools
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {categoryIntegrations.map(integration => {
-                const integrationSettings = settings[integration.id];
-                const isConnected =
-                  'connected' in integrationSettings
-                    ? integrationSettings.connected
-                    : false;
-                const isEnabled = integrationSettings?.enabled || false;
+      {Object.entries(groupedIntegrations).map(([category, categoryIntegrations]) => (
+        <Card key={category} className="bg-white/50 backdrop-blur-sm border border-white/30">
+          <CardHeader>
+            <CardTitle className="text-lg">
+              {categoryLabels[category as keyof typeof categoryLabels]}
+            </CardTitle>
+            <CardDescription>
+              Connect and manage your {category.replace('-', ' ')} tools
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {categoryIntegrations.map((integration) => {
+              const integrationSettings = settings[integration.id]
+              const isConnected =
+                'connected' in integrationSettings ? integrationSettings.connected : false
+              const isEnabled = integrationSettings?.enabled || false
 
-                return (
-                  <div
-                    key={integration.id}
-                    className={cn(
-                      'flex items-center justify-between p-4 rounded-lg border border-white/20',
-                      'bg-white/30 backdrop-blur-sm transition-all duration-200',
-                      'hover:bg-white/40 hover:shadow-sm'
-                    )}
-                  >
-                    <div className="flex items-center space-x-4">
-                      <div
-                        className={cn(
-                          'p-2 rounded-lg text-white',
-                          integration.color
-                        )}
-                      >
-                        {integration.icon}
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-2">
-                          <h3 className="font-medium text-gray-900">
-                            {integration.name}
-                          </h3>
-                          {isConnected && (
-                            <Badge variant="success" size="sm">
-                              Connected
-                            </Badge>
-                          )}
-                          {!isConnected && isEnabled && (
-                            <Badge variant="warning" size="sm">
-                              Not Connected
-                            </Badge>
-                          )}
-                        </div>
-                        <p className="text-sm text-gray-600">
-                          {integration.description}
-                        </p>
-                      </div>
+              return (
+                <div
+                  key={integration.id}
+                  className={cn(
+                    'flex items-center justify-between p-4 rounded-lg border border-white/20',
+                    'bg-white/30 backdrop-blur-sm transition-all duration-200',
+                    'hover:bg-white/40 hover:shadow-sm'
+                  )}
+                >
+                  <div className="flex items-center space-x-4">
+                    <div className={cn('p-2 rounded-lg text-white', integration.color)}>
+                      {integration.icon}
                     </div>
-
-                    <div className="flex items-center space-x-3">
-                      <Toggle
-                        checked={isEnabled}
-                        onCheckedChange={enabled =>
-                          handleToggleIntegration(integration.id, enabled)
-                        }
-                        size="sm"
-                      />
-                      {isEnabled && (
-                        <>
-                          {isConnected ? (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleDisconnect(integration.id)}
-                            >
-                              Disconnect
-                            </Button>
-                          ) : (
-                            <Button
-                              size="sm"
-                              onClick={() => handleConnect(integration.id)}
-                            >
-                              Connect
-                            </Button>
-                          )}
-                        </>
-                      )}
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2">
+                        <h3 className="font-medium text-gray-900">{integration.name}</h3>
+                        {isConnected && (
+                          <Badge variant="success" size="sm">
+                            Connected
+                          </Badge>
+                        )}
+                        {!isConnected && isEnabled && (
+                          <Badge variant="warning" size="sm">
+                            Not Connected
+                          </Badge>
+                        )}
+                      </div>
+                      <p className="text-sm text-gray-600">{integration.description}</p>
                     </div>
                   </div>
-                );
-              })}
-            </CardContent>
-          </Card>
-        )
-      )}
+
+                  <div className="flex items-center space-x-3">
+                    <Toggle
+                      checked={isEnabled}
+                      onCheckedChange={(enabled) =>
+                        handleToggleIntegration(integration.id, enabled)
+                      }
+                      size="sm"
+                    />
+                    {isEnabled && (
+                      <>
+                        {isConnected ? (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleDisconnect(integration.id)}
+                          >
+                            Disconnect
+                          </Button>
+                        ) : (
+                          <Button size="sm" onClick={() => handleConnect(integration.id)}>
+                            Connect
+                          </Button>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </div>
+              )
+            })}
+          </CardContent>
+        </Card>
+      ))}
 
       {/* Webhooks Section */}
       <Card className="bg-white/50 backdrop-blur-sm border border-white/30">
@@ -439,8 +412,8 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({
             <div className="flex items-center space-x-3">
               <Toggle
                 checked={settings.webhooks.enabled}
-                onCheckedChange={enabled =>
-                  setSettings(prev => ({
+                onCheckedChange={(enabled) =>
+                  setSettings((prev) => ({
                     ...prev,
                     webhooks: { ...prev.webhooks, enabled },
                   }))
@@ -460,29 +433,20 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({
           <CardContent>
             {/* Existing Webhooks */}
             <div className="space-y-3 mb-6">
-              {settings.webhooks.endpoints.map(webhook => (
+              {settings.webhooks.endpoints.map((webhook) => (
                 <div
                   key={webhook.id}
                   className="flex items-center justify-between p-3 rounded-lg bg-white/30 backdrop-blur-sm border border-white/20"
                 >
                   <div className="flex-1">
                     <div className="flex items-center space-x-2">
-                      <h4 className="font-medium text-gray-900">
-                        {webhook.name}
-                      </h4>
-                      <Badge
-                        variant={webhook.active ? 'success' : 'secondary'}
-                        size="sm"
-                      >
+                      <h4 className="font-medium text-gray-900">{webhook.name}</h4>
+                      <Badge variant={webhook.active ? 'success' : 'secondary'} size="sm">
                         {webhook.active ? 'Active' : 'Inactive'}
                       </Badge>
                     </div>
-                    <p className="text-sm text-gray-600 font-mono">
-                      {webhook.url}
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      Events: {webhook.events.join(', ')}
-                    </p>
+                    <p className="text-sm text-gray-600 font-mono">{webhook.url}</p>
+                    <p className="text-xs text-gray-500">Events: {webhook.events.join(', ')}</p>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Button variant="outline" size="sm">
@@ -504,27 +468,19 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({
                   <FormField
                     label="Webhook Name"
                     value={newWebhook.name}
-                    onChange={e =>
-                      setNewWebhook(prev => ({ ...prev, name: e.target.value }))
-                    }
+                    onChange={(e) => setNewWebhook((prev) => ({ ...prev, name: e.target.value }))}
                     placeholder="e.g. Deploy Webhook"
                   />
                   <FormField
                     label="Endpoint URL"
                     type="url"
                     value={newWebhook.url}
-                    onChange={e =>
-                      setNewWebhook(prev => ({ ...prev, url: e.target.value }))
-                    }
+                    onChange={(e) => setNewWebhook((prev) => ({ ...prev, url: e.target.value }))}
                     placeholder="https://api.example.com/webhook"
                   />
                 </div>
                 <div className="flex justify-end space-x-3">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setShowWebhookForm(false)}
-                  >
+                  <Button variant="outline" size="sm" onClick={() => setShowWebhookForm(false)}>
                     Cancel
                   </Button>
                   <Button size="sm" onClick={handleAddWebhook}>
@@ -550,12 +506,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({
         >
           {isSaved ? (
             <>
-              <svg
-                className="w-4 h-4 mr-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -571,7 +522,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({
         </Button>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default IntegrationsSettings;
+export default IntegrationsSettings

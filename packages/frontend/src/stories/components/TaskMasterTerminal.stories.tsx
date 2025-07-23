@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { TaskMasterTerminal } from '../../components/Terminal/TaskMasterTerminal';
-import '../../components/Terminal/TaskMasterTerminal.css';
+import type { Meta, StoryObj } from '@storybook/react'
+import { TaskMasterTerminal } from '../../components/Terminal/TaskMasterTerminal'
+import '../../components/Terminal/TaskMasterTerminal.css'
 
 const meta = {
   title: 'Components/Terminal/TaskMasterTerminal',
@@ -95,7 +95,7 @@ A specialized terminal component designed for TaskMaster CLI integration. Featur
     },
   },
   decorators: [
-    Story => (
+    (Story) => (
       <div
         style={{
           width: '100%',
@@ -108,10 +108,10 @@ A specialized terminal component designed for TaskMaster CLI integration. Featur
       </div>
     ),
   ],
-} satisfies Meta<typeof TaskMasterTerminal>;
+} satisfies Meta<typeof TaskMasterTerminal>
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {
@@ -146,7 +146,7 @@ The default configuration with all features enabled. This terminal is ready for 
       },
     },
   },
-};
+}
 
 export const LightTheme: Story = {
   args: {
@@ -166,7 +166,7 @@ All functionality remains the same with adjusted colors for optimal contrast.
       },
     },
   },
-};
+}
 
 export const Fullscreen: Story = {
   args: {
@@ -189,7 +189,7 @@ Fullscreen terminal mode for intensive CLI work. Perfect for:
     },
   },
   decorators: [
-    Story => (
+    (Story) => (
       <div
         style={{
           width: '100vw',
@@ -202,7 +202,7 @@ Fullscreen terminal mode for intensive CLI work. Perfect for:
       </div>
     ),
   ],
-};
+}
 
 export const WithoutSuggestions: Story = {
   args: {
@@ -222,7 +222,7 @@ traditional terminal experience while maintaining TaskMaster integration.
       },
     },
   },
-};
+}
 
 export const MinimalTerminal: Story = {
   args: {
@@ -246,7 +246,7 @@ in constrained spaces while maintaining core TaskMaster CLI functionality.
       },
     },
   },
-};
+}
 
 export const ProjectScoped: Story = {
   args: {
@@ -271,7 +271,7 @@ task management seamless.
       },
     },
   },
-};
+}
 
 export const CompactMode: Story = {
   args: {
@@ -293,7 +293,7 @@ Reduced history size and dimensions while maintaining full functionality.
     },
   },
   decorators: [
-    Story => (
+    (Story) => (
       <div
         style={{
           width: '600px',
@@ -307,7 +307,7 @@ Reduced history size and dimensions while maintaining full functionality.
       </div>
     ),
   ],
-};
+}
 
 // Mock service integration for Storybook
 export const WithMockService: Story = {
@@ -326,11 +326,11 @@ Shows how the terminal integrates with TaskMaster CLI backend services.
       },
     },
   },
-  render: args => {
+  render: (args) => {
     // In a real implementation, this would connect to a mock service
-    return <TaskMasterTerminal {...args} />;
+    return <TaskMasterTerminal {...args} />
   },
-};
+}
 
 // Interactive demo story
 export const InteractiveDemo: Story = {
@@ -356,4 +356,4 @@ Try these TaskMaster commands to see the terminal in action:
       },
     },
   },
-};
+}

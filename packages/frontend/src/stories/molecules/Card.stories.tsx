@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react'
 import {
   Card,
   CardHeader,
@@ -6,15 +6,10 @@ import {
   CardDescription,
   CardContent,
   CardFooter,
-} from '../../components/ui/molecules/Card';
-import { Button } from '../../components/ui/atoms/Button';
-import { Badge } from '../../components/ui/atoms/Badge';
-import {
-  Icon,
-  CheckIcon,
-  EyeIcon,
-  PencilIcon,
-} from '../../components/ui/atoms/Icon';
+} from '../../components/ui/molecules/Card'
+import { Button } from '../../components/ui/atoms/Button'
+import { Badge } from '../../components/ui/atoms/Badge'
+import { Icon, CheckIcon, EyeIcon, PencilIcon } from '../../components/ui/atoms/Icon'
 
 const meta: Meta<typeof Card> = {
   title: 'Molecules/Card',
@@ -46,25 +41,23 @@ const meta: Meta<typeof Card> = {
     },
   },
   decorators: [
-    Story => (
+    (Story) => (
       <div className="w-96">
         <Story />
       </div>
     ),
   ],
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
-  render: args => (
+  render: (args) => (
     <Card {...args}>
       <CardHeader>
         <CardTitle>Card Title</CardTitle>
-        <CardDescription>
-          This is a description of what this card contains.
-        </CardDescription>
+        <CardDescription>This is a description of what this card contains.</CardDescription>
       </CardHeader>
       <CardContent>
         <p>This is the main content area of the card.</p>
@@ -74,7 +67,7 @@ export const Default: Story = {
       </CardFooter>
     </Card>
   ),
-};
+}
 
 export const Variants: Story = {
   render: () => (
@@ -82,41 +75,33 @@ export const Variants: Story = {
       <Card variant="default">
         <CardContent>
           <p className="font-medium">Default</p>
-          <p className="text-sm text-secondary-600">
-            Standard card with border
-          </p>
+          <p className="text-sm text-secondary-600">Standard card with border</p>
         </CardContent>
       </Card>
 
       <Card variant="outline">
         <CardContent>
           <p className="font-medium">Outline</p>
-          <p className="text-sm text-secondary-600">
-            Card with prominent border
-          </p>
+          <p className="text-sm text-secondary-600">Card with prominent border</p>
         </CardContent>
       </Card>
 
       <Card variant="elevated">
         <CardContent>
           <p className="font-medium">Elevated</p>
-          <p className="text-sm text-secondary-600">
-            Card with shadow elevation
-          </p>
+          <p className="text-sm text-secondary-600">Card with shadow elevation</p>
         </CardContent>
       </Card>
 
       <Card variant="ghost">
         <CardContent>
           <p className="font-medium">Ghost</p>
-          <p className="text-sm text-secondary-600">
-            Minimal card without border
-          </p>
+          <p className="text-sm text-secondary-600">Minimal card without border</p>
         </CardContent>
       </Card>
     </div>
   ),
-};
+}
 
 export const Sizes: Story = {
   render: () => (
@@ -143,23 +128,21 @@ export const Sizes: Story = {
       </Card>
     </div>
   ),
-};
+}
 
 export const Interactive: Story = {
   render: () => (
     <Card interactive onClick={() => alert('Card clicked!')}>
       <CardHeader>
         <CardTitle>Interactive Card</CardTitle>
-        <CardDescription>
-          This card is clickable and shows hover effects.
-        </CardDescription>
+        <CardDescription>This card is clickable and shows hover effects.</CardDescription>
       </CardHeader>
       <CardContent>
         <p>Click anywhere on this card to see the interaction.</p>
       </CardContent>
     </Card>
   ),
-};
+}
 
 export const TaskCard: Story = {
   render: () => (
@@ -170,8 +153,7 @@ export const TaskCard: Story = {
           <Badge variant="in-progress">In Progress</Badge>
         </div>
         <CardDescription>
-          Create login and registration forms with proper validation and error
-          handling.
+          Create login and registration forms with proper validation and error handling.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -181,10 +163,7 @@ export const TaskCard: Story = {
             <span className="font-medium">60%</span>
           </div>
           <div className="w-full bg-secondary-200 rounded-full h-2">
-            <div
-              className="bg-primary-600 h-2 rounded-full"
-              style={{ width: '60%' }}
-            />
+            <div className="bg-primary-600 h-2 rounded-full" style={{ width: '60%' }} />
           </div>
           <div className="flex gap-2">
             <Badge variant="outline" size="sm">
@@ -209,7 +188,7 @@ export const TaskCard: Story = {
       </CardFooter>
     </Card>
   ),
-};
+}
 
 export const ProfileCard: Story = {
   render: () => (
@@ -247,7 +226,7 @@ export const ProfileCard: Story = {
       </CardFooter>
     </Card>
   ),
-};
+}
 
 export const StatsCard: Story = {
   render: () => (
@@ -256,9 +235,7 @@ export const StatsCard: Story = {
         <CardContent>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-secondary-600">
-                Total Tasks
-              </p>
+              <p className="text-sm font-medium text-secondary-600">Total Tasks</p>
               <p className="text-2xl font-bold">142</p>
             </div>
             <div className="h-8 w-8 bg-primary-100 rounded-full flex items-center justify-center">
@@ -272,9 +249,7 @@ export const StatsCard: Story = {
         <CardContent>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-secondary-600">
-                Completed
-              </p>
+              <p className="text-sm font-medium text-secondary-600">Completed</p>
               <p className="text-2xl font-bold text-success-600">89</p>
             </div>
             <div className="h-8 w-8 bg-success-100 rounded-full flex items-center justify-center">
@@ -288,9 +263,7 @@ export const StatsCard: Story = {
         <CardContent>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-secondary-600">
-                In Progress
-              </p>
+              <p className="text-sm font-medium text-secondary-600">In Progress</p>
               <p className="text-2xl font-bold text-warning-600">23</p>
             </div>
             <div className="h-8 w-8 bg-warning-100 rounded-full flex items-center justify-center">
@@ -301,7 +274,7 @@ export const StatsCard: Story = {
       </Card>
     </div>
   ),
-};
+}
 
 export const NotificationCard: Story = {
   render: () => (
@@ -337,7 +310,7 @@ export const NotificationCard: Story = {
       </CardFooter>
     </Card>
   ),
-};
+}
 
 export const ComplexLayout: Story = {
   render: () => (
@@ -355,10 +328,7 @@ export const ComplexLayout: Story = {
                 <span>75%</span>
               </div>
               <div className="w-full bg-secondary-200 rounded-full h-2">
-                <div
-                  className="bg-primary-600 h-2 rounded-full"
-                  style={{ width: '75%' }}
-                />
+                <div className="bg-primary-600 h-2 rounded-full" style={{ width: '75%' }} />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4 text-sm">
@@ -420,4 +390,4 @@ export const ComplexLayout: Story = {
       </Card>
     </div>
   ),
-};
+}

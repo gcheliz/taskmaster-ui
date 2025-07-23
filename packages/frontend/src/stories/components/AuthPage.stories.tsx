@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { AuthPage } from '../../components/Auth/AuthPage';
+import type { Meta, StoryObj } from '@storybook/react'
+import { AuthPage } from '../../components/Auth/AuthPage'
 
 const meta: Meta<typeof AuthPage> = {
   title: 'Components/AuthPage',
@@ -43,31 +43,31 @@ const meta: Meta<typeof AuthPage> = {
       description: 'Callback when authentication is successful',
     },
   },
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {
     defaultTab: 'login',
     showSocialLogins: true,
   },
-};
+}
 
 export const RegisterDefault: Story = {
   args: {
     defaultTab: 'register',
     showSocialLogins: true,
   },
-};
+}
 
 export const WithoutSocialLogins: Story = {
   args: {
     defaultTab: 'login',
     showSocialLogins: false,
   },
-};
+}
 
 export const CustomBackground: Story = {
   args: {
@@ -76,7 +76,7 @@ export const CustomBackground: Story = {
     backgroundImage:
       'https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&auto=format&fit=crop&w=2574&q=80',
   },
-};
+}
 
 export const GlassmorphismShowcase: Story = {
   parameters: {
@@ -86,7 +86,7 @@ export const GlassmorphismShowcase: Story = {
     defaultTab: 'login',
     showSocialLogins: true,
   },
-  render: args => (
+  render: (args) => (
     <div
       style={{
         background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
@@ -96,7 +96,7 @@ export const GlassmorphismShowcase: Story = {
       <AuthPage {...args} />
     </div>
   ),
-};
+}
 
 export const InteractiveDemo: Story = {
   args: {
@@ -105,9 +105,9 @@ export const InteractiveDemo: Story = {
   },
   play: async ({ canvasElement, step }) => {
     // This would be used for interactive testing
-    console.log('Interactive demo: Authentication page loaded');
+    console.log('Interactive demo: Authentication page loaded')
   },
-};
+}
 
 export const MobileView: Story = {
   parameters: {
@@ -119,7 +119,7 @@ export const MobileView: Story = {
     defaultTab: 'register',
     showSocialLogins: true,
   },
-};
+}
 
 export const TabletView: Story = {
   parameters: {
@@ -131,7 +131,7 @@ export const TabletView: Story = {
     defaultTab: 'login',
     showSocialLogins: true,
   },
-};
+}
 
 export const DesktopView: Story = {
   parameters: {
@@ -143,4 +143,4 @@ export const DesktopView: Story = {
     defaultTab: 'register',
     showSocialLogins: true,
   },
-};
+}

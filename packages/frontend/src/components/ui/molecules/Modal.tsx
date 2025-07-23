@@ -1,13 +1,13 @@
-import React, { useEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
-import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '../../../utils/cn';
-import { Button } from '../atoms/Button';
-import { Icon, XMarkIcon } from '../atoms/Icon';
+import React, { useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
+import { cva, type VariantProps } from 'class-variance-authority'
+import { cn } from '../../../utils/cn'
+import { Button } from '../atoms/Button'
+import { Icon, XMarkIcon } from '../atoms/Icon'
 
 const modalOverlayVariants = cva(
   'fixed inset-0 z-50 bg-black/50 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0'
-);
+)
 
 const modalContentVariants = cva(
   'fixed left-1/2 top-1/2 z-50 grid w-full translate-x-[-50%] translate-y-[-50%] gap-4 border border-secondary-200 bg-white shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg p-4 sm:p-6 m-4 sm:m-0',
@@ -25,37 +25,33 @@ const modalContentVariants = cva(
       size: 'md',
     },
   }
-);
+)
 
-const modalHeaderVariants = cva(
-  'flex flex-col space-y-1.5 text-center sm:text-left'
-);
+const modalHeaderVariants = cva('flex flex-col space-y-1.5 text-center sm:text-left')
 
-const modalTitleVariants = cva(
-  'text-lg font-semibold leading-none tracking-tight'
-);
+const modalTitleVariants = cva('text-lg font-semibold leading-none tracking-tight')
 
-const modalDescriptionVariants = cva('text-sm text-secondary-600');
+const modalDescriptionVariants = cva('text-sm text-secondary-600')
 
-const modalBodyVariants = cva('flex-1 overflow-y-auto');
+const modalBodyVariants = cva('flex-1 overflow-y-auto')
 
 const modalFooterVariants = cva(
   'flex flex-col space-y-2 sm:flex-row-reverse sm:space-y-0 sm:space-x-2 sm:space-x-reverse sm:justify-start pt-4 border-t border-secondary-100'
-);
+)
 
 export interface ModalProps {
   /**
    * Whether the modal is open
    */
-  open: boolean;
+  open: boolean
   /**
    * Callback when the modal open state changes
    */
-  onOpenChange: (open: boolean) => void;
+  onOpenChange: (open: boolean) => void
   /**
    * Modal content
    */
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
 export interface ModalContentProps
@@ -64,16 +60,16 @@ export interface ModalContentProps
   /**
    * Callback when Escape key is pressed
    */
-  onEscapeKeyDown?: (event: KeyboardEvent) => void;
+  onEscapeKeyDown?: (event: KeyboardEvent) => void
   /**
    * Callback when clicking outside the modal
    */
-  onPointerDownOutside?: (event: PointerEvent) => void;
+  onPointerDownOutside?: (event: PointerEvent) => void
   /**
    * Size of the modal
    * @default 'md'
    */
-  size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'full'
 }
 
 export interface ModalHeaderProps
@@ -98,158 +94,135 @@ export interface ModalFooterProps
 
 // Context for managing modal state
 const ModalContext = React.createContext<{
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-} | null>(null);
+  open: boolean
+  onOpenChange: (open: boolean) => void
+} | null>(null)
 
 const useModalContext = () => {
-  const context = React.useContext(ModalContext);
+  const context = React.useContext(ModalContext)
   if (!context) {
-    throw new Error('Modal components must be used within a Modal');
+    throw new Error('Modal components must be used within a Modal')
   }
-  return context;
-};
+  return context
+}
 
 const Modal: React.FC<ModalProps> = ({ open, onOpenChange, children }) => {
-  return (
-    <ModalContext.Provider value={{ open, onOpenChange }}>
-      {children}
-    </ModalContext.Provider>
-  );
-};
+  return <ModalContext.Provider value={{ open, onOpenChange }}>{children}</ModalContext.Provider>
+}
 
-export interface ModalTriggerProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?:
-    | 'primary'
-    | 'secondary'
-    | 'outline'
-    | 'ghost'
-    | 'link'
-    | 'destructive';
-  size?: 'sm' | 'md' | 'lg' | 'xl' | 'icon';
+export interface ModalTriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'link' | 'destructive'
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'icon'
 }
 
 const ModalTrigger = React.forwardRef<HTMLButtonElement, ModalTriggerProps>(
   ({ children, onClick, variant, size, ...props }, ref) => {
-    const { onOpenChange } = useModalContext();
+    const { onOpenChange } = useModalContext()
 
     return (
       <Button
         ref={ref}
         variant={variant}
         size={size}
-        onClick={event => {
-          onOpenChange(true);
-          onClick?.(event);
+        onClick={(event) => {
+          onOpenChange(true)
+          onClick?.(event)
         }}
         {...props}
       >
         {children}
       </Button>
-    );
+    )
   }
-);
-ModalTrigger.displayName = 'ModalTrigger';
+)
+ModalTrigger.displayName = 'ModalTrigger'
 
 const ModalContent = React.forwardRef<HTMLDivElement, ModalContentProps>(
-  (
-    {
-      className,
-      size,
-      onEscapeKeyDown,
-      onPointerDownOutside,
-      children,
-      ...props
-    },
-    ref
-  ) => {
-    const { open, onOpenChange } = useModalContext();
-    const contentRef = useRef<HTMLDivElement>(null);
-    const overlayRef = useRef<HTMLDivElement>(null);
+  ({ className, size, onEscapeKeyDown, onPointerDownOutside, children, ...props }, ref) => {
+    const { open, onOpenChange } = useModalContext()
+    const contentRef = useRef<HTMLDivElement>(null)
+    const overlayRef = useRef<HTMLDivElement>(null)
 
     // Focus management
     useEffect(() => {
-      if (!open) return;
+      if (!open) return
 
       const handleKeyDown = (event: KeyboardEvent) => {
         if (event.key === 'Escape') {
-          event.preventDefault();
-          onEscapeKeyDown?.(event);
-          onOpenChange(false);
+          event.preventDefault()
+          onEscapeKeyDown?.(event)
+          onOpenChange(false)
         }
-      };
+      }
 
       const handleTabKey = (event: KeyboardEvent) => {
-        if (event.key !== 'Tab') return;
+        if (event.key !== 'Tab') return
 
         const focusableElements = contentRef.current?.querySelectorAll(
           'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"]):not([disabled]), details:not([disabled]), summary:not(:disabled)'
-        );
+        )
 
-        if (!focusableElements || focusableElements.length === 0) return;
+        if (!focusableElements || focusableElements.length === 0) return
 
-        const firstElement = focusableElements[0] as HTMLElement;
-        const lastElement = focusableElements[
-          focusableElements.length - 1
-        ] as HTMLElement;
+        const firstElement = focusableElements[0] as HTMLElement
+        const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement
 
         if (event.shiftKey) {
           if (document.activeElement === firstElement) {
-            event.preventDefault();
-            lastElement.focus();
+            event.preventDefault()
+            lastElement.focus()
           }
         } else {
           if (document.activeElement === lastElement) {
-            event.preventDefault();
-            firstElement.focus();
+            event.preventDefault()
+            firstElement.focus()
           }
         }
-      };
+      }
 
-      document.addEventListener('keydown', handleKeyDown);
-      document.addEventListener('keydown', handleTabKey);
+      document.addEventListener('keydown', handleKeyDown)
+      document.addEventListener('keydown', handleTabKey)
 
       // Focus the first focusable element when modal opens
       const focusableElements = contentRef.current?.querySelectorAll(
         'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"]):not([disabled]), details:not([disabled]), summary:not(:disabled)'
-      );
+      )
 
       if (focusableElements && focusableElements.length > 0) {
-        (focusableElements[0] as HTMLElement).focus();
+        ;(focusableElements[0] as HTMLElement).focus()
       }
 
       return () => {
-        document.removeEventListener('keydown', handleKeyDown);
-        document.removeEventListener('keydown', handleTabKey);
-      };
-    }, [open, onEscapeKeyDown, onOpenChange]);
+        document.removeEventListener('keydown', handleKeyDown)
+        document.removeEventListener('keydown', handleTabKey)
+      }
+    }, [open, onEscapeKeyDown, onOpenChange])
 
     // Prevent body scroll when modal is open
     useEffect(() => {
       if (open) {
-        document.body.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden'
       } else {
-        document.body.style.overflow = 'unset';
+        document.body.style.overflow = 'unset'
       }
 
       return () => {
-        document.body.style.overflow = 'unset';
-      };
-    }, [open]);
+        document.body.style.overflow = 'unset'
+      }
+    }, [open])
 
-    if (!open) return null;
+    if (!open) return null
 
     const handleOverlayClick = (event: React.MouseEvent) => {
       if (event.target === overlayRef.current) {
         const pointerEvent = new PointerEvent('pointerdown', {
           bubbles: true,
           cancelable: true,
-        });
-        onPointerDownOutside?.(pointerEvent);
-        onOpenChange(false);
+        })
+        onPointerDownOutside?.(pointerEvent)
+        onOpenChange(false)
       }
-    };
+    }
 
     const modalElement = (
       <div
@@ -264,80 +237,59 @@ const ModalContent = React.forwardRef<HTMLDivElement, ModalContentProps>(
           aria-modal="true"
           data-state={open ? 'open' : 'closed'}
           className={cn(modalContentVariants({ size, className }))}
-          onClick={e => e.stopPropagation()}
+          onClick={(e) => e.stopPropagation()}
           {...props}
         >
           {children}
         </div>
       </div>
-    );
+    )
 
-    return createPortal(modalElement, document.body);
+    return createPortal(modalElement, document.body)
   }
-);
-ModalContent.displayName = 'ModalContent';
+)
+ModalContent.displayName = 'ModalContent'
 
 const ModalHeader = React.forwardRef<HTMLDivElement, ModalHeaderProps>(
   ({ className, ...props }, ref) => (
-    <div
-      ref={ref}
-      className={cn(modalHeaderVariants({ className }))}
-      {...props}
-    />
+    <div ref={ref} className={cn(modalHeaderVariants({ className }))} {...props} />
   )
-);
-ModalHeader.displayName = 'ModalHeader';
+)
+ModalHeader.displayName = 'ModalHeader'
 
 const ModalTitle = React.forwardRef<HTMLHeadingElement, ModalTitleProps>(
   ({ className, ...props }, ref) => (
-    <h3
-      ref={ref}
-      className={cn(modalTitleVariants({ className }))}
-      {...props}
-    />
+    <h3 ref={ref} className={cn(modalTitleVariants({ className }))} {...props} />
   )
-);
-ModalTitle.displayName = 'ModalTitle';
+)
+ModalTitle.displayName = 'ModalTitle'
 
-const ModalDescription = React.forwardRef<
-  HTMLParagraphElement,
-  ModalDescriptionProps
->(({ className, ...props }, ref) => (
-  <p
-    ref={ref}
-    className={cn(modalDescriptionVariants({ className }))}
-    {...props}
-  />
-));
-ModalDescription.displayName = 'ModalDescription';
+const ModalDescription = React.forwardRef<HTMLParagraphElement, ModalDescriptionProps>(
+  ({ className, ...props }, ref) => (
+    <p ref={ref} className={cn(modalDescriptionVariants({ className }))} {...props} />
+  )
+)
+ModalDescription.displayName = 'ModalDescription'
 
 const ModalBody = React.forwardRef<HTMLDivElement, ModalBodyProps>(
   ({ className, ...props }, ref) => (
-    <div
-      ref={ref}
-      className={cn(modalBodyVariants({ className }))}
-      {...props}
-    />
+    <div ref={ref} className={cn(modalBodyVariants({ className }))} {...props} />
   )
-);
-ModalBody.displayName = 'ModalBody';
+)
+ModalBody.displayName = 'ModalBody'
 
 const ModalFooter = React.forwardRef<HTMLDivElement, ModalFooterProps>(
   ({ className, ...props }, ref) => (
-    <div
-      ref={ref}
-      className={cn(modalFooterVariants({ className }))}
-      {...props}
-    />
+    <div ref={ref} className={cn(modalFooterVariants({ className }))} {...props} />
   )
-);
-ModalFooter.displayName = 'ModalFooter';
+)
+ModalFooter.displayName = 'ModalFooter'
 
 const ModalClose = React.forwardRef<
   HTMLButtonElement,
   React.ButtonHTMLAttributes<HTMLButtonElement>
 >(({ children, onClick, ...props }, ref) => {
-  const { onOpenChange } = useModalContext();
+  const { onOpenChange } = useModalContext()
 
   return (
     <Button
@@ -345,18 +297,18 @@ const ModalClose = React.forwardRef<
       variant="ghost"
       size="sm"
       className="absolute right-2 top-2 sm:right-4 sm:top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground touch-target"
-      onClick={event => {
-        onOpenChange(false);
-        onClick?.(event);
+      onClick={(event) => {
+        onOpenChange(false)
+        onClick?.(event)
       }}
       {...props}
     >
       {children || <Icon icon={XMarkIcon} size="sm" />}
       <span className="sr-only">Close</span>
     </Button>
-  );
-});
-ModalClose.displayName = 'ModalClose';
+  )
+})
+ModalClose.displayName = 'ModalClose'
 
 export {
   Modal,
@@ -375,4 +327,4 @@ export {
   modalDescriptionVariants,
   modalBodyVariants,
   modalFooterVariants,
-};
+}

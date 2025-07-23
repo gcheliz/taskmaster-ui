@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { useState } from 'react';
-import { Alert } from '../../components/ui/molecules/Alert';
-import { Button } from '../../components/ui/atoms/Button';
+import type { Meta, StoryObj } from '@storybook/react'
+import { useState } from 'react'
+import { Alert } from '../../components/ui/molecules/Alert'
+import { Button } from '../../components/ui/atoms/Button'
 import {
   Icon,
   CheckIcon,
@@ -9,7 +9,7 @@ import {
   WarningIcon,
   NotificationIcon,
   SettingsIcon,
-} from '../../components/ui/atoms/Icon';
+} from '../../components/ui/atoms/Icon'
 
 const meta: Meta<typeof Alert> = {
   title: 'Molecules/Alert',
@@ -70,22 +70,22 @@ const meta: Meta<typeof Alert> = {
     },
   },
   decorators: [
-    Story => (
+    (Story) => (
       <div className="max-w-lg">
         <Story />
       </div>
     ),
   ],
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {
     children: 'This is a default alert with some important information.',
   },
-};
+}
 
 export const Success: Story = {
   args: {
@@ -93,7 +93,7 @@ export const Success: Story = {
     title: 'Success!',
     children: 'Your changes have been saved successfully.',
   },
-};
+}
 
 export const Warning: Story = {
   args: {
@@ -101,7 +101,7 @@ export const Warning: Story = {
     title: 'Warning',
     children: 'This action cannot be undone. Please proceed with caution.',
   },
-};
+}
 
 export const Error: Story = {
   args: {
@@ -109,7 +109,7 @@ export const Error: Story = {
     title: 'Error',
     children: 'There was an error processing your request. Please try again.',
   },
-};
+}
 
 export const Info: Story = {
   args: {
@@ -117,7 +117,7 @@ export const Info: Story = {
     title: 'Information',
     children: 'New features are available! Check out the latest updates.',
   },
-};
+}
 
 export const AllVariants: Story = {
   render: () => (
@@ -143,25 +143,21 @@ export const AllVariants: Story = {
       </Alert>
     </div>
   ),
-};
+}
 
 export const WithoutTitle: Story = {
   render: () => (
     <div className="space-y-4 w-full max-w-2xl">
-      <Alert variant="success">
-        Changes saved successfully without a title.
-      </Alert>
+      <Alert variant="success">Changes saved successfully without a title.</Alert>
 
       <Alert variant="warning">
         Warning message without title - the text is automatically emphasized.
       </Alert>
 
-      <Alert variant="error">
-        Error occurred - no title needed for simple messages.
-      </Alert>
+      <Alert variant="error">Error occurred - no title needed for simple messages.</Alert>
     </div>
   ),
-};
+}
 
 export const WithCustomIcons: Story = {
   render: () => (
@@ -185,15 +181,13 @@ export const WithCustomIcons: Story = {
       <Alert
         variant="warning"
         title="New Notification"
-        icon={
-          <Icon icon={NotificationIcon} className="h-4 w-4 text-warning-600" />
-        }
+        icon={<Icon icon={NotificationIcon} className="h-4 w-4 text-warning-600" />}
       >
         You have 3 unread notifications waiting for your attention.
       </Alert>
     </div>
   ),
-};
+}
 
 export const WithoutIcons: Story = {
   render: () => (
@@ -211,7 +205,7 @@ export const WithoutIcons: Story = {
       </Alert>
     </div>
   ),
-};
+}
 
 export const DismissibleAlerts: Story = {
   render: () => {
@@ -234,15 +228,15 @@ export const DismissibleAlerts: Story = {
         title: 'Information',
         message: 'Click the X to dismiss this alert.',
       },
-    ]);
+    ])
 
     const dismissAlert = (id: number) => {
-      setAlerts(alerts.filter(alert => alert.id !== id));
-    };
+      setAlerts(alerts.filter((alert) => alert.id !== id))
+    }
 
     return (
       <div className="space-y-4 w-full max-w-2xl">
-        {alerts.map(alert => (
+        {alerts.map((alert) => (
           <Alert
             key={alert.id}
             variant={alert.variant as any}
@@ -289,9 +283,9 @@ export const DismissibleAlerts: Story = {
           </div>
         )}
       </div>
-    );
+    )
   },
-};
+}
 
 export const WithActions: Story = {
   render: () => (
@@ -310,8 +304,7 @@ export const WithActions: Story = {
           </div>
         }
       >
-        A new version of the application is available with bug fixes and
-        improvements.
+        A new version of the application is available with bug fixes and improvements.
       </Alert>
 
       <Alert
@@ -349,26 +342,21 @@ export const WithActions: Story = {
       </Alert>
     </div>
   ),
-};
+}
 
 export const DismissibleWithActions: Story = {
   render: () => {
-    const [showAlert, setShowAlert] = useState(true);
+    const [showAlert, setShowAlert] = useState(true)
 
     if (!showAlert) {
       return (
         <div className="text-center py-8 text-secondary-500 max-w-2xl">
           <p>Alert was dismissed!</p>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setShowAlert(true)}
-            className="mt-2"
-          >
+          <Button variant="outline" size="sm" onClick={() => setShowAlert(true)} className="mt-2">
             Show Alert Again
           </Button>
         </div>
-      );
+      )
     }
 
     return (
@@ -389,13 +377,13 @@ export const DismissibleWithActions: Story = {
             </div>
           }
         >
-          Your account will expire in 7 days. Renew now to continue using all
-          features without interruption.
+          Your account will expire in 7 days. Renew now to continue using all features without
+          interruption.
         </Alert>
       </div>
-    );
+    )
   },
-};
+}
 
 export const RealWorldExamples: Story = {
   render: () => (
@@ -407,8 +395,8 @@ export const RealWorldExamples: Story = {
           title="Form Validation Failed"
           icon={<Icon icon={WarningIcon} className="h-4 w-4 text-error-600" />}
         >
-          Please check the following fields: Email address, Password
-          confirmation, and Terms of service acceptance.
+          Please check the following fields: Email address, Password confirmation, and Terms of
+          service acceptance.
         </Alert>
       </div>
 
@@ -427,8 +415,8 @@ export const RealWorldExamples: Story = {
             </div>
           }
         >
-          System maintenance is scheduled for tonight from 2:00 AM to 4:00 AM
-          EST. Some features may be temporarily unavailable.
+          System maintenance is scheduled for tonight from 2:00 AM to 4:00 AM EST. Some features may
+          be temporarily unavailable.
         </Alert>
       </div>
 
@@ -448,8 +436,8 @@ export const RealWorldExamples: Story = {
             </div>
           }
         >
-          Your new project "TaskMaster Dashboard" has been created and is ready
-          to use. Team members have been notified.
+          Your new project "TaskMaster Dashboard" has been created and is ready to use. Team members
+          have been notified.
         </Alert>
       </div>
 
@@ -470,13 +458,13 @@ export const RealWorldExamples: Story = {
             </div>
           }
         >
-          We detected a login from a new device in New York, NY. If this wasn't
-          you, please secure your account immediately.
+          We detected a login from a new device in New York, NY. If this wasn't you, please secure
+          your account immediately.
         </Alert>
       </div>
     </div>
   ),
-};
+}
 
 export const AccessibilityExample: Story = {
   render: () => (
@@ -484,18 +472,11 @@ export const AccessibilityExample: Story = {
       <div>
         <h3 className="font-semibold mb-3">Screen Reader Compatibility</h3>
         <p className="text-sm text-secondary-600 mb-4">
-          All alerts include proper ARIA roles and live regions for screen
-          reader accessibility.
+          All alerts include proper ARIA roles and live regions for screen reader accessibility.
         </p>
 
-        <Alert
-          variant="error"
-          title="Accessibility Focus"
-          role="alert"
-          aria-live="assertive"
-        >
-          This error alert has <code>role="alert"</code> and{' '}
-          <code>aria-live="assertive"</code>
+        <Alert variant="error" title="Accessibility Focus" role="alert" aria-live="assertive">
+          This error alert has <code>role="alert"</code> and <code>aria-live="assertive"</code>
           for immediate screen reader announcement.
         </Alert>
       </div>
@@ -518,8 +499,8 @@ export const AccessibilityExample: Story = {
             </div>
           }
         >
-          Use Tab to navigate between action buttons and the dismiss button.
-          Press Enter or Space to activate.
+          Use Tab to navigate between action buttons and the dismiss button. Press Enter or Space to
+          activate.
         </Alert>
       </div>
 
@@ -531,13 +512,12 @@ export const AccessibilityExample: Story = {
           dismissible
           onDismiss={() => console.log('Alert dismissed')}
         >
-          The dismiss button and action buttons have clear focus indicators for
-          keyboard users.
+          The dismiss button and action buttons have clear focus indicators for keyboard users.
         </Alert>
       </div>
     </div>
   ),
-};
+}
 
 export const NotificationSystem: Story = {
   render: () => {
@@ -553,11 +533,10 @@ export const NotificationSystem: Story = {
         id: 2,
         type: 'warning',
         title: 'Low Storage',
-        message:
-          'You are running low on storage space. Consider upgrading your plan.',
+        message: 'You are running low on storage space. Consider upgrading your plan.',
         actions: true,
       },
-    ]);
+    ])
 
     const addNotification = (type: string) => {
       const messages = {
@@ -565,7 +544,7 @@ export const NotificationSystem: Story = {
         error: 'An error occurred. Please try again.',
         warning: 'This action requires your attention.',
         info: 'Here is some helpful information.',
-      };
+      }
 
       const newNotification = {
         id: Date.now(),
@@ -573,53 +552,37 @@ export const NotificationSystem: Story = {
         title: `${type.charAt(0).toUpperCase() + type.slice(1)} Notification`,
         message: messages[type as keyof typeof messages],
         actions: false,
-      };
+      }
 
-      setNotifications(prev => [...prev, newNotification]);
-    };
+      setNotifications((prev) => [...prev, newNotification])
+    }
 
     const removeNotification = (id: number) => {
-      setNotifications(prev => prev.filter(n => n.id !== id));
-    };
+      setNotifications((prev) => prev.filter((n) => n.id !== id))
+    }
 
     return (
       <div className="w-full max-w-2xl">
         <div className="mb-6">
           <h3 className="font-semibold mb-3">Notification System Demo</h3>
           <div className="flex gap-2 flex-wrap">
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => addNotification('success')}
-            >
+            <Button size="sm" variant="outline" onClick={() => addNotification('success')}>
               Add Success
             </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => addNotification('error')}
-            >
+            <Button size="sm" variant="outline" onClick={() => addNotification('error')}>
               Add Error
             </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => addNotification('warning')}
-            >
+            <Button size="sm" variant="outline" onClick={() => addNotification('warning')}>
               Add Warning
             </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => addNotification('info')}
-            >
+            <Button size="sm" variant="outline" onClick={() => addNotification('info')}>
               Add Info
             </Button>
           </div>
         </div>
 
         <div className="space-y-3">
-          {notifications.map(notification => (
+          {notifications.map((notification) => (
             <Alert
               key={notification.id}
               variant={notification.type as any}
@@ -650,6 +613,6 @@ export const NotificationSystem: Story = {
           )}
         </div>
       </div>
-    );
+    )
   },
-};
+}

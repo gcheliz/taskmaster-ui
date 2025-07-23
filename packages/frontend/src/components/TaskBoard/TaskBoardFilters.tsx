@@ -3,47 +3,46 @@
  * Filter controls for priority, complexity, and assignee
  */
 
-import React from 'react';
-import { Badge } from '../ui/atoms/Badge';
-import { Icon } from '../ui/atoms/Icon';
-import { cn } from '../../utils/cn';
-import type { TaskFilters, TaskPriority, TaskStatus } from '../../types/task';
+import React from 'react'
+import { Badge } from '../ui/atoms/Badge'
+import { Icon } from '../ui/atoms/Icon'
+import { cn } from '../../utils/cn'
+import type { TaskFilters, TaskPriority, TaskStatus } from '../../types/task'
 
 interface TaskBoardFiltersProps {
   /** Current filter values */
-  filters: TaskFilters;
+  filters: TaskFilters
   /** Callback when filters change */
-  onChange: (filters: TaskFilters) => void;
+  onChange: (filters: TaskFilters) => void
   /** Available assignees for filtering */
-  availableAssignees?: string[];
+  availableAssignees?: string[]
   /** Additional CSS class name */
-  className?: string;
+  className?: string
   /** Whether filters are collapsed */
-  isCollapsed?: boolean;
+  isCollapsed?: boolean
   /** Callback when collapse state changes */
-  onToggleCollapse?: (collapsed: boolean) => void;
+  onToggleCollapse?: (collapsed: boolean) => void
 }
 
 const PRIORITY_OPTIONS: {
-  value: TaskPriority;
-  label: string;
-  variant: string;
+  value: TaskPriority
+  label: string
+  variant: string
 }[] = [
   { value: 'low', label: 'Low', variant: 'success' },
   { value: 'medium', label: 'Medium', variant: 'warning' },
   { value: 'high', label: 'High', variant: 'error' },
   { value: 'urgent', label: 'Urgent', variant: 'error' },
-];
+]
 
-const STATUS_OPTIONS: { value: TaskStatus; label: string; variant: string }[] =
-  [
-    { value: 'pending', label: 'To Do', variant: 'pending' },
-    { value: 'in-progress', label: 'In Progress', variant: 'in-progress' },
-    { value: 'done', label: 'Done', variant: 'done' },
-    { value: 'blocked', label: 'Blocked', variant: 'blocked' },
-    { value: 'cancelled', label: 'Cancelled', variant: 'secondary' },
-    { value: 'deferred', label: 'Deferred', variant: 'deferred' },
-  ];
+const STATUS_OPTIONS: { value: TaskStatus; label: string; variant: string }[] = [
+  { value: 'pending', label: 'To Do', variant: 'pending' },
+  { value: 'in-progress', label: 'In Progress', variant: 'in-progress' },
+  { value: 'done', label: 'Done', variant: 'done' },
+  { value: 'blocked', label: 'Blocked', variant: 'blocked' },
+  { value: 'cancelled', label: 'Cancelled', variant: 'secondary' },
+  { value: 'deferred', label: 'Deferred', variant: 'deferred' },
+]
 
 export const TaskBoardFilters: React.FC<TaskBoardFiltersProps> = ({
   filters,
@@ -54,56 +53,51 @@ export const TaskBoardFilters: React.FC<TaskBoardFiltersProps> = ({
   onToggleCollapse,
 }) => {
   const handlePriorityToggle = (priority: TaskPriority) => {
-    const currentPriorities = filters.priority || [];
+    const currentPriorities = filters.priority || []
     const newPriorities = currentPriorities.includes(priority)
-      ? currentPriorities.filter(p => p !== priority)
-      : [...currentPriorities, priority];
+      ? currentPriorities.filter((p) => p !== priority)
+      : [...currentPriorities, priority]
 
     onChange({
       ...filters,
       priority: newPriorities.length > 0 ? newPriorities : undefined,
-    });
-  };
+    })
+  }
 
   const handleStatusToggle = (status: TaskStatus) => {
-    const currentStatuses = filters.status || [];
+    const currentStatuses = filters.status || []
     const newStatuses = currentStatuses.includes(status)
-      ? currentStatuses.filter(s => s !== status)
-      : [...currentStatuses, status];
+      ? currentStatuses.filter((s) => s !== status)
+      : [...currentStatuses, status]
 
     onChange({
       ...filters,
       status: newStatuses.length > 0 ? newStatuses : undefined,
-    });
-  };
+    })
+  }
 
   const handleAssigneeToggle = (assignee: string) => {
-    const currentAssignees = filters.assignedTo || [];
+    const currentAssignees = filters.assignedTo || []
     const newAssignees = currentAssignees.includes(assignee)
-      ? currentAssignees.filter(a => a !== assignee)
-      : [...currentAssignees, assignee];
+      ? currentAssignees.filter((a) => a !== assignee)
+      : [...currentAssignees, assignee]
 
     onChange({
       ...filters,
       assignedTo: newAssignees.length > 0 ? newAssignees : undefined,
-    });
-  };
+    })
+  }
 
   const clearAllFilters = () => {
-    onChange({});
-  };
+    onChange({})
+  }
 
-  const hasActiveFilters = Object.values(filters).some(value =>
+  const hasActiveFilters = Object.values(filters).some((value) =>
     Array.isArray(value) ? value.length > 0 : value !== undefined
-  );
+  )
 
   return (
-    <div
-      className={cn(
-        'bg-slate-900 border border-slate-800 rounded-lg',
-        className
-      )}
-    >
+    <div className={cn('bg-slate-900 border border-slate-800 rounded-lg', className)}>
       {/* Filter Header */}
       <div className="flex items-center justify-between p-4 border-b border-slate-800">
         <div className="flex items-center space-x-2">
@@ -134,10 +128,7 @@ export const TaskBoardFilters: React.FC<TaskBoardFiltersProps> = ({
               <Icon
                 icon={ChevronDownIcon}
                 size="sm"
-                className={cn(
-                  'transition-transform',
-                  isCollapsed && 'rotate-180'
-                )}
+                className={cn('transition-transform', isCollapsed && 'rotate-180')}
               />
             </button>
           )}
@@ -149,13 +140,10 @@ export const TaskBoardFilters: React.FC<TaskBoardFiltersProps> = ({
         <div className="p-4 space-y-4">
           {/* Priority Filter */}
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-2">
-              Priority
-            </label>
+            <label className="block text-xs font-medium text-slate-300 mb-2">Priority</label>
             <div className="flex flex-wrap gap-2">
-              {PRIORITY_OPTIONS.map(option => {
-                const isSelected =
-                  filters.priority?.includes(option.value) || false;
+              {PRIORITY_OPTIONS.map((option) => {
+                const isSelected = filters.priority?.includes(option.value) || false
                 return (
                   <button
                     key={option.value}
@@ -169,20 +157,17 @@ export const TaskBoardFilters: React.FC<TaskBoardFiltersProps> = ({
                   >
                     {option.label}
                   </button>
-                );
+                )
               })}
             </div>
           </div>
 
           {/* Status Filter */}
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-2">
-              Status
-            </label>
+            <label className="block text-xs font-medium text-slate-300 mb-2">Status</label>
             <div className="flex flex-wrap gap-2">
-              {STATUS_OPTIONS.map(option => {
-                const isSelected =
-                  filters.status?.includes(option.value) || false;
+              {STATUS_OPTIONS.map((option) => {
+                const isSelected = filters.status?.includes(option.value) || false
                 return (
                   <button
                     key={option.value}
@@ -196,7 +181,7 @@ export const TaskBoardFilters: React.FC<TaskBoardFiltersProps> = ({
                   >
                     {option.label}
                   </button>
-                );
+                )
               })}
             </div>
           </div>
@@ -204,13 +189,10 @@ export const TaskBoardFilters: React.FC<TaskBoardFiltersProps> = ({
           {/* Assignee Filter */}
           {availableAssignees.length > 0 && (
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-2">
-                Assigned To
-              </label>
+              <label className="block text-xs font-medium text-slate-300 mb-2">Assigned To</label>
               <div className="flex flex-wrap gap-2">
-                {availableAssignees.map(assignee => {
-                  const isSelected =
-                    filters.assignedTo?.includes(assignee) || false;
+                {availableAssignees.map((assignee) => {
+                  const isSelected = filters.assignedTo?.includes(assignee) || false
                   return (
                     <button
                       key={assignee}
@@ -224,7 +206,7 @@ export const TaskBoardFilters: React.FC<TaskBoardFiltersProps> = ({
                     >
                       {assignee}
                     </button>
-                  );
+                  )
                 })}
               </div>
             </div>
@@ -233,11 +215,9 @@ export const TaskBoardFilters: React.FC<TaskBoardFiltersProps> = ({
           {/* Tags Filter */}
           {filters.tags && filters.tags.length > 0 && (
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-2">
-                Active Tags
-              </label>
+              <label className="block text-xs font-medium text-slate-300 mb-2">Active Tags</label>
               <div className="flex flex-wrap gap-2">
-                {filters.tags.map(tag => (
+                {filters.tags.map((tag) => (
                   <Badge
                     key={tag}
                     variant="outline"
@@ -253,8 +233,8 @@ export const TaskBoardFilters: React.FC<TaskBoardFiltersProps> = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
 // Filter icon SVG
 const FunnelIcon = () => (
@@ -271,7 +251,7 @@ const FunnelIcon = () => (
       d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z"
     />
   </svg>
-);
+)
 
 // Chevron down icon SVG
 const ChevronDownIcon = () => (
@@ -282,12 +262,8 @@ const ChevronDownIcon = () => (
     strokeWidth={1.5}
     stroke="currentColor"
   >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="m19.5 8.25-7.5 7.5-7.5-7.5"
-    />
+    <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
   </svg>
-);
+)
 
-export default TaskBoardFilters;
+export default TaskBoardFilters

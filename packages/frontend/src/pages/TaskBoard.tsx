@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { 
+import React, { useState, useEffect, useRef, useCallback } from 'react'
+import {
   Plus,
   Filter,
   ArrowUpDown,
@@ -11,8 +11,8 @@ import {
   X,
   ChevronDown,
   Edit2,
-  MoreVertical
-} from 'lucide-react';
+  MoreVertical,
+} from 'lucide-react'
 import {
   DndContext,
   closestCorners,
@@ -22,51 +22,49 @@ import {
   useSensors,
   DragOverlay,
   defaultDropAnimationSideEffects,
-} from '@dnd-kit/core';
-import type { DragEndEvent, DragOverEvent, DragStartEvent, UniqueIdentifier } from '@dnd-kit/core';
+} from '@dnd-kit/core'
+import type { DragEndEvent, DragOverEvent, DragStartEvent, UniqueIdentifier } from '@dnd-kit/core'
 import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import {
-  useSortable,
-} from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-import { useTaskCollaboration, useWebSocket } from '../hooks/useWebSocket';
-import { WebSocketState } from '../types/websocket';
-import type { Task as WebSocketTask } from '../types/websocket';
-import { TaskModal, type TaskModalMode } from '../components/TaskBoard/TaskModal';
-import type { Task as LocalTask } from '../types/task';
+} from '@dnd-kit/sortable'
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
+import { useTaskCollaboration, useWebSocket } from '../hooks/useWebSocket'
+import { WebSocketState } from '../types/websocket'
+import type { Task as WebSocketTask } from '../types/websocket'
+import { TaskModal, type TaskModalMode } from '../components/TaskBoard/TaskModal'
+import type { Task as LocalTask } from '../types/task'
 
 interface Task extends Omit<WebSocketTask, 'status' | 'priority' | 'assignee'> {
-  description: string; // Make required for UI
-  priority: 'low' | 'medium' | 'high'; // Exclude 'critical' for now
-  complexity: number; // Make required
+  description: string // Make required for UI
+  priority: 'low' | 'medium' | 'high' // Exclude 'critical' for now
+  complexity: number // Make required
   assignee: {
-    name: string;
-    initials: string;
-    color: string;
-  };
-  progress?: number;
-  status?: string; // Make optional for compatibility
+    name: string
+    initials: string
+    color: string
+  }
+  progress?: number
+  status?: string // Make optional for compatibility
 }
 
 interface FilterOptions {
-  priorities: string[];
-  assignees: string[];
-  columns: string[];
+  priorities: string[]
+  assignees: string[]
+  columns: string[]
 }
 
-type SortOption = 'priority' | 'complexity' | 'assignee' | 'created' | 'updated';
-type SortDirection = 'asc' | 'desc';
+type SortOption = 'priority' | 'complexity' | 'assignee' | 'created' | 'updated'
+type SortDirection = 'asc' | 'desc'
 
 interface Column {
-  id: string;
-  title: string;
-  color: string;
-  tasks: Task[];
+  id: string
+  title: string
+  color: string
+  tasks: Task[]
 }
 
 // Helper to convert between local Task and WebSocketTask
@@ -75,33 +73,41 @@ const convertToWebSocketTask = (task: Task): WebSocketTask => ({
   status: (task.status || 'pending') as WebSocketTask['status'],
   priority: task.priority as WebSocketTask['priority'],
   description: task.description,
-  assignee: task.assignee ? {
-    id: task.assignee.name.toLowerCase().replace(/\s/g, '-'),
-    name: task.assignee.name,
-    email: `${task.assignee.name.toLowerCase().replace(/\s/g, '.')}@example.com`,
-    color: task.assignee.color
-  } : undefined
-});
+  assignee: task.assignee
+    ? {
+        id: task.assignee.name.toLowerCase().replace(/\s/g, '-'),
+        name: task.assignee.name,
+        email: `${task.assignee.name.toLowerCase().replace(/\s/g, '.')}@example.com`,
+        color: task.assignee.color,
+      }
+    : undefined,
+})
 
 const convertFromWebSocketTask = (task: WebSocketTask): Task => ({
   ...task,
   description: task.description || '',
   priority: (task.priority === 'critical' ? 'high' : task.priority) as Task['priority'],
   complexity: task.complexity || 5,
-  assignee: task.assignee ? {
-    name: task.assignee.name,
-    initials: task.assignee.name.split(' ').map(n => n[0]).join('').toUpperCase(),
-    color: task.assignee.color || 'bg-gray-600'
-  } : {
-    name: 'Unassigned',
-    initials: 'NA',
-    color: 'bg-gray-400'
-  },
-  status: task.status
-});
+  assignee: task.assignee
+    ? {
+        name: task.assignee.name,
+        initials: task.assignee.name
+          .split(' ')
+          .map((n) => n[0])
+          .join('')
+          .toUpperCase(),
+        color: task.assignee.color || 'bg-gray-600',
+      }
+    : {
+        name: 'Unassigned',
+        initials: 'NA',
+        color: 'bg-gray-400',
+      },
+  status: task.status,
+})
 
 // Initial tasks for demo purposes - defined outside component to prevent recreation
-const NOW = new Date().toISOString();
+const NOW = new Date().toISOString()
 const initialTasks: Task[] = [
   {
     id: '1',
@@ -113,7 +119,7 @@ const initialTasks: Task[] = [
     column: 'todo',
     position: 0,
     createdAt: NOW,
-    updatedAt: NOW
+    updatedAt: NOW,
   },
   {
     id: '2',
@@ -125,7 +131,7 @@ const initialTasks: Task[] = [
     column: 'todo',
     position: 1,
     createdAt: NOW,
-    updatedAt: NOW
+    updatedAt: NOW,
   },
   {
     id: '3',
@@ -137,7 +143,7 @@ const initialTasks: Task[] = [
     column: 'todo',
     position: 2,
     createdAt: NOW,
-    updatedAt: NOW
+    updatedAt: NOW,
   },
   {
     id: '4',
@@ -150,7 +156,7 @@ const initialTasks: Task[] = [
     position: 0,
     progress: 75,
     createdAt: NOW,
-    updatedAt: NOW
+    updatedAt: NOW,
   },
   {
     id: '5',
@@ -163,7 +169,7 @@ const initialTasks: Task[] = [
     position: 1,
     progress: 25,
     createdAt: NOW,
-    updatedAt: NOW
+    updatedAt: NOW,
   },
   {
     id: '6',
@@ -176,7 +182,7 @@ const initialTasks: Task[] = [
     position: 0,
     progress: 90,
     createdAt: NOW,
-    updatedAt: NOW
+    updatedAt: NOW,
   },
   {
     id: '7',
@@ -189,7 +195,7 @@ const initialTasks: Task[] = [
     position: 0,
     progress: 60,
     createdAt: NOW,
-    updatedAt: NOW
+    updatedAt: NOW,
   },
   {
     id: '8',
@@ -202,37 +208,36 @@ const initialTasks: Task[] = [
     position: 0,
     progress: 100,
     createdAt: NOW,
-    updatedAt: NOW
-  }
-];
+    updatedAt: NOW,
+  },
+]
 
 // Get the board context for task interactions
 const TaskBoardContext = React.createContext<{
-  handleTaskClick: (task: Task) => void;
-  handleTaskEdit: (task: Task, e: React.MouseEvent) => void;
-  isDraggingRef: React.MutableRefObject<boolean>;
-} | null>(null);
+  handleTaskClick: (task: Task) => void
+  handleTaskEdit: (task: Task, e: React.MouseEvent) => void
+  isDraggingRef: React.MutableRefObject<boolean>
+} | null>(null)
 
 const TaskBoard: React.FC = () => {
-  
-  const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
-  const [showFilterMenu, setShowFilterMenu] = useState(false);
-  const [showSortMenu, setShowSortMenu] = useState(false);
+  const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null)
+  const [showFilterMenu, setShowFilterMenu] = useState(false)
+  const [showSortMenu, setShowSortMenu] = useState(false)
   const [filters, setFilters] = useState<FilterOptions>({
     priorities: [],
     assignees: [],
-    columns: []
-  });
-  const [sortBy, setSortBy] = useState<SortOption>('priority');
-  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
-  const filterRef = useRef<HTMLDivElement>(null);
-  const sortRef = useRef<HTMLDivElement>(null);
-  const isDraggingRef = useRef(false);
-  
+    columns: [],
+  })
+  const [sortBy, setSortBy] = useState<SortOption>('priority')
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc')
+  const filterRef = useRef<HTMLDivElement>(null)
+  const sortRef = useRef<HTMLDivElement>(null)
+  const isDraggingRef = useRef(false)
+
   // Modal state
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMode, setModalMode] = useState<TaskModalMode>('create');
-  const [selectedTask, setSelectedTask] = useState<LocalTask | undefined>();
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [modalMode, setModalMode] = useState<TaskModalMode>('create')
+  const [selectedTask, setSelectedTask] = useState<LocalTask | undefined>()
 
   // WebSocket integration through useTaskCollaboration
   const {
@@ -244,95 +249,110 @@ const TaskBoard: React.FC = () => {
     error: taskError,
     isLoading: wsLoading,
     state: wsState,
-    isConnected
+    isConnected,
   } = useTaskCollaboration(
     React.useMemo(() => initialTasks.map(convertToWebSocketTask), []),
-    React.useMemo(() => ({
-      url: process.env.VITE_WS_URL || 'ws://localhost:3001',
-      autoConnect: false, // Disabled until backend is running
-      user: {
-        id: 'user-1',
-        name: 'Gonzalo',
-        email: 'gonzalo@example.com',
-        avatar: ''
-      }
-    }), [])
-  );
-  
-  const wsError = taskError;
-  
+    React.useMemo(
+      () => ({
+        url: process.env.VITE_WS_URL || 'ws://localhost:3001',
+        autoConnect: false, // Disabled until backend is running
+        user: {
+          id: 'user-1',
+          name: 'Gonzalo',
+          email: 'gonzalo@example.com',
+          avatar: '',
+        },
+      }),
+      []
+    )
+  )
+
+  const wsError = taskError
+
   // Convert WebSocket tasks to local format - memoized to prevent re-renders
   const tasks = React.useMemo(() => {
-    return wsTasksRaw.length > 0 ? wsTasksRaw.map(convertFromWebSocketTask) : initialTasks;
-  }, [wsTasksRaw]);
+    return wsTasksRaw.length > 0 ? wsTasksRaw.map(convertFromWebSocketTask) : initialTasks
+  }, [wsTasksRaw])
 
   const [columns, setColumns] = useState<Column[]>([
     { id: 'todo', title: 'To Do', color: 'bg-gray-500', tasks: [] },
     { id: 'in-progress', title: 'In Progress', color: 'bg-blue-600', tasks: [] },
     { id: 'review', title: 'Review', color: 'bg-purple-600', tasks: [] },
     { id: 'testing', title: 'Testing', color: 'bg-amber-600', tasks: [] },
-    { id: 'done', title: 'Done', color: 'bg-green-600', tasks: [] }
-  ]);
+    { id: 'done', title: 'Done', color: 'bg-green-600', tasks: [] },
+  ])
 
   // Get unique values for filter options
   const getUniqueAssignees = () => {
-    return Array.from(new Set(tasks.map(task => task.assignee?.name || 'Unassigned').filter(name => name !== 'Unassigned'))).sort();
-  };
+    return Array.from(
+      new Set(
+        tasks
+          .map((task) => task.assignee?.name || 'Unassigned')
+          .filter((name) => name !== 'Unassigned')
+      )
+    ).sort()
+  }
 
   // Update columns when tasks, filters, or sorting change
   useEffect(() => {
-    setColumns(prevColumns => {
-      return prevColumns.map(column => {
-        const columnTasks = tasks.filter(task => task.column === column.id);
-        
+    setColumns((prevColumns) => {
+      return prevColumns.map((column) => {
+        const columnTasks = tasks.filter((task) => task.column === column.id)
+
         // Filter and sort tasks inline to avoid circular dependency
-        let filtered = [...columnTasks];
+        let filtered = [...columnTasks]
 
         // Apply filters
         if (filters.priorities.length > 0) {
-          filtered = filtered.filter(task => filters.priorities.includes(task.priority));
+          filtered = filtered.filter((task) => filters.priorities.includes(task.priority))
         }
         if (filters.assignees.length > 0) {
-          filtered = filtered.filter(task => task.assignee && filters.assignees.includes(task.assignee.name));
+          filtered = filtered.filter(
+            (task) => task.assignee && filters.assignees.includes(task.assignee.name)
+          )
         }
 
         // Apply sorting
         filtered.sort((a, b) => {
-          let compareValue = 0;
-          
+          let compareValue = 0
+
           switch (sortBy) {
-            case 'priority':
-              const priorityOrder = { high: 3, medium: 2, low: 1 };
-              compareValue = priorityOrder[a.priority] - priorityOrder[b.priority];
-              break;
+            case 'priority': {
+              const priorityOrder = { high: 3, medium: 2, low: 1 }
+              compareValue = priorityOrder[a.priority] - priorityOrder[b.priority]
+              break
+            }
             case 'complexity':
-              compareValue = a.complexity - b.complexity;
-              break;
-            case 'assignee':
-              const aName = a.assignee?.name || '';
-              const bName = b.assignee?.name || '';
-              compareValue = aName.localeCompare(bName);
-              break;
+              compareValue = a.complexity - b.complexity
+              break
+            case 'assignee': {
+              const aName = a.assignee?.name || ''
+              const bName = b.assignee?.name || ''
+              compareValue = aName.localeCompare(bName)
+              break
+            }
             case 'created':
-              compareValue = new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime();
-              break;
+              compareValue =
+                new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime()
+              break
             case 'updated':
-              compareValue = new Date(a.updatedAt || 0).getTime() - new Date(b.updatedAt || 0).getTime();
-              break;
+              compareValue =
+                new Date(a.updatedAt || 0).getTime() - new Date(b.updatedAt || 0).getTime()
+              break
             default:
-              compareValue = a.position - b.position;
+              compareValue = a.position - b.position
           }
 
-          return sortDirection === 'asc' ? compareValue : -compareValue;
-        });
-        
+          return sortDirection === 'asc' ? compareValue : -compareValue
+        })
+
         return {
           ...column,
-          tasks: filtered
-        };
-      });
-    });
-  }, [tasks, filters, sortBy, sortDirection]);
+          tasks: filtered,
+        }
+      })
+    })
+  }, [tasks, filters, sortBy, sortDirection])
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -343,40 +363,40 @@ const TaskBoard: React.FC = () => {
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
-  );
+  )
 
   const findColumn = (id: UniqueIdentifier) => {
-    const column = columns.find((col) => col.id === id);
-    if (column) return column;
-    
-    return columns.find((col) => col.tasks.some((task) => task.id === id));
-  };
+    const column = columns.find((col) => col.id === id)
+    if (column) return column
+
+    return columns.find((col) => col.tasks.some((task) => task.id === id))
+  }
 
   const handleDragStart = (event: DragStartEvent) => {
-    setActiveId(event.active.id);
-    isDraggingRef.current = true;
-  };
+    setActiveId(event.active.id)
+    isDraggingRef.current = true
+  }
 
   const handleDragOver = (event: DragOverEvent) => {
-    const { active, over } = event;
-    if (!over) return;
+    const { active, over } = event
+    if (!over) return
 
-    const activeColumn = findColumn(active.id);
-    const overColumn = findColumn(over.id);
+    const activeColumn = findColumn(active.id)
+    const overColumn = findColumn(over.id)
 
-    if (!activeColumn || !overColumn || activeColumn === overColumn) return;
+    if (!activeColumn || !overColumn || activeColumn === overColumn) return
 
     setColumns((cols) => {
-      const activeItems = activeColumn.tasks;
-      const overItems = overColumn.tasks;
-      const activeIndex = activeItems.findIndex((i) => i.id === active.id);
-      const overIndex = overItems.findIndex((i) => i.id === over.id);
+      const activeItems = activeColumn.tasks
+      const overItems = overColumn.tasks
+      const activeIndex = activeItems.findIndex((i) => i.id === active.id)
+      const overIndex = overItems.findIndex((i) => i.id === over.id)
 
-      let newIndex: number;
+      let newIndex: number
       if (over.id in overColumn.tasks) {
-        newIndex = overIndex >= 0 ? overIndex : overItems.length;
+        newIndex = overIndex >= 0 ? overIndex : overItems.length
       } else {
-        newIndex = overItems.length;
+        newIndex = overItems.length
       }
 
       return cols.map((col) => {
@@ -384,76 +404,76 @@ const TaskBoard: React.FC = () => {
           return {
             ...col,
             tasks: col.tasks.filter((task) => task.id !== active.id),
-          };
+          }
         } else if (col.id === overColumn.id) {
-          const movedTask = activeColumn.tasks[activeIndex];
-          const updatedTask = { ...movedTask, column: col.id };
-          const newTasks = [...col.tasks];
-          newTasks.splice(newIndex, 0, updatedTask);
+          const movedTask = activeColumn.tasks[activeIndex]
+          const updatedTask = { ...movedTask, column: col.id }
+          const newTasks = [...col.tasks]
+          newTasks.splice(newIndex, 0, updatedTask)
           return {
             ...col,
             tasks: newTasks,
-          };
+          }
         }
-        return col;
-      });
-    });
-  };
+        return col
+      })
+    })
+  }
 
   const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-    if (!over) return;
+    const { active, over } = event
+    if (!over) return
 
-    const activeColumn = findColumn(active.id);
-    const overColumn = findColumn(over.id);
+    const activeColumn = findColumn(active.id)
+    const overColumn = findColumn(over.id)
 
-    if (!activeColumn || !overColumn) return;
+    if (!activeColumn || !overColumn) return
 
-    const activeIndex = activeColumn.tasks.findIndex((i) => i.id === active.id);
-    const overIndex = overColumn.tasks.findIndex((i) => i.id === over.id);
+    const activeIndex = activeColumn.tasks.findIndex((i) => i.id === active.id)
+    const overIndex = overColumn.tasks.findIndex((i) => i.id === over.id)
 
     if (activeColumn.id !== overColumn.id) {
       // Task moved to different column - update via WebSocket
-      const taskId = active.id as string;
-      const newPosition = overIndex >= 0 ? overIndex : overColumn.tasks.length;
-      
+      const taskId = active.id as string
+      const newPosition = overIndex >= 0 ? overIndex : overColumn.tasks.length
+
       // Send real-time update
       if (isConnected) {
-        moveTask(taskId, overColumn.id, newPosition);
+        moveTask(taskId, overColumn.id, newPosition)
       }
     } else if (activeIndex !== overIndex) {
       // Task reordered within same column
-      const taskId = active.id as string;
-      const newPosition = overIndex;
-      
+      const taskId = active.id as string
+      const newPosition = overIndex
+
       // Send real-time update
       if (isConnected) {
-        moveTask(taskId, activeColumn.id, newPosition);
+        moveTask(taskId, activeColumn.id, newPosition)
       }
-      
+
       setColumns((cols) =>
         cols.map((col) =>
           col.id === activeColumn.id
             ? { ...col, tasks: arrayMove(col.tasks, activeIndex, overIndex) }
             : col
         )
-      );
+      )
     }
 
-    setActiveId(null);
+    setActiveId(null)
     // Reset dragging state after a short delay to prevent click conflicts
     setTimeout(() => {
-      isDraggingRef.current = false;
-    }, 100);
-  };
+      isDraggingRef.current = false
+    }, 100)
+  }
 
   const getTaskById = (id: UniqueIdentifier): Task | undefined => {
     for (const column of columns) {
-      const task = column.tasks.find((t) => t.id === id);
-      if (task) return task;
+      const task = column.tasks.find((t) => t.id === id)
+      if (task) return task
     }
-    return undefined;
-  };
+    return undefined
+  }
 
   // Handle task click for viewing details
   const handleTaskClick = (task: Task) => {
@@ -462,44 +482,52 @@ const TaskBoard: React.FC = () => {
       title: task.title,
       description: task.description || '',
       priority: task.priority as LocalTask['priority'],
-      status: (task.column === 'todo' ? 'pending' : task.column === 'in-progress' ? 'in-progress' : 'done') as LocalTask['status'],
+      status: (task.column === 'todo'
+        ? 'pending'
+        : task.column === 'in-progress'
+          ? 'in-progress'
+          : 'done') as LocalTask['status'],
       assignedTo: task.assignee?.name,
       createdAt: task.createdAt,
       updatedAt: task.updatedAt,
       tags: [],
       dependencies: [],
-    };
-    setSelectedTask(localTask);
-    setModalMode('view');
-    setIsModalOpen(true);
-  };
+    }
+    setSelectedTask(localTask)
+    setModalMode('view')
+    setIsModalOpen(true)
+  }
 
   // Handle task edit
   const handleTaskEdit = (task: Task, e: React.MouseEvent) => {
-    e.stopPropagation();
+    e.stopPropagation()
     const localTask: LocalTask = {
       id: Number(task.id),
       title: task.title,
       description: task.description || '',
       priority: task.priority as LocalTask['priority'],
-      status: (task.column === 'todo' ? 'pending' : task.column === 'in-progress' ? 'in-progress' : 'done') as LocalTask['status'],
+      status: (task.column === 'todo'
+        ? 'pending'
+        : task.column === 'in-progress'
+          ? 'in-progress'
+          : 'done') as LocalTask['status'],
       assignedTo: task.assignee?.name,
       createdAt: task.createdAt,
       updatedAt: task.updatedAt,
       tags: [],
       dependencies: [],
-    };
-    setSelectedTask(localTask);
-    setModalMode('edit');
-    setIsModalOpen(true);
-  };
+    }
+    setSelectedTask(localTask)
+    setModalMode('edit')
+    setIsModalOpen(true)
+  }
 
   // Handle new task creation
   const handleAddTask = () => {
-    setSelectedTask(undefined);
-    setModalMode('create');
-    setIsModalOpen(true);
-  };
+    setSelectedTask(undefined)
+    setModalMode('create')
+    setIsModalOpen(true)
+  }
 
   // Handle task save from modal
   const handleTaskSave = async (taskData: Partial<LocalTask>) => {
@@ -511,108 +539,125 @@ const TaskBoard: React.FC = () => {
         description: taskData.description || '',
         priority: (taskData.priority || 'medium') as Task['priority'],
         complexity: 5,
-        assignee: taskData.assignedTo ? {
-          name: taskData.assignedTo,
-          initials: taskData.assignedTo.split(' ').map(n => n[0]).join('').toUpperCase(),
-          color: 'bg-' + ['blue', 'green', 'purple', 'amber', 'red'][Math.floor(Math.random() * 5)] + '-600',
-        } : {
-          name: 'Unassigned',
-          initials: 'NA',
-          color: 'bg-gray-400'
-        },
-        column: taskData.status === 'pending' ? 'todo' : taskData.status === 'in-progress' ? 'in-progress' : 'done',
+        assignee: taskData.assignedTo
+          ? {
+              name: taskData.assignedTo,
+              initials: taskData.assignedTo
+                .split(' ')
+                .map((n) => n[0])
+                .join('')
+                .toUpperCase(),
+              color:
+                'bg-' +
+                ['blue', 'green', 'purple', 'amber', 'red'][Math.floor(Math.random() * 5)] +
+                '-600',
+            }
+          : {
+              name: 'Unassigned',
+              initials: 'NA',
+              color: 'bg-gray-400',
+            },
+        column:
+          taskData.status === 'pending'
+            ? 'todo'
+            : taskData.status === 'in-progress'
+              ? 'in-progress'
+              : 'done',
         position: 0, // Position will be managed by drag and drop
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-      };
-      
+      }
+
       // Send WebSocket update
       if (isConnected && updateTask) {
-        const wsTask = convertToWebSocketTask(newTask);
-        updateTask(newTask.id, wsTask);
+        const wsTask = convertToWebSocketTask(newTask)
+        updateTask(newTask.id, wsTask)
       }
     } else if (modalMode === 'edit' && selectedTask) {
       // Update existing task
-      const taskToUpdate = tasks.find(t => t.id === selectedTask.id.toString());
+      const taskToUpdate = tasks.find((t) => t.id === selectedTask.id.toString())
       if (taskToUpdate && isConnected && updateTask) {
         const updates: Partial<WebSocketTask> = {
           title: taskData.title,
           description: taskData.description,
           priority: taskData.priority as WebSocketTask['priority'],
-          assignee: taskData.assignedTo ? {
-            id: taskData.assignedTo.toLowerCase().replace(/\s/g, '-'),
-            name: taskData.assignedTo,
-            email: `${taskData.assignedTo.toLowerCase().replace(/\s/g, '.')}@example.com`,
-            color: taskToUpdate.assignee?.color
-          } : undefined,
-        };
-        
-        updateTask(selectedTask.id.toString(), updates);
+          assignee: taskData.assignedTo
+            ? {
+                id: taskData.assignedTo.toLowerCase().replace(/\s/g, '-'),
+                name: taskData.assignedTo,
+                email: `${taskData.assignedTo.toLowerCase().replace(/\s/g, '.')}@example.com`,
+                color: taskToUpdate.assignee?.color,
+              }
+            : undefined,
+        }
+
+        updateTask(selectedTask.id.toString(), updates)
       }
     }
-    setIsModalOpen(false);
-  };
+    setIsModalOpen(false)
+  }
 
   // Handle task delete from modal
   const handleTaskDelete = async (taskId: number) => {
     // In a real app, this would call the WebSocket deleteTask method
     // For now, we'll just update the task to a 'deleted' status
     if (isConnected && updateTask) {
-      updateTask(taskId.toString(), { status: 'deferred' as WebSocketTask['status'] });
+      updateTask(taskId.toString(), { status: 'deferred' as WebSocketTask['status'] })
     }
-    setIsModalOpen(false);
-  };
+    setIsModalOpen(false)
+  }
 
   // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
-        setShowFilterMenu(false);
+        setShowFilterMenu(false)
       }
       if (sortRef.current && !sortRef.current.contains(event.target as Node)) {
-        setShowSortMenu(false);
+        setShowSortMenu(false)
       }
-    };
+    }
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
-  const allTasks = tasks.length;
-  const totalTasks = columns.reduce((sum, col) => sum + col.tasks.length, 0);
+  const allTasks = tasks.length
+  const totalTasks = columns.reduce((sum, col) => sum + col.tasks.length, 0)
   const activeTasks = columns
-    .filter(col => col.id !== 'done')
-    .reduce((sum, col) => sum + col.tasks.length, 0);
-  const completedTasks = columns.find(col => col.id === 'done')?.tasks.length || 0;
-  const activeFiltersCount = filters.priorities.length + filters.assignees.length + filters.columns.length;
-  const filteredOutCount = allTasks - totalTasks;
+    .filter((col) => col.id !== 'done')
+    .reduce((sum, col) => sum + col.tasks.length, 0)
+  const completedTasks = columns.find((col) => col.id === 'done')?.tasks.length || 0
+  const activeFiltersCount =
+    filters.priorities.length + filters.assignees.length + filters.columns.length
+  const filteredOutCount = allTasks - totalTasks
 
   const getConnectionStatusColor = () => {
     switch (wsState || WebSocketState.DISCONNECTED) {
       case WebSocketState.CONNECTED:
-        return 'text-green-600';
+        return 'text-green-600'
       case WebSocketState.CONNECTING:
       case WebSocketState.RECONNECTING:
-        return 'text-amber-600';
+        return 'text-amber-600'
       default:
-        return 'text-red-600';
+        return 'text-red-600'
     }
-  };
+  }
 
   const getConnectionStatusText = () => {
     switch (wsState || WebSocketState.DISCONNECTED) {
       case WebSocketState.CONNECTED:
-        return 'Connected';
+        return 'Connected'
       case WebSocketState.CONNECTING:
-        return 'Connecting...';
+        return 'Connecting...'
       case WebSocketState.RECONNECTING:
-        return 'Reconnecting...';
+        return 'Reconnecting...'
       case WebSocketState.DISCONNECTED:
-        return 'Disconnected';
+        return 'Disconnected'
       default:
-        return 'Unknown';
+        return 'Unknown'
     }
-  };
+  }
 
   return (
     <div className="space-y-6">
@@ -621,9 +666,11 @@ const TaskBoard: React.FC = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-semibold text-gray-900">Task Board</h1>
-            <p className="text-gray-600 mt-1">Drag and drop tasks between columns to update their status</p>
+            <p className="text-gray-600 mt-1">
+              Drag and drop tasks between columns to update their status
+            </p>
           </div>
-          
+
           {/* Connection Status */}
           <div className="flex items-center space-x-4">
             <div className={`flex items-center space-x-2 text-sm ${getConnectionStatusColor()}`}>
@@ -634,7 +681,7 @@ const TaskBoard: React.FC = () => {
               )}
               <span>{getConnectionStatusText()}</span>
             </div>
-            
+
             {connectedUsers.length > 0 && (
               <div className="flex items-center space-x-2">
                 <span className="text-sm text-gray-600">Active users:</span>
@@ -658,7 +705,7 @@ const TaskBoard: React.FC = () => {
             )}
           </div>
         </div>
-        
+
         {/* Last Update Indicator */}
         {lastUpdate && (
           <div className="mt-2 text-xs text-gray-500">
@@ -679,7 +726,7 @@ const TaskBoard: React.FC = () => {
         <div className="flex items-center space-x-2">
           {/* Filter Dropdown */}
           <div className="relative" ref={filterRef}>
-            <button 
+            <button
               onClick={() => setShowFilterMenu(!showFilterMenu)}
               className={`px-3 py-1.5 ${activeFiltersCount > 0 ? 'bg-blue-100 text-blue-700 border border-blue-300' : 'bg-gray-100 text-gray-700'} rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium flex items-center gap-1`}
             >
@@ -690,9 +737,11 @@ const TaskBoard: React.FC = () => {
                   {activeFiltersCount}
                 </span>
               )}
-              <ChevronDown className={`w-3 h-3 ml-1 transition-transform ${showFilterMenu ? 'rotate-180' : ''}`} />
+              <ChevronDown
+                className={`w-3 h-3 ml-1 transition-transform ${showFilterMenu ? 'rotate-180' : ''}`}
+              />
             </button>
-            
+
             {showFilterMenu && (
               <div className="absolute left-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
                 <div className="p-4">
@@ -705,21 +754,30 @@ const TaskBoard: React.FC = () => {
                       Clear all
                     </button>
                   </div>
-                  
+
                   {/* Priority Filter */}
                   <div className="mb-4">
                     <h4 className="text-sm font-medium text-gray-700 mb-2">Priority</h4>
                     <div className="space-y-1">
-                      {['high', 'medium', 'low'].map(priority => (
-                        <label key={priority} className="flex items-center cursor-pointer hover:bg-gray-50 p-1 rounded">
+                      {['high', 'medium', 'low'].map((priority) => (
+                        <label
+                          key={priority}
+                          className="flex items-center cursor-pointer hover:bg-gray-50 p-1 rounded"
+                        >
                           <input
                             type="checkbox"
                             checked={filters.priorities.includes(priority)}
                             onChange={(e) => {
                               if (e.target.checked) {
-                                setFilters(prev => ({ ...prev, priorities: [...prev.priorities, priority] }));
+                                setFilters((prev) => ({
+                                  ...prev,
+                                  priorities: [...prev.priorities, priority],
+                                }))
                               } else {
-                                setFilters(prev => ({ ...prev, priorities: prev.priorities.filter(p => p !== priority) }));
+                                setFilters((prev) => ({
+                                  ...prev,
+                                  priorities: prev.priorities.filter((p) => p !== priority),
+                                }))
                               }
                             }}
                             className="mr-2 rounded text-blue-600"
@@ -729,21 +787,30 @@ const TaskBoard: React.FC = () => {
                       ))}
                     </div>
                   </div>
-                  
+
                   {/* Assignee Filter */}
                   <div className="mb-4">
                     <h4 className="text-sm font-medium text-gray-700 mb-2">Assignee</h4>
                     <div className="space-y-1 max-h-32 overflow-y-auto">
-                      {getUniqueAssignees().map(assignee => (
-                        <label key={assignee} className="flex items-center cursor-pointer hover:bg-gray-50 p-1 rounded">
+                      {getUniqueAssignees().map((assignee) => (
+                        <label
+                          key={assignee}
+                          className="flex items-center cursor-pointer hover:bg-gray-50 p-1 rounded"
+                        >
                           <input
                             type="checkbox"
                             checked={filters.assignees.includes(assignee)}
                             onChange={(e) => {
                               if (e.target.checked) {
-                                setFilters(prev => ({ ...prev, assignees: [...prev.assignees, assignee] }));
+                                setFilters((prev) => ({
+                                  ...prev,
+                                  assignees: [...prev.assignees, assignee],
+                                }))
                               } else {
-                                setFilters(prev => ({ ...prev, assignees: prev.assignees.filter(a => a !== assignee) }));
+                                setFilters((prev) => ({
+                                  ...prev,
+                                  assignees: prev.assignees.filter((a) => a !== assignee),
+                                }))
                               }
                             }}
                             className="mr-2 rounded text-blue-600"
@@ -760,15 +827,17 @@ const TaskBoard: React.FC = () => {
 
           {/* Sort Dropdown */}
           <div className="relative" ref={sortRef}>
-            <button 
+            <button
               onClick={() => setShowSortMenu(!showSortMenu)}
               className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium flex items-center gap-1"
             >
               <ArrowUpDown className="w-4 h-4" />
               Sort
-              <ChevronDown className={`w-3 h-3 ml-1 transition-transform ${showSortMenu ? 'rotate-180' : ''}`} />
+              <ChevronDown
+                className={`w-3 h-3 ml-1 transition-transform ${showSortMenu ? 'rotate-180' : ''}`}
+              />
             </button>
-            
+
             {showSortMenu && (
               <div className="absolute left-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
                 <div className="p-2">
@@ -777,16 +846,16 @@ const TaskBoard: React.FC = () => {
                     { value: 'complexity', label: 'Complexity' },
                     { value: 'assignee', label: 'Assignee' },
                     { value: 'created', label: 'Date Created' },
-                    { value: 'updated', label: 'Last Updated' }
-                  ].map(option => (
+                    { value: 'updated', label: 'Last Updated' },
+                  ].map((option) => (
                     <button
                       key={option.value}
                       onClick={() => {
                         if (sortBy === option.value) {
-                          setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
+                          setSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'))
                         } else {
-                          setSortBy(option.value as SortOption);
-                          setSortDirection('desc');
+                          setSortBy(option.value as SortOption)
+                          setSortDirection('desc')
                         }
                       }}
                       className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded flex items-center justify-between"
@@ -817,7 +886,7 @@ const TaskBoard: React.FC = () => {
             <span>•</span>
             <span>Done: {completedTasks}</span>
           </div>
-          <button 
+          <button
             onClick={handleAddTask}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium flex items-center gap-2"
           >
@@ -875,7 +944,7 @@ const TaskBoard: React.FC = () => {
               ))}
             </div>
           </div>
-          
+
           <DragOverlay
             dropAnimation={{
               sideEffects: defaultDropAnimationSideEffects({
@@ -891,18 +960,22 @@ const TaskBoard: React.FC = () => {
           </DragOverlay>
         </DndContext>
       </TaskBoardContext.Provider>
-      
+
       {/* Task Modal */}
       <TaskModal
         isOpen={isModalOpen}
         mode={modalMode}
         task={selectedTask}
-        availableTasks={tasks.map(t => ({
+        availableTasks={tasks.map((t) => ({
           id: Number(t.id),
           title: t.title,
           description: t.description || '',
           priority: t.priority as LocalTask['priority'],
-          status: (t.column === 'todo' ? 'pending' : t.column === 'in-progress' ? 'in-progress' : 'done') as LocalTask['status'],
+          status: (t.column === 'todo'
+            ? 'pending'
+            : t.column === 'in-progress'
+              ? 'in-progress'
+              : 'done') as LocalTask['status'],
           assignedTo: t.assignee?.name !== 'Unassigned' ? t.assignee?.name : undefined,
           createdAt: t.createdAt,
           updatedAt: t.updatedAt,
@@ -914,12 +987,12 @@ const TaskBoard: React.FC = () => {
         onSave={handleTaskSave}
         onDelete={selectedTask ? handleTaskDelete : undefined}
         onEdit={() => {
-          setModalMode('edit');
+          setModalMode('edit')
         }}
       />
     </div>
-  );
-};
+  )
+}
 
 // Droppable Column Component
 const DroppableColumn: React.FC<{ column: Column }> = ({ column }) => {
@@ -928,7 +1001,7 @@ const DroppableColumn: React.FC<{ column: Column }> = ({ column }) => {
     data: {
       type: 'column',
     },
-  });
+  })
 
   return (
     <div className="flex-shrink-0 w-80">
@@ -951,19 +1024,16 @@ const DroppableColumn: React.FC<{ column: Column }> = ({ column }) => {
       </div>
 
       {/* Column Content */}
-      <div 
-        ref={setNodeRef}
-        className="bg-gray-50 rounded-b-lg p-4 space-y-3 min-h-[400px]"
-      >
+      <div ref={setNodeRef} className="bg-gray-50 rounded-b-lg p-4 space-y-3 min-h-[400px]">
         <SortableContext
-          items={column.tasks.map(t => t.id)}
+          items={column.tasks.map((t) => t.id)}
           strategy={verticalListSortingStrategy}
         >
           {column.tasks.map((task) => (
             <SortableTaskCard key={task.id} task={task} />
           ))}
         </SortableContext>
-        
+
         {/* Empty State */}
         {column.tasks.length === 0 && (
           <div className="text-center py-8 text-gray-400">
@@ -973,92 +1043,88 @@ const DroppableColumn: React.FC<{ column: Column }> = ({ column }) => {
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
 // Sortable Task Card Wrapper
 const SortableTaskCard: React.FC<{ task: Task }> = ({ task }) => {
-  const context = React.useContext(TaskBoardContext);
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: task.id });
+  const context = React.useContext(TaskBoardContext)
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: task.id,
+  })
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : 1,
-  };
+  }
 
   return (
     <div ref={setNodeRef} style={style}>
-      <TaskCard 
-        task={task} 
-        attributes={attributes} 
+      <TaskCard
+        task={task}
+        attributes={attributes}
         listeners={listeners}
         onClick={context?.handleTaskClick}
         onEdit={context?.handleTaskEdit}
       />
     </div>
-  );
-};
+  )
+}
 
 // Task Card Component
-const TaskCard: React.FC<{ 
-  task: Task; 
-  isDragging?: boolean;
-  attributes?: any;
-  listeners?: any;
-  onClick?: (task: Task) => void;
-  onEdit?: (task: Task, e: React.MouseEvent) => void;
+const TaskCard: React.FC<{
+  task: Task
+  isDragging?: boolean
+  attributes?: any
+  listeners?: any
+  onClick?: (task: Task) => void
+  onEdit?: (task: Task, e: React.MouseEvent) => void
 }> = ({ task, isDragging = false, attributes, listeners, onClick, onEdit }) => {
   const getPriorityStyles = (priority: string) => {
     switch (priority) {
       case 'high':
         return {
           border: 'border-l-4 border-red-500',
-          badge: 'bg-red-100 text-red-700'
-        };
+          badge: 'bg-red-100 text-red-700',
+        }
       case 'medium':
         return {
           border: 'border-l-4 border-amber-500',
-          badge: 'bg-amber-100 text-amber-700'
-        };
+          badge: 'bg-amber-100 text-amber-700',
+        }
       case 'low':
         return {
           border: 'border-l-4 border-green-500',
-          badge: 'bg-green-100 text-green-700'
-        };
+          badge: 'bg-green-100 text-green-700',
+        }
       default:
         return {
           border: '',
-          badge: ''
-        };
+          badge: '',
+        }
     }
-  };
+  }
 
   const getComplexityColor = (complexity: number) => {
-    if (complexity >= 7) return 'bg-red-500';
-    if (complexity >= 5) return 'bg-amber-500';
-    return 'bg-green-500';
-  };
+    if (complexity >= 7) return 'bg-red-500'
+    if (complexity >= 5) return 'bg-amber-500'
+    return 'bg-green-500'
+  }
 
-  const priorityStyles = getPriorityStyles(task.priority);
+  const priorityStyles = getPriorityStyles(task.priority)
 
   return (
-    <div 
+    <div
       {...attributes}
       {...listeners}
       onClick={(e) => {
         // Prevent click when dragging
-        if (isDragging) return;
-        onClick?.(task);
+        if (isDragging) return
+        onClick?.(task)
       }}
-      className={`bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-grab active:cursor-grabbing group select-none ${priorityStyles.border} ${isDragging ? 'shadow-lg ring-2 ring-blue-500' : ''}`}>
+      className={`bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-grab active:cursor-grabbing group select-none ${priorityStyles.border} ${isDragging ? 'shadow-lg ring-2 ring-blue-500' : ''}`}
+    >
       <div className="flex items-start justify-between mb-2">
         <div className="flex items-start gap-2 flex-1">
           <GripVertical className="w-4 h-4 text-gray-400 mt-1" />
@@ -1077,9 +1143,9 @@ const TaskCard: React.FC<{
           </span>
         </div>
       </div>
-      
+
       <p className="text-gray-600 text-sm mb-3 pl-6 select-none">{task.description}</p>
-      
+
       <div className="flex items-center justify-between pl-6">
         <div className="flex items-center space-x-2">
           <span className="text-gray-500 text-xs">Complexity:</span>
@@ -1089,7 +1155,9 @@ const TaskCard: React.FC<{
           </div>
         </div>
         <div className="flex items-center space-x-2">
-          <div className={`w-6 h-6 ${task.assignee.color} rounded-full flex items-center justify-center`}>
+          <div
+            className={`w-6 h-6 ${task.assignee.color} rounded-full flex items-center justify-center`}
+          >
             <span className="text-white text-xs font-medium">{task.assignee.initials}</span>
           </div>
         </div>
@@ -1099,7 +1167,7 @@ const TaskCard: React.FC<{
       {task.progress !== undefined && (
         <div className="mt-3 flex items-center justify-between pl-6">
           <div className="w-full bg-gray-200 rounded-full h-2">
-            <div 
+            <div
               className="bg-blue-600 h-2 rounded-full transition-all duration-300"
               style={{ width: `${task.progress}%` }}
             />
@@ -1107,9 +1175,8 @@ const TaskCard: React.FC<{
           <span className="text-gray-500 text-xs ml-2">{task.progress}%</span>
         </div>
       )}
-
     </div>
-  );
-};
+  )
+}
 
-export default TaskBoard;
+export default TaskBoard

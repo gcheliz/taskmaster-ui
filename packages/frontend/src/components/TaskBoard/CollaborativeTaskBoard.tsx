@@ -3,42 +3,34 @@
  * Enhanced TaskBoard with real-time collaboration features
  */
 
-import React, { useEffect, useState, useCallback } from 'react';
-import { TaskBoard, type TaskBoardProps } from './TaskBoard';
-import { CollaborationStatus, UserCursor } from '../Collaboration/UserPresence';
-import {
-  useTaskCollaboration,
-  useUserPresence,
-} from '../../hooks/useWebSocket';
-import { useWebSocketContext } from '../../providers/WebSocketProvider';
-import { Toast } from '../ui/molecules/Toast';
-import { Badge } from '../ui/atoms/Badge';
-import { Icon, CheckIcon, XMarkIcon } from '../ui/atoms/Icon';
-import type { Task, TaskStatus } from '../../types/websocket';
-import { cn } from '../../utils/cn';
+import React, { useEffect, useState, useCallback } from 'react'
+import { TaskBoard, type TaskBoardProps } from './TaskBoard'
+import { CollaborationStatus, UserCursor } from '../Collaboration/UserPresence'
+import { useTaskCollaboration, useUserPresence } from '../../hooks/useWebSocket'
+import { useWebSocketContext } from '../../providers/WebSocketProvider'
+import { Toast } from '../ui/molecules/Toast'
+import { Badge } from '../ui/atoms/Badge'
+import { Icon, CheckIcon, XMarkIcon } from '../ui/atoms/Icon'
+import type { Task, TaskStatus } from '../../types/websocket'
+import { cn } from '../../utils/cn'
 
-interface CollaborativeTaskBoardProps
-  extends Omit<TaskBoardProps, 'data' | 'onTaskMove'> {
+interface CollaborativeTaskBoardProps extends Omit<TaskBoardProps, 'data' | 'onTaskMove'> {
   /** Initial tasks to display */
-  initialTasks?: Task[];
+  initialTasks?: Task[]
   /** Board ID for collaboration */
-  boardId?: string;
+  boardId?: string
   /** Whether to show collaboration features */
-  showCollaboration?: boolean;
+  showCollaboration?: boolean
   /** Whether to show user cursors */
-  showUserCursors?: boolean;
+  showUserCursors?: boolean
   /** Callback when a task is moved */
-  onTaskMove?: (
-    taskId: string,
-    fromStatus: TaskStatus,
-    toStatus: TaskStatus
-  ) => void;
+  onTaskMove?: (taskId: string, fromStatus: TaskStatus, toStatus: TaskStatus) => void
   /** Callback when a task is created */
-  onTaskCreate?: (task: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => void;
+  onTaskCreate?: (task: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => void
   /** Callback when a task is updated */
-  onTaskUpdate?: (taskId: string, updates: Partial<Task>) => void;
+  onTaskUpdate?: (taskId: string, updates: Partial<Task>) => void
   /** Callback when a task is deleted */
-  onTaskDelete?: (taskId: string) => void;
+  onTaskDelete?: (taskId: string) => void
 }
 
 export const CollaborativeTaskBoard: React.FC<CollaborativeTaskBoardProps> = ({
@@ -53,27 +45,19 @@ export const CollaborativeTaskBoard: React.FC<CollaborativeTaskBoardProps> = ({
   className,
   ...props
 }) => {
-  const { isConnected, error: wsError } = useWebSocketContext();
-  const { connectedUsers, userPresence } = useUserPresence();
-  const {
-    tasks,
-    updateTask,
-    moveTask,
-    createTask,
-    deleteTask,
-    isLoading,
-    error,
-    lastUpdate,
-  } = useTaskCollaboration(initialTasks);
+  const { isConnected, error: wsError } = useWebSocketContext()
+  const { connectedUsers, userPresence } = useUserPresence()
+  const { tasks, updateTask, moveTask, createTask, deleteTask, isLoading, error, lastUpdate } =
+    useTaskCollaboration(initialTasks)
 
   const [notifications, setNotifications] = useState<
     Array<{
-      id: string;
-      type: 'info' | 'success' | 'warning' | 'error';
-      message: string;
-      timestamp: string;
+      id: string
+      type: 'info' | 'success' | 'warning' | 'error'
+      message: string
+      timestamp: string
     }>
-  >([]);
+  >([])
 
   // Convert our Task type to the expected TaskBoardData format
   const taskBoardData = React.useMemo(() => {
@@ -102,9 +86,9 @@ export const CollaborativeTaskBoard: React.FC<CollaborativeTaskBoardProps> = ({
         status: 'blocked' as TaskStatus,
         tasks: [] as any[],
       },
-    ];
+    ]
 
-    const convertedTasks = tasks.map(task => ({
+    const convertedTasks = tasks.map((task) => ({
       id: parseInt(task.id.replace('task-', ''), 10) || Math.random(),
       title: task.title,
       description: task.description || '',
@@ -115,14 +99,12 @@ export const CollaborativeTaskBoard: React.FC<CollaborativeTaskBoardProps> = ({
       updatedAt: task.updatedAt,
       tags: task.tags || [],
       complexity: task.complexity || 1,
-    }));
+    }))
 
     // Group tasks by status into columns
-    columns.forEach(column => {
-      column.tasks = convertedTasks.filter(
-        task => task.status === column.status
-      );
-    });
+    columns.forEach((column) => {
+      column.tasks = convertedTasks.filter((task) => task.status === column.status)
+    })
 
     return {
       columns,
@@ -133,31 +115,31 @@ export const CollaborativeTaskBoard: React.FC<CollaborativeTaskBoardProps> = ({
         created: new Date().toISOString(),
         description: 'Real-time collaborative task board',
       },
-    };
-  }, [tasks, lastUpdate]);
+    }
+  }, [tasks, lastUpdate])
 
   // Handle task movements
   const handleTaskMove = useCallback(
     (taskId: number, fromStatus: TaskStatus, toStatus: TaskStatus) => {
-      const stringTaskId = `task-${taskId}`;
-      const task = tasks.find(t => t.id === stringTaskId);
+      const stringTaskId = `task-${taskId}`
+      const task = tasks.find((t) => t.id === stringTaskId)
 
       if (task) {
-        const fromPosition = task.position;
-        const toPosition = tasks.filter(t => t.status === toStatus).length;
+        const fromPosition = task.position
+        const toPosition = tasks.filter((t) => t.status === toStatus).length
 
-        moveTask(stringTaskId, toStatus, toPosition);
-        onTaskMove?.(stringTaskId, fromStatus, toStatus);
+        moveTask(stringTaskId, toStatus, toPosition)
+        onTaskMove?.(stringTaskId, fromStatus, toStatus)
 
         // Show notification for task movement
         addNotification({
           type: 'info',
           message: `Task "${task.title}" moved from ${fromStatus} to ${toStatus}`,
-        });
+        })
       }
     },
     [tasks, moveTask, onTaskMove]
-  );
+  )
 
   // Handle task creation
   const handleTaskCreate = useCallback(
@@ -167,22 +149,22 @@ export const CollaborativeTaskBoard: React.FC<CollaborativeTaskBoardProps> = ({
         description: '',
         status,
         priority: 'medium',
-        position: tasks.filter(t => t.status === status).length,
+        position: tasks.filter((t) => t.status === status).length,
         column: status,
         tags: [],
         complexity: 1,
-      };
+      }
 
-      createTask(newTask);
-      onTaskCreate?.(newTask);
+      createTask(newTask)
+      onTaskCreate?.(newTask)
 
       addNotification({
         type: 'success',
         message: 'New task created successfully',
-      });
+      })
     },
     [tasks, createTask, onTaskCreate]
-  );
+  )
 
   // Add notification helper
   const addNotification = useCallback(
@@ -191,17 +173,17 @@ export const CollaborativeTaskBoard: React.FC<CollaborativeTaskBoardProps> = ({
         ...notification,
         id: `notification-${Date.now()}-${Math.random()}`,
         timestamp: new Date().toISOString(),
-      };
+      }
 
-      setNotifications(prev => [...prev, newNotification]);
+      setNotifications((prev) => [...prev, newNotification])
 
       // Auto-remove notification after 5 seconds
       setTimeout(() => {
-        setNotifications(prev => prev.filter(n => n.id !== newNotification.id));
-      }, 5000);
+        setNotifications((prev) => prev.filter((n) => n.id !== newNotification.id))
+      }, 5000)
     },
     []
-  );
+  )
 
   // Listen for collaboration events
   useEffect(() => {
@@ -209,9 +191,9 @@ export const CollaborativeTaskBoard: React.FC<CollaborativeTaskBoardProps> = ({
       addNotification({
         type: 'info',
         message: 'Board updated by collaborator',
-      });
+      })
     }
-  }, [lastUpdate, addNotification]);
+  }, [lastUpdate, addNotification])
 
   // Handle WebSocket connection errors
   useEffect(() => {
@@ -219,13 +201,13 @@ export const CollaborativeTaskBoard: React.FC<CollaborativeTaskBoardProps> = ({
       addNotification({
         type: 'error',
         message: `Connection error: ${wsError.message}`,
-      });
+      })
     }
-  }, [wsError, addNotification]);
+  }, [wsError, addNotification])
 
   const removeNotification = useCallback((id: string) => {
-    setNotifications(prev => prev.filter(n => n.id !== id));
-  }, []);
+    setNotifications((prev) => prev.filter((n) => n.id !== id))
+  }, [])
 
   return (
     <div className={cn('relative', className)}>
@@ -250,11 +232,7 @@ export const CollaborativeTaskBoard: React.FC<CollaborativeTaskBoardProps> = ({
             </div>
 
             <div className="flex items-center space-x-2 text-sm text-slate-400">
-              {lastUpdate && (
-                <span>
-                  Last sync: {new Date(lastUpdate).toLocaleTimeString()}
-                </span>
-              )}
+              {lastUpdate && <span>Last sync: {new Date(lastUpdate).toLocaleTimeString()}</span>}
             </div>
           </div>
         </div>
@@ -274,7 +252,7 @@ export const CollaborativeTaskBoard: React.FC<CollaborativeTaskBoardProps> = ({
       {/* User Cursors */}
       {showUserCursors && (
         <>
-          {connectedUsers.map(user => (
+          {connectedUsers.map((user) => (
             <UserCursor key={user.id} userId={user.id} />
           ))}
         </>
@@ -282,7 +260,7 @@ export const CollaborativeTaskBoard: React.FC<CollaborativeTaskBoardProps> = ({
 
       {/* Notifications */}
       <div className="fixed top-4 right-4 z-50 space-y-2">
-        {notifications.map(notification => (
+        {notifications.map((notification) => (
           <Toast
             key={notification.id}
             type={notification.type}
@@ -303,7 +281,7 @@ export const CollaborativeTaskBoard: React.FC<CollaborativeTaskBoardProps> = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default CollaborativeTaskBoard;
+export default CollaborativeTaskBoard

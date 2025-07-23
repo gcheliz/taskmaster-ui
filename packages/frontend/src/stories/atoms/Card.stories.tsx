@@ -1,11 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import {
-  DndContext,
-  type DragEndEvent,
-  DragOverlay,
-  type DragStartEvent,
-} from '@dnd-kit/core';
-import { useState } from 'react';
+import type { Meta, StoryObj } from '@storybook/react'
+import { DndContext, type DragEndEvent, DragOverlay, type DragStartEvent } from '@dnd-kit/core'
+import { useState } from 'react'
 import {
   Card,
   CardHeader,
@@ -13,17 +8,17 @@ import {
   CardDescription,
   CardContent,
   CardFooter,
-} from '../../components/ui/atoms/Card';
-import { DraggableCard } from '../../components/ui/atoms/DraggableCard';
-import { DroppableArea } from '../../components/ui/atoms/DroppableArea';
-import { Button } from '../../components/ui/atoms/Button';
+} from '../../components/ui/atoms/Card'
+import { DraggableCard } from '../../components/ui/atoms/DraggableCard'
+import { DroppableArea } from '../../components/ui/atoms/DroppableArea'
+import { Button } from '../../components/ui/atoms/Button'
 import {
   Icon,
   TaskIcon,
   CompleteIcon,
   DragHandleIcon,
   StarFilledIcon,
-} from '../../components/ui/atoms/Icon';
+} from '../../components/ui/atoms/Icon'
 
 const meta = {
   title: 'Atoms/Card',
@@ -52,10 +47,10 @@ const meta = {
       control: 'boolean',
     },
   },
-} satisfies Meta<typeof Card>;
+} satisfies Meta<typeof Card>
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 // Basic Card Examples
 export const Default: Story = {
@@ -64,7 +59,7 @@ export const Default: Story = {
     size: 'md',
     interactive: false,
   },
-  render: args => (
+  render: (args) => (
     <Card {...args}>
       <CardHeader>
         <CardTitle>Card Title</CardTitle>
@@ -83,14 +78,14 @@ export const Default: Story = {
       </CardFooter>
     </Card>
   ),
-};
+}
 
 export const Elevated: Story = {
   args: {
     variant: 'elevated',
     size: 'md',
   },
-  render: args => (
+  render: (args) => (
     <Card {...args}>
       <CardHeader>
         <CardTitle>Elevated Card</CardTitle>
@@ -101,7 +96,7 @@ export const Elevated: Story = {
       </CardContent>
     </Card>
   ),
-};
+}
 
 export const Interactive: Story = {
   args: {
@@ -109,7 +104,7 @@ export const Interactive: Story = {
     size: 'md',
     interactive: true,
   },
-  render: args => (
+  render: (args) => (
     <Card {...args} onCardClick={() => alert('Card clicked!')}>
       <CardHeader>
         <CardTitle>Interactive Card</CardTitle>
@@ -120,7 +115,7 @@ export const Interactive: Story = {
       </CardContent>
     </Card>
   ),
-};
+}
 
 export const WithIcons: Story = {
   render: () => (
@@ -136,9 +131,7 @@ export const WithIcons: Story = {
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-1">
             <Icon icon={CompleteIcon} color="success" size="sm" />
-            <span className="text-sm text-secondary-600 dark:text-secondary-400">
-              Completed
-            </span>
+            <span className="text-sm text-secondary-600 dark:text-secondary-400">Completed</span>
           </div>
           <div className="flex items-center space-x-1">
             <Icon icon={StarFilledIcon} color="warning" size="sm" />
@@ -150,18 +143,16 @@ export const WithIcons: Story = {
       </CardContent>
     </Card>
   ),
-};
+}
 
 export const Sizes: Story = {
   render: () => (
     <div className="grid grid-cols-2 gap-4">
-      {(['sm', 'md', 'lg', 'xl'] as const).map(size => (
+      {(['sm', 'md', 'lg', 'xl'] as const).map((size) => (
         <Card key={size} variant="default" size={size}>
           <CardHeader size={size}>
             <CardTitle size={size}>Size: {size}</CardTitle>
-            <CardDescription size={size}>
-              This card uses {size} sizing
-            </CardDescription>
+            <CardDescription size={size}>This card uses {size} sizing</CardDescription>
           </CardHeader>
           <CardContent size={size}>
             <p>Content scaled to {size} size</p>
@@ -170,12 +161,12 @@ export const Sizes: Story = {
       ))}
     </div>
   ),
-};
+}
 
 export const Variants: Story = {
   render: () => (
     <div className="grid grid-cols-2 gap-4">
-      {(['default', 'elevated', 'outline', 'ghost'] as const).map(variant => (
+      {(['default', 'elevated', 'outline', 'ghost'] as const).map((variant) => (
         <Card key={variant} variant={variant}>
           <CardHeader>
             <CardTitle>Variant: {variant}</CardTitle>
@@ -188,38 +179,38 @@ export const Variants: Story = {
       ))}
     </div>
   ),
-};
+}
 
 // Drag and Drop Examples
 export const DragAndDropExample: Story = {
   render: () => {
-    const [activeId, setActiveId] = useState<string | null>(null);
+    const [activeId, setActiveId] = useState<string | null>(null)
     const [items, setItems] = useState([
       { id: '1', title: 'Task 1', description: 'First task to drag' },
       { id: '2', title: 'Task 2', description: 'Second task to drag' },
       { id: '3', title: 'Task 3', description: 'Third task to drag' },
-    ]);
-    const [droppedItems, setDroppedItems] = useState<typeof items>([]);
+    ])
+    const [droppedItems, setDroppedItems] = useState<typeof items>([])
 
     const handleDragStart = (event: DragStartEvent) => {
-      setActiveId(event.active.id as string);
-    };
+      setActiveId(event.active.id as string)
+    }
 
     const handleDragEnd = (event: DragEndEvent) => {
-      const { active, over } = event;
+      const { active, over } = event
 
       if (over && over.id === 'droppable-area') {
-        const draggedItem = items.find(item => item.id === active.id);
+        const draggedItem = items.find((item) => item.id === active.id)
         if (draggedItem) {
-          setItems(items.filter(item => item.id !== active.id));
-          setDroppedItems([...droppedItems, draggedItem]);
+          setItems(items.filter((item) => item.id !== active.id))
+          setDroppedItems([...droppedItems, draggedItem])
         }
       }
 
-      setActiveId(null);
-    };
+      setActiveId(null)
+    }
 
-    const activeItem = items.find(item => item.id === activeId);
+    const activeItem = items.find((item) => item.id === activeId)
 
     return (
       <div className="p-4 max-w-4xl mx-auto">
@@ -235,21 +226,14 @@ export const DragAndDropExample: Story = {
                 Available Tasks
               </h4>
               <div className="space-y-3">
-                {items.map(item => (
-                  <DraggableCard
-                    key={item.id}
-                    id={item.id}
-                    data={item}
-                    variant="elevated"
-                  >
+                {items.map((item) => (
+                  <DraggableCard key={item.id} id={item.id} data={item} variant="elevated">
                     <CardHeader>
                       <div className="flex items-center space-x-2">
                         <Icon icon={DragHandleIcon} size="sm" color="muted" />
                         <CardTitle size="sm">{item.title}</CardTitle>
                       </div>
-                      <CardDescription size="sm">
-                        {item.description}
-                      </CardDescription>
+                      <CardDescription size="sm">{item.description}</CardDescription>
                     </CardHeader>
                   </DraggableCard>
                 ))}
@@ -268,20 +252,14 @@ export const DragAndDropExample: Story = {
                 placeholder="Drop tasks here to mark as complete"
               >
                 <div className="space-y-3">
-                  {droppedItems.map(item => (
-                    <Card
-                      key={item.id}
-                      variant="outline"
-                      className="opacity-75"
-                    >
+                  {droppedItems.map((item) => (
+                    <Card key={item.id} variant="outline" className="opacity-75">
                       <CardHeader>
                         <div className="flex items-center space-x-2">
                           <Icon icon={CompleteIcon} size="sm" color="success" />
                           <CardTitle size="sm">{item.title}</CardTitle>
                         </div>
-                        <CardDescription size="sm">
-                          {item.description}
-                        </CardDescription>
+                        <CardDescription size="sm">{item.description}</CardDescription>
                       </CardHeader>
                     </Card>
                   ))}
@@ -304,18 +282,16 @@ export const DragAndDropExample: Story = {
                     <Icon icon={DragHandleIcon} size="sm" color="muted" />
                     <CardTitle size="sm">{activeItem.title}</CardTitle>
                   </div>
-                  <CardDescription size="sm">
-                    {activeItem.description}
-                  </CardDescription>
+                  <CardDescription size="sm">{activeItem.description}</CardDescription>
                 </CardHeader>
               </DraggableCard>
             )}
           </DragOverlay>
         </DndContext>
       </div>
-    );
+    )
   },
-};
+}
 
 export const DarkThemeShowcase: Story = {
   parameters: {
@@ -324,9 +300,7 @@ export const DarkThemeShowcase: Story = {
   render: () => (
     <div className="">
       <div className="p-4 space-y-4">
-        <h3 className="text-lg font-semibold mb-4 text-secondary-100">
-          Dark Theme Cards
-        </h3>
+        <h3 className="text-lg font-semibold mb-4 text-secondary-100">Dark Theme Cards</h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Card variant="default">
@@ -350,9 +324,7 @@ export const DarkThemeShowcase: Story = {
                 <Icon icon={TaskIcon} color="primary" />
                 <CardTitle>Elevated with Icons</CardTitle>
               </div>
-              <CardDescription>
-                Enhanced shadow and icon support
-              </CardDescription>
+              <CardDescription>Enhanced shadow and icon support</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex items-center space-x-4">
@@ -371,4 +343,4 @@ export const DarkThemeShowcase: Story = {
       </div>
     </div>
   ),
-};
+}

@@ -1,29 +1,25 @@
-import React from 'react';
-import type { TaskBoardData, TaskStatus } from '../../types/task';
-import { TaskColumn } from './TaskColumn';
-import { DragAndDropProvider } from './DragAndDropProvider';
+import React from 'react'
+import type { TaskBoardData, TaskStatus } from '../../types/task'
+import { TaskColumn } from './TaskColumn'
+import { DragAndDropProvider } from './DragAndDropProvider'
 
 export interface TaskBoardProps {
   /** Task board data containing columns and tasks */
-  data?: TaskBoardData;
+  data?: TaskBoardData
   /** Whether the board is in a loading state */
-  isLoading?: boolean;
+  isLoading?: boolean
   /** Error message to display */
-  error?: string | null;
+  error?: string | null
   /** Additional CSS class name */
-  className?: string;
+  className?: string
   /** Callback when a task is clicked */
-  onTaskClick?: (taskId: number) => void;
+  onTaskClick?: (taskId: number) => void
   /** Callback when a task is moved between columns */
-  onTaskMove?: (
-    taskId: number,
-    fromStatus: TaskStatus,
-    toStatus: TaskStatus
-  ) => void;
+  onTaskMove?: (taskId: number, fromStatus: TaskStatus, toStatus: TaskStatus) => void
   /** Whether to show the create task button */
-  showCreateButton?: boolean;
+  showCreateButton?: boolean
   /** Callback when create task is clicked */
-  onCreateTask?: (status: TaskStatus) => void;
+  onCreateTask?: (status: TaskStatus) => void
 }
 
 /**
@@ -44,22 +40,14 @@ export const TaskBoard: React.FC<TaskBoardProps> = ({
 }) => {
   if (isLoading) {
     return (
-      <main
-        className={`task-board loading ${className}`}
-        role="main"
-        aria-label="Task Board"
-      >
+      <main className={`task-board loading ${className}`} role="main" aria-label="Task Board">
         <header className="task-board__header">
           <h2 className="task-board__title">Task Board</h2>
           <div className="task-board__stats" role="status" aria-live="polite">
             <span className="stat-item skeleton">Loading...</span>
           </div>
         </header>
-        <div
-          className="task-board__columns"
-          role="group"
-          aria-label="Task columns"
-        >
+        <div className="task-board__columns" role="group" aria-label="Task columns">
           {Array.from({ length: 4 }).map((_, index) => (
             <div
               key={index}
@@ -68,22 +56,12 @@ export const TaskBoard: React.FC<TaskBoardProps> = ({
               aria-label={`Loading column ${index + 1}`}
             >
               <div className="column-header__skeleton">
-                <div
-                  className="skeleton-line column-title"
-                  aria-hidden="true"
-                ></div>
-                <div
-                  className="skeleton-line column-count"
-                  aria-hidden="true"
-                ></div>
+                <div className="skeleton-line column-title" aria-hidden="true"></div>
+                <div className="skeleton-line column-count" aria-hidden="true"></div>
               </div>
               <div className="column-content__skeleton">
                 {Array.from({ length: 2 }).map((_, cardIndex) => (
-                  <div
-                    key={cardIndex}
-                    className="task-card__skeleton"
-                    aria-hidden="true"
-                  >
+                  <div key={cardIndex} className="task-card__skeleton" aria-hidden="true">
                     <div className="skeleton-line skeleton-title"></div>
                     <div className="skeleton-line skeleton-description"></div>
                     <div className="skeleton-line skeleton-meta"></div>
@@ -94,16 +72,12 @@ export const TaskBoard: React.FC<TaskBoardProps> = ({
           ))}
         </div>
       </main>
-    );
+    )
   }
 
   if (error) {
     return (
-      <main
-        className={`task-board error ${className}`}
-        role="main"
-        aria-label="Task Board"
-      >
+      <main className={`task-board error ${className}`} role="main" aria-label="Task Board">
         <header className="task-board__header">
           <h2 className="task-board__title">Task Board</h2>
         </header>
@@ -124,17 +98,13 @@ export const TaskBoard: React.FC<TaskBoardProps> = ({
           </div>
         </div>
       </main>
-    );
+    )
   }
 
   // If no data is provided, show empty state
   if (!data) {
     return (
-      <main
-        className={`task-board empty ${className}`}
-        role="main"
-        aria-label="Task Board"
-      >
+      <main className={`task-board empty ${className}`} role="main" aria-label="Task Board">
         <header className="task-board__header">
           <h2 className="task-board__title">Task Board</h2>
         </header>
@@ -150,25 +120,18 @@ export const TaskBoard: React.FC<TaskBoardProps> = ({
           </div>
         </div>
       </main>
-    );
+    )
   }
 
-  const { columns, tasks, metadata } = data;
-  const totalTasks = tasks.length;
-  const completedTasks = tasks.filter(task => task.status === 'done').length;
-  const inProgressTasks = tasks.filter(
-    task => task.status === 'in-progress'
-  ).length;
-  const completionRate =
-    totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+  const { columns, tasks, metadata } = data
+  const totalTasks = tasks.length
+  const completedTasks = tasks.filter((task) => task.status === 'done').length
+  const inProgressTasks = tasks.filter((task) => task.status === 'in-progress').length
+  const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0
 
   return (
     <DragAndDropProvider onTaskMove={onTaskMove} className={className}>
-      <main
-        className={`task-board ${className}`}
-        role="main"
-        aria-label="Task Board"
-      >
+      <main className={`task-board ${className}`} role="main" aria-label="Task Board">
         <header className="task-board__header">
           <div className="header-main">
             <h2 className="task-board__title">
@@ -177,16 +140,8 @@ export const TaskBoard: React.FC<TaskBoardProps> = ({
                 <span className="project-name"> - {metadata.projectName}</span>
               )}
             </h2>
-            <div
-              className="task-board__stats"
-              role="region"
-              aria-label="Task statistics"
-            >
-              <div
-                className="stat-item"
-                role="img"
-                aria-label={`${totalTasks} total tasks`}
-              >
+            <div className="task-board__stats" role="region" aria-label="Task statistics">
+              <div className="stat-item" role="img" aria-label={`${totalTasks} total tasks`}>
                 <span className="stat-icon" aria-hidden="true">
                   📊
                 </span>
@@ -246,12 +201,8 @@ export const TaskBoard: React.FC<TaskBoardProps> = ({
           )}
         </header>
 
-        <div
-          className="task-board__columns"
-          role="group"
-          aria-label="Kanban board columns"
-        >
-          {columns.map(column => (
+        <div className="task-board__columns" role="group" aria-label="Kanban board columns">
+          {columns.map((column) => (
             <TaskColumn
               key={column.id}
               column={column}
@@ -281,7 +232,7 @@ export const TaskBoard: React.FC<TaskBoardProps> = ({
         ></div>
       </main>
     </DragAndDropProvider>
-  );
-};
+  )
+}
 
-export default TaskBoard;
+export default TaskBoard

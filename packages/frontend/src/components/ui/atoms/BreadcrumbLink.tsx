@@ -1,7 +1,7 @@
-import React from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '../../../utils/cn';
-import { ChevronDownIcon } from './Icon';
+import React from 'react'
+import { cva, type VariantProps } from 'class-variance-authority'
+import { cn } from '../../../utils/cn'
+import { ChevronDownIcon } from './Icon'
 
 const breadcrumbVariants = cva('flex items-center space-x-2 text-sm', {
   variants: {
@@ -14,7 +14,7 @@ const breadcrumbVariants = cva('flex items-center space-x-2 text-sm', {
   defaultVariants: {
     size: 'md',
   },
-});
+})
 
 const breadcrumbLinkVariants = cva(
   'inline-flex items-center font-medium transition-all duration-200 ease-in-out hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-100 dark:focus-visible:ring-offset-surface-900 disabled:pointer-events-none disabled:opacity-50 transform-gpu',
@@ -38,7 +38,7 @@ const breadcrumbLinkVariants = cva(
       size: 'md',
     },
   }
-);
+)
 
 const breadcrumbSeparatorVariants = cva(
   'text-secondary-400 dark:text-secondary-500 flex-shrink-0 transition-colors duration-200',
@@ -54,7 +54,7 @@ const breadcrumbSeparatorVariants = cva(
       size: 'md',
     },
   }
-);
+)
 
 export interface BreadcrumbProps
   extends React.HTMLAttributes<HTMLElement>,
@@ -63,16 +63,16 @@ export interface BreadcrumbProps
    * Custom separator between breadcrumb items
    * @default '/'
    */
-  separator?: React.ReactNode;
+  separator?: React.ReactNode
   /**
    * Maximum number of items to show before collapsing
    */
-  maxItems?: number;
+  maxItems?: number
   /**
    * Whether to show the collapse button on mobile
    * @default true
    */
-  responsive?: boolean;
+  responsive?: boolean
 }
 
 export interface BreadcrumbLinkProps
@@ -82,20 +82,20 @@ export interface BreadcrumbLinkProps
    * Whether this is the current/active breadcrumb item
    * @default false
    */
-  isCurrent?: boolean;
+  isCurrent?: boolean
   /**
    * Whether the link is disabled
    * @default false
    */
-  disabled?: boolean;
+  disabled?: boolean
   /**
    * Icon to display before the link text
    */
-  icon?: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  icon?: React.ComponentType<React.SVGProps<SVGSVGElement>>
   /**
    * Custom component to render as (e.g., Link from react-router)
    */
-  as?: React.ElementType;
+  as?: React.ElementType
 }
 
 export interface BreadcrumbSeparatorProps
@@ -104,34 +104,23 @@ export interface BreadcrumbSeparatorProps
   /**
    * Custom separator content
    */
-  children?: React.ReactNode;
+  children?: React.ReactNode
 }
 
 const Breadcrumb = React.forwardRef<HTMLElement, BreadcrumbProps>(
-  (
-    {
-      className,
-      size,
-      separator = '/',
-      maxItems,
-      responsive = true,
-      children,
-      ...props
-    },
-    ref
-  ) => {
-    const childrenArray = React.Children.toArray(children);
-    const shouldCollapse = maxItems && childrenArray.length > maxItems;
-    const [isExpanded, setIsExpanded] = React.useState(false);
+  ({ className, size, separator = '/', maxItems, responsive = true, children, ...props }, ref) => {
+    const childrenArray = React.Children.toArray(children)
+    const shouldCollapse = maxItems && childrenArray.length > maxItems
+    const [isExpanded, setIsExpanded] = React.useState(false)
 
     const renderItems = () => {
       if (!shouldCollapse || isExpanded) {
-        return childrenArray;
+        return childrenArray
       }
 
-      const firstItem = childrenArray[0];
-      const lastItems = childrenArray.slice(-(maxItems - 1));
-      const hiddenCount = childrenArray.length - maxItems;
+      const firstItem = childrenArray[0]
+      const lastItems = childrenArray.slice(-(maxItems - 1))
+      const hiddenCount = childrenArray.length - maxItems
 
       return [
         firstItem,
@@ -154,8 +143,8 @@ const Breadcrumb = React.forwardRef<HTMLElement, BreadcrumbProps>(
           {separator}
         </BreadcrumbSeparator>,
         ...lastItems,
-      ];
-    };
+      ]
+    }
 
     return (
       <nav
@@ -172,9 +161,9 @@ const Breadcrumb = React.forwardRef<HTMLElement, BreadcrumbProps>(
           ))}
         </ol>
       </nav>
-    );
+    )
   }
-);
+)
 
 const BreadcrumbLink = React.forwardRef<HTMLAnchorElement, BreadcrumbLinkProps>(
   (
@@ -191,7 +180,7 @@ const BreadcrumbLink = React.forwardRef<HTMLAnchorElement, BreadcrumbLinkProps>(
     },
     ref
   ) => {
-    const effectiveVariant = isCurrent ? 'current' : variant;
+    const effectiveVariant = isCurrent ? 'current' : variant
 
     return (
       <Component
@@ -223,27 +212,26 @@ const BreadcrumbLink = React.forwardRef<HTMLAnchorElement, BreadcrumbLinkProps>(
         )}
         {children}
       </Component>
-    );
+    )
   }
-);
+)
 
-const BreadcrumbSeparator = React.forwardRef<
-  HTMLSpanElement,
-  BreadcrumbSeparatorProps
->(({ className, size, children = '/', ...props }, ref) => (
-  <span
-    ref={ref}
-    className={cn(breadcrumbSeparatorVariants({ size, className }))}
-    aria-hidden="true"
-    {...props}
-  >
-    {children}
-  </span>
-));
+const BreadcrumbSeparator = React.forwardRef<HTMLSpanElement, BreadcrumbSeparatorProps>(
+  ({ className, size, children = '/', ...props }, ref) => (
+    <span
+      ref={ref}
+      className={cn(breadcrumbSeparatorVariants({ size, className }))}
+      aria-hidden="true"
+      {...props}
+    >
+      {children}
+    </span>
+  )
+)
 
-Breadcrumb.displayName = 'Breadcrumb';
-BreadcrumbLink.displayName = 'BreadcrumbLink';
-BreadcrumbSeparator.displayName = 'BreadcrumbSeparator';
+Breadcrumb.displayName = 'Breadcrumb'
+BreadcrumbLink.displayName = 'BreadcrumbLink'
+BreadcrumbSeparator.displayName = 'BreadcrumbSeparator'
 
 export {
   Breadcrumb,
@@ -252,4 +240,4 @@ export {
   breadcrumbVariants,
   breadcrumbLinkVariants,
   breadcrumbSeparatorVariants,
-};
+}

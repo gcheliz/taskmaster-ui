@@ -19,20 +19,20 @@ export interface BreadcrumbsProps {
 const generateBreadcrumbsFromPath = (pathname: string): BreadcrumbItem[] => {
   const paths = pathname.split('/').filter(Boolean)
   const breadcrumbs: BreadcrumbItem[] = []
-  
+
   paths.forEach((path, index) => {
     const href = `/${paths.slice(0, index + 1).join('/')}`
     const label = path
       .split('-')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ')
-    
+
     breadcrumbs.push({
       label,
       href: index < paths.length - 1 ? href : undefined,
     })
   })
-  
+
   return breadcrumbs
 }
 
@@ -43,20 +43,17 @@ export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({
   showHome = true,
 }) => {
   const location = useLocation()
-  
+
   // Use provided items or generate from path
   const breadcrumbItems = items || generateBreadcrumbsFromPath(location.pathname)
-  
+
   // Don't show breadcrumbs on home page
   if (location.pathname === '/' && !items) {
     return null
   }
-  
+
   return (
-    <nav
-      className={cn('flex items-center space-x-2 text-sm', className)}
-      aria-label="Breadcrumb"
-    >
+    <nav className={cn('flex items-center space-x-2 text-sm', className)} aria-label="Breadcrumb">
       {showHome && (
         <>
           <Link
@@ -66,17 +63,13 @@ export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({
           >
             <Home className="h-4 w-4" />
           </Link>
-          {breadcrumbItems.length > 0 && (
-            <span className="text-secondary-400">{separator}</span>
-          )}
+          {breadcrumbItems.length > 0 && <span className="text-secondary-400">{separator}</span>}
         </>
       )}
-      
+
       {breadcrumbItems.map((item, index) => (
         <React.Fragment key={index}>
-          {index > 0 && (
-            <span className="text-secondary-400">{separator}</span>
-          )}
+          {index > 0 && <span className="text-secondary-400">{separator}</span>}
           {item.href ? (
             <Link
               to={item.href}
@@ -85,9 +78,7 @@ export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({
               {item.label}
             </Link>
           ) : (
-            <span className="text-secondary-900 font-medium">
-              {item.label}
-            </span>
+            <span className="text-secondary-900 font-medium">{item.label}</span>
           )}
         </React.Fragment>
       ))}

@@ -1,6 +1,6 @@
-import React from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '../../../utils/cn';
+import React from 'react'
+import { cva, type VariantProps } from 'class-variance-authority'
+import { cn } from '../../../utils/cn'
 
 const navLinkVariants = cva(
   'inline-flex items-center justify-center text-sm font-medium transition-all duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-100 dark:focus-visible:ring-offset-surface-900 disabled:pointer-events-none disabled:opacity-50 transform-gpu',
@@ -48,7 +48,7 @@ const navLinkVariants = cva(
       rounded: 'md',
     },
   }
-);
+)
 
 export interface NavLinkProps
   extends React.AnchorHTMLAttributes<HTMLAnchorElement>,
@@ -57,29 +57,29 @@ export interface NavLinkProps
    * Whether the link is currently active
    * @default false
    */
-  isActive?: boolean;
+  isActive?: boolean
   /**
    * Whether the link is disabled
    * @default false
    */
-  disabled?: boolean;
+  disabled?: boolean
   /**
    * External link behavior - opens in new tab
    * @default false
    */
-  external?: boolean;
+  external?: boolean
   /**
    * Icon to display before the link text
    */
-  icon?: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  icon?: React.ComponentType<React.SVGProps<SVGSVGElement>>
   /**
    * Icon to display after the link text
    */
-  endIcon?: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  endIcon?: React.ComponentType<React.SVGProps<SVGSVGElement>>
   /**
    * Custom component to render as (e.g., Link from react-router)
    */
-  as?: React.ElementType;
+  as?: React.ElementType
 }
 
 const NavLink = React.forwardRef<HTMLAnchorElement, NavLinkProps>(
@@ -100,10 +100,8 @@ const NavLink = React.forwardRef<HTMLAnchorElement, NavLinkProps>(
     },
     ref
   ) => {
-    const effectiveVariant = isActive ? 'active' : variant;
-    const externalProps = external
-      ? { target: '_blank', rel: 'noopener noreferrer' }
-      : {};
+    const effectiveVariant = isActive ? 'active' : variant
+    const externalProps = external ? { target: '_blank', rel: 'noopener noreferrer' } : {}
 
     return (
       <Component
@@ -152,10 +150,10 @@ const NavLink = React.forwardRef<HTMLAnchorElement, NavLinkProps>(
           />
         )}
       </Component>
-    );
+    )
   }
-);
+)
 
-NavLink.displayName = 'NavLink';
+NavLink.displayName = 'NavLink'
 
-export { NavLink, navLinkVariants };
+export { NavLink, navLinkVariants }

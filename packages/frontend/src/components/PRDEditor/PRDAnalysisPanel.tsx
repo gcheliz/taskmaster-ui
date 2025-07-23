@@ -1,26 +1,26 @@
-import React, { useState, useCallback } from 'react';
-import { PRDAnalysisButton } from './PRDAnalysisButton';
-import { PRDAnalysisResults } from './PRDAnalysisResults';
-import { usePRDAnalysisResults } from './hooks/usePRDAnalysisResults';
-import type { PRDAnalysisResult } from '../../services/api';
+import React, { useState, useCallback } from 'react'
+import { PRDAnalysisButton } from './PRDAnalysisButton'
+import { PRDAnalysisResults } from './PRDAnalysisResults'
+import { usePRDAnalysisResults } from './hooks/usePRDAnalysisResults'
+import type { PRDAnalysisResult } from '../../services/api'
 
 export interface PRDAnalysisPanelProps {
   /** PRD content to analyze */
-  content: string;
+  content: string
   /** Whether the panel is visible */
-  isVisible?: boolean;
+  isVisible?: boolean
   /** Whether to show in compact mode */
-  compact?: boolean;
+  compact?: boolean
   /** Additional CSS class name */
-  className?: string;
+  className?: string
   /** Callback when analysis completes */
-  onAnalysisComplete?: (result: PRDAnalysisResult) => void;
+  onAnalysisComplete?: (result: PRDAnalysisResult) => void
   /** Callback when task is selected */
-  onTaskSelect?: (taskIndex: number, task: any) => void;
+  onTaskSelect?: (taskIndex: number, task: any) => void
   /** Callback when dependency is selected */
-  onDependencySelect?: (dependency: any) => void;
+  onDependencySelect?: (dependency: any) => void
   /** Callback when panel visibility changes */
-  onVisibilityChange?: (isVisible: boolean) => void;
+  onVisibilityChange?: (isVisible: boolean) => void
 }
 
 /**
@@ -39,53 +39,52 @@ export const PRDAnalysisPanel: React.FC<PRDAnalysisPanelProps> = ({
   onDependencySelect,
   onVisibilityChange,
 }) => {
-  const [analysisResult, setAnalysisResult] =
-    useState<PRDAnalysisResult | null>(null);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [analysisError, setAnalysisError] = useState<Error | null>(null);
+  const [analysisResult, setAnalysisResult] = useState<PRDAnalysisResult | null>(null)
+  const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [analysisError, setAnalysisError] = useState<Error | null>(null)
 
   const analysisResultsHandler = usePRDAnalysisResults({
-    onTaskSelect: taskIndex => {
+    onTaskSelect: (taskIndex) => {
       if (analysisResult) {
-        const actualTask = analysisResult.analysis.extractedTasks[taskIndex];
-        onTaskSelect?.(taskIndex, actualTask);
+        const actualTask = analysisResult.analysis.extractedTasks[taskIndex]
+        onTaskSelect?.(taskIndex, actualTask)
       }
     },
     onDependencySelect,
-  });
+  })
 
   const handleAnalysisStart = useCallback(() => {
-    setIsAnalyzing(true);
-    setAnalysisError(null);
-  }, []);
+    setIsAnalyzing(true)
+    setAnalysisError(null)
+  }, [])
 
   const handleAnalysisComplete = useCallback(
     (result: PRDAnalysisResult) => {
-      setAnalysisResult(result);
-      setIsAnalyzing(false);
-      setAnalysisError(null);
-      onAnalysisComplete?.(result);
+      setAnalysisResult(result)
+      setIsAnalyzing(false)
+      setAnalysisError(null)
+      onAnalysisComplete?.(result)
     },
     [onAnalysisComplete]
-  );
+  )
 
   const handleAnalysisError = useCallback((error: Error) => {
-    setAnalysisError(error);
-    setIsAnalyzing(false);
-    setAnalysisResult(null);
-  }, []);
+    setAnalysisError(error)
+    setIsAnalyzing(false)
+    setAnalysisResult(null)
+  }, [])
 
   const handleClearResults = useCallback(() => {
-    setAnalysisResult(null);
-    setAnalysisError(null);
-    analysisResultsHandler.clearTaskSelection();
-    analysisResultsHandler.clearDependencySelection();
-  }, [analysisResultsHandler]);
+    setAnalysisResult(null)
+    setAnalysisError(null)
+    analysisResultsHandler.clearTaskSelection()
+    analysisResultsHandler.clearDependencySelection()
+  }, [analysisResultsHandler])
 
   const handleToggleVisibility = useCallback(() => {
-    const newVisibility = !isVisible;
-    onVisibilityChange?.(newVisibility);
-  }, [isVisible, onVisibilityChange]);
+    const newVisibility = !isVisible
+    onVisibilityChange?.(newVisibility)
+  }, [isVisible, onVisibilityChange])
 
   if (!isVisible) {
     return (
@@ -100,13 +99,11 @@ export const PRDAnalysisPanel: React.FC<PRDAnalysisPanelProps> = ({
         </button>
         <style>{getCollapsedStyles()}</style>
       </div>
-    );
+    )
   }
 
   return (
-    <div
-      className={`prd-analysis-panel ${compact ? 'compact' : ''} ${className}`}
-    >
+    <div className={`prd-analysis-panel ${compact ? 'compact' : ''} ${className}`}>
       {/* Panel Header */}
       <div className="panel-header">
         <div className="header-content">
@@ -184,10 +181,7 @@ export const PRDAnalysisPanel: React.FC<PRDAnalysisPanelProps> = ({
           <div className="empty-content">
             <div className="empty-icon">🔍</div>
             <h4>Ready to Analyze</h4>
-            <p>
-              Click the analyze button to extract tasks and complexity from your
-              PRD.
-            </p>
+            <p>Click the analyze button to extract tasks and complexity from your PRD.</p>
             <div className="empty-features">
               <div className="feature-item">
                 <span className="feature-icon">📋</span>
@@ -212,8 +206,8 @@ export const PRDAnalysisPanel: React.FC<PRDAnalysisPanelProps> = ({
 
       <style>{getMainStyles()}</style>
     </div>
-  );
-};
+  )
+}
 
 function getCollapsedStyles() {
   return `
@@ -236,7 +230,7 @@ function getCollapsedStyles() {
       background: #e9ecef;
       color: #495057;
     }
-  `;
+  `
 }
 
 function getMainStyles() {
@@ -461,7 +455,7 @@ function getMainStyles() {
         grid-template-columns: 1fr;
       }
     }
-  `;
+  `
 }
 
-export default PRDAnalysisPanel;
+export default PRDAnalysisPanel

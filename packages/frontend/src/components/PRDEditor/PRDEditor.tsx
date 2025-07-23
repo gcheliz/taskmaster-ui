@@ -1,38 +1,34 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { useEditor, EditorContent } from '@tiptap/react';
-import { StarterKit } from '@tiptap/starter-kit';
-import { Bold } from '@tiptap/extension-bold';
-import { Italic } from '@tiptap/extension-italic';
-import { Underline } from '@tiptap/extension-underline';
-import { Heading } from '@tiptap/extension-heading';
-import { BulletList } from '@tiptap/extension-bullet-list';
-import { OrderedList } from '@tiptap/extension-ordered-list';
-import { ListItem } from '@tiptap/extension-list-item';
-import { Code } from '@tiptap/extension-code';
-import { Blockquote } from '@tiptap/extension-blockquote';
-import {
-  savePRDData,
-  loadPRDData,
-  isLocalStorageAvailable,
-} from './utils/localStorage';
+import React, { useCallback, useEffect, useState } from 'react'
+import { useEditor, EditorContent } from '@tiptap/react'
+import { StarterKit } from '@tiptap/starter-kit'
+import { Bold } from '@tiptap/extension-bold'
+import { Italic } from '@tiptap/extension-italic'
+import { Underline } from '@tiptap/extension-underline'
+import { Heading } from '@tiptap/extension-heading'
+import { BulletList } from '@tiptap/extension-bullet-list'
+import { OrderedList } from '@tiptap/extension-ordered-list'
+import { ListItem } from '@tiptap/extension-list-item'
+import { Code } from '@tiptap/extension-code'
+import { Blockquote } from '@tiptap/extension-blockquote'
+import { savePRDData, loadPRDData, isLocalStorageAvailable } from './utils/localStorage'
 
 export interface PRDEditorProps {
   /** Initial content for the editor */
-  initialContent?: string;
+  initialContent?: string
   /** Callback fired when content changes */
-  onContentChange?: (content: string) => void;
+  onContentChange?: (content: string) => void
   /** Whether the editor is in read-only mode */
-  readOnly?: boolean;
+  readOnly?: boolean
   /** Additional CSS class name */
-  className?: string;
+  className?: string
   /** Placeholder text when editor is empty */
-  placeholder?: string;
+  placeholder?: string
   /** Whether to enable auto-save functionality */
-  autoSave?: boolean;
+  autoSave?: boolean
   /** Auto-save interval in milliseconds */
-  autoSaveInterval?: number;
+  autoSaveInterval?: number
   /** Callback fired when auto-save occurs */
-  onAutoSave?: (content: string) => void;
+  onAutoSave?: (content: string) => void
 }
 
 /**
@@ -56,9 +52,9 @@ export const PRDEditor: React.FC<PRDEditorProps> = ({
   autoSaveInterval = 2000,
   onAutoSave,
 }) => {
-  const [content, setContent] = useState(initialContent);
-  const [isSaving, setIsSaving] = useState(false);
-  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [content, setContent] = useState(initialContent)
+  const [isSaving, setIsSaving] = useState(false)
+  const [lastSaved, setLastSaved] = useState<Date | null>(null)
 
   // Initialize TipTap editor with extensions
   const editor = useEditor({
@@ -117,40 +113,38 @@ export const PRDEditor: React.FC<PRDEditorProps> = ({
       },
     },
     onUpdate: ({ editor }) => {
-      const html = editor.getHTML();
-      setContent(html);
-      onContentChange?.(html);
+      const html = editor.getHTML()
+      setContent(html)
+      onContentChange?.(html)
     },
     onCreate: ({ editor }) => {
       // Set initial content if provided
       if (initialContent) {
-        editor.commands.setContent(initialContent);
+        editor.commands.setContent(initialContent)
       }
     },
-  });
+  })
 
   // Auto-save functionality
   useEffect(() => {
-    if (!autoSave || !editor || readOnly) return;
+    if (!autoSave || !editor || readOnly) return
 
     const saveTimer = setTimeout(() => {
-      handleAutoSave();
-    }, autoSaveInterval);
+      handleAutoSave()
+    }, autoSaveInterval)
 
-    return () => clearTimeout(saveTimer);
-  }, [content, autoSave, autoSaveInterval, editor, readOnly]);
+    return () => clearTimeout(saveTimer)
+  }, [content, autoSave, autoSaveInterval, editor, readOnly])
 
   const handleAutoSave = useCallback(async () => {
-    if (!editor || !content || readOnly || !isLocalStorageAvailable()) return;
+    if (!editor || !content || readOnly || !isLocalStorageAvailable()) return
 
-    setIsSaving(true);
+    setIsSaving(true)
 
     try {
       // Calculate word count for saving
-      const text = editor.getText();
-      const wordCount = text
-        .split(/\s+/)
-        .filter(word => word.length > 0).length;
+      const text = editor.getText()
+      const wordCount = text.split(/\s+/).filter((word) => word.length > 0).length
 
       // Save to local storage using utility function
       const saveSuccess = savePRDData({
@@ -159,47 +153,47 @@ export const PRDEditor: React.FC<PRDEditorProps> = ({
         timestamp: new Date().toISOString(),
         wordCount,
         charCount: text.length,
-      });
+      })
 
       if (!saveSuccess) {
-        throw new Error('Failed to save to local storage');
+        throw new Error('Failed to save to local storage')
       }
 
       // Call external save callback if provided
       if (onAutoSave) {
-        await onAutoSave(content);
+        await onAutoSave(content)
       }
 
-      setLastSaved(new Date());
+      setLastSaved(new Date())
     } catch (error) {
-      console.error('Auto-save failed:', error);
+      console.error('Auto-save failed:', error)
     } finally {
-      setIsSaving(false);
+      setIsSaving(false)
     }
-  }, [editor, content, readOnly, onAutoSave]);
+  }, [editor, content, readOnly, onAutoSave])
 
   // Load content from local storage on mount
   useEffect(() => {
-    if (!isLocalStorageAvailable() || initialContent) return;
+    if (!isLocalStorageAvailable() || initialContent) return
 
-    const savedData = loadPRDData();
+    const savedData = loadPRDData()
 
     if (savedData && savedData.content) {
-      editor?.commands.setContent(savedData.content);
-      setContent(savedData.content);
+      editor?.commands.setContent(savedData.content)
+      setContent(savedData.content)
 
       if (savedData.timestamp) {
-        setLastSaved(new Date(savedData.timestamp));
+        setLastSaved(new Date(savedData.timestamp))
       }
     }
-  }, [editor, initialContent]);
+  }, [editor, initialContent])
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      editor?.destroy();
-    };
-  }, [editor]);
+      editor?.destroy()
+    }
+  }, [editor])
 
   if (!editor) {
     return (
@@ -209,7 +203,7 @@ export const PRDEditor: React.FC<PRDEditorProps> = ({
           <span>Loading editor...</span>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -217,13 +211,9 @@ export const PRDEditor: React.FC<PRDEditorProps> = ({
       {/* Editor Status Bar */}
       <div className="prd-editor__status">
         <div className="status-left">
-          <span className="word-count">
-            {editor.storage.characterCount?.words() || 0} words
-          </span>
+          <span className="word-count">{editor.storage.characterCount?.words() || 0} words</span>
           {lastSaved && (
-            <span className="last-saved">
-              Last saved: {lastSaved.toLocaleTimeString()}
-            </span>
+            <span className="last-saved">Last saved: {lastSaved.toLocaleTimeString()}</span>
           )}
         </div>
         <div className="status-right">
@@ -261,7 +251,7 @@ export const PRDEditor: React.FC<PRDEditorProps> = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default PRDEditor;
+export default PRDEditor

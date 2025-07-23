@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { ProfileSettings } from '../../components/Settings/ProfileSettings';
+import type { Meta, StoryObj } from '@storybook/react'
+import { ProfileSettings } from '../../components/Settings/ProfileSettings'
 
 const meta: Meta<typeof ProfileSettings> = {
   title: 'Settings/ProfileSettings',
@@ -30,7 +30,7 @@ including basic details, professional information, and preferences.
     },
   },
   decorators: [
-    Story => (
+    (Story) => (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-8">
         <div className="max-w-4xl mx-auto">
           <Story />
@@ -38,35 +38,35 @@ including basic details, professional information, and preferences.
       </div>
     ),
   ],
-};
+}
 
-export default meta;
+export default meta
 
-type Story = StoryObj<typeof ProfileSettings>;
+type Story = StoryObj<typeof ProfileSettings>
 
 /**
  * Default profile settings component
  */
-export const Default: Story = {};
+export const Default: Story = {}
 
 /**
  * Profile settings with custom save handler
  */
 export const WithSaveHandler: Story = {
   args: {
-    onSave: settings => {
-      console.log('Profile settings saved:', settings);
-      alert('Profile updated successfully!');
+    onSave: (settings) => {
+      console.log('Profile settings saved:', settings)
+      alert('Profile updated successfully!')
     },
   },
-};
+}
 
 /**
  * Compact view for smaller screens
  */
 export const CompactView: Story = {
   decorators: [
-    Story => (
+    (Story) => (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-4">
         <div className="max-w-2xl mx-auto">
           <Story />
@@ -79,14 +79,14 @@ export const CompactView: Story = {
       defaultViewport: 'mobile2',
     },
   },
-};
+}
 
 /**
  * Profile settings in a modal-like container
  */
 export const ModalStyle: Story = {
   decorators: [
-    Story => (
+    (Story) => (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
         <div className="w-full max-w-4xl bg-white/90 backdrop-blur-xl rounded-2xl p-8 shadow-2xl">
           <Story />
@@ -99,4 +99,4 @@ export const ModalStyle: Story = {
       default: 'dark',
     },
   },
-};
+}

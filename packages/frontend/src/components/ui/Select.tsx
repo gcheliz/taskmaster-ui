@@ -36,19 +36,22 @@ export interface SelectProps
 }
 
 const Select = forwardRef<HTMLSelectElement, SelectProps>(
-  ({ 
-    className, 
-    size, 
-    variant,
-    label,
-    error,
-    helperText,
-    options = [],
-    placeholder,
-    id,
-    children,
-    ...props 
-  }, ref) => {
+  (
+    {
+      className,
+      size,
+      variant,
+      label,
+      error,
+      helperText,
+      options = [],
+      placeholder,
+      id,
+      children,
+      ...props
+    },
+    ref
+  ) => {
     const selectId = id || `select-${Math.random().toString(36).substr(2, 9)}`
     const errorId = `${selectId}-error`
     const helperId = `${selectId}-helper`
@@ -56,10 +59,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
     return (
       <div className="space-y-2">
         {label && (
-          <label
-            htmlFor={selectId}
-            className="block text-sm font-medium text-secondary-700"
-          >
+          <label htmlFor={selectId} className="block text-sm font-medium text-secondary-700">
             {label}
           </label>
         )}
@@ -72,9 +72,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
             )}
             ref={ref}
             aria-invalid={!!error}
-            aria-describedby={
-              error ? errorId : helperText ? helperId : undefined
-            }
+            aria-describedby={error ? errorId : helperText ? helperId : undefined}
             {...props}
           >
             {placeholder && (
@@ -82,17 +80,12 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
                 {placeholder}
               </option>
             )}
-            {children || 
+            {children ||
               options.map((option) => (
-                <option
-                  key={option.value}
-                  value={option.value}
-                  disabled={option.disabled}
-                >
+                <option key={option.value} value={option.value} disabled={option.disabled}>
                   {option.label}
                 </option>
-              ))
-            }
+              ))}
           </select>
           <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
             <svg

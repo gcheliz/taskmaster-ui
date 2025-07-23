@@ -49,9 +49,7 @@ export const StatisticsCard: React.FC<StatisticsCardProps> = ({
               <motion.p className="text-3xl font-bold text-secondary-900 mt-2 tabular-nums">
                 {animatedValue}
               </motion.p>
-              {subtitle && (
-                <p className="text-sm text-secondary-500 mt-1">{subtitle}</p>
-              )}
+              {subtitle && <p className="text-sm text-secondary-500 mt-1">{subtitle}</p>}
               {trend && (
                 <div className="flex items-center gap-1 mt-2">
                   <span
@@ -60,7 +58,8 @@ export const StatisticsCard: React.FC<StatisticsCardProps> = ({
                       trend.isPositive ? 'text-semantic-success' : 'text-semantic-error'
                     )}
                   >
-                    {trend.isPositive ? '+' : ''}{trend.value}%
+                    {trend.isPositive ? '+' : ''}
+                    {trend.value}%
                   </span>
                   <svg
                     className={cn(
@@ -82,11 +81,7 @@ export const StatisticsCard: React.FC<StatisticsCardProps> = ({
                 </div>
               )}
             </div>
-            {icon && (
-              <div className={cn('p-3 rounded-lg', colorClasses[color])}>
-                {icon}
-              </div>
-            )}
+            {icon && <div className={cn('p-3 rounded-lg', colorClasses[color])}>{icon}</div>}
           </div>
         </CardContent>
       </Card>

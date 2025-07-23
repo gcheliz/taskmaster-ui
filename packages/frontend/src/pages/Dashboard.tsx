@@ -1,8 +1,8 @@
-import React from 'react';
-import { 
-  ClipboardList, 
-  GitBranch, 
-  Users, 
+import React from 'react'
+import {
+  ClipboardList,
+  GitBranch,
+  Users,
   TrendingUp,
   Check,
   AlertTriangle,
@@ -11,13 +11,12 @@ import {
   Code2,
   BarChart3,
   ArrowUpRight,
-  ArrowRight
-} from 'lucide-react';
+  ArrowRight,
+} from 'lucide-react'
 
 const Dashboard: React.FC = () => {
   return (
     <div className="space-y-8">
-
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Active Tasks */}
@@ -174,19 +173,21 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 // Activity Item Component
 const ActivityItem: React.FC<{
-  icon: React.ReactNode;
-  iconBg: string;
-  title: string;
-  time: string;
+  icon: React.ReactNode
+  iconBg: string
+  title: string
+  time: string
 }> = ({ icon, iconBg, title, time }) => {
   return (
     <div className="flex items-center gap-4">
-      <div className={`w-8 h-8 ${iconBg} rounded-full flex items-center justify-center flex-shrink-0`}>
+      <div
+        className={`w-8 h-8 ${iconBg} rounded-full flex items-center justify-center flex-shrink-0`}
+      >
         {icon}
       </div>
       <div className="flex-1 min-w-0">
@@ -194,46 +195,46 @@ const ActivityItem: React.FC<{
         <p className="text-xs text-gray-500">{time}</p>
       </div>
     </div>
-  );
-};
+  )
+}
 
 // Health Metric Component
 const HealthMetric: React.FC<{
-  label: string;
-  value: number;
-  color: 'primary' | 'success' | 'warning' | 'error';
+  label: string
+  value: number
+  color: 'primary' | 'success' | 'warning' | 'error'
 }> = ({ label, value, color }) => {
   const getColorClasses = () => {
     switch (color) {
       case 'primary':
         return {
           text: 'text-blue-600',
-          bg: 'bg-blue-600'
-        };
+          bg: 'bg-blue-600',
+        }
       case 'success':
         return {
           text: 'text-green-600',
-          bg: 'bg-green-600'
-        };
+          bg: 'bg-green-600',
+        }
       case 'warning':
         return {
           text: 'text-amber-600',
-          bg: 'bg-amber-600'
-        };
+          bg: 'bg-amber-600',
+        }
       case 'error':
         return {
           text: 'text-red-600',
-          bg: 'bg-red-600'
-        };
+          bg: 'bg-red-600',
+        }
       default:
         return {
           text: 'text-gray-600',
-          bg: 'bg-gray-600'
-        };
+          bg: 'bg-gray-600',
+        }
     }
-  };
+  }
 
-  const colors = getColorClasses();
+  const colors = getColorClasses()
 
   return (
     <div>
@@ -248,23 +249,25 @@ const HealthMetric: React.FC<{
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
 // Quick Action Button Component
 const QuickActionButton: React.FC<{
-  icon: React.ReactNode;
-  iconBg: string;
-  label: string;
+  icon: React.ReactNode
+  iconBg: string
+  label: string
 }> = ({ icon, iconBg, label }) => {
   return (
     <button className="flex items-center gap-3 p-4 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 w-full">
-      <div className={`w-8 h-8 ${iconBg} rounded-lg flex items-center justify-center flex-shrink-0`}>
+      <div
+        className={`w-8 h-8 ${iconBg} rounded-lg flex items-center justify-center flex-shrink-0`}
+      >
         {icon}
       </div>
       <span className="text-sm font-medium text-gray-900">{label}</span>
     </button>
-  );
-};
+  )
+}
 
-export default Dashboard;
+export default Dashboard

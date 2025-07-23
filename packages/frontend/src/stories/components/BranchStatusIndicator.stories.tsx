@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { BranchStatusIndicator } from '../../components/Repository/BranchStatusIndicator';
+import type { Meta, StoryObj } from '@storybook/react'
+import { BranchStatusIndicator } from '../../components/Repository/BranchStatusIndicator'
 
 const meta: Meta<typeof BranchStatusIndicator> = {
   title: 'Components/Repository/BranchStatusIndicator',
@@ -45,14 +45,14 @@ const meta: Meta<typeof BranchStatusIndicator> = {
       description: 'Size variant',
     },
   },
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 // Helper to generate dates relative to now
 const getRelativeDate = (hoursAgo: number) =>
-  new Date(Date.now() - hoursAgo * 60 * 60 * 1000).toISOString();
+  new Date(Date.now() - hoursAgo * 60 * 60 * 1000).toISOString()
 
 export const UpToDate: Story = {
   args: {
@@ -67,12 +67,11 @@ export const UpToDate: Story = {
   parameters: {
     docs: {
       description: {
-        story:
-          'Branch is synchronized with remote and working directory is clean.',
+        story: 'Branch is synchronized with remote and working directory is clean.',
       },
     },
   },
-};
+}
 
 export const UpToDateWithChanges: Story = {
   args: {
@@ -91,7 +90,7 @@ export const UpToDateWithChanges: Story = {
       },
     },
   },
-};
+}
 
 export const Ahead: Story = {
   args: {
@@ -110,7 +109,7 @@ export const Ahead: Story = {
       },
     },
   },
-};
+}
 
 export const Behind: Story = {
   args: {
@@ -129,7 +128,7 @@ export const Behind: Story = {
       },
     },
   },
-};
+}
 
 export const Diverged: Story = {
   args: {
@@ -148,7 +147,7 @@ export const Diverged: Story = {
       },
     },
   },
-};
+}
 
 export const Conflicted: Story = {
   args: {
@@ -167,7 +166,7 @@ export const Conflicted: Story = {
       },
     },
   },
-};
+}
 
 export const WithDetails: Story = {
   args: {
@@ -182,12 +181,11 @@ export const WithDetails: Story = {
   parameters: {
     docs: {
       description: {
-        story:
-          'Shows detailed information including commit counts and descriptions.',
+        story: 'Shows detailed information including commit counts and descriptions.',
       },
     },
   },
-};
+}
 
 export const LargeSize: Story = {
   args: {
@@ -206,7 +204,7 @@ export const LargeSize: Story = {
       },
     },
   },
-};
+}
 
 export const SmallSize: Story = {
   args: {
@@ -225,7 +223,7 @@ export const SmallSize: Story = {
       },
     },
   },
-};
+}
 
 // Showcase different time periods
 export const RecentCommit: Story = {
@@ -245,7 +243,7 @@ export const RecentCommit: Story = {
       },
     },
   },
-};
+}
 
 export const OldCommit: Story = {
   args: {
@@ -264,4 +262,4 @@ export const OldCommit: Story = {
       },
     },
   },
-};
+}

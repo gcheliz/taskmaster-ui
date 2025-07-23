@@ -51,14 +51,10 @@ export const QuickActions: React.FC<QuickActionsProps> = ({ actions, className }
               )}
             >
               <div className="flex items-start gap-3">
-                <div className="p-2 rounded-md bg-white/50">
-                  {action.icon}
-                </div>
+                <div className="p-2 rounded-md bg-white/50">{action.icon}</div>
                 <div className="flex-1 min-w-0">
                   <h4 className="font-medium text-sm">{action.title}</h4>
-                  <p className="text-xs mt-1 opacity-75">
-                    {action.description}
-                  </p>
+                  <p className="text-xs mt-1 opacity-75">{action.description}</p>
                 </div>
               </div>
             </motion.button>

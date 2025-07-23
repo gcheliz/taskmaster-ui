@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { QuickActionsGrid } from '../../components/ui/organisms/QuickActionsGrid';
+import type { Meta, StoryObj } from '@storybook/react'
+import { QuickActionsGrid } from '../../components/ui/organisms/QuickActionsGrid'
 import {
   TaskIcon,
   NotificationIcon,
@@ -8,8 +8,8 @@ import {
   PlusIcon,
   SettingsIcon,
   ArchiveIcon,
-} from '../../components/ui/atoms/Icon';
-import type { QuickAction } from '../../components/ui/organisms/QuickActionsGrid';
+} from '../../components/ui/atoms/Icon'
+import type { QuickAction } from '../../components/ui/organisms/QuickActionsGrid'
 
 const meta: Meta<typeof QuickActionsGrid> = {
   title: 'Organisms/QuickActionsGrid',
@@ -33,10 +33,10 @@ const meta: Meta<typeof QuickActionsGrid> = {
     showCategories: { control: 'boolean' },
     maxItems: { control: 'number' },
   },
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 const sampleActions: QuickAction[] = [
   {
@@ -118,60 +118,60 @@ const sampleActions: QuickAction[] = [
     disabled: true,
     onClick: () => console.log('Archive project clicked'),
   },
-];
+]
 
 export const Default: Story = {
   args: {
     actions: sampleActions,
   },
-};
+}
 
 export const Loading: Story = {
   args: {
     loading: true,
   },
-};
+}
 
 export const Empty: Story = {
   args: {
     actions: [],
   },
-};
+}
 
 export const TwoColumns: Story = {
   args: {
     actions: sampleActions,
     columns: 2,
   },
-};
+}
 
 export const ThreeColumns: Story = {
   args: {
     actions: sampleActions,
     columns: 3,
   },
-};
+}
 
 export const SixColumns: Story = {
   args: {
     actions: sampleActions,
     columns: 6,
   },
-};
+}
 
 export const WithCategories: Story = {
   args: {
     actions: sampleActions,
     showCategories: true,
   },
-};
+}
 
 export const LimitedItems: Story = {
   args: {
     actions: sampleActions,
     maxItems: 4,
   },
-};
+}
 
 export const CustomTitle: Story = {
   args: {
@@ -179,38 +179,38 @@ export const CustomTitle: Story = {
     title: 'Project Actions',
     description: 'Manage your project with these powerful tools',
   },
-};
+}
 
 export const OnlyTaskActions: Story = {
   args: {
-    actions: sampleActions.filter(action => action.category === 'task'),
+    actions: sampleActions.filter((action) => action.category === 'task'),
     title: 'Task Management',
     description: 'Actions related to task management',
   },
-};
+}
 
 export const OnlyTeamActions: Story = {
   args: {
-    actions: sampleActions.filter(action => action.category === 'team'),
+    actions: sampleActions.filter((action) => action.category === 'team'),
     title: 'Team Management',
     description: 'Actions for managing your team',
   },
-};
+}
 
 export const OnlySystemActions: Story = {
   args: {
-    actions: sampleActions.filter(action => action.category === 'system'),
+    actions: sampleActions.filter((action) => action.category === 'system'),
     title: 'System Actions',
     description: 'System configuration and management',
   },
-};
+}
 
 export const SingleColumn: Story = {
   args: {
     actions: sampleActions.slice(0, 4),
     columns: 1,
   },
-};
+}
 
 export const MixedVariants: Story = {
   args: {
@@ -253,11 +253,11 @@ export const MixedVariants: Story = {
       },
     ],
   },
-};
+}
 
 export const WithBadgesAndShortcuts: Story = {
   args: {
-    actions: sampleActions.map(action => ({
+    actions: sampleActions.map((action) => ({
       ...action,
       badge: action.badge || {
         text: 'Available',
@@ -267,4 +267,4 @@ export const WithBadgesAndShortcuts: Story = {
     title: 'Enhanced Actions',
     description: 'All actions with badges and shortcuts',
   },
-};
+}

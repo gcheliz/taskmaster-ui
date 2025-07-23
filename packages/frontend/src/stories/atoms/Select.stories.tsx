@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { Select } from '../../components/ui/atoms/Select';
-import { Label } from '../../components/ui/atoms/Label';
+import type { Meta, StoryObj } from '@storybook/react'
+import { Select } from '../../components/ui/atoms/Select'
+import { Label } from '../../components/ui/atoms/Label'
 
 const meta: Meta<typeof Select> = {
   title: 'Atoms/Select',
@@ -48,16 +48,16 @@ const meta: Meta<typeof Select> = {
     },
   },
   decorators: [
-    Story => (
+    (Story) => (
       <div className="w-80">
         <Story />
       </div>
     ),
   ],
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {
@@ -70,10 +70,10 @@ export const Default: Story = {
       </>
     ),
   },
-};
+}
 
 export const WithLabel: Story = {
-  render: args => (
+  render: (args) => (
     <div className="space-y-2">
       <Label htmlFor="select-with-label">Country</Label>
       <Select id="select-with-label" {...args}>
@@ -86,10 +86,10 @@ export const WithLabel: Story = {
       </Select>
     </div>
   ),
-};
+}
 
 export const Required: Story = {
-  render: args => (
+  render: (args) => (
     <div className="space-y-2">
       <Label htmlFor="required-select" required>
         Priority Level
@@ -103,10 +103,10 @@ export const Required: Story = {
       </Select>
     </div>
   ),
-};
+}
 
 export const WithDescription: Story = {
-  render: args => (
+  render: (args) => (
     <div className="space-y-2">
       <Label
         htmlFor="select-with-desc"
@@ -124,10 +124,10 @@ export const WithDescription: Story = {
       </Select>
     </div>
   ),
-};
+}
 
 export const WithHelpText: Story = {
-  render: args => (
+  render: (args) => (
     <div className="space-y-2">
       <Label
         htmlFor="select-with-help"
@@ -145,16 +145,12 @@ export const WithHelpText: Story = {
       </Select>
     </div>
   ),
-};
+}
 
 export const ErrorState: Story = {
-  render: args => (
+  render: (args) => (
     <div className="space-y-2">
-      <Label
-        htmlFor="error-select"
-        error
-        description="Please select a valid option"
-      >
+      <Label htmlFor="error-select" error description="Please select a valid option">
         Required Selection
       </Label>
       <Select id="error-select" error {...args}>
@@ -165,10 +161,10 @@ export const ErrorState: Story = {
       </Select>
     </div>
   ),
-};
+}
 
 export const SuccessState: Story = {
-  render: args => (
+  render: (args) => (
     <div className="space-y-2">
       <Label htmlFor="success-select" success description="Great choice!">
         Valid Selection
@@ -181,10 +177,10 @@ export const SuccessState: Story = {
       </Select>
     </div>
   ),
-};
+}
 
 export const Disabled: Story = {
-  render: args => (
+  render: (args) => (
     <div className="space-y-2">
       <Label htmlFor="disabled-select">Disabled Select</Label>
       <Select id="disabled-select" disabled {...args}>
@@ -194,7 +190,7 @@ export const Disabled: Story = {
       </Select>
     </div>
   ),
-};
+}
 
 export const Sizes: Story = {
   render: () => (
@@ -225,7 +221,7 @@ export const Sizes: Story = {
       </div>
     </div>
   ),
-};
+}
 
 export const FormExample: Story = {
   render: () => (
@@ -244,11 +240,7 @@ export const FormExample: Story = {
       </div>
 
       <div className="space-y-2">
-        <Label
-          htmlFor="form-priority"
-          required
-          description="How urgent is this issue?"
-        >
+        <Label htmlFor="form-priority" required description="How urgent is this issue?">
           Priority Level
         </Label>
         <Select id="form-priority">
@@ -273,7 +265,7 @@ export const FormExample: Story = {
       </div>
     </form>
   ),
-};
+}
 
 // Dark theme specific stories
 export const DarkThemeVariants: Story = {
@@ -283,9 +275,7 @@ export const DarkThemeVariants: Story = {
   render: () => (
     <div className="">
       <div className="bg-white p-6 rounded-lg space-y-4">
-        <h3 className="text-slate-900 text-lg font-semibold mb-4">
-          Dark Theme Select
-        </h3>
+        <h3 className="text-slate-900 text-lg font-semibold mb-4">Dark Theme Select</h3>
         <div className="space-y-4">
           <div className="space-y-2">
             <Label className="text-slate-900">Default Select</Label>
@@ -315,7 +305,7 @@ export const DarkThemeVariants: Story = {
       </div>
     </div>
   ),
-};
+}
 
 // Accessibility testing story
 export const AccessibilityTest: Story = {
@@ -323,9 +313,7 @@ export const AccessibilityTest: Story = {
     <div className="space-y-6">
       <div className="space-y-2">
         <h3 className="text-lg font-semibold">Keyboard Navigation</h3>
-        <p className="text-sm text-secondary-600">
-          Use Tab to navigate, Arrow keys to select
-        </p>
+        <p className="text-sm text-secondary-600">Use Tab to navigate, Arrow keys to select</p>
         <div className="space-y-2">
           <Label htmlFor="accessible-select-1">First Select</Label>
           <Select id="accessible-select-1">
@@ -367,10 +355,7 @@ export const AccessibilityTest: Story = {
         <h3 className="text-lg font-semibold">Focus Indicators</h3>
         <div className="space-y-2">
           <Label htmlFor="focus-select">Focus Test</Label>
-          <Select
-            id="focus-select"
-            className="focus:ring-4 focus:ring-primary-500"
-          >
+          <Select id="focus-select" className="focus:ring-4 focus:ring-primary-500">
             <option value="">Click or tab to focus</option>
             <option value="option1">Option 1</option>
             <option value="option2">Option 2</option>
@@ -379,7 +364,7 @@ export const AccessibilityTest: Story = {
       </div>
     </div>
   ),
-};
+}
 
 // Micro-interactions showcase
 export const MicroInteractions: Story = {
@@ -420,7 +405,7 @@ export const MicroInteractions: Story = {
       </div>
     </div>
   ),
-};
+}
 
 // Responsive design showcase
 export const ResponsiveDesign: Story = {
@@ -428,9 +413,7 @@ export const ResponsiveDesign: Story = {
     <div className="space-y-6">
       <div className="space-y-2">
         <h3 className="text-lg font-semibold">Mobile First Design</h3>
-        <p className="text-sm text-secondary-600">
-          Selects are optimized for mobile touch targets
-        </p>
+        <p className="text-sm text-secondary-600">Selects are optimized for mobile touch targets</p>
         <div className="space-y-2">
           <Label>Mobile Friendly Select</Label>
           <Select selectSize="lg">
@@ -453,4 +436,4 @@ export const ResponsiveDesign: Story = {
       </div>
     </div>
   ),
-};
+}

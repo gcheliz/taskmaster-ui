@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { PRDEditor, PRDEditorWithToolbar, PRDDocumentManager } from './index';
+import React, { useState } from 'react'
+import { PRDEditor, PRDEditorWithToolbar, PRDDocumentManager } from './index'
 
 /**
  * PRD Editor Demo Component
@@ -8,21 +8,21 @@ import { PRDEditor, PRDEditorWithToolbar, PRDDocumentManager } from './index';
  * for testing and showcasing capabilities.
  */
 export const PRDEditorDemo: React.FC = () => {
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState('')
   const [activeTab, setActiveTab] = useState<
     'basic' | 'with-toolbar' | 'document-manager' | 'separate'
-  >('document-manager');
+  >('document-manager')
 
   const handleContentChange = (newContent: string) => {
-    setContent(newContent);
-    console.log('Content changed:', newContent);
-  };
+    setContent(newContent)
+    console.log('Content changed:', newContent)
+  }
 
   const handleAutoSave = async (content: string) => {
-    console.log('Auto-saving content:', content);
+    console.log('Auto-saving content:', content)
     // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 500));
-  };
+    await new Promise((resolve) => setTimeout(resolve, 500))
+  }
 
   const tabStyle = {
     padding: '8px 16px',
@@ -32,13 +32,13 @@ export const PRDEditorDemo: React.FC = () => {
     cursor: 'pointer',
     marginRight: '4px',
     borderRadius: '4px 4px 0 0',
-  };
+  }
 
   const activeTabStyle = {
     ...tabStyle,
     backgroundColor: '#ffffff',
     borderBottom: '1px solid #ffffff',
-  };
+  }
 
   return (
     <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
@@ -77,8 +77,7 @@ export const PRDEditorDemo: React.FC = () => {
         <div>
           <h2>Complete PRD Document Management System</h2>
           <p>
-            Full document management with backend integration, auto-save, and
-            document operations.
+            Full document management with backend integration, auto-save, and document operations.
           </p>
           <div
             style={{
@@ -92,11 +91,7 @@ export const PRDEditorDemo: React.FC = () => {
               enableBackendAutoSave={true}
               autoSaveInterval={3000}
               onOperationComplete={(operation, success, data) => {
-                console.log(
-                  `Operation ${operation}:`,
-                  success ? 'Success' : 'Failed',
-                  data
-                );
+                console.log(`Operation ${operation}:`, success ? 'Success' : 'Failed', data)
               }}
             />
           </div>
@@ -107,10 +102,7 @@ export const PRDEditorDemo: React.FC = () => {
       {activeTab === 'with-toolbar' && (
         <div>
           <h2>Complete PRD Editor with Toolbar</h2>
-          <p>
-            Full-featured editor with integrated toolbar, document title, and
-            auto-save.
-          </p>
+          <p>Full-featured editor with integrated toolbar, document title, and auto-save.</p>
           <div
             style={{
               height: '600px',
@@ -135,10 +127,7 @@ export const PRDEditorDemo: React.FC = () => {
       {activeTab === 'basic' && (
         <div>
           <h2>Basic PRD Editor</h2>
-          <p>
-            Simple editor without toolbar - formatting via keyboard shortcuts
-            only.
-          </p>
+          <p>Simple editor without toolbar - formatting via keyboard shortcuts only.</p>
           <div
             style={{
               height: '400px',
@@ -161,9 +150,7 @@ export const PRDEditorDemo: React.FC = () => {
       {activeTab === 'separate' && (
         <div>
           <h2>Separate Editor and Toolbar</h2>
-          <p>
-            Demonstration of using editor and toolbar as separate components.
-          </p>
+          <p>Demonstration of using editor and toolbar as separate components.</p>
           <div
             style={{
               border: '1px solid #dee2e6',
@@ -201,7 +188,7 @@ export const PRDEditorDemo: React.FC = () => {
               content
                 .replace(/<[^>]*>/g, '')
                 .split(/\s+/)
-                .filter(w => w.length > 0).length
+                .filter((w) => w.length > 0).length
             }{' '}
             words
           </p>
@@ -212,9 +199,7 @@ export const PRDEditorDemo: React.FC = () => {
 
         {content && (
           <details style={{ marginTop: '16px' }}>
-            <summary style={{ cursor: 'pointer', fontWeight: 'bold' }}>
-              HTML Content
-            </summary>
+            <summary style={{ cursor: 'pointer', fontWeight: 'bold' }}>HTML Content</summary>
             <pre
               style={{
                 backgroundColor: '#ffffff',
@@ -231,7 +216,7 @@ export const PRDEditorDemo: React.FC = () => {
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default PRDEditorDemo;
+export default PRDEditorDemo

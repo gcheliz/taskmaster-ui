@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { ResponsiveStatsGrid } from '../../components/ui/organisms/ResponsiveStatsGrid';
+import type { Meta, StoryObj } from '@storybook/react'
+import { ResponsiveStatsGrid } from '../../components/ui/organisms/ResponsiveStatsGrid'
 
 const meta = {
   title: 'Organisms/ResponsiveStatsGrid',
@@ -51,10 +51,10 @@ const meta = {
       description: 'Additional CSS classes',
     },
   },
-} satisfies Meta<typeof ResponsiveStatsGrid>;
+} satisfies Meta<typeof ResponsiveStatsGrid>
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 const mockTaskMetrics = {
   total: 127,
@@ -70,7 +70,7 @@ const mockTaskMetrics = {
     pending: 12,
     blocked: 3,
   },
-};
+}
 
 const mockInsights = {
   totalEstimatedHours: 340,
@@ -81,16 +81,13 @@ const mockInsights = {
     'Current completion rate is above target - great work!',
     'Team productivity has increased by 15% this sprint',
   ],
-};
+}
 
 const mockHealth = {
   score: 87,
   status: 'good' as const,
   lastChecked: new Date().toISOString(),
-  issues: [
-    'Some tests are failing in the CI pipeline',
-    'Code coverage dropped below 80%',
-  ],
+  issues: ['Some tests are failing in the CI pipeline', 'Code coverage dropped below 80%'],
   trends: {
     direction: 'stable' as const,
     percentage: 2,
@@ -102,7 +99,7 @@ const mockHealth = {
     documentation: 82,
     performance: 83,
   },
-};
+}
 
 export const Default: Story = {
   args: {
@@ -115,12 +112,12 @@ export const Default: Story = {
     lastUpdated: new Date(),
     onRefresh: () => console.log('Refresh clicked'),
   },
-  render: args => (
+  render: (args) => (
     <div className="p-8 min-h-screen">
       <ResponsiveStatsGrid {...args} />
     </div>
   ),
-};
+}
 
 export const LoadingState: Story = {
   args: {
@@ -133,12 +130,12 @@ export const LoadingState: Story = {
     lastUpdated: new Date(),
     onRefresh: () => console.log('Refresh clicked'),
   },
-  render: args => (
+  render: (args) => (
     <div className="p-8 min-h-screen">
       <ResponsiveStatsGrid {...args} />
     </div>
   ),
-};
+}
 
 export const HighPerformanceProject: Story = {
   args: {
@@ -186,12 +183,12 @@ export const HighPerformanceProject: Story = {
     lastUpdated: new Date(),
     onRefresh: () => console.log('Refresh clicked'),
   },
-  render: args => (
+  render: (args) => (
     <div className="p-8 min-h-screen">
       <ResponsiveStatsGrid {...args} />
     </div>
   ),
-};
+}
 
 export const ProblematicProject: Story = {
   args: {
@@ -245,12 +242,12 @@ export const ProblematicProject: Story = {
     lastUpdated: new Date(),
     onRefresh: () => console.log('Refresh clicked'),
   },
-  render: args => (
+  render: (args) => (
     <div className="p-8 min-h-screen">
       <ResponsiveStatsGrid {...args} />
     </div>
   ),
-};
+}
 
 export const WithoutHealthDetails: Story = {
   args: {
@@ -263,12 +260,12 @@ export const WithoutHealthDetails: Story = {
     lastUpdated: new Date(),
     onRefresh: () => console.log('Refresh clicked'),
   },
-  render: args => (
+  render: (args) => (
     <div className="p-8 min-h-screen">
       <ResponsiveStatsGrid {...args} />
     </div>
   ),
-};
+}
 
 export const WithoutTaskBreakdown: Story = {
   args: {
@@ -281,12 +278,12 @@ export const WithoutTaskBreakdown: Story = {
     lastUpdated: new Date(),
     onRefresh: () => console.log('Refresh clicked'),
   },
-  render: args => (
+  render: (args) => (
     <div className="p-8 min-h-screen">
       <ResponsiveStatsGrid {...args} />
     </div>
   ),
-};
+}
 
 export const DarkTheme: Story = {
   args: {
@@ -302,14 +299,14 @@ export const DarkTheme: Story = {
   parameters: {
     backgrounds: { default: 'light' },
   },
-  render: args => (
+  render: (args) => (
     <div className="">
       <div className="p-8 min-h-screen bg-white">
         <ResponsiveStatsGrid {...args} />
       </div>
     </div>
   ),
-};
+}
 
 export const ResponsiveDemo: Story = {
   args: {
@@ -322,15 +319,14 @@ export const ResponsiveDemo: Story = {
     lastUpdated: new Date(),
     onRefresh: () => console.log('Refresh clicked'),
   },
-  render: args => (
+  render: (args) => (
     <div className="space-y-8 p-4">
       <div className="text-center">
         <h2 className="text-2xl font-bold text-secondary-900 dark:text-secondary-100 mb-4">
           Responsive Statistics Grid Demo
         </h2>
         <p className="text-secondary-600 dark:text-secondary-400 mb-6">
-          The grid adapts to different screen sizes and provides overview and
-          detailed views
+          The grid adapts to different screen sizes and provides overview and detailed views
         </p>
       </div>
 
@@ -365,4 +361,4 @@ export const ResponsiveDemo: Story = {
       </div>
     </div>
   ),
-};
+}

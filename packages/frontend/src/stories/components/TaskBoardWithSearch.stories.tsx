@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { TaskBoardWithSearch } from '../../components/TaskBoard/TaskBoardWithSearch';
-import type { TaskBoardData } from '../../types/task';
+import type { Meta, StoryObj } from '@storybook/react'
+import { TaskBoardWithSearch } from '../../components/TaskBoard/TaskBoardWithSearch'
+import type { TaskBoardData } from '../../types/task'
 
 // Mock task data for demonstration
 const mockTasks = [
@@ -19,8 +19,7 @@ const mockTasks = [
   {
     id: 2,
     title: 'Setup database schema',
-    description:
-      'Design and implement the database structure for the application',
+    description: 'Design and implement the database structure for the application',
     status: 'in-progress' as const,
     priority: 'high' as const,
     assignedTo: 'Jane Smith',
@@ -44,8 +43,7 @@ const mockTasks = [
   {
     id: 4,
     title: 'Write API documentation',
-    description:
-      'Document all API endpoints with examples and response schemas',
+    description: 'Document all API endpoints with examples and response schemas',
     status: 'pending' as const,
     priority: 'low' as const,
     assignedTo: 'Sarah Johnson',
@@ -102,7 +100,7 @@ const mockTasks = [
     createdAt: '2024-01-12T14:00:00Z',
     updatedAt: '2024-01-16T18:00:00Z',
   },
-];
+]
 
 const mockTaskBoardData: TaskBoardData = {
   columns: [
@@ -110,7 +108,7 @@ const mockTaskBoardData: TaskBoardData = {
       id: 'pending',
       title: 'To Do',
       status: 'pending',
-      tasks: mockTasks.filter(task => task.status === 'pending'),
+      tasks: mockTasks.filter((task) => task.status === 'pending'),
       color: '#6b7280',
       limit: 10,
     },
@@ -118,7 +116,7 @@ const mockTaskBoardData: TaskBoardData = {
       id: 'in-progress',
       title: 'In Progress',
       status: 'in-progress',
-      tasks: mockTasks.filter(task => task.status === 'in-progress'),
+      tasks: mockTasks.filter((task) => task.status === 'in-progress'),
       color: '#3b82f6',
       limit: 5,
     },
@@ -126,7 +124,7 @@ const mockTaskBoardData: TaskBoardData = {
       id: 'done',
       title: 'Done',
       status: 'done',
-      tasks: mockTasks.filter(task => task.status === 'done'),
+      tasks: mockTasks.filter((task) => task.status === 'done'),
       color: '#10b981',
       limit: 20,
     },
@@ -134,7 +132,7 @@ const mockTaskBoardData: TaskBoardData = {
       id: 'blocked',
       title: 'Blocked',
       status: 'blocked',
-      tasks: mockTasks.filter(task => task.status === 'blocked'),
+      tasks: mockTasks.filter((task) => task.status === 'blocked'),
       color: '#ef4444',
       limit: 5,
     },
@@ -146,7 +144,7 @@ const mockTaskBoardData: TaskBoardData = {
     updated: '2024-01-17T12:00:00Z',
     description: 'Development tasks for TaskMaster project',
   },
-};
+}
 
 const meta: Meta<typeof TaskBoardWithSearch> = {
   title: 'Components/TaskBoardWithSearch',
@@ -183,20 +181,20 @@ const meta: Meta<typeof TaskBoardWithSearch> = {
       description: 'Callback when search or filters change',
     },
   },
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {},
-};
+}
 
 export const WithInitialSearch: Story = {
   args: {
     initialSearch: 'authentication',
   },
-};
+}
 
 export const WithInitialFilters: Story = {
   args: {
@@ -205,19 +203,19 @@ export const WithInitialFilters: Story = {
       status: ['pending', 'in-progress'],
     },
   },
-};
+}
 
 export const CompactMode: Story = {
   args: {
     compact: true,
   },
-};
+}
 
 export const WithoutSearchAndFilter: Story = {
   args: {
     showSearchAndFilter: false,
   },
-};
+}
 
 export const MobileView: Story = {
   parameters: {
@@ -228,32 +226,32 @@ export const MobileView: Story = {
   args: {
     compact: true,
   },
-};
+}
 
 export const LoadingState: Story = {
   args: {
     isLoading: true,
   },
-};
+}
 
 export const ErrorState: Story = {
   args: {
     error: 'Failed to load tasks. Please try again.',
   },
-};
+}
 
 export const EmptyBoard: Story = {
   args: {
     data: {
       ...mockTaskBoardData,
       tasks: [],
-      columns: mockTaskBoardData.columns.map(col => ({
+      columns: mockTaskBoardData.columns.map((col) => ({
         ...col,
         tasks: [],
       })),
     },
   },
-};
+}
 
 export const FilteredEmptyState: Story = {
   args: {
@@ -262,7 +260,7 @@ export const FilteredEmptyState: Story = {
   play: async () => {
     // This story demonstrates what happens when filters result in no matches
   },
-};
+}
 
 export const HighPriorityTasksOnly: Story = {
   args: {
@@ -270,7 +268,7 @@ export const HighPriorityTasksOnly: Story = {
       priority: ['high', 'urgent'],
     },
   },
-};
+}
 
 export const BackendTasksOnly: Story = {
   args: {
@@ -278,7 +276,7 @@ export const BackendTasksOnly: Story = {
       tags: ['backend'],
     },
   },
-};
+}
 
 export const JohnDoeTasks: Story = {
   args: {
@@ -286,19 +284,16 @@ export const JohnDoeTasks: Story = {
       assignedTo: ['John Doe'],
     },
   },
-};
+}
 
 export const InteractiveDemo: Story = {
-  render: args => (
+  render: (args) => (
     <div className="min-h-screen bg-white p-6">
       <div className="max-w-7xl mx-auto space-y-6">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">
-            TaskBoard with Search & Filter
-          </h1>
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">TaskBoard with Search & Filter</h1>
           <p className="text-slate-600">
-            Try searching for tasks or applying filters to see the board update
-            in real-time
+            Try searching for tasks or applying filters to see the board update in real-time
           </p>
         </div>
         <TaskBoardWithSearch {...args} />
@@ -306,16 +301,16 @@ export const InteractiveDemo: Story = {
     </div>
   ),
   args: {},
-};
+}
 
 export const LightTheme: Story = {
   parameters: {
     backgrounds: { default: 'light' },
   },
-  render: args => (
+  render: (args) => (
     <div className="min-h-screen bg-white p-6">
       <TaskBoardWithSearch {...args} />
     </div>
   ),
   args: {},
-};
+}

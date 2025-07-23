@@ -1,34 +1,34 @@
-import React from 'react';
-import { Terminal } from './Terminal';
-import { useTerminal } from '../../hooks/useTerminal';
+import React from 'react'
+import { Terminal } from './Terminal'
+import { useTerminal } from '../../hooks/useTerminal'
 
 export interface TerminalContainerProps {
   /** Working directory for the terminal */
-  workingDirectory?: string;
+  workingDirectory?: string
   /** Repository path if terminal is scoped to a repository */
-  repositoryPath?: string;
+  repositoryPath?: string
   /** Terminal display mode */
-  mode?: 'embedded' | 'popup' | 'fullscreen';
+  mode?: 'embedded' | 'popup' | 'fullscreen'
   /** Whether to show the terminal header */
-  showHeader?: boolean;
+  showHeader?: boolean
   /** Whether to show the status bar */
-  showStatusBar?: boolean;
+  showStatusBar?: boolean
   /** Terminal title */
-  title?: string;
+  title?: string
   /** Terminal theme */
-  theme?: 'dark' | 'light';
+  theme?: 'dark' | 'light'
   /** Initial size */
-  initialSize?: { cols: number; rows: number };
+  initialSize?: { cols: number; rows: number }
   /** Callback when terminal is closed */
-  onClose?: () => void;
+  onClose?: () => void
   /** Additional CSS class */
-  className?: string;
+  className?: string
   /** Whether to show notifications */
-  showNotifications?: boolean;
+  showNotifications?: boolean
   /** Whether to auto-create session */
-  autoCreate?: boolean;
+  autoCreate?: boolean
   /** Whether to auto-connect WebSocket */
-  autoConnect?: boolean;
+  autoConnect?: boolean
 }
 
 /**
@@ -69,35 +69,35 @@ export const TerminalContainer: React.FC<TerminalContainerProps> = ({
     autoCreate,
     autoConnect,
     showNotifications,
-  });
+  })
 
   const handleTerminalReady = (terminalInstance: any) => {
-    setTerminal(terminalInstance);
-  };
+    setTerminal(terminalInstance)
+  }
 
   const handleClose = async () => {
-    await closeSession();
-    onClose?.();
-  };
+    await closeSession()
+    onClose?.()
+  }
 
   const handleCommand = async (command: string) => {
     try {
-      await executeCommand(command);
+      await executeCommand(command)
     } catch (error) {
-      console.error('Failed to execute command:', error);
+      console.error('Failed to execute command:', error)
     }
-  };
+  }
 
   const handleData = (data: string) => {
     if (websocket && session) {
       // Send data to WebSocket
-      sendInput(data);
+      sendInput(data)
     }
-  };
+  }
 
   const handleResize = (cols: number, rows: number) => {
-    resizeTerminal(cols, rows);
-  };
+    resizeTerminal(cols, rows)
+  }
 
   return (
     <Terminal
@@ -122,7 +122,7 @@ export const TerminalContainer: React.FC<TerminalContainerProps> = ({
       enableWebLinks={true}
       enableClipboard={true}
     />
-  );
-};
+  )
+}
 
-export default TerminalContainer;
+export default TerminalContainer

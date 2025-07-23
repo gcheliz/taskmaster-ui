@@ -1,6 +1,6 @@
-import React from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '../../../utils/cn';
+import React from 'react'
+import { cva, type VariantProps } from 'class-variance-authority'
+import { cn } from '../../../utils/cn'
 
 const spinnerVariants = cva(
   'animate-spin rounded-full border-2 border-solid border-current border-r-transparent',
@@ -29,7 +29,7 @@ const spinnerVariants = cva(
       spinnerColor: 'current',
     },
   }
-);
+)
 
 export interface SpinnerProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, 'color'>,
@@ -38,12 +38,12 @@ export interface SpinnerProps
    * Accessible label for the spinner
    * @default 'Loading'
    */
-  'aria-label'?: string;
+  'aria-label'?: string
   /**
    * Size of the spinner
    * @default 'md'
    */
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
   /**
    * Color of the spinner
    * @default 'current'
@@ -56,20 +56,11 @@ export interface SpinnerProps
     | 'warning'
     | 'error'
     | 'white'
-    | 'muted';
+    | 'muted'
 }
 
 const Spinner = React.forwardRef<HTMLDivElement, SpinnerProps>(
-  (
-    {
-      className,
-      size,
-      spinnerColor,
-      'aria-label': ariaLabel = 'Loading',
-      ...props
-    },
-    ref
-  ) => {
+  ({ className, size, spinnerColor, 'aria-label': ariaLabel = 'Loading', ...props }, ref) => {
     return (
       <div
         role="status"
@@ -80,11 +71,11 @@ const Spinner = React.forwardRef<HTMLDivElement, SpinnerProps>(
       >
         <span className="sr-only">{ariaLabel}</span>
       </div>
-    );
+    )
   }
-);
+)
 
-Spinner.displayName = 'Spinner';
+Spinner.displayName = 'Spinner'
 
 // Pulse Spinner variant for different loading states
 const pulseVariants = cva('animate-pulse rounded-full bg-current opacity-75', {
@@ -111,25 +102,16 @@ const pulseVariants = cva('animate-pulse rounded-full bg-current opacity-75', {
     size: 'md',
     pulseColor: 'current',
   },
-});
+})
 
 export interface PulseSpinnerProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, 'color'>,
     VariantProps<typeof pulseVariants> {
-  'aria-label'?: string;
+  'aria-label'?: string
 }
 
 const PulseSpinner = React.forwardRef<HTMLDivElement, PulseSpinnerProps>(
-  (
-    {
-      className,
-      size,
-      pulseColor,
-      'aria-label': ariaLabel = 'Loading',
-      ...props
-    },
-    ref
-  ) => {
+  ({ className, size, pulseColor, 'aria-label': ariaLabel = 'Loading', ...props }, ref) => {
     return (
       <div
         role="status"
@@ -140,37 +122,22 @@ const PulseSpinner = React.forwardRef<HTMLDivElement, PulseSpinnerProps>(
       >
         <span className="sr-only">{ariaLabel}</span>
       </div>
-    );
+    )
   }
-);
+)
 
-PulseSpinner.displayName = 'PulseSpinner';
+PulseSpinner.displayName = 'PulseSpinner'
 
 // Dots Spinner for subtle loading states
-export interface DotsSpinnerProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'color'> {
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-  color?:
-    | 'current'
-    | 'primary'
-    | 'secondary'
-    | 'success'
-    | 'warning'
-    | 'error'
-    | 'white'
-    | 'muted';
-  'aria-label'?: string;
+export interface DotsSpinnerProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'color'> {
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+  color?: 'current' | 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'white' | 'muted'
+  'aria-label'?: string
 }
 
 const DotsSpinner = React.forwardRef<HTMLDivElement, DotsSpinnerProps>(
   (
-    {
-      className,
-      size = 'md',
-      color = 'current',
-      'aria-label': ariaLabel = 'Loading',
-      ...props
-    },
+    { className, size = 'md', color = 'current', 'aria-label': ariaLabel = 'Loading', ...props },
     ref
   ) => {
     const dotSize =
@@ -182,7 +149,7 @@ const DotsSpinner = React.forwardRef<HTMLDivElement, DotsSpinnerProps>(
             ? 'h-2 w-2'
             : size === 'lg'
               ? 'h-2.5 w-2.5'
-              : 'h-3 w-3';
+              : 'h-3 w-3'
     const colorClass =
       color === 'current'
         ? 'bg-current'
@@ -198,7 +165,7 @@ const DotsSpinner = React.forwardRef<HTMLDivElement, DotsSpinnerProps>(
                   ? 'bg-error-600'
                   : color === 'white'
                     ? 'bg-white'
-                    : 'bg-secondary-400';
+                    : 'bg-secondary-400'
 
     return (
       <div
@@ -222,10 +189,10 @@ const DotsSpinner = React.forwardRef<HTMLDivElement, DotsSpinnerProps>(
         />
         <span className="sr-only">{ariaLabel}</span>
       </div>
-    );
+    )
   }
-);
+)
 
-DotsSpinner.displayName = 'DotsSpinner';
+DotsSpinner.displayName = 'DotsSpinner'
 
-export { Spinner, PulseSpinner, DotsSpinner, spinnerVariants, pulseVariants };
+export { Spinner, PulseSpinner, DotsSpinner, spinnerVariants, pulseVariants }

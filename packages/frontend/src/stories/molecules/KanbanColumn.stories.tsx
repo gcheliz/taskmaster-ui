@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { KanbanColumn } from '../../components/ui/molecules/KanbanColumn';
+import type { Meta, StoryObj } from '@storybook/react'
+import { KanbanColumn } from '../../components/ui/molecules/KanbanColumn'
 
 const meta: Meta<typeof KanbanColumn> = {
   title: 'Molecules/KanbanColumn',
@@ -11,14 +11,7 @@ const meta: Meta<typeof KanbanColumn> = {
   argTypes: {
     status: {
       control: 'select',
-      options: [
-        'pending',
-        'in-progress',
-        'done',
-        'blocked',
-        'cancelled',
-        'deferred',
-      ],
+      options: ['pending', 'in-progress', 'done', 'blocked', 'cancelled', 'deferred'],
     },
     color: {
       control: 'select',
@@ -33,10 +26,10 @@ const meta: Meta<typeof KanbanColumn> = {
     onTaskClick: { action: 'task-clicked' },
     onAddTask: { action: 'add-task' },
   },
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 // Sample tasks for stories
 const sampleTasks = [
@@ -87,7 +80,7 @@ const sampleTasks = [
     updatedAt: '2024-01-18T16:45:00Z',
     dueDate: '2024-01-20T23:59:59Z',
   },
-];
+]
 
 export const Default: Story = {
   args: {
@@ -99,7 +92,7 @@ export const Default: Story = {
     limit: 5,
     showAddButton: true,
   },
-};
+}
 
 export const EmptyColumn: Story = {
   args: {
@@ -111,7 +104,7 @@ export const EmptyColumn: Story = {
     limit: 10,
     showAddButton: true,
   },
-};
+}
 
 export const TodoColumn: Story = {
   args: {
@@ -122,8 +115,7 @@ export const TodoColumn: Story = {
       {
         id: 4,
         title: 'Write unit tests',
-        description:
-          'Add comprehensive test coverage for authentication module',
+        description: 'Add comprehensive test coverage for authentication module',
         status: 'pending' as const,
         priority: 'medium' as const,
         complexity: 5,
@@ -153,7 +145,7 @@ export const TodoColumn: Story = {
     limit: 20,
     showAddButton: true,
   },
-};
+}
 
 export const DoneColumn: Story = {
   args: {
@@ -206,7 +198,7 @@ export const DoneColumn: Story = {
     color: 'success',
     showAddButton: true,
   },
-};
+}
 
 export const BlockedColumn: Story = {
   args: {
@@ -233,7 +225,7 @@ export const BlockedColumn: Story = {
     limit: 5,
     showAddButton: false,
   },
-};
+}
 
 export const OverLimitColumn: Story = {
   args: {
@@ -260,7 +252,7 @@ export const OverLimitColumn: Story = {
     limit: 5, // Less than the number of tasks to show over-limit state
     showAddButton: true,
   },
-};
+}
 
 export const NoAddButton: Story = {
   args: {
@@ -271,7 +263,7 @@ export const NoAddButton: Story = {
     color: 'success',
     showAddButton: false,
   },
-};
+}
 
 export const CustomColor: Story = {
   args: {
@@ -283,7 +275,7 @@ export const CustomColor: Story = {
     limit: 8,
     showAddButton: true,
   },
-};
+}
 
 export const Interactive: Story = {
   args: {
@@ -302,4 +294,4 @@ export const Interactive: Story = {
       },
     },
   },
-};
+}

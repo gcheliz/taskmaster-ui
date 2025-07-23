@@ -1,10 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import {
-  Spinner,
-  PulseSpinner,
-  DotsSpinner,
-} from '../../components/ui/atoms/Spinner';
-import { Button } from '../../components/ui/atoms/Button';
+import type { Meta, StoryObj } from '@storybook/react'
+import { Spinner, PulseSpinner, DotsSpinner } from '../../components/ui/atoms/Spinner'
+import { Button } from '../../components/ui/atoms/Button'
 
 const meta: Meta<typeof Spinner> = {
   title: 'Atoms/Spinner',
@@ -27,16 +23,7 @@ const meta: Meta<typeof Spinner> = {
     },
     spinnerColor: {
       control: { type: 'select' },
-      options: [
-        'current',
-        'primary',
-        'secondary',
-        'success',
-        'warning',
-        'error',
-        'white',
-        'muted',
-      ],
+      options: ['current', 'primary', 'secondary', 'success', 'warning', 'error', 'white', 'muted'],
       description: 'The color of the spinner',
     },
     'aria-label': {
@@ -44,17 +31,17 @@ const meta: Meta<typeof Spinner> = {
       description: 'Accessible label for screen readers',
     },
   },
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {
     size: 'md',
     spinnerColor: 'primary',
   },
-};
+}
 
 export const Sizes: Story = {
   render: () => (
@@ -81,7 +68,7 @@ export const Sizes: Story = {
       </div>
     </div>
   ),
-};
+}
 
 export const Colors: Story = {
   render: () => (
@@ -120,15 +107,13 @@ export const Colors: Story = {
       </div>
     </div>
   ),
-};
+}
 
 export const SpinnerVariants: Story = {
   render: () => (
     <div className="space-y-8">
       <div>
-        <h3 className="text-sm font-medium text-secondary-900 mb-4">
-          Default Spinner
-        </h3>
+        <h3 className="text-sm font-medium text-secondary-900 mb-4">Default Spinner</h3>
         <div className="flex items-center gap-6">
           <Spinner size="sm" spinnerColor="primary" />
           <Spinner size="md" spinnerColor="primary" />
@@ -137,9 +122,7 @@ export const SpinnerVariants: Story = {
       </div>
 
       <div>
-        <h3 className="text-sm font-medium text-secondary-900 mb-4">
-          Pulse Spinner
-        </h3>
+        <h3 className="text-sm font-medium text-secondary-900 mb-4">Pulse Spinner</h3>
         <div className="flex items-center gap-6">
           <PulseSpinner size="sm" pulseColor="primary" />
           <PulseSpinner size="md" pulseColor="primary" />
@@ -148,9 +131,7 @@ export const SpinnerVariants: Story = {
       </div>
 
       <div>
-        <h3 className="text-sm font-medium text-secondary-900 mb-4">
-          Dots Spinner
-        </h3>
+        <h3 className="text-sm font-medium text-secondary-900 mb-4">Dots Spinner</h3>
         <div className="flex items-center gap-6">
           <DotsSpinner size="sm" color="primary" />
           <DotsSpinner size="md" color="primary" />
@@ -159,7 +140,7 @@ export const SpinnerVariants: Story = {
       </div>
     </div>
   ),
-};
+}
 
 export const InButtons: Story = {
   render: () => (
@@ -178,7 +159,7 @@ export const InButtons: Story = {
       </Button>
     </div>
   ),
-};
+}
 
 export const LoadingStates: Story = {
   render: () => (
@@ -186,17 +167,9 @@ export const LoadingStates: Story = {
       <div className="border border-secondary-200 rounded-lg p-6">
         <div className="flex items-center justify-center">
           <div className="text-center">
-            <Spinner
-              size="lg"
-              spinnerColor="primary"
-              className="mx-auto mb-4"
-            />
-            <h3 className="text-lg font-medium text-secondary-900 mb-2">
-              Loading Tasks
-            </h3>
-            <p className="text-secondary-600">
-              Please wait while we fetch your tasks...
-            </p>
+            <Spinner size="lg" spinnerColor="primary" className="mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-secondary-900 mb-2">Loading Tasks</h3>
+            <p className="text-secondary-600">Please wait while we fetch your tasks...</p>
           </div>
         </div>
       </div>
@@ -205,12 +178,8 @@ export const LoadingStates: Story = {
         <div className="flex items-center justify-center">
           <div className="text-center">
             <DotsSpinner size="lg" color="success" className="mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-secondary-900 mb-2">
-              Syncing Data
-            </h3>
-            <p className="text-secondary-600">
-              Synchronizing with the server...
-            </p>
+            <h3 className="text-lg font-medium text-secondary-900 mb-2">Syncing Data</h3>
+            <p className="text-secondary-600">Synchronizing with the server...</p>
           </div>
         </div>
       </div>
@@ -218,32 +187,22 @@ export const LoadingStates: Story = {
       <div className="border border-secondary-200 rounded-lg p-6">
         <div className="flex items-center justify-center">
           <div className="text-center">
-            <PulseSpinner
-              size="lg"
-              pulseColor="warning"
-              className="mx-auto mb-4"
-            />
-            <h3 className="text-lg font-medium text-secondary-900 mb-2">
-              Processing
-            </h3>
-            <p className="text-secondary-600">
-              Analyzing your project structure...
-            </p>
+            <PulseSpinner size="lg" pulseColor="warning" className="mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-secondary-900 mb-2">Processing</h3>
+            <p className="text-secondary-600">Analyzing your project structure...</p>
           </div>
         </div>
       </div>
     </div>
   ),
-};
+}
 
 export const InlineSpinners: Story = {
   render: () => (
     <div className="space-y-4">
       <div className="flex items-center gap-2">
         <Spinner size="sm" spinnerColor="primary" />
-        <span className="text-sm text-secondary-600">
-          Loading your dashboard...
-        </span>
+        <span className="text-sm text-secondary-600">Loading your dashboard...</span>
       </div>
 
       <div className="flex items-center gap-2">
@@ -253,28 +212,22 @@ export const InlineSpinners: Story = {
 
       <div className="flex items-center gap-2">
         <PulseSpinner size="sm" pulseColor="warning" />
-        <span className="text-sm text-secondary-600">
-          Connecting to server...
-        </span>
+        <span className="text-sm text-secondary-600">Connecting to server...</span>
       </div>
 
       <div className="flex items-center gap-2">
         <Spinner size="sm" spinnerColor="error" />
-        <span className="text-sm text-secondary-600">
-          Retrying connection...
-        </span>
+        <span className="text-sm text-secondary-600">Retrying connection...</span>
       </div>
     </div>
   ),
-};
+}
 
 export const OverlaySpinner: Story = {
   render: () => (
     <div className="relative">
       <div className="border border-secondary-200 rounded-lg p-6 bg-secondary-50">
-        <h3 className="text-lg font-medium text-secondary-900 mb-4">
-          Task Board
-        </h3>
+        <h3 className="text-lg font-medium text-secondary-900 mb-4">Task Board</h3>
         <div className="grid grid-cols-3 gap-4">
           <div className="bg-white p-4 rounded border">
             <h4 className="font-medium mb-2">To Do</h4>
@@ -307,39 +260,25 @@ export const OverlaySpinner: Story = {
       </div>
     </div>
   ),
-};
+}
 
 export const AccessibilityExample: Story = {
   render: () => (
     <div className="space-y-4">
       <div className="flex items-center gap-3">
-        <Spinner
-          size="md"
-          spinnerColor="primary"
-          aria-label="Loading user data"
-        />
+        <Spinner size="md" spinnerColor="primary" aria-label="Loading user data" />
         <span className="text-sm text-secondary-600">Loading user data...</span>
       </div>
 
       <div className="flex items-center gap-3">
-        <DotsSpinner
-          size="md"
-          color="success"
-          aria-label="Uploading file, please wait"
-        />
+        <DotsSpinner size="md" color="success" aria-label="Uploading file, please wait" />
         <span className="text-sm text-secondary-600">Uploading file...</span>
       </div>
 
       <div className="flex items-center gap-3">
-        <PulseSpinner
-          size="md"
-          pulseColor="warning"
-          aria-label="Processing payment"
-        />
-        <span className="text-sm text-secondary-600">
-          Processing payment...
-        </span>
+        <PulseSpinner size="md" pulseColor="warning" aria-label="Processing payment" />
+        <span className="text-sm text-secondary-600">Processing payment...</span>
       </div>
     </div>
   ),
-};
+}

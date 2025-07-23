@@ -1,23 +1,19 @@
-import React, { useState, useMemo } from 'react';
-import type { PRDAnalysisResult } from '../../services/api';
+import React, { useState, useMemo } from 'react'
+import type { PRDAnalysisResult } from '../../services/api'
 
 export interface PRDAnalysisResultsProps {
   /** Analysis result data */
-  result: PRDAnalysisResult;
+  result: PRDAnalysisResult
   /** Whether to show in compact mode */
-  compact?: boolean;
+  compact?: boolean
   /** Additional CSS class name */
-  className?: string;
+  className?: string
   /** Callback when task is selected */
-  onTaskSelect?: (taskIndex: number) => void;
+  onTaskSelect?: (taskIndex: number) => void
   /** Callback when dependency is selected */
-  onDependencySelect?: (dependency: {
-    from: string;
-    to: string;
-    type: string;
-  }) => void;
+  onDependencySelect?: (dependency: { from: string; to: string; type: string }) => void
   /** Whether to show export options */
-  showExportOptions?: boolean;
+  showExportOptions?: boolean
 }
 
 /**
@@ -39,65 +35,56 @@ export const PRDAnalysisResults: React.FC<PRDAnalysisResultsProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<
     'tasks' | 'dependencies' | 'summary' | 'recommendations'
-  >('summary');
-  const [sortBy, setSortBy] = useState<
-    'priority' | 'complexity' | 'hours' | 'title'
-  >('priority');
-  const [filterPriority, setFilterPriority] = useState<
-    'all' | 'high' | 'medium' | 'low'
-  >('all');
-  const [showExportModal, setShowExportModal] = useState(false);
+  >('summary')
+  const [sortBy, setSortBy] = useState<'priority' | 'complexity' | 'hours' | 'title'>('priority')
+  const [filterPriority, setFilterPriority] = useState<'all' | 'high' | 'medium' | 'low'>('all')
+  const [showExportModal, setShowExportModal] = useState(false)
 
-  const { analysis } = result;
+  const { analysis } = result
 
   // Sort and filter tasks
   const sortedTasks = useMemo(() => {
-    let filtered = analysis.extractedTasks;
+    let filtered = analysis.extractedTasks
 
     // Filter by priority
     if (filterPriority !== 'all') {
-      filtered = filtered.filter(task => task.priority === filterPriority);
+      filtered = filtered.filter((task) => task.priority === filterPriority)
     }
 
     // Sort tasks
     return filtered.sort((a, b) => {
       switch (sortBy) {
         case 'priority': {
-          const priorityOrder = { high: 3, medium: 2, low: 1 };
-          return priorityOrder[b.priority] - priorityOrder[a.priority];
+          const priorityOrder = { high: 3, medium: 2, low: 1 }
+          return priorityOrder[b.priority] - priorityOrder[a.priority]
         }
         case 'complexity':
-          return b.complexity - a.complexity;
+          return b.complexity - a.complexity
         case 'hours':
-          return b.estimatedHours - a.estimatedHours;
+          return b.estimatedHours - a.estimatedHours
         case 'title':
-          return a.title.localeCompare(b.title);
+          return a.title.localeCompare(b.title)
         default:
-          return 0;
+          return 0
       }
-    });
-  }, [analysis.extractedTasks, sortBy, filterPriority]);
+    })
+  }, [analysis.extractedTasks, sortBy, filterPriority])
 
   // Calculate summary statistics
   const stats = useMemo(() => {
-    const tasks = analysis.extractedTasks;
-    const totalTasks = tasks.length;
-    const totalHours = tasks.reduce(
-      (sum, task) => sum + task.estimatedHours,
-      0
-    );
+    const tasks = analysis.extractedTasks
+    const totalTasks = tasks.length
+    const totalHours = tasks.reduce((sum, task) => sum + task.estimatedHours, 0)
     const priorityBreakdown = tasks.reduce(
       (acc, task) => {
-        acc[task.priority] = (acc[task.priority] || 0) + 1;
-        return acc;
+        acc[task.priority] = (acc[task.priority] || 0) + 1
+        return acc
       },
       {} as Record<string, number>
-    );
+    )
 
     const avgComplexity =
-      tasks.length > 0
-        ? tasks.reduce((sum, task) => sum + task.complexity, 0) / tasks.length
-        : 0;
+      tasks.length > 0 ? tasks.reduce((sum, task) => sum + task.complexity, 0) / tasks.length : 0
 
     return {
       totalTasks,
@@ -105,32 +92,25 @@ export const PRDAnalysisResults: React.FC<PRDAnalysisResultsProps> = ({
       avgComplexity,
       priorityBreakdown,
       complexityScore: analysis.complexityScore,
-    };
-  }, [analysis]);
+    }
+  }, [analysis])
 
   const handleExportJSON = () => {
-    const dataStr = JSON.stringify(result, null, 2);
-    const dataUri =
-      'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
-    const exportFileDefaultName = `prd-analysis-${new Date().toISOString().split('T')[0]}.json`;
+    const dataStr = JSON.stringify(result, null, 2)
+    const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr)
+    const exportFileDefaultName = `prd-analysis-${new Date().toISOString().split('T')[0]}.json`
 
-    const linkElement = document.createElement('a');
-    linkElement.setAttribute('href', dataUri);
-    linkElement.setAttribute('download', exportFileDefaultName);
-    linkElement.click();
-  };
+    const linkElement = document.createElement('a')
+    linkElement.setAttribute('href', dataUri)
+    linkElement.setAttribute('download', exportFileDefaultName)
+    linkElement.click()
+  }
 
   const handleExportCSV = () => {
-    const headers = [
-      'Title',
-      'Description',
-      'Priority',
-      'Complexity',
-      'Estimated Hours',
-    ];
+    const headers = ['Title', 'Description', 'Priority', 'Complexity', 'Estimated Hours']
     const csvContent = [
       headers.join(','),
-      ...analysis.extractedTasks.map(task =>
+      ...analysis.extractedTasks.map((task) =>
         [
           `"${task.title.replace(/"/g, '""')}"`,
           `"${task.description.replace(/"/g, '""')}"`,
@@ -139,36 +119,35 @@ export const PRDAnalysisResults: React.FC<PRDAnalysisResultsProps> = ({
           task.estimatedHours,
         ].join(',')
       ),
-    ].join('\n');
+    ].join('\n')
 
-    const dataUri =
-      'data:text/csv;charset=utf-8,' + encodeURIComponent(csvContent);
-    const exportFileDefaultName = `prd-analysis-tasks-${new Date().toISOString().split('T')[0]}.csv`;
+    const dataUri = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csvContent)
+    const exportFileDefaultName = `prd-analysis-tasks-${new Date().toISOString().split('T')[0]}.csv`
 
-    const linkElement = document.createElement('a');
-    linkElement.setAttribute('href', dataUri);
-    linkElement.setAttribute('download', exportFileDefaultName);
-    linkElement.click();
-  };
+    const linkElement = document.createElement('a')
+    linkElement.setAttribute('href', dataUri)
+    linkElement.setAttribute('download', exportFileDefaultName)
+    linkElement.click()
+  }
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'high':
-        return '#dc3545';
+        return '#dc3545'
       case 'medium':
-        return '#ffc107';
+        return '#ffc107'
       case 'low':
-        return '#28a745';
+        return '#28a745'
       default:
-        return '#6c757d';
+        return '#6c757d'
     }
-  };
+  }
 
   const getComplexityColor = (complexity: number) => {
-    if (complexity >= 8) return '#dc3545';
-    if (complexity >= 5) return '#ffc107';
-    return '#28a745';
-  };
+    if (complexity >= 8) return '#dc3545'
+    if (complexity >= 5) return '#ffc107'
+    return '#28a745'
+  }
 
   if (compact) {
     return (
@@ -189,7 +168,7 @@ export const PRDAnalysisResults: React.FC<PRDAnalysisResultsProps> = ({
         </div>
         <style>{getCompactStyles()}</style>
       </div>
-    );
+    )
   }
 
   return (
@@ -267,22 +246,17 @@ export const PRDAnalysisResults: React.FC<PRDAnalysisResultsProps> = ({
               </div>
               <div className="stat-card">
                 <h4>📈 Avg Complexity</h4>
-                <div className="stat-value">
-                  {stats.avgComplexity.toFixed(1)}/10
-                </div>
+                <div className="stat-value">{stats.avgComplexity.toFixed(1)}/10</div>
               </div>
             </div>
 
             <div className="priority-breakdown">
               <h4>Priority Breakdown</h4>
               <div className="priority-bars">
-                {(['high', 'medium', 'low'] as const).map(priority => (
+                {(['high', 'medium', 'low'] as const).map((priority) => (
                   <div key={priority} className="priority-bar">
                     <div className="priority-label">
-                      <span
-                        className="priority-name"
-                        style={{ color: getPriorityColor(priority) }}
-                      >
+                      <span className="priority-name" style={{ color: getPriorityColor(priority) }}>
                         {priority.charAt(0).toUpperCase() + priority.slice(1)}
                       </span>
                       <span className="priority-count">
@@ -310,10 +284,7 @@ export const PRDAnalysisResults: React.FC<PRDAnalysisResultsProps> = ({
             <div className="tasks-controls">
               <div className="control-group">
                 <label>Sort by:</label>
-                <select
-                  value={sortBy}
-                  onChange={e => setSortBy(e.target.value as any)}
-                >
+                <select value={sortBy} onChange={(e) => setSortBy(e.target.value as any)}>
                   <option value="priority">Priority</option>
                   <option value="complexity">Complexity</option>
                   <option value="hours">Hours</option>
@@ -324,7 +295,7 @@ export const PRDAnalysisResults: React.FC<PRDAnalysisResultsProps> = ({
                 <label>Filter:</label>
                 <select
                   value={filterPriority}
-                  onChange={e => setFilterPriority(e.target.value as any)}
+                  onChange={(e) => setFilterPriority(e.target.value as any)}
                 >
                   <option value="all">All Priorities</option>
                   <option value="high">High Priority</option>
@@ -336,11 +307,7 @@ export const PRDAnalysisResults: React.FC<PRDAnalysisResultsProps> = ({
 
             <div className="tasks-list">
               {sortedTasks.map((task, index) => (
-                <div
-                  key={index}
-                  className="task-item"
-                  onClick={() => onTaskSelect?.(index)}
-                >
+                <div key={index} className="task-item" onClick={() => onTaskSelect?.(index)}>
                   <div className="task-header">
                     <h5 className="task-title">{task.title}</h5>
                     <div className="task-meta">
@@ -415,11 +382,8 @@ export const PRDAnalysisResults: React.FC<PRDAnalysisResultsProps> = ({
 
       {/* Export Modal */}
       {showExportModal && (
-        <div
-          className="export-modal-overlay"
-          onClick={() => setShowExportModal(false)}
-        >
-          <div className="export-modal" onClick={e => e.stopPropagation()}>
+        <div className="export-modal-overlay" onClick={() => setShowExportModal(false)}>
+          <div className="export-modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h4>Export Analysis Results</h4>
               <button
@@ -435,8 +399,8 @@ export const PRDAnalysisResults: React.FC<PRDAnalysisResultsProps> = ({
                 <button
                   type="button"
                   onClick={() => {
-                    handleExportJSON();
-                    setShowExportModal(false);
+                    handleExportJSON()
+                    setShowExportModal(false)
                   }}
                   className="export-option-button"
                 >
@@ -448,8 +412,8 @@ export const PRDAnalysisResults: React.FC<PRDAnalysisResultsProps> = ({
                 <button
                   type="button"
                   onClick={() => {
-                    handleExportCSV();
-                    setShowExportModal(false);
+                    handleExportCSV()
+                    setShowExportModal(false)
                   }}
                   className="export-option-button"
                 >
@@ -464,8 +428,8 @@ export const PRDAnalysisResults: React.FC<PRDAnalysisResultsProps> = ({
 
       <style>{getFullStyles()}</style>
     </div>
-  );
-};
+  )
+}
 
 function getCompactStyles() {
   return `
@@ -498,7 +462,7 @@ function getCompactStyles() {
       font-weight: 600;
       color: #1a1a1a;
     }
-  `;
+  `
 }
 
 function getFullStyles() {
@@ -934,7 +898,7 @@ function getFullStyles() {
         justify-content: space-between;
       }
     }
-  `;
+  `
 }
 
-export default PRDAnalysisResults;
+export default PRDAnalysisResults

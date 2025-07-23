@@ -1,29 +1,22 @@
-import React from 'react';
-import { useDroppable } from '@dnd-kit/core';
-import type {
-  TaskColumn as TaskColumnType,
-  TaskStatus,
-} from '../../types/task';
-import { TaskCard } from './TaskCard';
-import type { DropData } from './DragAndDropProvider';
+import React from 'react'
+import { useDroppable } from '@dnd-kit/core'
+import type { TaskColumn as TaskColumnType, TaskStatus } from '../../types/task'
+import { TaskCard } from './TaskCard'
+import type { DropData } from './DragAndDropProvider'
 
 export interface TaskColumnProps {
   /** Column data including title, status, and tasks */
-  column: TaskColumnType;
+  column: TaskColumnType
   /** Callback when a task is clicked */
-  onTaskClick?: (taskId: number) => void;
+  onTaskClick?: (taskId: number) => void
   /** Callback when a task is moved between columns */
-  onTaskMove?: (
-    taskId: number,
-    fromStatus: TaskStatus,
-    toStatus: TaskStatus
-  ) => void;
+  onTaskMove?: (taskId: number, fromStatus: TaskStatus, toStatus: TaskStatus) => void
   /** Whether to show the create task button */
-  showCreateButton?: boolean;
+  showCreateButton?: boolean
   /** Callback when create task is clicked */
-  onCreateTask?: (status: TaskStatus) => void;
+  onCreateTask?: (status: TaskStatus) => void
   /** Additional CSS class name */
-  className?: string;
+  className?: string
 }
 
 /**
@@ -40,51 +33,51 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
   onCreateTask,
   className = '',
 }) => {
-  const { title, status, tasks, color, limit } = column;
-  const taskCount = tasks.length;
-  const isOverLimit = limit && taskCount > limit;
+  const { title, status, tasks, color, limit } = column
+  const taskCount = tasks.length
+  const isOverLimit = limit && taskCount > limit
 
   // Configure droppable behavior
   const dropData: DropData = {
     type: 'column',
     status: status,
-  };
+  }
 
   const { isOver, setNodeRef } = useDroppable({
     id: `column-${status}`,
     data: dropData,
-  });
+  })
 
   const handleTaskClick = (taskId: number) => {
     if (onTaskClick) {
-      onTaskClick(taskId);
+      onTaskClick(taskId)
     }
-  };
+  }
 
   const handleCreateTask = () => {
     if (onCreateTask) {
-      onCreateTask(status);
+      onCreateTask(status)
     }
-  };
+  }
 
   const getStatusIcon = (status: TaskStatus): string => {
     switch (status) {
       case 'pending':
-        return '📋';
+        return '📋'
       case 'in-progress':
-        return '🔄';
+        return '🔄'
       case 'done':
-        return '✅';
+        return '✅'
       case 'blocked':
-        return '🚫';
+        return '🚫'
       case 'cancelled':
-        return '❌';
+        return '❌'
       case 'deferred':
-        return '⏸️';
+        return '⏸️'
       default:
-        return '📋';
+        return '📋'
     }
-  };
+  }
 
   return (
     <section
@@ -119,8 +112,7 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
               </span>
             )}
             <span className="sr-only">
-              {taskCount} task{taskCount !== 1 ? 's' : ''} in{' '}
-              {title.toLowerCase()}
+              {taskCount} task{taskCount !== 1 ? 's' : ''} in {title.toLowerCase()}
               {limit && `, limit ${limit}`}
               {isOverLimit && ', over limit'}
             </span>
@@ -157,9 +149,7 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
               <span className="text-3xl opacity-50" aria-hidden="true">
                 {getStatusIcon(status)}
               </span>
-              <span className="text-sm text-gray-500">
-                No {title.toLowerCase()} tasks
-              </span>
+              <span className="text-sm text-gray-500">No {title.toLowerCase()} tasks</span>
             </div>
             {showCreateButton && (
               <button
@@ -177,7 +167,7 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
             role="group"
             aria-label={`${taskCount} task${taskCount !== 1 ? 's' : ''} in ${title.toLowerCase()}`}
           >
-            {tasks.map(task => (
+            {tasks.map((task) => (
               <TaskCard
                 key={task.id}
                 task={task}
@@ -189,7 +179,7 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
         )}
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default TaskColumn;
+export default TaskColumn

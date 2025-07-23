@@ -1,22 +1,22 @@
-import React from 'react';
-import { useDraggable } from '@dnd-kit/core';
-import { CSS } from '@dnd-kit/utilities';
-import type { Task } from '../../types/task';
-import type { DragData } from './DragAndDropProvider';
+import React from 'react'
+import { useDraggable } from '@dnd-kit/core'
+import { CSS } from '@dnd-kit/utilities'
+import type { Task } from '../../types/task'
+import type { DragData } from './DragAndDropProvider'
 
 export interface TaskCardProps {
   /** Task data to display */
-  task: Task;
+  task: Task
   /** Callback when task is clicked */
-  onTaskClick?: (taskId: number) => void;
+  onTaskClick?: (taskId: number) => void
   /** Additional CSS class name */
-  className?: string;
+  className?: string
   /** Whether the card is in a compact view */
-  compact?: boolean;
+  compact?: boolean
   /** Whether to show all task details */
-  showFullDetails?: boolean;
+  showFullDetails?: boolean
   /** Whether the card is draggable */
-  isDraggable?: boolean;
+  isDraggable?: boolean
 }
 
 /**
@@ -38,91 +38,87 @@ export const TaskCard: React.FC<TaskCardProps> = ({
     type: 'task',
     taskId: task.id,
     status: task.status,
-  };
+  }
 
-  const { attributes, listeners, setNodeRef, transform, isDragging } =
-    useDraggable({
-      id: `task-${task.id}`,
-      data: dragData,
-      disabled: !isDraggable,
-    });
+  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
+    id: `task-${task.id}`,
+    data: dragData,
+    disabled: !isDraggable,
+  })
 
   const style = {
     transform: CSS.Translate.toString(transform),
     opacity: isDragging ? 0.5 : 1,
     cursor: isDragging ? 'grabbing' : isDraggable ? 'grab' : 'default',
-  };
+  }
 
   const handleTaskClick = () => {
     if (onTaskClick && !isDragging) {
-      onTaskClick(task.id);
+      onTaskClick(task.id)
     }
-  };
+  }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      handleTaskClick();
+      e.preventDefault()
+      handleTaskClick()
     }
-  };
+  }
 
   const getPriorityIcon = (priority: string): string => {
     switch (priority) {
       case 'urgent':
-        return '🔴';
+        return '🔴'
       case 'high':
-        return '🟠';
+        return '🟠'
       case 'medium':
-        return '🟡';
+        return '🟡'
       case 'low':
-        return '🟢';
+        return '🟢'
       default:
-        return '⚪';
+        return '⚪'
     }
-  };
+  }
 
   const getPriorityColor = (priority: string): string => {
     switch (priority) {
       case 'urgent':
-        return '#dc2626';
+        return '#dc2626'
       case 'high':
-        return '#ea580c';
+        return '#ea580c'
       case 'medium':
-        return '#d97706';
+        return '#d97706'
       case 'low':
-        return '#16a34a';
+        return '#16a34a'
       default:
-        return '#64748b';
+        return '#64748b'
     }
-  };
+  }
 
   const getStatusIcon = (status: string): string => {
     switch (status) {
       case 'pending':
-        return '📋';
+        return '📋'
       case 'in-progress':
-        return '🔄';
+        return '🔄'
       case 'done':
-        return '✅';
+        return '✅'
       case 'blocked':
-        return '🚫';
+        return '🚫'
       case 'cancelled':
-        return '❌';
+        return '❌'
       case 'deferred':
-        return '⏸️';
+        return '⏸️'
       default:
-        return '📋';
+        return '📋'
     }
-  };
+  }
 
-  const isOverdue =
-    task.dueDate &&
-    new Date(task.dueDate) < new Date() &&
-    task.status !== 'done';
+  const isOverdue = task.dueDate && new Date(task.dueDate) < new Date() && task.status !== 'done'
   const isDueSoon =
     task.dueDate &&
     !isOverdue &&
-    new Date(task.dueDate) <= new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    new Date(task.dueDate) <= new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
 
   // Merge accessibility attributes with DnD attributes
   const mergedAttributes = {
@@ -130,10 +126,8 @@ export const TaskCard: React.FC<TaskCardProps> = ({
     role: 'button',
     tabIndex: 0,
     'aria-label': `Task ${task.title}, priority ${task.priority}, status ${task.status}. Press Enter or Space to open details.`,
-    'aria-describedby': task.description
-      ? `task-${task.id}-description`
-      : undefined,
-  };
+    'aria-describedby': task.description ? `task-${task.id}-description` : undefined,
+  }
 
   return (
     <div
@@ -186,10 +180,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
       {showFullDetails && task.description && (
         <div className="mb-3">
-          <p
-            id={`task-${task.id}-description`}
-            className="text-sm text-gray-600 leading-relaxed"
-          >
+          <p id={`task-${task.id}-description`} className="text-sm text-gray-600 leading-relaxed">
             {task.description}
           </p>
         </div>
@@ -222,8 +213,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
                   📋
                 </span>
                 <span className="font-medium">
-                  {task.subtasks.filter(st => st.status === 'done').length}/
-                  {task.subtasks.length}
+                  {task.subtasks.filter((st) => st.status === 'done').length}/{task.subtasks.length}
                 </span>
               </div>
             )}
@@ -265,9 +255,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
           <span className="text-xs" aria-hidden="true">
             📅
           </span>
-          <span className="font-medium">
-            Due: {new Date(task.dueDate).toLocaleDateString()}
-          </span>
+          <span className="font-medium">Due: {new Date(task.dueDate).toLocaleDateString()}</span>
         </div>
       )}
 
@@ -276,13 +264,11 @@ export const TaskCard: React.FC<TaskCardProps> = ({
           <span className="text-xs" aria-hidden="true">
             🔗
           </span>
-          <span className="font-medium">
-            Depends on: {task.dependencies.join(', ')}
-          </span>
+          <span className="font-medium">Depends on: {task.dependencies.join(', ')}</span>
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default TaskCard;
+export default TaskCard

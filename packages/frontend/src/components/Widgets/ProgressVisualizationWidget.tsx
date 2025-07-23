@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo } from 'react'
 import {
   LineChart,
   Line,
@@ -10,26 +10,26 @@ import {
   ResponsiveContainer,
   AreaChart,
   Area,
-} from 'recharts';
+} from 'recharts'
 
 export interface ProgressDataPoint {
-  date: string;
-  completed: number;
-  total: number;
-  completionRate: number;
-  newTasks?: number;
-  velocity?: number;
+  date: string
+  completed: number
+  total: number
+  completionRate: number
+  newTasks?: number
+  velocity?: number
 }
 
 export interface ProgressVisualizationWidgetProps {
-  data: ProgressDataPoint[];
-  chartType?: 'line' | 'area';
-  showVelocity?: boolean;
-  showTrendLine?: boolean;
-  timeRange?: '7d' | '30d' | '90d' | 'all';
-  width?: number;
-  height?: number;
-  className?: string;
+  data: ProgressDataPoint[]
+  chartType?: 'line' | 'area'
+  showVelocity?: boolean
+  showTrendLine?: boolean
+  timeRange?: '7d' | '30d' | '90d' | 'all'
+  width?: number
+  height?: number
+  className?: string
 }
 
 /**
@@ -39,9 +39,7 @@ export interface ProgressVisualizationWidgetProps {
  * line charts or area charts. Shows cumulative task completions, completion rates,
  * and velocity trends against a timeline.
  */
-export const ProgressVisualizationWidget: React.FC<
-  ProgressVisualizationWidgetProps
-> = ({
+export const ProgressVisualizationWidget: React.FC<ProgressVisualizationWidgetProps> = ({
   data,
   chartType = 'line',
   showVelocity = true,
@@ -53,74 +51,67 @@ export const ProgressVisualizationWidget: React.FC<
 }) => {
   // Filter data based on time range
   const filteredData = useMemo(() => {
-    if (timeRange === 'all') return data;
+    if (timeRange === 'all') return data
 
-    const now = new Date();
-    const days = timeRange === '7d' ? 7 : timeRange === '30d' ? 30 : 90;
-    const cutoffDate = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
+    const now = new Date()
+    const days = timeRange === '7d' ? 7 : timeRange === '30d' ? 30 : 90
+    const cutoffDate = new Date(now.getTime() - days * 24 * 60 * 60 * 1000)
 
-    return data.filter(point => new Date(point.date) >= cutoffDate);
-  }, [data, timeRange]);
+    return data.filter((point) => new Date(point.date) >= cutoffDate)
+  }, [data, timeRange])
 
   // Calculate velocity (tasks completed per day)
   const dataWithVelocity = useMemo(() => {
     return filteredData.map((point, index) => {
-      let velocity = 0;
+      let velocity = 0
       if (index > 0) {
-        const prevPoint = filteredData[index - 1];
+        const prevPoint = filteredData[index - 1]
         const daysDiff = Math.max(
           1,
           Math.floor(
-            (new Date(point.date).getTime() -
-              new Date(prevPoint.date).getTime()) /
+            (new Date(point.date).getTime() - new Date(prevPoint.date).getTime()) /
               (24 * 60 * 60 * 1000)
           )
-        );
-        velocity = (point.completed - prevPoint.completed) / daysDiff;
+        )
+        velocity = (point.completed - prevPoint.completed) / daysDiff
       }
-      return { ...point, velocity: Math.round(velocity * 100) / 100 };
-    });
-  }, [filteredData]);
+      return { ...point, velocity: Math.round(velocity * 100) / 100 }
+    })
+  }, [filteredData])
 
   // Calculate trend line data
   const trendData = useMemo(() => {
-    if (!showTrendLine || dataWithVelocity.length < 2) return [];
+    if (!showTrendLine || dataWithVelocity.length < 2) return []
 
-    const n = dataWithVelocity.length;
-    const sumX = dataWithVelocity.reduce((sum, _, i) => sum + i, 0);
-    const sumY = dataWithVelocity.reduce(
-      (sum, point) => sum + point.completed,
-      0
-    );
-    const sumXY = dataWithVelocity.reduce(
-      (sum, point, i) => sum + i * point.completed,
-      0
-    );
-    const sumXX = dataWithVelocity.reduce((sum, _, i) => sum + i * i, 0);
+    const n = dataWithVelocity.length
+    const sumX = dataWithVelocity.reduce((sum, _, i) => sum + i, 0)
+    const sumY = dataWithVelocity.reduce((sum, point) => sum + point.completed, 0)
+    const sumXY = dataWithVelocity.reduce((sum, point, i) => sum + i * point.completed, 0)
+    const sumXX = dataWithVelocity.reduce((sum, _, i) => sum + i * i, 0)
 
-    const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
-    const intercept = (sumY - slope * sumX) / n;
+    const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX)
+    const intercept = (sumY - slope * sumX) / n
 
     return dataWithVelocity.map((point, i) => ({
       ...point,
       trend: Math.round(slope * i + intercept),
-    }));
-  }, [dataWithVelocity, showTrendLine]);
+    }))
+  }, [dataWithVelocity, showTrendLine])
 
   // Format date for display
   const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
+    const date = new Date(dateStr)
     return date.toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
       year: timeRange === 'all' ? 'numeric' : undefined,
-    });
-  };
+    })
+  }
 
   // Format completion rate as percentage
   const formatPercentage = (value: number) => {
-    return `${Math.round(value)}%`;
-  };
+    return `${Math.round(value)}%`
+  }
 
   // Custom tooltip component
   const CustomTooltip = ({
@@ -128,12 +119,12 @@ export const ProgressVisualizationWidget: React.FC<
     payload,
     label,
   }: {
-    active?: boolean;
-    payload?: Array<{ payload: ProgressDataPoint & { velocity: number } }>;
-    label?: string;
+    active?: boolean
+    payload?: Array<{ payload: ProgressDataPoint & { velocity: number } }>
+    label?: string
   }) => {
     if (active && payload && payload.length && label) {
-      const data = payload[0].payload;
+      const data = payload[0].payload
       return (
         <div className="progress-tooltip">
           <p className="tooltip-label">{formatDate(label)}</p>
@@ -148,42 +139,38 @@ export const ProgressVisualizationWidget: React.FC<
             </div>
             <div className="tooltip-item">
               <span className="tooltip-dot rate" />
-              <span className="tooltip-text">
-                Rate: {formatPercentage(data.completionRate)}
-              </span>
+              <span className="tooltip-text">Rate: {formatPercentage(data.completionRate)}</span>
             </div>
             {showVelocity && (
               <div className="tooltip-item">
                 <span className="tooltip-dot velocity" />
-                <span className="tooltip-text">
-                  Velocity: {data.velocity} tasks/day
-                </span>
+                <span className="tooltip-text">Velocity: {data.velocity} tasks/day</span>
               </div>
             )}
           </div>
         </div>
-      );
+      )
     }
-    return null;
-  };
+    return null
+  }
 
   // Calculate key metrics
   const metrics = useMemo(() => {
-    if (dataWithVelocity.length === 0) return null;
+    if (dataWithVelocity.length === 0) return null
 
-    const latest = dataWithVelocity[dataWithVelocity.length - 1];
-    const earliest = dataWithVelocity[0];
+    const latest = dataWithVelocity[dataWithVelocity.length - 1]
+    const earliest = dataWithVelocity[0]
     const totalDays = Math.max(
       1,
       Math.floor(
         (new Date(latest.date).getTime() - new Date(earliest.date).getTime()) /
           (24 * 60 * 60 * 1000)
       )
-    );
-    const avgVelocity = (latest.completed - earliest.completed) / totalDays;
+    )
+    const avgVelocity = (latest.completed - earliest.completed) / totalDays
     const avgCompletionRate =
       dataWithVelocity.reduce((sum, point) => sum + point.completionRate, 0) /
-      dataWithVelocity.length;
+      dataWithVelocity.length
 
     return {
       totalCompleted: latest.completed,
@@ -191,63 +178,45 @@ export const ProgressVisualizationWidget: React.FC<
       avgVelocity: Math.round(avgVelocity * 100) / 100,
       avgCompletionRate: Math.round(avgCompletionRate * 100) / 100,
       timeSpan: totalDays,
-    };
-  }, [dataWithVelocity]);
+    }
+  }, [dataWithVelocity])
 
   // No data state
   if (filteredData.length === 0) {
     return (
-      <div
-        className={`bg-white rounded-lg p-6 shadow-sm border border-gray-200 ${className}`}
-      >
+      <div className={`bg-white rounded-lg p-6 shadow-sm border border-gray-200 ${className}`}>
         <div className="text-center py-12">
           <div className="text-4xl mb-4">📈</div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            No Progress Data
-          </h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">No Progress Data</h3>
           <p className="text-sm text-gray-600">
             No progress data available for the selected time range
           </p>
         </div>
       </div>
-    );
+    )
   }
 
   return (
-    <div
-      className={`bg-white rounded-lg p-6 shadow-sm border border-gray-200 ${className}`}
-    >
+    <div className={`bg-white rounded-lg p-6 shadow-sm border border-gray-200 ${className}`}>
       {/* Header */}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-900">
-            Progress Over Time
-          </h3>
+          <h3 className="text-lg font-semibold text-gray-900">Progress Over Time</h3>
           {metrics && (
             <div className="flex items-center gap-6">
               <div className="text-center">
-                <div className="text-lg font-semibold text-gray-900">
-                  {metrics.totalCompleted}
-                </div>
-                <div className="text-xs text-gray-500 uppercase tracking-wide">
-                  completed
-                </div>
+                <div className="text-lg font-semibold text-gray-900">{metrics.totalCompleted}</div>
+                <div className="text-xs text-gray-500 uppercase tracking-wide">completed</div>
               </div>
               <div className="text-center">
-                <div className="text-lg font-semibold text-gray-900">
-                  {metrics.avgVelocity}
-                </div>
-                <div className="text-xs text-gray-500 uppercase tracking-wide">
-                  avg velocity
-                </div>
+                <div className="text-lg font-semibold text-gray-900">{metrics.avgVelocity}</div>
+                <div className="text-xs text-gray-500 uppercase tracking-wide">avg velocity</div>
               </div>
               <div className="text-center">
                 <div className="text-lg font-semibold text-gray-900">
                   {formatPercentage(metrics.avgCompletionRate)}
                 </div>
-                <div className="text-xs text-gray-500 uppercase tracking-wide">
-                  avg rate
-                </div>
+                <div className="text-xs text-gray-500 uppercase tracking-wide">avg rate</div>
               </div>
             </div>
           )}
@@ -266,11 +235,7 @@ export const ProgressVisualizationWidget: React.FC<
           {chartType === 'area' ? (
             <AreaChart data={showTrendLine ? trendData : dataWithVelocity}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis
-                dataKey="date"
-                tickFormatter={formatDate}
-                interval="preserveStartEnd"
-              />
+              <XAxis dataKey="date" tickFormatter={formatDate} interval="preserveStartEnd" />
               <YAxis />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
@@ -307,11 +272,7 @@ export const ProgressVisualizationWidget: React.FC<
           ) : (
             <LineChart data={showTrendLine ? trendData : dataWithVelocity}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis
-                dataKey="date"
-                tickFormatter={formatDate}
-                interval="preserveStartEnd"
-              />
+              <XAxis dataKey="date" tickFormatter={formatDate} interval="preserveStartEnd" />
               <YAxis />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
@@ -363,10 +324,7 @@ export const ProgressVisualizationWidget: React.FC<
           <div className="summary-item">
             <span className="summary-label">Current Progress</span>
             <span className="summary-value">
-              {metrics &&
-                formatPercentage(
-                  (metrics.totalCompleted / metrics.totalTasks) * 100
-                )}
+              {metrics && formatPercentage((metrics.totalCompleted / metrics.totalTasks) * 100)}
             </span>
           </div>
           <div className="summary-item">
@@ -388,7 +346,7 @@ export const ProgressVisualizationWidget: React.FC<
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ProgressVisualizationWidget;
+export default ProgressVisualizationWidget

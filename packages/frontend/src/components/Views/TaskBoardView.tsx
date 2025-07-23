@@ -1,26 +1,26 @@
-import React, { useState } from 'react';
-import { TaskBoard } from '../TaskBoard';
-import { TaskBoardWithFilters } from '../TaskBoard/TaskBoardWithFilters';
-import { KanbanBoard } from '../ui/organisms/KanbanBoard';
-import type { TaskStatus } from '../../types/task';
-import { useTaskData } from '../../hooks/useTaskData';
+import React, { useState } from 'react'
+import { TaskBoard } from '../TaskBoard'
+import { TaskBoardWithFilters } from '../TaskBoard/TaskBoardWithFilters'
+import { KanbanBoard } from '../ui/organisms/KanbanBoard'
+import type { TaskStatus } from '../../types/task'
+import { useTaskData } from '../../hooks/useTaskData'
 
 export interface TaskBoardViewProps {
-  className?: string;
+  className?: string
   /** Repository path to load tasks from */
-  repositoryPath?: string;
+  repositoryPath?: string
   /** Project tag to filter tasks */
-  projectTag?: string;
+  projectTag?: string
   /** Project ID to load tasks from */
-  projectId?: string;
+  projectId?: string
   /** File path to load tasks from */
-  filePath?: string;
+  filePath?: string
   /** Auto-refresh interval (in ms) */
-  refreshInterval?: number;
+  refreshInterval?: number
   /** Enable filtering and sorting features */
-  enableFiltering?: boolean;
+  enableFiltering?: boolean
   /** Use new Kanban board layout */
-  useKanbanLayout?: boolean;
+  useKanbanLayout?: boolean
 }
 
 export const TaskBoardView: React.FC<TaskBoardViewProps> = ({
@@ -33,44 +33,39 @@ export const TaskBoardView: React.FC<TaskBoardViewProps> = ({
   enableFiltering = true,
   useKanbanLayout = true,
 }) => {
-  const [showFilters, setShowFilters] = useState(enableFiltering);
-  const [, setFilteredTasks] = useState<unknown[]>([]);
-  const [isFilterLoading, setIsFilterLoading] = useState(false);
-  const [, setFilterError] = useState<Error | null>(null);
-  const { taskBoardData, isLoading, error, refresh, loadSampleTasks } =
-    useTaskData({
-      repositoryPath,
-      projectTag,
-      projectId,
-      filePath,
-      autoLoad: true,
-      pollingInterval: refreshInterval,
-    });
+  const [showFilters, setShowFilters] = useState(enableFiltering)
+  const [, setFilteredTasks] = useState<unknown[]>([])
+  const [isFilterLoading, setIsFilterLoading] = useState(false)
+  const [, setFilterError] = useState<Error | null>(null)
+  const { taskBoardData, isLoading, error, refresh, loadSampleTasks } = useTaskData({
+    repositoryPath,
+    projectTag,
+    projectId,
+    filePath,
+    autoLoad: true,
+    pollingInterval: refreshInterval,
+  })
 
   const handleTaskClick = (taskId: number) => {
     // TODO: Implement task details modal
-    console.log('Task clicked:', taskId);
-  };
+    console.log('Task clicked:', taskId)
+  }
 
-  const handleTaskMove = (
-    taskId: number,
-    fromStatus: TaskStatus,
-    toStatus: TaskStatus
-  ) => {
+  const handleTaskMove = (taskId: number, fromStatus: TaskStatus, toStatus: TaskStatus) => {
     // TODO: Implement task status update API call
-    console.log('Task moved:', { taskId, fromStatus, toStatus });
+    console.log('Task moved:', { taskId, fromStatus, toStatus })
     // This would typically call an API to update the task status
     // For now, we'll just log the move action
-  };
+  }
 
   const handleCreateTask = (status: TaskStatus) => {
     // TODO: Implement task creation modal
-    console.log('Create task with status:', status);
-  };
+    console.log('Create task with status:', status)
+  }
 
   const handleRefresh = async () => {
-    await refresh();
-  };
+    await refresh()
+  }
 
   return (
     <div className={`task-board-view ${className}`.trim()}>
@@ -169,5 +164,5 @@ export const TaskBoardView: React.FC<TaskBoardViewProps> = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

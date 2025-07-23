@@ -1,35 +1,35 @@
-import React, { useState } from 'react';
-import { cn } from '../../utils/cn';
-import { Card, CardContent } from '../ui/molecules/Card';
-import { ProfileSettings } from './ProfileSettings';
-import { IntegrationsSettings } from './IntegrationsSettings';
-import { NotificationSettings } from './NotificationSettings';
-import { SecuritySettings } from './SecuritySettings';
-import { AppearanceSettings } from './AppearanceSettings';
-import { SettingsProvider } from '../../contexts/SettingsContext';
+import React, { useState } from 'react'
+import { cn } from '../../utils/cn'
+import { Card, CardContent } from '../ui/molecules/Card'
+import { ProfileSettings } from './ProfileSettings'
+import { IntegrationsSettings } from './IntegrationsSettings'
+import { NotificationSettings } from './NotificationSettings'
+import { SecuritySettings } from './SecuritySettings'
+import { AppearanceSettings } from './AppearanceSettings'
+import { SettingsProvider } from '../../contexts/SettingsContext'
 
 export interface SettingsPageProps {
   /**
    * Default category to show
    * @default 'profile'
    */
-  defaultCategory?: string;
+  defaultCategory?: string
   /**
    * Callback when settings are saved
    */
-  onSettingsSave?: (category: string, settings: any) => void;
+  onSettingsSave?: (category: string, settings: any) => void
   /**
    * Additional CSS classes
    */
-  className?: string;
+  className?: string
 }
 
 interface SettingsCategory {
-  id: string;
-  title: string;
-  description: string;
-  icon: React.ReactNode;
-  component: React.ComponentType<any>;
+  id: string
+  title: string
+  description: string
+  icon: React.ReactNode
+  component: React.ComponentType<any>
 }
 
 const settingsCategories: SettingsCategory[] = [
@@ -38,12 +38,7 @@ const settingsCategories: SettingsCategory[] = [
     title: 'Profile',
     description: 'Manage your account information and preferences',
     icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -59,12 +54,7 @@ const settingsCategories: SettingsCategory[] = [
     title: 'Security',
     description: 'Password, two-factor authentication, and login settings',
     icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -80,12 +70,7 @@ const settingsCategories: SettingsCategory[] = [
     title: 'Notifications',
     description: 'Control how and when you receive notifications',
     icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -101,12 +86,7 @@ const settingsCategories: SettingsCategory[] = [
     title: 'Integrations',
     description: 'Connect external services and manage API integrations',
     icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -122,12 +102,7 @@ const settingsCategories: SettingsCategory[] = [
     title: 'Appearance',
     description: 'Customize the interface theme and display preferences',
     icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -138,23 +113,22 @@ const settingsCategories: SettingsCategory[] = [
     ),
     component: AppearanceSettings,
   },
-];
+]
 
 export const SettingsPage: React.FC<SettingsPageProps> = ({
   defaultCategory = 'profile',
   onSettingsSave,
   className,
 }) => {
-  const [activeCategory, setActiveCategory] = useState(defaultCategory);
+  const [activeCategory, setActiveCategory] = useState(defaultCategory)
 
   const currentCategory =
-    settingsCategories.find(cat => cat.id === activeCategory) ||
-    settingsCategories[0];
-  const CurrentComponent = currentCategory.component;
+    settingsCategories.find((cat) => cat.id === activeCategory) || settingsCategories[0]
+  const CurrentComponent = currentCategory.component
 
   const handleSettingsSave = (settings: any) => {
-    onSettingsSave?.(activeCategory, settings);
-  };
+    onSettingsSave?.(activeCategory, settings)
+  }
 
   return (
     <SettingsProvider>
@@ -172,9 +146,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
           {/* Page Header */}
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Settings</h1>
-            <p className="text-gray-600">
-              Manage your account settings and preferences
-            </p>
+            <p className="text-gray-600">Manage your account settings and preferences</p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -191,7 +163,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
               >
                 <CardContent className="p-6">
                   <nav className="space-y-2">
-                    {settingsCategories.map(category => (
+                    {settingsCategories.map((category) => (
                       <button
                         key={category.id}
                         onClick={() => setActiveCategory(category.id)}
@@ -206,17 +178,13 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                         <span
                           className={cn(
                             'flex-shrink-0',
-                            activeCategory === category.id
-                              ? 'text-primary-600'
-                              : 'text-gray-500'
+                            activeCategory === category.id ? 'text-primary-600' : 'text-gray-500'
                           )}
                         >
                           {category.icon}
                         </span>
                         <div className="flex-1 min-w-0">
-                          <div className="font-medium text-sm">
-                            {category.title}
-                          </div>
+                          <div className="font-medium text-sm">{category.title}</div>
                           <div className="text-xs text-gray-500 mt-0.5 truncate">
                             {category.description}
                           </div>
@@ -243,23 +211,16 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                   {/* Category Header */}
                   <div className="mb-8">
                     <div className="flex items-center space-x-3 mb-3">
-                      <span className="text-primary-600">
-                        {currentCategory.icon}
-                      </span>
+                      <span className="text-primary-600">{currentCategory.icon}</span>
                       <h2 className="text-2xl font-semibold text-gray-900">
                         {currentCategory.title}
                       </h2>
                     </div>
-                    <p className="text-gray-600">
-                      {currentCategory.description}
-                    </p>
+                    <p className="text-gray-600">{currentCategory.description}</p>
                   </div>
 
                   {/* Category Content */}
-                  <CurrentComponent
-                    onSave={handleSettingsSave}
-                    className="space-y-6"
-                  />
+                  <CurrentComponent onSave={handleSettingsSave} className="space-y-6" />
                 </CardContent>
               </Card>
             </div>
@@ -267,7 +228,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
         </div>
       </div>
     </SettingsProvider>
-  );
-};
+  )
+}
 
-export default SettingsPage;
+export default SettingsPage

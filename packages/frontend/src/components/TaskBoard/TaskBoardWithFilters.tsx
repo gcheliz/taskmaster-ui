@@ -1,14 +1,14 @@
-import React, { useState, useCallback } from 'react';
-import { FilterSortControls } from './FilterSortControls';
-import { useTaskFiltersIntegration } from '../../hooks/useTaskFiltersIntegration';
-import type { FilterOptions, SortOptions } from './FilterSortControls';
+import React, { useState, useCallback } from 'react'
+import { FilterSortControls } from './FilterSortControls'
+import { useTaskFiltersIntegration } from '../../hooks/useTaskFiltersIntegration'
+import type { FilterOptions, SortOptions } from './FilterSortControls'
 
 export interface TaskBoardWithFiltersProps {
-  repositoryPath: string;
-  onTasksChange?: (tasks: any[]) => void;
-  onLoadingChange?: (loading: boolean) => void;
-  onErrorChange?: (error: Error | null) => void;
-  className?: string;
+  repositoryPath: string
+  onTasksChange?: (tasks: any[]) => void
+  onLoadingChange?: (loading: boolean) => void
+  onErrorChange?: (error: Error | null) => void
+  className?: string
 }
 
 /**
@@ -24,22 +24,22 @@ export const TaskBoardWithFilters: React.FC<TaskBoardWithFiltersProps> = ({
   onErrorChange,
   className = '',
 }) => {
-  const [, setLastError] = useState<Error | null>(null);
+  const [, setLastError] = useState<Error | null>(null)
 
   const integration = useTaskFiltersIntegration({
     repositoryPath,
     onTasksChange,
-    onFilterChange: filters => {
-      console.log('Filters changed:', filters);
+    onFilterChange: (filters) => {
+      console.log('Filters changed:', filters)
     },
-    onSortChange: sorting => {
-      console.log('Sorting changed:', sorting);
+    onSortChange: (sorting) => {
+      console.log('Sorting changed:', sorting)
     },
-    onError: error => {
-      setLastError(error);
-      onErrorChange?.(error);
+    onError: (error) => {
+      setLastError(error)
+      onErrorChange?.(error)
     },
-  });
+  })
 
   const {
     tasks,
@@ -56,59 +56,58 @@ export const TaskBoardWithFilters: React.FC<TaskBoardWithFiltersProps> = ({
     refetchTasks,
     hasActiveFilters,
     hasActiveSort,
-  } = integration;
+  } = integration
 
   // Notify parent of loading state changes
   React.useEffect(() => {
-    onLoadingChange?.(loading);
-  }, [loading, onLoadingChange]);
+    onLoadingChange?.(loading)
+  }, [loading, onLoadingChange])
 
   // Notify parent of error state changes
   React.useEffect(() => {
-    onErrorChange?.(error);
-  }, [error, onErrorChange]);
+    onErrorChange?.(error)
+  }, [error, onErrorChange])
 
   // Handle filter changes
   const handleFilterChange = useCallback(
     (newFilters: FilterOptions) => {
       Object.entries(newFilters).forEach(([key, value]) => {
         if (filters[key as keyof FilterOptions] !== value) {
-          updateFilter(key as keyof FilterOptions, value);
+          updateFilter(key as keyof FilterOptions, value)
         }
-      });
+      })
     },
     [filters, updateFilter]
-  );
+  )
 
   // Handle sort changes
   const handleSortChange = useCallback(
     (newSorting: SortOptions) => {
       Object.entries(newSorting).forEach(([key, value]) => {
         if (sorting[key as keyof SortOptions] !== value) {
-          updateSort(key as keyof SortOptions, value);
+          updateSort(key as keyof SortOptions, value)
         }
-      });
+      })
     },
     [sorting, updateSort]
-  );
+  )
 
   // Handle clear filters
   const handleClearFilters = useCallback(() => {
-    clearFilters();
-  }, [clearFilters]);
+    clearFilters()
+  }, [clearFilters])
 
   // Handle retry after error
   const handleRetry = useCallback(async () => {
-    setLastError(null);
+    setLastError(null)
     try {
-      await refetchTasks();
+      await refetchTasks()
     } catch (err) {
-      const error =
-        err instanceof Error ? err : new Error('Failed to refetch tasks');
-      setLastError(error);
-      onErrorChange?.(error);
+      const error = err instanceof Error ? err : new Error('Failed to refetch tasks')
+      setLastError(error)
+      onErrorChange?.(error)
     }
-  }, [refetchTasks, onErrorChange]);
+  }, [refetchTasks, onErrorChange])
 
   return (
     <div className={`task-board-with-filters ${className}`}>
@@ -146,8 +145,8 @@ export const TaskBoardWithFilters: React.FC<TaskBoardWithFiltersProps> = ({
               </button>
               <button
                 onClick={() => {
-                  setLastError(null);
-                  onErrorChange?.(null);
+                  setLastError(null)
+                  onErrorChange?.(null)
                 }}
                 className="dismiss-button"
               >
@@ -165,21 +164,14 @@ export const TaskBoardWithFilters: React.FC<TaskBoardWithFiltersProps> = ({
             <span className="results-count">
               {filteredCount} of {totalCount} tasks
             </span>
-            {hasActiveFilters && (
-              <span className="active-filters-indicator">Filtered</span>
-            )}
-            {hasActiveSort && (
-              <span className="active-sort-indicator">Sorted</span>
-            )}
+            {hasActiveFilters && <span className="active-filters-indicator">Filtered</span>}
+            {hasActiveSort && <span className="active-sort-indicator">Sorted</span>}
           </div>
 
           {tasks.length === 0 && totalCount > 0 && (
             <div className="no-results">
               <p>No tasks match the current filters.</p>
-              <button
-                onClick={handleClearFilters}
-                className="clear-filters-button"
-              >
+              <button onClick={handleClearFilters} className="clear-filters-button">
                 Clear Filters
               </button>
             </div>
@@ -191,32 +183,20 @@ export const TaskBoardWithFilters: React.FC<TaskBoardWithFiltersProps> = ({
       <div className="task-list-container">
         {!loading && !error && tasks.length > 0 && (
           <div className="task-list">
-            {tasks.map(task => (
+            {tasks.map((task) => (
               <div key={task.id} className="task-item">
                 <div className="task-header">
                   <h4 className="task-title">{task.title}</h4>
                   <div className="task-badges">
-                    <span className={`status-badge ${task.status}`}>
-                      {task.status}
-                    </span>
-                    <span className={`priority-badge ${task.priority}`}>
-                      {task.priority}
-                    </span>
+                    <span className={`status-badge ${task.status}`}>{task.status}</span>
+                    <span className={`priority-badge ${task.priority}`}>{task.priority}</span>
                   </div>
                 </div>
-                {task.description && (
-                  <p className="task-description">{task.description}</p>
-                )}
+                {task.description && <p className="task-description">{task.description}</p>}
                 <div className="task-meta">
                   <span className="task-id">#{task.id}</span>
-                  {task.assignee && (
-                    <span className="task-assignee">👤 {task.assignee}</span>
-                  )}
-                  {task.complexity && (
-                    <span className="task-complexity">
-                      ⚡ {task.complexity}
-                    </span>
-                  )}
+                  {task.assignee && <span className="task-assignee">👤 {task.assignee}</span>}
+                  {task.complexity && <span className="task-complexity">⚡ {task.complexity}</span>}
                 </div>
               </div>
             ))}
@@ -232,7 +212,7 @@ export const TaskBoardWithFilters: React.FC<TaskBoardWithFiltersProps> = ({
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default TaskBoardWithFilters;
+export default TaskBoardWithFilters

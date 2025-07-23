@@ -1,40 +1,37 @@
-import { useEffect, useCallback } from 'react';
-import { useTaskBoard } from './useTaskBoard';
-import type {
-  FilterOptions,
-  SortOptions,
-} from '../components/TaskBoard/FilterSortControls';
+import { useEffect, useCallback } from 'react'
+import { useTaskBoard } from './useTaskBoard'
+import type { FilterOptions, SortOptions } from '../components/TaskBoard/FilterSortControls'
 
 export interface TaskFiltersIntegrationOptions {
-  repositoryPath: string;
-  onTasksChange?: (tasks: any[]) => void;
-  onFilterChange?: (filters: FilterOptions) => void;
-  onSortChange?: (sorting: SortOptions) => void;
-  onError?: (error: Error) => void;
+  repositoryPath: string
+  onTasksChange?: (tasks: any[]) => void
+  onFilterChange?: (filters: FilterOptions) => void
+  onSortChange?: (sorting: SortOptions) => void
+  onError?: (error: Error) => void
 }
 
 export interface TaskFiltersIntegrationReturn {
   // Task board state
-  tasks: any[];
-  loading: boolean;
-  error: Error | null;
-  totalCount: number;
-  filteredCount: number;
-  availableAssignees: string[];
+  tasks: any[]
+  loading: boolean
+  error: Error | null
+  totalCount: number
+  filteredCount: number
+  availableAssignees: string[]
 
   // Filter state
-  filters: FilterOptions;
-  sorting: SortOptions;
+  filters: FilterOptions
+  sorting: SortOptions
 
   // Actions
-  updateFilter: (key: keyof FilterOptions, value: string) => void;
-  updateSort: (key: keyof SortOptions, value: string) => void;
-  clearFilters: () => void;
-  refetchTasks: () => Promise<void>;
+  updateFilter: (key: keyof FilterOptions, value: string) => void
+  updateSort: (key: keyof SortOptions, value: string) => void
+  clearFilters: () => void
+  refetchTasks: () => Promise<void>
 
   // Computed values
-  hasActiveFilters: boolean;
-  hasActiveSort: boolean;
+  hasActiveFilters: boolean
+  hasActiveSort: boolean
 }
 
 /**
@@ -46,13 +43,7 @@ export interface TaskFiltersIntegrationReturn {
 export const useTaskFiltersIntegration = (
   options: TaskFiltersIntegrationOptions
 ): TaskFiltersIntegrationReturn => {
-  const {
-    repositoryPath,
-    onTasksChange,
-    onFilterChange,
-    onSortChange,
-    onError,
-  } = options;
+  const { repositoryPath, onTasksChange, onFilterChange, onSortChange, onError } = options
 
   const taskBoard = useTaskBoard({
     repositoryPath,
@@ -60,10 +51,10 @@ export const useTaskFiltersIntegration = (
     debounceMs: 300,
     pageSize: 100,
     onError,
-    onDataChange: data => {
-      onTasksChange?.(data.tasks);
+    onDataChange: (data) => {
+      onTasksChange?.(data.tasks)
     },
-  });
+  })
 
   const {
     data,
@@ -74,51 +65,51 @@ export const useTaskFiltersIntegration = (
     hasActiveFilters,
     hasActiveSort,
     refetch,
-  } = taskBoard;
+  } = taskBoard
 
   // Update filter and notify parent
   const updateFilter = useCallback(
     (key: keyof FilterOptions, value: string) => {
-      filtersActions.updateFilter(key, value);
-      onFilterChange?.(filtersState.filters);
+      filtersActions.updateFilter(key, value)
+      onFilterChange?.(filtersState.filters)
     },
     [filtersActions, filtersState.filters, onFilterChange]
-  );
+  )
 
   // Update sort and notify parent
   const updateSort = useCallback(
     (key: keyof SortOptions, value: string) => {
-      filtersActions.updateSort(key, value);
-      onSortChange?.(filtersState.sorting);
+      filtersActions.updateSort(key, value)
+      onSortChange?.(filtersState.sorting)
     },
     [filtersActions, filtersState.sorting, onSortChange]
-  );
+  )
 
   // Clear filters and notify parent
   const clearFilters = useCallback(() => {
-    filtersActions.clearFilters();
-    onFilterChange?.(filtersState.filters);
-  }, [filtersActions, filtersState.filters, onFilterChange]);
+    filtersActions.clearFilters()
+    onFilterChange?.(filtersState.filters)
+  }, [filtersActions, filtersState.filters, onFilterChange])
 
   // Refetch tasks wrapper
   const refetchTasks = useCallback(async () => {
-    await refetch();
-  }, [refetch]);
+    await refetch()
+  }, [refetch])
 
   // Notify parent components of changes
   useEffect(() => {
     if (data?.tasks) {
-      onTasksChange?.(data.tasks);
+      onTasksChange?.(data.tasks)
     }
-  }, [data?.tasks, onTasksChange]);
+  }, [data?.tasks, onTasksChange])
 
   useEffect(() => {
-    onFilterChange?.(filtersState.filters);
-  }, [filtersState.filters, onFilterChange]);
+    onFilterChange?.(filtersState.filters)
+  }, [filtersState.filters, onFilterChange])
 
   useEffect(() => {
-    onSortChange?.(filtersState.sorting);
-  }, [filtersState.sorting, onSortChange]);
+    onSortChange?.(filtersState.sorting)
+  }, [filtersState.sorting, onSortChange])
 
   return {
     // Task board state
@@ -142,7 +133,7 @@ export const useTaskFiltersIntegration = (
     // Computed values
     hasActiveFilters,
     hasActiveSort,
-  };
-};
+  }
+}
 
-export default useTaskFiltersIntegration;
+export default useTaskFiltersIntegration

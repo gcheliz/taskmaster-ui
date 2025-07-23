@@ -3,19 +3,19 @@
  * Shows connected users and their status indicators
  */
 
-import React from 'react';
-import { Badge } from '../ui/atoms/Badge';
-import { Icon, CheckIcon } from '../ui/atoms/Icon';
-import { useUserPresence } from '../../hooks/useWebSocket';
-import type { User } from '../../types/websocket';
-import { cn } from '../../utils/cn';
+import React from 'react'
+import { Badge } from '../ui/atoms/Badge'
+import { Icon, CheckIcon } from '../ui/atoms/Icon'
+import { useUserPresence } from '../../hooks/useWebSocket'
+import type { User } from '../../types/websocket'
+import { cn } from '../../utils/cn'
 
 interface UserAvatarProps {
-  user: User;
-  isActive?: boolean;
-  size?: 'sm' | 'md' | 'lg';
-  showStatus?: boolean;
-  className?: string;
+  user: User
+  isActive?: boolean
+  size?: 'sm' | 'md' | 'lg'
+  showStatus?: boolean
+  className?: string
 }
 
 export const UserAvatar: React.FC<UserAvatarProps> = ({
@@ -29,22 +29,22 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
     sm: 'w-8 h-8 text-xs',
     md: 'w-10 h-10 text-sm',
     lg: 'w-12 h-12 text-base',
-  };
+  }
 
   const statusSizes = {
     sm: 'w-2 h-2',
     md: 'w-3 h-3',
     lg: 'w-4 h-4',
-  };
+  }
 
   const getInitials = (name: string): string => {
     return name
       .split(' ')
-      .map(word => word.charAt(0))
+      .map((word) => word.charAt(0))
       .join('')
       .toUpperCase()
-      .slice(0, 2);
-  };
+      .slice(0, 2)
+  }
 
   const getUserColor = (userId: string): string => {
     const colors = [
@@ -56,12 +56,10 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
       'bg-purple-500',
       'bg-pink-500',
       'bg-indigo-500',
-    ];
-    const index = userId
-      .split('')
-      .reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    return colors[index % colors.length];
-  };
+    ]
+    const index = userId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
+    return colors[index % colors.length]
+  }
 
   return (
     <div className={cn('relative', className)}>
@@ -99,31 +97,28 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
         />
       )}
     </div>
-  );
-};
-
-interface ConnectedUsersProps {
-  maxVisible?: number;
-  className?: string;
+  )
 }
 
-export const ConnectedUsers: React.FC<ConnectedUsersProps> = ({
-  maxVisible = 5,
-  className,
-}) => {
-  const { connectedUsers, isUserActive } = useUserPresence();
+interface ConnectedUsersProps {
+  maxVisible?: number
+  className?: string
+}
+
+export const ConnectedUsers: React.FC<ConnectedUsersProps> = ({ maxVisible = 5, className }) => {
+  const { connectedUsers, isUserActive } = useUserPresence()
 
   if (connectedUsers.length === 0) {
-    return null;
+    return null
   }
 
-  const visibleUsers = connectedUsers.slice(0, maxVisible);
-  const hiddenUsersCount = Math.max(0, connectedUsers.length - maxVisible);
+  const visibleUsers = connectedUsers.slice(0, maxVisible)
+  const hiddenUsersCount = Math.max(0, connectedUsers.length - maxVisible)
 
   return (
     <div className={cn('flex items-center space-x-2', className)}>
       <div className="flex -space-x-2">
-        {visibleUsers.map(user => (
+        {visibleUsers.map((user) => (
           <UserAvatar
             key={user.id}
             user={user}
@@ -140,30 +135,28 @@ export const ConnectedUsers: React.FC<ConnectedUsersProps> = ({
         )}
       </div>
 
-      <div className="text-sm text-slate-400">
-        {connectedUsers.length} online
-      </div>
+      <div className="text-sm text-slate-400">{connectedUsers.length} online</div>
     </div>
-  );
-};
+  )
+}
 
 interface UserPresenceIndicatorProps {
-  userId: string;
-  className?: string;
+  userId: string
+  className?: string
 }
 
 export const UserPresenceIndicator: React.FC<UserPresenceIndicatorProps> = ({
   userId,
   className,
 }) => {
-  const { connectedUsers, isUserActive } = useUserPresence();
-  const user = connectedUsers.find(u => u.id === userId);
+  const { connectedUsers, isUserActive } = useUserPresence()
+  const user = connectedUsers.find((u) => u.id === userId)
 
   if (!user) {
-    return null;
+    return null
   }
 
-  const isActive = isUserActive(userId);
+  const isActive = isUserActive(userId)
 
   return (
     <div className={cn('flex items-center space-x-2', className)}>
@@ -181,32 +174,26 @@ export const UserPresenceIndicator: React.FC<UserPresenceIndicatorProps> = ({
         </div>
       </div>
     </div>
-  );
-};
-
-interface UserCursorProps {
-  userId: string;
-  className?: string;
+  )
 }
 
-export const UserCursor: React.FC<UserCursorProps> = ({
-  userId,
-  className,
-}) => {
-  const { connectedUsers, getUserCursor } = useUserPresence();
-  const user = connectedUsers.find(u => u.id === userId);
-  const cursor = getUserCursor(userId);
+interface UserCursorProps {
+  userId: string
+  className?: string
+}
+
+export const UserCursor: React.FC<UserCursorProps> = ({ userId, className }) => {
+  const { connectedUsers, getUserCursor } = useUserPresence()
+  const user = connectedUsers.find((u) => u.id === userId)
+  const cursor = getUserCursor(userId)
 
   if (!user || !cursor) {
-    return null;
+    return null
   }
 
   return (
     <div
-      className={cn(
-        'fixed pointer-events-none z-50 transition-all duration-100',
-        className
-      )}
+      className={cn('fixed pointer-events-none z-50 transition-all duration-100', className)}
       style={{
         left: cursor.x,
         top: cursor.y,
@@ -214,13 +201,7 @@ export const UserCursor: React.FC<UserCursorProps> = ({
       }}
     >
       <div className="relative">
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          className="drop-shadow-lg"
-        >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="drop-shadow-lg">
           <path
             d="M5.65376 12.3673H5.46026L5.31717 12.4976L0.500002 16.8829L0.500002 1.19841L11.7841 12.3673H5.65376Z"
             fill={user.color || '#3B82F6'}
@@ -237,18 +218,16 @@ export const UserCursor: React.FC<UserCursorProps> = ({
         </div>
       </div>
     </div>
-  );
-};
-
-interface CollaborationStatusProps {
-  className?: string;
+  )
 }
 
-export const CollaborationStatus: React.FC<CollaborationStatusProps> = ({
-  className,
-}) => {
-  const { connectedUsers } = useUserPresence();
-  const activeUsers = connectedUsers.length;
+interface CollaborationStatusProps {
+  className?: string
+}
+
+export const CollaborationStatus: React.FC<CollaborationStatusProps> = ({ className }) => {
+  const { connectedUsers } = useUserPresence()
+  const activeUsers = connectedUsers.length
 
   return (
     <div className={cn('flex items-center space-x-2', className)}>
@@ -265,8 +244,8 @@ export const CollaborationStatus: React.FC<CollaborationStatusProps> = ({
         </Badge>
       )}
     </div>
-  );
-};
+  )
+}
 
 export default {
   UserAvatar,
@@ -274,4 +253,4 @@ export default {
   UserPresenceIndicator,
   UserCursor,
   CollaborationStatus,
-};
+}

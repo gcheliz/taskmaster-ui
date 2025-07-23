@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react'
 // import { useState } from 'react';
-import { ModernDashboardView } from '../../components/Views/ModernDashboardView';
-import { DashboardDemo } from '../../components/Views/DashboardDemo';
+import { ModernDashboardView } from '../../components/Views/ModernDashboardView'
+import { DashboardDemo } from '../../components/Views/DashboardDemo'
 
 const meta = {
   title: 'Views/ModernDashboardView',
@@ -37,10 +37,10 @@ const meta = {
       description: 'Additional CSS classes',
     },
   },
-} satisfies Meta<typeof ModernDashboardView>;
+} satisfies Meta<typeof ModernDashboardView>
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 // Mock the dashboard hook data
 const mockDashboardData = {
@@ -91,12 +91,12 @@ const mockDashboardData = {
       type: 'task_started',
     },
   ],
-};
+}
 
 const mockHealthData = {
   score: 87,
   status: 'good',
-};
+}
 
 // Mock the useDashboard hook
 const mockUseDashboard = () => ({
@@ -110,7 +110,7 @@ const mockUseDashboard = () => ({
   clearError: () => {},
   isStale: false,
   retryCount: 0,
-});
+})
 
 // Override the hook for stories
 // const originalHook = require('../../hooks/useDashboard');
@@ -123,12 +123,12 @@ export const Default: Story = {
     projectId: 'taskmaster-ui',
     projectTag: 'frontend',
   },
-  render: args => (
+  render: (args) => (
     <div className="min-h-screen">
       <ModernDashboardView {...args} />
     </div>
   ),
-};
+}
 
 export const DarkTheme: Story = {
   args: {
@@ -138,21 +138,21 @@ export const DarkTheme: Story = {
   parameters: {
     backgrounds: { default: 'light' },
   },
-  render: args => (
+  render: (args) => (
     <div className="">
       <div className="min-h-screen">
         <ModernDashboardView {...args} />
       </div>
     </div>
   ),
-};
+}
 
 export const LoadingState: Story = {
   args: {
     projectId: 'taskmaster-ui',
     projectTag: 'frontend',
   },
-  render: args => {
+  render: (args) => {
     // Mock loading state
     const mockUseDashboardLoading = () => ({
       data: null,
@@ -165,7 +165,7 @@ export const LoadingState: Story = {
       clearError: () => {},
       isStale: false,
       retryCount: 0,
-    });
+    })
 
     // originalHook.useDashboard = mockUseDashboardLoading;
 
@@ -173,31 +173,29 @@ export const LoadingState: Story = {
       <div className="min-h-screen">
         <ModernDashboardView {...args} />
       </div>
-    );
+    )
   },
-};
+}
 
 export const ErrorState: Story = {
   args: {
     projectId: 'invalid-project',
     projectTag: 'frontend',
   },
-  render: args => {
+  render: (args) => {
     // Mock error state
     const mockUseDashboardError = () => ({
       data: null,
       health: null,
       loading: false,
-      error: new Error(
-        'Failed to load dashboard data. Please check your network connection.'
-      ),
+      error: new Error('Failed to load dashboard data. Please check your network connection.'),
       lastUpdated: null,
       refresh: async () => {},
       refreshHealth: async () => {},
       clearError: () => {},
       isStale: false,
       retryCount: 2,
-    });
+    })
 
     // originalHook.useDashboard = mockUseDashboardError;
 
@@ -205,16 +203,16 @@ export const ErrorState: Story = {
       <div className="min-h-screen">
         <ModernDashboardView {...args} />
       </div>
-    );
+    )
   },
-};
+}
 
 export const EmptyState: Story = {
   args: {
     projectId: 'empty-project',
     projectTag: 'frontend',
   },
-  render: args => {
+  render: (args) => {
     // Mock empty state
     const mockUseDashboardEmpty = () => ({
       data: null,
@@ -227,7 +225,7 @@ export const EmptyState: Story = {
       clearError: () => {},
       isStale: false,
       retryCount: 0,
-    });
+    })
 
     // originalHook.useDashboard = mockUseDashboardEmpty;
 
@@ -235,16 +233,16 @@ export const EmptyState: Story = {
       <div className="min-h-screen">
         <ModernDashboardView {...args} />
       </div>
-    );
+    )
   },
-};
+}
 
 export const HighActivityProject: Story = {
   args: {
     projectId: 'high-activity-project',
     projectTag: 'frontend',
   },
-  render: args => {
+  render: (args) => {
     // Mock high activity data
     const mockUseDashboardHighActivity = () => ({
       data: {
@@ -288,7 +286,7 @@ export const HighActivityProject: Story = {
       clearError: () => {},
       isStale: false,
       retryCount: 0,
-    });
+    })
 
     // originalHook.useDashboard = mockUseDashboardHighActivity;
 
@@ -296,16 +294,16 @@ export const HighActivityProject: Story = {
       <div className="min-h-screen">
         <ModernDashboardView {...args} />
       </div>
-    );
+    )
   },
-};
+}
 
 export const ResponsiveDemo: Story = {
   args: {
     projectId: 'responsive-demo',
     projectTag: 'frontend',
   },
-  render: args => (
+  render: (args) => (
     <div className="space-y-8">
       <div className="text-center p-4">
         <h2 className="text-2xl font-bold text-secondary-900 dark:text-secondary-100 mb-4">
@@ -347,7 +345,7 @@ export const ResponsiveDemo: Story = {
       </div>
     </div>
   ),
-};
+}
 
 export const InteractiveDemo: Story = {
   args: {
@@ -355,4 +353,4 @@ export const InteractiveDemo: Story = {
     projectTag: 'frontend',
   },
   render: () => <DashboardDemo />,
-};
+}

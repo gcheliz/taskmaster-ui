@@ -1,42 +1,42 @@
-import React, { useState, useCallback } from 'react';
-import { cn } from '../../utils/cn';
-import { RepositoryGrid } from '../Repository/RepositoryGrid';
-import { CommitHistoryModal } from '../Repository/CommitHistoryModal';
-import { RepositoryHealthModal } from '../Repository/RepositoryHealthModal';
-import type { RepositoryCardProps } from '../Repository/RepositoryCard';
+import React, { useState, useCallback } from 'react'
+import { cn } from '../../utils/cn'
+import { RepositoryGrid } from '../Repository/RepositoryGrid'
+import { CommitHistoryModal } from '../Repository/CommitHistoryModal'
+import { RepositoryHealthModal } from '../Repository/RepositoryHealthModal'
+import type { RepositoryCardProps } from '../Repository/RepositoryCard'
 
 export interface EnhancedRepositoryViewProps {
   /** Array of repositories to display */
-  repositories: RepositoryCardProps['repository'][];
+  repositories: RepositoryCardProps['repository'][]
   /** Loading state */
-  isLoading?: boolean;
+  isLoading?: boolean
   /** Error message */
-  error?: string | null;
+  error?: string | null
   /** Whether to show enhanced features */
-  showEnhanced?: boolean;
+  showEnhanced?: boolean
   /** Whether to enable real-time updates */
-  enableRealtime?: boolean;
+  enableRealtime?: boolean
   /** Event handlers */
-  onRepositoryClick?: (repository: RepositoryCardProps['repository']) => void;
-  onRepositoryRefresh?: (repositoryId: string) => void;
-  onRepositoryDetails?: (repositoryId: string) => void;
-  onRepositoryManage?: (repositoryId: string) => void;
-  onRefreshAll?: () => void;
+  onRepositoryClick?: (repository: RepositoryCardProps['repository']) => void
+  onRepositoryRefresh?: (repositoryId: string) => void
+  onRepositoryDetails?: (repositoryId: string) => void
+  onRepositoryManage?: (repositoryId: string) => void
+  onRefreshAll?: () => void
   /** Additional CSS classes */
-  className?: string;
+  className?: string
 }
 
 export interface CommitHistoryModalState {
-  isOpen: boolean;
-  repositoryId: string | null;
-  repositoryName: string | null;
-  branchName?: string;
+  isOpen: boolean
+  repositoryId: string | null
+  repositoryName: string | null
+  branchName?: string
 }
 
 export interface HealthModalState {
-  isOpen: boolean;
-  repositoryId: string | null;
-  repositoryName: string | null;
+  isOpen: boolean
+  repositoryId: string | null
+  repositoryName: string | null
 }
 
 export const EnhancedRepositoryView: React.FC<EnhancedRepositoryViewProps> = ({
@@ -52,34 +52,33 @@ export const EnhancedRepositoryView: React.FC<EnhancedRepositoryViewProps> = ({
   onRefreshAll,
   className,
 }) => {
-  const [commitHistoryModal, setCommitHistoryModal] =
-    useState<CommitHistoryModalState>({
-      isOpen: false,
-      repositoryId: null,
-      repositoryName: null,
-      branchName: undefined,
-    });
+  const [commitHistoryModal, setCommitHistoryModal] = useState<CommitHistoryModalState>({
+    isOpen: false,
+    repositoryId: null,
+    repositoryName: null,
+    branchName: undefined,
+  })
 
   const [healthModal, setHealthModal] = useState<HealthModalState>({
     isOpen: false,
     repositoryId: null,
     repositoryName: null,
-  });
+  })
 
   const handleRepositoryCommits = useCallback(
     (repositoryId: string) => {
-      const repository = repositories.find(repo => repo.id === repositoryId);
+      const repository = repositories.find((repo) => repo.id === repositoryId)
       if (repository) {
         setCommitHistoryModal({
           isOpen: true,
           repositoryId,
           repositoryName: repository.name,
           branchName: repository.currentBranch,
-        });
+        })
       }
     },
     [repositories]
-  );
+  )
 
   const handleCommitHistoryClose = useCallback(() => {
     setCommitHistoryModal({
@@ -87,30 +86,30 @@ export const EnhancedRepositoryView: React.FC<EnhancedRepositoryViewProps> = ({
       repositoryId: null,
       repositoryName: null,
       branchName: undefined,
-    });
-  }, []);
+    })
+  }, [])
 
   const handleRepositoryDetails = useCallback(
     (repositoryId: string) => {
-      const repository = repositories.find(repo => repo.id === repositoryId);
+      const repository = repositories.find((repo) => repo.id === repositoryId)
       if (repository) {
         setHealthModal({
           isOpen: true,
           repositoryId,
           repositoryName: repository.name,
-        });
+        })
       }
     },
     [repositories]
-  );
+  )
 
   const handleHealthModalClose = useCallback(() => {
     setHealthModal({
       isOpen: false,
       repositoryId: null,
       repositoryName: null,
-    });
-  }, []);
+    })
+  }, [])
 
   return (
     <div className={cn('enhanced-repository-view', className)}>
@@ -119,12 +118,9 @@ export const EnhancedRepositoryView: React.FC<EnhancedRepositoryViewProps> = ({
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-2xl font-semibold text-gray-900">
-                Repository Dashboard
-              </h1>
+              <h1 className="text-2xl font-semibold text-gray-900">Repository Dashboard</h1>
               <p className="text-gray-600 mt-1">
-                Monitor and manage your Git repositories with detailed insights
-                and commit history
+                Monitor and manage your Git repositories with detailed insights and commit history
               </p>
             </div>
 
@@ -140,29 +136,27 @@ export const EnhancedRepositoryView: React.FC<EnhancedRepositoryViewProps> = ({
           {repositories.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="bg-blue-50 rounded-lg p-4">
-                <div className="text-2xl font-semibold text-blue-600">
-                  {repositories.length}
-                </div>
+                <div className="text-2xl font-semibold text-blue-600">{repositories.length}</div>
                 <div className="text-sm text-blue-700">Total Repositories</div>
               </div>
 
               <div className="bg-green-50 rounded-lg p-4">
                 <div className="text-2xl font-semibold text-green-600">
-                  {repositories.filter(repo => repo.status.isClean).length}
+                  {repositories.filter((repo) => repo.status.isClean).length}
                 </div>
                 <div className="text-sm text-green-700">Clean Repositories</div>
               </div>
 
               <div className="bg-yellow-50 rounded-lg p-4">
                 <div className="text-2xl font-semibold text-yellow-600">
-                  {repositories.filter(repo => !repo.status.isClean).length}
+                  {repositories.filter((repo) => !repo.status.isClean).length}
                 </div>
                 <div className="text-sm text-yellow-700">With Changes</div>
               </div>
 
               <div className="bg-purple-50 rounded-lg p-4">
                 <div className="text-2xl font-semibold text-purple-600">
-                  {repositories.filter(repo => repo.isPrivate).length}
+                  {repositories.filter((repo) => repo.isPrivate).length}
                 </div>
                 <div className="text-sm text-purple-700">Private Repos</div>
               </div>
@@ -207,7 +201,7 @@ export const EnhancedRepositoryView: React.FC<EnhancedRepositoryViewProps> = ({
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default EnhancedRepositoryView;
+export default EnhancedRepositoryView

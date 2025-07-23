@@ -1,112 +1,107 @@
-import React, { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { Spinner } from '../ui/atoms/Spinner';
+import React, { useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
+import { Spinner } from '../ui/atoms/Spinner'
 
 export interface OAuthCallbackProps {
   /**
    * Callback when OAuth is successful
    */
-  onSuccess?: (data: { user: any; token: string }) => void;
+  onSuccess?: (data: { user: any; token: string }) => void
   /**
    * Callback when OAuth fails
    */
-  onError?: (error: string) => void;
+  onError?: (error: string) => void
 }
 
-export const OAuthCallback: React.FC<OAuthCallbackProps> = ({
-  onSuccess,
-  onError,
-}) => {
-  const [searchParams] = useSearchParams();
-  const [status, setStatus] = useState<'processing' | 'success' | 'error'>(
-    'processing'
-  );
-  const [message, setMessage] = useState('Processing OAuth callback...');
+export const OAuthCallback: React.FC<OAuthCallbackProps> = ({ onSuccess, onError }) => {
+  const [searchParams] = useSearchParams()
+  const [status, setStatus] = useState<'processing' | 'success' | 'error'>('processing')
+  const [message, setMessage] = useState('Processing OAuth callback...')
 
   useEffect(() => {
     const processCallback = async () => {
       try {
         // Check for error parameter
-        const error = searchParams.get('error');
+        const error = searchParams.get('error')
         if (error) {
-          const errorMessage = getErrorMessage(error);
-          setStatus('error');
-          setMessage(errorMessage);
-          onError?.(errorMessage);
-          return;
+          const errorMessage = getErrorMessage(error)
+          setStatus('error')
+          setMessage(errorMessage)
+          onError?.(errorMessage)
+          return
         }
 
         // Check for token and user data
-        const token = searchParams.get('token');
-        const userJson = searchParams.get('user');
+        const token = searchParams.get('token')
+        const userJson = searchParams.get('user')
 
         if (!token || !userJson) {
-          const errorMessage = 'Missing token or user data in OAuth callback';
-          setStatus('error');
-          setMessage(errorMessage);
-          onError?.(errorMessage);
-          return;
+          const errorMessage = 'Missing token or user data in OAuth callback'
+          setStatus('error')
+          setMessage(errorMessage)
+          onError?.(errorMessage)
+          return
         }
 
         // Parse user data
-        const user = JSON.parse(decodeURIComponent(userJson));
+        const user = JSON.parse(decodeURIComponent(userJson))
 
         // Store token in localStorage
-        localStorage.setItem('authToken', token);
-        localStorage.setItem('user', JSON.stringify(user));
+        localStorage.setItem('authToken', token)
+        localStorage.setItem('user', JSON.stringify(user))
 
-        setStatus('success');
-        setMessage('OAuth login successful! Redirecting...');
+        setStatus('success')
+        setMessage('OAuth login successful! Redirecting...')
 
         // Call success callback
-        onSuccess?.({ user, token });
+        onSuccess?.({ user, token })
 
         // Redirect after a brief delay
         setTimeout(() => {
-          window.location.href = '/dashboard';
-        }, 1500);
+          window.location.href = '/dashboard'
+        }, 1500)
       } catch (error) {
-        console.error('OAuth callback error:', error);
-        const errorMessage = 'Failed to process OAuth callback';
-        setStatus('error');
-        setMessage(errorMessage);
-        onError?.(errorMessage);
+        console.error('OAuth callback error:', error)
+        const errorMessage = 'Failed to process OAuth callback'
+        setStatus('error')
+        setMessage(errorMessage)
+        onError?.(errorMessage)
       }
-    };
+    }
 
-    processCallback();
-  }, [searchParams, onSuccess, onError]);
+    processCallback()
+  }, [searchParams, onSuccess, onError])
 
   const getErrorMessage = (error: string): string => {
     switch (error) {
       case 'oauth_failed':
-        return 'OAuth authentication failed. Please try again.';
+        return 'OAuth authentication failed. Please try again.'
       case 'oauth_callback_failed':
-        return 'OAuth callback processing failed. Please try again.';
+        return 'OAuth callback processing failed. Please try again.'
       case 'access_denied':
-        return 'Access denied. Please grant permissions to continue.';
+        return 'Access denied. Please grant permissions to continue.'
       default:
-        return `Authentication error: ${error}`;
+        return `Authentication error: ${error}`
     }
-  };
+  }
 
   const getStatusColor = () => {
     switch (status) {
       case 'processing':
-        return 'text-blue-600';
+        return 'text-blue-600'
       case 'success':
-        return 'text-green-600';
+        return 'text-green-600'
       case 'error':
-        return 'text-red-600';
+        return 'text-red-600'
       default:
-        return 'text-gray-600';
+        return 'text-gray-600'
     }
-  };
+  }
 
   const getStatusIcon = () => {
     switch (status) {
       case 'processing':
-        return <Spinner size="lg" className="text-blue-600" />;
+        return <Spinner size="lg" className="text-blue-600" />
       case 'success':
         return (
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
@@ -124,7 +119,7 @@ export const OAuthCallback: React.FC<OAuthCallbackProps> = ({
               />
             </svg>
           </div>
-        );
+        )
       case 'error':
         return (
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
@@ -142,11 +137,11 @@ export const OAuthCallback: React.FC<OAuthCallbackProps> = ({
               />
             </svg>
           </div>
-        );
+        )
       default:
-        return null;
+        return null
     }
-  };
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
@@ -180,13 +175,11 @@ export const OAuthCallback: React.FC<OAuthCallbackProps> = ({
         )}
 
         {status === 'success' && (
-          <div className="text-sm text-gray-500">
-            You will be redirected automatically...
-          </div>
+          <div className="text-sm text-gray-500">You will be redirected automatically...</div>
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default OAuthCallback;
+export default OAuthCallback

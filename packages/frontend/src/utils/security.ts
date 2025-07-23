@@ -9,9 +9,9 @@
  * Input validation result interface
  */
 export interface ValidationResult {
-  isValid: boolean;
-  error?: string;
-  sanitizedValue?: string;
+  isValid: boolean
+  error?: string
+  sanitizedValue?: string
 }
 
 /**
@@ -35,7 +35,7 @@ const VALIDATION_PATTERNS = {
 
   // Safe HTML content - very restrictive
   safeText: /^[a-zA-Z0-9\-_\s.,!?;:(){}[\]'"@#$%&+=~`]*$/,
-};
+}
 
 /**
  * Dangerous patterns that should be rejected
@@ -82,14 +82,14 @@ const DANGEROUS_PATTERNS = [
   /file:\/\//i,
   /ftp:\/\//i,
   /data:/i,
-];
+]
 
 /**
  * Sanitize a string by removing or escaping dangerous characters
  */
 export const sanitizeString = (input: string): string => {
   if (typeof input !== 'string') {
-    return '';
+    return ''
   }
 
   return (
@@ -104,8 +104,8 @@ export const sanitizeString = (input: string): string => {
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#x27;')
       .replace(/\//g, '&#x2F;')
-  );
-};
+  )
+}
 
 /**
  * Validate and sanitize repository path
@@ -115,24 +115,24 @@ export const validateRepositoryPath = (path: string): ValidationResult => {
     return {
       isValid: false,
       error: 'Repository path is required',
-    };
+    }
   }
 
-  const trimmedPath = path.trim();
+  const trimmedPath = path.trim()
 
   // Check length constraints
   if (trimmedPath.length < 2) {
     return {
       isValid: false,
       error: 'Path is too short',
-    };
+    }
   }
 
   if (trimmedPath.length > 500) {
     return {
       isValid: false,
       error: 'Path is too long (max 500 characters)',
-    };
+    }
   }
 
   // Check for dangerous patterns
@@ -141,7 +141,7 @@ export const validateRepositoryPath = (path: string): ValidationResult => {
       return {
         isValid: false,
         error: 'Path contains potentially dangerous characters',
-      };
+      }
     }
   }
 
@@ -151,11 +151,11 @@ export const validateRepositoryPath = (path: string): ValidationResult => {
       isValid: false,
       error:
         'Please provide an absolute path (e.g., /Users/john/my-repo or C:\\Users\\john\\my-repo)',
-    };
+    }
   }
 
   // Additional security checks
-  const normalizedPath = trimmedPath.toLowerCase();
+  const normalizedPath = trimmedPath.toLowerCase()
 
   // Prevent access to system directories
   const systemPaths = [
@@ -174,22 +174,22 @@ export const validateRepositoryPath = (path: string): ValidationResult => {
     'c:\\system32',
     'c:\\program files',
     'c:\\programdata',
-  ];
+  ]
 
   for (const sysPath of systemPaths) {
     if (normalizedPath.startsWith(sysPath)) {
       return {
         isValid: false,
         error: 'Access to system directories is not allowed',
-      };
+      }
     }
   }
 
   return {
     isValid: true,
     sanitizedValue: trimmedPath,
-  };
-};
+  }
+}
 
 /**
  * Validate and sanitize project name
@@ -199,24 +199,24 @@ export const validateProjectName = (name: string): ValidationResult => {
     return {
       isValid: false,
       error: 'Project name is required',
-    };
+    }
   }
 
-  const trimmedName = name.trim();
+  const trimmedName = name.trim()
 
   // Check length constraints
   if (trimmedName.length < 2) {
     return {
       isValid: false,
       error: 'Project name must be at least 2 characters long',
-    };
+    }
   }
 
   if (trimmedName.length > 50) {
     return {
       isValid: false,
       error: 'Project name must be less than 50 characters',
-    };
+    }
   }
 
   // Check for dangerous patterns
@@ -225,7 +225,7 @@ export const validateProjectName = (name: string): ValidationResult => {
       return {
         isValid: false,
         error: 'Project name contains invalid characters',
-      };
+      }
     }
   }
 
@@ -233,9 +233,8 @@ export const validateProjectName = (name: string): ValidationResult => {
   if (!VALIDATION_PATTERNS.projectName.test(trimmedName)) {
     return {
       isValid: false,
-      error:
-        'Project name can only contain letters, numbers, spaces, hyphens, and underscores',
-    };
+      error: 'Project name can only contain letters, numbers, spaces, hyphens, and underscores',
+    }
   }
 
   // Prevent reserved names
@@ -266,46 +265,46 @@ export const validateProjectName = (name: string): ValidationResult => {
     'admin',
     'root',
     'test',
-  ];
+  ]
 
   if (reservedNames.includes(trimmedName.toLowerCase())) {
     return {
       isValid: false,
       error: 'Project name is reserved and cannot be used',
-    };
+    }
   }
 
   return {
     isValid: true,
     sanitizedValue: trimmedName,
-  };
-};
+  }
+}
 
 /**
  * Validate task ID format
  */
 export const validateTaskId = (taskId: string | number): ValidationResult => {
-  const stringId = String(taskId).trim();
+  const stringId = String(taskId).trim()
 
   if (!stringId) {
     return {
       isValid: false,
       error: 'Task ID is required',
-    };
+    }
   }
 
   if (!VALIDATION_PATTERNS.taskId.test(stringId)) {
     return {
       isValid: false,
       error: 'Invalid task ID format',
-    };
+    }
   }
 
   return {
     isValid: true,
     sanitizedValue: stringId,
-  };
-};
+  }
+}
 
 /**
  * Validate and sanitize generic text input
@@ -313,40 +312,35 @@ export const validateTaskId = (taskId: string | number): ValidationResult => {
 export const validateTextInput = (
   input: string,
   options: {
-    required?: boolean;
-    minLength?: number;
-    maxLength?: number;
-    allowSpecialChars?: boolean;
+    required?: boolean
+    minLength?: number
+    maxLength?: number
+    allowSpecialChars?: boolean
   } = {}
 ): ValidationResult => {
-  const {
-    required = false,
-    minLength = 0,
-    maxLength = 1000,
-    allowSpecialChars = false,
-  } = options;
+  const { required = false, minLength = 0, maxLength = 1000, allowSpecialChars = false } = options
 
   if (!input || typeof input !== 'string') {
     if (required) {
       return {
         isValid: false,
         error: 'This field is required',
-      };
+      }
     }
     return {
       isValid: true,
       sanitizedValue: '',
-    };
+    }
   }
 
-  const trimmedInput = input.trim();
+  const trimmedInput = input.trim()
 
   // Check required
   if (required && !trimmedInput) {
     return {
       isValid: false,
       error: 'This field is required',
-    };
+    }
   }
 
   // Check length constraints
@@ -354,14 +348,14 @@ export const validateTextInput = (
     return {
       isValid: false,
       error: `Must be at least ${minLength} characters long`,
-    };
+    }
   }
 
   if (trimmedInput.length > maxLength) {
     return {
       isValid: false,
       error: `Must be less than ${maxLength} characters`,
-    };
+    }
   }
 
   // Check for dangerous patterns
@@ -370,7 +364,7 @@ export const validateTextInput = (
       return {
         isValid: false,
         error: 'Input contains potentially dangerous characters',
-      };
+      }
     }
   }
 
@@ -379,14 +373,14 @@ export const validateTextInput = (
     return {
       isValid: false,
       error: 'Input contains invalid characters',
-    };
+    }
   }
 
   return {
     isValid: true,
     sanitizedValue: sanitizeString(trimmedInput),
-  };
-};
+  }
+}
 
 /**
  * Create a Content Security Policy header value
@@ -402,57 +396,55 @@ export const generateCSPHeader = (): string => {
     "frame-ancestors 'none'",
     "object-src 'none'",
     "base-uri 'self'",
-  ];
+  ]
 
-  return policies.join('; ');
-};
+  return policies.join('; ')
+}
 
 /**
  * Rate limiting utility
  */
 export class RateLimiter {
-  private attempts: Map<string, number[]> = new Map();
-  private maxAttempts: number;
-  private windowMs: number;
+  private attempts: Map<string, number[]> = new Map()
+  private maxAttempts: number
+  private windowMs: number
 
   constructor(maxAttempts: number = 5, windowMs: number = 15 * 60 * 1000) {
-    this.maxAttempts = maxAttempts;
-    this.windowMs = windowMs;
+    this.maxAttempts = maxAttempts
+    this.windowMs = windowMs
   }
 
   /**
    * Check if an IP/identifier is rate limited
    */
   isLimited(identifier: string): boolean {
-    const now = Date.now();
-    const attempts = this.attempts.get(identifier) || [];
+    const now = Date.now()
+    const attempts = this.attempts.get(identifier) || []
 
     // Remove old attempts outside the window
-    const validAttempts = attempts.filter(
-      timestamp => now - timestamp < this.windowMs
-    );
+    const validAttempts = attempts.filter((timestamp) => now - timestamp < this.windowMs)
 
-    this.attempts.set(identifier, validAttempts);
+    this.attempts.set(identifier, validAttempts)
 
-    return validAttempts.length >= this.maxAttempts;
+    return validAttempts.length >= this.maxAttempts
   }
 
   /**
    * Record an attempt
    */
   recordAttempt(identifier: string): void {
-    const now = Date.now();
-    const attempts = this.attempts.get(identifier) || [];
+    const now = Date.now()
+    const attempts = this.attempts.get(identifier) || []
 
-    attempts.push(now);
-    this.attempts.set(identifier, attempts);
+    attempts.push(now)
+    this.attempts.set(identifier, attempts)
   }
 
   /**
    * Reset attempts for an identifier
    */
   reset(identifier: string): void {
-    this.attempts.delete(identifier);
+    this.attempts.delete(identifier)
   }
 }
 
@@ -460,27 +452,26 @@ export class RateLimiter {
  * Secure random string generator
  */
 export const generateSecureToken = (length: number = 32): string => {
-  const chars =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let result = '';
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  let result = ''
 
   // Use crypto.getRandomValues if available (browser environment)
   if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
-    const array = new Uint8Array(length);
-    crypto.getRandomValues(array);
+    const array = new Uint8Array(length)
+    crypto.getRandomValues(array)
 
     for (let i = 0; i < length; i++) {
-      result += chars[array[i] % chars.length];
+      result += chars[array[i] % chars.length]
     }
   } else {
     // Fallback for environments without crypto.getRandomValues
     for (let i = 0; i < length; i++) {
-      result += chars[Math.floor(Math.random() * chars.length)];
+      result += chars[Math.floor(Math.random() * chars.length)]
     }
   }
 
-  return result;
-};
+  return result
+}
 
 /**
  * Hash function for sensitive data (client-side)
@@ -488,22 +479,22 @@ export const generateSecureToken = (length: number = 32): string => {
  */
 export const hashString = async (input: string): Promise<string> => {
   if (typeof crypto !== 'undefined' && crypto.subtle) {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(input);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    const encoder = new TextEncoder()
+    const data = encoder.encode(input)
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data)
+    const hashArray = Array.from(new Uint8Array(hashBuffer))
+    return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('')
   } else {
     // Simple fallback hash (not cryptographically secure)
-    let hash = 0;
+    let hash = 0
     for (let i = 0; i < input.length; i++) {
-      const char = input.charCodeAt(i);
-      hash = (hash << 5) - hash + char;
-      hash = hash & hash; // Convert to 32-bit integer
+      const char = input.charCodeAt(i)
+      hash = (hash << 5) - hash + char
+      hash = hash & hash // Convert to 32-bit integer
     }
-    return Math.abs(hash).toString(16);
+    return Math.abs(hash).toString(16)
   }
-};
+}
 
 /**
  * Environment security checks
@@ -516,8 +507,8 @@ export const getSecurityHeaders = (): Record<string, string> => {
     'X-XSS-Protection': '1; mode=block',
     'Referrer-Policy': 'strict-origin-when-cross-origin',
     'Permissions-Policy': 'geolocation=(), microphone=(), camera=()',
-  };
-};
+  }
+}
 
 /**
  * Check if running in development mode
@@ -527,8 +518,8 @@ export const isDevelopment = (): boolean => {
     process.env.NODE_ENV === 'development' ||
     process.env.NODE_ENV === 'test' ||
     (typeof window !== 'undefined' && window.location.hostname === 'localhost')
-  );
-};
+  )
+}
 
 /**
  * Validate URL for safety
@@ -538,39 +529,36 @@ export const validateURL = (url: string): ValidationResult => {
     return {
       isValid: false,
       error: 'URL is required',
-    };
+    }
   }
 
   try {
-    const urlObj = new URL(url);
+    const urlObj = new URL(url)
 
     // Only allow http and https protocols
     if (!['http:', 'https:'].includes(urlObj.protocol)) {
       return {
         isValid: false,
         error: 'Only HTTP and HTTPS URLs are allowed',
-      };
+      }
     }
 
     // Prevent localhost in production
-    if (
-      !isDevelopment() &&
-      ['localhost', '127.0.0.1', '0.0.0.0'].includes(urlObj.hostname)
-    ) {
+    if (!isDevelopment() && ['localhost', '127.0.0.1', '0.0.0.0'].includes(urlObj.hostname)) {
       return {
         isValid: false,
         error: 'Localhost URLs are not allowed in production',
-      };
+      }
     }
 
     return {
       isValid: true,
       sanitizedValue: urlObj.toString(),
-    };
+    }
   } catch {
     return {
       isValid: false,
       error: 'Invalid URL format',
-    };
+    }
   }
-};
+}

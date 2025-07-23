@@ -1,31 +1,26 @@
-import React, { useState } from 'react';
-import { cn } from '../../utils/cn';
-import { Button } from '../ui/atoms/Button';
+import React, { useState } from 'react'
+import { cn } from '../../utils/cn'
+import { Button } from '../ui/atoms/Button'
 
 export interface SocialLoginButtonsProps {
   /**
    * Callback when social login is successful
    */
-  onSuccess?: (data: {
-    provider: string;
-    email: string;
-    name: string;
-    token: string;
-  }) => void;
+  onSuccess?: (data: { provider: string; email: string; name: string; token: string }) => void
   /**
    * Which providers to show
    * @default ['google', 'github']
    */
-  providers?: ('google' | 'github' | 'apple' | 'microsoft')[];
+  providers?: ('google' | 'github' | 'apple' | 'microsoft')[]
   /**
    * Layout orientation
    * @default 'vertical'
    */
-  layout?: 'vertical' | 'horizontal';
+  layout?: 'vertical' | 'horizontal'
   /**
    * Additional CSS classes
    */
-  className?: string;
+  className?: string
 }
 
 export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
@@ -34,18 +29,17 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
   layout = 'vertical',
   className,
 }) => {
-  const [loadingProvider, setLoadingProvider] = useState<string | null>(null);
+  const [loadingProvider, setLoadingProvider] = useState<string | null>(null)
 
   const handleSocialLogin = async (provider: string) => {
-    setLoadingProvider(provider);
+    setLoadingProvider(provider)
 
     try {
       // Get backend API URL from environment or default
-      const API_BASE_URL =
-        import.meta.env.VITE_API_URL || 'http://localhost:3001';
+      const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001'
 
       // Redirect to OAuth provider
-      const oauthUrl = `${API_BASE_URL}/api/auth/${provider}`;
+      const oauthUrl = `${API_BASE_URL}/api/auth/${provider}`
 
       // Open OAuth popup or redirect
       if (window.location !== window.parent.location) {
@@ -54,26 +48,26 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
           oauthUrl,
           `${provider}_oauth`,
           'width=500,height=600,scrollbars=yes,resizable=yes'
-        );
+        )
 
         // Listen for popup completion
         const checkClosed = setInterval(() => {
           if (popup?.closed) {
-            clearInterval(checkClosed);
-            setLoadingProvider(null);
+            clearInterval(checkClosed)
+            setLoadingProvider(null)
             // In a real app, you'd listen for postMessage from the popup
-            console.log(`${provider} OAuth completed (popup closed)`);
+            console.log(`${provider} OAuth completed (popup closed)`)
           }
-        }, 1000);
+        }, 1000)
       } else {
         // Direct redirect in main window
-        window.location.href = oauthUrl;
+        window.location.href = oauthUrl
       }
     } catch (error) {
-      console.error(`${provider} login failed:`, error);
-      setLoadingProvider(null);
+      console.error(`${provider} login failed:`, error)
+      setLoadingProvider(null)
     }
-  };
+  }
 
   const providerConfigs = {
     google: {
@@ -138,19 +132,15 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
       textColor: 'text-gray-700',
       borderColor: 'border-gray-300',
     },
-  };
+  }
 
   return (
     <div
-      className={cn(
-        'space-y-3',
-        layout === 'horizontal' && 'flex space-x-3 space-y-0',
-        className
-      )}
+      className={cn('space-y-3', layout === 'horizontal' && 'flex space-x-3 space-y-0', className)}
     >
-      {providers.map(provider => {
-        const config = providerConfigs[provider];
-        const isLoading = loadingProvider === provider;
+      {providers.map((provider) => {
+        const config = providerConfigs[provider]
+        const isLoading = loadingProvider === provider
 
         return (
           <Button
@@ -178,10 +168,10 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
             )}
             {isLoading && <span>Connecting...</span>}
           </Button>
-        );
+        )
       })}
     </div>
-  );
-};
+  )
+}
 
-export default SocialLoginButtons;
+export default SocialLoginButtons

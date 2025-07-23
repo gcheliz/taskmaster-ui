@@ -1,6 +1,6 @@
-import React from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '../../../utils/cn';
+import React from 'react'
+import { cva, type VariantProps } from 'class-variance-authority'
+import { cn } from '../../../utils/cn'
 
 const radioVariants = cva(
   'aspect-square h-4 w-4 rounded-full border border-secondary-300 text-primary-600 ring-offset-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 ease-in-out transform-gpu hover:scale-110 focus-visible:ring-offset-surface-100 dark:focus-visible:ring-offset-surface-900 hover:shadow-md dark:border-secondary-600 dark:text-primary-500 dark:focus-visible:ring-primary-400 hover:border-secondary-400 dark:hover:border-secondary-500',
@@ -25,7 +25,7 @@ const radioVariants = cva(
       variant: 'default',
     },
   }
-);
+)
 
 export interface RadioProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>,
@@ -34,53 +34,50 @@ export interface RadioProps
    * Shows error state styling
    * @default false
    */
-  error?: boolean;
+  error?: boolean
   /**
    * Shows success state styling
    * @default false
    */
-  success?: boolean;
+  success?: boolean
   /**
    * Size of the radio button
    * @default 'md'
    */
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg'
   /**
    * Visual style variant of the radio button
    * @default 'default'
    */
-  variant?: 'default' | 'error' | 'success';
+  variant?: 'default' | 'error' | 'success'
 }
 
 const Radio = React.forwardRef<HTMLInputElement, RadioProps>(
   ({ className, size, variant, error, success, style, ...props }, ref) => {
-    const computedVariant = error ? 'error' : success ? 'success' : variant;
+    const computedVariant = error ? 'error' : success ? 'success' : variant
 
     // CSS for radio checked state
     const radioStyles: React.CSSProperties = {
       ...style,
       ...(props.checked && {
-        backgroundImage:
-          'radial-gradient(circle, currentColor 40%, transparent 41%)',
+        backgroundImage: 'radial-gradient(circle, currentColor 40%, transparent 41%)',
       }),
-    };
+    }
 
     return (
       <div className="relative inline-flex items-center">
         <input
           type="radio"
-          className={cn(
-            radioVariants({ size, variant: computedVariant, className })
-          )}
+          className={cn(radioVariants({ size, variant: computedVariant, className }))}
           ref={ref}
           style={radioStyles}
           {...props}
         />
       </div>
-    );
+    )
   }
-);
+)
 
-Radio.displayName = 'Radio';
+Radio.displayName = 'Radio'
 
-export { Radio, radioVariants };
+export { Radio, radioVariants }

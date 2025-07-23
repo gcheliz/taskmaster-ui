@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 export const SimpleRepositoryView: React.FC = () => {
   return (
@@ -16,9 +16,7 @@ export const SimpleRepositoryView: React.FC = () => {
               <div className="repo-info">
                 <h3>taskmaster-ui</h3>
                 <p>Main project repository</p>
-                <span className="repo-path">
-                  /Users/gonzalo/workspace/taskmaster-ui
-                </span>
+                <span className="repo-path">/Users/gonzalo/workspace/taskmaster-ui</span>
               </div>
               <div className="repo-stats">
                 <span className="stat">15 commits</span>
@@ -31,9 +29,7 @@ export const SimpleRepositoryView: React.FC = () => {
               <div className="repo-info">
                 <h3>taskmaster-cli</h3>
                 <p>Command line interface</p>
-                <span className="repo-path">
-                  /Users/gonzalo/workspace/taskmaster-cli
-                </span>
+                <span className="repo-path">/Users/gonzalo/workspace/taskmaster-cli</span>
               </div>
               <div className="repo-stats">
                 <span className="stat">8 commits</span>
@@ -72,7 +68,7 @@ export const SimpleRepositoryView: React.FC = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default SimpleRepositoryView;
+export default SimpleRepositoryView

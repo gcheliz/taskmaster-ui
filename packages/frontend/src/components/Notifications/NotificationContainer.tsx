@@ -1,6 +1,6 @@
-import React from 'react';
-import { useNotification } from '../../contexts/NotificationContext';
-import { NotificationCard } from './NotificationCard';
+import React from 'react'
+import { useNotification } from '../../contexts/NotificationContext'
+import { NotificationCard } from './NotificationCard'
 
 export interface NotificationContainerProps {
   position?:
@@ -9,18 +9,18 @@ export interface NotificationContainerProps {
     | 'bottom-right'
     | 'bottom-left'
     | 'top-center'
-    | 'bottom-center';
-  className?: string;
+    | 'bottom-center'
+  className?: string
 }
 
 export const NotificationContainer: React.FC<NotificationContainerProps> = ({
   position = 'top-right',
   className = '',
 }) => {
-  const { state, removeNotification } = useNotification();
+  const { state, removeNotification } = useNotification()
 
   if (state.notifications.length === 0) {
-    return null;
+    return null
   }
 
   return (
@@ -31,7 +31,7 @@ export const NotificationContainer: React.FC<NotificationContainerProps> = ({
       aria-live="polite"
       aria-atomic="false"
     >
-      {state.notifications.map(notification => (
+      {state.notifications.map((notification) => (
         <NotificationCard
           key={notification.id}
           notification={notification}
@@ -39,5 +39,5 @@ export const NotificationContainer: React.FC<NotificationContainerProps> = ({
         />
       ))}
     </div>
-  );
-};
+  )
+}

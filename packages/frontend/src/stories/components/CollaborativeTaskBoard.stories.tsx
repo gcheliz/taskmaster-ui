@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { CollaborativeTaskBoard } from '../../components/TaskBoard/CollaborativeTaskBoard';
-import { WebSocketProvider } from '../../providers/WebSocketProvider';
-import type { Task, User } from '../../types/websocket';
+import type { Meta, StoryObj } from '@storybook/react'
+import { CollaborativeTaskBoard } from '../../components/TaskBoard/CollaborativeTaskBoard'
+import { WebSocketProvider } from '../../providers/WebSocketProvider'
+import type { Task, User } from '../../types/websocket'
 
 const meta: Meta<typeof CollaborativeTaskBoard> = {
   title: 'Components/CollaborativeTaskBoard',
@@ -24,7 +24,7 @@ const meta: Meta<typeof CollaborativeTaskBoard> = {
   },
   tags: ['autodocs'],
   decorators: [
-    Story => (
+    (Story) => (
       <WebSocketProvider
         wsUrl="ws://localhost:8080"
         autoConnect={false}
@@ -41,10 +41,10 @@ const meta: Meta<typeof CollaborativeTaskBoard> = {
       </WebSocketProvider>
     ),
   ],
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 // Mock data
 const mockTasks: Task[] = [
@@ -89,8 +89,7 @@ const mockTasks: Task[] = [
   {
     id: 'task-3',
     title: 'Set up CI/CD pipeline',
-    description:
-      'Configure GitHub Actions for automated testing and deployment',
+    description: 'Configure GitHub Actions for automated testing and deployment',
     status: 'pending',
     priority: 'medium',
     assignee: {
@@ -144,7 +143,7 @@ const mockTasks: Task[] = [
     complexity: 3,
     tags: ['documentation', 'api'],
   },
-];
+]
 
 export const Default: Story = {
   args: {
@@ -153,7 +152,7 @@ export const Default: Story = {
     showCollaboration: true,
     showUserCursors: true,
   },
-};
+}
 
 export const WithoutCollaboration: Story = {
   args: {
@@ -162,7 +161,7 @@ export const WithoutCollaboration: Story = {
     showCollaboration: false,
     showUserCursors: false,
   },
-};
+}
 
 export const EmptyBoard: Story = {
   args: {
@@ -171,7 +170,7 @@ export const EmptyBoard: Story = {
     showCollaboration: true,
     showUserCursors: true,
   },
-};
+}
 
 export const LoadingState: Story = {
   args: {
@@ -180,7 +179,7 @@ export const LoadingState: Story = {
     isLoading: true,
     showCollaboration: true,
   },
-};
+}
 
 export const ErrorState: Story = {
   args: {
@@ -189,7 +188,7 @@ export const ErrorState: Story = {
     error: 'Failed to connect to WebSocket server',
     showCollaboration: true,
   },
-};
+}
 
 export const HighActivityBoard: Story = {
   args: {
@@ -199,29 +198,18 @@ export const HighActivityBoard: Story = {
         id: `task-${i + 6}`,
         title: `Task ${i + 6}`,
         description: `Description for task ${i + 6}`,
-        status: ['pending', 'in-progress', 'done', 'blocked'][
-          i % 4
-        ] as Task['status'],
+        status: ['pending', 'in-progress', 'done', 'blocked'][i % 4] as Task['status'],
         priority: ['low', 'medium', 'high'][i % 3] as Task['priority'],
         assignee: {
           id: `user-${(i % 4) + 1}`,
-          name: ['John Doe', 'Jane Smith', 'Mike Johnson', 'Sarah Wilson'][
+          name: ['John Doe', 'Jane Smith', 'Mike Johnson', 'Sarah Wilson'][i % 4],
+          email: ['john@example.com', 'jane@example.com', 'mike@example.com', 'sarah@example.com'][
             i % 4
           ],
-          email: [
-            'john@example.com',
-            'jane@example.com',
-            'mike@example.com',
-            'sarah@example.com',
-          ][i % 4],
           color: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444'][i % 4],
         },
-        createdAt: new Date(
-          Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000
-        ).toISOString(),
-        updatedAt: new Date(
-          Date.now() - Math.random() * 24 * 60 * 60 * 1000
-        ).toISOString(),
+        createdAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
+        updatedAt: new Date(Date.now() - Math.random() * 24 * 60 * 60 * 1000).toISOString(),
         position: Math.floor(i / 4),
         column: ['pending', 'in-progress', 'done', 'blocked'][i % 4],
         complexity: Math.floor(Math.random() * 10) + 1,
@@ -237,7 +225,7 @@ export const HighActivityBoard: Story = {
     showCollaboration: true,
     showUserCursors: true,
   },
-};
+}
 
 export const InteractiveDemo: Story = {
   args: {
@@ -248,6 +236,6 @@ export const InteractiveDemo: Story = {
   },
   play: async ({ canvasElement, step }) => {
     // This would be used for interactive testing
-    console.log('Interactive demo started');
+    console.log('Interactive demo started')
   },
-};
+}

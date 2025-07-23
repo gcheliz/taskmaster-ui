@@ -1,7 +1,7 @@
-import React from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '../../../utils/cn';
-import { Icon, ChevronDownIcon } from './Icon';
+import React from 'react'
+import { cva, type VariantProps } from 'class-variance-authority'
+import { cn } from '../../../utils/cn'
+import { Icon, ChevronDownIcon } from './Icon'
 
 const selectVariants = cva(
   // Base styles with enhanced dark theme support and micro-interactions
@@ -27,7 +27,7 @@ const selectVariants = cva(
       selectSize: 'md',
     },
   }
-);
+)
 
 export interface SelectProps
   extends React.SelectHTMLAttributes<HTMLSelectElement>,
@@ -36,38 +36,33 @@ export interface SelectProps
    * Shows error state styling
    * @default false
    */
-  error?: boolean;
+  error?: boolean
   /**
    * Shows success state styling
    * @default false
    */
-  success?: boolean;
+  success?: boolean
   /**
    * The visual style variant of the select
    * @default 'default'
    */
-  variant?: 'default' | 'error' | 'success';
+  variant?: 'default' | 'error' | 'success'
   /**
    * The size of the select
    * @default 'md'
    */
-  selectSize?: 'sm' | 'md' | 'lg';
+  selectSize?: 'sm' | 'md' | 'lg'
 }
 
 const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
-  (
-    { className, variant, selectSize, error, success, children, ...props },
-    ref
-  ) => {
+  ({ className, variant, selectSize, error, success, children, ...props }, ref) => {
     // Determine variant based on state
-    const computedVariant = error ? 'error' : success ? 'success' : variant;
+    const computedVariant = error ? 'error' : success ? 'success' : variant
 
     return (
       <div className="relative">
         <select
-          className={cn(
-            selectVariants({ variant: computedVariant, selectSize, className })
-          )}
+          className={cn(selectVariants({ variant: computedVariant, selectSize, className }))}
           ref={ref}
           {...props}
         >
@@ -77,10 +72,10 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
           <Icon icon={ChevronDownIcon} size="sm" />
         </div>
       </div>
-    );
+    )
   }
-);
+)
 
-Select.displayName = 'Select';
+Select.displayName = 'Select'
 
-export { Select, selectVariants };
+export { Select, selectVariants }

@@ -1,99 +1,93 @@
-import React, { useState, useEffect } from 'react';
-import { cn } from '../../utils/cn';
-import { Card, CardContent } from '../ui/molecules/Card';
-import { Badge } from '../ui/atoms/Badge';
-import { Button } from '../ui/atoms/Button';
-import { Spinner } from '../ui/atoms/Spinner';
-import { BranchStatusIndicator } from './BranchStatusIndicator';
-import {
-  RepositoryHealthIndicator,
-  HealthScoreCompact,
-} from './RepositoryHealthIndicator';
+import React, { useState, useEffect } from 'react'
+import { cn } from '../../utils/cn'
+import { Card, CardContent } from '../ui/molecules/Card'
+import { Badge } from '../ui/atoms/Badge'
+import { Button } from '../ui/atoms/Button'
+import { Spinner } from '../ui/atoms/Spinner'
+import { BranchStatusIndicator } from './BranchStatusIndicator'
+import { RepositoryHealthIndicator, HealthScoreCompact } from './RepositoryHealthIndicator'
 import {
   useRepositoryHealth,
   useRepositoryStatistics,
   useRepositoryIntegrations,
   useRepositoryRealtime,
-} from '../../hooks/useRepositoryData';
-import {
-  useRepositoryState,
-  useRepositoryActions,
-} from '../../stores/repositoryStore';
+} from '../../hooks/useRepositoryData'
+import { useRepositoryState, useRepositoryActions } from '../../stores/repositoryStore'
 import type {
   RepositoryHealthMetrics,
   RepositoryStatistics,
   RepositoryIntegrationStatus,
-} from '../../services/repositoryService';
-import type { RepositoryMetadataData } from './RepositoryMetadata';
+} from '../../services/repositoryService'
+import type { RepositoryMetadataData } from './RepositoryMetadata'
 
 export interface RepositoryCardData {
-  id: string;
-  description?: string;
-  url?: string;
-  starCount?: number;
-  forkCount?: number;
-  language?: string;
-  isPrivate?: boolean;
-  size?: number; // in KB
+  id: string
+  description?: string
+  url?: string
+  starCount?: number
+  forkCount?: number
+  language?: string
+  isPrivate?: boolean
+  size?: number // in KB
 }
 
 export interface RepositoryCardProps {
   /** Repository metadata */
-  repository: RepositoryMetadataData & RepositoryCardData;
+  repository: RepositoryMetadataData & RepositoryCardData
   /** Card size variant */
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg'
   /** Whether to show detailed statistics */
-  showDetails?: boolean;
+  showDetails?: boolean
   /** Whether to show health metrics */
-  showHealth?: boolean;
+  showHealth?: boolean
   /** Whether to show integration status */
-  showIntegrations?: boolean;
+  showIntegrations?: boolean
   /** Whether to enable real-time updates */
-  enableRealtime?: boolean;
+  enableRealtime?: boolean
   /** Click handler for repository selection */
-  onClick?: (repository: RepositoryCardProps['repository']) => void;
+  onClick?: (repository: RepositoryCardProps['repository']) => void
   /** Action handlers */
-  onRefresh?: (repositoryId: string) => void;
-  onViewDetails?: (repositoryId: string) => void;
-  onViewCommits?: (repositoryId: string) => void;
-  onManage?: (repositoryId: string) => void;
+  onRefresh?: (repositoryId: string) => void
+  onViewDetails?: (repositoryId: string) => void
+  onViewCommits?: (repositoryId: string) => void
+  onManage?: (repositoryId: string) => void
   /** Additional CSS classes */
-  className?: string;
+  className?: string
 }
 
 export interface RepositoryCardEnhancedData {
-  id: string;
-  name: string;
-  description?: string;
-  path: string;
-  currentBranch: string;
+  id: string
+  name: string
+  description?: string
+  path: string
+  currentBranch: string
   lastCommit: {
-    hash: string;
-    date: string;
-    message: string;
+    hash: string
+    date: string
+    message: string
     author: {
-      name: string;
-      email: string;
-    };
-  };
+      name: string
+      email: string
+    }
+  }
   status: {
-    isClean: boolean;
-    staged: number;
-    unstaged: number;
-    untracked: number;
-    conflicted: number;
-    ahead?: number;
-    behind?: number;
-  };
-  url?: string;
-  starCount?: number;
-  forkCount?: number;
-  language?: string;
-  isPrivate?: boolean;
-  size?: number;
-  health?: RepositoryHealthMetrics;
-  statistics?: RepositoryStatistics;
-  integrations?: RepositoryIntegrationStatus;
+    isClean: boolean
+    staged: number
+    unstaged: number
+    untracked: number
+    conflicted: number
+    ahead?: number
+    behind?: number
+  }
+  url?: string
+  starCount?: number
+  forkCount?: number
+  language?: string
+  isPrivate?: boolean
+  size?: number
+  health?: RepositoryHealthMetrics
+  statistics?: RepositoryStatistics
+  integrations?: RepositoryIntegrationStatus
 }
 
 export const RepositoryCard: React.FC<RepositoryCardProps> = ({
@@ -110,95 +104,88 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = ({
   onManage,
   className,
 }) => {
-  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false)
 
   // Get centralized repository state
-  const repositoryState = useRepositoryState(repository.id);
-  const {
-    syncRepository,
-    openNewBranchModal,
-    openCommitHistory,
-    initializeRepository,
-  } = useRepositoryActions();
+  const repositoryState = useRepositoryState(repository.id)
+  const { syncRepository, openNewBranchModal, openCommitHistory, initializeRepository } =
+    useRepositoryActions()
 
   // Initialize repository state on mount
   useEffect(() => {
-    initializeRepository(repository.id);
-  }, [repository.id, initializeRepository]);
+    initializeRepository(repository.id)
+  }, [repository.id, initializeRepository])
 
   // Conditionally fetch enhanced data based on props
   const { health, isLoading: healthLoading } = useRepositoryHealth({
     repositoryId: repository.id,
     autoFetch: showHealth,
-  });
+  })
 
   const { statistics, isLoading: statsLoading } = useRepositoryStatistics({
     repositoryId: repository.id,
     autoFetch: showDetails,
-  });
+  })
 
-  const { integrations, isLoading: integrationsLoading } =
-    useRepositoryIntegrations({
-      repositoryId: repository.id,
-      autoFetch: showIntegrations,
-    });
+  const { integrations, isLoading: integrationsLoading } = useRepositoryIntegrations({
+    repositoryId: repository.id,
+    autoFetch: showIntegrations,
+  })
 
   const { isConnected, latestUpdate } = useRepositoryRealtime({
     repositoryId: repository.id,
     autoWatch: enableRealtime,
-    onUpdate: data => {
+    onUpdate: (data) => {
       // Handle real-time updates
-      console.log('Repository update:', data);
+      console.log('Repository update:', data)
     },
-  });
+  })
 
   const handleRefresh = async () => {
     // Use centralized sync functionality
-    await syncRepository(repository.id);
+    await syncRepository(repository.id)
 
     // Also call the original onRefresh callback if provided
     if (onRefresh) {
-      setIsRefreshing(true);
+      setIsRefreshing(true)
       try {
-        onRefresh(repository.id);
+        onRefresh(repository.id)
         // Add a small delay for visual feedback
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 1000))
       } finally {
-        setIsRefreshing(false);
+        setIsRefreshing(false)
       }
     }
-  };
+  }
 
   const handleNewBranch = () => {
-    openNewBranchModal(repository.id);
-  };
+    openNewBranchModal(repository.id)
+  }
 
   const handleViewCommits = () => {
     if (onViewCommits) {
-      onViewCommits(repository.id);
+      onViewCommits(repository.id)
     } else {
       // Use centralized commit history functionality
-      openCommitHistory(repository.id);
+      openCommitHistory(repository.id)
     }
-  };
+  }
 
-  const getHealthBadgeVariant = (
-    score?: number
-  ): 'success' | 'warning' | 'error' | 'secondary' => {
-    if (!score) return 'secondary';
-    if (score >= 80) return 'success';
-    if (score >= 60) return 'warning';
-    return 'error';
-  };
+  const getHealthBadgeVariant = (score?: number): 'success' | 'warning' | 'error' | 'secondary' => {
+    if (!score) return 'secondary'
+    if (score >= 80) return 'success'
+    if (score >= 60) return 'warning'
+    return 'error'
+  }
 
   const getBranchStatusVariant = (
     status: typeof repository.status
   ): 'success' | 'warning' | 'error' | 'secondary' => {
-    if (!status.isClean) return 'error';
-    if (status.ahead && status.ahead > 0) return 'warning';
-    if (status.behind && status.behind > 0) return 'warning';
-    return 'success';
-  };
+    if (!status.isClean) return 'error'
+    if (status.ahead && status.ahead > 0) return 'warning'
+    if (status.behind && status.behind > 0) return 'warning'
+    return 'success'
+  }
 
   const getIntegrationStatusVariant = (
     status?: string
@@ -206,44 +193,42 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = ({
     switch (status) {
       case 'passing':
       case 'deployed':
-        return 'success';
+        return 'success'
       case 'pending':
       case 'deploying':
-        return 'warning';
+        return 'warning'
       case 'failing':
       case 'failed':
-        return 'error';
+        return 'error'
       default:
-        return 'secondary';
+        return 'secondary'
     }
-  };
+  }
 
   const formatSize = (sizeInKB?: number): string => {
-    if (!sizeInKB) return 'Unknown';
-    if (sizeInKB < 1024) return `${sizeInKB} KB`;
-    if (sizeInKB < 1024 * 1024) return `${(sizeInKB / 1024).toFixed(1)} MB`;
-    return `${(sizeInKB / (1024 * 1024)).toFixed(1)} GB`;
-  };
+    if (!sizeInKB) return 'Unknown'
+    if (sizeInKB < 1024) return `${sizeInKB} KB`
+    if (sizeInKB < 1024 * 1024) return `${(sizeInKB / 1024).toFixed(1)} MB`
+    return `${(sizeInKB / (1024 * 1024)).toFixed(1)} GB`
+  }
 
   const formatLastCommitDate = (date: string): string => {
-    const commitDate = new Date(date);
-    const now = new Date();
-    const diffInHours =
-      (now.getTime() - commitDate.getTime()) / (1000 * 60 * 60);
+    const commitDate = new Date(date)
+    const now = new Date()
+    const diffInHours = (now.getTime() - commitDate.getTime()) / (1000 * 60 * 60)
 
-    if (diffInHours < 1) return 'Just now';
-    if (diffInHours < 24) return `${Math.floor(diffInHours)}h ago`;
-    if (diffInHours < 24 * 7) return `${Math.floor(diffInHours / 24)}d ago`;
-    if (diffInHours < 24 * 30)
-      return `${Math.floor(diffInHours / (24 * 7))}w ago`;
-    return commitDate.toLocaleDateString();
-  };
+    if (diffInHours < 1) return 'Just now'
+    if (diffInHours < 24) return `${Math.floor(diffInHours)}h ago`
+    if (diffInHours < 24 * 7) return `${Math.floor(diffInHours / 24)}d ago`
+    if (diffInHours < 24 * 30) return `${Math.floor(diffInHours / (24 * 7))}w ago`
+    return commitDate.toLocaleDateString()
+  }
 
   const cardSizeClasses = {
     sm: 'p-4',
     md: 'p-6',
     lg: 'p-8',
-  };
+  }
 
   return (
     <Card
@@ -261,13 +246,8 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = ({
         {enableRealtime && (
           <div className="absolute top-3 right-3">
             <div
-              className={cn(
-                'w-2 h-2 rounded-full',
-                isConnected ? 'bg-green-500' : 'bg-gray-400'
-              )}
-              title={
-                isConnected ? 'Real-time connected' : 'Real-time disconnected'
-              }
+              className={cn('w-2 h-2 rounded-full', isConnected ? 'bg-green-500' : 'bg-gray-400')}
+              title={isConnected ? 'Real-time connected' : 'Real-time disconnected'}
             />
           </div>
         )}
@@ -276,9 +256,7 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = ({
         <div className="flex items-start justify-between">
           <div className="flex-1 min-w-0">
             <div className="flex items-center space-x-2 mb-2">
-              <h3 className="text-lg font-semibold text-gray-900 truncate">
-                {repository.name}
-              </h3>
+              <h3 className="text-lg font-semibold text-gray-900 truncate">{repository.name}</h3>
               {repository.isPrivate && (
                 <Badge variant="secondary" size="sm">
                   Private
@@ -296,9 +274,7 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = ({
             </div>
 
             {repository.description && (
-              <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-                {repository.description}
-              </p>
+              <p className="text-sm text-gray-600 mb-3 line-clamp-2">{repository.description}</p>
             )}
 
             {/* Repository Stats Row */}
@@ -335,18 +311,14 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = ({
             <Button
               variant="ghost"
               size="sm"
-              onClick={e => {
-                e.stopPropagation();
-                handleRefresh();
+              onClick={(e) => {
+                e.stopPropagation()
+                handleRefresh()
               }}
               disabled={isRefreshing}
               title="Refresh repository data"
             >
-              {isRefreshing ? (
-                <Spinner size="sm" />
-              ) : (
-                <RefreshIcon className="w-4 h-4" />
-              )}
+              {isRefreshing ? <Spinner size="sm" /> : <RefreshIcon className="w-4 h-4" />}
             </Button>
           </div>
         </div>
@@ -393,12 +365,9 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = ({
 
         {/* Last Commit */}
         <div className="bg-gray-50/50 rounded-lg p-3">
-          <p className="text-sm text-gray-900 mb-1 truncate">
-            {repository.lastCommit.message}
-          </p>
+          <p className="text-sm text-gray-900 mb-1 truncate">{repository.lastCommit.message}</p>
           <p className="text-xs text-gray-500">
-            by {repository.lastCommit.author.name} •{' '}
-            {repository.lastCommit.hash.substring(0, 7)}
+            by {repository.lastCommit.author.name} • {repository.lastCommit.hash.substring(0, 7)}
           </p>
         </div>
 
@@ -406,9 +375,7 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = ({
         {showDetails && statistics && !statsLoading && (
           <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-200">
             <div className="text-center">
-              <div className="text-lg font-semibold text-gray-900">
-                {statistics.commits.total}
-              </div>
+              <div className="text-lg font-semibold text-gray-900">{statistics.commits.total}</div>
               <div className="text-xs text-gray-500">Total Commits</div>
             </div>
             <div className="text-center">
@@ -434,9 +401,7 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = ({
             )}
             {integrations.deployment.status !== 'unknown' && (
               <Badge
-                variant={getIntegrationStatusVariant(
-                  integrations.deployment.status
-                )}
+                variant={getIntegrationStatusVariant(integrations.deployment.status)}
                 size="sm"
                 title={`Deploy: ${integrations.deployment.status}`}
               >
@@ -445,11 +410,7 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = ({
             )}
             {integrations.security.vulnerabilities !== null && (
               <Badge
-                variant={
-                  integrations.security.vulnerabilities === 0
-                    ? 'success'
-                    : 'error'
-                }
+                variant={integrations.security.vulnerabilities === 0 ? 'success' : 'error'}
                 size="sm"
                 title={`Security: ${integrations.security.vulnerabilities} vulnerabilities`}
               >
@@ -474,9 +435,9 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = ({
             <Button
               variant="primary"
               size="sm"
-              onClick={e => {
-                e.stopPropagation();
-                handleRefresh();
+              onClick={(e) => {
+                e.stopPropagation()
+                handleRefresh()
               }}
               disabled={repositoryState?.isSyncing || isRefreshing}
               className="flex-1"
@@ -493,9 +454,9 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = ({
             <Button
               variant="outline"
               size="sm"
-              onClick={e => {
-                e.stopPropagation();
-                handleNewBranch();
+              onClick={(e) => {
+                e.stopPropagation()
+                handleNewBranch()
               }}
               className="flex-1"
             >
@@ -504,9 +465,9 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = ({
             <Button
               variant="outline"
               size="sm"
-              onClick={e => {
-                e.stopPropagation();
-                handleViewCommits();
+              onClick={(e) => {
+                e.stopPropagation()
+                handleViewCommits()
               }}
               className="flex-1"
             >
@@ -524,8 +485,7 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = ({
           {/* Last Sync Time */}
           {repositoryState?.lastSyncTime && (
             <div className="text-xs text-gray-500 text-center">
-              Last synced:{' '}
-              {new Date(repositoryState.lastSyncTime).toLocaleTimeString()}
+              Last synced: {new Date(repositoryState.lastSyncTime).toLocaleTimeString()}
             </div>
           )}
 
@@ -534,9 +494,9 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = ({
             <Button
               variant="ghost"
               size="sm"
-              onClick={e => {
-                e.stopPropagation();
-                onViewDetails?.(repository.id);
+              onClick={(e) => {
+                e.stopPropagation()
+                onViewDetails?.(repository.id)
               }}
               className="flex-1"
             >
@@ -545,9 +505,9 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = ({
             <Button
               variant="ghost"
               size="sm"
-              onClick={e => {
-                e.stopPropagation();
-                onManage?.(repository.id);
+              onClick={(e) => {
+                e.stopPropagation()
+                onManage?.(repository.id)
               }}
               className="flex-1"
             >
@@ -557,8 +517,8 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = ({
         </div>
       </CardContent>
     </Card>
-  );
-};
+  )
+}
 
 // Helper function to get language color
 function getLanguageColor(language: string): string {
@@ -579,8 +539,8 @@ function getLanguageColor(language: string): string {
     html: '#e34c26',
     css: '#1572b6',
     shell: '#89e051',
-  };
-  return colors[language.toLowerCase()] || '#6b7280';
+  }
+  return colors[language.toLowerCase()] || '#6b7280'
 }
 
 // Simple SVG icons as components
@@ -588,15 +548,10 @@ const StarIcon: React.FC<{ className?: string }> = ({ className }) => (
   <svg className={className} fill="currentColor" viewBox="0 0 20 20">
     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
   </svg>
-);
+)
 
 const ForkIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg
-    className={className}
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -604,31 +559,16 @@ const ForkIcon: React.FC<{ className?: string }> = ({ className }) => (
       d="M7 16l-4-4m0 0l4-4m-4 4h18"
     />
   </svg>
-);
+)
 
 const BranchIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg
-    className={className}
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={2}
-      d="M8 9l3 3-3 3m5 0h3"
-    />
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l3 3-3 3m5 0h3" />
   </svg>
-);
+)
 
 const RefreshIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg
-    className={className}
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -636,6 +576,6 @@ const RefreshIcon: React.FC<{ className?: string }> = ({ className }) => (
       d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
     />
   </svg>
-);
+)
 
-export default RepositoryCard;
+export default RepositoryCard

@@ -1,4 +1,4 @@
-import { Meta } from '@storybook/blocks';
+import { Meta } from '@storybook/blocks'
 
 <Meta title="Design System/Design Tokens" />
 
@@ -207,7 +207,7 @@ Our color system is built on a comprehensive palette that ensures accessibility,
     { name: '800', value: '#1e293b', dark: true },
     { name: '900', value: '#0f172a', dark: true },
     { name: '950', value: '#020617', dark: true },
-  ].map(color => (
+  ].map((color) => (
     <div
       key={color.name}
       style={{
@@ -357,11 +357,8 @@ Our spacing system follows a consistent 8px grid system for visual harmony and a
     { name: '10 (40px)', size: '2.5rem' },
     { name: '12 (48px)', size: '3rem' },
     { name: '16 (64px)', size: '4rem' },
-  ].map(space => (
-    <div
-      key={space.name}
-      style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}
-    >
+  ].map((space) => (
+    <div key={space.name} style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
       <div
         style={{
           width: space.size,
@@ -397,20 +394,17 @@ Our shadow system creates depth and hierarchy through consistent elevation level
     },
     {
       name: 'Medium',
-      shadow:
-        '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+      shadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
     },
     {
       name: 'Large',
-      shadow:
-        '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+      shadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
     },
     {
       name: 'Extra Large',
-      shadow:
-        '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
+      shadow: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
     },
-  ].map(shadowItem => (
+  ].map((shadowItem) => (
     <div
       key={shadowItem.name}
       style={{
@@ -449,7 +443,7 @@ Consistent border radius values for maintaining visual harmony.
     { name: 'XL', value: '1rem' },
     { name: '2XL', value: '1.5rem' },
     { name: '3XL', value: '2rem' },
-  ].map(radius => (
+  ].map((radius) => (
     <div key={radius.name} style={{ textAlign: 'center' }}>
       <div
         style={{
@@ -460,9 +454,7 @@ Consistent border radius values for maintaining visual harmony.
           margin: '0 auto 0.5rem',
         }}
       ></div>
-      <div style={{ fontSize: '0.75rem', fontWeight: '500' }}>
-        {radius.name}
-      </div>
+      <div style={{ fontSize: '0.75rem', fontWeight: '500' }}>{radius.name}</div>
       <div style={{ fontSize: '0.625rem', opacity: 0.7 }}>{radius.value}</div>
     </div>
   ))}
@@ -481,7 +473,7 @@ Responsive breakpoints for consistent cross-device experiences.
     { name: 'XL', value: '1280px', description: 'Large desktops' },
     { name: '2XL', value: '1536px', description: 'Extra large screens' },
     { name: '3XL', value: '1920px', description: 'Ultra-wide screens' },
-  ].map(breakpoint => (
+  ].map((breakpoint) => (
     <div
       key={breakpoint.name}
       style={{

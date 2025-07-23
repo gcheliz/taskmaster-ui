@@ -1,27 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import type { Task, TaskStatus, TaskPriority } from '../../types/task';
+import React, { useState, useEffect } from 'react'
+import type { Task, TaskStatus, TaskPriority } from '../../types/task'
 
-export type TaskModalMode = 'create' | 'edit' | 'view';
+export type TaskModalMode = 'create' | 'edit' | 'view'
 
 export interface TaskModalProps {
   /** Whether the modal is open */
-  isOpen: boolean;
+  isOpen: boolean
   /** Modal mode: create, edit, or view */
-  mode: TaskModalMode;
+  mode: TaskModalMode
   /** Task data (for edit/view modes) */
-  task?: Task;
+  task?: Task
   /** Available tasks for dependency selection */
-  availableTasks?: Task[];
+  availableTasks?: Task[]
   /** Callback when modal should be closed */
-  onClose: () => void;
+  onClose: () => void
   /** Callback when task should be saved */
-  onSave: (task: Partial<Task>) => Promise<void>;
+  onSave: (task: Partial<Task>) => Promise<void>
   /** Callback when task should be deleted */
-  onDelete?: (taskId: number) => Promise<void>;
+  onDelete?: (taskId: number) => Promise<void>
   /** Callback when switching to edit mode */
-  onEdit?: () => void;
+  onEdit?: () => void
   /** Additional CSS class name */
-  className?: string;
+  className?: string
 }
 
 const DEFAULT_TASK_VALUES: Partial<Task> = {
@@ -36,7 +36,7 @@ const DEFAULT_TASK_VALUES: Partial<Task> = {
   estimatedHours: undefined,
   assignedTo: '',
   dueDate: undefined,
-};
+}
 
 const TASK_STATUSES: { value: TaskStatus; label: string; color: string }[] = [
   { value: 'pending', label: 'To Do', color: '#6b7280' },
@@ -45,15 +45,14 @@ const TASK_STATUSES: { value: TaskStatus; label: string; color: string }[] = [
   { value: 'blocked', label: 'Blocked', color: '#ef4444' },
   { value: 'deferred', label: 'Deferred', color: '#f59e0b' },
   { value: 'cancelled', label: 'Cancelled', color: '#6b7280' },
-];
+]
 
-const TASK_PRIORITIES: { value: TaskPriority; label: string; color: string }[] =
-  [
-    { value: 'low', label: 'Low', color: '#10b981' },
-    { value: 'medium', label: 'Medium', color: '#f59e0b' },
-    { value: 'high', label: 'High', color: '#ef4444' },
-    { value: 'urgent', label: 'Urgent', color: '#dc2626' },
-  ];
+const TASK_PRIORITIES: { value: TaskPriority; label: string; color: string }[] = [
+  { value: 'low', label: 'Low', color: '#10b981' },
+  { value: 'medium', label: 'Medium', color: '#f59e0b' },
+  { value: 'high', label: 'High', color: '#ef4444' },
+  { value: 'urgent', label: 'Urgent', color: '#dc2626' },
+]
 
 /**
  * Task Modal Component
@@ -72,20 +71,20 @@ export const TaskModal: React.FC<TaskModalProps> = ({
   onEdit,
   className = '',
 }) => {
-  const [formData, setFormData] = useState<Partial<Task>>(DEFAULT_TASK_VALUES);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [formData, setFormData] = useState<Partial<Task>>(DEFAULT_TASK_VALUES)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const [validationErrors, setValidationErrors] = useState<{
-    title?: string;
-    description?: string;
-    priority?: string;
-    status?: string;
-    dueDate?: string;
-  }>({});
+    title?: string
+    description?: string
+    priority?: string
+    status?: string
+    dueDate?: string
+  }>({})
 
-  const isReadOnly = mode === 'view';
-  const isCreateMode = mode === 'create';
-  const isEditMode = mode === 'edit';
+  const isReadOnly = mode === 'view'
+  const isCreateMode = mode === 'create'
+  const isEditMode = mode === 'edit'
 
   // Reset form when modal opens or task changes
   useEffect(() => {
@@ -95,72 +94,72 @@ export const TaskModal: React.FC<TaskModalProps> = ({
           ...task,
           dependencies: task.dependencies || [],
           tags: task.tags || [],
-        });
+        })
       } else {
-        setFormData(DEFAULT_TASK_VALUES);
+        setFormData(DEFAULT_TASK_VALUES)
       }
-      setError(null);
-      setValidationErrors({});
+      setError(null)
+      setValidationErrors({})
     }
-  }, [isOpen, task, mode, isEditMode]);
+  }, [isOpen, task, mode, isEditMode])
 
   const validateForm = (): boolean => {
-    const errors: typeof validationErrors = {};
+    const errors: typeof validationErrors = {}
 
     // Title validation
     if (!formData.title?.trim()) {
-      errors.title = 'Title is required';
+      errors.title = 'Title is required'
     } else if (formData.title.trim().length < 3) {
-      errors.title = 'Title must be at least 3 characters long';
+      errors.title = 'Title must be at least 3 characters long'
     } else if (formData.title.trim().length > 100) {
-      errors.title = 'Title must be less than 100 characters';
+      errors.title = 'Title must be less than 100 characters'
     }
 
     // Description validation
     if (!formData.description?.trim()) {
-      errors.description = 'Description is required';
+      errors.description = 'Description is required'
     } else if (formData.description.trim().length < 10) {
-      errors.description = 'Description must be at least 10 characters long';
+      errors.description = 'Description must be at least 10 characters long'
     } else if (formData.description.trim().length > 500) {
-      errors.description = 'Description must be less than 500 characters';
+      errors.description = 'Description must be less than 500 characters'
     }
 
     // Priority validation
     if (!formData.priority) {
-      errors.priority = 'Priority is required';
+      errors.priority = 'Priority is required'
     }
 
     // Status validation
     if (!formData.status) {
-      errors.status = 'Status is required';
+      errors.status = 'Status is required'
     }
 
     // Due date validation
     if (formData.dueDate) {
-      const dueDate = new Date(formData.dueDate);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+      const dueDate = new Date(formData.dueDate)
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
 
       if (dueDate < today) {
-        errors.dueDate = 'Due date cannot be in the past';
+        errors.dueDate = 'Due date cannot be in the past'
       }
     }
 
-    setValidationErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
+    setValidationErrors(errors)
+    return Object.keys(errors).length === 0
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
 
-    if (isReadOnly) return;
+    if (isReadOnly) return
 
     if (!validateForm()) {
-      return;
+      return
     }
 
-    setIsLoading(true);
-    setError(null);
+    setIsLoading(true)
+    setError(null)
 
     try {
       const taskData = {
@@ -170,84 +169,83 @@ export const TaskModal: React.FC<TaskModalProps> = ({
         details: formData.details?.trim() || undefined,
         testStrategy: formData.testStrategy?.trim() || undefined,
         assignedTo: formData.assignedTo?.trim() || undefined,
-        dependencies:
-          formData.dependencies?.filter(dep => dep !== undefined) || [],
-        tags: formData.tags?.filter(tag => tag.trim() !== '') || [],
-      };
+        dependencies: formData.dependencies?.filter((dep) => dep !== undefined) || [],
+        tags: formData.tags?.filter((tag) => tag.trim() !== '') || [],
+      }
 
-      await onSave(taskData);
-      onClose();
+      await onSave(taskData)
+      onClose()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to save task');
+      setError(err instanceof Error ? err.message : 'Failed to save task')
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   const handleDelete = async () => {
-    if (!onDelete || !task?.id) return;
+    if (!onDelete || !task?.id) return
 
     const confirmed = window.confirm(
       `Are you sure you want to delete task "${task.title}"? This action cannot be undone.`
-    );
+    )
 
-    if (!confirmed) return;
+    if (!confirmed) return
 
-    setIsLoading(true);
-    setError(null);
+    setIsLoading(true)
+    setError(null)
 
     try {
-      await onDelete(task.id);
-      onClose();
+      await onDelete(task.id)
+      onClose()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to delete task');
+      setError(err instanceof Error ? err.message : 'Failed to delete task')
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   const handleClose = () => {
     if (!isLoading) {
-      onClose();
+      onClose()
     }
-  };
+  }
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
-      handleClose();
+      handleClose()
     }
-  };
+  }
 
   const updateFormData = (field: keyof Task, value: any) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [field]: value,
-    }));
-  };
+    }))
+  }
 
   const getModalTitle = () => {
     switch (mode) {
       case 'create':
-        return 'Create New Task';
+        return 'Create New Task'
       case 'edit':
-        return 'Edit Task';
+        return 'Edit Task'
       case 'view':
-        return 'Task Details';
+        return 'Task Details'
       default:
-        return 'Task';
+        return 'Task'
     }
-  };
+  }
 
   const getPriorityColor = (priority: TaskPriority) => {
-    return TASK_PRIORITIES.find(p => p.value === priority)?.color || '#6b7280';
-  };
+    return TASK_PRIORITIES.find((p) => p.value === priority)?.color || '#6b7280'
+  }
 
   const getStatusColor = (status: TaskStatus) => {
-    return TASK_STATUSES.find(s => s.value === status)?.color || '#6b7280';
-  };
+    return TASK_STATUSES.find((s) => s.value === status)?.color || '#6b7280'
+  }
 
   if (!isOpen) {
-    return null;
+    return null
   }
 
   return (
@@ -257,9 +255,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
     >
       <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-hidden flex flex-col">
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-900">
-            {getModalTitle()}
-          </h2>
+          <h2 className="text-xl font-semibold text-gray-900">{getModalTitle()}</h2>
           <button
             className="inline-flex items-center justify-center w-8 h-8 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
             onClick={handleClose}
@@ -290,17 +286,14 @@ export const TaskModal: React.FC<TaskModalProps> = ({
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Title */}
             <div className="space-y-2">
-              <label
-                htmlFor="task-title"
-                className="block text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="task-title" className="block text-sm font-medium text-gray-700">
                 Title *
               </label>
               <input
                 id="task-title"
                 type="text"
                 value={formData.title || ''}
-                onChange={e => updateFormData('title', e.target.value)}
+                onChange={(e) => updateFormData('title', e.target.value)}
                 className={`block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${validationErrors.title ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
                 placeholder="Enter task title..."
                 disabled={isLoading || isReadOnly}
@@ -308,24 +301,19 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                 data-testid="task-title-input"
               />
               {validationErrors.title && (
-                <span className="text-sm text-red-600">
-                  {validationErrors.title}
-                </span>
+                <span className="text-sm text-red-600">{validationErrors.title}</span>
               )}
             </div>
 
             {/* Description */}
             <div className="space-y-2">
-              <label
-                htmlFor="task-description"
-                className="block text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="task-description" className="block text-sm font-medium text-gray-700">
                 Description *
               </label>
               <textarea
                 id="task-description"
                 value={formData.description || ''}
-                onChange={e => updateFormData('description', e.target.value)}
+                onChange={(e) => updateFormData('description', e.target.value)}
                 className={`block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical ${validationErrors.description ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
                 placeholder="Enter task description..."
                 disabled={isLoading || isReadOnly}
@@ -334,39 +322,32 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                 data-testid="task-description-input"
               />
               {validationErrors.description && (
-                <span className="text-sm text-red-600">
-                  {validationErrors.description}
-                </span>
+                <span className="text-sm text-red-600">{validationErrors.description}</span>
               )}
             </div>
 
             {/* Priority and Status Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label
-                  htmlFor="task-priority"
-                  className="block text-sm font-medium text-gray-700"
-                >
+                <label htmlFor="task-priority" className="block text-sm font-medium text-gray-700">
                   Priority *
                 </label>
                 <select
                   id="task-priority"
                   value={formData.priority || 'medium'}
-                  onChange={e => updateFormData('priority', e.target.value)}
+                  onChange={(e) => updateFormData('priority', e.target.value)}
                   className={`block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${validationErrors.priority ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
                   disabled={isLoading || isReadOnly}
                   data-testid="task-priority-select"
                 >
-                  {TASK_PRIORITIES.map(priority => (
+                  {TASK_PRIORITIES.map((priority) => (
                     <option key={priority.value} value={priority.value}>
                       {priority.label}
                     </option>
                   ))}
                 </select>
                 {validationErrors.priority && (
-                  <span className="text-sm text-red-600">
-                    {validationErrors.priority}
-                  </span>
+                  <span className="text-sm text-red-600">{validationErrors.priority}</span>
                 )}
                 {formData.priority && (
                   <div className="flex items-center gap-2 mt-2">
@@ -377,10 +358,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                       }}
                     />
                     <span className="text-sm text-gray-600">
-                      {
-                        TASK_PRIORITIES.find(p => p.value === formData.priority)
-                          ?.label
-                      }
+                      {TASK_PRIORITIES.find((p) => p.value === formData.priority)?.label}
                     </span>
                   </div>
                 )}
@@ -393,12 +371,12 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                 <select
                   id="task-status"
                   value={formData.status || 'pending'}
-                  onChange={e => updateFormData('status', e.target.value)}
+                  onChange={(e) => updateFormData('status', e.target.value)}
                   className={`form-select ${validationErrors.status ? 'error' : ''}`}
                   disabled={isLoading || isReadOnly}
                   data-testid="task-status-select"
                 >
-                  {TASK_STATUSES.map(status => (
+                  {TASK_STATUSES.map((status) => (
                     <option key={status.value} value={status.value}>
                       {status.label}
                     </option>
@@ -416,10 +394,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                       }}
                     />
                     <span className="status-label">
-                      {
-                        TASK_STATUSES.find(s => s.value === formData.status)
-                          ?.label
-                      }
+                      {TASK_STATUSES.find((s) => s.value === formData.status)?.label}
                     </span>
                   </div>
                 )}
@@ -434,7 +409,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
               <textarea
                 id="task-details"
                 value={formData.details || ''}
-                onChange={e => updateFormData('details', e.target.value)}
+                onChange={(e) => updateFormData('details', e.target.value)}
                 className="form-textarea"
                 placeholder="Enter additional task details..."
                 disabled={isLoading || isReadOnly}
@@ -454,16 +429,14 @@ export const TaskModal: React.FC<TaskModalProps> = ({
               <textarea
                 id="task-test-strategy"
                 value={formData.testStrategy || ''}
-                onChange={e => updateFormData('testStrategy', e.target.value)}
+                onChange={(e) => updateFormData('testStrategy', e.target.value)}
                 className="form-textarea"
                 placeholder="Enter test strategy..."
                 disabled={isLoading || isReadOnly}
                 rows={3}
                 data-testid="task-test-strategy-input"
               />
-              <div className="form-help">
-                How this task should be tested and validated.
-              </div>
+              <div className="form-help">How this task should be tested and validated.</div>
             </div>
 
             {/* Assignment and Due Date Row */}
@@ -476,7 +449,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                   id="task-assigned-to"
                   type="text"
                   value={formData.assignedTo || ''}
-                  onChange={e => updateFormData('assignedTo', e.target.value)}
+                  onChange={(e) => updateFormData('assignedTo', e.target.value)}
                   className="form-input"
                   placeholder="Enter assignee name..."
                   disabled={isLoading || isReadOnly}
@@ -492,12 +465,10 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                   id="task-due-date"
                   type="date"
                   value={formData.dueDate ? formData.dueDate.split('T')[0] : ''}
-                  onChange={e =>
+                  onChange={(e) =>
                     updateFormData(
                       'dueDate',
-                      e.target.value
-                        ? new Date(e.target.value).toISOString()
-                        : undefined
+                      e.target.value ? new Date(e.target.value).toISOString() : undefined
                     )
                   }
                   className={`form-input ${validationErrors.dueDate ? 'error' : ''}`}
@@ -519,7 +490,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                 id="task-estimated-hours"
                 type="number"
                 value={formData.estimatedHours || ''}
-                onChange={e =>
+                onChange={(e) =>
                   updateFormData(
                     'estimatedHours',
                     e.target.value ? Number(e.target.value) : undefined
@@ -543,13 +514,13 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                 id="task-tags"
                 type="text"
                 value={formData.tags?.join(', ') || ''}
-                onChange={e =>
+                onChange={(e) =>
                   updateFormData(
                     'tags',
                     e.target.value
                       .split(',')
-                      .map(tag => tag.trim())
-                      .filter(tag => tag)
+                      .map((tag) => tag.trim())
+                      .filter((tag) => tag)
                   )
                 }
                 className="form-input"
@@ -557,9 +528,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                 disabled={isLoading || isReadOnly}
                 data-testid="task-tags-input"
               />
-              <div className="form-help">
-                Separate multiple tags with commas.
-              </div>
+              <div className="form-help">Separate multiple tags with commas.</div>
             </div>
 
             {/* Dependencies */}
@@ -568,65 +537,55 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                 <label className="form-label">Dependencies</label>
                 <div className="dependencies-container">
                   {/* Selected Dependencies */}
-                  {formData.dependencies &&
-                    formData.dependencies.length > 0 && (
-                      <div className="selected-dependencies">
-                        <div className="selected-dependencies-header">
-                          <span className="dependencies-count">
-                            {formData.dependencies.length} dependenc
-                            {formData.dependencies.length === 1 ? 'y' : 'ies'}
-                          </span>
-                        </div>
-                        <div className="selected-dependencies-list">
-                          {formData.dependencies.map(depId => {
-                            const depTask = availableTasks.find(
-                              t => t.id === depId
-                            );
-                            if (!depTask) return null;
-
-                            return (
-                              <div key={depId} className="dependency-item">
-                                <div className="dependency-info">
-                                  <span className="dependency-id">
-                                    #{depTask.id}
-                                  </span>
-                                  <span className="dependency-title">
-                                    {depTask.title}
-                                  </span>
-                                  <span
-                                    className="dependency-status"
-                                    style={{
-                                      color: getStatusColor(depTask.status),
-                                      backgroundColor: `${getStatusColor(depTask.status)}20`,
-                                    }}
-                                  >
-                                    {TASK_STATUSES.find(
-                                      s => s.value === depTask.status
-                                    )?.label || depTask.status}
-                                  </span>
-                                </div>
-                                {!isReadOnly && (
-                                  <button
-                                    type="button"
-                                    className="remove-dependency-button"
-                                    onClick={() => {
-                                      const newDeps =
-                                        formData.dependencies?.filter(
-                                          id => id !== depId
-                                        ) || [];
-                                      updateFormData('dependencies', newDeps);
-                                    }}
-                                    title="Remove dependency"
-                                  >
-                                    ✕
-                                  </button>
-                                )}
-                              </div>
-                            );
-                          })}
-                        </div>
+                  {formData.dependencies && formData.dependencies.length > 0 && (
+                    <div className="selected-dependencies">
+                      <div className="selected-dependencies-header">
+                        <span className="dependencies-count">
+                          {formData.dependencies.length} dependenc
+                          {formData.dependencies.length === 1 ? 'y' : 'ies'}
+                        </span>
                       </div>
-                    )}
+                      <div className="selected-dependencies-list">
+                        {formData.dependencies.map((depId) => {
+                          const depTask = availableTasks.find((t) => t.id === depId)
+                          if (!depTask) return null
+
+                          return (
+                            <div key={depId} className="dependency-item">
+                              <div className="dependency-info">
+                                <span className="dependency-id">#{depTask.id}</span>
+                                <span className="dependency-title">{depTask.title}</span>
+                                <span
+                                  className="dependency-status"
+                                  style={{
+                                    color: getStatusColor(depTask.status),
+                                    backgroundColor: `${getStatusColor(depTask.status)}20`,
+                                  }}
+                                >
+                                  {TASK_STATUSES.find((s) => s.value === depTask.status)?.label ||
+                                    depTask.status}
+                                </span>
+                              </div>
+                              {!isReadOnly && (
+                                <button
+                                  type="button"
+                                  className="remove-dependency-button"
+                                  onClick={() => {
+                                    const newDeps =
+                                      formData.dependencies?.filter((id) => id !== depId) || []
+                                    updateFormData('dependencies', newDeps)
+                                  }}
+                                  title="Remove dependency"
+                                >
+                                  ✕
+                                </button>
+                              )}
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )}
 
                   {/* Add Dependencies */}
                   {!isReadOnly && (
@@ -634,50 +593,38 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                       <select
                         className="form-select dependency-select"
                         value=""
-                        onChange={e => {
-                          const selectedId = Number(e.target.value);
-                          if (
-                            selectedId &&
-                            !formData.dependencies?.includes(selectedId)
-                          ) {
-                            const newDeps = [
-                              ...(formData.dependencies || []),
-                              selectedId,
-                            ];
-                            updateFormData('dependencies', newDeps);
+                        onChange={(e) => {
+                          const selectedId = Number(e.target.value)
+                          if (selectedId && !formData.dependencies?.includes(selectedId)) {
+                            const newDeps = [...(formData.dependencies || []), selectedId]
+                            updateFormData('dependencies', newDeps)
                           }
                         }}
                         disabled={isLoading}
                       >
-                        <option value="">
-                          Select a task to add as dependency...
-                        </option>
+                        <option value="">Select a task to add as dependency...</option>
                         {availableTasks
                           .filter(
-                            t =>
+                            (t) =>
                               t.id !== task?.id && // Don't allow self-dependency
                               !formData.dependencies?.includes(t.id) // Don't show already selected
                           )
                           .sort((a, b) => a.id - b.id)
-                          .map(t => (
+                          .map((t) => (
                             <option key={t.id} value={t.id}>
                               #{t.id} - {t.title} (
-                              {TASK_STATUSES.find(s => s.value === t.status)
-                                ?.label || t.status}
-                              )
+                              {TASK_STATUSES.find((s) => s.value === t.status)?.label || t.status})
                             </option>
                           ))}
                       </select>
                       <div className="form-help">
-                        Select tasks that must be completed before this task can
-                        be worked on.
+                        Select tasks that must be completed before this task can be worked on.
                       </div>
                     </div>
                   )}
 
                   {/* Empty state */}
-                  {(!formData.dependencies ||
-                    formData.dependencies.length === 0) && (
+                  {(!formData.dependencies || formData.dependencies.length === 0) && (
                     <div className="dependencies-empty">
                       <span className="empty-icon">🔗</span>
                       <span className="empty-text">
@@ -759,7 +706,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default TaskModal;
+export default TaskModal

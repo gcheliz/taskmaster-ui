@@ -1,10 +1,10 @@
-import React from 'react';
-import { 
-  Palette, 
-  Bell, 
-  Globe, 
-  Shield, 
-  Code2, 
+import React from 'react'
+import {
+  Palette,
+  Bell,
+  Globe,
+  Shield,
+  Code2,
   Download,
   Moon,
   Sun,
@@ -16,8 +16,8 @@ import {
   Mail,
   Smartphone,
   Volume2,
-  Check
-} from 'lucide-react';
+  Check,
+} from 'lucide-react'
 
 const Settings: React.FC = () => {
   return (
@@ -38,23 +38,19 @@ const Settings: React.FC = () => {
             </div>
             <h2 className="text-xl font-semibold text-gray-900">Appearance</h2>
           </div>
-          
+
           <div className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">
-                Theme
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-3">Theme</label>
               <div className="grid grid-cols-3 gap-3">
                 <ThemeOption icon={<Sun />} label="Light" value="light" selected />
                 <ThemeOption icon={<Moon />} label="Dark" value="dark" />
                 <ThemeOption icon={<Monitor />} label="System" value="system" />
               </div>
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">
-                Accent Color
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-3">Accent Color</label>
               <div className="flex space-x-3">
                 <ColorOption color="bg-blue-500" selected />
                 <ColorOption color="bg-purple-500" />
@@ -66,9 +62,7 @@ const Settings: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">
-                Font Size
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-3">Font Size</label>
               <select className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 <option>Small</option>
                 <option selected>Medium</option>
@@ -87,7 +81,7 @@ const Settings: React.FC = () => {
             </div>
             <h2 className="text-xl font-semibold text-gray-900">Notifications</h2>
           </div>
-          
+
           <div className="space-y-4">
             <ToggleSetting
               icon={<Mail className="w-4 h-4" />}
@@ -123,12 +117,10 @@ const Settings: React.FC = () => {
             </div>
             <h2 className="text-xl font-semibold text-gray-900">General</h2>
           </div>
-          
+
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Language
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Language</label>
               <select className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 <option>English</option>
                 <option>Spanish</option>
@@ -138,11 +130,9 @@ const Settings: React.FC = () => {
                 <option>Chinese (Simplified)</option>
               </select>
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Timezone
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Timezone</label>
               <select className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 <option>UTC-08:00 Pacific Time</option>
                 <option>UTC-05:00 Eastern Time</option>
@@ -151,11 +141,9 @@ const Settings: React.FC = () => {
                 <option>UTC+09:00 Japan Standard Time</option>
               </select>
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Date Format
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Date Format</label>
               <select className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 <option>MM/DD/YYYY</option>
                 <option>DD/MM/YYYY</option>
@@ -190,7 +178,7 @@ const Settings: React.FC = () => {
             </div>
             <h2 className="text-xl font-semibold text-gray-900">Security</h2>
           </div>
-          
+
           <div className="space-y-4">
             <ToggleSetting
               icon={<Shield className="w-4 h-4" />}
@@ -209,7 +197,7 @@ const Settings: React.FC = () => {
               description="Alert when account is accessed"
               defaultChecked
             />
-            
+
             <div className="pt-4 space-y-3">
               <button className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium flex items-center justify-center gap-2">
                 <Key className="w-4 h-4" />
@@ -231,7 +219,7 @@ const Settings: React.FC = () => {
             </div>
             <h2 className="text-xl font-semibold text-gray-900">Developer</h2>
           </div>
-          
+
           <div className="space-y-4">
             <ToggleSetting
               icon={<Code2 className="w-4 h-4" />}
@@ -248,7 +236,7 @@ const Settings: React.FC = () => {
               label="Verbose Errors"
               description="Show detailed error messages"
             />
-            
+
             <div className="pt-4 space-y-3">
               <button className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium flex items-center justify-center gap-2">
                 <Download className="w-4 h-4" />
@@ -270,34 +258,28 @@ const Settings: React.FC = () => {
             </div>
             <h2 className="text-xl font-semibold text-gray-900">Account</h2>
           </div>
-          
+
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Display Name
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Display Name</label>
               <input
                 type="text"
                 defaultValue="Gonzalo"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Email Address
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
               <input
                 type="email"
                 defaultValue="gonzalo@example.com"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Role
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Role</label>
               <input
                 type="text"
                 value="Administrator"
@@ -305,7 +287,7 @@ const Settings: React.FC = () => {
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-500"
               />
             </div>
-            
+
             <div className="pt-4">
               <button className="w-full px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors text-sm font-medium">
                 Delete Account
@@ -326,23 +308,22 @@ const Settings: React.FC = () => {
         </button>
       </div>
     </div>
-  );
-};
+  )
+}
 
 // Theme Option Component
 const ThemeOption: React.FC<{
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-  selected?: boolean;
+  icon: React.ReactNode
+  label: string
+  value: string
+  selected?: boolean
 }> = ({ icon, label, value, selected = false }) => (
-  <button className={`
+  <button
+    className={`
     p-4 rounded-lg border-2 transition-all duration-200 relative
-    ${selected 
-      ? 'border-blue-500 bg-blue-50' 
-      : 'border-gray-200 hover:border-gray-300 bg-white'
-    }
-  `}>
+    ${selected ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300 bg-white'}
+  `}
+  >
     {selected && (
       <div className="absolute top-2 right-2">
         <div className="w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center">
@@ -351,50 +332,46 @@ const ThemeOption: React.FC<{
       </div>
     )}
     <div className="flex flex-col items-center space-y-2">
-      <div className={selected ? 'text-blue-600' : 'text-gray-500'}>
-        {icon}
-      </div>
+      <div className={selected ? 'text-blue-600' : 'text-gray-500'}>{icon}</div>
       <span className={`text-sm font-medium ${selected ? 'text-gray-900' : 'text-gray-600'}`}>
         {label}
       </span>
     </div>
   </button>
-);
+)
 
 // Color Option Component
 const ColorOption: React.FC<{
-  color: string;
-  selected?: boolean;
+  color: string
+  selected?: boolean
 }> = ({ color, selected = false }) => (
-  <button className={`
+  <button
+    className={`
     w-10 h-10 rounded-full ${color} relative transition-all duration-200
     ${selected ? 'ring-2 ring-offset-2 ring-blue-500 ring-offset-white scale-110' : 'hover:scale-105'}
-  `}>
+  `}
+  >
     {selected && (
       <div className="absolute inset-0 flex items-center justify-center">
         <Check className="w-4 h-4 text-white" />
       </div>
     )}
   </button>
-);
+)
 
 // Toggle Setting Component
 const ToggleSetting: React.FC<{
-  icon?: React.ReactNode;
-  label: string;
-  description: string;
-  defaultChecked?: boolean;
+  icon?: React.ReactNode
+  label: string
+  description: string
+  defaultChecked?: boolean
 }> = ({ icon, label, description, defaultChecked = false }) => {
-  const [checked, setChecked] = React.useState(defaultChecked);
-  
+  const [checked, setChecked] = React.useState(defaultChecked)
+
   return (
     <div className="flex items-center justify-between py-2">
       <div className="flex items-start space-x-3">
-        {icon && (
-          <div className="text-gray-400 mt-0.5">
-            {icon}
-          </div>
-        )}
+        {icon && <div className="text-gray-400 mt-0.5">{icon}</div>}
         <div>
           <p className="text-sm font-medium text-gray-900">{label}</p>
           <p className="text-xs text-gray-500 mt-0.5">{description}</p>
@@ -407,13 +384,15 @@ const ToggleSetting: React.FC<{
           ${checked ? 'bg-blue-600' : 'bg-gray-300'}
         `}
       >
-        <span className={`
+        <span
+          className={`
           inline-block h-4 w-4 transform rounded-full bg-white transition-transform shadow-sm
           ${checked ? 'translate-x-6' : 'translate-x-1'}
-        `} />
+        `}
+        />
       </button>
     </div>
-  );
-};
+  )
+}
 
-export default Settings;
+export default Settings

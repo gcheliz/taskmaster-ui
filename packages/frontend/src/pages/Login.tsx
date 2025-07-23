@@ -1,6 +1,13 @@
 import React from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../components/ui/Card'
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from '../components/ui/Card'
 import { Input } from '../components/ui/Input'
 import { Button } from '../components/ui/Button'
 import { Checkbox } from '../components/ui/Checkbox'
@@ -17,9 +24,9 @@ const Login = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const { login, isLoading } = useAuth()
-  
+
   const from = location.state?.from?.pathname || '/'
-  
+
   const {
     register,
     handleSubmit,
@@ -40,9 +47,7 @@ const Login = () => {
       <Card>
         <CardHeader className="text-center">
           <CardTitle>Welcome back</CardTitle>
-          <CardDescription>
-            Enter your credentials to access your account
-          </CardDescription>
+          <CardDescription>Enter your credentials to access your account</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -59,7 +64,7 @@ const Login = () => {
                 },
               })}
             />
-            
+
             <Input
               label="Password"
               type="password"
@@ -73,12 +78,9 @@ const Login = () => {
                 },
               })}
             />
-            
+
             <div className="flex items-center justify-between">
-              <Checkbox
-                label="Remember me"
-                {...register('remember')}
-              />
+              <Checkbox label="Remember me" {...register('remember')} />
               <Link
                 to="/auth/forgot-password"
                 className="text-sm text-primary-600 hover:text-primary-700"
@@ -86,22 +88,15 @@ const Login = () => {
                 Forgot password?
               </Link>
             </div>
-            
-            <Button
-              type="submit"
-              fullWidth
-              loading={isLoading}
-            >
+
+            <Button type="submit" fullWidth loading={isLoading}>
               Sign in
             </Button>
           </form>
         </CardContent>
         <CardFooter className="text-center text-sm">
           Don't have an account?{' '}
-          <Link
-            to="/auth/register"
-            className="text-primary-600 hover:text-primary-700 font-medium"
-          >
+          <Link to="/auth/register" className="text-primary-600 hover:text-primary-700 font-medium">
             Sign up
           </Link>
         </CardFooter>

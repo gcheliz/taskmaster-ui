@@ -3,36 +3,34 @@
  * Combines search and filter functionality with responsive layout
  */
 
-import React, { useState, useMemo, useCallback } from 'react';
-import { TaskBoardSearch } from './TaskBoardSearch';
-import { TaskBoardFilters } from './TaskBoardFilters';
-import { Badge } from '../ui/atoms/Badge';
-import { Icon } from '../ui/atoms/Icon';
-import { cn } from '../../utils/cn';
-import type { TaskFilters, Task } from '../../types/task';
+import React, { useState, useMemo, useCallback } from 'react'
+import { TaskBoardSearch } from './TaskBoardSearch'
+import { TaskBoardFilters } from './TaskBoardFilters'
+import { Badge } from '../ui/atoms/Badge'
+import { Icon } from '../ui/atoms/Icon'
+import { cn } from '../../utils/cn'
+import type { TaskFilters, Task } from '../../types/task'
 
 interface TaskBoardSearchAndFilterProps {
   /** Current search query */
-  searchQuery: string;
+  searchQuery: string
   /** Callback when search query changes */
-  onSearchChange: (query: string) => void;
+  onSearchChange: (query: string) => void
   /** Current filter values */
-  filters: TaskFilters;
+  filters: TaskFilters
   /** Callback when filters change */
-  onFiltersChange: (filters: TaskFilters) => void;
+  onFiltersChange: (filters: TaskFilters) => void
   /** All available tasks for extracting filter options */
-  allTasks?: Task[];
+  allTasks?: Task[]
   /** Additional CSS class name */
-  className?: string;
+  className?: string
   /** Whether to show the filter panel by default */
-  showFilters?: boolean;
+  showFilters?: boolean
   /** Compact mode for smaller screens */
-  compact?: boolean;
+  compact?: boolean
 }
 
-export const TaskBoardSearchAndFilter: React.FC<
-  TaskBoardSearchAndFilterProps
-> = ({
+export const TaskBoardSearchAndFilter: React.FC<TaskBoardSearchAndFilterProps> = ({
   searchQuery,
   onSearchChange,
   filters,
@@ -42,42 +40,42 @@ export const TaskBoardSearchAndFilter: React.FC<
   showFilters = true,
   compact = false,
 }) => {
-  const [isFiltersExpanded, setIsFiltersExpanded] = useState(!compact);
+  const [isFiltersExpanded, setIsFiltersExpanded] = useState(!compact)
 
   // Extract unique assignees from all tasks
   const availableAssignees = useMemo(() => {
-    const assignees = new Set<string>();
-    allTasks.forEach(task => {
+    const assignees = new Set<string>()
+    allTasks.forEach((task) => {
       if (task.assignedTo) {
-        assignees.add(task.assignedTo);
+        assignees.add(task.assignedTo)
       }
-    });
-    return Array.from(assignees).sort();
-  }, [allTasks]);
+    })
+    return Array.from(assignees).sort()
+  }, [allTasks])
 
   // Count active filters
   const activeFilterCount = useMemo(() => {
-    let count = 0;
-    if (filters.status?.length) count += filters.status.length;
-    if (filters.priority?.length) count += filters.priority.length;
-    if (filters.assignedTo?.length) count += filters.assignedTo.length;
-    if (filters.tags?.length) count += filters.tags.length;
-    return count;
-  }, [filters]);
+    let count = 0
+    if (filters.status?.length) count += filters.status.length
+    if (filters.priority?.length) count += filters.priority.length
+    if (filters.assignedTo?.length) count += filters.assignedTo.length
+    if (filters.tags?.length) count += filters.tags.length
+    return count
+  }, [filters])
 
   // Check if any filters or search are active
-  const hasActiveSearch = searchQuery.trim().length > 0;
-  const hasActiveFilters = activeFilterCount > 0;
-  const hasAnyActive = hasActiveSearch || hasActiveFilters;
+  const hasActiveSearch = searchQuery.trim().length > 0
+  const hasActiveFilters = activeFilterCount > 0
+  const hasAnyActive = hasActiveSearch || hasActiveFilters
 
   const handleClearAll = useCallback(() => {
-    onSearchChange('');
-    onFiltersChange({});
-  }, [onSearchChange, onFiltersChange]);
+    onSearchChange('')
+    onFiltersChange({})
+  }, [onSearchChange, onFiltersChange])
 
   const handleToggleFilters = useCallback(() => {
-    setIsFiltersExpanded(!isFiltersExpanded);
-  }, [isFiltersExpanded]);
+    setIsFiltersExpanded(!isFiltersExpanded)
+  }, [isFiltersExpanded])
 
   return (
     <div className={cn('space-y-4', className)}>
@@ -102,18 +100,13 @@ export const TaskBoardSearchAndFilter: React.FC<
           {/* Active Indicators */}
           {hasActiveSearch && (
             <Badge variant="secondary" size="sm">
-              Search: "
-              {searchQuery.length > 20
-                ? searchQuery.slice(0, 20) + '...'
-                : searchQuery}
-              "
+              Search: "{searchQuery.length > 20 ? searchQuery.slice(0, 20) + '...' : searchQuery}"
             </Badge>
           )}
 
           {hasActiveFilters && (
             <Badge variant="primary" size="sm">
-              {activeFilterCount}{' '}
-              {activeFilterCount === 1 ? 'Filter' : 'Filters'}
+              {activeFilterCount} {activeFilterCount === 1 ? 'Filter' : 'Filters'}
             </Badge>
           )}
 
@@ -171,9 +164,7 @@ export const TaskBoardSearchAndFilter: React.FC<
         <div className="sm:hidden">
           <div className="bg-slate-900 border border-slate-800 rounded-lg p-3">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-medium text-slate-300">
-                Active Filters
-              </span>
+              <span className="text-xs font-medium text-slate-300">Active Filters</span>
               <button
                 onClick={handleClearAll}
                 className="text-xs text-slate-400 hover:text-slate-300"
@@ -187,17 +178,17 @@ export const TaskBoardSearchAndFilter: React.FC<
                   Search
                 </Badge>
               )}
-              {filters.status?.map(status => (
+              {filters.status?.map((status) => (
                 <Badge key={status} variant="pending" size="sm">
                   {status}
                 </Badge>
               ))}
-              {filters.priority?.map(priority => (
+              {filters.priority?.map((priority) => (
                 <Badge key={priority} variant="warning" size="sm">
                   {priority}
                 </Badge>
               ))}
-              {filters.assignedTo?.map(assignee => (
+              {filters.assignedTo?.map((assignee) => (
                 <Badge key={assignee} variant="outline" size="sm">
                   {assignee}
                 </Badge>
@@ -207,8 +198,8 @@ export const TaskBoardSearchAndFilter: React.FC<
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
 // Filter icon SVG
 const FunnelIcon = () => (
@@ -225,6 +216,6 @@ const FunnelIcon = () => (
       d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z"
     />
   </svg>
-);
+)
 
-export default TaskBoardSearchAndFilter;
+export default TaskBoardSearchAndFilter

@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { useState } from 'react';
+import type { Meta, StoryObj } from '@storybook/react'
+import { useState } from 'react'
 import {
   Pagination,
   PaginationContent,
@@ -9,7 +9,7 @@ import {
   PaginationPrevious,
   PaginationEllipsis,
   CompletePagination,
-} from '../../components/ui/molecules/Pagination';
+} from '../../components/ui/molecules/Pagination'
 
 const meta: Meta<typeof Pagination> = {
   title: 'Molecules/Pagination',
@@ -32,22 +32,22 @@ const meta: Meta<typeof Pagination> = {
     },
   },
   decorators: [
-    Story => (
+    (Story) => (
       <div className="w-full max-w-2xl">
         <Story />
       </div>
     ),
   ],
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {
     size: 'md',
   },
-  render: args => (
+  render: (args) => (
     <Pagination {...args}>
       <PaginationContent>
         <PaginationItem>
@@ -68,7 +68,7 @@ export const Default: Story = {
       </PaginationContent>
     </Pagination>
   ),
-};
+}
 
 export const WithEllipsis: Story = {
   render: () => (
@@ -104,7 +104,7 @@ export const WithEllipsis: Story = {
       </PaginationContent>
     </Pagination>
   ),
-};
+}
 
 export const Sizes: Story = {
   render: () => (
@@ -185,7 +185,7 @@ export const Sizes: Story = {
       </div>
     </div>
   ),
-};
+}
 
 export const Variants: Story = {
   render: () => (
@@ -241,12 +241,12 @@ export const Variants: Story = {
       </div>
     </div>
   ),
-};
+}
 
 export const CompletePaginationExample: Story = {
   render: () => {
-    const [currentPage, setCurrentPage] = useState(5);
-    const totalPages = 20;
+    const [currentPage, setCurrentPage] = useState(5)
+    const totalPages = 20
 
     return (
       <div className="space-y-6">
@@ -265,20 +265,20 @@ export const CompletePaginationExample: Story = {
 
         <div className="text-center">
           <p className="text-xs text-secondary-500">
-            Click on page numbers to navigate. This example shows ellipsis when
-            there are many pages.
+            Click on page numbers to navigate. This example shows ellipsis when there are many
+            pages.
           </p>
         </div>
       </div>
-    );
+    )
   },
-};
+}
 
 export const CompletePaginationSizes: Story = {
   render: () => {
-    const [smallPage, setSmallPage] = useState(2);
-    const [mediumPage, setMediumPage] = useState(3);
-    const [largePage, setLargePage] = useState(4);
+    const [smallPage, setSmallPage] = useState(2)
+    const [mediumPage, setMediumPage] = useState(3)
+    const [largePage, setLargePage] = useState(4)
 
     return (
       <div className="space-y-8">
@@ -315,19 +315,19 @@ export const CompletePaginationSizes: Story = {
           />
         </div>
       </div>
-    );
+    )
   },
-};
+}
 
 export const TaskListPagination: Story = {
   render: () => {
-    const [currentPage, setCurrentPage] = useState(1);
-    const totalPages = 8;
-    const tasksPerPage = 5;
-    const totalTasks = 38;
+    const [currentPage, setCurrentPage] = useState(1)
+    const totalPages = 8
+    const tasksPerPage = 5
+    const totalTasks = 38
 
-    const startTask = (currentPage - 1) * tasksPerPage + 1;
-    const endTask = Math.min(currentPage * tasksPerPage, totalTasks);
+    const startTask = (currentPage - 1) * tasksPerPage + 1
+    const endTask = Math.min(currentPage * tasksPerPage, totalTasks)
 
     return (
       <div className="space-y-6">
@@ -340,30 +340,22 @@ export const TaskListPagination: Story = {
           </div>
 
           <div className="divide-y divide-secondary-200">
-            {Array.from(
-              { length: Math.min(tasksPerPage, totalTasks - startTask + 1) },
-              (_, i) => {
-                const taskNumber = startTask + i;
-                return (
-                  <div
-                    key={taskNumber}
-                    className="p-4 flex items-center justify-between"
-                  >
-                    <div>
-                      <h4 className="font-medium">Task #{taskNumber}</h4>
-                      <p className="text-sm text-secondary-600">
-                        Sample task description
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="status-in-progress px-2 py-1 rounded text-xs">
-                        In Progress
-                      </span>
-                    </div>
+            {Array.from({ length: Math.min(tasksPerPage, totalTasks - startTask + 1) }, (_, i) => {
+              const taskNumber = startTask + i
+              return (
+                <div key={taskNumber} className="p-4 flex items-center justify-between">
+                  <div>
+                    <h4 className="font-medium">Task #{taskNumber}</h4>
+                    <p className="text-sm text-secondary-600">Sample task description</p>
                   </div>
-                );
-              }
-            )}
+                  <div className="flex items-center gap-2">
+                    <span className="status-in-progress px-2 py-1 rounded text-xs">
+                      In Progress
+                    </span>
+                  </div>
+                </div>
+              )
+            })}
           </div>
 
           <div className="p-4 border-t border-secondary-200">
@@ -376,14 +368,14 @@ export const TaskListPagination: Story = {
           </div>
         </div>
       </div>
-    );
+    )
   },
-};
+}
 
 export const MinimalPagination: Story = {
   render: () => {
-    const [currentPage, setCurrentPage] = useState(3);
-    const totalPages = 5;
+    const [currentPage, setCurrentPage] = useState(3)
+    const totalPages = 5
 
     return (
       <div className="space-y-6">
@@ -400,22 +392,20 @@ export const MinimalPagination: Story = {
           maxVisiblePages={5}
         />
       </div>
-    );
+    )
   },
-};
+}
 
 export const WithoutPreviousNext: Story = {
   render: () => {
-    const [currentPage, setCurrentPage] = useState(5);
-    const totalPages = 15;
+    const [currentPage, setCurrentPage] = useState(5)
+    const totalPages = 15
 
     return (
       <div className="space-y-6">
         <div className="text-center">
           <h3 className="font-medium mb-2">Numbers Only</h3>
-          <p className="text-sm text-secondary-600">
-            Without Previous/Next buttons
-          </p>
+          <p className="text-sm text-secondary-600">Without Previous/Next buttons</p>
         </div>
 
         <CompletePagination
@@ -426,6 +416,6 @@ export const WithoutPreviousNext: Story = {
           maxVisiblePages={7}
         />
       </div>
-    );
+    )
   },
-};
+}

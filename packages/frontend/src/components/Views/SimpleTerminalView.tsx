@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 export const SimpleTerminalView: React.FC = () => {
   return (
@@ -22,9 +22,7 @@ export const SimpleTerminalView: React.FC = () => {
           <div className="terminal-content">
             <div className="terminal-line">
               <span className="prompt">$ </span>
-              <span className="command">
-                cd /Users/gonzalo/workspace/taskmaster-ui
-              </span>
+              <span className="command">cd /Users/gonzalo/workspace/taskmaster-ui</span>
             </div>
             <div className="terminal-line">
               <span className="prompt">$ </span>
@@ -32,16 +30,13 @@ export const SimpleTerminalView: React.FC = () => {
             </div>
             <div className="terminal-output">
               <div className="output-line">
-                <span className="success">✓</span> Frontend started on
-                http://localhost:5173
+                <span className="success">✓</span> Frontend started on http://localhost:5173
               </div>
               <div className="output-line">
-                <span className="success">✓</span> Backend started on
-                http://localhost:3001
+                <span className="success">✓</span> Backend started on http://localhost:3001
               </div>
               <div className="output-line">
-                <span className="success">✓</span> Database connected
-                successfully
+                <span className="success">✓</span> Database connected successfully
               </div>
             </div>
             <div className="terminal-line">
@@ -85,7 +80,7 @@ export const SimpleTerminalView: React.FC = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default SimpleTerminalView;
+export default SimpleTerminalView

@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '../../../utils/cn';
-import { Input } from '../atoms/Input';
-import { Button } from '../atoms/Button';
-import { Icon, EyeIcon, XMarkIcon } from '../atoms/Icon';
+import React, { useState } from 'react'
+import { cva, type VariantProps } from 'class-variance-authority'
+import { cn } from '../../../utils/cn'
+import { Input } from '../atoms/Input'
+import { Button } from '../atoms/Button'
+import { Icon, EyeIcon, XMarkIcon } from '../atoms/Icon'
 
 const searchFieldVariants = cva('relative flex w-full', {
   variants: {
@@ -15,17 +15,17 @@ const searchFieldVariants = cva('relative flex w-full', {
   defaultVariants: {
     variant: 'default',
   },
-});
+})
 
 export interface SearchFieldProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>,
     VariantProps<typeof searchFieldVariants> {
-  onSearch?: (value: string) => void;
-  onClear?: () => void;
-  showClearButton?: boolean;
-  showSearchButton?: boolean;
-  inputSize?: 'sm' | 'md' | 'lg';
-  isLoading?: boolean;
+  onSearch?: (value: string) => void
+  onClear?: () => void
+  showClearButton?: boolean
+  showSearchButton?: boolean
+  inputSize?: 'sm' | 'md' | 'lg'
+  isLoading?: boolean
 }
 
 const SearchField = React.forwardRef<HTMLInputElement, SearchFieldProps>(
@@ -46,47 +46,46 @@ const SearchField = React.forwardRef<HTMLInputElement, SearchFieldProps>(
     },
     ref
   ) => {
-    const [internalValue, setInternalValue] = useState('');
-    const value =
-      controlledValue !== undefined ? controlledValue : internalValue;
+    const [internalValue, setInternalValue] = useState('')
+    const value = controlledValue !== undefined ? controlledValue : internalValue
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const newValue = e.target.value;
+      const newValue = e.target.value
       if (controlledValue === undefined) {
-        setInternalValue(newValue);
+        setInternalValue(newValue)
       }
-      onChange?.(e);
-    };
+      onChange?.(e)
+    }
 
     const handleSearch = () => {
-      onSearch?.(String(value));
-    };
+      onSearch?.(String(value))
+    }
 
     const handleClear = () => {
       if (controlledValue === undefined) {
-        setInternalValue('');
+        setInternalValue('')
       }
-      onClear?.();
+      onClear?.()
 
       // Create a synthetic event for controlled components
       if (onChange) {
         const syntheticEvent = {
           target: { value: '' },
           currentTarget: { value: '' },
-        } as React.ChangeEvent<HTMLInputElement>;
-        onChange(syntheticEvent);
+        } as React.ChangeEvent<HTMLInputElement>
+        onChange(syntheticEvent)
       }
-    };
+    }
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === 'Enter') {
-        e.preventDefault();
-        handleSearch();
+        e.preventDefault()
+        handleSearch()
       }
-      props.onKeyDown?.(e);
-    };
+      props.onKeyDown?.(e)
+    }
 
-    const searchIcon = <Icon icon={EyeIcon} size="sm" />;
+    const searchIcon = <Icon icon={EyeIcon} size="sm" />
     const clearButton =
       value && showClearButton ? (
         <Button
@@ -100,7 +99,7 @@ const SearchField = React.forwardRef<HTMLInputElement, SearchFieldProps>(
         >
           <Icon icon={XMarkIcon} size="sm" />
         </Button>
-      ) : null;
+      ) : null
 
     return (
       <div className={cn(searchFieldVariants({ variant, className }))}>
@@ -130,10 +129,10 @@ const SearchField = React.forwardRef<HTMLInputElement, SearchFieldProps>(
           </Button>
         )}
       </div>
-    );
+    )
   }
-);
+)
 
-SearchField.displayName = 'SearchField';
+SearchField.displayName = 'SearchField'
 
-export { SearchField, searchFieldVariants };
+export { SearchField, searchFieldVariants }

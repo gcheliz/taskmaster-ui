@@ -1,50 +1,50 @@
-import React from 'react';
+import React from 'react'
 
 export interface CommitInfo {
-  hash: string;
-  date: string;
-  message: string;
+  hash: string
+  date: string
+  message: string
   author: {
-    name: string;
-    email: string;
-  };
+    name: string
+    email: string
+  }
 }
 
 export interface GitStatus {
-  isClean: boolean;
-  staged: number;
-  unstaged: number;
-  untracked: number;
-  conflicted: number;
-  ahead?: number;
-  behind?: number;
+  isClean: boolean
+  staged: number
+  unstaged: number
+  untracked: number
+  conflicted: number
+  ahead?: number
+  behind?: number
 }
 
 export interface RepositoryMetadataData {
-  name: string;
-  path: string;
-  currentBranch: string;
-  lastCommit: CommitInfo;
-  status: GitStatus;
+  name: string
+  path: string
+  currentBranch: string
+  lastCommit: CommitInfo
+  status: GitStatus
 }
 
 export interface RepositoryMetadataProps {
   /** Repository metadata to display */
-  repository: RepositoryMetadataData;
+  repository: RepositoryMetadataData
   /** Whether the component is in a loading state */
-  isLoading?: boolean;
+  isLoading?: boolean
   /** Error message to display */
-  error?: string | null;
+  error?: string | null
   /** Additional CSS class name */
-  className?: string;
+  className?: string
   /** Whether to show the full path or just repository name */
-  showFullPath?: boolean;
+  showFullPath?: boolean
   /** Whether to show detailed commit information */
-  showCommitDetails?: boolean;
+  showCommitDetails?: boolean
   /** Click handler for the repository name/path */
-  onRepositoryClick?: () => void;
+  onRepositoryClick?: () => void
   /** Click handler for the branch name */
-  onBranchClick?: () => void;
+  onBranchClick?: () => void
 }
 
 /**
@@ -75,7 +75,7 @@ export const RepositoryMetadata: React.FC<RepositoryMetadataProps> = ({
           <div className="skeleton-line skeleton-commit"></div>
         </div>
       </div>
-    );
+    )
   }
 
   if (error) {
@@ -86,40 +86,40 @@ export const RepositoryMetadata: React.FC<RepositoryMetadataProps> = ({
           <span className="error-message">{error}</span>
         </div>
       </div>
-    );
+    )
   }
 
   const formatCommitHash = (hash: string, length: number = 7): string => {
-    return hash.substring(0, length);
-  };
+    return hash.substring(0, length)
+  }
 
   const formatDate = (dateString: string): string => {
     try {
-      const date = new Date(dateString);
-      const now = new Date();
-      const diffMs = now.getTime() - date.getTime();
-      const diffMinutes = Math.floor(diffMs / 60000);
-      const diffHours = Math.floor(diffMinutes / 60);
-      const diffDays = Math.floor(diffHours / 24);
+      const date = new Date(dateString)
+      const now = new Date()
+      const diffMs = now.getTime() - date.getTime()
+      const diffMinutes = Math.floor(diffMs / 60000)
+      const diffHours = Math.floor(diffMinutes / 60)
+      const diffDays = Math.floor(diffHours / 24)
 
       if (diffMinutes < 1) {
-        return 'just now';
+        return 'just now'
       } else if (diffMinutes < 60) {
-        return `${diffMinutes}m ago`;
+        return `${diffMinutes}m ago`
       } else if (diffHours < 24) {
-        return `${diffHours}h ago`;
+        return `${diffHours}h ago`
       } else if (diffDays < 7) {
-        return `${diffDays}d ago`;
+        return `${diffDays}d ago`
       } else {
-        return date.toLocaleDateString();
+        return date.toLocaleDateString()
       }
     } catch {
-      return dateString;
+      return dateString
     }
-  };
+  }
 
   const getStatusIndicator = () => {
-    const { status } = repository;
+    const { status } = repository
 
     if (status.isClean) {
       return {
@@ -127,11 +127,10 @@ export const RepositoryMetadata: React.FC<RepositoryMetadataProps> = ({
         icon: '●',
         label: 'Clean',
         title: 'Working directory is clean',
-      };
+      }
     }
 
-    const totalChanges =
-      status.staged + status.unstaged + status.untracked + status.conflicted;
+    const totalChanges = status.staged + status.unstaged + status.untracked + status.conflicted
 
     if (status.conflicted > 0) {
       return {
@@ -139,7 +138,7 @@ export const RepositoryMetadata: React.FC<RepositoryMetadataProps> = ({
         icon: '●',
         label: 'Conflicts',
         title: `${status.conflicted} conflicted file(s)`,
-      };
+      }
     }
 
     return {
@@ -147,12 +146,12 @@ export const RepositoryMetadata: React.FC<RepositoryMetadataProps> = ({
       icon: '●',
       label: `${totalChanges} change${totalChanges === 1 ? '' : 's'}`,
       title: `${status.staged} staged, ${status.unstaged} unstaged, ${status.untracked} untracked`,
-    };
-  };
+    }
+  }
 
-  const statusIndicator = getStatusIndicator();
+  const statusIndicator = getStatusIndicator()
 
-  const displayName = showFullPath ? repository.path : repository.name;
+  const displayName = showFullPath ? repository.path : repository.name
 
   return (
     <div className={`repository-metadata ${className}`}>
@@ -187,18 +186,12 @@ export const RepositoryMetadata: React.FC<RepositoryMetadataProps> = ({
         {(repository.status.ahead || repository.status.behind) && (
           <div className="branch-tracking">
             {repository.status.ahead ? (
-              <span
-                className="ahead"
-                title={`${repository.status.ahead} commits ahead`}
-              >
+              <span className="ahead" title={`${repository.status.ahead} commits ahead`}>
                 ↑{repository.status.ahead}
               </span>
             ) : null}
             {repository.status.behind ? (
-              <span
-                className="behind"
-                title={`${repository.status.behind} commits behind`}
-              >
+              <span className="behind" title={`${repository.status.behind} commits behind`}>
                 ↓{repository.status.behind}
               </span>
             ) : null}
@@ -212,16 +205,12 @@ export const RepositoryMetadata: React.FC<RepositoryMetadataProps> = ({
             <span className="commit-hash" title={repository.lastCommit.hash}>
               {formatCommitHash(repository.lastCommit.hash)}
             </span>
-            <span className="commit-date">
-              {formatDate(repository.lastCommit.date)}
-            </span>
+            <span className="commit-date">{formatDate(repository.lastCommit.date)}</span>
           </div>
           <div className="commit-message" title={repository.lastCommit.message}>
             {repository.lastCommit.message}
           </div>
-          <div className="commit-author">
-            by {repository.lastCommit.author.name}
-          </div>
+          <div className="commit-author">by {repository.lastCommit.author.name}</div>
         </div>
       )}
 
@@ -252,7 +241,7 @@ export const RepositoryMetadata: React.FC<RepositoryMetadataProps> = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default RepositoryMetadata;
+export default RepositoryMetadata

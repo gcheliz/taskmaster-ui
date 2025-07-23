@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { useDashboard } from '../../hooks/useDashboard';
-import { Card, CardHeader, CardTitle, CardContent } from '../ui/atoms/Card';
-import { Button } from '../ui/atoms/Button';
-import { Badge } from '../ui/atoms/Badge';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '../ui/molecules/Tabs';
+import React, { useState } from 'react'
+import { useDashboard } from '../../hooks/useDashboard'
+import { Card, CardHeader, CardTitle, CardContent } from '../ui/atoms/Card'
+import { Button } from '../ui/atoms/Button'
+import { Badge } from '../ui/atoms/Badge'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '../ui/molecules/Tabs'
 import {
   Icon,
   HomeFilledIcon,
@@ -19,29 +19,25 @@ import {
   DuplicateIcon,
   ArchiveIcon,
   PlusIcon,
-} from '../ui/atoms/Icon';
-import { Spinner } from '../ui/atoms/Spinner';
-import {
-  Breadcrumb,
-  BreadcrumbLink,
-  BreadcrumbSeparator,
-} from '../ui/atoms/BreadcrumbLink';
-import { ActivityTimeline } from '../ui/organisms/ActivityTimeline';
-import { QuickActionsGrid } from '../ui/organisms/QuickActionsGrid';
-import type { QuickAction } from '../ui/organisms/QuickActionsGrid';
+} from '../ui/atoms/Icon'
+import { Spinner } from '../ui/atoms/Spinner'
+import { Breadcrumb, BreadcrumbLink, BreadcrumbSeparator } from '../ui/atoms/BreadcrumbLink'
+import { ActivityTimeline } from '../ui/organisms/ActivityTimeline'
+import { QuickActionsGrid } from '../ui/organisms/QuickActionsGrid'
+import type { QuickAction } from '../ui/organisms/QuickActionsGrid'
 
 export interface ModernDashboardViewProps {
-  projectId: string;
-  projectTag?: string;
-  className?: string;
+  projectId: string
+  projectTag?: string
+  className?: string
 }
 
 interface WelcomeHeaderProps {
-  projectName: string;
-  projectPath: string;
-  lastUpdated: string;
-  userAvatar?: string;
-  userName?: string;
+  projectName: string
+  projectPath: string
+  lastUpdated: string
+  userAvatar?: string
+  userName?: string
 }
 
 const WelcomeHeader: React.FC<WelcomeHeaderProps> = ({
@@ -52,8 +48,8 @@ const WelcomeHeader: React.FC<WelcomeHeaderProps> = ({
   userName = 'User',
 }) => {
   const formatTime = (dateString: string) => {
-    return new Date(dateString).toLocaleString();
-  };
+    return new Date(dateString).toLocaleString()
+  }
 
   return (
     <div className="mb-8">
@@ -99,9 +95,7 @@ const WelcomeHeader: React.FC<WelcomeHeaderProps> = ({
             </div>
             <div className="flex items-center space-x-4">
               <div className="text-right">
-                <p className="text-sm text-secondary-600 dark:text-secondary-400">
-                  Last updated
-                </p>
+                <p className="text-sm text-secondary-600 dark:text-secondary-400">Last updated</p>
                 <p className="text-sm font-medium text-secondary-900 dark:text-secondary-100">
                   {formatTime(lastUpdated)}
                 </p>
@@ -131,52 +125,48 @@ const WelcomeHeader: React.FC<WelcomeHeaderProps> = ({
         </CardContent>
       </Card>
     </div>
-  );
-};
+  )
+}
 
 interface StatisticsGridProps {
   taskMetrics: {
-    total: number;
-    completed: number;
-    inProgress: number;
-    pending: number;
-    blocked: number;
-    completionRate: number;
-  };
+    total: number
+    completed: number
+    inProgress: number
+    pending: number
+    blocked: number
+    completionRate: number
+  }
   insights: {
-    totalEstimatedHours: number;
-    averageTaskComplexity: number;
-    productivityScore: number;
-  };
+    totalEstimatedHours: number
+    averageTaskComplexity: number
+    productivityScore: number
+  }
   health?: {
-    score: number;
-    status: string;
-  };
+    score: number
+    status: string
+  }
 }
 
-const StatisticsGrid: React.FC<StatisticsGridProps> = ({
-  taskMetrics,
-  insights,
-  health,
-}) => {
+const StatisticsGrid: React.FC<StatisticsGridProps> = ({ taskMetrics, insights, health }) => {
   const getHealthColor = (status: string) => {
     switch (status) {
       case 'excellent':
-        return 'success';
+        return 'success'
       case 'good':
-        return 'primary';
+        return 'primary'
       case 'fair':
-        return 'warning';
+        return 'warning'
       case 'needs-attention':
-        return 'error';
+        return 'error'
       default:
-        return 'secondary';
+        return 'secondary'
     }
-  };
+  }
 
   const formatPercentage = (value: number) => {
-    return `${Math.round(value)}%`;
-  };
+    return `${Math.round(value)}%`
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -276,9 +266,7 @@ const StatisticsGrid: React.FC<StatisticsGridProps> = ({
           </div>
           <div className="flex items-center space-x-2">
             <Badge
-              variant={
-                health ? (getHealthColor(health.status) as any) : 'secondary'
-              }
+              variant={health ? (getHealthColor(health.status) as any) : 'secondary'}
               size="sm"
             >
               {health ? health.status.replace('-', ' ') : 'Unknown'}
@@ -290,8 +278,8 @@ const StatisticsGrid: React.FC<StatisticsGridProps> = ({
         </CardContent>
       </Card>
     </div>
-  );
-};
+  )
+}
 
 /**
  * Modern Dashboard View Component
@@ -304,78 +292,67 @@ export const ModernDashboardView: React.FC<ModernDashboardViewProps> = ({
   projectTag,
   className = '',
 }) => {
-  const [activeTab, setActiveTab] = useState<
-    'overview' | 'analytics' | 'activity'
-  >('overview');
-  const [refreshing, setRefreshing] = useState(false);
+  const [activeTab, setActiveTab] = useState<'overview' | 'analytics' | 'activity'>('overview')
+  const [refreshing, setRefreshing] = useState(false)
 
-  const {
-    data,
-    health,
-    loading,
-    error,
-    lastUpdated,
-    refresh,
-    clearError,
-    isStale,
-    retryCount,
-  } = useDashboard({
-    projectId,
-    projectTag,
-    refreshInterval: 30000,
-    autoRefresh: true,
-    onError: error => {
-      console.error('Dashboard error:', error);
-    },
-    onDataUpdate: data => {
-      console.log('Dashboard data updated:', data);
-    },
-  });
+  const { data, health, loading, error, lastUpdated, refresh, clearError, isStale, retryCount } =
+    useDashboard({
+      projectId,
+      projectTag,
+      refreshInterval: 30000,
+      autoRefresh: true,
+      onError: (error) => {
+        console.error('Dashboard error:', error)
+      },
+      onDataUpdate: (data) => {
+        console.log('Dashboard data updated:', data)
+      },
+    })
 
   const handleRefresh = async () => {
-    setRefreshing(true);
+    setRefreshing(true)
     try {
-      await refresh();
+      await refresh()
     } finally {
-      setRefreshing(false);
+      setRefreshing(false)
     }
-  };
+  }
 
   const handleCreateTask = () => {
     // TODO: Implement create task functionality
-    console.log('Create task action triggered');
+    console.log('Create task action triggered')
     // Navigate to task creation page or open modal
-  };
+  }
 
   const handleViewReports = () => {
     // TODO: Implement view reports functionality
-    console.log('View reports action triggered');
+    console.log('View reports action triggered')
     // Navigate to reports dashboard
-  };
+  }
 
   const handleManageTeam = () => {
     // TODO: Implement manage team functionality
-    console.log('Manage team action triggered');
+    console.log('Manage team action triggered')
     // Navigate to team management page
-  };
+  }
 
   const handleExportData = () => {
     // TODO: Implement export data functionality
-    console.log('Export data action triggered');
+    console.log('Export data action triggered')
     // Trigger export process
-  };
+  }
 
   const handleAddMember = () => {
     // TODO: Implement add member functionality
-    console.log('Add member action triggered');
+    console.log('Add member action triggered')
     // Open add member modal
-  };
+  }
 
   const handleProjectSettings = () => {
     // TODO: Implement project settings functionality
-    console.log('Project settings action triggered');
+    console.log('Project settings action triggered')
     // Navigate to project settings page
-  };
+  }
 
   // const handleArchiveProject = () => {
   //   // TODO: Implement archive project functionality
@@ -453,7 +430,7 @@ export const ModernDashboardView: React.FC<ModernDashboardViewProps> = ({
       category: 'system',
       onClick: handleProjectSettings,
     },
-  ];
+  ]
 
   // Loading State
   if (loading && !data) {
@@ -473,7 +450,7 @@ export const ModernDashboardView: React.FC<ModernDashboardViewProps> = ({
           </CardContent>
         </Card>
       </div>
-    );
+    )
   }
 
   // Error State
@@ -484,18 +461,11 @@ export const ModernDashboardView: React.FC<ModernDashboardViewProps> = ({
       >
         <Card variant="elevated" className="w-96">
           <CardContent className="text-center py-12">
-            <Icon
-              icon={WarningIcon}
-              size="2xl"
-              color="error"
-              className="mx-auto mb-4"
-            />
+            <Icon icon={WarningIcon} size="2xl" color="error" className="mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-error-600 dark:text-error-400 mb-2">
               Dashboard Error
             </h3>
-            <p className="text-secondary-600 dark:text-secondary-400 mb-6">
-              {error.message}
-            </p>
+            <p className="text-secondary-600 dark:text-secondary-400 mb-6">{error.message}</p>
             <div className="flex justify-center space-x-3">
               <Button variant="outline" onClick={clearError}>
                 Clear Error
@@ -507,7 +477,7 @@ export const ModernDashboardView: React.FC<ModernDashboardViewProps> = ({
           </CardContent>
         </Card>
       </div>
-    );
+    )
   }
 
   // Empty State
@@ -518,12 +488,7 @@ export const ModernDashboardView: React.FC<ModernDashboardViewProps> = ({
       >
         <Card variant="elevated" className="w-96">
           <CardContent className="text-center py-12">
-            <Icon
-              icon={ArchiveIcon}
-              size="2xl"
-              color="muted"
-              className="mx-auto mb-4"
-            />
+            <Icon icon={ArchiveIcon} size="2xl" color="muted" className="mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-secondary-900 dark:text-secondary-100 mb-2">
               No Dashboard Data
             </h3>
@@ -536,13 +501,11 @@ export const ModernDashboardView: React.FC<ModernDashboardViewProps> = ({
           </CardContent>
         </Card>
       </div>
-    );
+    )
   }
 
   return (
-    <div
-      className={`min-h-screen bg-surface-50 dark:bg-surface-950 ${className}`}
-    >
+    <div className={`min-h-screen bg-surface-50 dark:bg-surface-950 ${className}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Welcome Header */}
         <WelcomeHeader
@@ -572,7 +535,7 @@ export const ModernDashboardView: React.FC<ModernDashboardViewProps> = ({
         {/* Main Content Tabs */}
         <Tabs
           value={activeTab}
-          onValueChange={value => setActiveTab(value as any)}
+          onValueChange={(value) => setActiveTab(value as any)}
           className="w-full"
         >
           <Card variant="elevated">
@@ -588,12 +551,7 @@ export const ModernDashboardView: React.FC<ModernDashboardViewProps> = ({
                       Data Stale
                     </Badge>
                   )}
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleRefresh}
-                    disabled={refreshing}
-                  >
+                  <Button variant="outline" size="sm" onClick={handleRefresh} disabled={refreshing}>
                     {refreshing ? (
                       <Spinner size="sm" className="mr-2" />
                     ) : (
@@ -630,39 +588,34 @@ export const ModernDashboardView: React.FC<ModernDashboardViewProps> = ({
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
-                        {Object.entries(data.taskMetrics.statusBreakdown).map(
-                          ([status, count]) => (
-                            <div
-                              key={status}
-                              className="flex items-center space-x-4"
-                            >
-                              <div className="w-20 text-sm font-medium text-secondary-900 dark:text-secondary-100 capitalize">
-                                {status.replace('-', ' ')}
-                              </div>
-                              <div className="flex-1 bg-secondary-200 dark:bg-surface-700 rounded-full h-2">
-                                <div
-                                  className="h-2 rounded-full transition-all duration-500"
-                                  style={{
-                                    width: `${(count / data.taskMetrics.total) * 100}%`,
-                                    backgroundColor:
-                                      status === 'done'
-                                        ? '#22c55e'
-                                        : status === 'in-progress'
-                                          ? '#3b82f6'
-                                          : status === 'pending'
-                                            ? '#f59e0b'
-                                            : status === 'blocked'
-                                              ? '#ef4444'
-                                              : '#6b7280',
-                                  }}
-                                />
-                              </div>
-                              <div className="w-12 text-sm font-semibold text-secondary-900 dark:text-secondary-100 text-right">
-                                {count}
-                              </div>
+                        {Object.entries(data.taskMetrics.statusBreakdown).map(([status, count]) => (
+                          <div key={status} className="flex items-center space-x-4">
+                            <div className="w-20 text-sm font-medium text-secondary-900 dark:text-secondary-100 capitalize">
+                              {status.replace('-', ' ')}
                             </div>
-                          )
-                        )}
+                            <div className="flex-1 bg-secondary-200 dark:bg-surface-700 rounded-full h-2">
+                              <div
+                                className="h-2 rounded-full transition-all duration-500"
+                                style={{
+                                  width: `${(count / data.taskMetrics.total) * 100}%`,
+                                  backgroundColor:
+                                    status === 'done'
+                                      ? '#22c55e'
+                                      : status === 'in-progress'
+                                        ? '#3b82f6'
+                                        : status === 'pending'
+                                          ? '#f59e0b'
+                                          : status === 'blocked'
+                                            ? '#ef4444'
+                                            : '#6b7280',
+                                }}
+                              />
+                            </div>
+                            <div className="w-12 text-sm font-semibold text-secondary-900 dark:text-secondary-100 text-right">
+                              {count}
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </CardContent>
                   </Card>
@@ -672,11 +625,7 @@ export const ModernDashboardView: React.FC<ModernDashboardViewProps> = ({
                     <Card variant="outline">
                       <CardHeader>
                         <CardTitle className="flex items-center space-x-2">
-                          <Icon
-                            icon={StarFilledIcon}
-                            size="md"
-                            color="warning"
-                          />
+                          <Icon icon={StarFilledIcon} size="md" color="warning" />
                           <span>Recommendations</span>
                         </CardTitle>
                       </CardHeader>
@@ -724,8 +673,7 @@ export const ModernDashboardView: React.FC<ModernDashboardViewProps> = ({
                           Analytics Coming Soon
                         </h3>
                         <p className="text-secondary-600 dark:text-secondary-400">
-                          Advanced analytics and insights will be available in
-                          the next update.
+                          Advanced analytics and insights will be available in the next update.
                         </p>
                       </div>
                     </CardContent>
@@ -755,7 +703,7 @@ export const ModernDashboardView: React.FC<ModernDashboardViewProps> = ({
         </Tabs>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ModernDashboardView;
+export default ModernDashboardView

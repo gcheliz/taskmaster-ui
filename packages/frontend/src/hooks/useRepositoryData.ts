@@ -1,41 +1,38 @@
-import { useState, useEffect, useCallback } from 'react';
-import { RepositoryService } from '../services/repositoryService';
-import type {
-  RepositoryMetadataData,
-  BranchInfo,
-} from '../components/Repository';
+import { useState, useEffect, useCallback } from 'react'
+import { RepositoryService } from '../services/repositoryService'
+import type { RepositoryMetadataData, BranchInfo } from '../components/Repository'
 import type {
   RepositoryHealthMetrics,
   RepositoryStatistics,
   RepositoryIntegrationStatus,
-} from '../services/repositoryService';
+} from '../services/repositoryService'
 
 export interface UseRepositoryDataOptions {
   /** Repository ID to fetch data for */
-  repositoryId: string;
+  repositoryId: string
   /** Auto-refresh interval in milliseconds (0 to disable) */
-  refreshInterval?: number;
+  refreshInterval?: number
   /** Whether to fetch data immediately on mount */
-  autoFetch?: boolean;
+  autoFetch?: boolean
 }
 
 export interface UseRepositoryDataReturn {
   /** Repository metadata */
-  metadata: RepositoryMetadataData | null;
+  metadata: RepositoryMetadataData | null
   /** Branch information */
-  branches: BranchInfo[];
+  branches: BranchInfo[]
   /** Loading state */
-  isLoading: boolean;
+  isLoading: boolean
   /** Error message */
-  error: string | null;
+  error: string | null
   /** Whether data is currently being refreshed */
-  isRefreshing: boolean;
+  isRefreshing: boolean
   /** Manually refresh data */
-  refresh: () => Promise<void>;
+  refresh: () => Promise<void>
   /** Clear error state */
-  clearError: () => void;
+  clearError: () => void
   /** Last successful fetch timestamp */
-  lastFetch: Date | null;
+  lastFetch: Date | null
 }
 
 /**
@@ -49,75 +46,71 @@ export const useRepositoryData = ({
   refreshInterval = 30000, // 30 seconds default
   autoFetch = true,
 }: UseRepositoryDataOptions): UseRepositoryDataReturn => {
-  const [metadata, setMetadata] = useState<RepositoryMetadataData | null>(null);
-  const [branches, setBranches] = useState<BranchInfo[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [lastFetch, setLastFetch] = useState<Date | null>(null);
+  const [metadata, setMetadata] = useState<RepositoryMetadataData | null>(null)
+  const [branches, setBranches] = useState<BranchInfo[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const [lastFetch, setLastFetch] = useState<Date | null>(null)
 
   const fetchData = useCallback(
     async (isRefresh = false) => {
       if (isRefresh) {
-        setIsRefreshing(true);
+        setIsRefreshing(true)
       } else {
-        setIsLoading(true);
+        setIsLoading(true)
       }
 
-      setError(null);
+      setError(null)
 
       try {
-        const response =
-          await RepositoryService.getRepositoryDetails(repositoryId);
+        const response = await RepositoryService.getRepositoryDetails(repositoryId)
 
         if (response.success && response.data) {
-          const repositoryMetadata =
-            RepositoryService.extractRepositoryMetadata(response.data);
-          const branchInfo = RepositoryService.extractBranchInfo(response.data);
+          const repositoryMetadata = RepositoryService.extractRepositoryMetadata(response.data)
+          const branchInfo = RepositoryService.extractBranchInfo(response.data)
 
-          setMetadata(repositoryMetadata);
-          setBranches(branchInfo);
-          setLastFetch(new Date());
+          setMetadata(repositoryMetadata)
+          setBranches(branchInfo)
+          setLastFetch(new Date())
         } else {
-          setError(response.error || 'Failed to fetch repository data');
+          setError(response.error || 'Failed to fetch repository data')
         }
       } catch (err) {
-        setError(
-          err instanceof Error ? err.message : 'An unexpected error occurred'
-        );
+        setError(err instanceof Error ? err.message : 'An unexpected error occurred')
       } finally {
-        setIsLoading(false);
-        setIsRefreshing(false);
+        setIsLoading(false)
+        setIsRefreshing(false)
       }
     },
     [repositoryId]
-  );
+  )
 
   const refresh = useCallback(async () => {
-    await fetchData(true);
-  }, [fetchData]);
+    await fetchData(true)
+  }, [fetchData])
 
   const clearError = useCallback(() => {
-    setError(null);
-  }, []);
+    setError(null)
+  }, [])
 
   // Initial fetch
   useEffect(() => {
     if (autoFetch && repositoryId) {
-      fetchData();
+      fetchData()
     }
-  }, [fetchData, autoFetch, repositoryId]);
+  }, [fetchData, autoFetch, repositoryId])
 
   // Auto-refresh interval
   useEffect(() => {
     if (refreshInterval > 0 && repositoryId) {
       const interval = setInterval(() => {
-        fetchData(true);
-      }, refreshInterval);
+        fetchData(true)
+      }, refreshInterval)
 
-      return () => clearInterval(interval);
+      return () => clearInterval(interval)
     }
-  }, [fetchData, refreshInterval, repositoryId]);
+  }, [fetchData, refreshInterval, repositoryId])
 
   return {
     metadata,
@@ -128,35 +121,35 @@ export const useRepositoryData = ({
     refresh,
     clearError,
     lastFetch,
-  };
-};
+  }
+}
 
 export interface UseRepositoryActionsOptions {
   /** Repository ID */
-  repositoryId: string;
+  repositoryId: string
   /** Callback when action completes successfully */
-  onSuccess?: (message: string) => void;
+  onSuccess?: (message: string) => void
   /** Callback when action fails */
-  onError?: (error: string) => void;
+  onError?: (error: string) => void
 }
 
 export interface UseRepositoryActionsReturn {
   /** Checkout a branch */
-  checkoutBranch: (branchName: string) => Promise<void>;
+  checkoutBranch: (branchName: string) => Promise<void>
   /** Create a new branch */
-  createBranch: (branchName: string, fromBranch?: string) => Promise<void>;
+  createBranch: (branchName: string, fromBranch?: string) => Promise<void>
   /** Delete a branch */
-  deleteBranch: (branchName: string, force?: boolean) => Promise<void>;
+  deleteBranch: (branchName: string, force?: boolean) => Promise<void>
   /** Fetch from remote */
-  fetchRemote: () => Promise<void>;
+  fetchRemote: () => Promise<void>
   /** Pull from remote */
-  pullFromRemote: () => Promise<void>;
+  pullFromRemote: () => Promise<void>
   /** Push to remote */
-  pushToRemote: (branchName?: string, setUpstream?: boolean) => Promise<void>;
+  pushToRemote: (branchName?: string, setUpstream?: boolean) => Promise<void>
   /** Whether any action is in progress */
-  isActionLoading: boolean;
+  isActionLoading: boolean
   /** Current action being performed */
-  currentAction: string | null;
+  currentAction: string | null
 }
 
 /**
@@ -170,113 +163,102 @@ export const useRepositoryActions = ({
   onSuccess,
   onError,
 }: UseRepositoryActionsOptions): UseRepositoryActionsReturn => {
-  const [isActionLoading, setIsActionLoading] = useState(false);
-  const [currentAction, setCurrentAction] = useState<string | null>(null);
+  const [isActionLoading, setIsActionLoading] = useState(false)
+  const [currentAction, setCurrentAction] = useState<string | null>(null)
 
   const executeAction = useCallback(
     async (
       actionName: string,
       action: () => Promise<{
-        success: boolean;
-        message?: string;
-        error?: string;
+        success: boolean
+        message?: string
+        error?: string
       }>
     ) => {
-      setIsActionLoading(true);
-      setCurrentAction(actionName);
+      setIsActionLoading(true)
+      setCurrentAction(actionName)
 
       try {
-        const result = await action();
+        const result = await action()
 
         if (result.success) {
-          onSuccess?.(result.message || `${actionName} completed successfully`);
+          onSuccess?.(result.message || `${actionName} completed successfully`)
         } else {
-          onError?.(result.error || `${actionName} failed`);
+          onError?.(result.error || `${actionName} failed`)
         }
       } catch (err) {
-        onError?.(err instanceof Error ? err.message : `${actionName} failed`);
+        onError?.(err instanceof Error ? err.message : `${actionName} failed`)
       } finally {
-        setIsActionLoading(false);
-        setCurrentAction(null);
+        setIsActionLoading(false)
+        setCurrentAction(null)
       }
     },
     [onSuccess, onError]
-  );
+  )
 
   const checkoutBranch = useCallback(
     async (branchName: string) => {
       await executeAction('Checkout branch', async () => {
-        const response = await RepositoryService.checkoutBranch(
-          repositoryId,
-          branchName
-        );
+        const response = await RepositoryService.checkoutBranch(repositoryId, branchName)
         return {
           success: response.success,
           message: response.data?.message,
           error: response.error,
-        };
-      });
+        }
+      })
     },
     [repositoryId, executeAction]
-  );
+  )
 
   const createBranch = useCallback(
     async (branchName: string, fromBranch?: string) => {
       await executeAction('Create branch', async () => {
-        const response = await RepositoryService.createBranch(
-          repositoryId,
-          branchName,
-          fromBranch
-        );
+        const response = await RepositoryService.createBranch(repositoryId, branchName, fromBranch)
         return {
           success: response.success,
           message: response.data?.message,
           error: response.error,
-        };
-      });
+        }
+      })
     },
     [repositoryId, executeAction]
-  );
+  )
 
   const deleteBranch = useCallback(
     async (branchName: string, force: boolean = false) => {
       await executeAction('Delete branch', async () => {
-        const response = await RepositoryService.deleteBranch(
-          repositoryId,
-          branchName,
-          force
-        );
+        const response = await RepositoryService.deleteBranch(repositoryId, branchName, force)
         return {
           success: response.success,
           message: response.data?.message,
           error: response.error,
-        };
-      });
+        }
+      })
     },
     [repositoryId, executeAction]
-  );
+  )
 
   const fetchRemote = useCallback(async () => {
     await executeAction('Fetch remote', async () => {
-      const response = await RepositoryService.fetchRepository(repositoryId);
+      const response = await RepositoryService.fetchRepository(repositoryId)
       return {
         success: response.success,
         message: response.data?.message,
         error: response.error,
-      };
-    });
-  }, [repositoryId, executeAction]);
+      }
+    })
+  }, [repositoryId, executeAction])
 
   const pullFromRemote = useCallback(async () => {
     await executeAction('Pull from remote', async () => {
-      const response = await RepositoryService.pullRepository(repositoryId);
+      const response = await RepositoryService.pullRepository(repositoryId)
       return {
         success: response.success,
         message: response.data?.message,
         error: response.error,
-      };
-    });
-  }, [repositoryId, executeAction]);
+      }
+    })
+  }, [repositoryId, executeAction])
 
   const pushToRemote = useCallback(
     async (branchName?: string, setUpstream: boolean = false) => {
@@ -285,16 +267,16 @@ export const useRepositoryActions = ({
           repositoryId,
           branchName,
           setUpstream
-        );
+        )
         return {
           success: response.success,
           message: response.data?.message,
           error: response.error,
-        };
-      });
+        }
+      })
     },
     [repositoryId, executeAction]
-  );
+  )
 
   return {
     checkoutBranch,
@@ -305,35 +287,35 @@ export const useRepositoryActions = ({
     pushToRemote,
     isActionLoading,
     currentAction,
-  };
-};
+  }
+}
 
 // Enhanced Repository Management Hooks
 
 export interface UseRepositoryHealthOptions {
   /** Repository ID */
-  repositoryId: string;
+  repositoryId: string
   /** Auto-refresh interval in milliseconds (0 to disable) */
-  refreshInterval?: number;
+  refreshInterval?: number
   /** Whether to fetch data immediately on mount */
-  autoFetch?: boolean;
+  autoFetch?: boolean
 }
 
 export interface UseRepositoryHealthReturn {
   /** Repository health metrics */
-  health: RepositoryHealthMetrics | null;
+  health: RepositoryHealthMetrics | null
   /** Loading state */
-  isLoading: boolean;
+  isLoading: boolean
   /** Error message */
-  error: string | null;
+  error: string | null
   /** Whether data is currently being refreshed */
-  isRefreshing: boolean;
+  isRefreshing: boolean
   /** Manually refresh health data */
-  refresh: () => Promise<void>;
+  refresh: () => Promise<void>
   /** Clear error state */
-  clearError: () => void;
+  clearError: () => void
   /** Last successful fetch timestamp */
-  lastFetch: Date | null;
+  lastFetch: Date | null
 }
 
 /**
@@ -344,67 +326,64 @@ export const useRepositoryHealth = ({
   refreshInterval = 300000, // 5 minutes default for health checks
   autoFetch = true,
 }: UseRepositoryHealthOptions): UseRepositoryHealthReturn => {
-  const [health, setHealth] = useState<RepositoryHealthMetrics | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [lastFetch, setLastFetch] = useState<Date | null>(null);
+  const [health, setHealth] = useState<RepositoryHealthMetrics | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const [lastFetch, setLastFetch] = useState<Date | null>(null)
 
   const fetchHealth = useCallback(
     async (isRefresh = false) => {
       if (isRefresh) {
-        setIsRefreshing(true);
+        setIsRefreshing(true)
       } else {
-        setIsLoading(true);
+        setIsLoading(true)
       }
 
-      setError(null);
+      setError(null)
 
       try {
-        const response =
-          await RepositoryService.getRepositoryHealth(repositoryId);
+        const response = await RepositoryService.getRepositoryHealth(repositoryId)
 
         if (response.success && response.data) {
-          setHealth(response.data);
-          setLastFetch(new Date());
+          setHealth(response.data)
+          setLastFetch(new Date())
         } else {
-          setError(response.error || 'Failed to fetch repository health');
+          setError(response.error || 'Failed to fetch repository health')
         }
       } catch (err) {
-        setError(
-          err instanceof Error ? err.message : 'An unexpected error occurred'
-        );
+        setError(err instanceof Error ? err.message : 'An unexpected error occurred')
       } finally {
-        setIsLoading(false);
-        setIsRefreshing(false);
+        setIsLoading(false)
+        setIsRefreshing(false)
       }
     },
     [repositoryId]
-  );
+  )
 
   const refresh = useCallback(async () => {
-    await fetchHealth(true);
-  }, [fetchHealth]);
+    await fetchHealth(true)
+  }, [fetchHealth])
 
   const clearError = useCallback(() => {
-    setError(null);
-  }, []);
+    setError(null)
+  }, [])
 
   useEffect(() => {
     if (autoFetch && repositoryId) {
-      fetchHealth();
+      fetchHealth()
     }
-  }, [fetchHealth, autoFetch, repositoryId]);
+  }, [fetchHealth, autoFetch, repositoryId])
 
   useEffect(() => {
     if (refreshInterval > 0 && repositoryId) {
       const interval = setInterval(() => {
-        fetchHealth(true);
-      }, refreshInterval);
+        fetchHealth(true)
+      }, refreshInterval)
 
-      return () => clearInterval(interval);
+      return () => clearInterval(interval)
     }
-  }, [fetchHealth, refreshInterval, repositoryId]);
+  }, [fetchHealth, refreshInterval, repositoryId])
 
   return {
     health,
@@ -414,37 +393,37 @@ export const useRepositoryHealth = ({
     refresh,
     clearError,
     lastFetch,
-  };
-};
+  }
+}
 
 export interface UseRepositoryStatisticsOptions {
   /** Repository ID */
-  repositoryId: string;
+  repositoryId: string
   /** Statistics period */
-  period?: '7d' | '30d' | '90d' | '1y';
+  period?: '7d' | '30d' | '90d' | '1y'
   /** Auto-refresh interval in milliseconds (0 to disable) */
-  refreshInterval?: number;
+  refreshInterval?: number
   /** Whether to fetch data immediately on mount */
-  autoFetch?: boolean;
+  autoFetch?: boolean
 }
 
 export interface UseRepositoryStatisticsReturn {
   /** Repository statistics */
-  statistics: RepositoryStatistics | null;
+  statistics: RepositoryStatistics | null
   /** Loading state */
-  isLoading: boolean;
+  isLoading: boolean
   /** Error message */
-  error: string | null;
+  error: string | null
   /** Whether data is currently being refreshed */
-  isRefreshing: boolean;
+  isRefreshing: boolean
   /** Change the statistics period */
-  setPeriod: (period: '7d' | '30d' | '90d' | '1y') => void;
+  setPeriod: (period: '7d' | '30d' | '90d' | '1y') => void
   /** Manually refresh statistics */
-  refresh: () => Promise<void>;
+  refresh: () => Promise<void>
   /** Clear error state */
-  clearError: () => void;
+  clearError: () => void
   /** Last successful fetch timestamp */
-  lastFetch: Date | null;
+  lastFetch: Date | null
 }
 
 /**
@@ -456,76 +435,72 @@ export const useRepositoryStatistics = ({
   refreshInterval = 600000, // 10 minutes default for statistics
   autoFetch = true,
 }: UseRepositoryStatisticsOptions): UseRepositoryStatisticsReturn => {
-  const [statistics, setStatistics] = useState<RepositoryStatistics | null>(
-    null
-  );
-  const [currentPeriod, setCurrentPeriod] = useState(period);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [lastFetch, setLastFetch] = useState<Date | null>(null);
+  const [statistics, setStatistics] = useState<RepositoryStatistics | null>(null)
+  const [currentPeriod, setCurrentPeriod] = useState(period)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const [lastFetch, setLastFetch] = useState<Date | null>(null)
 
   const fetchStatistics = useCallback(
     async (isRefresh = false) => {
       if (isRefresh) {
-        setIsRefreshing(true);
+        setIsRefreshing(true)
       } else {
-        setIsLoading(true);
+        setIsLoading(true)
       }
 
-      setError(null);
+      setError(null)
 
       try {
         const response = await RepositoryService.getRepositoryStatistics(
           repositoryId,
           currentPeriod
-        );
+        )
 
         if (response.success && response.data) {
-          setStatistics(response.data);
-          setLastFetch(new Date());
+          setStatistics(response.data)
+          setLastFetch(new Date())
         } else {
-          setError(response.error || 'Failed to fetch repository statistics');
+          setError(response.error || 'Failed to fetch repository statistics')
         }
       } catch (err) {
-        setError(
-          err instanceof Error ? err.message : 'An unexpected error occurred'
-        );
+        setError(err instanceof Error ? err.message : 'An unexpected error occurred')
       } finally {
-        setIsLoading(false);
-        setIsRefreshing(false);
+        setIsLoading(false)
+        setIsRefreshing(false)
       }
     },
     [repositoryId, currentPeriod]
-  );
+  )
 
   const setPeriod = useCallback((newPeriod: '7d' | '30d' | '90d' | '1y') => {
-    setCurrentPeriod(newPeriod);
-  }, []);
+    setCurrentPeriod(newPeriod)
+  }, [])
 
   const refresh = useCallback(async () => {
-    await fetchStatistics(true);
-  }, [fetchStatistics]);
+    await fetchStatistics(true)
+  }, [fetchStatistics])
 
   const clearError = useCallback(() => {
-    setError(null);
-  }, []);
+    setError(null)
+  }, [])
 
   useEffect(() => {
     if (autoFetch && repositoryId) {
-      fetchStatistics();
+      fetchStatistics()
     }
-  }, [fetchStatistics, autoFetch, repositoryId]);
+  }, [fetchStatistics, autoFetch, repositoryId])
 
   useEffect(() => {
     if (refreshInterval > 0 && repositoryId) {
       const interval = setInterval(() => {
-        fetchStatistics(true);
-      }, refreshInterval);
+        fetchStatistics(true)
+      }, refreshInterval)
 
-      return () => clearInterval(interval);
+      return () => clearInterval(interval)
     }
-  }, [fetchStatistics, refreshInterval, repositoryId]);
+  }, [fetchStatistics, refreshInterval, repositoryId])
 
   return {
     statistics,
@@ -536,33 +511,33 @@ export const useRepositoryStatistics = ({
     refresh,
     clearError,
     lastFetch,
-  };
-};
+  }
+}
 
 export interface UseRepositoryIntegrationsOptions {
   /** Repository ID */
-  repositoryId: string;
+  repositoryId: string
   /** Auto-refresh interval in milliseconds (0 to disable) */
-  refreshInterval?: number;
+  refreshInterval?: number
   /** Whether to fetch data immediately on mount */
-  autoFetch?: boolean;
+  autoFetch?: boolean
 }
 
 export interface UseRepositoryIntegrationsReturn {
   /** Repository integration status */
-  integrations: RepositoryIntegrationStatus | null;
+  integrations: RepositoryIntegrationStatus | null
   /** Loading state */
-  isLoading: boolean;
+  isLoading: boolean
   /** Error message */
-  error: string | null;
+  error: string | null
   /** Whether data is currently being refreshed */
-  isRefreshing: boolean;
+  isRefreshing: boolean
   /** Manually refresh integration status */
-  refresh: () => Promise<void>;
+  refresh: () => Promise<void>
   /** Clear error state */
-  clearError: () => void;
+  clearError: () => void
   /** Last successful fetch timestamp */
-  lastFetch: Date | null;
+  lastFetch: Date | null
 }
 
 /**
@@ -573,68 +548,64 @@ export const useRepositoryIntegrations = ({
   refreshInterval = 120000, // 2 minutes default for integrations
   autoFetch = true,
 }: UseRepositoryIntegrationsOptions): UseRepositoryIntegrationsReturn => {
-  const [integrations, setIntegrations] =
-    useState<RepositoryIntegrationStatus | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [lastFetch, setLastFetch] = useState<Date | null>(null);
+  const [integrations, setIntegrations] = useState<RepositoryIntegrationStatus | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const [lastFetch, setLastFetch] = useState<Date | null>(null)
 
   const fetchIntegrations = useCallback(
     async (isRefresh = false) => {
       if (isRefresh) {
-        setIsRefreshing(true);
+        setIsRefreshing(true)
       } else {
-        setIsLoading(true);
+        setIsLoading(true)
       }
 
-      setError(null);
+      setError(null)
 
       try {
-        const response =
-          await RepositoryService.getRepositoryIntegrations(repositoryId);
+        const response = await RepositoryService.getRepositoryIntegrations(repositoryId)
 
         if (response.success && response.data) {
-          setIntegrations(response.data);
-          setLastFetch(new Date());
+          setIntegrations(response.data)
+          setLastFetch(new Date())
         } else {
-          setError(response.error || 'Failed to fetch repository integrations');
+          setError(response.error || 'Failed to fetch repository integrations')
         }
       } catch (err) {
-        setError(
-          err instanceof Error ? err.message : 'An unexpected error occurred'
-        );
+        setError(err instanceof Error ? err.message : 'An unexpected error occurred')
       } finally {
-        setIsLoading(false);
-        setIsRefreshing(false);
+        setIsLoading(false)
+        setIsRefreshing(false)
       }
     },
     [repositoryId]
-  );
+  )
 
   const refresh = useCallback(async () => {
-    await fetchIntegrations(true);
-  }, [fetchIntegrations]);
+    await fetchIntegrations(true)
+  }, [fetchIntegrations])
 
   const clearError = useCallback(() => {
-    setError(null);
-  }, []);
+    setError(null)
+  }, [])
 
   useEffect(() => {
     if (autoFetch && repositoryId) {
-      fetchIntegrations();
+      fetchIntegrations()
     }
-  }, [fetchIntegrations, autoFetch, repositoryId]);
+  }, [fetchIntegrations, autoFetch, repositoryId])
 
   useEffect(() => {
     if (refreshInterval > 0 && repositoryId) {
       const interval = setInterval(() => {
-        fetchIntegrations(true);
-      }, refreshInterval);
+        fetchIntegrations(true)
+      }, refreshInterval)
 
-      return () => clearInterval(interval);
+      return () => clearInterval(interval)
     }
-  }, [fetchIntegrations, refreshInterval, repositoryId]);
+  }, [fetchIntegrations, refreshInterval, repositoryId])
 
   return {
     integrations,
@@ -644,38 +615,38 @@ export const useRepositoryIntegrations = ({
     refresh,
     clearError,
     lastFetch,
-  };
-};
+  }
+}
 
 export interface UseRepositoryRealtimeOptions {
   /** Repository ID */
-  repositoryId: string;
+  repositoryId: string
   /** Whether to start watching immediately */
-  autoWatch?: boolean;
+  autoWatch?: boolean
   /** Callback for repository updates */
   onUpdate?: (data: {
-    type: 'commit' | 'branch' | 'status' | 'health';
-    repository: string;
-    data: unknown;
-    timestamp: string;
-  }) => void;
+    type: 'commit' | 'branch' | 'status' | 'health'
+    repository: string
+    data: unknown
+    timestamp: string
+  }) => void
   /** Callback for errors */
-  onError?: (error: Error) => void;
+  onError?: (error: Error) => void
 }
 
 export interface UseRepositoryRealtimeReturn {
   /** Whether the WebSocket connection is active */
-  isConnected: boolean;
+  isConnected: boolean
   /** Connection error */
-  connectionError: string | null;
+  connectionError: string | null
   /** Start watching repository updates */
-  startWatching: () => void;
+  startWatching: () => void
   /** Stop watching repository updates */
-  stopWatching: () => void;
+  stopWatching: () => void
   /** Latest update received */
-  latestUpdate: unknown;
+  latestUpdate: unknown
   /** Connection status */
-  connectionStatus: 'disconnected' | 'connecting' | 'connected' | 'error';
+  connectionStatus: 'disconnected' | 'connecting' | 'connected' | 'error'
 }
 
 /**
@@ -687,62 +658,62 @@ export const useRepositoryRealtime = ({
   onUpdate,
   onError,
 }: UseRepositoryRealtimeOptions): UseRepositoryRealtimeReturn => {
-  const [isConnected, setIsConnected] = useState(false);
-  const [connectionError, setConnectionError] = useState<string | null>(null);
-  const [latestUpdate, setLatestUpdate] = useState<unknown>(null);
+  const [isConnected, setIsConnected] = useState(false)
+  const [connectionError, setConnectionError] = useState<string | null>(null)
+  const [latestUpdate, setLatestUpdate] = useState<unknown>(null)
   const [connectionStatus, setConnectionStatus] = useState<
     'disconnected' | 'connecting' | 'connected' | 'error'
-  >('disconnected');
-  const [cleanup, setCleanup] = useState<(() => void) | null>(null);
+  >('disconnected')
+  const [cleanup, setCleanup] = useState<(() => void) | null>(null)
 
   const startWatching = useCallback(() => {
     if (cleanup) {
-      cleanup();
+      cleanup()
     }
 
-    setConnectionStatus('connecting');
-    setConnectionError(null);
+    setConnectionStatus('connecting')
+    setConnectionError(null)
 
     const cleanupFn = RepositoryService.watchRepository(
       repositoryId,
-      data => {
-        setLatestUpdate(data);
-        setIsConnected(true);
-        setConnectionStatus('connected');
-        onUpdate?.(data);
+      (data) => {
+        setLatestUpdate(data)
+        setIsConnected(true)
+        setConnectionStatus('connected')
+        onUpdate?.(data)
       },
-      error => {
-        setConnectionError(error.message);
-        setIsConnected(false);
-        setConnectionStatus('error');
-        onError?.(error);
+      (error) => {
+        setConnectionError(error.message)
+        setIsConnected(false)
+        setConnectionStatus('error')
+        onError?.(error)
       }
-    );
+    )
 
-    setCleanup(() => cleanupFn);
-  }, [repositoryId, onUpdate, onError, cleanup]);
+    setCleanup(() => cleanupFn)
+  }, [repositoryId, onUpdate, onError, cleanup])
 
   const stopWatching = useCallback(() => {
     if (cleanup) {
-      cleanup();
-      setCleanup(null);
+      cleanup()
+      setCleanup(null)
     }
-    setIsConnected(false);
-    setConnectionStatus('disconnected');
-    setConnectionError(null);
-  }, [cleanup]);
+    setIsConnected(false)
+    setConnectionStatus('disconnected')
+    setConnectionError(null)
+  }, [cleanup])
 
   useEffect(() => {
     if (autoWatch && repositoryId) {
-      startWatching();
+      startWatching()
     }
 
     return () => {
       if (cleanup) {
-        cleanup();
+        cleanup()
       }
-    };
-  }, [autoWatch, repositoryId, startWatching, cleanup]);
+    }
+  }, [autoWatch, repositoryId, startWatching, cleanup])
 
   return {
     isConnected,
@@ -751,7 +722,7 @@ export const useRepositoryRealtime = ({
     stopWatching,
     latestUpdate,
     connectionStatus,
-  };
-};
+  }
+}
 
-export default useRepositoryData;
+export default useRepositoryData

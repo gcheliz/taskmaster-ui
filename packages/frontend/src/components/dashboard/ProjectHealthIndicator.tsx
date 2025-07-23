@@ -78,7 +78,7 @@ export const ProjectHealthIndicator: React.FC<ProjectHealthIndicatorProps> = ({
                   strokeDasharray={circumference}
                   initial={{ strokeDashoffset: circumference }}
                   animate={{ strokeDashoffset }}
-                  transition={{ duration: 1.5, ease: "easeOut" }}
+                  transition={{ duration: 1.5, ease: 'easeOut' }}
                   className={getHealthBackground(overallHealth)}
                   strokeLinecap="round"
                 />
@@ -98,7 +98,7 @@ export const ProjectHealthIndicator: React.FC<ProjectHealthIndicatorProps> = ({
               </div>
             </div>
           </div>
-          
+
           <div className="flex-1 space-y-4">
             {metrics.map((metric, index) => (
               <motion.div
@@ -108,16 +108,17 @@ export const ProjectHealthIndicator: React.FC<ProjectHealthIndicatorProps> = ({
                 transition={{ delay: 0.1 * index }}
               >
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-sm font-medium text-secondary-700">
-                    {metric.name}
-                  </span>
+                  <span className="text-sm font-medium text-secondary-700">{metric.name}</span>
                   <span className={cn('text-sm font-medium', getStatusColor(metric.status))}>
                     {metric.value}/{metric.max}
                   </span>
                 </div>
                 <div className="w-full bg-secondary-200 rounded-full h-2">
                   <motion.div
-                    className={cn('h-2 rounded-full', getHealthBackground((metric.value / metric.max) * 100))}
+                    className={cn(
+                      'h-2 rounded-full',
+                      getHealthBackground((metric.value / metric.max) * 100)
+                    )}
                     initial={{ width: 0 }}
                     animate={{ width: `${(metric.value / metric.max) * 100}%` }}
                     transition={{ delay: 0.2 + index * 0.1, duration: 0.8 }}

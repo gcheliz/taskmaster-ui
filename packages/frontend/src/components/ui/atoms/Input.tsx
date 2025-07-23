@@ -1,6 +1,6 @@
-import React from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '../../../utils/cn';
+import React from 'react'
+import { cva, type VariantProps } from 'class-variance-authority'
+import { cn } from '../../../utils/cn'
 
 const inputVariants = cva(
   // Base styles with enhanced dark theme support and micro-interactions
@@ -26,7 +26,7 @@ const inputVariants = cva(
       inputSize: 'md',
     },
   }
-);
+)
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement>,
@@ -35,49 +35,36 @@ export interface InputProps
    * Shows error state styling
    * @default false
    */
-  error?: boolean;
+  error?: boolean
   /**
    * Shows success state styling
    * @default false
    */
-  success?: boolean;
+  success?: boolean
   /**
    * Icon to display on the left side of the input
    */
-  leftIcon?: React.ReactNode;
+  leftIcon?: React.ReactNode
   /**
    * Icon to display on the right side of the input
    */
-  rightIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode
   /**
    * The visual style variant of the input
    * @default 'default'
    */
-  variant?: 'default' | 'error' | 'success';
+  variant?: 'default' | 'error' | 'success'
   /**
    * The size of the input
    * @default 'md'
    */
-  inputSize?: 'sm' | 'md' | 'lg';
+  inputSize?: 'sm' | 'md' | 'lg'
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  (
-    {
-      className,
-      variant,
-      inputSize,
-      error,
-      success,
-      leftIcon,
-      rightIcon,
-      type,
-      ...props
-    },
-    ref
-  ) => {
+  ({ className, variant, inputSize, error, success, leftIcon, rightIcon, type, ...props }, ref) => {
     // Determine variant based on state
-    const computedVariant = error ? 'error' : success ? 'success' : variant;
+    const computedVariant = error ? 'error' : success ? 'success' : variant
 
     const inputElement = (
       <input
@@ -90,7 +77,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         ref={ref}
         {...props}
       />
-    );
+    )
 
     if (leftIcon || rightIcon) {
       return (
@@ -107,13 +94,13 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             </div>
           )}
         </div>
-      );
+      )
     }
 
-    return inputElement;
+    return inputElement
   }
-);
+)
 
-Input.displayName = 'Input';
+Input.displayName = 'Input'
 
-export { Input, inputVariants };
+export { Input, inputVariants }

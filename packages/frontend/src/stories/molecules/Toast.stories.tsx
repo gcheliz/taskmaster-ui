@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { useState, useEffect } from 'react';
-import { Toast } from '../../components/ui/molecules/Toast';
-import { Button } from '../../components/ui/atoms/Button';
+import type { Meta, StoryObj } from '@storybook/react'
+import { useState, useEffect } from 'react'
+import { Toast } from '../../components/ui/molecules/Toast'
+import { Button } from '../../components/ui/atoms/Button'
 
 const meta: Meta<typeof Toast> = {
   title: 'Molecules/Toast',
@@ -28,8 +28,7 @@ const meta: Meta<typeof Toast> = {
     },
     duration: {
       control: { type: 'number', min: 0, max: 10000, step: 500 },
-      description:
-        'Auto-dismiss duration in milliseconds (0 = no auto-dismiss)',
+      description: 'Auto-dismiss duration in milliseconds (0 = no auto-dismiss)',
     },
     onClose: {
       action: 'closed',
@@ -37,7 +36,7 @@ const meta: Meta<typeof Toast> = {
     },
   },
   decorators: [
-    Story => (
+    (Story) => (
       <div className="min-h-[120px] flex items-center justify-center">
         <div className="max-w-md w-full">
           <Story />
@@ -45,10 +44,10 @@ const meta: Meta<typeof Toast> = {
       </div>
     ),
   ],
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 export const Success: Story = {
   args: {
@@ -56,7 +55,7 @@ export const Success: Story = {
     message: 'Your changes have been saved successfully.',
     duration: 5000,
   },
-};
+}
 
 export const Error: Story = {
   args: {
@@ -64,7 +63,7 @@ export const Error: Story = {
     message: 'An error occurred while processing your request.',
     duration: 5000,
   },
-};
+}
 
 export const Warning: Story = {
   args: {
@@ -72,7 +71,7 @@ export const Warning: Story = {
     message: 'This action cannot be undone. Please proceed with caution.',
     duration: 5000,
   },
-};
+}
 
 export const Info: Story = {
   args: {
@@ -80,61 +79,45 @@ export const Info: Story = {
     message: 'New features are available! Check out the latest updates.',
     duration: 5000,
   },
-};
+}
 
 export const AllTypes: Story = {
   render: () => (
     <div className="space-y-4 w-full max-w-lg">
-      <Toast
-        type="success"
-        message="Operation completed successfully!"
-        duration={0}
-      />
+      <Toast type="success" message="Operation completed successfully!" duration={0} />
 
-      <Toast
-        type="error"
-        message="Failed to save changes. Please try again."
-        duration={0}
-      />
+      <Toast type="error" message="Failed to save changes. Please try again." duration={0} />
 
-      <Toast
-        type="warning"
-        message="Your session will expire in 5 minutes."
-        duration={0}
-      />
+      <Toast type="warning" message="Your session will expire in 5 minutes." duration={0} />
 
-      <Toast
-        type="info"
-        message="System maintenance scheduled for tonight."
-        duration={0}
-      />
+      <Toast type="info" message="System maintenance scheduled for tonight." duration={0} />
     </div>
   ),
-};
+}
 
 export const DifferentDurations: Story = {
   render: () => {
     const [toasts, setToasts] = useState<
       Array<{
-        id: number;
-        type: 'info' | 'success' | 'warning' | 'error';
-        message: string;
-        duration: number;
+        id: number
+        type: 'info' | 'success' | 'warning' | 'error'
+        message: string
+        duration: number
       }>
-    >([]);
+    >([])
 
     const addToast = (
       type: 'info' | 'success' | 'warning' | 'error',
       message: string,
       duration: number
     ) => {
-      const id = Date.now();
-      setToasts(prev => [...prev, { id, type, message, duration }]);
-    };
+      const id = Date.now()
+      setToasts((prev) => [...prev, { id, type, message, duration }])
+    }
 
     const removeToast = (id: number) => {
-      setToasts(prev => prev.filter(toast => toast.id !== id));
-    };
+      setToasts((prev) => prev.filter((toast) => toast.id !== id))
+    }
 
     return (
       <div className="w-full max-w-2xl">
@@ -151,31 +134,21 @@ export const DifferentDurations: Story = {
             <Button
               size="sm"
               variant="outline"
-              onClick={() =>
-                addToast('success', 'Standard notification (5s)', 5000)
-              }
+              onClick={() => addToast('success', 'Standard notification (5s)', 5000)}
             >
               5 Second Toast
             </Button>
             <Button
               size="sm"
               variant="outline"
-              onClick={() =>
-                addToast('warning', 'Long notification (10s)', 10000)
-              }
+              onClick={() => addToast('warning', 'Long notification (10s)', 10000)}
             >
               10 Second Toast
             </Button>
             <Button
               size="sm"
               variant="outline"
-              onClick={() =>
-                addToast(
-                  'error',
-                  'Persistent notification - manual dismiss only',
-                  0
-                )
-              }
+              onClick={() => addToast('error', 'Persistent notification - manual dismiss only', 0)}
             >
               No Auto-Dismiss
             </Button>
@@ -183,7 +156,7 @@ export const DifferentDurations: Story = {
         </div>
 
         <div className="space-y-3">
-          {toasts.map(toast => (
+          {toasts.map((toast) => (
             <Toast
               key={toast.id}
               type={toast.type}
@@ -195,45 +168,42 @@ export const DifferentDurations: Story = {
 
           {toasts.length === 0 && (
             <div className="text-center py-8 text-secondary-500">
-              <p>
-                No active toasts. Click the buttons above to see different
-                durations!
-              </p>
+              <p>No active toasts. Click the buttons above to see different durations!</p>
             </div>
           )}
         </div>
       </div>
-    );
+    )
   },
-};
+}
 
 export const ToastNotificationSystem: Story = {
   render: () => {
     const [notifications, setNotifications] = useState<
       Array<{
-        id: number;
-        type: 'info' | 'success' | 'warning' | 'error';
-        message: string;
-        duration: number;
+        id: number
+        type: 'info' | 'success' | 'warning' | 'error'
+        message: string
+        duration: number
       }>
-    >([]);
+    >([])
 
     const showNotification = (
       type: 'info' | 'success' | 'warning' | 'error',
       message: string,
       duration = 5000
     ) => {
-      const id = Date.now() + Math.random();
-      setNotifications(prev => [...prev, { id, type, message, duration }]);
-    };
+      const id = Date.now() + Math.random()
+      setNotifications((prev) => [...prev, { id, type, message, duration }])
+    }
 
     const removeNotification = (id: number) => {
-      setNotifications(prev => prev.filter(notif => notif.id !== id));
-    };
+      setNotifications((prev) => prev.filter((notif) => notif.id !== id))
+    }
 
     const clearAll = () => {
-      setNotifications([]);
-    };
+      setNotifications([])
+    }
 
     const presetNotifications = [
       {
@@ -256,7 +226,7 @@ export const ToastNotificationSystem: Story = {
         message: 'New team member joined the project.',
         duration: 5000,
       },
-    ];
+    ]
 
     return (
       <div className="w-full max-w-2xl">
@@ -269,9 +239,7 @@ export const ToastNotificationSystem: Story = {
                 key={index}
                 size="sm"
                 variant="outline"
-                onClick={() =>
-                  showNotification(notif.type, notif.message, notif.duration)
-                }
+                onClick={() => showNotification(notif.type, notif.message, notif.duration)}
               >
                 {notif.type.charAt(0).toUpperCase() + notif.type.slice(1)} Toast
               </Button>
@@ -283,11 +251,7 @@ export const ToastNotificationSystem: Story = {
               size="sm"
               variant="secondary"
               onClick={() => {
-                showNotification(
-                  'info',
-                  'Multiple notifications can appear together',
-                  3000
-                );
+                showNotification('info', 'Multiple notifications can appear together', 3000)
                 setTimeout(
                   () =>
                     showNotification(
@@ -296,16 +260,11 @@ export const ToastNotificationSystem: Story = {
                       4000
                     ),
                   500
-                );
+                )
                 setTimeout(
-                  () =>
-                    showNotification(
-                      'warning',
-                      'Each can be dismissed independently',
-                      5000
-                    ),
+                  () => showNotification('warning', 'Each can be dismissed independently', 5000),
                   1000
-                );
+                )
               }}
             >
               Show Multiple
@@ -325,9 +284,7 @@ export const ToastNotificationSystem: Story = {
         {/* Toast Container - Fixed positioned */}
         <div className="relative">
           <div className="border-2 border-dashed border-secondary-300 rounded-lg p-4 min-h-[200px] bg-secondary-50">
-            <p className="text-sm text-secondary-600 text-center mb-4">
-              Toast Notification Area
-            </p>
+            <p className="text-sm text-secondary-600 text-center mb-4">Toast Notification Area</p>
 
             {notifications.length === 0 ? (
               <div className="text-center py-8 text-secondary-400">
@@ -335,7 +292,7 @@ export const ToastNotificationSystem: Story = {
               </div>
             ) : (
               <div className="space-y-3">
-                {notifications.map(notification => (
+                {notifications.map((notification) => (
                   <Toast
                     key={notification.id}
                     type={notification.type}
@@ -349,33 +306,33 @@ export const ToastNotificationSystem: Story = {
           </div>
         </div>
       </div>
-    );
+    )
   },
-};
+}
 
 export const RealWorldExamples: Story = {
   render: () => {
     const [activeToasts, setActiveToasts] = useState<
       Array<{
-        id: number;
-        type: 'info' | 'success' | 'warning' | 'error';
-        message: string;
-        duration: number;
+        id: number
+        type: 'info' | 'success' | 'warning' | 'error'
+        message: string
+        duration: number
       }>
-    >([]);
+    >([])
 
     const showToast = (
       type: 'info' | 'success' | 'warning' | 'error',
       message: string,
       duration = 5000
     ) => {
-      const id = Date.now() + Math.random();
-      setActiveToasts(prev => [...prev, { id, type, message, duration }]);
-    };
+      const id = Date.now() + Math.random()
+      setActiveToasts((prev) => [...prev, { id, type, message, duration }])
+    }
 
     const removeToast = (id: number) => {
-      setActiveToasts(prev => prev.filter(toast => toast.id !== id));
-    };
+      setActiveToasts((prev) => prev.filter((toast) => toast.id !== id))
+    }
 
     const examples = [
       {
@@ -453,7 +410,7 @@ export const RealWorldExamples: Story = {
           },
         ],
       },
-    ];
+    ]
 
     return (
       <div className="w-full max-w-4xl">
@@ -463,9 +420,7 @@ export const RealWorldExamples: Story = {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             {examples.map((category, categoryIndex) => (
               <div key={categoryIndex} className="border rounded-lg p-4">
-                <h4 className="font-medium text-secondary-700 mb-3">
-                  {category.category}
-                </h4>
+                <h4 className="font-medium text-secondary-700 mb-3">{category.category}</h4>
                 <div className="space-y-2">
                   {category.scenarios.map((scenario, scenarioIndex) => (
                     <Button
@@ -487,9 +442,7 @@ export const RealWorldExamples: Story = {
         {/* Toast Display Area */}
         <div className="border-2 border-dashed border-secondary-300 rounded-lg p-4 min-h-[300px] bg-secondary-50/50">
           <div className="flex justify-between items-center mb-4">
-            <h4 className="text-sm font-medium text-secondary-700">
-              Active Notifications
-            </h4>
+            <h4 className="text-sm font-medium text-secondary-700">Active Notifications</h4>
             <Button
               size="sm"
               variant="ghost"
@@ -506,7 +459,7 @@ export const RealWorldExamples: Story = {
             </div>
           ) : (
             <div className="space-y-3">
-              {activeToasts.map(toast => (
+              {activeToasts.map((toast) => (
                 <Toast
                   key={toast.id}
                   type={toast.type}
@@ -519,21 +472,21 @@ export const RealWorldExamples: Story = {
           )}
         </div>
       </div>
-    );
+    )
   },
-};
+}
 
 export const AccessibilityExample: Story = {
   render: () => {
     const [accessibleToasts, setAccessibleToasts] = useState<
       Array<{
-        id: number;
-        type: 'info' | 'success' | 'warning' | 'error';
-        message: string;
-        duration: number;
-        ariaLive: 'polite' | 'assertive';
+        id: number
+        type: 'info' | 'success' | 'warning' | 'error'
+        message: string
+        duration: number
+        ariaLive: 'polite' | 'assertive'
       }>
-    >([]);
+    >([])
 
     const showAccessibleToast = (
       type: 'info' | 'success' | 'warning' | 'error',
@@ -541,31 +494,26 @@ export const AccessibilityExample: Story = {
       ariaLive: 'polite' | 'assertive' = 'polite',
       duration = 5000
     ) => {
-      const id = Date.now() + Math.random();
-      setAccessibleToasts(prev => [
-        ...prev,
-        { id, type, message, duration, ariaLive },
-      ]);
-    };
+      const id = Date.now() + Math.random()
+      setAccessibleToasts((prev) => [...prev, { id, type, message, duration, ariaLive }])
+    }
 
     const removeAccessibleToast = (id: number) => {
-      setAccessibleToasts(prev => prev.filter(toast => toast.id !== id));
-    };
+      setAccessibleToasts((prev) => prev.filter((toast) => toast.id !== id))
+    }
 
     return (
       <div className="space-y-6 w-full max-w-2xl">
         <div>
           <h3 className="font-semibold mb-3">Accessibility Features</h3>
           <p className="text-sm text-secondary-600 mb-4">
-            Toasts include proper ARIA roles, live regions for screen reader
-            announcements, and keyboard navigation support.
+            Toasts include proper ARIA roles, live regions for screen reader announcements, and
+            keyboard navigation support.
           </p>
 
           <div className="space-y-3 mb-6">
             <div>
-              <h4 className="text-sm font-medium text-secondary-700 mb-2">
-                ARIA Live Regions
-              </h4>
+              <h4 className="text-sm font-medium text-secondary-700 mb-2">ARIA Live Regions</h4>
               <div className="flex gap-2">
                 <Button
                   size="sm"
@@ -645,22 +593,15 @@ export const AccessibilityExample: Story = {
           </div>
 
           <div className="bg-primary-50 border border-primary-200 rounded-lg p-4 mb-6">
-            <h4 className="text-sm font-medium text-primary-800 mb-2">
-              Accessibility Features:
-            </h4>
+            <h4 className="text-sm font-medium text-primary-800 mb-2">Accessibility Features:</h4>
             <ul className="text-xs text-primary-700 space-y-1">
               <li>
-                • <code>role="alert"</code> for immediate screen reader
-                attention
+                • <code>role="alert"</code> for immediate screen reader attention
               </li>
               <li>
-                • <code>aria-live</code> regions for polite or assertive
-                announcements
+                • <code>aria-live</code> regions for polite or assertive announcements
               </li>
-              <li>
-                • Keyboard accessible dismiss buttons with proper focus
-                indicators
-              </li>
+              <li>• Keyboard accessible dismiss buttons with proper focus indicators</li>
               <li>• High contrast colors meeting WCAG 2.1 AA standards</li>
               <li>• Clear, descriptive text for screen reader users</li>
               <li>• Focus management for dismissible toasts</li>
@@ -671,9 +612,7 @@ export const AccessibilityExample: Story = {
         {/* Toast Display Area */}
         <div className="border border-secondary-300 rounded-lg p-4 min-h-[200px] bg-white">
           <div className="flex justify-between items-center mb-4">
-            <h4 className="text-sm font-medium text-secondary-700">
-              Accessible Toast Area
-            </h4>
+            <h4 className="text-sm font-medium text-secondary-700">Accessible Toast Area</h4>
             <Button
               size="sm"
               variant="ghost"
@@ -691,13 +630,8 @@ export const AccessibilityExample: Story = {
             </div>
           ) : (
             <div className="space-y-3" role="log" aria-label="Notification log">
-              {accessibleToasts.map(toast => (
-                <div
-                  key={toast.id}
-                  role="alert"
-                  aria-live={toast.ariaLive}
-                  className="relative"
-                >
+              {accessibleToasts.map((toast) => (
+                <div key={toast.id} role="alert" aria-live={toast.ariaLive} className="relative">
                   <Toast
                     type={toast.type}
                     message={toast.message}
@@ -707,8 +641,8 @@ export const AccessibilityExample: Story = {
 
                   {/* Screen reader only information */}
                   <div className="sr-only">
-                    Toast notification: {toast.type} message. {toast.message}.
-                    Use Tab to navigate to dismiss button if available.
+                    Toast notification: {toast.type} message. {toast.message}. Use Tab to navigate
+                    to dismiss button if available.
                   </div>
                 </div>
               ))}
@@ -717,16 +651,13 @@ export const AccessibilityExample: Story = {
         </div>
 
         <div>
-          <h4 className="text-sm font-medium text-secondary-700 mb-2">
-            Keyboard Testing
-          </h4>
+          <h4 className="text-sm font-medium text-secondary-700 mb-2">Keyboard Testing</h4>
           <p className="text-xs text-secondary-500">
-            Use Tab to navigate to toast dismiss buttons. Press Enter or Space
-            to dismiss. Screen readers will announce toasts automatically based
-            on their aria-live settings.
+            Use Tab to navigate to toast dismiss buttons. Press Enter or Space to dismiss. Screen
+            readers will announce toasts automatically based on their aria-live settings.
           </p>
         </div>
       </div>
-    );
+    )
   },
-};
+}

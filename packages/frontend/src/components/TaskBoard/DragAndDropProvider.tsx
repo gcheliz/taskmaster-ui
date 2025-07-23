@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react'
 import {
   DndContext,
   PointerSensor,
@@ -8,44 +8,36 @@ import {
   closestCenter,
   KeyboardSensor,
   TouchSensor,
-} from '@dnd-kit/core';
-import type {
-  DragEndEvent,
-  DragOverEvent,
-  DragStartEvent,
-} from '@dnd-kit/core';
-import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
-import type { TaskStatus } from '../../types/task';
-import { announceToScreenReader } from '../../utils/keyboard';
+} from '@dnd-kit/core'
+import type { DragEndEvent, DragOverEvent, DragStartEvent } from '@dnd-kit/core'
+import { sortableKeyboardCoordinates } from '@dnd-kit/sortable'
+import type { TaskStatus } from '../../types/task'
+import { announceToScreenReader } from '../../utils/keyboard'
 
 export interface DragAndDropProviderProps {
   /** Children components to wrap with drag and drop context */
-  children: React.ReactNode;
+  children: React.ReactNode
   /** Callback when a task is moved between columns */
-  onTaskMove?: (
-    taskId: number,
-    fromStatus: TaskStatus,
-    toStatus: TaskStatus
-  ) => void;
+  onTaskMove?: (taskId: number, fromStatus: TaskStatus, toStatus: TaskStatus) => void
   /** Callback when drag starts */
-  onDragStart?: (taskId: number) => void;
+  onDragStart?: (taskId: number) => void
   /** Callback when drag ends */
-  onDragEnd?: () => void;
+  onDragEnd?: () => void
   /** Optional drag overlay component */
-  dragOverlay?: React.ReactNode;
+  dragOverlay?: React.ReactNode
   /** Additional CSS class name */
-  className?: string;
+  className?: string
 }
 
 export interface DragData {
-  type: 'task';
-  taskId: number;
-  status: TaskStatus;
+  type: 'task'
+  taskId: number
+  status: TaskStatus
 }
 
 export interface DropData {
-  type: 'column';
-  status: TaskStatus;
+  type: 'column'
+  status: TaskStatus
 }
 
 /**
@@ -63,7 +55,7 @@ export const DragAndDropProvider: React.FC<DragAndDropProviderProps> = ({
   dragOverlay,
   className = '',
 }) => {
-  const [activeId, setActiveId] = useState<string | null>(null);
+  const [activeId, setActiveId] = useState<string | null>(null)
 
   // Configure sensors for different input methods
   const sensors = useSensors(
@@ -81,124 +73,118 @@ export const DragAndDropProvider: React.FC<DragAndDropProviderProps> = ({
         tolerance: 5,
       },
     })
-  );
+  )
 
   // Handle drag start
   const handleDragStart = useCallback(
     (event: DragStartEvent) => {
-      const { active } = event;
-      setActiveId(active.id as string);
+      const { active } = event
+      setActiveId(active.id as string)
 
       // Add visual feedback
-      document.body.style.cursor = 'grabbing';
+      document.body.style.cursor = 'grabbing'
 
-      const activeData = active.data.current as DragData;
+      const activeData = active.data.current as DragData
       if (activeData && activeData.type === 'task') {
         announceToScreenReader(
           `Started moving task ${activeData.taskId} from ${activeData.status}`,
           'polite'
-        );
+        )
 
         // Call the onDragStart callback
         if (onDragStart) {
-          onDragStart(activeData.taskId);
+          onDragStart(activeData.taskId)
         }
       }
 
-      console.log('Drag started:', active.id);
+      console.log('Drag started:', active.id)
     },
     [onDragStart]
-  );
+  )
 
   // Handle drag over (for visual feedback)
   const handleDragOver = useCallback((event: DragOverEvent) => {
-    const { active, over } = event;
+    const { active, over } = event
 
     if (!over) {
-      return;
+      return
     }
 
     // Optional: Add custom drag over logic
-    console.log('Drag over:', { active: active.id, over: over.id });
-  }, []);
+    console.log('Drag over:', { active: active.id, over: over.id })
+  }, [])
 
   // Handle drag end
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
-      const { active, over } = event;
+      const { active, over } = event
 
       // Clean up
-      setActiveId(null);
-      document.body.style.cursor = '';
+      setActiveId(null)
+      document.body.style.cursor = ''
 
       if (!over) {
-        announceToScreenReader('Task move cancelled', 'polite');
-        console.log('Drag ended without drop target');
-        return;
+        announceToScreenReader('Task move cancelled', 'polite')
+        console.log('Drag ended without drop target')
+        return
       }
 
-      const activeData = active.data.current as DragData;
-      const overData = over.data.current as DropData;
+      const activeData = active.data.current as DragData
+      const overData = over.data.current as DropData
 
       // Validate drag data
       if (!activeData || activeData.type !== 'task') {
-        announceToScreenReader('Invalid task move attempted', 'assertive');
-        console.error('Invalid drag data:', activeData);
-        return;
+        announceToScreenReader('Invalid task move attempted', 'assertive')
+        console.error('Invalid drag data:', activeData)
+        return
       }
 
       // Validate drop data
       if (!overData || overData.type !== 'column') {
-        announceToScreenReader('Invalid drop target', 'assertive');
-        console.error('Invalid drop data:', overData);
-        return;
+        announceToScreenReader('Invalid drop target', 'assertive')
+        console.error('Invalid drop data:', overData)
+        return
       }
 
-      const { taskId, status: fromStatus } = activeData;
-      const { status: toStatus } = overData;
+      const { taskId, status: fromStatus } = activeData
+      const { status: toStatus } = overData
 
       // Don't move if status is the same
       if (fromStatus === toStatus) {
-        announceToScreenReader(
-          `Task ${taskId} is already in ${fromStatus}`,
-          'polite'
-        );
-        console.log('Task already in the same column');
-        return;
+        announceToScreenReader(`Task ${taskId} is already in ${fromStatus}`, 'polite')
+        console.log('Task already in the same column')
+        return
       }
 
       // Announce successful move
-      announceToScreenReader(
-        `Task ${taskId} moved from ${fromStatus} to ${toStatus}`,
-        'polite'
-      );
+      announceToScreenReader(`Task ${taskId} moved from ${fromStatus} to ${toStatus}`, 'polite')
 
       // Call the onTaskMove callback
       if (onTaskMove) {
-        console.log('Moving task:', { taskId, fromStatus, toStatus });
-        onTaskMove(taskId, fromStatus, toStatus);
+        console.log('Moving task:', { taskId, fromStatus, toStatus })
+        onTaskMove(taskId, fromStatus, toStatus)
       }
 
       // Call the onDragEnd callback
       if (onDragEnd) {
-        onDragEnd();
+        onDragEnd()
       }
     },
     [onTaskMove, onDragEnd]
-  );
+  )
 
   // Handle drag cancel
   const handleDragCancel = useCallback(() => {
-    setActiveId(null);
-    document.body.style.cursor = '';
-    announceToScreenReader('Task move cancelled', 'polite');
-    console.log('Drag cancelled');
+    setActiveId(null)
+    document.body.style.cursor = ''
+    announceToScreenReader('Task move cancelled', 'polite')
+    console.log('Drag cancelled')
 
     // Call the onDragEnd callback
     if (onDragEnd) {
-      onDragEnd();
+      onDragEnd()
     }
-  }, [onDragEnd]);
+  }, [onDragEnd])
 
   return (
     <DndContext
@@ -279,7 +265,7 @@ export const DragAndDropProvider: React.FC<DragAndDropProviderProps> = ({
         }
       `}</style>
     </DndContext>
-  );
-};
+  )
+}
 
-export default DragAndDropProvider;
+export default DragAndDropProvider

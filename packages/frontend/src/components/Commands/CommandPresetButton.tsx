@@ -1,29 +1,23 @@
-import React from 'react';
-import { Button } from '../ui/atoms/Button';
-import { Icon } from '../ui/atoms/Icon';
-import { Spinner } from '../ui/atoms/Spinner';
-import { useCommandExecution } from '../../hooks/useCommandExecution';
+import React from 'react'
+import { Button } from '../ui/atoms/Button'
+import { Icon } from '../ui/atoms/Icon'
+import { Spinner } from '../ui/atoms/Spinner'
+import { useCommandExecution } from '../../hooks/useCommandExecution'
 
 export interface CommandPresetButtonProps {
-  presetName: string;
-  label?: string;
-  description?: string;
-  icon?: React.ComponentType<{ className?: string }>;
-  variant?:
-    | 'primary'
-    | 'secondary'
-    | 'outline'
-    | 'ghost'
-    | 'link'
-    | 'destructive';
-  size?: 'sm' | 'md' | 'lg' | 'xl' | 'icon';
-  workingDirectory?: string;
-  repositoryPath?: string;
-  disabled?: boolean;
-  confirmationMessage?: string;
-  className?: string;
-  onExecutionStart?: () => void;
-  onExecutionComplete?: (success: boolean, results?: any) => void;
+  presetName: string
+  label?: string
+  description?: string
+  icon?: React.ComponentType<{ className?: string }>
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'link' | 'destructive'
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'icon'
+  workingDirectory?: string
+  repositoryPath?: string
+  disabled?: boolean
+  confirmationMessage?: string
+  className?: string
+  onExecutionStart?: () => void
+  onExecutionComplete?: (success: boolean, results?: any) => void
 }
 
 export const CommandPresetButton: React.FC<CommandPresetButtonProps> = ({
@@ -41,29 +35,29 @@ export const CommandPresetButton: React.FC<CommandPresetButtonProps> = ({
   onExecutionStart,
   onExecutionComplete,
 }) => {
-  const { state, executePreset } = useCommandExecution();
+  const { state, executePreset } = useCommandExecution()
 
   const handleClick = async () => {
     // Show confirmation if required
     if (confirmationMessage) {
-      const confirmed = window.confirm(confirmationMessage);
+      const confirmed = window.confirm(confirmationMessage)
       if (!confirmed) {
-        return;
+        return
       }
     }
 
-    onExecutionStart?.();
+    onExecutionStart?.()
 
     try {
-      await executePreset(presetName, workingDirectory, repositoryPath);
-      onExecutionComplete?.(state.result?.success || false, state.result);
+      await executePreset(presetName, workingDirectory, repositoryPath)
+      onExecutionComplete?.(state.result?.success || false, state.result)
     } catch (error) {
-      onExecutionComplete?.(false, error);
+      onExecutionComplete?.(false, error)
     }
-  };
+  }
 
-  const isDisabled = disabled || state.isExecuting;
-  const displayLabel = label || presetName;
+  const isDisabled = disabled || state.isExecuting
+  const displayLabel = label || presetName
 
   return (
     <Button
@@ -83,5 +77,5 @@ export const CommandPresetButton: React.FC<CommandPresetButtonProps> = ({
     >
       {state.isExecuting ? 'Executing...' : displayLabel}
     </Button>
-  );
-};
+  )
+}

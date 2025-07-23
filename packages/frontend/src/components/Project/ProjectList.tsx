@@ -1,34 +1,34 @@
-import React from 'react';
+import React from 'react'
 
 export interface Project {
-  id: string;
-  name: string;
-  repositoryId: string;
-  repositoryName: string;
-  repositoryPath: string;
-  createdAt: string;
-  lastAccessed?: string;
-  tasksCount?: number;
-  status?: 'active' | 'archived' | 'inactive';
+  id: string
+  name: string
+  repositoryId: string
+  repositoryName: string
+  repositoryPath: string
+  createdAt: string
+  lastAccessed?: string
+  tasksCount?: number
+  status?: 'active' | 'archived' | 'inactive'
 }
 
 export interface ProjectListProps {
   /** Array of projects to display */
-  projects: Project[];
+  projects: Project[]
   /** Whether the component is in a loading state */
-  isLoading?: boolean;
+  isLoading?: boolean
   /** Error message to display */
-  error?: string | null;
+  error?: string | null
   /** Additional CSS class name */
-  className?: string;
+  className?: string
   /** Callback when a project is clicked */
-  onProjectClick?: (project: Project) => void;
+  onProjectClick?: (project: Project) => void
   /** Callback when create project is clicked */
-  onCreateProject?: () => void;
+  onCreateProject?: () => void
   /** Whether to show the create project button */
-  showCreateButton?: boolean;
+  showCreateButton?: boolean
   /** Empty state message */
-  emptyStateMessage?: string;
+  emptyStateMessage?: string
 }
 
 /**
@@ -52,56 +52,56 @@ export const ProjectList: React.FC<ProjectListProps> = ({
 }) => {
   const formatDate = (dateString: string): string => {
     try {
-      const date = new Date(dateString);
-      const now = new Date();
-      const diffMs = now.getTime() - date.getTime();
-      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+      const date = new Date(dateString)
+      const now = new Date()
+      const diffMs = now.getTime() - date.getTime()
+      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
 
       if (diffDays === 0) {
-        return 'Today';
+        return 'Today'
       } else if (diffDays === 1) {
-        return 'Yesterday';
+        return 'Yesterday'
       } else if (diffDays < 7) {
-        return `${diffDays} days ago`;
+        return `${diffDays} days ago`
       } else {
-        return date.toLocaleDateString();
+        return date.toLocaleDateString()
       }
     } catch {
-      return 'Unknown';
+      return 'Unknown'
     }
-  };
+  }
 
   const getStatusIcon = (status?: string): string => {
     switch (status) {
       case 'active':
-        return '🟢';
+        return '🟢'
       case 'archived':
-        return '📁';
+        return '📁'
       case 'inactive':
-        return '⚪';
+        return '⚪'
       default:
-        return '🟡';
+        return '🟡'
     }
-  };
+  }
 
   const getStatusLabel = (status?: string): string => {
     switch (status) {
       case 'active':
-        return 'Active';
+        return 'Active'
       case 'archived':
-        return 'Archived';
+        return 'Archived'
       case 'inactive':
-        return 'Inactive';
+        return 'Inactive'
       default:
-        return 'Unknown';
+        return 'Unknown'
     }
-  };
+  }
 
   const handleProjectClick = (project: Project) => {
     if (onProjectClick) {
-      onProjectClick(project);
+      onProjectClick(project)
     }
-  };
+  }
 
   if (isLoading) {
     return (
@@ -125,7 +125,7 @@ export const ProjectList: React.FC<ProjectListProps> = ({
           ))}
         </div>
       </div>
-    );
+    )
   }
 
   if (error) {
@@ -145,7 +145,7 @@ export const ProjectList: React.FC<ProjectListProps> = ({
           <span className="error-message">{error}</span>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -158,12 +158,11 @@ export const ProjectList: React.FC<ProjectListProps> = ({
           {projects.length > 0 && (
             <div className="project-stats">
               <span className="stat-item">
-                {getStatusIcon('active')}{' '}
-                {projects.filter(p => p.status === 'active').length} active
+                {getStatusIcon('active')} {projects.filter((p) => p.status === 'active').length}{' '}
+                active
               </span>
               <span className="stat-item">
-                📊 {projects.reduce((sum, p) => sum + (p.tasksCount || 0), 0)}{' '}
-                total tasks
+                📊 {projects.reduce((sum, p) => sum + (p.tasksCount || 0), 0)} total tasks
               </span>
             </div>
           )}
@@ -193,17 +192,17 @@ export const ProjectList: React.FC<ProjectListProps> = ({
           </div>
         ) : (
           <div className="project-grid">
-            {projects.map(project => (
+            {projects.map((project) => (
               <div
                 key={project.id}
                 className={`project-item ${onProjectClick ? 'clickable' : ''}`}
                 onClick={() => handleProjectClick(project)}
                 role={onProjectClick ? 'button' : 'article'}
                 tabIndex={onProjectClick ? 0 : undefined}
-                onKeyDown={e => {
+                onKeyDown={(e) => {
                   if (onProjectClick && (e.key === 'Enter' || e.key === ' ')) {
-                    e.preventDefault();
-                    handleProjectClick(project);
+                    e.preventDefault()
+                    handleProjectClick(project)
                   }
                 }}
               >
@@ -211,15 +210,10 @@ export const ProjectList: React.FC<ProjectListProps> = ({
                   <div className="project-title-section">
                     <h4 className="project-name">{project.name}</h4>
                     <div className="project-status">
-                      <span
-                        className="status-icon"
-                        title={getStatusLabel(project.status)}
-                      >
+                      <span className="status-icon" title={getStatusLabel(project.status)}>
                         {getStatusIcon(project.status)}
                       </span>
-                      <span className="status-label">
-                        {getStatusLabel(project.status)}
-                      </span>
+                      <span className="status-label">{getStatusLabel(project.status)}</span>
                     </div>
                   </div>
                 </div>
@@ -227,12 +221,8 @@ export const ProjectList: React.FC<ProjectListProps> = ({
                 <div className="project-item__repository">
                   <span className="repository-icon">📁</span>
                   <div className="repository-info">
-                    <span className="repository-name">
-                      {project.repositoryName}
-                    </span>
-                    <span className="repository-path">
-                      {project.repositoryPath}
-                    </span>
+                    <span className="repository-name">{project.repositoryName}</span>
+                    <span className="repository-path">{project.repositoryPath}</span>
                   </div>
                 </div>
 
@@ -246,9 +236,7 @@ export const ProjectList: React.FC<ProjectListProps> = ({
                   )}
                   <div className="stat-badge">
                     <span className="stat-icon">📅</span>
-                    <span className="stat-value">
-                      {formatDate(project.createdAt)}
-                    </span>
+                    <span className="stat-value">{formatDate(project.createdAt)}</span>
                     <span className="stat-label">created</span>
                   </div>
                 </div>
@@ -266,7 +254,7 @@ export const ProjectList: React.FC<ProjectListProps> = ({
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ProjectList;
+export default ProjectList

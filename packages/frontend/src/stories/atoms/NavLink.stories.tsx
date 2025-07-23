@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { NavLink } from '../../components/ui/atoms/NavLink';
+import type { Meta, StoryObj } from '@storybook/react'
+import { NavLink } from '../../components/ui/atoms/NavLink'
 import {
   Icon,
   HomeFilledIcon,
@@ -10,7 +10,7 @@ import {
   CompleteIcon,
   WarningIcon,
   StarFilledIcon,
-} from '../../components/ui/atoms/Icon';
+} from '../../components/ui/atoms/Icon'
 
 const meta = {
   title: 'Atoms/NavLink',
@@ -49,10 +49,10 @@ const meta = {
       control: 'boolean',
     },
   },
-} satisfies Meta<typeof NavLink>;
+} satisfies Meta<typeof NavLink>
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 // Basic NavLink Examples
 export const Default: Story = {
@@ -66,7 +66,7 @@ export const Default: Story = {
     children: 'Home',
     href: '#',
   },
-};
+}
 
 export const Primary: Story = {
   args: {
@@ -75,7 +75,7 @@ export const Primary: Story = {
     children: 'Dashboard',
     href: '#',
   },
-};
+}
 
 export const Active: Story = {
   args: {
@@ -85,7 +85,7 @@ export const Active: Story = {
     children: 'Current Page',
     href: '#',
   },
-};
+}
 
 export const WithIcon: Story = {
   args: {
@@ -95,7 +95,7 @@ export const WithIcon: Story = {
     children: 'Home',
     href: '#',
   },
-};
+}
 
 export const WithEndIcon: Story = {
   args: {
@@ -105,7 +105,7 @@ export const WithEndIcon: Story = {
     children: 'Settings',
     href: '#',
   },
-};
+}
 
 export const IconOnly: Story = {
   args: {
@@ -115,7 +115,7 @@ export const IconOnly: Story = {
     href: '#',
     'aria-label': 'Notifications',
   },
-};
+}
 
 export const External: Story = {
   args: {
@@ -125,7 +125,7 @@ export const External: Story = {
     children: 'External Link',
     href: 'https://example.com',
   },
-};
+}
 
 export const Disabled: Story = {
   args: {
@@ -135,7 +135,7 @@ export const Disabled: Story = {
     children: 'Disabled Link',
     href: '#',
   },
-};
+}
 
 export const Variants: Story = {
   render: () => (
@@ -174,7 +174,7 @@ export const Variants: Story = {
       </div>
     </div>
   ),
-};
+}
 
 export const Sizes: Story = {
   render: () => (
@@ -210,7 +210,7 @@ export const Sizes: Story = {
       </div>
     </div>
   ),
-};
+}
 
 export const WithIcons: Story = {
   render: () => (
@@ -249,7 +249,7 @@ export const WithIcons: Story = {
       </div>
     </div>
   ),
-};
+}
 
 export const NavigationMenu: Story = {
   render: () => (
@@ -264,34 +264,19 @@ export const NavigationMenu: Story = {
         >
           Dashboard
         </NavLink>
-        <NavLink
-          variant="default"
-          icon={TaskIcon}
-          href="#"
-          className="w-full justify-start"
-        >
+        <NavLink variant="default" icon={TaskIcon} href="#" className="w-full justify-start">
           Tasks
         </NavLink>
-        <NavLink
-          variant="default"
-          icon={UserCircleIcon}
-          href="#"
-          className="w-full justify-start"
-        >
+        <NavLink variant="default" icon={UserCircleIcon} href="#" className="w-full justify-start">
           Team
         </NavLink>
-        <NavLink
-          variant="default"
-          icon={SettingsIcon}
-          href="#"
-          className="w-full justify-start"
-        >
+        <NavLink variant="default" icon={SettingsIcon} href="#" className="w-full justify-start">
           Settings
         </NavLink>
       </div>
     </nav>
   ),
-};
+}
 
 export const HorizontalNavigation: Story = {
   render: () => (
@@ -315,7 +300,7 @@ export const HorizontalNavigation: Story = {
       </div>
     </nav>
   ),
-};
+}
 
 export const DarkThemeShowcase: Story = {
   parameters: {
@@ -324,9 +309,7 @@ export const DarkThemeShowcase: Story = {
   render: () => (
     <div className="">
       <div className="p-6 space-y-6">
-        <h3 className="text-lg font-semibold text-secondary-100">
-          Dark Theme Navigation
-        </h3>
+        <h3 className="text-lg font-semibold text-secondary-100">Dark Theme Navigation</h3>
 
         <div className="space-y-4">
           <div className="flex flex-wrap gap-4">
@@ -359,51 +342,30 @@ export const DarkThemeShowcase: Story = {
       </div>
     </div>
   ),
-};
+}
 
 export const ResponsiveNavigation: Story = {
   render: () => (
     <div className="w-full max-w-4xl mx-auto">
       <nav className="w-full p-4 bg-white border-b border-secondary-200 dark:bg-white dark:border-surface-700">
         <div className="flex flex-col sm:flex-row sm:space-x-6 space-y-2 sm:space-y-0">
-          <NavLink
-            variant="underline"
-            href="#"
-            isActive
-            className="sm:whitespace-nowrap"
-          >
+          <NavLink variant="underline" href="#" isActive className="sm:whitespace-nowrap">
             Dashboard
           </NavLink>
-          <NavLink
-            variant="underline"
-            href="#"
-            className="sm:whitespace-nowrap"
-          >
+          <NavLink variant="underline" href="#" className="sm:whitespace-nowrap">
             Task Management
           </NavLink>
-          <NavLink
-            variant="underline"
-            href="#"
-            className="sm:whitespace-nowrap"
-          >
+          <NavLink variant="underline" href="#" className="sm:whitespace-nowrap">
             Team Collaboration
           </NavLink>
-          <NavLink
-            variant="underline"
-            href="#"
-            className="sm:whitespace-nowrap"
-          >
+          <NavLink variant="underline" href="#" className="sm:whitespace-nowrap">
             Analytics & Reports
           </NavLink>
-          <NavLink
-            variant="underline"
-            href="#"
-            className="sm:whitespace-nowrap"
-          >
+          <NavLink variant="underline" href="#" className="sm:whitespace-nowrap">
             Settings & Configuration
           </NavLink>
         </div>
       </nav>
     </div>
   ),
-};
+}

@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { RepositoryGrid } from '../../components/Repository/RepositoryGrid';
-import type { RepositoryGridProps } from '../../components/Repository/RepositoryGrid';
+import type { Meta, StoryObj } from '@storybook/react'
+import { RepositoryGrid } from '../../components/Repository/RepositoryGrid'
+import type { RepositoryGridProps } from '../../components/Repository/RepositoryGrid'
 
 const meta: Meta<typeof RepositoryGrid> = {
   title: 'Components/Repository/RepositoryGrid',
@@ -52,18 +52,17 @@ const meta: Meta<typeof RepositoryGrid> = {
     onRepositoryManage: { action: 'manage repository' },
     onRefreshAll: { action: 'refresh all' },
   },
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof RepositoryGrid>;
+export default meta
+type Story = StoryObj<typeof RepositoryGrid>
 
 // Sample repository data
 const sampleRepositories: RepositoryGridProps['repositories'] = [
   {
     id: 'repo-1',
     name: 'taskmaster-ui',
-    description:
-      'A modern task management interface built with React and TypeScript',
+    description: 'A modern task management interface built with React and TypeScript',
     path: '/Users/user/projects/taskmaster-ui',
     currentBranch: 'main',
     lastCommit: {
@@ -91,8 +90,7 @@ const sampleRepositories: RepositoryGridProps['repositories'] = [
   {
     id: 'repo-2',
     name: 'internal-tools',
-    description:
-      'Internal development tools and utilities for the engineering team',
+    description: 'Internal development tools and utilities for the engineering team',
     path: '/Users/user/projects/internal-tools',
     currentBranch: 'develop',
     lastCommit: {
@@ -120,8 +118,7 @@ const sampleRepositories: RepositoryGridProps['repositories'] = [
   {
     id: 'repo-3',
     name: 'api-gateway',
-    description:
-      'Microservices API gateway with authentication and rate limiting',
+    description: 'Microservices API gateway with authentication and rate limiting',
     path: '/Users/user/projects/api-gateway',
     currentBranch: 'main',
     lastCommit: {
@@ -149,8 +146,7 @@ const sampleRepositories: RepositoryGridProps['repositories'] = [
   {
     id: 'repo-4',
     name: 'legacy-system',
-    description:
-      'Legacy system requiring maintenance and gradual modernization',
+    description: 'Legacy system requiring maintenance and gradual modernization',
     path: '/Users/user/projects/legacy-system',
     currentBranch: 'master',
     lastCommit: {
@@ -230,7 +226,7 @@ const sampleRepositories: RepositoryGridProps['repositories'] = [
     isPrivate: false,
     size: 1024,
   },
-];
+]
 
 export const Default: Story = {
   args: {
@@ -244,7 +240,7 @@ export const Default: Story = {
     isLoading: false,
     error: null,
   },
-};
+}
 
 export const GridLayout: Story = {
   args: {
@@ -257,7 +253,7 @@ export const GridLayout: Story = {
     sortable: true,
     isLoading: false,
   },
-};
+}
 
 export const ListLayout: Story = {
   args: {
@@ -270,7 +266,7 @@ export const ListLayout: Story = {
     sortable: true,
     isLoading: false,
   },
-};
+}
 
 export const CompactLayout: Story = {
   args: {
@@ -283,7 +279,7 @@ export const CompactLayout: Story = {
     sortable: true,
     isLoading: false,
   },
-};
+}
 
 export const EnhancedFeatures: Story = {
   args: {
@@ -296,7 +292,7 @@ export const EnhancedFeatures: Story = {
     sortable: true,
     isLoading: false,
   },
-};
+}
 
 export const LoadingState: Story = {
   args: {
@@ -309,7 +305,7 @@ export const LoadingState: Story = {
     sortable: true,
     isLoading: true,
   },
-};
+}
 
 export const EmptyState: Story = {
   args: {
@@ -322,7 +318,7 @@ export const EmptyState: Story = {
     sortable: true,
     isLoading: false,
   },
-};
+}
 
 export const ErrorState: Story = {
   args: {
@@ -334,10 +330,9 @@ export const ErrorState: Story = {
     filterable: true,
     sortable: true,
     isLoading: false,
-    error:
-      'Failed to connect to Git service. Please check your connection and try again.',
+    error: 'Failed to connect to Git service. Please check your connection and try again.',
   },
-};
+}
 
 export const WithPagination: Story = {
   args: {
@@ -356,7 +351,7 @@ export const WithPagination: Story = {
       onPageChange: (page: number) => console.log('Page changed to:', page),
     },
   },
-};
+}
 
 export const MinimalFeatures: Story = {
   args: {
@@ -369,7 +364,7 @@ export const MinimalFeatures: Story = {
     sortable: false,
     isLoading: false,
   },
-};
+}
 
 export const InteractiveExample: Story = {
   args: {
@@ -390,4 +385,4 @@ export const InteractiveExample: Story = {
       },
     },
   },
-};
+}

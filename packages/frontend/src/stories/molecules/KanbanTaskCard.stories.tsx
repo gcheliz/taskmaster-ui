@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { KanbanTaskCard } from '../../components/ui/molecules/KanbanTaskCard';
+import type { Meta, StoryObj } from '@storybook/react'
+import { KanbanTaskCard } from '../../components/ui/molecules/KanbanTaskCard'
 
 const meta: Meta<typeof KanbanTaskCard> = {
   title: 'Molecules/KanbanTaskCard',
@@ -15,14 +15,7 @@ const meta: Meta<typeof KanbanTaskCard> = {
     },
     status: {
       control: 'select',
-      options: [
-        'pending',
-        'in-progress',
-        'done',
-        'blocked',
-        'cancelled',
-        'deferred',
-      ],
+      options: ['pending', 'in-progress', 'done', 'blocked', 'cancelled', 'deferred'],
     },
     complexity: {
       control: { type: 'range', min: 1, max: 10, step: 1 },
@@ -32,10 +25,10 @@ const meta: Meta<typeof KanbanTaskCard> = {
     },
     onClick: { action: 'clicked' },
   },
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 // Sample data for stories
 const sampleTask = {
@@ -56,13 +49,13 @@ const sampleTask = {
     { id: 2, title: 'Implement JWT service', status: 'in-progress' as const },
     { id: 3, title: 'Add registration endpoint', status: 'pending' as const },
   ],
-};
+}
 
 export const Default: Story = {
   args: {
     ...sampleTask,
   },
-};
+}
 
 export const UrgentPriority: Story = {
   args: {
@@ -71,7 +64,7 @@ export const UrgentPriority: Story = {
     title: 'Critical security vulnerability fix',
     description: 'Patch identified security issue in authentication system',
   },
-};
+}
 
 export const LowPriority: Story = {
   args: {
@@ -80,7 +73,7 @@ export const LowPriority: Story = {
     title: 'Update documentation',
     description: 'Refresh API documentation with latest changes',
   },
-};
+}
 
 export const CompletedTask: Story = {
   args: {
@@ -94,7 +87,7 @@ export const CompletedTask: Story = {
       { id: 3, title: 'Verify data integrity', status: 'done' as const },
     ],
   },
-};
+}
 
 export const BlockedTask: Story = {
   args: {
@@ -103,7 +96,7 @@ export const BlockedTask: Story = {
     title: 'Integration with third-party API',
     description: 'Cannot proceed until API keys are provided by vendor',
   },
-};
+}
 
 export const OverdueTask: Story = {
   args: {
@@ -112,7 +105,7 @@ export const OverdueTask: Story = {
     title: 'Overdue task example',
     description: 'This task is past its due date',
   },
-};
+}
 
 export const NoSubtasks: Story = {
   args: {
@@ -121,7 +114,7 @@ export const NoSubtasks: Story = {
     title: 'Simple task without subtasks',
     description: 'A straightforward task with no sub-items',
   },
-};
+}
 
 export const NoAssignee: Story = {
   args: {
@@ -130,24 +123,16 @@ export const NoAssignee: Story = {
     title: 'Unassigned task',
     description: 'This task has not been assigned to anyone yet',
   },
-};
+}
 
 export const ManyTags: Story = {
   args: {
     ...sampleTask,
-    tags: [
-      'react',
-      'typescript',
-      'ui',
-      'components',
-      'storybook',
-      'testing',
-      'responsive',
-    ],
+    tags: ['react', 'typescript', 'ui', 'components', 'storybook', 'testing', 'responsive'],
     title: 'Task with many tags',
     description: 'This task has multiple tags to test overflow behavior',
   },
-};
+}
 
 export const MinimalTask: Story = {
   args: {
@@ -157,7 +142,7 @@ export const MinimalTask: Story = {
     status: 'pending',
     priority: 'medium',
   },
-};
+}
 
 export const ComplexTask: Story = {
   args: {
@@ -165,8 +150,7 @@ export const ComplexTask: Story = {
     complexity: 10,
     estimatedHours: 40,
     title: 'Highly complex task',
-    description:
-      'This is a very complex task that requires significant time and effort',
+    description: 'This is a very complex task that requires significant time and effort',
     subtasks: [
       { id: 1, title: 'Research phase', status: 'done' as const },
       { id: 2, title: 'Design phase', status: 'in-progress' as const },
@@ -175,7 +159,7 @@ export const ComplexTask: Story = {
       { id: 5, title: 'Documentation phase', status: 'pending' as const },
     ],
   },
-};
+}
 
 export const DraggingState: Story = {
   args: {
@@ -184,7 +168,7 @@ export const DraggingState: Story = {
     title: 'Task being dragged',
     description: 'Shows the visual state when task is being dragged',
   },
-};
+}
 
 export const Interactive: Story = {
   args: {
@@ -197,4 +181,4 @@ export const Interactive: Story = {
       },
     },
   },
-};
+}

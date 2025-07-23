@@ -1,6 +1,6 @@
-import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '../Tabs';
+import React from 'react'
+import { render, screen, fireEvent } from '@testing-library/react'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '../Tabs'
 
 describe('Tabs', () => {
   const renderTabs = (defaultValue = 'tab1') => {
@@ -15,43 +15,31 @@ describe('Tabs', () => {
         <TabsContent value="tab2">Content 2</TabsContent>
         <TabsContent value="tab3">Content 3</TabsContent>
       </Tabs>
-    );
-  };
+    )
+  }
 
   it('renders tabs with default active tab', () => {
-    renderTabs();
+    renderTabs()
 
-    expect(screen.getByRole('tab', { name: 'Tab 1' })).toHaveAttribute(
-      'aria-selected',
-      'true'
-    );
-    expect(screen.getByRole('tab', { name: 'Tab 2' })).toHaveAttribute(
-      'aria-selected',
-      'false'
-    );
-    expect(screen.getByText('Content 1')).toBeInTheDocument();
-    expect(screen.queryByText('Content 2')).not.toBeInTheDocument();
-  });
+    expect(screen.getByRole('tab', { name: 'Tab 1' })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByRole('tab', { name: 'Tab 2' })).toHaveAttribute('aria-selected', 'false')
+    expect(screen.getByText('Content 1')).toBeInTheDocument()
+    expect(screen.queryByText('Content 2')).not.toBeInTheDocument()
+  })
 
   it('switches tabs when clicked', () => {
-    renderTabs();
+    renderTabs()
 
-    fireEvent.click(screen.getByRole('tab', { name: 'Tab 2' }));
+    fireEvent.click(screen.getByRole('tab', { name: 'Tab 2' }))
 
-    expect(screen.getByRole('tab', { name: 'Tab 2' })).toHaveAttribute(
-      'aria-selected',
-      'true'
-    );
-    expect(screen.getByRole('tab', { name: 'Tab 1' })).toHaveAttribute(
-      'aria-selected',
-      'false'
-    );
-    expect(screen.getByText('Content 2')).toBeInTheDocument();
-    expect(screen.queryByText('Content 1')).not.toBeInTheDocument();
-  });
+    expect(screen.getByRole('tab', { name: 'Tab 2' })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByRole('tab', { name: 'Tab 1' })).toHaveAttribute('aria-selected', 'false')
+    expect(screen.getByText('Content 2')).toBeInTheDocument()
+    expect(screen.queryByText('Content 1')).not.toBeInTheDocument()
+  })
 
   it('handles controlled mode', () => {
-    const handleValueChange = vi.fn();
+    const handleValueChange = vi.fn()
 
     render(
       <Tabs value="tab1" onValueChange={handleValueChange}>
@@ -62,12 +50,12 @@ describe('Tabs', () => {
         <TabsContent value="tab1">Content 1</TabsContent>
         <TabsContent value="tab2">Content 2</TabsContent>
       </Tabs>
-    );
+    )
 
-    fireEvent.click(screen.getByRole('tab', { name: 'Tab 2' }));
+    fireEvent.click(screen.getByRole('tab', { name: 'Tab 2' }))
 
-    expect(handleValueChange).toHaveBeenCalledWith('tab2');
-  });
+    expect(handleValueChange).toHaveBeenCalledWith('tab2')
+  })
 
   it('applies variant classes correctly', () => {
     render(
@@ -77,24 +65,21 @@ describe('Tabs', () => {
         </TabsList>
         <TabsContent value="tab1">Content 1</TabsContent>
       </Tabs>
-    );
+    )
 
-    expect(screen.getByTestId('tabs-list')).toHaveClass(
-      'border-b',
-      'border-secondary-200'
-    );
-  });
+    expect(screen.getByTestId('tabs-list')).toHaveClass('border-b', 'border-secondary-200')
+  })
 
   it('has proper accessibility attributes', () => {
-    renderTabs();
+    renderTabs()
 
-    const tabList = screen.getByRole('tablist');
-    const tab1 = screen.getByRole('tab', { name: 'Tab 1' });
-    const panel1 = screen.getByRole('tabpanel');
+    const tabList = screen.getByRole('tablist')
+    const tab1 = screen.getByRole('tab', { name: 'Tab 1' })
+    const panel1 = screen.getByRole('tabpanel')
 
-    expect(tabList).toBeInTheDocument();
-    expect(tab1).toHaveAttribute('aria-controls', 'panel-tab1');
-    expect(panel1).toHaveAttribute('aria-labelledby', 'tab-tab1');
-    expect(panel1).toHaveAttribute('id', 'panel-tab1');
-  });
-});
+    expect(tabList).toBeInTheDocument()
+    expect(tab1).toHaveAttribute('aria-controls', 'panel-tab1')
+    expect(panel1).toHaveAttribute('aria-labelledby', 'tab-tab1')
+    expect(panel1).toHaveAttribute('id', 'panel-tab1')
+  })
+})

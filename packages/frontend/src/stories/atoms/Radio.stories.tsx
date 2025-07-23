@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { Radio } from '../../components/ui/atoms/Radio';
-import { Label } from '../../components/ui/atoms/Label';
+import type { Meta, StoryObj } from '@storybook/react'
+import { Radio } from '../../components/ui/atoms/Radio'
+import { Label } from '../../components/ui/atoms/Label'
 
 const meta: Meta<typeof Radio> = {
   title: 'Atoms/Radio',
@@ -35,30 +35,30 @@ const meta: Meta<typeof Radio> = {
       description: 'Whether the radio button is disabled',
     },
   },
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {
     name: 'radio-default',
   },
-};
+}
 
 export const Checked: Story = {
   args: {
     checked: true,
     name: 'radio-checked',
   },
-};
+}
 
 export const Disabled: Story = {
   args: {
     disabled: true,
     name: 'radio-disabled',
   },
-};
+}
 
 export const DisabledChecked: Story = {
   args: {
@@ -66,10 +66,10 @@ export const DisabledChecked: Story = {
     disabled: true,
     name: 'radio-disabled-checked',
   },
-};
+}
 
 export const WithLabel: Story = {
-  render: args => (
+  render: (args) => (
     <div className="flex items-center space-x-2">
       <Radio id="radio-with-label" name="radio-label-example" {...args} />
       <Label htmlFor="radio-with-label" className="cursor-pointer">
@@ -77,7 +77,7 @@ export const WithLabel: Story = {
       </Label>
     </div>
   ),
-};
+}
 
 export const Sizes: Story = {
   render: () => (
@@ -96,7 +96,7 @@ export const Sizes: Story = {
       </div>
     </div>
   ),
-};
+}
 
 export const States: Story = {
   render: () => (
@@ -119,7 +119,7 @@ export const States: Story = {
       </div>
     </div>
   ),
-};
+}
 
 export const Variants: Story = {
   render: () => (
@@ -138,14 +138,12 @@ export const Variants: Story = {
       </div>
     </div>
   ),
-};
+}
 
 export const RadioGroup: Story = {
   render: () => (
     <fieldset className="space-y-4">
-      <legend className="text-base font-medium text-secondary-900">
-        Choose a plan
-      </legend>
+      <legend className="text-base font-medium text-secondary-900">Choose a plan</legend>
       <div className="space-y-3">
         <div className="flex items-center space-x-3">
           <Radio id="plan-free" name="plan" value="free" defaultChecked />
@@ -185,79 +183,46 @@ export const RadioGroup: Story = {
       </div>
     </fieldset>
   ),
-};
+}
 
 export const TaskPriority: Story = {
   render: () => (
     <fieldset className="space-y-4">
-      <legend className="text-base font-medium text-secondary-900">
-        Task Priority
-      </legend>
+      <legend className="text-base font-medium text-secondary-900">Task Priority</legend>
       <div className="space-y-3">
         <div className="flex items-center space-x-3">
-          <Radio
-            id="priority-low"
-            name="priority"
-            value="low"
-            variant="success"
-          />
-          <Label
-            htmlFor="priority-low"
-            className="cursor-pointer text-success-700"
-          >
+          <Radio id="priority-low" name="priority" value="low" variant="success" />
+          <Label htmlFor="priority-low" className="cursor-pointer text-success-700">
             Low Priority
           </Label>
         </div>
 
         <div className="flex items-center space-x-3">
-          <Radio
-            id="priority-medium"
-            name="priority"
-            value="medium"
-            defaultChecked
-          />
-          <Label
-            htmlFor="priority-medium"
-            className="cursor-pointer text-warning-700"
-          >
+          <Radio id="priority-medium" name="priority" value="medium" defaultChecked />
+          <Label htmlFor="priority-medium" className="cursor-pointer text-warning-700">
             Medium Priority
           </Label>
         </div>
 
         <div className="flex items-center space-x-3">
-          <Radio
-            id="priority-high"
-            name="priority"
-            value="high"
-            variant="error"
-          />
-          <Label
-            htmlFor="priority-high"
-            className="cursor-pointer text-error-700"
-          >
+          <Radio id="priority-high" name="priority" value="high" variant="error" />
+          <Label htmlFor="priority-high" className="cursor-pointer text-error-700">
             High Priority
           </Label>
         </div>
       </div>
     </fieldset>
   ),
-};
+}
 
 export const FormExample: Story = {
   render: () => (
     <form className="space-y-8 max-w-md">
       <fieldset className="space-y-4">
-        <legend className="text-base font-medium text-secondary-900">
-          Notification Frequency
-        </legend>
+        <legend className="text-base font-medium text-secondary-900">Notification Frequency</legend>
         <div className="space-y-3">
           <div className="flex items-center space-x-3">
-            <Radio
-              id="freq-immediate"
-              name="frequency"
-              value="immediate"
-              defaultChecked
-            />
+            <Radio id="freq-immediate" name="frequency" value="immediate" defaultChecked />
             <Label htmlFor="freq-immediate" className="cursor-pointer">
               Immediate
             </Label>
@@ -287,9 +252,7 @@ export const FormExample: Story = {
       </fieldset>
 
       <fieldset className="space-y-4">
-        <legend className="text-base font-medium text-secondary-900">
-          Theme Preference
-        </legend>
+        <legend className="text-base font-medium text-secondary-900">Theme Preference</legend>
         <div className="space-y-3">
           <div className="flex items-center space-x-3">
             <Radio id="theme-light" name="theme" value="light" defaultChecked />
@@ -315,4 +278,4 @@ export const FormExample: Story = {
       </fieldset>
     </form>
   ),
-};
+}

@@ -1,16 +1,15 @@
-import React, { useState, createContext, useContext } from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '../../../utils/cn';
+import React, { useState, createContext, useContext } from 'react'
+import { cva, type VariantProps } from 'class-variance-authority'
+import { cn } from '../../../utils/cn'
 
-const tabsVariants = cva('w-full');
+const tabsVariants = cva('w-full')
 
 const tabsListVariants = cva(
   'inline-flex items-center justify-center rounded-md p-1 transition-all duration-200 ease-in-out',
   {
     variants: {
       variant: {
-        default:
-          'bg-secondary-100 text-secondary-600 dark:bg-surface-800 dark:text-secondary-400',
+        default: 'bg-secondary-100 text-secondary-600 dark:bg-surface-800 dark:text-secondary-400',
         line: 'border-b border-secondary-200 dark:border-surface-700 bg-transparent',
         pills: 'bg-secondary-100 p-1 dark:bg-surface-800',
         card: 'bg-white border border-secondary-200 shadow-sm dark:bg-surface-900 dark:border-surface-700',
@@ -31,7 +30,7 @@ const tabsListVariants = cva(
       responsive: false,
     },
   }
-);
+)
 
 const tabsTriggerVariants = cva(
   'inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 font-medium ring-offset-2 transition-all duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-100 dark:focus-visible:ring-offset-surface-900 disabled:pointer-events-none disabled:opacity-50 transform-gpu hover:scale-[1.02] active:scale-[0.98]',
@@ -56,7 +55,7 @@ const tabsTriggerVariants = cva(
       size: 'md',
     },
   }
-);
+)
 
 const tabsContentVariants = cva(
   'mt-2 ring-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-100 dark:focus-visible:ring-offset-surface-900 animate-in fade-in-0 slide-in-from-bottom-2 duration-300',
@@ -72,35 +71,35 @@ const tabsContentVariants = cva(
       size: 'md',
     },
   }
-);
+)
 
 interface TabsContextValue {
-  activeTab: string;
-  setActiveTab: (value: string) => void;
-  variant: 'default' | 'line' | 'pills' | 'card';
-  size: 'sm' | 'md' | 'lg';
-  responsive: boolean;
+  activeTab: string
+  setActiveTab: (value: string) => void
+  variant: 'default' | 'line' | 'pills' | 'card'
+  size: 'sm' | 'md' | 'lg'
+  responsive: boolean
 }
 
-const TabsContext = createContext<TabsContextValue | undefined>(undefined);
+const TabsContext = createContext<TabsContextValue | undefined>(undefined)
 
 const useTabsContext = () => {
-  const context = useContext(TabsContext);
+  const context = useContext(TabsContext)
   if (!context) {
-    throw new Error('Tabs components must be used within a Tabs provider');
+    throw new Error('Tabs components must be used within a Tabs provider')
   }
-  return context;
-};
+  return context
+}
 
 export interface TabsProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof tabsVariants> {
-  defaultValue?: string;
-  value?: string;
-  onValueChange?: (value: string) => void;
-  variant?: 'default' | 'line' | 'pills' | 'card';
-  size?: 'sm' | 'md' | 'lg';
-  responsive?: boolean;
+  defaultValue?: string
+  value?: string
+  onValueChange?: (value: string) => void
+  variant?: 'default' | 'line' | 'pills' | 'card'
+  size?: 'sm' | 'md' | 'lg'
+  responsive?: boolean
 }
 
 const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(
@@ -118,15 +117,15 @@ const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(
     },
     ref
   ) => {
-    const [internalValue, setInternalValue] = useState(defaultValue || '');
-    const activeTab = value !== undefined ? value : internalValue;
+    const [internalValue, setInternalValue] = useState(defaultValue || '')
+    const activeTab = value !== undefined ? value : internalValue
 
     const handleTabChange = (newValue: string) => {
       if (value === undefined) {
-        setInternalValue(newValue);
+        setInternalValue(newValue)
       }
-      onValueChange?.(newValue);
-    };
+      onValueChange?.(newValue)
+    }
 
     return (
       <TabsContext.Provider
@@ -142,10 +141,10 @@ const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(
           {children}
         </div>
       </TabsContext.Provider>
-    );
+    )
   }
-);
-Tabs.displayName = 'Tabs';
+)
+Tabs.displayName = 'Tabs'
 
 export interface TabsListProps
   extends React.HTMLAttributes<HTMLDivElement>,
@@ -153,7 +152,7 @@ export interface TabsListProps
   /**
    * Whether to show a dropdown menu on mobile for better responsive behavior
    */
-  showMobileDropdown?: boolean;
+  showMobileDropdown?: boolean
 }
 
 const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
@@ -172,69 +171,62 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
       variant: contextVariant,
       size: contextSize,
       responsive: contextResponsive,
-    } = useTabsContext();
-    const variant = propVariant || contextVariant;
-    const size = propSize || contextSize;
-    const responsive = propResponsive || contextResponsive;
+    } = useTabsContext()
+    const variant = propVariant || contextVariant
+    const size = propSize || contextSize
+    const responsive = propResponsive || contextResponsive
 
     const handleKeyDown = (event: React.KeyboardEvent) => {
-      const tablist = event.currentTarget;
-      const tabs = Array.from(
-        tablist.querySelectorAll('[role="tab"]')
-      ) as HTMLElement[];
-      const currentIndex = tabs.findIndex(
-        tab => tab === document.activeElement
-      );
+      const tablist = event.currentTarget
+      const tabs = Array.from(tablist.querySelectorAll('[role="tab"]')) as HTMLElement[]
+      const currentIndex = tabs.findIndex((tab) => tab === document.activeElement)
 
       if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
-        event.preventDefault();
-        const nextIndex = (currentIndex + 1) % tabs.length;
-        tabs[nextIndex]?.focus();
-        tabs[nextIndex]?.click();
+        event.preventDefault()
+        const nextIndex = (currentIndex + 1) % tabs.length
+        tabs[nextIndex]?.focus()
+        tabs[nextIndex]?.click()
       } else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
-        event.preventDefault();
-        const prevIndex =
-          currentIndex === 0 ? tabs.length - 1 : currentIndex - 1;
-        tabs[prevIndex]?.focus();
-        tabs[prevIndex]?.click();
+        event.preventDefault()
+        const prevIndex = currentIndex === 0 ? tabs.length - 1 : currentIndex - 1
+        tabs[prevIndex]?.focus()
+        tabs[prevIndex]?.click()
       } else if (event.key === 'Home') {
-        event.preventDefault();
-        tabs[0]?.focus();
-        tabs[0]?.click();
+        event.preventDefault()
+        tabs[0]?.focus()
+        tabs[0]?.click()
       } else if (event.key === 'End') {
-        event.preventDefault();
-        tabs[tabs.length - 1]?.focus();
-        tabs[tabs.length - 1]?.click();
+        event.preventDefault()
+        tabs[tabs.length - 1]?.focus()
+        tabs[tabs.length - 1]?.click()
       }
-    };
+    }
 
     return (
       <div
         ref={ref}
         role="tablist"
-        className={cn(
-          tabsListVariants({ variant, size, responsive, className })
-        )}
+        className={cn(tabsListVariants({ variant, size, responsive, className }))}
         onKeyDown={handleKeyDown}
         {...props}
       />
-    );
+    )
   }
-);
-TabsList.displayName = 'TabsList';
+)
+TabsList.displayName = 'TabsList'
 
 export interface TabsTriggerProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof tabsTriggerVariants> {
-  value: string;
+  value: string
   /**
    * Icon to display before the tab text
    */
-  icon?: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  icon?: React.ComponentType<React.SVGProps<SVGSVGElement>>
   /**
    * Badge content to display after the tab text
    */
-  badge?: React.ReactNode;
+  badge?: React.ReactNode
 }
 
 const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
@@ -251,15 +243,10 @@ const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
     },
     ref
   ) => {
-    const {
-      activeTab,
-      setActiveTab,
-      variant: contextVariant,
-      size: contextSize,
-    } = useTabsContext();
-    const variant = propVariant || contextVariant;
-    const size = propSize || contextSize;
-    const isActive = activeTab === value;
+    const { activeTab, setActiveTab, variant: contextVariant, size: contextSize } = useTabsContext()
+    const variant = propVariant || contextVariant
+    const size = propSize || contextSize
+    const isActive = activeTab === value
 
     return (
       <button
@@ -292,32 +279,29 @@ const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
           )}
         </div>
       </button>
-    );
+    )
   }
-);
-TabsTrigger.displayName = 'TabsTrigger';
+)
+TabsTrigger.displayName = 'TabsTrigger'
 
 export interface TabsContentProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof tabsContentVariants> {
-  value: string;
+  value: string
   /**
    * Whether to animate the content transition
    * @default true
    */
-  animate?: boolean;
+  animate?: boolean
 }
 
 const TabsContent = React.forwardRef<HTMLDivElement, TabsContentProps>(
-  (
-    { className, size: propSize, value, animate = true, children, ...props },
-    ref
-  ) => {
-    const { activeTab, size: contextSize } = useTabsContext();
-    const size = propSize || contextSize;
-    const isActive = activeTab === value;
+  ({ className, size: propSize, value, animate = true, children, ...props }, ref) => {
+    const { activeTab, size: contextSize } = useTabsContext()
+    const size = propSize || contextSize
+    const isActive = activeTab === value
 
-    if (!isActive) return null;
+    if (!isActive) return null
 
     return (
       <div
@@ -325,18 +309,15 @@ const TabsContent = React.forwardRef<HTMLDivElement, TabsContentProps>(
         role="tabpanel"
         id={`panel-${value}`}
         aria-labelledby={`tab-${value}`}
-        className={cn(
-          tabsContentVariants({ size, className }),
-          !animate && 'animate-none'
-        )}
+        className={cn(tabsContentVariants({ size, className }), !animate && 'animate-none')}
         {...props}
       >
         {children}
       </div>
-    );
+    )
   }
-);
-TabsContent.displayName = 'TabsContent';
+)
+TabsContent.displayName = 'TabsContent'
 
 export {
   Tabs,
@@ -347,4 +328,4 @@ export {
   tabsListVariants,
   tabsTriggerVariants,
   tabsContentVariants,
-};
+}

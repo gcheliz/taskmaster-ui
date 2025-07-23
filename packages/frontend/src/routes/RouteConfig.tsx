@@ -6,10 +6,20 @@ import { ProtectedRoute } from './ProtectedRoute'
 import { RoleGuard } from './RoleGuard'
 
 // Lazy load all route components
-const SimpleDashboardView = lazy(() => import('../components/Views/SimpleDashboardView').then(m => ({ default: m.SimpleDashboardView })))
-const SimpleRepositoryView = lazy(() => import('../components/Views/SimpleRepositoryView').then(m => ({ default: m.SimpleRepositoryView })))
+const SimpleDashboardView = lazy(() =>
+  import('../components/Views/SimpleDashboardView').then((m) => ({
+    default: m.SimpleDashboardView,
+  }))
+)
+const SimpleRepositoryView = lazy(() =>
+  import('../components/Views/SimpleRepositoryView').then((m) => ({
+    default: m.SimpleRepositoryView,
+  }))
+)
 const TaskBoard = lazy(() => import('../pages/TaskBoard'))
-const SimpleTerminalView = lazy(() => import('../components/Views/SimpleTerminalView').then(m => ({ default: m.SimpleTerminalView })))
+const SimpleTerminalView = lazy(() =>
+  import('../components/Views/SimpleTerminalView').then((m) => ({ default: m.SimpleTerminalView }))
+)
 const LoginPage = lazy(() => import('../pages/Login'))
 const NotFoundPage = lazy(() => import('../pages/NotFound'))
 

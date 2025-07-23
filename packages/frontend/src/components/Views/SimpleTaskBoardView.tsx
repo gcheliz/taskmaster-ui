@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 export const SimpleTaskBoardView: React.FC = () => {
   return (
@@ -111,7 +111,7 @@ export const SimpleTaskBoardView: React.FC = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default SimpleTaskBoardView;
+export default SimpleTaskBoardView

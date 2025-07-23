@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { Textarea } from '../../components/ui/atoms/Textarea';
-import { Label } from '../../components/ui/atoms/Label';
+import type { Meta, StoryObj } from '@storybook/react'
+import { Textarea } from '../../components/ui/atoms/Textarea'
+import { Label } from '../../components/ui/atoms/Label'
 
 const meta: Meta<typeof Textarea> = {
   title: 'Atoms/Textarea',
@@ -52,53 +52,45 @@ const meta: Meta<typeof Textarea> = {
     },
   },
   decorators: [
-    Story => (
+    (Story) => (
       <div className="w-96">
         <Story />
       </div>
     ),
   ],
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {
     placeholder: 'Enter your message...',
   },
-};
+}
 
 export const WithLabel: Story = {
-  render: args => (
+  render: (args) => (
     <div className="space-y-2">
       <Label htmlFor="textarea-with-label">Message</Label>
-      <Textarea
-        id="textarea-with-label"
-        placeholder="Type your message here..."
-        {...args}
-      />
+      <Textarea id="textarea-with-label" placeholder="Type your message here..." {...args} />
     </div>
   ),
-};
+}
 
 export const Required: Story = {
-  render: args => (
+  render: (args) => (
     <div className="space-y-2">
       <Label htmlFor="required-textarea" required>
         Description
       </Label>
-      <Textarea
-        id="required-textarea"
-        placeholder="Please provide a description..."
-        {...args}
-      />
+      <Textarea id="required-textarea" placeholder="Please provide a description..." {...args} />
     </div>
   ),
-};
+}
 
 export const WithDescription: Story = {
-  render: args => (
+  render: (args) => (
     <div className="space-y-2">
       <Label
         htmlFor="textarea-with-desc"
@@ -106,17 +98,13 @@ export const WithDescription: Story = {
       >
         Project Description
       </Label>
-      <Textarea
-        id="textarea-with-desc"
-        placeholder="Enter project details..."
-        {...args}
-      />
+      <Textarea id="textarea-with-desc" placeholder="Enter project details..." {...args} />
     </div>
   ),
-};
+}
 
 export const WithHelpText: Story = {
-  render: args => (
+  render: (args) => (
     <div className="space-y-2">
       <Label htmlFor="textarea-with-help" helpText="Maximum 500 characters">
         Comments
@@ -129,30 +117,21 @@ export const WithHelpText: Story = {
       />
     </div>
   ),
-};
+}
 
 export const ErrorState: Story = {
-  render: args => (
+  render: (args) => (
     <div className="space-y-2">
-      <Label
-        htmlFor="error-textarea"
-        error
-        description="This field is required"
-      >
+      <Label htmlFor="error-textarea" error description="This field is required">
         Required Field
       </Label>
-      <Textarea
-        id="error-textarea"
-        placeholder="Enter required information..."
-        error
-        {...args}
-      />
+      <Textarea id="error-textarea" placeholder="Enter required information..." error {...args} />
     </div>
   ),
-};
+}
 
 export const SuccessState: Story = {
-  render: args => (
+  render: (args) => (
     <div className="space-y-2">
       <Label htmlFor="success-textarea" success description="Looks good!">
         Valid Input
@@ -165,21 +144,16 @@ export const SuccessState: Story = {
       />
     </div>
   ),
-};
+}
 
 export const Disabled: Story = {
-  render: args => (
+  render: (args) => (
     <div className="space-y-2">
       <Label htmlFor="disabled-textarea">Disabled Textarea</Label>
-      <Textarea
-        id="disabled-textarea"
-        placeholder="This textarea is disabled"
-        disabled
-        {...args}
-      />
+      <Textarea id="disabled-textarea" placeholder="This textarea is disabled" disabled {...args} />
     </div>
   ),
-};
+}
 
 export const Sizes: Story = {
   render: () => (
@@ -198,7 +172,7 @@ export const Sizes: Story = {
       </div>
     </div>
   ),
-};
+}
 
 export const FormExample: Story = {
   render: () => (
@@ -207,11 +181,7 @@ export const FormExample: Story = {
         <Label htmlFor="form-title" required>
           Title
         </Label>
-        <Textarea
-          id="form-title"
-          textareaSize="sm"
-          placeholder="Enter a brief title..."
-        />
+        <Textarea id="form-title" textareaSize="sm" placeholder="Enter a brief title..." />
       </div>
 
       <div className="space-y-2">
@@ -222,28 +192,18 @@ export const FormExample: Story = {
         >
           Description
         </Label>
-        <Textarea
-          id="form-description"
-          placeholder="Describe your needs in detail..."
-        />
+        <Textarea id="form-description" placeholder="Describe your needs in detail..." />
       </div>
 
       <div className="space-y-2">
-        <Label
-          htmlFor="form-notes"
-          helpText="Any additional information or special requirements"
-        >
+        <Label htmlFor="form-notes" helpText="Any additional information or special requirements">
           Additional Notes (Optional)
         </Label>
-        <Textarea
-          id="form-notes"
-          placeholder="Add any extra details..."
-          textareaSize="lg"
-        />
+        <Textarea id="form-notes" placeholder="Add any extra details..." textareaSize="lg" />
       </div>
     </form>
   ),
-};
+}
 
 // Dark theme specific stories
 export const DarkThemeVariants: Story = {
@@ -253,9 +213,7 @@ export const DarkThemeVariants: Story = {
   render: () => (
     <div className="">
       <div className="bg-white p-6 rounded-lg space-y-4">
-        <h3 className="text-slate-900 text-lg font-semibold mb-4">
-          Dark Theme Textarea
-        </h3>
+        <h3 className="text-slate-900 text-lg font-semibold mb-4">Dark Theme Textarea</h3>
         <div className="space-y-4">
           <div className="space-y-2">
             <Label className="text-slate-900">Default Textarea</Label>
@@ -273,7 +231,7 @@ export const DarkThemeVariants: Story = {
       </div>
     </div>
   ),
-};
+}
 
 // Accessibility testing story
 export const AccessibilityTest: Story = {
@@ -281,22 +239,14 @@ export const AccessibilityTest: Story = {
     <div className="space-y-6">
       <div className="space-y-2">
         <h3 className="text-lg font-semibold">Keyboard Navigation</h3>
-        <p className="text-sm text-secondary-600">
-          Use Tab to navigate, Enter for new lines
-        </p>
+        <p className="text-sm text-secondary-600">Use Tab to navigate, Enter for new lines</p>
         <div className="space-y-2">
           <Label htmlFor="accessible-textarea-1">First Textarea</Label>
-          <Textarea
-            id="accessible-textarea-1"
-            placeholder="Tab to next textarea"
-          />
+          <Textarea id="accessible-textarea-1" placeholder="Tab to next textarea" />
         </div>
         <div className="space-y-2">
           <Label htmlFor="accessible-textarea-2">Second Textarea</Label>
-          <Textarea
-            id="accessible-textarea-2"
-            placeholder="Continue navigation"
-          />
+          <Textarea id="accessible-textarea-2" placeholder="Continue navigation" />
         </div>
       </div>
       <div className="space-y-2">
@@ -314,10 +264,7 @@ export const AccessibilityTest: Story = {
             placeholder="Enter required information"
             aria-describedby="sr-textarea-description"
           />
-          <p
-            id="sr-textarea-description"
-            className="text-sm text-secondary-600"
-          >
+          <p id="sr-textarea-description" className="text-sm text-secondary-600">
             This description provides additional context for screen readers
           </p>
         </div>
@@ -335,7 +282,7 @@ export const AccessibilityTest: Story = {
       </div>
     </div>
   ),
-};
+}
 
 // Micro-interactions showcase
 export const MicroInteractions: Story = {
@@ -364,7 +311,7 @@ export const MicroInteractions: Story = {
       </div>
     </div>
   ),
-};
+}
 
 // Responsive design showcase
 export const ResponsiveDesign: Story = {
@@ -389,4 +336,4 @@ export const ResponsiveDesign: Story = {
       </div>
     </div>
   ),
-};
+}

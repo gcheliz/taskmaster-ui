@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { useState } from 'react';
+import type { Meta, StoryObj } from '@storybook/react'
+import { useState } from 'react'
 import {
   Dropdown,
   DropdownTrigger,
@@ -10,16 +10,10 @@ import {
   DropdownCheckboxItem,
   DropdownRadioGroup,
   DropdownRadioItem,
-} from '../../components/ui/molecules/Dropdown';
-import { Button } from '../../components/ui/atoms/Button';
-import { Badge } from '../../components/ui/atoms/Badge';
-import {
-  Icon,
-  PlusIcon,
-  PencilIcon,
-  TrashIcon,
-  EyeIcon,
-} from '../../components/ui/atoms/Icon';
+} from '../../components/ui/molecules/Dropdown'
+import { Button } from '../../components/ui/atoms/Button'
+import { Badge } from '../../components/ui/atoms/Badge'
+import { Icon, PlusIcon, PencilIcon, TrashIcon, EyeIcon } from '../../components/ui/atoms/Icon'
 
 const meta: Meta<typeof Dropdown> = {
   title: 'Molecules/Dropdown',
@@ -45,16 +39,16 @@ const meta: Meta<typeof Dropdown> = {
     },
   },
   decorators: [
-    Story => (
+    (Story) => (
       <div className="w-full min-h-[300px] flex items-center justify-center">
         <Story />
       </div>
     ),
   ],
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   render: () => (
@@ -67,7 +61,7 @@ export const Default: Story = {
       </DropdownContent>
     </Dropdown>
   ),
-};
+}
 
 export const WithIcons: Story = {
   render: () => (
@@ -94,7 +88,7 @@ export const WithIcons: Story = {
       </DropdownContent>
     </Dropdown>
   ),
-};
+}
 
 export const WithLabelsAndSeparators: Story = {
   render: () => (
@@ -117,7 +111,7 @@ export const WithLabelsAndSeparators: Story = {
       </DropdownContent>
     </Dropdown>
   ),
-};
+}
 
 export const Sizes: Story = {
   render: () => (
@@ -150,29 +144,23 @@ export const Sizes: Story = {
       </Dropdown>
     </div>
   ),
-};
+}
 
 export const WithCheckboxItems: Story = {
   render: () => {
-    const [notifications, setNotifications] = useState(true);
-    const [marketing, setMarketing] = useState(false);
-    const [social, setSocial] = useState(true);
+    const [notifications, setNotifications] = useState(true)
+    const [marketing, setMarketing] = useState(false)
+    const [social, setSocial] = useState(true)
 
     return (
       <Dropdown>
         <DropdownTrigger variant="outline">Notifications</DropdownTrigger>
         <DropdownContent>
           <DropdownLabel>Email Notifications</DropdownLabel>
-          <DropdownCheckboxItem
-            checked={notifications}
-            onCheckedChange={setNotifications}
-          >
+          <DropdownCheckboxItem checked={notifications} onCheckedChange={setNotifications}>
             Comments
           </DropdownCheckboxItem>
-          <DropdownCheckboxItem
-            checked={marketing}
-            onCheckedChange={setMarketing}
-          >
+          <DropdownCheckboxItem checked={marketing} onCheckedChange={setMarketing}>
             Marketing emails
           </DropdownCheckboxItem>
           <DropdownCheckboxItem checked={social} onCheckedChange={setSocial}>
@@ -182,13 +170,13 @@ export const WithCheckboxItems: Story = {
           <DropdownItem>More settings...</DropdownItem>
         </DropdownContent>
       </Dropdown>
-    );
+    )
   },
-};
+}
 
 export const WithRadioGroup: Story = {
   render: () => {
-    const [theme, setTheme] = useState('system');
+    const [theme, setTheme] = useState('system')
 
     return (
       <Dropdown>
@@ -202,19 +190,19 @@ export const WithRadioGroup: Story = {
           </DropdownRadioGroup>
         </DropdownContent>
       </Dropdown>
-    );
+    )
   },
-};
+}
 
 export const TaskActionsDropdown: Story = {
   render: () => {
-    const [taskStatus, setTaskStatus] = useState('in-progress');
-    const [showAssigned, setShowAssigned] = useState(true);
-    const [showCompleted, setShowCompleted] = useState(false);
+    const [taskStatus, setTaskStatus] = useState('in-progress')
+    const [showAssigned, setShowAssigned] = useState(true)
+    const [showCompleted, setShowCompleted] = useState(false)
 
     const handleAction = (action: string) => {
-      alert(`Action: ${action}`);
-    };
+      alert(`Action: ${action}`)
+    }
 
     return (
       <div className="space-y-4">
@@ -247,29 +235,15 @@ export const TaskActionsDropdown: Story = {
                   <DropdownSeparator />
 
                   <DropdownLabel>Change Status</DropdownLabel>
-                  <DropdownRadioGroup
-                    value={taskStatus}
-                    onValueChange={setTaskStatus}
-                  >
-                    <DropdownRadioItem value="pending">
-                      Pending
-                    </DropdownRadioItem>
-                    <DropdownRadioItem value="in-progress">
-                      In Progress
-                    </DropdownRadioItem>
-                    <DropdownRadioItem value="review">
-                      Under Review
-                    </DropdownRadioItem>
-                    <DropdownRadioItem value="done">
-                      Completed
-                    </DropdownRadioItem>
+                  <DropdownRadioGroup value={taskStatus} onValueChange={setTaskStatus}>
+                    <DropdownRadioItem value="pending">Pending</DropdownRadioItem>
+                    <DropdownRadioItem value="in-progress">In Progress</DropdownRadioItem>
+                    <DropdownRadioItem value="review">Under Review</DropdownRadioItem>
+                    <DropdownRadioItem value="done">Completed</DropdownRadioItem>
                   </DropdownRadioGroup>
 
                   <DropdownSeparator />
-                  <DropdownItem
-                    variant="destructive"
-                    onClick={() => handleAction('delete')}
-                  >
+                  <DropdownItem variant="destructive" onClick={() => handleAction('delete')}>
                     <Icon icon={TrashIcon} size="sm" className="mr-2" />
                     Delete Task
                   </DropdownItem>
@@ -288,16 +262,10 @@ export const TaskActionsDropdown: Story = {
               </DropdownTrigger>
               <DropdownContent>
                 <DropdownLabel>Show Tasks</DropdownLabel>
-                <DropdownCheckboxItem
-                  checked={showAssigned}
-                  onCheckedChange={setShowAssigned}
-                >
+                <DropdownCheckboxItem checked={showAssigned} onCheckedChange={setShowAssigned}>
                   Assigned to me
                 </DropdownCheckboxItem>
-                <DropdownCheckboxItem
-                  checked={showCompleted}
-                  onCheckedChange={setShowCompleted}
-                >
+                <DropdownCheckboxItem checked={showCompleted} onCheckedChange={setShowCompleted}>
                   Completed tasks
                 </DropdownCheckboxItem>
                 <DropdownSeparator />
@@ -310,16 +278,15 @@ export const TaskActionsDropdown: Story = {
           </div>
         </div>
       </div>
-    );
+    )
   },
-};
+}
 
 export const NestedMenuExample: Story = {
   render: () => (
     <div className="space-y-4">
       <p className="text-sm text-secondary-600">
-        This demonstrates multiple independent dropdown menus that can be open
-        simultaneously.
+        This demonstrates multiple independent dropdown menus that can be open simultaneously.
       </p>
       <div className="flex gap-4">
         <Dropdown>
@@ -357,12 +324,12 @@ export const NestedMenuExample: Story = {
       </div>
     </div>
   ),
-};
+}
 
 export const ControlledDropdown: Story = {
   render: () => {
-    const [open, setOpen] = useState(false);
-    const [selectedItem, setSelectedItem] = useState('');
+    const [open, setOpen] = useState(false)
+    const [selectedItem, setSelectedItem] = useState('')
 
     return (
       <div className="space-y-4">
@@ -370,41 +337,28 @@ export const ControlledDropdown: Story = {
           <Button size="sm" variant="outline" onClick={() => setOpen(!open)}>
             {open ? 'Close' : 'Open'} Dropdown
           </Button>
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => setSelectedItem('')}
-          >
+          <Button size="sm" variant="outline" onClick={() => setSelectedItem('')}>
             Clear Selection
           </Button>
         </div>
 
         <Dropdown open={open} onOpenChange={setOpen}>
-          <DropdownTrigger disabled={open}>
-            Select Option: {selectedItem || 'None'}
-          </DropdownTrigger>
+          <DropdownTrigger disabled={open}>Select Option: {selectedItem || 'None'}</DropdownTrigger>
           <DropdownContent>
             <DropdownLabel>Options</DropdownLabel>
-            <DropdownItem onSelect={() => setSelectedItem('Option 1')}>
-              Option 1
-            </DropdownItem>
-            <DropdownItem onSelect={() => setSelectedItem('Option 2')}>
-              Option 2
-            </DropdownItem>
-            <DropdownItem onSelect={() => setSelectedItem('Option 3')}>
-              Option 3
-            </DropdownItem>
+            <DropdownItem onSelect={() => setSelectedItem('Option 1')}>Option 1</DropdownItem>
+            <DropdownItem onSelect={() => setSelectedItem('Option 2')}>Option 2</DropdownItem>
+            <DropdownItem onSelect={() => setSelectedItem('Option 3')}>Option 3</DropdownItem>
           </DropdownContent>
         </Dropdown>
 
         <div className="text-sm text-secondary-600">
-          Status: {open ? 'Open' : 'Closed'} | Selected:{' '}
-          {selectedItem || 'None'}
+          Status: {open ? 'Open' : 'Closed'} | Selected: {selectedItem || 'None'}
         </div>
       </div>
-    );
+    )
   },
-};
+}
 
 export const WithDisabledItems: Story = {
   render: () => (
@@ -422,7 +376,7 @@ export const WithDisabledItems: Story = {
       </DropdownContent>
     </Dropdown>
   ),
-};
+}
 
 export const AccessibilityExample: Story = {
   render: () => (
@@ -431,39 +385,24 @@ export const AccessibilityExample: Story = {
         <h4 className="font-medium mb-2">Keyboard Navigation:</h4>
         <ul className="space-y-1">
           <li>
-            •{' '}
-            <kbd className="px-1 py-0.5 bg-secondary-100 rounded text-xs">
-              Enter/Space
-            </kbd>{' '}
-            to open menu
+            • <kbd className="px-1 py-0.5 bg-secondary-100 rounded text-xs">Enter/Space</kbd> to
+            open menu
           </li>
           <li>
-            •{' '}
-            <kbd className="px-1 py-0.5 bg-secondary-100 rounded text-xs">
-              Arrow Keys
-            </kbd>{' '}
-            to navigate items
+            • <kbd className="px-1 py-0.5 bg-secondary-100 rounded text-xs">Arrow Keys</kbd> to
+            navigate items
           </li>
           <li>
-            •{' '}
-            <kbd className="px-1 py-0.5 bg-secondary-100 rounded text-xs">
-              Enter/Space
-            </kbd>{' '}
-            to select item
+            • <kbd className="px-1 py-0.5 bg-secondary-100 rounded text-xs">Enter/Space</kbd> to
+            select item
           </li>
           <li>
-            •{' '}
-            <kbd className="px-1 py-0.5 bg-secondary-100 rounded text-xs">
-              Escape
-            </kbd>{' '}
-            to close menu
+            • <kbd className="px-1 py-0.5 bg-secondary-100 rounded text-xs">Escape</kbd> to close
+            menu
           </li>
           <li>
-            •{' '}
-            <kbd className="px-1 py-0.5 bg-secondary-100 rounded text-xs">
-              Home/End
-            </kbd>{' '}
-            to jump to first/last item
+            • <kbd className="px-1 py-0.5 bg-secondary-100 rounded text-xs">Home/End</kbd> to jump
+            to first/last item
           </li>
         </ul>
       </div>
@@ -481,7 +420,7 @@ export const AccessibilityExample: Story = {
       </Dropdown>
     </div>
   ),
-};
+}
 
 export const AlignmentAndPositioning: Story = {
   render: () => (
@@ -529,4 +468,4 @@ export const AlignmentAndPositioning: Story = {
       </div>
     </div>
   ),
-};
+}

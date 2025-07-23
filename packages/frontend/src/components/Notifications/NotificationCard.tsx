@@ -1,43 +1,40 @@
-import React, { useEffect, useState } from 'react';
-import type { Notification } from '../../contexts/NotificationContext';
+import React, { useEffect, useState } from 'react'
+import type { Notification } from '../../contexts/NotificationContext'
 
 export interface NotificationCardProps {
-  notification: Notification;
-  onDismiss: (id: string) => void;
+  notification: Notification
+  onDismiss: (id: string) => void
 }
 
-export const NotificationCard: React.FC<NotificationCardProps> = ({
-  notification,
-  onDismiss,
-}) => {
-  const [isVisible, setIsVisible] = useState(false);
+export const NotificationCard: React.FC<NotificationCardProps> = ({ notification, onDismiss }) => {
+  const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
     // Trigger entrance animation
-    const timer = setTimeout(() => setIsVisible(true), 10);
-    return () => clearTimeout(timer);
-  }, []);
+    const timer = setTimeout(() => setIsVisible(true), 10)
+    return () => clearTimeout(timer)
+  }, [])
 
   const handleDismiss = () => {
-    setIsVisible(false);
+    setIsVisible(false)
     // Wait for exit animation before removing
-    setTimeout(() => onDismiss(notification.id), 300);
-  };
+    setTimeout(() => onDismiss(notification.id), 300)
+  }
 
   const getIcon = () => {
     switch (notification.type) {
       case 'success':
-        return '✓';
+        return '✓'
       case 'error':
-        return '✕';
+        return '✕'
       case 'warning':
-        return '⚠';
+        return '⚠'
       case 'info':
-        return 'ℹ';
+        return 'ℹ'
       default:
-        return 'ℹ';
+        return 'ℹ'
     }
-  };
+  }
 
   return (
     <div
@@ -49,14 +46,9 @@ export const NotificationCard: React.FC<NotificationCardProps> = ({
 
       <div className="notification-content">
         <div className="notification-title">{notification.title}</div>
-        {notification.message && (
-          <div className="notification-message">{notification.message}</div>
-        )}
+        {notification.message && <div className="notification-message">{notification.message}</div>}
         {notification.action && (
-          <button
-            className="notification-action"
-            onClick={notification.action.onClick}
-          >
+          <button className="notification-action" onClick={notification.action.onClick}>
             {notification.action.label}
           </button>
         )}
@@ -72,5 +64,5 @@ export const NotificationCard: React.FC<NotificationCardProps> = ({
         </button>
       )}
     </div>
-  );
-};
+  )
+}

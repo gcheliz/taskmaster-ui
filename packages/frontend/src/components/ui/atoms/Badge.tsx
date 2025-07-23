@@ -1,6 +1,6 @@
-import React from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '../../../utils/cn';
+import React from 'react'
+import { cva, type VariantProps } from 'class-variance-authority'
+import { cn } from '../../../utils/cn'
 
 const badgeVariants = cva(
   'inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white transform-gpu hover:scale-105 active:scale-95',
@@ -43,7 +43,7 @@ const badgeVariants = cva(
       size: 'md',
     },
   }
-);
+)
 
 export interface BadgeProps
   extends React.HTMLAttributes<HTMLSpanElement>,
@@ -51,7 +51,7 @@ export interface BadgeProps
   /**
    * Optional icon to display before the badge text
    */
-  icon?: React.ReactNode;
+  icon?: React.ReactNode
   /**
    * The visual style variant of the badge
    * @default 'default'
@@ -68,12 +68,12 @@ export interface BadgeProps
     | 'in-progress'
     | 'done'
     | 'blocked'
-    | 'deferred';
+    | 'deferred'
   /**
    * The size of the badge
    * @default 'md'
    */
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg'
 }
 
 const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
@@ -93,10 +93,10 @@ const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
         )}
         {children}
       </span>
-    );
+    )
   }
-);
+)
 
-Badge.displayName = 'Badge';
+Badge.displayName = 'Badge'
 
-export { Badge, badgeVariants };
+export { Badge, badgeVariants }

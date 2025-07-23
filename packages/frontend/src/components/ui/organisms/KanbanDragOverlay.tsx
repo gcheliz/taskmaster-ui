@@ -1,14 +1,14 @@
-import React from 'react';
-import { KanbanTaskCard } from '../molecules/KanbanTaskCard';
-import type { KanbanTask } from '../molecules/KanbanColumn';
+import React from 'react'
+import { KanbanTaskCard } from '../molecules/KanbanTaskCard'
+import type { KanbanTask } from '../molecules/KanbanColumn'
 
 export interface KanbanDragOverlayProps {
   /** The task being dragged */
-  task: KanbanTask | null;
+  task: KanbanTask | null
   /** Whether the overlay is active */
-  isActive: boolean;
+  isActive: boolean
   /** Additional CSS class name */
-  className?: string;
+  className?: string
 }
 
 /**
@@ -24,7 +24,7 @@ export const KanbanDragOverlay: React.FC<KanbanDragOverlayProps> = ({
   className = '',
 }) => {
   if (!task || !isActive) {
-    return null;
+    return null
   }
 
   return (
@@ -56,7 +56,7 @@ export const KanbanDragOverlay: React.FC<KanbanDragOverlayProps> = ({
         className="shadow-2xl border-2 border-primary-500 bg-primary-50 dark:bg-primary-900/20"
       />
     </div>
-  );
-};
+  )
+}
 
-export default KanbanDragOverlay;
+export default KanbanDragOverlay

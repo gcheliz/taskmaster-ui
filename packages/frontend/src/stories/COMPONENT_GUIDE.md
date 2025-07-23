@@ -2,7 +2,8 @@
 
 ## Overview
 
-The TaskMaster UI component library follows atomic design principles, organizing components into three main categories:
+The TaskMaster UI component library follows atomic design principles, organizing
+components into three main categories:
 
 - **Atoms**: Basic building blocks (Button, Input, Icon, etc.)
 - **Molecules**: Simple combinations of atoms (FormField, Card, Modal, etc.)
@@ -126,17 +127,17 @@ export interface ComponentProps {
    * Brief description of the prop
    * @default 'defaultValue'
    */
-  propName?: string;
+  propName?: string
 
   /**
    * Required prop description
    */
-  requiredProp: string;
+  requiredProp: string
 
   /**
    * Enum-like prop with options
    */
-  variant?: 'option1' | 'option2' | 'option3';
+  variant?: 'option1' | 'option2' | 'option3'
 }
 ```
 

@@ -1,6 +1,6 @@
-import React from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '../../../utils/cn';
+import React from 'react'
+import { cva, type VariantProps } from 'class-variance-authority'
+import { cn } from '../../../utils/cn'
 
 const textareaVariants = cva(
   // Base styles with enhanced dark theme support and micro-interactions
@@ -26,7 +26,7 @@ const textareaVariants = cva(
       textareaSize: 'md',
     },
   }
-);
+)
 
 export interface TextareaProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement>,
@@ -35,28 +35,28 @@ export interface TextareaProps
    * Shows error state styling
    * @default false
    */
-  error?: boolean;
+  error?: boolean
   /**
    * Shows success state styling
    * @default false
    */
-  success?: boolean;
+  success?: boolean
   /**
    * The visual style variant of the textarea
    * @default 'default'
    */
-  variant?: 'default' | 'error' | 'success';
+  variant?: 'default' | 'error' | 'success'
   /**
    * The size of the textarea
    * @default 'md'
    */
-  textareaSize?: 'sm' | 'md' | 'lg';
+  textareaSize?: 'sm' | 'md' | 'lg'
 }
 
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ className, variant, textareaSize, error, success, ...props }, ref) => {
     // Determine variant based on state
-    const computedVariant = error ? 'error' : success ? 'success' : variant;
+    const computedVariant = error ? 'error' : success ? 'success' : variant
 
     return (
       <textarea
@@ -70,10 +70,10 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         ref={ref}
         {...props}
       />
-    );
+    )
   }
-);
+)
 
-Textarea.displayName = 'Textarea';
+Textarea.displayName = 'Textarea'
 
-export { Textarea, textareaVariants };
+export { Textarea, textareaVariants }

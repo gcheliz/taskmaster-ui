@@ -1,10 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { DndContext, DragOverlay, closestCenter } from '@dnd-kit/core';
-import { useState } from 'react';
-import { DraggableCard } from '../../components/ui/atoms/DraggableCard';
-import { DroppableArea } from '../../components/ui/atoms/DroppableArea';
-import { Button } from '../../components/ui/atoms/Button';
-import { Badge } from '../../components/ui/atoms/Badge';
+import type { Meta, StoryObj } from '@storybook/react'
+import { DndContext, DragOverlay, closestCenter } from '@dnd-kit/core'
+import { useState } from 'react'
+import { DraggableCard } from '../../components/ui/atoms/DraggableCard'
+import { DroppableArea } from '../../components/ui/atoms/DroppableArea'
+import { Button } from '../../components/ui/atoms/Button'
+import { Badge } from '../../components/ui/atoms/Badge'
 import {
   Icon,
   DragHandleIcon,
@@ -12,13 +12,13 @@ import {
   CheckIcon,
   TimeIcon,
   WarningIcon,
-} from '../../components/ui/atoms/Icon';
+} from '../../components/ui/atoms/Icon'
 
 // Create missing icon aliases for compatibility
-const ClockIcon = TimeIcon;
-const GripVerticalIcon = DragHandleIcon;
-const AlertTriangleIcon = WarningIcon;
-const StarIcon = StarFilledIcon;
+const ClockIcon = TimeIcon
+const GripVerticalIcon = DragHandleIcon
+const AlertTriangleIcon = WarningIcon
+const StarIcon = StarFilledIcon
 
 const meta: Meta<typeof DraggableCard> = {
   title: 'Atoms/DraggableCard',
@@ -67,7 +67,7 @@ const meta: Meta<typeof DraggableCard> = {
     },
   },
   decorators: [
-    Story => (
+    (Story) => (
       <DndContext collisionDetection={closestCenter}>
         <div className="p-8">
           <Story />
@@ -75,10 +75,10 @@ const meta: Meta<typeof DraggableCard> = {
       </DndContext>
     ),
   ],
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {
@@ -86,13 +86,11 @@ export const Default: Story = {
     children: (
       <div>
         <h3 className="font-semibold mb-2">Draggable Task Card</h3>
-        <p className="text-sm text-secondary-600">
-          Click and drag to move this card around
-        </p>
+        <p className="text-sm text-secondary-600">Click and drag to move this card around</p>
       </div>
     ),
   },
-};
+}
 
 export const WithTaskContent: Story = {
   args: {
@@ -125,7 +123,7 @@ export const WithTaskContent: Story = {
       </div>
     ),
   },
-};
+}
 
 export const WithCustomHandle: Story = {
   args: {
@@ -137,11 +135,7 @@ export const WithCustomHandle: Story = {
           data-drag-handle
           className="flex-shrink-0 cursor-grab hover:bg-secondary-100 p-1 rounded active:cursor-grabbing"
         >
-          <Icon
-            icon={GripVerticalIcon}
-            size="sm"
-            className="text-secondary-400"
-          />
+          <Icon icon={GripVerticalIcon} size="sm" className="text-secondary-400" />
         </div>
         <div className="flex-1">
           <h3 className="font-semibold mb-2">Card with Drag Handle</h3>
@@ -152,7 +146,7 @@ export const WithCustomHandle: Story = {
       </div>
     ),
   },
-};
+}
 
 export const Disabled: Story = {
   args: {
@@ -161,13 +155,11 @@ export const Disabled: Story = {
     children: (
       <div className="text-center py-4">
         <h3 className="font-semibold mb-2 text-secondary-400">Disabled Card</h3>
-        <p className="text-sm text-secondary-400">
-          This card cannot be dragged
-        </p>
+        <p className="text-sm text-secondary-400">This card cannot be dragged</p>
       </div>
     ),
   },
-};
+}
 
 export const DifferentSizes: Story = {
   render: () => (
@@ -192,7 +184,7 @@ export const DifferentSizes: Story = {
       </DraggableCard>
     </div>
   ),
-};
+}
 
 export const DifferentVariants: Story = {
   render: () => (
@@ -217,7 +209,7 @@ export const DifferentVariants: Story = {
       </DraggableCard>
     </div>
   ),
-};
+}
 
 export const KanbanTaskCards: Story = {
   render: () => (
@@ -236,14 +228,8 @@ export const KanbanTaskCards: Story = {
             </Badge>
           </div>
           <div className="flex items-center gap-2">
-            <Icon
-              icon={AlertTriangleIcon}
-              size="sm"
-              className="text-warning-500"
-            />
-            <span className="text-xs text-secondary-600">
-              Blocked by dependencies
-            </span>
+            <Icon icon={AlertTriangleIcon} size="sm" className="text-warning-500" />
+            <span className="text-xs text-secondary-600">Blocked by dependencies</span>
           </div>
         </div>
       </DraggableCard>
@@ -289,52 +275,46 @@ export const KanbanTaskCards: Story = {
       </DraggableCard>
     </div>
   ),
-};
+}
 
 // Interactive demo with drag overlay and drop zones
 export const InteractiveDragDemo: Story = {
   render: () => {
-    const [activeId, setActiveId] = useState<string | null>(null);
-    const [todoItems, setTodoItems] = useState(['item-1', 'item-2']);
-    const [doneItems, setDoneItems] = useState(['item-3']);
+    const [activeId, setActiveId] = useState<string | null>(null)
+    const [todoItems, setTodoItems] = useState(['item-1', 'item-2'])
+    const [doneItems, setDoneItems] = useState(['item-3'])
 
     const handleDragStart = (event: any) => {
-      setActiveId(event.active.id);
-    };
+      setActiveId(event.active.id)
+    }
 
     const handleDragEnd = (event: any) => {
-      const { active, over } = event;
-      setActiveId(null);
+      const { active, over } = event
+      setActiveId(null)
 
       if (over) {
-        const activeId = active.id;
-        const overId = over.id;
+        const activeId = active.id
+        const overId = over.id
 
         // Move item between lists
         if (overId === 'todo-zone') {
-          setTodoItems(prev => [
-            ...prev.filter(id => id !== activeId),
-            activeId,
-          ]);
-          setDoneItems(prev => prev.filter(id => id !== activeId));
+          setTodoItems((prev) => [...prev.filter((id) => id !== activeId), activeId])
+          setDoneItems((prev) => prev.filter((id) => id !== activeId))
         } else if (overId === 'done-zone') {
-          setDoneItems(prev => [
-            ...prev.filter(id => id !== activeId),
-            activeId,
-          ]);
-          setTodoItems(prev => prev.filter(id => id !== activeId));
+          setDoneItems((prev) => [...prev.filter((id) => id !== activeId), activeId])
+          setTodoItems((prev) => prev.filter((id) => id !== activeId))
         }
       }
-    };
+    }
 
     const getTaskContent = (id: string) => {
       const tasks: Record<string, any> = {
         'item-1': { title: 'Review pull request', priority: 'high' },
         'item-2': { title: 'Update documentation', priority: 'medium' },
         'item-3': { title: 'Fix login bug', priority: 'high' },
-      };
-      return tasks[id] || { title: id, priority: 'low' };
-    };
+      }
+      return tasks[id] || { title: id, priority: 'low' }
+    }
 
     return (
       <DndContext
@@ -353,8 +333,8 @@ export const InteractiveDragDemo: Story = {
               placeholder="Drop tasks here"
               className="space-y-3"
             >
-              {todoItems.map(itemId => {
-                const task = getTaskContent(itemId);
+              {todoItems.map((itemId) => {
+                const task = getTaskContent(itemId)
                 return (
                   <DraggableCard
                     key={itemId}
@@ -364,15 +344,12 @@ export const InteractiveDragDemo: Story = {
                   >
                     <div className="flex items-center justify-between">
                       <h4 className="font-medium text-sm">{task.title}</h4>
-                      <Badge
-                        variant={task.priority === 'high' ? 'error' : 'warning'}
-                        size="sm"
-                      >
+                      <Badge variant={task.priority === 'high' ? 'error' : 'warning'} size="sm">
                         {task.priority}
                       </Badge>
                     </div>
                   </DraggableCard>
-                );
+                )
               })}
             </DroppableArea>
           </div>
@@ -387,8 +364,8 @@ export const InteractiveDragDemo: Story = {
               placeholder="Drop completed tasks here"
               className="space-y-3"
             >
-              {doneItems.map(itemId => {
-                const task = getTaskContent(itemId);
+              {doneItems.map((itemId) => {
+                const task = getTaskContent(itemId)
                 return (
                   <DraggableCard
                     key={itemId}
@@ -403,7 +380,7 @@ export const InteractiveDragDemo: Story = {
                       </Badge>
                     </div>
                   </DraggableCard>
-                );
+                )
               })}
             </DroppableArea>
           </div>
@@ -411,15 +388,9 @@ export const InteractiveDragDemo: Story = {
 
         <DragOverlay>
           {activeId ? (
-            <DraggableCard
-              id={activeId}
-              variant="elevated"
-              className="shadow-2xl"
-            >
+            <DraggableCard id={activeId} variant="elevated" className="shadow-2xl">
               <div className="flex items-center justify-between">
-                <h4 className="font-medium text-sm">
-                  {getTaskContent(activeId).title}
-                </h4>
+                <h4 className="font-medium text-sm">{getTaskContent(activeId).title}</h4>
                 <Badge variant="primary" size="sm">
                   Dragging
                 </Badge>
@@ -428,9 +399,9 @@ export const InteractiveDragDemo: Story = {
           ) : null}
         </DragOverlay>
       </DndContext>
-    );
+    )
   },
-};
+}
 
 export const DragStatesShowcase: Story = {
   render: () => (
@@ -440,30 +411,20 @@ export const DragStatesShowcase: Story = {
         <DraggableCard id="normal-state" variant="outline">
           <div className="text-center py-2">
             <p className="font-medium">Ready to drag</p>
-            <p className="text-sm text-secondary-600 mt-1">
-              Hover to see grab cursor
-            </p>
+            <p className="text-sm text-secondary-600 mt-1">Hover to see grab cursor</p>
           </div>
         </DraggableCard>
       </div>
 
       <div>
         <h3 className="font-semibold mb-3">With Drag Handle</h3>
-        <DraggableCard
-          id="handle-state"
-          handle="[data-handle]"
-          variant="outline"
-        >
+        <DraggableCard id="handle-state" handle="[data-handle]" variant="outline">
           <div className="flex items-center gap-3">
             <div
               data-handle
               className="p-2 hover:bg-secondary-100 rounded cursor-grab active:cursor-grabbing"
             >
-              <Icon
-                icon={GripVerticalIcon}
-                size="sm"
-                className="text-secondary-400"
-              />
+              <Icon icon={GripVerticalIcon} size="sm" className="text-secondary-400" />
             </div>
             <div>
               <p className="font-medium">Drag handle only</p>
@@ -478,15 +439,13 @@ export const DragStatesShowcase: Story = {
         <DraggableCard id="disabled-state" disabled variant="outline">
           <div className="text-center py-2">
             <p className="font-medium">Cannot be dragged</p>
-            <p className="text-sm text-secondary-600 mt-1">
-              Disabled interaction
-            </p>
+            <p className="text-sm text-secondary-600 mt-1">Disabled interaction</p>
           </div>
         </DraggableCard>
       </div>
     </div>
   ),
-};
+}
 
 export const AccessibilityExample: Story = {
   render: () => (
@@ -494,8 +453,7 @@ export const AccessibilityExample: Story = {
       <div>
         <h3 className="font-semibold mb-3">Keyboard Navigation</h3>
         <p className="text-sm text-secondary-600 mb-4">
-          Use Space to start dragging, arrow keys to move, Space to drop, Escape
-          to cancel
+          Use Space to start dragging, arrow keys to move, Space to drop, Escape to cancel
         </p>
         <div className="space-y-3">
           <DraggableCard
@@ -525,9 +483,7 @@ export const AccessibilityExample: Story = {
               <Icon icon={CheckIcon} size="sm" className="text-green-500" />
               <div>
                 <h4 className="font-medium text-sm">Update test cases</h4>
-                <p className="text-xs text-secondary-600">
-                  Medium priority task
-                </p>
+                <p className="text-xs text-secondary-600">Medium priority task</p>
               </div>
             </div>
           </DraggableCard>
@@ -535,7 +491,7 @@ export const AccessibilityExample: Story = {
       </div>
     </div>
   ),
-};
+}
 
 export const RealWorldExample: Story = {
   render: () => (
@@ -557,9 +513,7 @@ export const RealWorldExample: Story = {
           <div className="flex items-start justify-between">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-xs font-mono text-secondary-500">
-                  TASK-123
-                </span>
+                <span className="text-xs font-mono text-secondary-500">TASK-123</span>
                 <Badge variant="error" size="sm">
                   High
                 </Badge>
@@ -571,8 +525,7 @@ export const RealWorldExample: Story = {
           </div>
 
           <p className="text-xs text-secondary-600 leading-relaxed">
-            Set up WebSocket connections for real-time push notifications across
-            all user sessions
+            Set up WebSocket connections for real-time push notifications across all user sessions
           </p>
 
           <div className="flex items-center justify-between">
@@ -613,9 +566,7 @@ export const RealWorldExample: Story = {
           <div className="flex items-start justify-between">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-xs font-mono text-secondary-500">
-                  TASK-124
-                </span>
+                <span className="text-xs font-mono text-secondary-500">TASK-124</span>
                 <Badge variant="warning" size="sm">
                   Medium
                 </Badge>
@@ -648,4 +599,4 @@ export const RealWorldExample: Story = {
       </DraggableCard>
     </div>
   ),
-};
+}

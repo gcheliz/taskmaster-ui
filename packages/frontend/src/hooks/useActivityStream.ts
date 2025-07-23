@@ -8,21 +8,24 @@ interface UseActivityStreamOptions {
   initialActivities?: ActivityItem[]
 }
 
-export const useActivityStream = ({ 
+export const useActivityStream = ({
   maxItems = 50,
-  initialActivities = [] 
+  initialActivities = [],
 }: UseActivityStreamOptions = {}) => {
   const [activities, setActivities] = useState<ActivityItem[]>(initialActivities)
   const { isConnected, subscribe } = useWebSocket({
-    autoConnect: false // We'll use the existing connection from the provider
+    autoConnect: false, // We'll use the existing connection from the provider
   })
 
-  const addActivity = useCallback((newActivity: ActivityItem) => {
-    setActivities(prev => {
-      const updated = [newActivity, ...prev]
-      return updated.slice(0, maxItems)
-    })
-  }, [maxItems])
+  const addActivity = useCallback(
+    (newActivity: ActivityItem) => {
+      setActivities((prev) => {
+        const updated = [newActivity, ...prev]
+        return updated.slice(0, maxItems)
+      })
+    },
+    [maxItems]
+  )
 
   useEffect(() => {
     if (!isConnected) return
@@ -31,9 +34,11 @@ export const useActivityStream = ({
 
     // Subscribe to task events
     const handleTaskActivity = (message: any) => {
-      if (message.type === WebSocketEventType.TASK_UPDATED || 
-          message.type === WebSocketEventType.TASK_CREATED ||
-          message.type === WebSocketEventType.TASK_MOVED) {
+      if (
+        message.type === WebSocketEventType.TASK_UPDATED ||
+        message.type === WebSocketEventType.TASK_CREATED ||
+        message.type === WebSocketEventType.TASK_MOVED
+      ) {
         const activity: ActivityItem = {
           id: `activity-${Date.now()}-${Math.random()}`,
           type: 'task',
@@ -54,7 +59,7 @@ export const useActivityStream = ({
     )
 
     return () => {
-      unsubscribers.forEach(unsubscribe => unsubscribe())
+      unsubscribers.forEach((unsubscribe) => unsubscribe())
     }
   }, [isConnected, subscribe, addActivity])
 

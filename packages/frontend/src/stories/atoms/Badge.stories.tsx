@@ -1,12 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { Badge } from '../../components/ui/atoms/Badge';
-import {
-  Icon,
-  CheckIcon,
-  XMarkIcon,
-  PlusIcon,
-  EyeIcon,
-} from '../../components/ui/atoms/Icon';
+import type { Meta, StoryObj } from '@storybook/react'
+import { Badge } from '../../components/ui/atoms/Badge'
+import { Icon, CheckIcon, XMarkIcon, PlusIcon, EyeIcon } from '../../components/ui/atoms/Icon'
 
 const meta: Meta<typeof Badge> = {
   title: 'Atoms/Badge',
@@ -60,16 +54,16 @@ const meta: Meta<typeof Badge> = {
       description: 'Optional icon to display',
     },
   },
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {
     children: 'Default',
   },
-};
+}
 
 export const WithIcon: Story = {
   args: {
@@ -77,7 +71,7 @@ export const WithIcon: Story = {
     variant: 'success',
     icon: <Icon icon={CheckIcon} size="xs" />,
   },
-};
+}
 
 export const Sizes: Story = {
   render: () => (
@@ -87,7 +81,7 @@ export const Sizes: Story = {
       <Badge size="lg">Large</Badge>
     </div>
   ),
-};
+}
 
 export const AllVariants: Story = {
   render: () => (
@@ -100,7 +94,7 @@ export const AllVariants: Story = {
       <Badge variant="outline">Outline</Badge>
     </div>
   ),
-};
+}
 
 export const TaskMasterStatuses: Story = {
   render: () => (
@@ -112,7 +106,7 @@ export const TaskMasterStatuses: Story = {
       <Badge variant="deferred">Deferred</Badge>
     </div>
   ),
-};
+}
 
 export const WithIcons: Story = {
   render: () => (
@@ -131,15 +125,13 @@ export const WithIcons: Story = {
       </Badge>
     </div>
   ),
-};
+}
 
 export const TaskStatusExamples: Story = {
   render: () => (
     <div className="space-y-6">
       <div>
-        <h3 className="text-sm font-medium text-secondary-900 mb-3">
-          Task Statuses
-        </h3>
+        <h3 className="text-sm font-medium text-secondary-900 mb-3">Task Statuses</h3>
         <div className="flex flex-wrap gap-2">
           <Badge variant="pending">To Do</Badge>
           <Badge variant="in-progress">In Progress</Badge>
@@ -152,9 +144,7 @@ export const TaskStatusExamples: Story = {
       </div>
 
       <div>
-        <h3 className="text-sm font-medium text-secondary-900 mb-3">
-          Priority Levels
-        </h3>
+        <h3 className="text-sm font-medium text-secondary-900 mb-3">Priority Levels</h3>
         <div className="flex flex-wrap gap-2">
           <Badge variant="success" size="sm">
             Low
@@ -172,9 +162,7 @@ export const TaskStatusExamples: Story = {
       </div>
 
       <div>
-        <h3 className="text-sm font-medium text-secondary-900 mb-3">
-          Categories
-        </h3>
+        <h3 className="text-sm font-medium text-secondary-900 mb-3">Categories</h3>
         <div className="flex flex-wrap gap-2">
           <Badge variant="outline">Frontend</Badge>
           <Badge variant="outline">Backend</Badge>
@@ -185,7 +173,7 @@ export const TaskStatusExamples: Story = {
       </div>
     </div>
   ),
-};
+}
 
 export const NotificationBadges: Story = {
   render: () => (
@@ -219,7 +207,7 @@ export const NotificationBadges: Story = {
       </div>
     </div>
   ),
-};
+}
 
 export const InContext: Story = {
   render: () => (
@@ -248,14 +236,8 @@ export const InContext: Story = {
 
       <div className="border border-secondary-200 rounded-lg p-4">
         <div className="flex items-center justify-between mb-2">
-          <h4 className="font-medium text-secondary-900">
-            Task #124: Write API documentation
-          </h4>
-          <Badge
-            variant="done"
-            size="sm"
-            icon={<Icon icon={CheckIcon} size="xs" />}
-          >
+          <h4 className="font-medium text-secondary-900">Task #124: Write API documentation</h4>
+          <Badge variant="done" size="sm" icon={<Icon icon={CheckIcon} size="xs" />}>
             Completed
           </Badge>
         </div>
@@ -274,9 +256,7 @@ export const InContext: Story = {
 
       <div className="border border-secondary-200 rounded-lg p-4">
         <div className="flex items-center justify-between mb-2">
-          <h4 className="font-medium text-secondary-900">
-            Task #125: Fix database performance
-          </h4>
+          <h4 className="font-medium text-secondary-900">Task #125: Fix database performance</h4>
           <Badge variant="blocked" size="sm">
             Blocked
           </Badge>
@@ -295,16 +275,14 @@ export const InContext: Story = {
       </div>
     </div>
   ),
-};
+}
 
 export const TeamMemberBadges: Story = {
   render: () => (
     <div className="bg-white p-6 rounded-lg border border-slate-200">
       <div className="space-y-6">
         <div>
-          <h3 className="text-sm font-medium text-slate-700 mb-3">
-            Team Roles
-          </h3>
+          <h3 className="text-sm font-medium text-slate-700 mb-3">Team Roles</h3>
           <div className="flex flex-wrap gap-2">
             <Badge variant="default">Admin</Badge>
             <Badge variant="secondary">Developer</Badge>
@@ -314,9 +292,7 @@ export const TeamMemberBadges: Story = {
         </div>
 
         <div>
-          <h3 className="text-sm font-medium text-slate-700 mb-3">
-            Status Indicators
-          </h3>
+          <h3 className="text-sm font-medium text-slate-700 mb-3">Status Indicators</h3>
           <div className="flex flex-wrap gap-2">
             <Badge variant="success" icon={<Icon icon={CheckIcon} size="xs" />}>
               Online
@@ -329,7 +305,7 @@ export const TeamMemberBadges: Story = {
       </div>
     </div>
   ),
-};
+}
 
 // TaskMaster Recreation - clean light theme design
 export const TaskMasterRecreation: Story = {
@@ -344,9 +320,7 @@ export const TaskMasterRecreation: Story = {
                 <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                   <Icon icon={CheckIcon} size="sm" className="text-white" />
                 </div>
-                <h1 className="text-xl font-bold text-slate-900">
-                  TaskMaster UI
-                </h1>
+                <h1 className="text-xl font-bold text-slate-900">TaskMaster UI</h1>
               </div>
             </div>
             <div className="flex items-center space-x-4">
@@ -379,9 +353,7 @@ export const TaskMasterRecreation: Story = {
 
           <div className="space-y-6">
             <div>
-              <h3 className="text-lg font-semibold text-slate-700 mb-4">
-                Team Roles
-              </h3>
+              <h3 className="text-lg font-semibold text-slate-700 mb-4">Team Roles</h3>
               <div className="flex flex-wrap gap-3 justify-center">
                 <Badge variant="default" size="md">
                   Admin
@@ -399,15 +371,9 @@ export const TaskMasterRecreation: Story = {
             </div>
 
             <div>
-              <h3 className="text-lg font-semibold text-slate-700 mb-4">
-                Status Indicators
-              </h3>
+              <h3 className="text-lg font-semibold text-slate-700 mb-4">Status Indicators</h3>
               <div className="flex flex-wrap gap-3 justify-center">
-                <Badge
-                  variant="success"
-                  size="md"
-                  icon={<Icon icon={CheckIcon} size="xs" />}
-                >
+                <Badge variant="success" size="md" icon={<Icon icon={CheckIcon} size="xs" />}>
                   Online
                 </Badge>
                 <Badge variant="warning" size="md">
@@ -426,7 +392,7 @@ export const TaskMasterRecreation: Story = {
       </div>
     </div>
   ),
-};
+}
 
 // Accessibility testing story
 export const AccessibilityTest: Story = {
@@ -438,10 +404,7 @@ export const AccessibilityTest: Story = {
           All badges include proper ARIA labels and role attributes
         </p>
         <div className="flex flex-wrap gap-2">
-          <Badge
-            variant="success"
-            aria-label="Status: Task completed successfully"
-          >
+          <Badge variant="success" aria-label="Status: Task completed successfully">
             Completed
           </Badge>
           <Badge variant="error" aria-label="Status: Task failed with errors">
@@ -469,25 +432,17 @@ export const AccessibilityTest: Story = {
           Badges with interactive behavior have focus indicators
         </p>
         <div className="flex flex-wrap gap-2">
-          <Badge
-            variant="default"
-            tabIndex={0}
-            className="focus:ring-2 focus:ring-primary-500"
-          >
+          <Badge variant="default" tabIndex={0} className="focus:ring-2 focus:ring-primary-500">
             Focusable Badge
           </Badge>
-          <Badge
-            variant="secondary"
-            tabIndex={0}
-            className="focus:ring-2 focus:ring-secondary-500"
-          >
+          <Badge variant="secondary" tabIndex={0} className="focus:ring-2 focus:ring-secondary-500">
             Interactive Badge
           </Badge>
         </div>
       </div>
     </div>
   ),
-};
+}
 
 // Micro-interactions showcase
 export const MicroInteractions: Story = {
@@ -495,9 +450,7 @@ export const MicroInteractions: Story = {
     <div className="space-y-6">
       <div className="space-y-2">
         <h3 className="text-lg font-semibold">Hover Effects</h3>
-        <p className="text-sm text-secondary-600">
-          Hover to see scale and shadow animations
-        </p>
+        <p className="text-sm text-secondary-600">Hover to see scale and shadow animations</p>
         <div className="flex flex-wrap gap-2">
           <Badge variant="default">Hover for Scale</Badge>
           <Badge variant="success">Hover for Shadow</Badge>
@@ -519,7 +472,7 @@ export const MicroInteractions: Story = {
       </div>
     </div>
   ),
-};
+}
 
 // Responsive design showcase
 export const ResponsiveDesign: Story = {
@@ -544,9 +497,7 @@ export const ResponsiveDesign: Story = {
       </div>
       <div className="space-y-2">
         <h3 className="text-lg font-semibold">Mobile First</h3>
-        <p className="text-sm text-secondary-600">
-          Badges are optimized for mobile touch targets
-        </p>
+        <p className="text-sm text-secondary-600">Badges are optimized for mobile touch targets</p>
         <div className="flex flex-wrap gap-2">
           <Badge variant="default" size="lg">
             Touch Friendly
@@ -558,4 +509,4 @@ export const ResponsiveDesign: Story = {
       </div>
     </div>
   ),
-};
+}

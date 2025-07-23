@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
-import type { ReactNode, ErrorInfo } from 'react';
-import { BaseErrorBoundary } from './BaseErrorBoundary';
+import React, { Component } from 'react'
+import type { ReactNode, ErrorInfo } from 'react'
+import { BaseErrorBoundary } from './BaseErrorBoundary'
 
 interface Props {
-  children: ReactNode;
-  fallback?: ReactNode;
-  onError?: (error: Error, errorInfo: ErrorInfo) => void;
-  resetKeys?: Array<string | number>;
-  context?: string;
+  children: ReactNode
+  fallback?: ReactNode
+  onError?: (error: Error, errorInfo: ErrorInfo) => void
+  resetKeys?: Array<string | number>
+  context?: string
 }
 
 interface State {
-  asyncError: Error | null;
+  asyncError: Error | null
 }
 
 /**
@@ -20,63 +20,64 @@ interface State {
  */
 export class AsyncErrorBoundary extends Component<Props, State> {
   constructor(props: Props) {
-    super(props);
-    this.state = { asyncError: null };
+    super(props)
+    this.state = { asyncError: null }
   }
 
   static getDerivedStateFromError(error: Error): Partial<State> {
-    return { asyncError: error };
+    return { asyncError: error }
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     if (this.props.onError) {
-      this.props.onError(error, errorInfo);
+      this.props.onError(error, errorInfo)
     }
   }
 
   componentDidMount() {
     // Listen for unhandled promise rejections
-    window.addEventListener('unhandledrejection', this.handleUnhandledRejection);
+    window.addEventListener('unhandledrejection', this.handleUnhandledRejection)
   }
 
   componentWillUnmount() {
-    window.removeEventListener('unhandledrejection', this.handleUnhandledRejection);
+    window.removeEventListener('unhandledrejection', this.handleUnhandledRejection)
   }
 
   handleUnhandledRejection = (event: PromiseRejectionEvent) => {
     // Only handle rejections that occur within our component tree
     // This is a basic approach - you might want more sophisticated detection
-    const error = event.reason instanceof Error 
-      ? event.reason 
-      : new Error(String(event.reason));
+    const error = event.reason instanceof Error ? event.reason : new Error(String(event.reason))
 
     // Set the async error which will trigger a re-render
-    this.setState({ asyncError: error });
+    this.setState({ asyncError: error })
 
     // Prevent the error from being logged to console
-    event.preventDefault();
-  };
+    event.preventDefault()
+  }
 
   resetAsyncError = () => {
-    this.setState({ asyncError: null });
-  };
+    this.setState({ asyncError: null })
+  }
 
   render() {
-    const { asyncError } = this.state;
-    
+    const { asyncError } = this.state
+
     if (asyncError) {
       // If we have an async error, create a synthetic error to pass to BaseErrorBoundary
-      throw asyncError;
+      throw asyncError
     }
 
     return (
       <BaseErrorBoundary
         {...this.props}
-        resetKeys={[...(this.props.resetKeys || []), ...(asyncError ? [Date.now().toString()] : [])]}
+        resetKeys={[
+          ...(this.props.resetKeys || []),
+          ...(asyncError ? [Date.now().toString()] : []),
+        ]}
       >
         {this.props.children}
       </BaseErrorBoundary>
-    );
+    )
   }
 }
 
@@ -84,17 +85,17 @@ export class AsyncErrorBoundary extends Component<Props, State> {
  * Hook to capture async errors in functional components
  */
 export const useAsyncError = () => {
-  const [, setError] = React.useState();
-  
+  const [, setError] = React.useState()
+
   return React.useCallback(
     (error: Error) => {
       setError(() => {
-        throw error;
-      });
+        throw error
+      })
     },
-    [setError],
-  );
-};
+    [setError]
+  )
+}
 
 /**
  * Higher-order component to wrap components with async error handling
@@ -107,9 +108,9 @@ export function withAsyncErrorBoundary<P extends object>(
     <AsyncErrorBoundary {...errorBoundaryProps}>
       <Component {...props} />
     </AsyncErrorBoundary>
-  );
+  )
 
-  WrappedComponent.displayName = `withAsyncErrorBoundary(${Component.displayName || Component.name})`;
-  
-  return WrappedComponent;
+  WrappedComponent.displayName = `withAsyncErrorBoundary(${Component.displayName || Component.name})`
+
+  return WrappedComponent
 }

@@ -96,34 +96,35 @@ export const Tooltip: React.FC<TooltipProps> = ({
   return (
     <>
       {clonedChild}
-      {isVisible && createPortal(
-        <div
-          ref={tooltipRef}
-          id="tooltip"
-          role="tooltip"
-          className={cn(
-            'fixed z-tooltip px-3 py-2 text-xs font-medium text-white bg-secondary-900 rounded-md shadow-md',
-            'animate-fade-in pointer-events-none',
-            className
-          )}
-          style={{
-            top: `${position.top}px`,
-            left: `${position.left}px`,
-          }}
-        >
-          {content}
+      {isVisible &&
+        createPortal(
           <div
+            ref={tooltipRef}
+            id="tooltip"
+            role="tooltip"
             className={cn(
-              'absolute w-2 h-2 bg-secondary-900 rotate-45',
-              placement === 'top' && 'bottom-[-4px] left-1/2 -translate-x-1/2',
-              placement === 'right' && 'left-[-4px] top-1/2 -translate-y-1/2',
-              placement === 'bottom' && 'top-[-4px] left-1/2 -translate-x-1/2',
-              placement === 'left' && 'right-[-4px] top-1/2 -translate-y-1/2'
+              'fixed z-tooltip px-3 py-2 text-xs font-medium text-white bg-secondary-900 rounded-md shadow-md',
+              'animate-fade-in pointer-events-none',
+              className
             )}
-          />
-        </div>,
-        document.body
-      )}
+            style={{
+              top: `${position.top}px`,
+              left: `${position.left}px`,
+            }}
+          >
+            {content}
+            <div
+              className={cn(
+                'absolute w-2 h-2 bg-secondary-900 rotate-45',
+                placement === 'top' && 'bottom-[-4px] left-1/2 -translate-x-1/2',
+                placement === 'right' && 'left-[-4px] top-1/2 -translate-y-1/2',
+                placement === 'bottom' && 'top-[-4px] left-1/2 -translate-x-1/2',
+                placement === 'left' && 'right-[-4px] top-1/2 -translate-y-1/2'
+              )}
+            />
+          </div>,
+          document.body
+        )}
     </>
   )
 }

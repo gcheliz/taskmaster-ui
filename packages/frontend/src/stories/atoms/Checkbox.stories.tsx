@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { Checkbox } from '../../components/ui/atoms/Checkbox';
-import { Label } from '../../components/ui/atoms/Label';
+import type { Meta, StoryObj } from '@storybook/react'
+import { Checkbox } from '../../components/ui/atoms/Checkbox'
+import { Label } from '../../components/ui/atoms/Label'
 
 const meta: Meta<typeof Checkbox> = {
   title: 'Atoms/Checkbox',
@@ -55,44 +55,44 @@ const meta: Meta<typeof Checkbox> = {
       description: 'Shows success state',
     },
   },
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {
     checked: false,
   },
-};
+}
 
 export const Checked: Story = {
   args: {
     checked: true,
   },
-};
+}
 
 export const Indeterminate: Story = {
   args: {
     indeterminate: true,
   },
-};
+}
 
 export const Disabled: Story = {
   args: {
     disabled: true,
   },
-};
+}
 
 export const DisabledChecked: Story = {
   args: {
     checked: true,
     disabled: true,
   },
-};
+}
 
 export const WithLabel: Story = {
-  render: args => (
+  render: (args) => (
     <div className="flex items-center space-x-2">
       <Checkbox id="checkbox-with-label" {...args} />
       <Label htmlFor="checkbox-with-label" className="cursor-pointer">
@@ -103,7 +103,7 @@ export const WithLabel: Story = {
   args: {
     checked: false,
   },
-};
+}
 
 export const Sizes: Story = {
   render: () => (
@@ -122,7 +122,7 @@ export const Sizes: Story = {
       </div>
     </div>
   ),
-};
+}
 
 export const States: Story = {
   render: () => (
@@ -149,7 +149,7 @@ export const States: Story = {
       </div>
     </div>
   ),
-};
+}
 
 export const Variants: Story = {
   render: () => (
@@ -168,7 +168,7 @@ export const Variants: Story = {
       </div>
     </div>
   ),
-};
+}
 
 export const FormExample: Story = {
   render: () => (
@@ -196,9 +196,7 @@ export const FormExample: Story = {
               <Label htmlFor="push-notifications" className="cursor-pointer">
                 Push notifications
               </Label>
-              <p className="text-sm text-secondary-500">
-                Get push notifications in your browser.
-              </p>
+              <p className="text-sm text-secondary-500">Get push notifications in your browser.</p>
             </div>
           </div>
 
@@ -217,9 +215,7 @@ export const FormExample: Story = {
       </fieldset>
 
       <fieldset>
-        <legend className="text-base font-medium text-secondary-900 mb-4">
-          Task Management
-        </legend>
+        <legend className="text-base font-medium text-secondary-900 mb-4">Task Management</legend>
         <div className="space-y-4">
           <div className="flex items-center space-x-3">
             <Checkbox id="all-tasks" indeterminate />
@@ -254,7 +250,7 @@ export const FormExample: Story = {
       </fieldset>
     </form>
   ),
-};
+}
 
 // Dark theme specific stories
 export const DarkThemeVariants: Story = {
@@ -264,52 +260,35 @@ export const DarkThemeVariants: Story = {
   render: () => (
     <div className="">
       <div className="bg-white p-6 rounded-lg space-y-4">
-        <h3 className="text-slate-900 text-lg font-semibold mb-4">
-          Dark Theme Checkboxes
-        </h3>
+        <h3 className="text-slate-900 text-lg font-semibold mb-4">Dark Theme Checkboxes</h3>
         <div className="space-y-4">
           <div className="flex items-center space-x-3">
             <Checkbox id="dark-checkbox-1" />
-            <Label
-              htmlFor="dark-checkbox-1"
-              className="text-slate-900 cursor-pointer"
-            >
+            <Label htmlFor="dark-checkbox-1" className="text-slate-900 cursor-pointer">
               Unchecked
             </Label>
           </div>
           <div className="flex items-center space-x-3">
             <Checkbox id="dark-checkbox-2" checked />
-            <Label
-              htmlFor="dark-checkbox-2"
-              className="text-slate-900 cursor-pointer"
-            >
+            <Label htmlFor="dark-checkbox-2" className="text-slate-900 cursor-pointer">
               Checked
             </Label>
           </div>
           <div className="flex items-center space-x-3">
             <Checkbox id="dark-checkbox-3" indeterminate />
-            <Label
-              htmlFor="dark-checkbox-3"
-              className="text-slate-900 cursor-pointer"
-            >
+            <Label htmlFor="dark-checkbox-3" className="text-slate-900 cursor-pointer">
               Indeterminate
             </Label>
           </div>
           <div className="flex items-center space-x-3">
             <Checkbox id="dark-checkbox-4" error checked />
-            <Label
-              htmlFor="dark-checkbox-4"
-              className="text-slate-900 cursor-pointer"
-            >
+            <Label htmlFor="dark-checkbox-4" className="text-slate-900 cursor-pointer">
               Error State
             </Label>
           </div>
           <div className="flex items-center space-x-3">
             <Checkbox id="dark-checkbox-5" success checked />
-            <Label
-              htmlFor="dark-checkbox-5"
-              className="text-slate-900 cursor-pointer"
-            >
+            <Label htmlFor="dark-checkbox-5" className="text-slate-900 cursor-pointer">
               Success State
             </Label>
           </div>
@@ -317,7 +296,7 @@ export const DarkThemeVariants: Story = {
       </div>
     </div>
   ),
-};
+}
 
 // Accessibility testing story
 export const AccessibilityTest: Story = {
@@ -325,9 +304,7 @@ export const AccessibilityTest: Story = {
     <div className="space-y-6">
       <div className="space-y-2">
         <h3 className="text-lg font-semibold">Keyboard Navigation</h3>
-        <p className="text-sm text-secondary-600">
-          Use Tab to navigate, Space to toggle
-        </p>
+        <p className="text-sm text-secondary-600">Use Tab to navigate, Space to toggle</p>
         <div className="space-y-2">
           <div className="flex items-center space-x-2">
             <Checkbox id="accessible-checkbox-1" />
@@ -347,20 +324,13 @@ export const AccessibilityTest: Story = {
         <h3 className="text-lg font-semibold">Screen Reader Support</h3>
         <div className="space-y-2">
           <div className="flex items-center space-x-2">
-            <Checkbox
-              id="sr-checkbox"
-              aria-describedby="sr-checkbox-description"
-            />
+            <Checkbox id="sr-checkbox" aria-describedby="sr-checkbox-description" />
             <Label htmlFor="sr-checkbox" className="cursor-pointer">
               Accept terms and conditions
             </Label>
           </div>
-          <p
-            id="sr-checkbox-description"
-            className="text-sm text-secondary-600 ml-6"
-          >
-            By checking this box, you agree to our terms of service and privacy
-            policy
+          <p id="sr-checkbox-description" className="text-sm text-secondary-600 ml-6">
+            By checking this box, you agree to our terms of service and privacy policy
           </p>
         </div>
       </div>
@@ -380,7 +350,7 @@ export const AccessibilityTest: Story = {
       </div>
     </div>
   ),
-};
+}
 
 // Micro-interactions showcase
 export const MicroInteractions: Story = {
@@ -410,7 +380,7 @@ export const MicroInteractions: Story = {
       </div>
     </div>
   ),
-};
+}
 
 // Responsive design showcase
 export const ResponsiveDesign: Story = {
@@ -418,9 +388,7 @@ export const ResponsiveDesign: Story = {
     <div className="space-y-6">
       <div className="space-y-2">
         <h3 className="text-lg font-semibold">Mobile Touch Targets</h3>
-        <p className="text-sm text-secondary-600">
-          Checkboxes are optimized for touch interfaces
-        </p>
+        <p className="text-sm text-secondary-600">Checkboxes are optimized for touch interfaces</p>
         <div className="space-y-3">
           <div className="flex items-center space-x-3">
             <Checkbox id="mobile-checkbox-1" size="lg" />
@@ -438,4 +406,4 @@ export const ResponsiveDesign: Story = {
       </div>
     </div>
   ),
-};
+}

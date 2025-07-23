@@ -1,39 +1,39 @@
-import React, { useState, useCallback, useMemo } from 'react';
-import { Terminal as XTerminal } from '@xterm/xterm';
-import { Terminal } from './Terminal';
-import { useTerminal } from '../../hooks/useTerminal';
-import { taskMasterTerminalService } from '../../services/taskMasterTerminalService';
-import './TaskMasterTerminal.css';
+import React, { useState, useCallback, useMemo } from 'react'
+import { Terminal as XTerminal } from '@xterm/xterm'
+import { Terminal } from './Terminal'
+import { useTerminal } from '../../hooks/useTerminal'
+import { taskMasterTerminalService } from '../../services/taskMasterTerminalService'
+import './TaskMasterTerminal.css'
 
 export interface TaskMasterTerminalProps {
   /** Working directory for the terminal */
-  workingDirectory?: string;
+  workingDirectory?: string
   /** Repository path if terminal is scoped to a repository */
-  repositoryPath?: string;
+  repositoryPath?: string
   /** Terminal display mode */
-  mode?: 'embedded' | 'popup' | 'fullscreen';
+  mode?: 'embedded' | 'popup' | 'fullscreen'
   /** Whether to show the terminal header */
-  showHeader?: boolean;
+  showHeader?: boolean
   /** Whether to show the status bar */
-  showStatusBar?: boolean;
+  showStatusBar?: boolean
   /** Terminal title */
-  title?: string;
+  title?: string
   /** Terminal theme */
-  theme?: 'dark' | 'light';
+  theme?: 'dark' | 'light'
   /** Initial size */
-  initialSize?: { cols: number; rows: number };
+  initialSize?: { cols: number; rows: number }
   /** Callback when terminal is closed */
-  onClose?: () => void;
+  onClose?: () => void
   /** Additional CSS class */
-  className?: string;
+  className?: string
   /** Project tag for TaskMaster CLI commands */
-  projectTag?: string;
+  projectTag?: string
   /** Whether to enable TaskMaster command suggestions */
-  enableTaskMasterSuggestions?: boolean;
+  enableTaskMasterSuggestions?: boolean
   /** Whether to enable command history */
-  enableCommandHistory?: boolean;
+  enableCommandHistory?: boolean
   /** Maximum number of command history entries */
-  maxHistoryEntries?: number;
+  maxHistoryEntries?: number
 }
 
 // TaskMaster CLI commands and their descriptions
@@ -41,8 +41,7 @@ const TASKMASTER_COMMANDS = {
   'task-master init': 'Initialize TaskMaster in current directory',
   'task-master list': 'List all tasks with status',
   'task-master next': 'Get next available task to work on',
-  'task-master show':
-    'View detailed task information (e.g., task-master show 1.2)',
+  'task-master show': 'View detailed task information (e.g., task-master show 1.2)',
   'task-master set-status':
     'Mark task complete (e.g., task-master set-status --id=1 --status=done)',
   'task-master add-task': 'Add new task with AI assistance',
@@ -57,7 +56,7 @@ const TASKMASTER_COMMANDS = {
   'task-master generate': 'Update task markdown files',
   'task-master models': 'Configure AI models interactively',
   'task-master parse-prd': 'Generate tasks from PRD document',
-} as const;
+} as const
 
 // Common task management patterns
 const TASKMASTER_PATTERNS = {
@@ -70,7 +69,7 @@ const TASKMASTER_PATTERNS = {
   '--from=': 'Starting task ID for range operations',
   '--to=': 'Ending task ID for range operations',
   '--depends-on=': 'Task dependency ID',
-} as const;
+} as const
 
 /**
  * TaskMaster Terminal Component
@@ -97,17 +96,15 @@ export const TaskMasterTerminal: React.FC<TaskMasterTerminalProps> = ({
   enableCommandHistory = true,
   maxHistoryEntries = 100,
 }) => {
-  const [commandHistory, setCommandHistory] = useState<string[]>([]);
-  const [historyIndex, setHistoryIndex] = useState(-1);
-  const [currentInput, setCurrentInput] = useState('');
-  const [originalInput, setOriginalInput] = useState('');
-  const [suggestionIndex, setSuggestionIndex] = useState(-1);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [isTabCompleting, setIsTabCompleting] = useState(false);
-  const [tabCompletionOptions, setTabCompletionOptions] = useState<string[]>(
-    []
-  );
-  const [tabCompletionIndex, setTabCompletionIndex] = useState(-1);
+  const [commandHistory, setCommandHistory] = useState<string[]>([])
+  const [historyIndex, setHistoryIndex] = useState(-1)
+  const [currentInput, setCurrentInput] = useState('')
+  const [originalInput, setOriginalInput] = useState('')
+  const [suggestionIndex, setSuggestionIndex] = useState(-1)
+  const [showSuggestions, setShowSuggestions] = useState(false)
+  const [isTabCompleting, setIsTabCompleting] = useState(false)
+  const [tabCompletionOptions, setTabCompletionOptions] = useState<string[]>([])
+  const [tabCompletionIndex, setTabCompletionIndex] = useState(-1)
 
   // Use the existing terminal hook with TaskMaster-specific configuration
   const {
@@ -132,115 +129,114 @@ export const TaskMasterTerminal: React.FC<TaskMasterTerminalProps> = ({
       sessionClosed: 'TaskMaster terminal session closed',
       connectionError: 'Failed to connect to TaskMaster terminal service',
     },
-  });
+  })
 
   // Fetch command history when session is created
   React.useEffect(() => {
     if (session?.id && enableCommandHistory) {
       const loadCommandHistory = async () => {
         try {
-          const historyResponse =
-            await taskMasterTerminalService.getCommandHistory(session.id, {
-              limit: maxHistoryEntries,
-            });
-          setCommandHistory(historyResponse.history);
+          const historyResponse = await taskMasterTerminalService.getCommandHistory(session.id, {
+            limit: maxHistoryEntries,
+          })
+          setCommandHistory(historyResponse.history)
         } catch (error) {
-          console.warn('Failed to load command history from backend:', error);
+          console.warn('Failed to load command history from backend:', error)
         }
-      };
+      }
 
-      loadCommandHistory();
+      loadCommandHistory()
     }
-  }, [session?.id, enableCommandHistory, maxHistoryEntries]);
+  }, [session?.id, enableCommandHistory, maxHistoryEntries])
 
   // Enhanced backend suggestions integration
-  const [backendSuggestions, setBackendSuggestions] = useState<string[]>([]);
+  const [backendSuggestions, setBackendSuggestions] = useState<string[]>([])
 
   // Helper function to find common prefix of strings
   const findCommonPrefix = useCallback((strings: string[]): string => {
-    if (strings.length === 0) return '';
-    if (strings.length === 1) return strings[0];
+    if (strings.length === 0) return ''
+    if (strings.length === 1) return strings[0]
 
-    let prefix = strings[0];
+    let prefix = strings[0]
     for (let i = 1; i < strings.length; i++) {
       while (strings[i].indexOf(prefix) !== 0) {
-        prefix = prefix.substring(0, prefix.length - 1);
-        if (prefix === '') return '';
+        prefix = prefix.substring(0, prefix.length - 1)
+        if (prefix === '') return ''
       }
     }
-    return prefix;
-  }, []);
+    return prefix
+  }, [])
 
   // Helper function to get completions for current input
   const getCompletions = useCallback(
     (input: string): string[] => {
-      const words = input.split(' ');
-      const currentWord = words[words.length - 1] || '';
-      const completions: string[] = [];
+      const words = input.split(' ')
+      const currentWord = words[words.length - 1] || ''
+      const completions: string[] = []
 
       // Get backend suggestions first (highest priority)
-      backendSuggestions.forEach(suggestion => {
+      backendSuggestions.forEach((suggestion) => {
         if (!completions.includes(suggestion)) {
-          completions.push(suggestion);
+          completions.push(suggestion)
         }
-      });
+      })
 
       // Get TaskMaster command completions
-      Object.keys(TASKMASTER_COMMANDS).forEach(command => {
+      Object.keys(TASKMASTER_COMMANDS).forEach((command) => {
         if (command.toLowerCase().startsWith(currentWord.toLowerCase())) {
           if (!completions.includes(command)) {
-            completions.push(command);
+            completions.push(command)
           }
         }
-      });
+      })
 
       // Get pattern completions for TaskMaster commands
       if (input.startsWith('task-master ')) {
-        Object.keys(TASKMASTER_PATTERNS).forEach(pattern => {
+        Object.keys(TASKMASTER_PATTERNS).forEach((pattern) => {
           if (pattern.toLowerCase().startsWith(currentWord.toLowerCase())) {
             if (!completions.includes(pattern)) {
-              completions.push(pattern);
+              completions.push(pattern)
             }
           }
-        });
+        })
       }
 
       // Get recent command completions
       if (enableCommandHistory) {
         commandHistory
-          .filter(cmd => cmd.toLowerCase().startsWith(input.toLowerCase()))
+          .filter((cmd) => cmd.toLowerCase().startsWith(input.toLowerCase()))
           .slice(0, 5)
-          .forEach(cmd => {
+          .forEach((cmd) => {
             if (!completions.includes(cmd)) {
-              completions.push(cmd);
+              completions.push(cmd)
             }
-          });
+          })
       }
 
-      return completions.sort();
+      return completions.sort()
     },
     [commandHistory, enableCommandHistory, backendSuggestions]
-  );
+  )
 
   // Generate TaskMaster command suggestions based on current input
   const suggestions = useMemo(() => {
     if (!enableTaskMasterSuggestions || !currentInput.trim()) {
-      return [];
+      return []
     }
 
-    const input = currentInput.toLowerCase();
+    const input = currentInput.toLowerCase()
     const allSuggestions: Array<{
-      command: string;
-      description: string;
-      type: 'command' | 'pattern';
-    }> = [];
+      command: string
+      description: string
+      type: 'command' | 'pattern'
+    }> = []
 
     // Add command suggestions
     Object.entries(TASKMASTER_COMMANDS).forEach(([command, description]) => {
       if (command.toLowerCase().includes(input)) {
-        allSuggestions.push({ command, description, type: 'command' });
+        allSuggestions.push({ command, description, type: 'command' })
       }
-    });
+    })
 
     // Add pattern suggestions for partial commands
     if (input.startsWith('task-master ')) {
@@ -250,70 +246,64 @@ export const TaskMasterTerminal: React.FC<TaskMasterTerminalProps> = ({
             command: pattern,
             description,
             type: 'pattern',
-          });
+          })
         }
-      });
+      })
     }
 
     // Add recent command history suggestions
     if (enableCommandHistory) {
       commandHistory
-        .filter(cmd => cmd.toLowerCase().includes(input))
+        .filter((cmd) => cmd.toLowerCase().includes(input))
         .slice(-5) // Last 5 matching commands
-        .forEach(cmd => {
-          if (!allSuggestions.some(s => s.command === cmd)) {
+        .forEach((cmd) => {
+          if (!allSuggestions.some((s) => s.command === cmd)) {
             allSuggestions.push({
               command: cmd,
               description: 'Recent command',
               type: 'command',
-            });
+            })
           }
-        });
+        })
     }
 
-    return allSuggestions.slice(0, 10); // Limit to 10 suggestions
-  }, [
-    currentInput,
-    enableTaskMasterSuggestions,
-    enableCommandHistory,
-    commandHistory,
-  ]);
+    return allSuggestions.slice(0, 10) // Limit to 10 suggestions
+  }, [currentInput, enableTaskMasterSuggestions, enableCommandHistory, commandHistory])
 
   // Fetch backend suggestions for TaskMaster commands
   const fetchBackendSuggestions = useCallback(
     async (partialCommand: string) => {
       if (!session?.id || !partialCommand.startsWith('task-master')) {
-        setBackendSuggestions([]);
-        return;
+        setBackendSuggestions([])
+        return
       }
 
       try {
-        const response = await taskMasterTerminalService.getCommandSuggestions(
-          session.id,
-          { partialCommand }
-        );
+        const response = await taskMasterTerminalService.getCommandSuggestions(session.id, {
+          partialCommand,
+        })
 
-        setBackendSuggestions(response.suggestions || []);
+        setBackendSuggestions(response.suggestions || [])
       } catch (error) {
-        console.warn('Failed to fetch backend suggestions:', error);
-        setBackendSuggestions([]);
+        console.warn('Failed to fetch backend suggestions:', error)
+        setBackendSuggestions([])
       }
     },
     [session?.id]
-  );
+  )
 
   // Debounced backend suggestions fetching
   React.useEffect(() => {
     if (currentInput.startsWith('task-master') && currentInput.length > 12) {
       const timeoutId = setTimeout(() => {
-        fetchBackendSuggestions(currentInput);
-      }, 300); // 300ms debounce
+        fetchBackendSuggestions(currentInput)
+      }, 300) // 300ms debounce
 
-      return () => clearTimeout(timeoutId);
+      return () => clearTimeout(timeoutId)
     } else {
-      setBackendSuggestions([]);
+      setBackendSuggestions([])
     }
-  }, [currentInput, fetchBackendSuggestions]);
+  }, [currentInput, fetchBackendSuggestions])
 
   // Enhanced execute command with TaskMaster-specific features
   const executeCommand = useCallback(
@@ -321,53 +311,51 @@ export const TaskMasterTerminal: React.FC<TaskMasterTerminalProps> = ({
       try {
         // Add to command history if it's a new command
         if (enableCommandHistory && command.trim()) {
-          setCommandHistory(prev => {
-            const newHistory = [command, ...prev.filter(c => c !== command)];
-            return newHistory.slice(0, maxHistoryEntries);
-          });
+          setCommandHistory((prev) => {
+            const newHistory = [command, ...prev.filter((c) => c !== command)]
+            return newHistory.slice(0, maxHistoryEntries)
+          })
         }
 
         // Reset history navigation state after command execution
-        setHistoryIndex(-1);
-        setOriginalInput('');
+        setHistoryIndex(-1)
+        setOriginalInput('')
 
         // Add project tag to TaskMaster commands if specified
-        let enhancedCommand = command;
+        let enhancedCommand = command
         if (
           projectTag &&
           command.trim().startsWith('task-master ') &&
           !command.includes('--tag=')
         ) {
-          enhancedCommand = `${command} --tag=${projectTag}`;
+          enhancedCommand = `${command} --tag=${projectTag}`
         }
 
-        await baseExecuteCommand(enhancedCommand);
+        await baseExecuteCommand(enhancedCommand)
       } catch (error) {
-        console.error('Failed to execute TaskMaster command:', error);
-        throw error;
+        console.error('Failed to execute TaskMaster command:', error)
+        throw error
       }
     },
     [baseExecuteCommand, projectTag, enableCommandHistory, maxHistoryEntries]
-  );
+  )
 
   // Handle terminal ready with TaskMaster-specific setup
   const handleTerminalReady = useCallback(
     (terminalInstance: XTerminal) => {
-      setTerminal(terminalInstance);
+      setTerminal(terminalInstance)
 
       // Write TaskMaster welcome message
       if (terminalInstance && projectTag) {
-        terminalInstance.writeln(
-          `\x1b[32m✓ TaskMaster CLI ready for project: ${projectTag}\x1b[0m`
-        );
+        terminalInstance.writeln(`\x1b[32m✓ TaskMaster CLI ready for project: ${projectTag}\x1b[0m`)
         terminalInstance.writeln(
           '\x1b[36mTip: Use Tab for command completion, ↑↓ for history\x1b[0m'
-        );
-        terminalInstance.writeln('');
+        )
+        terminalInstance.writeln('')
       }
     },
     [setTerminal, projectTag]
-  );
+  )
 
   // Handle data input with TaskMaster-specific features
   const handleData = useCallback(
@@ -375,130 +363,127 @@ export const TaskMasterTerminal: React.FC<TaskMasterTerminalProps> = ({
       // Handle special key sequences for TaskMaster features
       if (data === '\t') {
         // Tab key for intelligent autocompletion
-        const completions = getCompletions(currentInput);
+        const completions = getCompletions(currentInput)
 
         if (completions.length === 0) {
           // No completions available
-          return;
+          return
         } else if (completions.length === 1) {
           // Single completion - complete it directly
-          setCurrentInput(completions[0]);
-          setIsTabCompleting(false);
-          setTabCompletionOptions([]);
-          setTabCompletionIndex(-1);
-          setShowSuggestions(false);
+          setCurrentInput(completions[0])
+          setIsTabCompleting(false)
+          setTabCompletionOptions([])
+          setTabCompletionIndex(-1)
+          setShowSuggestions(false)
         } else {
           // Multiple completions available
           if (!isTabCompleting) {
             // First tab - show common prefix and list options
-            const commonPrefix = findCommonPrefix(completions);
+            const commonPrefix = findCommonPrefix(completions)
             if (commonPrefix.length > currentInput.length) {
               // Complete to common prefix
-              setCurrentInput(commonPrefix);
+              setCurrentInput(commonPrefix)
             }
 
             // Set up tab completion cycle
-            setIsTabCompleting(true);
-            setTabCompletionOptions(completions);
-            setTabCompletionIndex(0);
-            setShowSuggestions(true);
+            setIsTabCompleting(true)
+            setTabCompletionOptions(completions)
+            setTabCompletionIndex(0)
+            setShowSuggestions(true)
           } else {
             // Subsequent tabs - cycle through completions
-            const nextIndex = (tabCompletionIndex + 1) % completions.length;
-            setTabCompletionIndex(nextIndex);
-            setCurrentInput(completions[nextIndex]);
+            const nextIndex = (tabCompletionIndex + 1) % completions.length
+            setTabCompletionIndex(nextIndex)
+            setCurrentInput(completions[nextIndex])
           }
         }
 
         // Reset history navigation when using tab completion
-        setHistoryIndex(-1);
-        setOriginalInput('');
-        return; // Don't pass tab to terminal
+        setHistoryIndex(-1)
+        setOriginalInput('')
+        return // Don't pass tab to terminal
       } else if (data === '\x1b[A') {
         // Up arrow for history navigation
         if (enableCommandHistory && commandHistory.length > 0) {
           // Save current input as original if we're starting history navigation
           if (historyIndex === -1) {
-            setOriginalInput(currentInput);
+            setOriginalInput(currentInput)
           }
 
-          const newIndex = Math.min(
-            commandHistory.length - 1,
-            historyIndex + 1
-          );
-          setHistoryIndex(newIndex);
-          setCurrentInput(commandHistory[newIndex]);
-          setShowSuggestions(false);
+          const newIndex = Math.min(commandHistory.length - 1, historyIndex + 1)
+          setHistoryIndex(newIndex)
+          setCurrentInput(commandHistory[newIndex])
+          setShowSuggestions(false)
         }
-        return;
+        return
       } else if (data === '\x1b[B') {
         // Down arrow for history navigation
         if (enableCommandHistory && commandHistory.length > 0) {
           if (historyIndex > 0) {
-            const newIndex = historyIndex - 1;
-            setHistoryIndex(newIndex);
-            setCurrentInput(commandHistory[newIndex]);
+            const newIndex = historyIndex - 1
+            setHistoryIndex(newIndex)
+            setCurrentInput(commandHistory[newIndex])
           } else if (historyIndex === 0) {
             // Go back to original input
-            setHistoryIndex(-1);
-            setCurrentInput(originalInput);
+            setHistoryIndex(-1)
+            setCurrentInput(originalInput)
           }
-          setShowSuggestions(false);
+          setShowSuggestions(false)
         }
-        return;
+        return
       } else if (data === '\x1b') {
         // Escape key to cancel navigation states
         if (isTabCompleting) {
           // Cancel tab completion
-          setIsTabCompleting(false);
-          setTabCompletionOptions([]);
-          setTabCompletionIndex(-1);
-          setShowSuggestions(false);
-          return;
+          setIsTabCompleting(false)
+          setTabCompletionOptions([])
+          setTabCompletionIndex(-1)
+          setShowSuggestions(false)
+          return
         } else if (historyIndex >= 0) {
           // Cancel history navigation
-          setHistoryIndex(-1);
-          setCurrentInput(originalInput);
-          setShowSuggestions(false);
-          return;
+          setHistoryIndex(-1)
+          setCurrentInput(originalInput)
+          setShowSuggestions(false)
+          return
         }
       } else if (data === '\r') {
         // Enter key
         if (currentInput.trim()) {
-          executeCommand(currentInput);
+          executeCommand(currentInput)
         }
-        setCurrentInput('');
-        setShowSuggestions(false);
-        setSuggestionIndex(-1);
+        setCurrentInput('')
+        setShowSuggestions(false)
+        setSuggestionIndex(-1)
         // Reset all completion states
-        setIsTabCompleting(false);
-        setTabCompletionOptions([]);
-        setTabCompletionIndex(-1);
+        setIsTabCompleting(false)
+        setTabCompletionOptions([])
+        setTabCompletionIndex(-1)
       } else if (data === '\x7f') {
         // Backspace
-        setCurrentInput(prev => prev.slice(0, -1));
+        setCurrentInput((prev) => prev.slice(0, -1))
         // Reset navigation states when manually editing
-        setHistoryIndex(-1);
-        setOriginalInput('');
-        setIsTabCompleting(false);
-        setTabCompletionOptions([]);
-        setTabCompletionIndex(-1);
+        setHistoryIndex(-1)
+        setOriginalInput('')
+        setIsTabCompleting(false)
+        setTabCompletionOptions([])
+        setTabCompletionIndex(-1)
       } else if (data.length === 1 && data.charCodeAt(0) >= 32) {
         // Printable characters
-        const newInput = currentInput + data;
-        setCurrentInput(newInput);
-        setShowSuggestions(enableTaskMasterSuggestions && newInput.length > 2);
+        const newInput = currentInput + data
+        setCurrentInput(newInput)
+        setShowSuggestions(enableTaskMasterSuggestions && newInput.length > 2)
         // Reset navigation states when manually typing
-        setHistoryIndex(-1);
-        setOriginalInput('');
-        setIsTabCompleting(false);
-        setTabCompletionOptions([]);
-        setTabCompletionIndex(-1);
+        setHistoryIndex(-1)
+        setOriginalInput('')
+        setIsTabCompleting(false)
+        setTabCompletionOptions([])
+        setTabCompletionIndex(-1)
       }
 
       // Pass data to the terminal
       if (websocket && session) {
-        sendInput(data);
+        sendInput(data)
       }
     },
     [
@@ -520,27 +505,27 @@ export const TaskMasterTerminal: React.FC<TaskMasterTerminalProps> = ({
       tabCompletionOptions,
       tabCompletionIndex,
     ]
-  );
+  )
 
   const handleClose = useCallback(async () => {
-    await closeSession();
-    onClose?.();
-  }, [closeSession, onClose]);
+    await closeSession()
+    onClose?.()
+  }, [closeSession, onClose])
 
   const handleResize = useCallback(
     (cols: number, rows: number) => {
-      resizeTerminal(cols, rows);
+      resizeTerminal(cols, rows)
     },
     [resizeTerminal]
-  );
+  )
 
   // Enhance terminal title with project info
   const enhancedTitle = useMemo(() => {
     if (projectTag) {
-      return `${title} - ${projectTag}`;
+      return `${title} - ${projectTag}`
     }
-    return title;
-  }, [title, projectTag]);
+    return title
+  }, [title, projectTag])
 
   return (
     <div className={`taskmaster-terminal-wrapper ${className}`}>
@@ -571,9 +556,7 @@ export const TaskMasterTerminal: React.FC<TaskMasterTerminalProps> = ({
         <div className="taskmaster-suggestions">
           <div className="suggestions-header">
             <span className="suggestions-title">TaskMaster Commands</span>
-            <span className="suggestions-hint">
-              Tab to complete, ↑↓ to navigate
-            </span>
+            <span className="suggestions-hint">Tab to complete, ↑↓ to navigate</span>
           </div>
           <div className="suggestions-list">
             {suggestions.map((suggestion, index) => (
@@ -581,15 +564,15 @@ export const TaskMasterTerminal: React.FC<TaskMasterTerminalProps> = ({
                 key={`${suggestion.command}-${index}`}
                 className={`suggestion-item ${index === suggestionIndex ? 'selected' : ''}`}
                 onClick={() => {
-                  setCurrentInput(suggestion.command);
-                  setShowSuggestions(false);
-                  setSuggestionIndex(-1);
-                  setHistoryIndex(-1);
-                  setOriginalInput('');
+                  setCurrentInput(suggestion.command)
+                  setShowSuggestions(false)
+                  setSuggestionIndex(-1)
+                  setHistoryIndex(-1)
+                  setOriginalInput('')
                   // Reset tab completion state
-                  setIsTabCompleting(false);
-                  setTabCompletionOptions([]);
-                  setTabCompletionIndex(-1);
+                  setIsTabCompleting(false)
+                  setTabCompletionOptions([])
+                  setTabCompletionIndex(-1)
                 }}
               >
                 <div className="suggestion-command">
@@ -598,9 +581,7 @@ export const TaskMasterTerminal: React.FC<TaskMasterTerminalProps> = ({
                   </span>
                   <code>{suggestion.command}</code>
                 </div>
-                <div className="suggestion-description">
-                  {suggestion.description}
-                </div>
+                <div className="suggestion-description">{suggestion.description}</div>
               </div>
             ))}
           </div>
@@ -608,19 +589,17 @@ export const TaskMasterTerminal: React.FC<TaskMasterTerminalProps> = ({
       )}
 
       {/* Command History Status Indicator */}
-      {enableCommandHistory &&
-        historyIndex >= 0 &&
-        commandHistory.length > 0 && (
-          <div className="command-history-indicator">
-            <div className="history-status">
-              <span className="history-icon">📚</span>
-              <span className="history-text">
-                History: {historyIndex + 1} of {commandHistory.length}
-              </span>
-              <span className="history-hint">↑↓ navigate • Esc to cancel</span>
-            </div>
+      {enableCommandHistory && historyIndex >= 0 && commandHistory.length > 0 && (
+        <div className="command-history-indicator">
+          <div className="history-status">
+            <span className="history-icon">📚</span>
+            <span className="history-text">
+              History: {historyIndex + 1} of {commandHistory.length}
+            </span>
+            <span className="history-hint">↑↓ navigate • Esc to cancel</span>
           </div>
-        )}
+        </div>
+      )}
 
       {/* Tab Completion Status Indicator */}
       {isTabCompleting && tabCompletionOptions.length > 1 && (
@@ -628,12 +607,9 @@ export const TaskMasterTerminal: React.FC<TaskMasterTerminalProps> = ({
           <div className="completion-status">
             <span className="completion-icon">⇥</span>
             <span className="completion-text">
-              Completion: {tabCompletionIndex + 1} of{' '}
-              {tabCompletionOptions.length}
+              Completion: {tabCompletionIndex + 1} of {tabCompletionOptions.length}
             </span>
-            <span className="completion-hint">
-              Tab to cycle • Esc to cancel
-            </span>
+            <span className="completion-hint">Tab to cycle • Esc to cancel</span>
           </div>
           <div className="completion-options">
             {tabCompletionOptions.map((option, index) => (
@@ -641,11 +617,11 @@ export const TaskMasterTerminal: React.FC<TaskMasterTerminalProps> = ({
                 key={option}
                 className={`completion-option ${index === tabCompletionIndex ? 'active' : ''}`}
                 onClick={() => {
-                  setCurrentInput(option);
-                  setIsTabCompleting(false);
-                  setTabCompletionOptions([]);
-                  setTabCompletionIndex(-1);
-                  setShowSuggestions(false);
+                  setCurrentInput(option)
+                  setIsTabCompleting(false)
+                  setTabCompletionOptions([])
+                  setTabCompletionIndex(-1)
+                  setShowSuggestions(false)
                 }}
               >
                 {option}
@@ -655,7 +631,7 @@ export const TaskMasterTerminal: React.FC<TaskMasterTerminalProps> = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default TaskMasterTerminal;
+export default TaskMasterTerminal

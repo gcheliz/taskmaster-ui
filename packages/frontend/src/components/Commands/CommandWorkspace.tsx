@@ -1,19 +1,19 @@
-import React from 'react';
-import { CommandPanel } from './CommandPanel';
-import { CommandOutputDisplay } from './CommandOutputDisplay';
-import { useCommandExecution } from '../../hooks/useCommandExecution';
-import { useRepository } from '../../contexts/RepositoryContext';
-import { Button } from '../ui/atoms/Button';
-import { Alert } from '../ui/molecules/Alert';
+import React from 'react'
+import { CommandPanel } from './CommandPanel'
+import { CommandOutputDisplay } from './CommandOutputDisplay'
+import { useCommandExecution } from '../../hooks/useCommandExecution'
+import { useRepository } from '../../contexts/RepositoryContext'
+import { Button } from '../ui/atoms/Button'
+import { Alert } from '../ui/molecules/Alert'
 
 export interface CommandWorkspaceProps {
-  repositoryPath?: string;
-  workingDirectory?: string;
-  className?: string;
+  repositoryPath?: string
+  workingDirectory?: string
+  className?: string
   /** Optional callback to execute command in terminal */
-  onExecuteInTerminal?: (command: string) => void;
+  onExecuteInTerminal?: (command: string) => void
   /** Whether terminal execution is available */
-  hasActiveTerminal?: boolean;
+  hasActiveTerminal?: boolean
 }
 
 export const CommandWorkspace: React.FC<CommandWorkspaceProps> = ({
@@ -23,30 +23,24 @@ export const CommandWorkspace: React.FC<CommandWorkspaceProps> = ({
   onExecuteInTerminal,
   hasActiveTerminal = false,
 }) => {
-  const { state, clearResult } = useCommandExecution();
-  const { state: repositoryState } = useRepository();
+  const { state, clearResult } = useCommandExecution()
+  const { state: repositoryState } = useRepository()
 
-  const currentRepo =
-    repositoryPath || repositoryState.selectedRepository?.path;
-  const currentWorkingDir = workingDirectory || currentRepo || process.cwd();
+  const currentRepo = repositoryPath || repositoryState.selectedRepository?.path
+  const currentWorkingDir = workingDirectory || currentRepo || process.cwd()
 
   return (
     <div className={`space-y-6 ${className || ''}`}>
       {/* Repository Info */}
       {currentRepo && (
         <div className="bg-secondary-50 rounded-lg p-4">
-          <h3 className="text-sm font-medium text-secondary-700 mb-1">
-            Repository Context
-          </h3>
+          <h3 className="text-sm font-medium text-secondary-700 mb-1">Repository Context</h3>
           <p className="text-sm text-secondary-600 font-mono">{currentRepo}</p>
         </div>
       )}
 
       {/* Command Panel */}
-      <CommandPanel
-        repositoryPath={currentRepo}
-        workingDirectory={currentWorkingDir}
-      />
+      <CommandPanel repositoryPath={currentRepo} workingDirectory={currentWorkingDir} />
 
       {/* Terminal Integration Notice */}
       {hasActiveTerminal && (
@@ -55,8 +49,7 @@ export const CommandWorkspace: React.FC<CommandWorkspaceProps> = ({
             <div>
               <h4 className="font-medium">Terminal Available</h4>
               <p className="text-sm mt-1">
-                Commands can be executed in the active terminal session for
-                real-time output.
+                Commands can be executed in the active terminal session for real-time output.
               </p>
             </div>
             {state.result && onExecuteInTerminal && (
@@ -65,11 +58,9 @@ export const CommandWorkspace: React.FC<CommandWorkspaceProps> = ({
                 size="sm"
                 onClick={() => {
                   // Get the last command that was executed
-                  const lastCommand = state.result
-                    ? 'echo "Command completed"'
-                    : '';
+                  const lastCommand = state.result ? 'echo "Command completed"' : ''
                   if (lastCommand) {
-                    onExecuteInTerminal(lastCommand);
+                    onExecuteInTerminal(lastCommand)
                   }
                 }}
               >
@@ -109,7 +100,7 @@ export const CommandWorkspace: React.FC<CommandWorkspaceProps> = ({
                     size="sm"
                     onClick={() => {
                       // This would ideally take the actual command that was executed
-                      onExecuteInTerminal('# Last command output shown above');
+                      onExecuteInTerminal('# Last command output shown above')
                     }}
                   >
                     Open in Terminal
@@ -124,15 +115,13 @@ export const CommandWorkspace: React.FC<CommandWorkspaceProps> = ({
       {/* Help Text */}
       {!currentRepo && (
         <div className="text-center py-8 text-secondary-500">
-          <p className="text-sm">
-            Select a repository to enable repository-specific commands.
-          </p>
+          <p className="text-sm">Select a repository to enable repository-specific commands.</p>
           <p className="text-xs mt-2">
-            Some commands like task-master and package management are available
-            without a repository.
+            Some commands like task-master and package management are available without a
+            repository.
           </p>
         </div>
       )}
     </div>
-  );
-};
+  )
+}

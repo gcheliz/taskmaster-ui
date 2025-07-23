@@ -1,34 +1,21 @@
-import React, { useState } from 'react';
-import {
-  StatisticsGrid,
-  type TaskMetrics,
-  type ProjectInsights,
-} from '../molecules/StatisticsGrid';
-import {
-  ProjectHealthIndicator,
-  type ProjectHealthData,
-} from '../molecules/ProjectHealthIndicator';
-import { Card, CardHeader, CardTitle, CardContent } from '../atoms/Card';
-import { Button } from '../atoms/Button';
-import { Badge } from '../atoms/Badge';
-import {
-  Icon,
-  TaskIcon,
-  TimeIcon,
-  CompleteIcon,
-  WarningIcon,
-} from '../atoms/Icon';
+import React, { useState } from 'react'
+import { StatisticsGrid, type TaskMetrics, type ProjectInsights } from '../molecules/StatisticsGrid'
+import { ProjectHealthIndicator, type ProjectHealthData } from '../molecules/ProjectHealthIndicator'
+import { Card, CardHeader, CardTitle, CardContent } from '../atoms/Card'
+import { Button } from '../atoms/Button'
+import { Badge } from '../atoms/Badge'
+import { Icon, TaskIcon, TimeIcon, CompleteIcon, WarningIcon } from '../atoms/Icon'
 
 export interface ResponsiveStatsGridProps {
-  taskMetrics: TaskMetrics;
-  insights: ProjectInsights;
-  health?: ProjectHealthData;
-  className?: string;
-  showHealthDetails?: boolean;
-  showTaskBreakdown?: boolean;
-  onRefresh?: () => void;
-  loading?: boolean;
-  lastUpdated?: Date;
+  taskMetrics: TaskMetrics
+  insights: ProjectInsights
+  health?: ProjectHealthData
+  className?: string
+  showHealthDetails?: boolean
+  showTaskBreakdown?: boolean
+  onRefresh?: () => void
+  loading?: boolean
+  lastUpdated?: Date
 }
 
 const ResponsiveStatsGrid: React.FC<ResponsiveStatsGridProps> = ({
@@ -42,41 +29,36 @@ const ResponsiveStatsGrid: React.FC<ResponsiveStatsGridProps> = ({
   loading = false,
   lastUpdated,
 }) => {
-  const [activeView, setActiveView] = useState<'overview' | 'detailed'>(
-    'overview'
-  );
+  const [activeView, setActiveView] = useState<'overview' | 'detailed'>('overview')
 
   const formatLastUpdated = (date: Date): string => {
-    const now = new Date();
-    const diffInMinutes = Math.floor(
-      (now.getTime() - date.getTime()) / (1000 * 60)
-    );
+    const now = new Date()
+    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60))
 
-    if (diffInMinutes < 1) return 'Just now';
-    if (diffInMinutes < 60) return `${diffInMinutes} minutes ago`;
-    if (diffInMinutes < 1440)
-      return `${Math.floor(diffInMinutes / 60)} hours ago`;
-    return date.toLocaleDateString();
-  };
+    if (diffInMinutes < 1) return 'Just now'
+    if (diffInMinutes < 60) return `${diffInMinutes} minutes ago`
+    if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)} hours ago`
+    return date.toLocaleDateString()
+  }
 
   const getStatusColor = (status: string): string => {
     switch (status) {
       case 'done':
-        return '#22c55e';
+        return '#22c55e'
       case 'in-progress':
-        return '#3b82f6';
+        return '#3b82f6'
       case 'pending':
-        return '#f59e0b';
+        return '#f59e0b'
       case 'blocked':
-        return '#ef4444';
+        return '#ef4444'
       default:
-        return '#6b7280';
+        return '#6b7280'
     }
-  };
+  }
 
   const getStatusLabel = (status: string): string => {
-    return status.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
-  };
+    return status.replace('-', ' ').replace(/\b\w/g, (l) => l.toUpperCase())
+  }
 
   return (
     <div className={`space-y-6 ${className}`}>
@@ -108,12 +90,7 @@ const ResponsiveStatsGrid: React.FC<ResponsiveStatsGridProps> = ({
             </Button>
           </div>
           {onRefresh && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={onRefresh}
-              disabled={loading}
-            >
+            <Button variant="outline" size="sm" onClick={onRefresh} disabled={loading}>
               {loading ? 'Refreshing...' : 'Refresh'}
             </Button>
           )}
@@ -143,30 +120,28 @@ const ResponsiveStatsGrid: React.FC<ResponsiveStatsGridProps> = ({
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {Object.entries(taskMetrics.statusBreakdown).map(
-                    ([status, count]) => (
-                      <div key={status} className="flex items-center space-x-4">
-                        <div className="w-24 text-sm font-medium text-secondary-900 dark:text-secondary-100">
-                          {getStatusLabel(status)}
-                        </div>
-                        <div className="flex-1 bg-secondary-200 dark:bg-surface-700 rounded-full h-3">
-                          <div
-                            className="h-3 rounded-full transition-all duration-500"
-                            style={{
-                              width: `${(count / taskMetrics.total) * 100}%`,
-                              backgroundColor: getStatusColor(status),
-                            }}
-                          />
-                        </div>
-                        <div className="w-16 text-sm font-semibold text-secondary-900 dark:text-secondary-100 text-right">
-                          {count}
-                        </div>
-                        <div className="w-16 text-xs text-secondary-600 dark:text-secondary-400 text-right">
-                          {Math.round((count / taskMetrics.total) * 100)}%
-                        </div>
+                  {Object.entries(taskMetrics.statusBreakdown).map(([status, count]) => (
+                    <div key={status} className="flex items-center space-x-4">
+                      <div className="w-24 text-sm font-medium text-secondary-900 dark:text-secondary-100">
+                        {getStatusLabel(status)}
                       </div>
-                    )
-                  )}
+                      <div className="flex-1 bg-secondary-200 dark:bg-surface-700 rounded-full h-3">
+                        <div
+                          className="h-3 rounded-full transition-all duration-500"
+                          style={{
+                            width: `${(count / taskMetrics.total) * 100}%`,
+                            backgroundColor: getStatusColor(status),
+                          }}
+                        />
+                      </div>
+                      <div className="w-16 text-sm font-semibold text-secondary-900 dark:text-secondary-100 text-right">
+                        {count}
+                      </div>
+                      <div className="w-16 text-xs text-secondary-600 dark:text-secondary-400 text-right">
+                        {Math.round((count / taskMetrics.total) * 100)}%
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
@@ -260,34 +235,32 @@ const ResponsiveStatsGrid: React.FC<ResponsiveStatsGridProps> = ({
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    {Object.entries(taskMetrics.statusBreakdown).map(
-                      ([status, count]) => (
-                        <div
-                          key={status}
-                          className="flex items-center justify-between p-3 bg-surface-50 dark:bg-surface-800 rounded-lg"
-                        >
-                          <div className="flex items-center space-x-3">
-                            <div
-                              className="w-3 h-3 rounded-full"
-                              style={{
-                                backgroundColor: getStatusColor(status),
-                              }}
-                            />
-                            <span className="text-sm font-medium text-secondary-900 dark:text-secondary-100">
-                              {getStatusLabel(status)}
-                            </span>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <span className="text-sm font-semibold text-secondary-900 dark:text-secondary-100">
-                              {count}
-                            </span>
-                            <Badge variant="secondary" size="sm">
-                              {Math.round((count / taskMetrics.total) * 100)}%
-                            </Badge>
-                          </div>
+                    {Object.entries(taskMetrics.statusBreakdown).map(([status, count]) => (
+                      <div
+                        key={status}
+                        className="flex items-center justify-between p-3 bg-surface-50 dark:bg-surface-800 rounded-lg"
+                      >
+                        <div className="flex items-center space-x-3">
+                          <div
+                            className="w-3 h-3 rounded-full"
+                            style={{
+                              backgroundColor: getStatusColor(status),
+                            }}
+                          />
+                          <span className="text-sm font-medium text-secondary-900 dark:text-secondary-100">
+                            {getStatusLabel(status)}
+                          </span>
                         </div>
-                      )
-                    )}
+                        <div className="flex items-center space-x-2">
+                          <span className="text-sm font-semibold text-secondary-900 dark:text-secondary-100">
+                            {count}
+                          </span>
+                          <Badge variant="secondary" size="sm">
+                            {Math.round((count / taskMetrics.total) * 100)}%
+                          </Badge>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </CardContent>
               </Card>
@@ -340,7 +313,7 @@ const ResponsiveStatsGrid: React.FC<ResponsiveStatsGridProps> = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export { ResponsiveStatsGrid };
+export { ResponsiveStatsGrid }

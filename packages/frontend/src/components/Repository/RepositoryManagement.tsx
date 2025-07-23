@@ -1,16 +1,13 @@
-import React from 'react';
-import { NewBranchModal } from './NewBranchModal';
-import { CommitHistoryModal } from './CommitHistoryModal';
-import {
-  useCommitHistory,
-  useRepositoryActions,
-} from '../../stores/repositoryStore';
+import React from 'react'
+import { NewBranchModal } from './NewBranchModal'
+import { CommitHistoryModal } from './CommitHistoryModal'
+import { useCommitHistory, useRepositoryActions } from '../../stores/repositoryStore'
 
 export interface RepositoryManagementProps {
   /** Children components */
-  children: React.ReactNode;
+  children: React.ReactNode
   /** Additional CSS classes */
-  className?: string;
+  className?: string
 }
 
 /**
@@ -23,9 +20,8 @@ export const RepositoryManagement: React.FC<RepositoryManagementProps> = ({
   children,
   className,
 }) => {
-  const { showCommitHistory, repositoryId: commitHistoryRepositoryId } =
-    useCommitHistory();
-  const { closeCommitHistory } = useRepositoryActions();
+  const { showCommitHistory, repositoryId: commitHistoryRepositoryId } = useCommitHistory()
+  const { closeCommitHistory } = useRepositoryActions()
 
   return (
     <div className={className}>
@@ -40,15 +36,15 @@ export const RepositoryManagement: React.FC<RepositoryManagementProps> = ({
           repositoryId={commitHistoryRepositoryId}
           repositoryName={commitHistoryRepositoryId}
           open={showCommitHistory}
-          onOpenChange={open => {
+          onOpenChange={(open) => {
             if (!open) {
-              closeCommitHistory();
+              closeCommitHistory()
             }
           }}
         />
       )}
     </div>
-  );
-};
+  )
+}
 
-export default RepositoryManagement;
+export default RepositoryManagement

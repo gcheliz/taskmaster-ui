@@ -57,7 +57,7 @@ export const useDesignTokens = () => {
     return {
       // Direct access to all tokens
       ...designTokens,
-      
+
       // Helper functions
       getColor,
       getSpacing,
@@ -70,7 +70,7 @@ export const useDesignTokens = () => {
       getBreakpoint,
       getDuration,
       getTiming,
-      
+
       // Commonly used combinations
       typography: {
         displayLarge: {
@@ -127,7 +127,7 @@ export const useDesignTokens = () => {
           lineHeight: designTokens.typography.lineHeight.sm,
         },
       },
-      
+
       // Component presets
       components: {
         card: {

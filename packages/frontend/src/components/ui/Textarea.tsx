@@ -36,45 +36,41 @@ export interface TextareaProps
 }
 
 const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ 
-    className, 
-    variant,
-    size,
-    label,
-    error,
-    helperText,
-    maxLength,
-    showCount = false,
-    id,
-    value,
-    ...props 
-  }, ref) => {
+  (
+    {
+      className,
+      variant,
+      size,
+      label,
+      error,
+      helperText,
+      maxLength,
+      showCount = false,
+      id,
+      value,
+      ...props
+    },
+    ref
+  ) => {
     const textareaId = id || `textarea-${Math.random().toString(36).substr(2, 9)}`
     const errorId = `${textareaId}-error`
     const helperId = `${textareaId}-helper`
-    
+
     const currentLength = value ? String(value).length : 0
 
     return (
       <div className="space-y-2">
         {label && (
-          <label
-            htmlFor={textareaId}
-            className="block text-sm font-medium text-secondary-700"
-          >
+          <label htmlFor={textareaId} className="block text-sm font-medium text-secondary-700">
             {label}
           </label>
         )}
         <textarea
           id={textareaId}
-          className={cn(
-            textareaVariants({ variant: error ? 'error' : variant, size, className })
-          )}
+          className={cn(textareaVariants({ variant: error ? 'error' : variant, size, className }))}
           ref={ref}
           aria-invalid={!!error}
-          aria-describedby={
-            error ? errorId : helperText ? helperId : undefined
-          }
+          aria-describedby={error ? errorId : helperText ? helperId : undefined}
           maxLength={maxLength}
           value={value}
           {...props}

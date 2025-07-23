@@ -1,19 +1,19 @@
-import React from 'react';
-import { Card, CardContent } from '../atoms/Card';
-import { Badge } from '../atoms/Badge';
-import { Icon, TaskIcon, TimeIcon } from '../atoms/Icon';
+import React from 'react'
+import { Card, CardContent } from '../atoms/Card'
+import { Badge } from '../atoms/Badge'
+import { Icon, TaskIcon, TimeIcon } from '../atoms/Icon'
 
 export interface TimelineItemProps {
-  id?: string;
-  type: 'commit' | 'task_update' | 'project_update';
-  timestamp: string;
-  message: string;
-  author?: string;
-  details?: Record<string, unknown>;
-  showAvatar?: boolean;
-  showTimestamp?: boolean;
-  isLast?: boolean;
-  className?: string;
+  id?: string
+  type: 'commit' | 'task_update' | 'project_update'
+  timestamp: string
+  message: string
+  author?: string
+  details?: Record<string, unknown>
+  showAvatar?: boolean
+  showTimestamp?: boolean
+  isLast?: boolean
+  className?: string
 }
 
 const TimelineItem: React.FC<TimelineItemProps> = ({
@@ -31,104 +31,93 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
   const getActivityIcon = (activityType: string) => {
     switch (activityType) {
       case 'commit':
-        return TaskIcon; // Using TaskIcon for commits
+        return TaskIcon // Using TaskIcon for commits
       case 'task_update':
-        return TaskIcon;
+        return TaskIcon
       case 'project_update':
-        return TaskIcon; // Using TaskIcon for project updates
+        return TaskIcon // Using TaskIcon for project updates
       default:
-        return TaskIcon;
+        return TaskIcon
     }
-  };
+  }
 
   const getActivityColor = (
     activityType: string
   ): 'success' | 'primary' | 'warning' | 'error' | 'secondary' => {
     switch (activityType) {
       case 'commit':
-        return 'success';
+        return 'success'
       case 'task_update':
-        return 'primary';
+        return 'primary'
       case 'project_update':
-        return 'warning';
+        return 'warning'
       default:
-        return 'secondary';
+        return 'secondary'
     }
-  };
+  }
 
   const getBadgeVariant = (
     activityType: string
   ): 'success' | 'primary' | 'warning' | 'error' | 'secondary' => {
     switch (activityType) {
       case 'commit':
-        return 'success';
+        return 'success'
       case 'task_update':
-        return 'primary';
+        return 'primary'
       case 'project_update':
-        return 'warning';
+        return 'warning'
       default:
-        return 'secondary';
+        return 'secondary'
     }
-  };
+  }
 
   const formatTimestamp = (timestampStr: string) => {
-    const date = new Date(timestampStr);
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMins / 60);
-    const diffDays = Math.floor(diffHours / 24);
+    const date = new Date(timestampStr)
+    const now = new Date()
+    const diffMs = now.getTime() - date.getTime()
+    const diffMins = Math.floor(diffMs / 60000)
+    const diffHours = Math.floor(diffMins / 60)
+    const diffDays = Math.floor(diffHours / 24)
 
-    if (diffMins < 1) return 'just now';
-    if (diffMins < 60) return `${diffMins}m ago`;
-    if (diffHours < 24) return `${diffHours}h ago`;
-    if (diffDays < 7) return `${diffDays}d ago`;
+    if (diffMins < 1) return 'just now'
+    if (diffMins < 60) return `${diffMins}m ago`
+    if (diffHours < 24) return `${diffHours}h ago`
+    if (diffDays < 7) return `${diffDays}d ago`
 
-    return date.toLocaleDateString();
-  };
+    return date.toLocaleDateString()
+  }
 
   const getAuthorInitials = (authorName?: string) => {
-    if (!authorName) return '?';
+    if (!authorName) return '?'
     return authorName
       .split(' ')
-      .map(name => name.charAt(0).toUpperCase())
+      .map((name) => name.charAt(0).toUpperCase())
       .join('')
-      .slice(0, 2);
-  };
+      .slice(0, 2)
+  }
 
   const truncateMessage = (msg: string, maxLength: number = 80) => {
-    if (msg.length <= maxLength) return msg;
-    return msg.substring(0, maxLength) + '...';
-  };
+    if (msg.length <= maxLength) return msg
+    return msg.substring(0, maxLength) + '...'
+  }
 
   const formatActivityType = (activityType: string) => {
-    return activityType
-      .replace('_', ' ')
-      .replace(/\b\w/g, l => l.toUpperCase());
-  };
+    return activityType.replace('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase())
+  }
 
   return (
     <div className={`relative flex items-start space-x-4 ${className}`}>
       {/* Timeline indicator */}
       <div className="flex flex-col items-center">
         <div className="flex items-center justify-center w-8 h-8 rounded-full bg-surface-100 dark:bg-surface-800 border-2 border-surface-200 dark:border-surface-700">
-          <Icon
-            icon={getActivityIcon(type)}
-            size="sm"
-            color={getActivityColor(type)}
-          />
+          <Icon icon={getActivityIcon(type)} size="sm" color={getActivityColor(type)} />
         </div>
-        {!isLast && (
-          <div className="w-0.5 h-6 bg-surface-200 dark:bg-surface-700 mt-2" />
-        )}
+        {!isLast && <div className="w-0.5 h-6 bg-surface-200 dark:bg-surface-700 mt-2" />}
       </div>
 
       {/* Content */}
       <div className="flex-1 min-w-0">
-        <Card
-          variant="outline"
-          className="hover:shadow-md transition-shadow duration-200"
-        >
+        <Card variant="outline" className="hover:shadow-md transition-shadow duration-200">
           <CardContent className="p-4">
             <div className="flex items-start justify-between">
               <div className="flex-1 min-w-0">
@@ -172,13 +161,8 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
                       {Object.entries(details)
                         .slice(0, 3)
                         .map(([key, value]) => (
-                          <div
-                            key={key}
-                            className="flex items-center space-x-2"
-                          >
-                            <span className="font-medium capitalize">
-                              {key}:
-                            </span>
+                          <div key={key} className="flex items-center space-x-2">
+                            <span className="font-medium capitalize">{key}:</span>
                             <span className="font-mono">{String(value)}</span>
                           </div>
                         ))}
@@ -191,7 +175,7 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
         </Card>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export { TimelineItem };
+export { TimelineItem }

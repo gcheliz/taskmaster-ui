@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { useState } from 'react';
-import { KanbanDragOverlay } from '../../components/ui/organisms/KanbanDragOverlay';
-import { Button } from '../../components/ui/atoms/Button';
-import type { KanbanTask } from '../../components/ui/molecules/KanbanColumn';
+import type { Meta, StoryObj } from '@storybook/react'
+import { useState } from 'react'
+import { KanbanDragOverlay } from '../../components/ui/organisms/KanbanDragOverlay'
+import { Button } from '../../components/ui/atoms/Button'
+import type { KanbanTask } from '../../components/ui/molecules/KanbanColumn'
 
 const meta: Meta<typeof KanbanDragOverlay> = {
   title: 'Organisms/KanbanDragOverlay',
@@ -32,22 +32,21 @@ const meta: Meta<typeof KanbanDragOverlay> = {
     },
   },
   decorators: [
-    Story => (
+    (Story) => (
       <div className="min-h-[400px] bg-secondary-50 p-8">
         <Story />
       </div>
     ),
   ],
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 const mockTask: KanbanTask = {
   id: 1,
   title: 'Implement User Authentication',
-  description:
-    'Create secure login and registration system with JWT tokens and password hashing.',
+  description: 'Create secure login and registration system with JWT tokens and password hashing.',
   status: 'in-progress',
   priority: 'high',
   complexity: 8,
@@ -63,13 +62,12 @@ const mockTask: KanbanTask = {
     { id: 3, title: 'Create login endpoint', status: 'in-progress' },
     { id: 4, title: 'Add email verification', status: 'pending' },
   ],
-};
+}
 
 const urgentTask: KanbanTask = {
   id: 2,
   title: 'Fix Critical Production Bug',
-  description:
-    'Database connection timeout causing 500 errors for user login attempts.',
+  description: 'Database connection timeout causing 500 errors for user login attempts.',
   status: 'pending',
   priority: 'urgent',
   complexity: 5,
@@ -83,7 +81,7 @@ const urgentTask: KanbanTask = {
     { id: 5, title: 'Identify root cause', status: 'pending' },
     { id: 6, title: 'Deploy hotfix', status: 'pending' },
   ],
-};
+}
 
 const largeTask: KanbanTask = {
   id: 3,
@@ -107,88 +105,82 @@ const largeTask: KanbanTask = {
     { id: 11, title: 'Create organisms', status: 'pending' },
     { id: 12, title: 'Document components', status: 'pending' },
   ],
-};
+}
 
 export const Default: Story = {
   args: {
     task: mockTask,
     isActive: true,
   },
-};
+}
 
 export const NotActive: Story = {
   args: {
     task: mockTask,
     isActive: false,
   },
-};
+}
 
 export const NoTask: Story = {
   args: {
     task: null,
     isActive: true,
   },
-};
+}
 
 export const DifferentTaskTypes: Story = {
   render: () => (
     <div className="space-y-8 w-full">
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-secondary-900">
-          High Priority Task
-        </h3>
+        <h3 className="text-lg font-semibold text-secondary-900">High Priority Task</h3>
         <div className="relative">
           <KanbanDragOverlay task={mockTask} isActive={true} />
         </div>
       </div>
 
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-secondary-900">
-          Urgent Priority Task
-        </h3>
+        <h3 className="text-lg font-semibold text-secondary-900">Urgent Priority Task</h3>
         <div className="relative">
           <KanbanDragOverlay task={urgentTask} isActive={true} />
         </div>
       </div>
 
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-secondary-900">
-          Large Epic Task
-        </h3>
+        <h3 className="text-lg font-semibold text-secondary-900">Large Epic Task</h3>
         <div className="relative">
           <KanbanDragOverlay task={largeTask} isActive={true} />
         </div>
       </div>
     </div>
   ),
-};
+}
 
 export const InteractiveDemo: Story = {
   render: () => {
-    const [isDragging, setIsDragging] = useState(false);
-    const [currentTask, setCurrentTask] = useState<KanbanTask | null>(mockTask);
-    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+    const [isDragging, setIsDragging] = useState(false)
+    const [currentTask, setCurrentTask] = useState<KanbanTask | null>(mockTask)
+    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
 
-    const tasks = [mockTask, urgentTask, largeTask];
+    const tasks = [mockTask, urgentTask, largeTask]
 
     const startDrag = (task: KanbanTask) => {
-      setCurrentTask(task);
-      setIsDragging(true);
-    };
+      setCurrentTask(task)
+      setIsDragging(true)
+    }
 
     const stopDrag = () => {
-      setIsDragging(false);
-      setCurrentTask(null);
-    };
+      setIsDragging(false)
+      setCurrentTask(null)
+    }
 
     const handleMouseMove = (e: React.MouseEvent) => {
       if (isDragging) {
         setMousePosition({
           x: e.clientX - 150, // Offset to center the card
           y: e.clientY - 100,
-        });
+        })
       }
-    };
+    }
 
     return (
       <div
@@ -197,12 +189,10 @@ export const InteractiveDemo: Story = {
         onMouseLeave={stopDrag}
       >
         <div className="mb-6">
-          <h3 className="text-lg font-semibold text-secondary-900 mb-2">
-            Interactive Drag Demo
-          </h3>
+          <h3 className="text-lg font-semibold text-secondary-900 mb-2">Interactive Drag Demo</h3>
           <p className="text-secondary-600 text-sm mb-4">
-            Click and hold any task card below to simulate dragging. The drag
-            overlay will follow your mouse cursor.
+            Click and hold any task card below to simulate dragging. The drag overlay will follow
+            your mouse cursor.
           </p>
 
           <div className="flex gap-2 mb-4">
@@ -222,8 +212,7 @@ export const InteractiveDemo: Story = {
 
           {isDragging && (
             <div className="text-sm text-primary-600 mb-4">
-              🖱️ Dragging: {currentTask?.title} - Move your mouse to see the
-              overlay follow
+              🖱️ Dragging: {currentTask?.title} - Move your mouse to see the overlay follow
             </div>
           )}
         </div>
@@ -243,9 +232,7 @@ export const InteractiveDemo: Story = {
 
         {/* Static Task Cards for Reference */}
         <div className="space-y-4">
-          <h4 className="font-medium text-secondary-700">
-            Task Cards (Click to drag)
-          </h4>
+          <h4 className="font-medium text-secondary-700">Task Cards (Click to drag)</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {tasks.map((task, index) => (
               <div
@@ -254,9 +241,7 @@ export const InteractiveDemo: Story = {
                 onMouseDown={() => startDrag(task)}
                 onMouseUp={stopDrag}
               >
-                <h5 className="font-medium text-secondary-900 mb-1">
-                  {task.title}
-                </h5>
+                <h5 className="font-medium text-secondary-900 mb-1">{task.title}</h5>
                 <p className="text-xs text-secondary-600 mb-2">
                   {task.description.substring(0, 100)}...
                 </p>
@@ -272,9 +257,7 @@ export const InteractiveDemo: Story = {
                   >
                     {task.priority}
                   </span>
-                  <span className="text-secondary-500">
-                    {task.estimatedHours}h
-                  </span>
+                  <span className="text-secondary-500">{task.estimatedHours}h</span>
                 </div>
               </div>
             ))}
@@ -282,9 +265,7 @@ export const InteractiveDemo: Story = {
         </div>
 
         <div className="mt-8 p-4 bg-primary-50 border border-primary-200 rounded-lg">
-          <h4 className="font-medium text-primary-800 mb-2">
-            Drag Overlay Features:
-          </h4>
+          <h4 className="font-medium text-primary-800 mb-2">Drag Overlay Features:</h4>
           <ul className="text-sm text-primary-700 space-y-1">
             <li>• Rotated appearance (5 degrees) for visual distinction</li>
             <li>• Reduced opacity (0.8) to indicate ghost state</li>
@@ -295,38 +276,31 @@ export const InteractiveDemo: Story = {
           </ul>
         </div>
       </div>
-    );
+    )
   },
-};
+}
 
 export const DragStates: Story = {
   render: () => (
     <div className="space-y-8 w-full">
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-secondary-900">
-          Different Drag States
-        </h3>
+        <h3 className="text-lg font-semibold text-secondary-900">Different Drag States</h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="space-y-4">
-            <h4 className="font-medium text-secondary-700">
-              Active Drag Overlay
-            </h4>
+            <h4 className="font-medium text-secondary-700">Active Drag Overlay</h4>
             <div className="bg-white p-6 rounded-lg border border-secondary-200 relative min-h-[200px]">
               <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                 <KanbanDragOverlay task={mockTask} isActive={true} />
               </div>
             </div>
             <p className="text-sm text-secondary-600">
-              Drag overlay is active and visible with rotation and enhanced
-              styling
+              Drag overlay is active and visible with rotation and enhanced styling
             </p>
           </div>
 
           <div className="space-y-4">
-            <h4 className="font-medium text-secondary-700">
-              Inactive Drag Overlay
-            </h4>
+            <h4 className="font-medium text-secondary-700">Inactive Drag Overlay</h4>
             <div className="bg-white p-6 rounded-lg border border-secondary-200 min-h-[200px] flex items-center justify-center">
               <KanbanDragOverlay task={mockTask} isActive={false} />
               <div className="text-secondary-400 text-center">
@@ -351,21 +325,18 @@ export const DragStates: Story = {
           </div>
         </div>
         <p className="text-sm text-secondary-600">
-          When no task is provided, the overlay renders nothing regardless of
-          isActive state
+          When no task is provided, the overlay renders nothing regardless of isActive state
         </p>
       </div>
     </div>
   ),
-};
+}
 
 export const CustomStyling: Story = {
   render: () => (
     <div className="space-y-8 w-full">
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-secondary-900">
-          Custom Styling Examples
-        </h3>
+        <h3 className="text-lg font-semibold text-secondary-900">Custom Styling Examples</h3>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="space-y-4">
@@ -406,9 +377,7 @@ export const CustomStyling: Story = {
       </div>
 
       <div className="mt-8 p-4 bg-secondary-50 border border-secondary-200 rounded-lg">
-        <h4 className="font-medium text-secondary-700 mb-2">
-          Styling Guidelines:
-        </h4>
+        <h4 className="font-medium text-secondary-700 mb-2">Styling Guidelines:</h4>
         <ul className="text-sm text-secondary-600 space-y-1">
           <li>• Default styling includes 5-degree rotation and 0.8 opacity</li>
           <li>• Enhanced border and background are applied automatically</li>
@@ -419,4 +388,4 @@ export const CustomStyling: Story = {
       </div>
     </div>
   ),
-};
+}

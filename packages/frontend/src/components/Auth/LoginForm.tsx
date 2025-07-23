@@ -1,32 +1,26 @@
-import React, { useState } from 'react';
-import { cn } from '../../utils/cn';
-import { Button } from '../ui/atoms/Button';
-import { Input } from '../ui/atoms/Input';
-import { Label } from '../ui/atoms/Label';
-import { Checkbox } from '../ui/atoms/Checkbox';
-import { SocialLoginButtons } from './SocialLoginButtons';
-import {
-  Icon,
-  EyeIcon,
-  EyeSlashIcon,
-  UserIcon,
-  LockClosedIcon,
-} from '../ui/atoms/Icon';
+import React, { useState } from 'react'
+import { cn } from '../../utils/cn'
+import { Button } from '../ui/atoms/Button'
+import { Input } from '../ui/atoms/Input'
+import { Label } from '../ui/atoms/Label'
+import { Checkbox } from '../ui/atoms/Checkbox'
+import { SocialLoginButtons } from './SocialLoginButtons'
+import { Icon, EyeIcon, EyeSlashIcon, UserIcon, LockClosedIcon } from '../ui/atoms/Icon'
 
 export interface LoginFormProps {
   /**
    * Callback when login is successful
    */
-  onSuccess?: (data: { email: string; token: string }) => void;
+  onSuccess?: (data: { email: string; token: string }) => void
   /**
    * Whether to show social login options
    * @default true
    */
-  showSocialLogins?: boolean;
+  showSocialLogins?: boolean
   /**
    * Additional CSS classes
    */
-  className?: string;
+  className?: string
 }
 
 export const LoginForm: React.FC<LoginFormProps> = ({
@@ -38,68 +32,66 @@ export const LoginForm: React.FC<LoginFormProps> = ({
     email: '',
     password: '',
     rememberMe: false,
-  });
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+  })
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [isLoading, setIsLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
 
   const validateForm = () => {
-    const newErrors: Record<string, string> = {};
+    const newErrors: Record<string, string> = {}
 
     // Email validation
     if (!formData.email) {
-      newErrors.email = 'Email is required';
+      newErrors.email = 'Email is required'
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+      newErrors.email = 'Please enter a valid email address'
     }
 
     // Password validation
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = 'Password is required'
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+      newErrors.password = 'Password must be at least 6 characters'
     }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
 
-    if (!validateForm()) return;
+    if (!validateForm()) return
 
-    setIsLoading(true);
+    setIsLoading(true)
 
     try {
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await new Promise((resolve) => setTimeout(resolve, 1500))
 
       // Mock successful login
-      const mockToken = 'mock-jwt-token-' + Date.now();
+      const mockToken = 'mock-jwt-token-' + Date.now()
       onSuccess?.({
         email: formData.email,
         token: mockToken,
-      });
+      })
     } catch (error) {
-      setErrors({ submit: 'Login failed. Please check your credentials.' });
+      setErrors({ submit: 'Login failed. Please check your credentials.' })
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   const handleInputChange =
-    (field: keyof typeof formData) =>
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value =
-        e.target.type === 'checkbox' ? e.target.checked : e.target.value;
-      setFormData(prev => ({ ...prev, [field]: value }));
+    (field: keyof typeof formData) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value
+      setFormData((prev) => ({ ...prev, [field]: value }))
 
       // Clear errors when user starts typing
       if (errors[field]) {
-        setErrors(prev => ({ ...prev, [field]: '' }));
+        setErrors((prev) => ({ ...prev, [field]: '' }))
       }
-    };
+    }
 
   return (
     <div className={cn('space-y-6', className)}>
@@ -113,9 +105,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
               <span className="w-full border-t border-slate-200" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-white px-2 text-slate-500">
-                Or continue with email
-              </span>
+              <span className="bg-white px-2 text-slate-500">Or continue with email</span>
             </div>
           </div>
         </>
@@ -136,9 +126,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
               value={formData.email}
               onChange={handleInputChange('email')}
               error={!!errors.email}
-              leftIcon={
-                <Icon icon={UserIcon} size="sm" className="text-slate-400" />
-              }
+              leftIcon={<Icon icon={UserIcon} size="sm" className="text-slate-400" />}
               className={cn(
                 'pl-10 bg-white/60 backdrop-blur-sm',
                 'border-slate-200/60',
@@ -146,18 +134,13 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                 'transition-all duration-300'
               )}
             />
-            {errors.email && (
-              <p className="text-xs text-red-500 mt-1">{errors.email}</p>
-            )}
+            {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email}</p>}
           </div>
         </div>
 
         {/* Password Field */}
         <div className="space-y-2">
-          <Label
-            htmlFor="password"
-            className="text-sm font-medium text-slate-700"
-          >
+          <Label htmlFor="password" className="text-sm font-medium text-slate-700">
             Password
           </Label>
           <div className="relative">
@@ -168,13 +151,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
               value={formData.password}
               onChange={handleInputChange('password')}
               error={!!errors.password}
-              leftIcon={
-                <Icon
-                  icon={LockClosedIcon}
-                  size="sm"
-                  className="text-slate-400"
-                />
-              }
+              leftIcon={<Icon icon={LockClosedIcon} size="sm" className="text-slate-400" />}
               className={cn(
                 'pl-10 pr-10 bg-white/60 backdrop-blur-sm',
                 'border-slate-200/60',
@@ -189,9 +166,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
             >
               <Icon icon={showPassword ? EyeSlashIcon : EyeIcon} size="sm" />
             </button>
-            {errors.password && (
-              <p className="text-xs text-red-500 mt-1">{errors.password}</p>
-            )}
+            {errors.password && <p className="text-xs text-red-500 mt-1">{errors.password}</p>}
           </div>
         </div>
 
@@ -250,7 +225,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         </p>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default LoginForm;
+export default LoginForm

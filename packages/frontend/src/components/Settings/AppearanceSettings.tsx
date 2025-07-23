@@ -1,65 +1,59 @@
-import React, { useState, useEffect } from 'react';
-import { cn } from '../../utils/cn';
-import { Button } from '../ui/atoms/Button';
-import { Toggle } from '../ui/atoms/Toggle';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from '../ui/molecules/Card';
-import { Badge } from '../ui/atoms/Badge';
-import { useSettings } from '../../contexts/SettingsContext';
+import React, { useState, useEffect } from 'react'
+import { cn } from '../../utils/cn'
+import { Button } from '../ui/atoms/Button'
+import { Toggle } from '../ui/atoms/Toggle'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/molecules/Card'
+import { Badge } from '../ui/atoms/Badge'
+import { useSettings } from '../../contexts/SettingsContext'
 
 export interface AppearanceSettingsProps {
   /**
    * Callback when settings are saved
    */
-  onSave?: (settings: AppearanceSettingsData) => void;
+  onSave?: (settings: AppearanceSettingsData) => void
   /**
    * Additional CSS classes
    */
-  className?: string;
+  className?: string
 }
 
 export interface AppearanceSettingsData {
-  theme: 'light' | 'dark' | 'system';
-  colorScheme: string;
-  fontSize: 'sm' | 'md' | 'lg';
-  density: 'compact' | 'comfortable' | 'spacious';
-  animations: boolean;
-  glassmorphism: boolean;
+  theme: 'light' | 'dark' | 'system'
+  colorScheme: string
+  fontSize: 'sm' | 'md' | 'lg'
+  density: 'compact' | 'comfortable' | 'spacious'
+  animations: boolean
+  glassmorphism: boolean
   sidebar: {
-    position: 'left' | 'right';
-    collapsed: boolean;
-    width: number;
-  };
+    position: 'left' | 'right'
+    collapsed: boolean
+    width: number
+  }
   dashboard: {
-    layout: 'grid' | 'list';
-    cardsPerRow: number;
-    showQuickActions: boolean;
-  };
+    layout: 'grid' | 'list'
+    cardsPerRow: number
+    showQuickActions: boolean
+  }
   accessibility: {
-    highContrast: boolean;
-    reducedMotion: boolean;
-    focusIndicators: boolean;
-  };
+    highContrast: boolean
+    reducedMotion: boolean
+    focusIndicators: boolean
+  }
 }
 
 interface ThemeOption {
-  id: 'light' | 'dark' | 'system';
-  name: string;
-  description: string;
-  preview: React.ReactNode;
+  id: 'light' | 'dark' | 'system'
+  name: string
+  description: string
+  preview: React.ReactNode
 }
 
 interface ColorScheme {
-  id: string;
-  name: string;
-  primary: string;
-  secondary: string;
-  accent: string;
+  id: string
+  name: string
+  primary: string
+  secondary: string
+  accent: string
 }
 
 const themeOptions: ThemeOption[] = [
@@ -105,7 +99,7 @@ const themeOptions: ThemeOption[] = [
       </div>
     ),
   },
-];
+]
 
 const colorSchemes: ColorScheme[] = [
   {
@@ -150,13 +144,10 @@ const colorSchemes: ColorScheme[] = [
     secondary: '#64748B',
     accent: '#F97316',
   },
-];
+]
 
-export const AppearanceSettings: React.FC<AppearanceSettingsProps> = ({
-  onSave,
-  className,
-}) => {
-  const { state, updateCategory, getSetting } = useSettings();
+export const AppearanceSettings: React.FC<AppearanceSettingsProps> = ({ onSave, className }) => {
+  const { state, updateCategory, getSetting } = useSettings()
   const [settings, setSettings] = useState<AppearanceSettingsData>({
     theme: 'light',
     colorScheme: 'blue',
@@ -179,10 +170,10 @@ export const AppearanceSettings: React.FC<AppearanceSettingsProps> = ({
       reducedMotion: false,
       focusIndicators: true,
     },
-  });
+  })
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [isSaved, setIsSaved] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
+  const [isSaved, setIsSaved] = useState(false)
 
   // Load settings data when component mounts or settings change
   useEffect(() => {
@@ -192,8 +183,7 @@ export const AppearanceSettings: React.FC<AppearanceSettingsProps> = ({
         colorScheme: state.settings.colorScheme || 'blue',
         fontSize: (state.settings.fontSize as 'sm' | 'md' | 'lg') || 'md',
         density:
-          (state.settings.density as 'compact' | 'comfortable' | 'spacious') ||
-          'comfortable',
+          (state.settings.density as 'compact' | 'comfortable' | 'spacious') || 'comfortable',
         animations: state.settings.animations ?? true,
         glassmorphism: state.settings.glassmorphism ?? true,
         sidebar: {
@@ -211,32 +201,32 @@ export const AppearanceSettings: React.FC<AppearanceSettingsProps> = ({
           reducedMotion: state.settings.reducedMotion ?? false,
           focusIndicators: state.settings.focusIndicators ?? true,
         },
-      };
-      setSettings(appearanceSettings);
+      }
+      setSettings(appearanceSettings)
     }
-  }, [state.settings]);
+  }, [state.settings])
 
   const handleSettingChange = async (path: string, value: any) => {
-    const keys = path.split('.');
-    const updatedSettings = { ...settings };
-    let current: any = updatedSettings;
+    const keys = path.split('.')
+    const updatedSettings = { ...settings }
+    let current: any = updatedSettings
 
     for (let i = 0; i < keys.length - 1; i++) {
-      current[keys[i]] = { ...current[keys[i]] };
-      current = current[keys[i]];
+      current[keys[i]] = { ...current[keys[i]] }
+      current = current[keys[i]]
     }
 
-    current[keys[keys.length - 1]] = value;
-    setSettings(updatedSettings);
+    current[keys[keys.length - 1]] = value
+    setSettings(updatedSettings)
 
     try {
-      await updateCategory('appearance', updatedSettings);
+      await updateCategory('appearance', updatedSettings)
     } catch (error) {
-      console.error('Failed to update appearance setting:', error);
+      console.error('Failed to update appearance setting:', error)
       // Revert on error
-      setSettings(settings);
+      setSettings(settings)
     }
-  };
+  }
 
   const resetToDefaults = async () => {
     const defaultSettings: AppearanceSettingsData = {
@@ -261,30 +251,30 @@ export const AppearanceSettings: React.FC<AppearanceSettingsProps> = ({
         reducedMotion: false,
         focusIndicators: true,
       },
-    };
+    }
 
-    setSettings(defaultSettings);
+    setSettings(defaultSettings)
 
     try {
-      await updateCategory('appearance', defaultSettings);
+      await updateCategory('appearance', defaultSettings)
     } catch (error) {
-      console.error('Failed to reset appearance settings:', error);
+      console.error('Failed to reset appearance settings:', error)
     }
-  };
+  }
 
   const handleSave = async () => {
-    setIsLoading(true);
+    setIsLoading(true)
     try {
-      await updateCategory('appearance', settings);
-      onSave?.(settings);
-      setIsSaved(true);
-      setTimeout(() => setIsSaved(false), 3000);
+      await updateCategory('appearance', settings)
+      onSave?.(settings)
+      setIsSaved(true)
+      setTimeout(() => setIsSaved(false), 3000)
     } catch (error) {
-      console.error('Failed to save appearance settings:', error);
+      console.error('Failed to save appearance settings:', error)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
     <div className={cn('space-y-6', className)}>
@@ -296,7 +286,7 @@ export const AppearanceSettings: React.FC<AppearanceSettingsProps> = ({
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {themeOptions.map(theme => (
+            {themeOptions.map((theme) => (
               <button
                 key={theme.id}
                 onClick={() => handleSettingChange('theme', theme.id)}
@@ -330,13 +320,11 @@ export const AppearanceSettings: React.FC<AppearanceSettingsProps> = ({
       <Card className="bg-white/50 backdrop-blur-sm border border-white/30">
         <CardHeader>
           <CardTitle className="text-lg">Color Scheme</CardTitle>
-          <CardDescription>
-            Customize the accent colors throughout the interface
-          </CardDescription>
+          <CardDescription>Customize the accent colors throughout the interface</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            {colorSchemes.map(scheme => (
+            {colorSchemes.map((scheme) => (
               <button
                 key={scheme.id}
                 onClick={() => handleSettingChange('colorScheme', scheme.id)}
@@ -362,9 +350,7 @@ export const AppearanceSettings: React.FC<AppearanceSettingsProps> = ({
                     style={{ backgroundColor: scheme.secondary }}
                   />
                 </div>
-                <h3 className="text-sm font-medium text-gray-900 text-left">
-                  {scheme.name}
-                </h3>
+                <h3 className="text-sm font-medium text-gray-900 text-left">{scheme.name}</h3>
                 {settings.colorScheme === scheme.id && (
                   <div className="absolute top-1 right-1">
                     <svg
@@ -390,22 +376,18 @@ export const AppearanceSettings: React.FC<AppearanceSettingsProps> = ({
       <Card className="bg-white/50 backdrop-blur-sm border border-white/30">
         <CardHeader>
           <CardTitle className="text-lg">Display</CardTitle>
-          <CardDescription>
-            Adjust the interface density and typography
-          </CardDescription>
+          <CardDescription>Adjust the interface density and typography</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Font Size */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-3">
-              Font Size
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-3">Font Size</label>
             <div className="grid grid-cols-3 gap-3">
               {[
                 { id: 'sm', label: 'Small', example: 'text-sm' },
                 { id: 'md', label: 'Medium', example: 'text-base' },
                 { id: 'lg', label: 'Large', example: 'text-lg' },
-              ].map(size => (
+              ].map((size) => (
                 <button
                   key={size.id}
                   onClick={() => handleSettingChange('fontSize', size.id)}
@@ -416,9 +398,7 @@ export const AppearanceSettings: React.FC<AppearanceSettingsProps> = ({
                       : 'border-gray-200 bg-white hover:border-gray-300'
                   )}
                 >
-                  <div className={cn('font-medium', size.example)}>
-                    {size.label}
-                  </div>
+                  <div className={cn('font-medium', size.example)}>{size.label}</div>
                 </button>
               ))}
             </div>
@@ -446,7 +426,7 @@ export const AppearanceSettings: React.FC<AppearanceSettingsProps> = ({
                   label: 'Spacious',
                   description: 'More space',
                 },
-              ].map(density => (
+              ].map((density) => (
                 <button
                   key={density.id}
                   onClick={() => handleSettingChange('density', density.id)}
@@ -458,9 +438,7 @@ export const AppearanceSettings: React.FC<AppearanceSettingsProps> = ({
                   )}
                 >
                   <div className="font-medium">{density.label}</div>
-                  <div className="text-xs text-gray-600">
-                    {density.description}
-                  </div>
+                  <div className="text-xs text-gray-600">{density.description}</div>
                 </button>
               ))}
             </div>
@@ -472,53 +450,39 @@ export const AppearanceSettings: React.FC<AppearanceSettingsProps> = ({
       <Card className="bg-white/50 backdrop-blur-sm border border-white/30">
         <CardHeader>
           <CardTitle className="text-lg">Interface</CardTitle>
-          <CardDescription>
-            Customize the behavior and visual effects
-          </CardDescription>
+          <CardDescription>Customize the behavior and visual effects</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
               <div className="font-medium text-gray-900">Animations</div>
-              <div className="text-sm text-gray-600">
-                Enable smooth transitions and animations
-              </div>
+              <div className="text-sm text-gray-600">Enable smooth transitions and animations</div>
             </div>
             <Toggle
               checked={settings.animations}
-              onCheckedChange={checked =>
-                handleSettingChange('animations', checked)
-              }
+              onCheckedChange={(checked) => handleSettingChange('animations', checked)}
             />
           </div>
 
           <div className="flex items-center justify-between">
             <div>
-              <div className="font-medium text-gray-900">
-                Glassmorphism Effects
-              </div>
-              <div className="text-sm text-gray-600">
-                Semi-transparent backgrounds with blur
-              </div>
+              <div className="font-medium text-gray-900">Glassmorphism Effects</div>
+              <div className="text-sm text-gray-600">Semi-transparent backgrounds with blur</div>
             </div>
             <Toggle
               checked={settings.glassmorphism}
-              onCheckedChange={checked =>
-                handleSettingChange('glassmorphism', checked)
-              }
+              onCheckedChange={(checked) => handleSettingChange('glassmorphism', checked)}
             />
           </div>
 
           <div className="flex items-center justify-between">
             <div>
               <div className="font-medium text-gray-900">Quick Actions</div>
-              <div className="text-sm text-gray-600">
-                Show quick action buttons on dashboard
-              </div>
+              <div className="text-sm text-gray-600">Show quick action buttons on dashboard</div>
             </div>
             <Toggle
               checked={settings.dashboard.showQuickActions}
-              onCheckedChange={checked =>
+              onCheckedChange={(checked) =>
                 handleSettingChange('dashboard.showQuickActions', checked)
               }
             />
@@ -530,21 +494,17 @@ export const AppearanceSettings: React.FC<AppearanceSettingsProps> = ({
       <Card className="bg-white/50 backdrop-blur-sm border border-white/30">
         <CardHeader>
           <CardTitle className="text-lg">Accessibility</CardTitle>
-          <CardDescription>
-            Settings to improve usability and accessibility
-          </CardDescription>
+          <CardDescription>Settings to improve usability and accessibility</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
               <div className="font-medium text-gray-900">High Contrast</div>
-              <div className="text-sm text-gray-600">
-                Increase contrast for better visibility
-              </div>
+              <div className="text-sm text-gray-600">Increase contrast for better visibility</div>
             </div>
             <Toggle
               checked={settings.accessibility.highContrast}
-              onCheckedChange={checked =>
+              onCheckedChange={(checked) =>
                 handleSettingChange('accessibility.highContrast', checked)
               }
             />
@@ -559,7 +519,7 @@ export const AppearanceSettings: React.FC<AppearanceSettingsProps> = ({
             </div>
             <Toggle
               checked={settings.accessibility.reducedMotion}
-              onCheckedChange={checked =>
+              onCheckedChange={(checked) =>
                 handleSettingChange('accessibility.reducedMotion', checked)
               }
             />
@@ -568,13 +528,11 @@ export const AppearanceSettings: React.FC<AppearanceSettingsProps> = ({
           <div className="flex items-center justify-between">
             <div>
               <div className="font-medium text-gray-900">Focus Indicators</div>
-              <div className="text-sm text-gray-600">
-                Enhanced keyboard navigation indicators
-              </div>
+              <div className="text-sm text-gray-600">Enhanced keyboard navigation indicators</div>
             </div>
             <Toggle
               checked={settings.accessibility.focusIndicators}
-              onCheckedChange={checked =>
+              onCheckedChange={(checked) =>
                 handleSettingChange('accessibility.focusIndicators', checked)
               }
             />
@@ -599,12 +557,7 @@ export const AppearanceSettings: React.FC<AppearanceSettingsProps> = ({
           >
             {isSaved ? (
               <>
-                <svg
-                  className="w-4 h-4 mr-2"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -621,7 +574,7 @@ export const AppearanceSettings: React.FC<AppearanceSettingsProps> = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default AppearanceSettings;
+export default AppearanceSettings

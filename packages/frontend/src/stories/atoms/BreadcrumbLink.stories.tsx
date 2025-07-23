@@ -1,9 +1,9 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react'
 import {
   Breadcrumb,
   BreadcrumbLink,
   BreadcrumbSeparator,
-} from '../../components/ui/atoms/BreadcrumbLink';
+} from '../../components/ui/atoms/BreadcrumbLink'
 import {
   Icon,
   HomeFilledIcon,
@@ -12,7 +12,7 @@ import {
   SettingsIcon,
   CompleteIcon,
   WarningIcon,
-} from '../../components/ui/atoms/Icon';
+} from '../../components/ui/atoms/Icon'
 
 const meta = {
   title: 'Atoms/BreadcrumbLink',
@@ -40,10 +40,10 @@ const meta = {
       control: 'boolean',
     },
   },
-} satisfies Meta<typeof Breadcrumb>;
+} satisfies Meta<typeof Breadcrumb>
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 // Basic Breadcrumb Examples
 export const Default: Story = {
@@ -51,7 +51,7 @@ export const Default: Story = {
     size: 'md',
     responsive: true,
   },
-  render: args => (
+  render: (args) => (
     <Breadcrumb {...args}>
       <BreadcrumbLink href="#">Home</BreadcrumbLink>
       <BreadcrumbSeparator />
@@ -62,7 +62,7 @@ export const Default: Story = {
       </BreadcrumbLink>
     </Breadcrumb>
   ),
-};
+}
 
 export const WithIcons: Story = {
   render: () => (
@@ -84,7 +84,7 @@ export const WithIcons: Story = {
       </BreadcrumbLink>
     </Breadcrumb>
   ),
-};
+}
 
 export const CustomSeparator: Story = {
   render: () => (
@@ -100,41 +100,21 @@ export const CustomSeparator: Story = {
       </BreadcrumbLink>
     </Breadcrumb>
   ),
-};
+}
 
 export const ArrowSeparator: Story = {
   render: () => (
     <Breadcrumb>
       <BreadcrumbLink href="#">Home</BreadcrumbLink>
       <BreadcrumbSeparator>
-        <svg
-          className="h-4 w-4"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M9 5l7 7-7 7"
-          />
+        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
       </BreadcrumbSeparator>
       <BreadcrumbLink href="#">Projects</BreadcrumbLink>
       <BreadcrumbSeparator>
-        <svg
-          className="h-4 w-4"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M9 5l7 7-7 7"
-          />
+        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
       </BreadcrumbSeparator>
       <BreadcrumbLink href="#" isCurrent>
@@ -142,15 +122,13 @@ export const ArrowSeparator: Story = {
       </BreadcrumbLink>
     </Breadcrumb>
   ),
-};
+}
 
 export const Sizes: Story = {
   render: () => (
     <div className="space-y-4">
       <div>
-        <p className="text-sm text-secondary-600 dark:text-secondary-400 mb-2">
-          Small
-        </p>
+        <p className="text-sm text-secondary-600 dark:text-secondary-400 mb-2">Small</p>
         <Breadcrumb size="sm">
           <BreadcrumbLink href="#" size="sm">
             Home
@@ -167,9 +145,7 @@ export const Sizes: Story = {
       </div>
 
       <div>
-        <p className="text-sm text-secondary-600 dark:text-secondary-400 mb-2">
-          Medium
-        </p>
+        <p className="text-sm text-secondary-600 dark:text-secondary-400 mb-2">Medium</p>
         <Breadcrumb size="md">
           <BreadcrumbLink href="#" size="md">
             Home
@@ -186,9 +162,7 @@ export const Sizes: Story = {
       </div>
 
       <div>
-        <p className="text-sm text-secondary-600 dark:text-secondary-400 mb-2">
-          Large
-        </p>
+        <p className="text-sm text-secondary-600 dark:text-secondary-400 mb-2">Large</p>
         <Breadcrumb size="lg">
           <BreadcrumbLink href="#" size="lg">
             Home
@@ -205,7 +179,7 @@ export const Sizes: Story = {
       </div>
     </div>
   ),
-};
+}
 
 export const CollapsedBreadcrumb: Story = {
   render: () => (
@@ -257,15 +231,13 @@ export const CollapsedBreadcrumb: Story = {
       </div>
     </div>
   ),
-};
+}
 
 export const Variants: Story = {
   render: () => (
     <div className="space-y-4">
       <div>
-        <p className="text-sm text-secondary-600 dark:text-secondary-400 mb-2">
-          Default
-        </p>
+        <p className="text-sm text-secondary-600 dark:text-secondary-400 mb-2">Default</p>
         <Breadcrumb>
           <BreadcrumbLink href="#">Home</BreadcrumbLink>
           <BreadcrumbSeparator />
@@ -278,9 +250,7 @@ export const Variants: Story = {
       </div>
 
       <div>
-        <p className="text-sm text-secondary-600 dark:text-secondary-400 mb-2">
-          Primary
-        </p>
+        <p className="text-sm text-secondary-600 dark:text-secondary-400 mb-2">Primary</p>
         <Breadcrumb>
           <BreadcrumbLink href="#" variant="primary">
             Home
@@ -297,7 +267,7 @@ export const Variants: Story = {
       </div>
     </div>
   ),
-};
+}
 
 export const TaskManagementBreadcrumb: Story = {
   render: () => (
@@ -321,7 +291,7 @@ export const TaskManagementBreadcrumb: Story = {
       </Breadcrumb>
     </div>
   ),
-};
+}
 
 export const ResponsiveBreadcrumb: Story = {
   render: () => (
@@ -345,7 +315,7 @@ export const ResponsiveBreadcrumb: Story = {
       </div>
     </div>
   ),
-};
+}
 
 export const DarkThemeShowcase: Story = {
   parameters: {
@@ -354,9 +324,7 @@ export const DarkThemeShowcase: Story = {
   render: () => (
     <div className="">
       <div className="p-6 space-y-6">
-        <h3 className="text-lg font-semibold text-secondary-100">
-          Dark Theme Breadcrumbs
-        </h3>
+        <h3 className="text-lg font-semibold text-secondary-100">Dark Theme Breadcrumbs</h3>
 
         <div className="space-y-4">
           <div>
@@ -387,21 +355,14 @@ export const DarkThemeShowcase: Story = {
                 Analytics
               </BreadcrumbLink>
               <BreadcrumbSeparator />
-              <BreadcrumbLink
-                href="#"
-                variant="primary"
-                icon={CompleteIcon}
-                isCurrent
-              >
+              <BreadcrumbLink href="#" variant="primary" icon={CompleteIcon} isCurrent>
                 Reports
               </BreadcrumbLink>
             </Breadcrumb>
           </div>
 
           <div>
-            <p className="text-sm text-secondary-400 mb-2">
-              Collapsed with Custom Separator
-            </p>
+            <p className="text-sm text-secondary-400 mb-2">Collapsed with Custom Separator</p>
             <Breadcrumb maxItems={3} separator="›">
               <BreadcrumbLink href="#" icon={HomeFilledIcon}>
                 Home
@@ -422,4 +383,4 @@ export const DarkThemeShowcase: Story = {
       </div>
     </div>
   ),
-};
+}

@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { cn } from '../../utils/cn';
+import React, { useState, useEffect, useMemo } from 'react'
+import { cn } from '../../utils/cn'
 import {
   Modal,
   ModalContent,
@@ -9,18 +9,15 @@ import {
   ModalBody,
   ModalFooter,
   ModalClose,
-} from '../ui/molecules/Modal';
-import { Button } from '../ui/atoms/Button';
-import { Badge } from '../ui/atoms/Badge';
-import { Spinner } from '../ui/atoms/Spinner';
-import {
-  useRepositoryHealth,
-  useRepositoryStatistics,
-} from '../../hooks/useRepositoryData';
+} from '../ui/molecules/Modal'
+import { Button } from '../ui/atoms/Button'
+import { Badge } from '../ui/atoms/Badge'
+import { Spinner } from '../ui/atoms/Spinner'
+import { useRepositoryHealth, useRepositoryStatistics } from '../../hooks/useRepositoryData'
 import type {
   RepositoryHealthMetrics,
   RepositoryStatistics,
-} from '../../services/repositoryService';
+} from '../../services/repositoryService'
 import {
   LineChart,
   Line,
@@ -39,28 +36,28 @@ import {
   RadialBarChart,
   RadialBar,
   Legend,
-} from 'recharts';
+} from 'recharts'
 
 export interface RepositoryHealthModalProps {
   /** Whether the modal is open */
-  open: boolean;
+  open: boolean
   /** Callback when the modal open state changes */
-  onOpenChange: (open: boolean) => void;
+  onOpenChange: (open: boolean) => void
   /** Repository ID to fetch health data for */
-  repositoryId: string;
+  repositoryId: string
   /** Repository name for display */
-  repositoryName: string;
+  repositoryName: string
   /** Additional CSS classes */
-  className?: string;
+  className?: string
 }
 
 export interface HealthSummaryCardProps {
-  title: string;
-  score: number;
-  trend?: 'up' | 'down' | 'stable';
-  subtitle?: string;
-  color?: 'blue' | 'green' | 'yellow' | 'red' | 'purple';
-  icon?: React.ReactNode;
+  title: string
+  score: number
+  trend?: 'up' | 'down' | 'stable'
+  subtitle?: string
+  color?: 'blue' | 'green' | 'yellow' | 'red' | 'purple'
+  icon?: React.ReactNode
 }
 
 const HealthSummaryCard: React.FC<HealthSummaryCardProps> = ({
@@ -77,28 +74,23 @@ const HealthSummaryCard: React.FC<HealthSummaryCardProps> = ({
     yellow: 'bg-yellow-50 border-yellow-200 text-yellow-700',
     red: 'bg-red-50 border-red-200 text-red-700',
     purple: 'bg-purple-50 border-purple-200 text-purple-700',
-  };
+  }
 
   const getScoreColor = (score: number): string => {
-    if (score >= 80) return 'text-green-600';
-    if (score >= 60) return 'text-yellow-600';
-    return 'text-red-600';
-  };
+    if (score >= 80) return 'text-green-600'
+    if (score >= 60) return 'text-yellow-600'
+    return 'text-red-600'
+  }
 
   const getTrendIcon = () => {
-    if (trend === 'up')
-      return <ArrowUpIcon className="w-4 h-4 text-green-500" />;
-    if (trend === 'down')
-      return <ArrowDownIcon className="w-4 h-4 text-red-500" />;
-    return <ArrowRightIcon className="w-4 h-4 text-gray-500" />;
-  };
+    if (trend === 'up') return <ArrowUpIcon className="w-4 h-4 text-green-500" />
+    if (trend === 'down') return <ArrowDownIcon className="w-4 h-4 text-red-500" />
+    return <ArrowRightIcon className="w-4 h-4 text-gray-500" />
+  }
 
   return (
     <div
-      className={cn(
-        'rounded-lg border p-4 transition-all hover:shadow-md',
-        colorClasses[color]
-      )}
+      className={cn('rounded-lg border p-4 transition-all hover:shadow-md', colorClasses[color])}
     >
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center space-x-2">
@@ -109,16 +101,14 @@ const HealthSummaryCard: React.FC<HealthSummaryCardProps> = ({
       </div>
 
       <div className="flex items-baseline space-x-1">
-        <span className={cn('text-2xl font-bold', getScoreColor(score))}>
-          {score}
-        </span>
+        <span className={cn('text-2xl font-bold', getScoreColor(score))}>{score}</span>
         <span className="text-sm text-gray-500">/100</span>
       </div>
 
       {subtitle && <p className="text-xs text-gray-600 mt-1">{subtitle}</p>}
     </div>
-  );
-};
+  )
+}
 
 export const RepositoryHealthModal: React.FC<RepositoryHealthModalProps> = ({
   open,
@@ -127,15 +117,13 @@ export const RepositoryHealthModal: React.FC<RepositoryHealthModalProps> = ({
   repositoryName,
   className,
 }) => {
-  const [selectedPeriod, setSelectedPeriod] = useState<
-    '7d' | '30d' | '90d' | '1y'
-  >('30d');
-  const [activeView, setActiveView] = useState<
-    'overview' | 'metrics' | 'issues' | 'trends'
-  >('overview');
+  const [selectedPeriod, setSelectedPeriod] = useState<'7d' | '30d' | '90d' | '1y'>('30d')
+  const [activeView, setActiveView] = useState<'overview' | 'metrics' | 'issues' | 'trends'>(
+    'overview'
+  )
 
   // Check for Storybook mock service and use custom hooks if available
-  const mockService = (window as any).__STORYBOOK_REPOSITORY_SERVICE__;
+  const mockService = (window as any).__STORYBOOK_REPOSITORY_SERVICE__
 
   const {
     health,
@@ -145,7 +133,7 @@ export const RepositoryHealthModal: React.FC<RepositoryHealthModalProps> = ({
   } = useRepositoryHealth({
     repositoryId,
     autoFetch: open && !mockService,
-  });
+  })
 
   const {
     statistics,
@@ -155,104 +143,97 @@ export const RepositoryHealthModal: React.FC<RepositoryHealthModalProps> = ({
     repositoryId,
     period: selectedPeriod,
     autoFetch: open && !mockService,
-  });
+  })
 
   // Custom state management for mock data
-  const [mockHealth, setMockHealth] = useState<RepositoryHealthMetrics | null>(
-    null
-  );
-  const [mockStats, setMockStats] = useState<RepositoryStatistics | null>(null);
-  const [mockLoading, setMockLoading] = useState(false);
-  const [mockError, setMockError] = useState<string | null>(null);
+  const [mockHealth, setMockHealth] = useState<RepositoryHealthMetrics | null>(null)
+  const [mockStats, setMockStats] = useState<RepositoryStatistics | null>(null)
+  const [mockLoading, setMockLoading] = useState(false)
+  const [mockError, setMockError] = useState<string | null>(null)
 
   // Load mock data when modal opens
   useEffect(() => {
     if (open && mockService && repositoryId) {
       const loadMockData = async () => {
-        setMockLoading(true);
-        setMockError(null);
+        setMockLoading(true)
+        setMockError(null)
 
         try {
           const [healthResponse, statsResponse] = await Promise.all([
             mockService.getRepositoryHealth(repositoryId),
             mockService.getRepositoryStatistics(repositoryId, selectedPeriod),
-          ]);
+          ])
 
           if (healthResponse.success) {
-            setMockHealth(healthResponse.data);
+            setMockHealth(healthResponse.data)
           } else {
-            setMockError(healthResponse.error || 'Failed to load health data');
+            setMockError(healthResponse.error || 'Failed to load health data')
           }
 
           if (statsResponse.success) {
-            setMockStats(statsResponse.data);
+            setMockStats(statsResponse.data)
           }
         } catch (error) {
-          setMockError(
-            error instanceof Error ? error.message : 'Failed to load data'
-          );
+          setMockError(error instanceof Error ? error.message : 'Failed to load data')
         } finally {
-          setMockLoading(false);
+          setMockLoading(false)
         }
-      };
+      }
 
-      loadMockData();
+      loadMockData()
     }
-  }, [open, mockService, repositoryId, selectedPeriod]);
+  }, [open, mockService, repositoryId, selectedPeriod])
 
   // Use mock data when available
-  const effectiveHealth = mockService ? mockHealth : health;
-  const effectiveStats = mockService ? mockStats : statistics;
-  const effectiveHealthLoading = mockService ? mockLoading : healthLoading;
-  const effectiveStatsLoading = mockService ? mockLoading : statsLoading;
-  const effectiveError = mockService ? mockError : healthError;
+  const effectiveHealth = mockService ? mockHealth : health
+  const effectiveStats = mockService ? mockStats : statistics
+  const effectiveHealthLoading = mockService ? mockLoading : healthLoading
+  const effectiveStatsLoading = mockService ? mockLoading : statsLoading
+  const effectiveError = mockService ? mockError : healthError
 
   const effectiveRefresh = mockService
     ? async () => {
         if (mockService && repositoryId) {
-          setMockLoading(true);
-          setMockError(null);
+          setMockLoading(true)
+          setMockError(null)
           try {
-            const response =
-              await mockService.getRepositoryHealth(repositoryId);
+            const response = await mockService.getRepositoryHealth(repositoryId)
             if (response.success) {
-              setMockHealth(response.data);
+              setMockHealth(response.data)
             } else {
-              setMockError(response.error || 'Failed to refresh health data');
+              setMockError(response.error || 'Failed to refresh health data')
             }
           } catch (error) {
-            setMockError(
-              error instanceof Error ? error.message : 'Failed to refresh'
-            );
+            setMockError(error instanceof Error ? error.message : 'Failed to refresh')
           } finally {
-            setMockLoading(false);
+            setMockLoading(false)
           }
         }
       }
-    : refreshHealth;
+    : refreshHealth
 
   // Update statistics period when selected period changes
   useEffect(() => {
-    setPeriod(selectedPeriod);
-  }, [selectedPeriod, setPeriod]);
+    setPeriod(selectedPeriod)
+  }, [selectedPeriod, setPeriod])
 
   const handlePeriodChange = (period: '7d' | '30d' | '90d' | '1y') => {
-    setSelectedPeriod(period);
-  };
+    setSelectedPeriod(period)
+  }
 
   const chartData = useMemo(() => {
-    if (!effectiveHealth?.trends.data) return [];
+    if (!effectiveHealth?.trends.data) return []
 
-    return effectiveHealth.trends.data.map(item => ({
+    return effectiveHealth.trends.data.map((item) => ({
       date: new Date(item.date).toLocaleDateString(),
       health: item.score,
       commits: item.commits,
       contributors: item.contributors,
-    }));
-  }, [effectiveHealth?.trends.data]);
+    }))
+  }, [effectiveHealth?.trends.data])
 
   const metricsData = useMemo(() => {
-    if (!effectiveHealth?.metrics) return [];
+    if (!effectiveHealth?.metrics) return []
 
     return [
       {
@@ -275,19 +256,19 @@ export const RepositoryHealthModal: React.FC<RepositoryHealthModalProps> = ({
         score: effectiveHealth.metrics.testing.score,
         fill: '#F59E0B',
       },
-    ];
-  }, [effectiveHealth?.metrics]);
+    ]
+  }, [effectiveHealth?.metrics])
 
   const issuesBySeverity = useMemo(() => {
-    if (!effectiveHealth?.issues) return [];
+    if (!effectiveHealth?.issues) return []
 
     const severityCounts = effectiveHealth.issues.reduce(
       (acc, issue) => {
-        acc[issue.severity] = (acc[issue.severity] || 0) + 1;
-        return acc;
+        acc[issue.severity] = (acc[issue.severity] || 0) + 1
+        return acc
       },
       {} as Record<string, number>
-    );
+    )
 
     return [
       {
@@ -298,22 +279,22 @@ export const RepositoryHealthModal: React.FC<RepositoryHealthModalProps> = ({
       { name: 'High', value: severityCounts.high || 0, fill: '#EA580C' },
       { name: 'Medium', value: severityCounts.medium || 0, fill: '#D97706' },
       { name: 'Low', value: severityCounts.low || 0, fill: '#65A30D' },
-    ].filter(item => item.value > 0);
-  }, [effectiveHealth?.issues]);
+    ].filter((item) => item.value > 0)
+  }, [effectiveHealth?.issues])
 
   const getHealthGrade = (score: number): { grade: string; color: string } => {
-    if (score >= 90) return { grade: 'A+', color: 'text-green-600' };
-    if (score >= 80) return { grade: 'A', color: 'text-green-600' };
-    if (score >= 70) return { grade: 'B', color: 'text-blue-600' };
-    if (score >= 60) return { grade: 'C', color: 'text-yellow-600' };
-    if (score >= 50) return { grade: 'D', color: 'text-orange-600' };
-    return { grade: 'F', color: 'text-red-600' };
-  };
+    if (score >= 90) return { grade: 'A+', color: 'text-green-600' }
+    if (score >= 80) return { grade: 'A', color: 'text-green-600' }
+    if (score >= 70) return { grade: 'B', color: 'text-blue-600' }
+    if (score >= 60) return { grade: 'C', color: 'text-yellow-600' }
+    if (score >= 50) return { grade: 'D', color: 'text-orange-600' }
+    return { grade: 'F', color: 'text-red-600' }
+  }
 
   const renderOverview = () => {
-    if (!effectiveHealth) return null;
+    if (!effectiveHealth) return null
 
-    const healthGrade = getHealthGrade(effectiveHealth.score);
+    const healthGrade = getHealthGrade(effectiveHealth.score)
 
     return (
       <div className="space-y-6">
@@ -347,16 +328,12 @@ export const RepositoryHealthModal: React.FC<RepositoryHealthModalProps> = ({
                   <div className={cn('text-2xl font-bold', healthGrade.color)}>
                     {healthGrade.grade}
                   </div>
-                  <div className="text-xs text-gray-500">
-                    {effectiveHealth.score}/100
-                  </div>
+                  <div className="text-xs text-gray-500">{effectiveHealth.score}/100</div>
                 </div>
               </div>
             </div>
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-1">
-            Repository Health
-          </h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-1">Repository Health</h3>
           <p className="text-sm text-gray-600">
             Overall assessment of repository quality and maintainability
           </p>
@@ -375,11 +352,7 @@ export const RepositoryHealthModal: React.FC<RepositoryHealthModalProps> = ({
             title="Security"
             score={effectiveHealth.metrics.security.score}
             subtitle={`${effectiveHealth.metrics.security.vulnerabilities} vulnerabilities`}
-            color={
-              effectiveHealth.metrics.security.vulnerabilities > 0
-                ? 'red'
-                : 'green'
-            }
+            color={effectiveHealth.metrics.security.vulnerabilities > 0 ? 'red' : 'green'}
             icon={<ShieldIcon className="w-5 h-5" />}
           />
           <HealthSummaryCard
@@ -393,11 +366,7 @@ export const RepositoryHealthModal: React.FC<RepositoryHealthModalProps> = ({
             title="Testing"
             score={effectiveHealth.metrics.testing.score}
             subtitle={`${effectiveHealth.metrics.testing.coverage}% coverage`}
-            color={
-              effectiveHealth.metrics.testing.coverage >= 80
-                ? 'green'
-                : 'yellow'
-            }
+            color={effectiveHealth.metrics.testing.coverage >= 80 ? 'green' : 'yellow'}
             icon={<TestIcon className="w-5 h-5" />}
           />
         </div>
@@ -405,9 +374,7 @@ export const RepositoryHealthModal: React.FC<RepositoryHealthModalProps> = ({
         {/* Quick Stats */}
         {effectiveStats && (
           <div className="bg-gray-50 rounded-lg p-4">
-            <h4 className="font-medium text-gray-900 mb-3">
-              Repository Activity
-            </h4>
+            <h4 className="font-medium text-gray-900 mb-3">Repository Activity</h4>
             <div className="grid grid-cols-3 gap-4 text-center">
               <div>
                 <div className="text-2xl font-bold text-blue-600">
@@ -431,24 +398,19 @@ export const RepositoryHealthModal: React.FC<RepositoryHealthModalProps> = ({
           </div>
         )}
       </div>
-    );
-  };
+    )
+  }
 
   const renderMetrics = () => {
-    if (!effectiveHealth) return null;
+    if (!effectiveHealth) return null
 
     return (
       <div className="space-y-6">
         {/* Metrics Comparison Chart */}
         <div className="bg-white p-4 rounded-lg border">
-          <h4 className="font-medium text-gray-900 mb-4">
-            Health Metrics Comparison
-          </h4>
+          <h4 className="font-medium text-gray-900 mb-4">Health Metrics Comparison</h4>
           <ResponsiveContainer width="100%" height={250}>
-            <BarChart
-              data={metricsData}
-              margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-            >
+            <BarChart data={metricsData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
               <YAxis domain={[0, 100]} />
@@ -517,10 +479,7 @@ export const RepositoryHealthModal: React.FC<RepositoryHealthModalProps> = ({
               <div className="flex justify-between">
                 <span>Bundle Size:</span>
                 <span className="font-medium">
-                  {(
-                    effectiveHealth.metrics.performance.bundleSize / 1024
-                  ).toFixed(1)}{' '}
-                  KB
+                  {(effectiveHealth.metrics.performance.bundleSize / 1024).toFixed(1)} KB
                 </span>
               </div>
               <div className="flex justify-between">
@@ -540,40 +499,32 @@ export const RepositoryHealthModal: React.FC<RepositoryHealthModalProps> = ({
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span>Test Count:</span>
-                <span className="font-medium">
-                  {effectiveHealth.metrics.testing.testsCount}
-                </span>
+                <span className="font-medium">{effectiveHealth.metrics.testing.testsCount}</span>
               </div>
               <div className="flex justify-between">
                 <span>Coverage:</span>
-                <span className="font-medium">
-                  {effectiveHealth.metrics.testing.coverage}%
-                </span>
+                <span className="font-medium">{effectiveHealth.metrics.testing.coverage}%</span>
               </div>
               <div className="flex justify-between">
                 <span>Pass Rate:</span>
-                <span className="font-medium">
-                  {effectiveHealth.metrics.testing.passRate}%
-                </span>
+                <span className="font-medium">{effectiveHealth.metrics.testing.passRate}%</span>
               </div>
             </div>
           </div>
         </div>
       </div>
-    );
-  };
+    )
+  }
 
   const renderIssues = () => {
     if (!effectiveHealth?.issues.length) {
       return (
         <div className="text-center py-12">
           <CheckIcon className="w-16 h-16 text-green-500 mx-auto mb-4" />
-          <h4 className="text-lg font-medium text-gray-900 mb-2">
-            No Issues Found
-          </h4>
+          <h4 className="text-lg font-medium text-gray-900 mb-2">No Issues Found</h4>
           <p className="text-gray-600">Your repository is looking healthy!</p>
         </div>
-      );
+      )
     }
 
     return (
@@ -581,9 +532,7 @@ export const RepositoryHealthModal: React.FC<RepositoryHealthModalProps> = ({
         {/* Issues by Severity Chart */}
         {issuesBySeverity.length > 0 && (
           <div className="bg-white p-4 rounded-lg border">
-            <h4 className="font-medium text-gray-900 mb-4">
-              Issues by Severity
-            </h4>
+            <h4 className="font-medium text-gray-900 mb-4">Issues by Severity</h4>
             <div className="flex items-center justify-center">
               <ResponsiveContainer width={300} height={200}>
                 <PieChart>
@@ -619,7 +568,7 @@ export const RepositoryHealthModal: React.FC<RepositoryHealthModalProps> = ({
                 high: 'bg-orange-100 text-orange-800 border-orange-200',
                 medium: 'bg-yellow-100 text-yellow-800 border-yellow-200',
                 low: 'bg-green-100 text-green-800 border-green-200',
-              };
+              }
 
               return (
                 <div key={index} className="bg-gray-50 rounded-lg p-3 border">
@@ -647,27 +596,23 @@ export const RepositoryHealthModal: React.FC<RepositoryHealthModalProps> = ({
                     </div>
                   </div>
                 </div>
-              );
+              )
             })}
           </div>
         </div>
       </div>
-    );
-  };
+    )
+  }
 
   const renderTrends = () => {
     if (!chartData.length) {
       return (
         <div className="text-center py-12">
           <ChartIcon className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-          <h4 className="text-lg font-medium text-gray-900 mb-2">
-            No Trend Data
-          </h4>
-          <p className="text-gray-600">
-            Trend data will appear as your repository evolves.
-          </p>
+          <h4 className="text-lg font-medium text-gray-900 mb-2">No Trend Data</h4>
+          <p className="text-gray-600">Trend data will appear as your repository evolves.</p>
         </div>
-      );
+      )
     }
 
     return (
@@ -676,7 +621,7 @@ export const RepositoryHealthModal: React.FC<RepositoryHealthModalProps> = ({
         <div className="flex items-center space-x-2">
           <span className="text-sm font-medium text-gray-700">Period:</span>
           <div className="flex space-x-1 bg-gray-100 rounded-lg p-1">
-            {['7d', '30d', '90d', '1y'].map(period => (
+            {['7d', '30d', '90d', '1y'].map((period) => (
               <button
                 key={period}
                 onClick={() => handlePeriodChange(period as any)}
@@ -697,20 +642,12 @@ export const RepositoryHealthModal: React.FC<RepositoryHealthModalProps> = ({
         <div className="bg-white p-4 rounded-lg border">
           <h4 className="font-medium text-gray-900 mb-4">Health Score Trend</h4>
           <ResponsiveContainer width="100%" height={250}>
-            <LineChart
-              data={chartData}
-              margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-            >
+            <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="date" />
               <YAxis domain={[0, 100]} />
               <Tooltip />
-              <Line
-                type="monotone"
-                dataKey="health"
-                stroke="#3B82F6"
-                strokeWidth={2}
-              />
+              <Line type="monotone" dataKey="health" stroke="#3B82F6" strokeWidth={2} />
             </LineChart>
           </ResponsiveContainer>
         </div>
@@ -737,9 +674,7 @@ export const RepositoryHealthModal: React.FC<RepositoryHealthModalProps> = ({
           </div>
 
           <div className="bg-white p-4 rounded-lg border">
-            <h5 className="font-medium text-gray-900 mb-3">
-              Contributor Activity
-            </h5>
+            <h5 className="font-medium text-gray-900 mb-3">Contributor Activity</h5>
             <ResponsiveContainer width="100%" height={150}>
               <AreaChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -758,8 +693,8 @@ export const RepositoryHealthModal: React.FC<RepositoryHealthModalProps> = ({
           </div>
         </div>
       </div>
-    );
-  };
+    )
+  }
 
   return (
     <Modal open={open} onOpenChange={onOpenChange}>
@@ -767,9 +702,7 @@ export const RepositoryHealthModal: React.FC<RepositoryHealthModalProps> = ({
         <ModalHeader>
           <div className="flex items-center justify-between">
             <div>
-              <ModalTitle className="text-xl font-semibold">
-                Repository Health Dashboard
-              </ModalTitle>
+              <ModalTitle className="text-xl font-semibold">Repository Health Dashboard</ModalTitle>
               <ModalDescription className="mt-1">
                 {repositoryName}
                 {effectiveHealth && (
@@ -815,7 +748,7 @@ export const RepositoryHealthModal: React.FC<RepositoryHealthModalProps> = ({
                 label: 'Trends',
                 icon: <TrendIcon className="w-4 h-4" />,
               },
-            ].map(tab => (
+            ].map((tab) => (
               <button
                 key={tab.key}
                 onClick={() => setActiveView(tab.key as any)}
@@ -855,16 +788,9 @@ export const RepositoryHealthModal: React.FC<RepositoryHealthModalProps> = ({
                   <WarningIcon className="w-5 h-5" />
                 </div>
                 <div className="ml-3">
-                  <h3 className="text-sm font-medium text-red-800">
-                    Error loading health data
-                  </h3>
+                  <h3 className="text-sm font-medium text-red-800">Error loading health data</h3>
                   <p className="text-sm text-red-700 mt-1">{effectiveError}</p>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={effectiveRefresh}
-                    className="mt-2"
-                  >
+                  <Button variant="outline" size="sm" onClick={effectiveRefresh} className="mt-2">
                     Try again
                   </Button>
                 </div>
@@ -886,12 +812,8 @@ export const RepositoryHealthModal: React.FC<RepositoryHealthModalProps> = ({
               <div className="text-gray-400 mb-4">
                 <DashboardIcon className="w-16 h-16 mx-auto" />
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                No health data available
-              </h3>
-              <p className="text-gray-500">
-                Health metrics are not available for this repository.
-              </p>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">No health data available</h3>
+              <p className="text-gray-500">Health metrics are not available for this repository.</p>
             </div>
           )}
         </ModalBody>
@@ -899,9 +821,7 @@ export const RepositoryHealthModal: React.FC<RepositoryHealthModalProps> = ({
         <ModalFooter>
           <div className="flex items-center justify-between w-full">
             <div className="text-xs text-gray-500">
-              {effectiveHealth && (
-                <span>Last updated: {new Date().toLocaleString()}</span>
-              )}
+              {effectiveHealth && <span>Last updated: {new Date().toLocaleString()}</span>}
             </div>
             <div className="flex space-x-3">
               <Button
@@ -919,17 +839,12 @@ export const RepositoryHealthModal: React.FC<RepositoryHealthModalProps> = ({
         </ModalFooter>
       </ModalContent>
     </Modal>
-  );
-};
+  )
+}
 
 // Icon components
 const CodeIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg
-    className={className}
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -937,15 +852,10 @@ const CodeIcon: React.FC<{ className?: string }> = ({ className }) => (
       d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
     />
   </svg>
-);
+)
 
 const ShieldIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg
-    className={className}
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -953,15 +863,10 @@ const ShieldIcon: React.FC<{ className?: string }> = ({ className }) => (
       d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
     />
   </svg>
-);
+)
 
 const SpeedIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg
-    className={className}
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -969,15 +874,10 @@ const SpeedIcon: React.FC<{ className?: string }> = ({ className }) => (
       d="M13 10V3L4 14h7v7l9-11h-7z"
     />
   </svg>
-);
+)
 
 const TestIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg
-    className={className}
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -985,15 +885,10 @@ const TestIcon: React.FC<{ className?: string }> = ({ className }) => (
       d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
     />
   </svg>
-);
+)
 
 const DashboardIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg
-    className={className}
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -1001,15 +896,10 @@ const DashboardIcon: React.FC<{ className?: string }> = ({ className }) => (
       d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
     />
   </svg>
-);
+)
 
 const ChartIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg
-    className={className}
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -1017,15 +907,10 @@ const ChartIcon: React.FC<{ className?: string }> = ({ className }) => (
       d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
     />
   </svg>
-);
+)
 
 const WarningIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg
-    className={className}
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -1033,15 +918,10 @@ const WarningIcon: React.FC<{ className?: string }> = ({ className }) => (
       d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.464 0L4.34 16.5c-.77.833.192 2.5 1.732 2.5z"
     />
   </svg>
-);
+)
 
 const TrendIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg
-    className={className}
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -1049,15 +929,10 @@ const TrendIcon: React.FC<{ className?: string }> = ({ className }) => (
       d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"
     />
   </svg>
-);
+)
 
 const CheckIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg
-    className={className}
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -1065,54 +940,24 @@ const CheckIcon: React.FC<{ className?: string }> = ({ className }) => (
       d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
     />
   </svg>
-);
+)
 
 const ArrowUpIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg
-    className={className}
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={2}
-      d="M7 14l5-5 5 5"
-    />
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 14l5-5 5 5" />
   </svg>
-);
+)
 
 const ArrowDownIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg
-    className={className}
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={2}
-      d="M17 14l-5 5-5-5"
-    />
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 14l-5 5-5-5" />
   </svg>
-);
+)
 
 const ArrowRightIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg
-    className={className}
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={2}
-      d="M9 5l7 7-7 7"
-    />
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
   </svg>
-);
+)
 
-export default RepositoryHealthModal;
+export default RepositoryHealthModal

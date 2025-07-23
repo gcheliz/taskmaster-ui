@@ -1,26 +1,21 @@
-import React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-  TabsContent,
-} from '../../components/ui/molecules/Tabs';
+import React from 'react'
+import type { Meta, StoryObj } from '@storybook/react'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '../../components/ui/molecules/Tabs'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '../../components/ui/molecules/Card';
-import { Badge } from '../../components/ui/atoms/Badge';
-import { Button } from '../../components/ui/atoms/Button';
+} from '../../components/ui/molecules/Card'
+import { Badge } from '../../components/ui/atoms/Badge'
+import { Button } from '../../components/ui/atoms/Button'
 import {
   HomeFilledIcon,
   TaskIcon,
   UserCircleIcon,
   SettingsIcon,
-} from '../../components/ui/atoms/Icon';
+} from '../../components/ui/atoms/Icon'
 
 const meta: Meta<typeof Tabs> = {
   title: 'Molecules/Tabs',
@@ -47,23 +42,23 @@ const meta: Meta<typeof Tabs> = {
     },
   },
   decorators: [
-    Story => (
+    (Story) => (
       <div className="w-96">
         <Story />
       </div>
     ),
   ],
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {
     defaultValue: 'tab1',
     variant: 'default',
   },
-  render: args => (
+  render: (args) => (
     <Tabs {...args}>
       <TabsList>
         <TabsTrigger value="tab1">Account</TabsTrigger>
@@ -82,17 +77,11 @@ export const Default: Story = {
             <div className="space-y-4">
               <div>
                 <label className="text-sm font-medium">Name</label>
-                <input
-                  className="input-base mt-1 w-full"
-                  placeholder="Enter your name"
-                />
+                <input className="input-base mt-1 w-full" placeholder="Enter your name" />
               </div>
               <div>
                 <label className="text-sm font-medium">Email</label>
-                <input
-                  className="input-base mt-1 w-full"
-                  placeholder="Enter your email"
-                />
+                <input className="input-base mt-1 w-full" placeholder="Enter your email" />
               </div>
               <Button>Save changes</Button>
             </div>
@@ -134,9 +123,7 @@ export const Default: Story = {
         <Card>
           <CardHeader>
             <CardTitle>Settings</CardTitle>
-            <CardDescription>
-              Configure your application settings and preferences.
-            </CardDescription>
+            <CardDescription>Configure your application settings and preferences.</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -165,7 +152,7 @@ export const Default: Story = {
       </TabsContent>
     </Tabs>
   ),
-};
+}
 
 export const Variants: Story = {
   render: () => (
@@ -179,9 +166,7 @@ export const Variants: Story = {
             <TabsTrigger value="tab3">Reports</TabsTrigger>
           </TabsList>
           <TabsContent value="tab1">
-            <p className="text-sm text-secondary-600 mt-4">
-              Default variant content
-            </p>
+            <p className="text-sm text-secondary-600 mt-4">Default variant content</p>
           </TabsContent>
           <TabsContent value="tab2">
             <p className="text-sm text-secondary-600 mt-4">Analytics content</p>
@@ -201,9 +186,7 @@ export const Variants: Story = {
             <TabsTrigger value="tab3">Reports</TabsTrigger>
           </TabsList>
           <TabsContent value="tab1">
-            <p className="text-sm text-secondary-600 mt-4">
-              Line variant content
-            </p>
+            <p className="text-sm text-secondary-600 mt-4">Line variant content</p>
           </TabsContent>
           <TabsContent value="tab2">
             <p className="text-sm text-secondary-600 mt-4">Analytics content</p>
@@ -223,9 +206,7 @@ export const Variants: Story = {
             <TabsTrigger value="tab3">Reports</TabsTrigger>
           </TabsList>
           <TabsContent value="tab1">
-            <p className="text-sm text-secondary-600 mt-4">
-              Pills variant content
-            </p>
+            <p className="text-sm text-secondary-600 mt-4">Pills variant content</p>
           </TabsContent>
           <TabsContent value="tab2">
             <p className="text-sm text-secondary-600 mt-4">Analytics content</p>
@@ -237,7 +218,7 @@ export const Variants: Story = {
       </div>
     </div>
   ),
-};
+}
 
 export const TaskMasterDashboard: Story = {
   render: () => (
@@ -286,21 +267,16 @@ export const TaskMasterDashboard: Story = {
                   status: 'done',
                   priority: 'high',
                 },
-              ].map(task => (
+              ].map((task) => (
                 <Card key={task.id}>
                   <CardContent className="flex items-center justify-between p-4">
                     <div>
                       <h3 className="font-medium">{task.title}</h3>
-                      <p className="text-sm text-secondary-600">
-                        Task #{task.id}
-                      </p>
+                      <p className="text-sm text-secondary-600">Task #{task.id}</p>
                     </div>
                     <div className="flex gap-2">
                       <Badge variant={task.status as any}>{task.status}</Badge>
-                      <Badge
-                        variant={task.priority === 'high' ? 'error' : 'warning'}
-                        size="sm"
-                      >
+                      <Badge variant={task.priority === 'high' ? 'error' : 'warning'} size="sm">
                         {task.priority}
                       </Badge>
                     </div>
@@ -367,9 +343,7 @@ export const TaskMasterDashboard: Story = {
                     </div>
                     <div>
                       <h3 className="font-medium">{member.name}</h3>
-                      <p className="text-sm text-secondary-600">
-                        {member.role}
-                      </p>
+                      <p className="text-sm text-secondary-600">{member.role}</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -412,11 +386,11 @@ export const TaskMasterDashboard: Story = {
       </Tabs>
     </div>
   ),
-};
+}
 
 export const ControlledTabs: Story = {
   render: () => {
-    const [activeTab, setActiveTab] = React.useState('overview');
+    const [activeTab, setActiveTab] = React.useState('overview')
 
     return (
       <div className="space-y-4">
@@ -447,9 +421,7 @@ export const ControlledTabs: Story = {
             <Card>
               <CardContent className="p-4">
                 <p>Overview content - controlled externally</p>
-                <p className="text-sm text-secondary-600 mt-2">
-                  Current tab: {activeTab}
-                </p>
+                <p className="text-sm text-secondary-600 mt-2">Current tab: {activeTab}</p>
               </CardContent>
             </Card>
           </TabsContent>
@@ -457,9 +429,7 @@ export const ControlledTabs: Story = {
             <Card>
               <CardContent className="p-4">
                 <p>Details content - controlled externally</p>
-                <p className="text-sm text-secondary-600 mt-2">
-                  Current tab: {activeTab}
-                </p>
+                <p className="text-sm text-secondary-600 mt-2">Current tab: {activeTab}</p>
               </CardContent>
             </Card>
           </TabsContent>
@@ -467,17 +437,15 @@ export const ControlledTabs: Story = {
             <Card>
               <CardContent className="p-4">
                 <p>Settings content</p>
-                <p className="text-sm text-secondary-600 mt-2">
-                  Current tab: {activeTab}
-                </p>
+                <p className="text-sm text-secondary-600 mt-2">Current tab: {activeTab}</p>
               </CardContent>
             </Card>
           </TabsContent>
         </Tabs>
       </div>
-    );
+    )
   },
-};
+}
 
 export const WithIconsAndBadges: Story = {
   parameters: {
@@ -486,9 +454,7 @@ export const WithIconsAndBadges: Story = {
   render: () => (
     <div className="bg-white">
       <div className="p-6 space-y-8">
-        <h3 className="text-lg font-semibold text-slate-900">
-          Navigation Tabs with Icons
-        </h3>
+        <h3 className="text-lg font-semibold text-slate-900">Navigation Tabs with Icons</h3>
 
         <div className="space-y-8">
           <div>
@@ -554,9 +520,7 @@ export const WithIconsAndBadges: Story = {
           </div>
 
           <div>
-            <h4 className="text-sm font-medium text-slate-700 mb-4">
-              Line Variant
-            </h4>
+            <h4 className="text-sm font-medium text-slate-700 mb-4">Line Variant</h4>
             <Tabs defaultValue="overview" variant="line" className="w-[500px]">
               <TabsList>
                 <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -599,4 +563,4 @@ export const WithIconsAndBadges: Story = {
       </div>
     </div>
   ),
-};
+}

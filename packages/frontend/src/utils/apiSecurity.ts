@@ -5,54 +5,50 @@
  * and repository operations from the frontend.
  */
 
-import {
-  validateRepositoryPath,
-  validateProjectName,
-  validateTaskId,
-} from './security';
-import { config } from '../config/environment';
-import { SecurityEnforcer } from '../config/security';
+import { validateRepositoryPath, validateProjectName, validateTaskId } from './security'
+import { config } from '../config/environment'
+import { SecurityEnforcer } from '../config/security'
 
 /**
  * Secure API request configuration
  */
 export interface SecureApiConfig {
-  baseUrl: string;
-  timeout: number;
-  headers: Record<string, string>;
-  retries: number;
-  retryDelay: number;
+  baseUrl: string
+  timeout: number
+  headers: Record<string, string>
+  retries: number
+  retryDelay: number
 }
 
 /**
  * API request options
  */
 export interface ApiRequestOptions {
-  method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
-  headers?: Record<string, string>;
-  body?: any;
-  timeout?: number;
-  validateResponse?: boolean;
-  rateLimitKey?: string;
+  method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
+  headers?: Record<string, string>
+  body?: any
+  timeout?: number
+  validateResponse?: boolean
+  rateLimitKey?: string
 }
 
 /**
  * API response wrapper
  */
 export interface ApiResponse<T = any> {
-  success: boolean;
-  data?: T;
-  error?: string;
-  status: number;
-  headers: Headers;
+  success: boolean
+  data?: T
+  error?: string
+  status: number
+  headers: Headers
 }
 
 /**
  * Secure API client for file system and repository operations
  */
 export class SecureApiClient {
-  private config: SecureApiConfig;
-  private abortControllers: Map<string, AbortController> = new Map();
+  private config: SecureApiConfig
+  private abortControllers: Map<string, AbortController> = new Map()
 
   constructor(configOverrides?: Partial<SecureApiConfig>) {
     this.config = {
@@ -66,7 +62,7 @@ export class SecureApiClient {
       },
       retries: configOverrides?.retries || 3,
       retryDelay: configOverrides?.retryDelay || 1000,
-    };
+    }
   }
 
   /**
@@ -83,58 +79,58 @@ export class SecureApiClient {
       timeout = this.config.timeout,
       validateResponse = true,
       rateLimitKey,
-    } = options;
+    } = options
 
     // Validate endpoint
-    const sanitizedEndpoint = this.sanitizeEndpoint(endpoint);
+    const sanitizedEndpoint = this.sanitizeEndpoint(endpoint)
     if (!sanitizedEndpoint) {
       return {
         success: false,
         error: 'Invalid API endpoint',
         status: 400,
         headers: new Headers(),
-      };
+      }
     }
 
     // Check rate limiting
     if (rateLimitKey) {
-      const clientId = SecurityEnforcer.getClientId();
+      const clientId = SecurityEnforcer.getClientId()
       if (SecurityEnforcer.checkRateLimit('api', clientId)) {
         return {
           success: false,
           error: 'Rate limit exceeded. Please try again later.',
           status: 429,
           headers: new Headers(),
-        };
+        }
       }
-      SecurityEnforcer.recordAttempt('api', clientId);
+      SecurityEnforcer.recordAttempt('api', clientId)
     }
 
-    const requestId = this.generateRequestId();
-    const abortController = new AbortController();
-    this.abortControllers.set(requestId, abortController);
+    const requestId = this.generateRequestId()
+    const abortController = new AbortController()
+    this.abortControllers.set(requestId, abortController)
 
     // Set timeout
     const timeoutId = setTimeout(() => {
-      abortController.abort();
-    }, timeout);
+      abortController.abort()
+    }, timeout)
 
     try {
-      const url = `${this.config.baseUrl}${sanitizedEndpoint}`;
+      const url = `${this.config.baseUrl}${sanitizedEndpoint}`
       const requestHeaders: Record<string, string> = {
         ...this.config.headers,
         ...headers,
         'X-Request-ID': requestId,
-      };
+      }
 
       // Prepare request body
-      let requestBody: string | FormData | undefined;
+      let requestBody: string | FormData | undefined
       if (body !== undefined) {
         if (body instanceof FormData) {
-          requestBody = body;
-          delete (requestHeaders as any)['Content-Type']; // Let browser set it for FormData
+          requestBody = body
+          delete (requestHeaders as any)['Content-Type'] // Let browser set it for FormData
         } else {
-          requestBody = JSON.stringify(this.sanitizeRequestBody(body));
+          requestBody = JSON.stringify(this.sanitizeRequestBody(body))
         }
       }
 
@@ -145,9 +141,9 @@ export class SecureApiClient {
         signal: abortController.signal,
         credentials: 'include',
         mode: 'cors',
-      });
+      })
 
-      clearTimeout(timeoutId);
+      clearTimeout(timeoutId)
 
       if (validateResponse && !this.isValidResponse(response)) {
         return {
@@ -155,19 +151,19 @@ export class SecureApiClient {
           error: `Invalid response: ${response.status} ${response.statusText}`,
           status: response.status,
           headers: response.headers,
-        };
+        }
       }
 
-      let data: T | undefined;
-      const contentType = response.headers.get('content-type');
+      let data: T | undefined
+      const contentType = response.headers.get('content-type')
 
       if (contentType?.includes('application/json')) {
-        const text = await response.text();
+        const text = await response.text()
         if (text.trim()) {
-          data = JSON.parse(text) as T;
+          data = JSON.parse(text) as T
         }
       } else if (contentType?.includes('text/')) {
-        data = (await response.text()) as unknown as T;
+        data = (await response.text()) as unknown as T
       }
 
       return {
@@ -178,9 +174,9 @@ export class SecureApiClient {
           : `Request failed: ${response.status} ${response.statusText}`,
         status: response.status,
         headers: response.headers,
-      };
+      }
     } catch (error) {
-      clearTimeout(timeoutId);
+      clearTimeout(timeoutId)
 
       if (error instanceof Error) {
         if (error.name === 'AbortError') {
@@ -189,7 +185,7 @@ export class SecureApiClient {
             error: 'Request timeout',
             status: 408,
             headers: new Headers(),
-          };
+          }
         }
 
         return {
@@ -197,7 +193,7 @@ export class SecureApiClient {
           error: error.message,
           status: 500,
           headers: new Headers(),
-        };
+        }
       }
 
       return {
@@ -205,9 +201,9 @@ export class SecureApiClient {
         error: 'Unknown error occurred',
         status: 500,
         headers: new Headers(),
-      };
+      }
     } finally {
-      this.abortControllers.delete(requestId);
+      this.abortControllers.delete(requestId)
     }
   }
 
@@ -215,28 +211,28 @@ export class SecureApiClient {
    * Secure repository operations
    */
   async addRepository(repositoryPath: string): Promise<ApiResponse> {
-    const validation = validateRepositoryPath(repositoryPath);
+    const validation = validateRepositoryPath(repositoryPath)
     if (!validation.isValid) {
       return {
         success: false,
         error: validation.error || 'Invalid repository path',
         status: 400,
         headers: new Headers(),
-      };
+      }
     }
 
     return this.request('/api/repositories', {
       method: 'POST',
       body: { path: validation.sanitizedValue },
       rateLimitKey: 'repository',
-    });
+    })
   }
 
   async getRepositories(): Promise<ApiResponse> {
     return this.request('/api/repositories', {
       method: 'GET',
       rateLimitKey: 'repository',
-    });
+    })
   }
 
   async deleteRepository(repositoryId: string): Promise<ApiResponse> {
@@ -246,34 +242,31 @@ export class SecureApiClient {
         error: 'Invalid repository ID',
         status: 400,
         headers: new Headers(),
-      };
+      }
     }
 
-    const sanitizedId = this.sanitizeId(repositoryId);
+    const sanitizedId = this.sanitizeId(repositoryId)
     return this.request(`/api/repositories/${sanitizedId}`, {
       method: 'DELETE',
       rateLimitKey: 'repository',
-    });
+    })
   }
 
   /**
    * Secure project operations
    */
-  async createProject(
-    repositoryId: string,
-    projectName: string
-  ): Promise<ApiResponse> {
-    const nameValidation = validateProjectName(projectName);
+  async createProject(repositoryId: string, projectName: string): Promise<ApiResponse> {
+    const nameValidation = validateProjectName(projectName)
     if (!nameValidation.isValid) {
       return {
         success: false,
         error: nameValidation.error || 'Invalid project name',
         status: 400,
         headers: new Headers(),
-      };
+      }
     }
 
-    const sanitizedRepoId = this.sanitizeId(repositoryId);
+    const sanitizedRepoId = this.sanitizeId(repositoryId)
     return this.request('/api/projects', {
       method: 'POST',
       body: {
@@ -281,48 +274,38 @@ export class SecureApiClient {
         name: nameValidation.sanitizedValue,
       },
       rateLimitKey: 'project',
-    });
+    })
   }
 
   /**
    * Secure task operations
    */
-  async updateTaskStatus(
-    taskId: string | number,
-    status: string
-  ): Promise<ApiResponse> {
-    const idValidation = validateTaskId(taskId);
+  async updateTaskStatus(taskId: string | number, status: string): Promise<ApiResponse> {
+    const idValidation = validateTaskId(taskId)
     if (!idValidation.isValid) {
       return {
         success: false,
         error: idValidation.error || 'Invalid task ID',
         status: 400,
         headers: new Headers(),
-      };
+      }
     }
 
-    const allowedStatuses = [
-      'pending',
-      'in-progress',
-      'done',
-      'blocked',
-      'cancelled',
-      'deferred',
-    ];
+    const allowedStatuses = ['pending', 'in-progress', 'done', 'blocked', 'cancelled', 'deferred']
     if (!allowedStatuses.includes(status)) {
       return {
         success: false,
         error: 'Invalid task status',
         status: 400,
         headers: new Headers(),
-      };
+      }
     }
 
     return this.request(`/api/tasks/${idValidation.sanitizedValue}`, {
       method: 'PATCH',
       body: { status },
       rateLimitKey: 'task',
-    });
+    })
   }
 
   /**
@@ -330,7 +313,7 @@ export class SecureApiClient {
    */
   private sanitizeEndpoint(endpoint: string): string | null {
     if (!endpoint || typeof endpoint !== 'string') {
-      return null;
+      return null
     }
 
     // Remove any potentially dangerous patterns
@@ -338,19 +321,19 @@ export class SecureApiClient {
       .replace(/[^a-zA-Z0-9\-_/?&=.]/g, '')
       .replace(/.{2,}/g, '') // Remove path traversal
       .replace(/\/+/g, '/') // Normalize slashes
-      .trim();
+      .trim()
 
     // Ensure it starts with /
     if (!sanitized.startsWith('/')) {
-      return `/${sanitized}`;
+      return `/${sanitized}`
     }
 
     // Basic length check
     if (sanitized.length > 200) {
-      return null;
+      return null
     }
 
-    return sanitized;
+    return sanitized
   }
 
   /**
@@ -358,33 +341,33 @@ export class SecureApiClient {
    */
   private sanitizeRequestBody(body: any): any {
     if (body === null || body === undefined) {
-      return body;
+      return body
     }
 
     if (typeof body === 'string') {
-      return body.slice(0, 10000); // Limit string length
+      return body.slice(0, 10000) // Limit string length
     }
 
     if (Array.isArray(body)) {
-      return body.slice(0, 100).map(item => this.sanitizeRequestBody(item));
+      return body.slice(0, 100).map((item) => this.sanitizeRequestBody(item))
     }
 
     if (typeof body === 'object') {
-      const sanitized: any = {};
-      let fieldCount = 0;
+      const sanitized: any = {}
+      let fieldCount = 0
 
       for (const [key, value] of Object.entries(body)) {
-        if (fieldCount >= 50) break; // Limit number of fields
+        if (fieldCount >= 50) break // Limit number of fields
 
-        const sanitizedKey = String(key).slice(0, 100);
-        sanitized[sanitizedKey] = this.sanitizeRequestBody(value);
-        fieldCount++;
+        const sanitizedKey = String(key).slice(0, 100)
+        sanitized[sanitizedKey] = this.sanitizeRequestBody(value)
+        fieldCount++
       }
 
-      return sanitized;
+      return sanitized
     }
 
-    return body;
+    return body
   }
 
   /**
@@ -393,7 +376,7 @@ export class SecureApiClient {
   private sanitizeId(id: string): string {
     return String(id)
       .replace(/[^a-zA-Z0-9\-_.]/g, '')
-      .slice(0, 50);
+      .slice(0, 50)
   }
 
   /**
@@ -402,25 +385,25 @@ export class SecureApiClient {
   private isValidResponse(response: Response): boolean {
     // Check status code range
     if (response.status < 100 || response.status >= 600) {
-      return false;
+      return false
     }
 
     // Check for required security headers
-    const requiredHeaders = ['x-content-type-options', 'x-frame-options'];
+    const requiredHeaders = ['x-content-type-options', 'x-frame-options']
     for (const header of requiredHeaders) {
       if (!response.headers.has(header)) {
-        console.warn(`Missing security header: ${header}`);
+        console.warn(`Missing security header: ${header}`)
       }
     }
 
-    return true;
+    return true
   }
 
   /**
    * Generate unique request ID
    */
   private generateRequestId(): string {
-    return `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    return `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
   }
 
   /**
@@ -428,8 +411,8 @@ export class SecureApiClient {
    */
   cancelAllRequests(): void {
     for (const [requestId, controller] of this.abortControllers.entries()) {
-      controller.abort();
-      this.abortControllers.delete(requestId);
+      controller.abort()
+      this.abortControllers.delete(requestId)
     }
   }
 
@@ -437,18 +420,18 @@ export class SecureApiClient {
    * Cancel specific request
    */
   cancelRequest(requestId: string): boolean {
-    const controller = this.abortControllers.get(requestId);
+    const controller = this.abortControllers.get(requestId)
     if (controller) {
-      controller.abort();
-      this.abortControllers.delete(requestId);
-      return true;
+      controller.abort()
+      this.abortControllers.delete(requestId)
+      return true
     }
-    return false;
+    return false
   }
 }
 
 // Create singleton instance
-export const secureApiClient = new SecureApiClient();
+export const secureApiClient = new SecureApiClient()
 
 /**
  * React hook for secure API operations
@@ -463,8 +446,7 @@ export const useSecureApi = () => {
     deleteRepository: (id: string) => secureApiClient.deleteRepository(id),
 
     // Project operations
-    createProject: (repoId: string, name: string) =>
-      secureApiClient.createProject(repoId, name),
+    createProject: (repoId: string, name: string) => secureApiClient.createProject(repoId, name),
 
     // Task operations
     updateTaskStatus: (taskId: string | number, status: string) =>
@@ -472,7 +454,7 @@ export const useSecureApi = () => {
 
     // Utility
     cancelAllRequests: () => secureApiClient.cancelAllRequests(),
-  };
-};
+  }
+}
 
-export default secureApiClient;
+export default secureApiClient

@@ -1,34 +1,33 @@
-import React from 'react';
-import { useDroppable } from '@dnd-kit/core';
-import { cn } from '../../../utils/cn';
+import React from 'react'
+import { useDroppable } from '@dnd-kit/core'
+import { cn } from '../../../utils/cn'
 
-export interface DroppableAreaProps
-  extends React.HTMLAttributes<HTMLDivElement> {
+export interface DroppableAreaProps extends React.HTMLAttributes<HTMLDivElement> {
   /**
    * Unique identifier for the droppable area
    */
-  id: string;
+  id: string
   /**
    * Data to pass when something is dropped
    */
-  data?: Record<string, any>;
+  data?: Record<string, any>
   /**
    * Disable drop functionality
    * @default false
    */
-  disabled?: boolean;
+  disabled?: boolean
   /**
    * Content to display when area is empty
    */
-  placeholder?: React.ReactNode;
+  placeholder?: React.ReactNode
   /**
    * Custom styling for different drop states
    */
-  variant?: 'default' | 'highlighted' | 'minimal';
+  variant?: 'default' | 'highlighted' | 'minimal'
   /**
    * Size of the droppable area
    */
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'sm' | 'md' | 'lg' | 'xl'
 }
 
 const DroppableArea = React.forwardRef<HTMLDivElement, DroppableAreaProps>(
@@ -50,7 +49,7 @@ const DroppableArea = React.forwardRef<HTMLDivElement, DroppableAreaProps>(
       id,
       data,
       disabled,
-    });
+    })
 
     const baseStyles = cn(
       'rounded-lg border-2 border-dashed transition-all duration-200 ease-in-out',
@@ -60,8 +59,7 @@ const DroppableArea = React.forwardRef<HTMLDivElement, DroppableAreaProps>(
           variant === 'default',
         'border-primary-300 bg-primary-50/50 dark:border-primary-600 dark:bg-primary-900/20':
           variant === 'highlighted',
-        'border-transparent bg-transparent dark:bg-transparent':
-          variant === 'minimal',
+        'border-transparent bg-transparent dark:bg-transparent': variant === 'minimal',
         // Size styles
         'min-h-[80px] p-4': size === 'sm',
         'min-h-[120px] p-6': size === 'md',
@@ -78,18 +76,18 @@ const DroppableArea = React.forwardRef<HTMLDivElement, DroppableAreaProps>(
         'opacity-50 cursor-not-allowed': disabled,
       },
       className
-    );
+    )
 
-    const hasContent = children || placeholder;
+    const hasContent = children || placeholder
 
     return (
       <div
-        ref={node => {
-          setNodeRef(node);
+        ref={(node) => {
+          setNodeRef(node)
           if (typeof ref === 'function') {
-            ref(node);
+            ref(node)
           } else if (ref) {
-            ref.current = node;
+            ref.current = node
           }
         }}
         className={baseStyles}
@@ -120,24 +118,18 @@ const DroppableArea = React.forwardRef<HTMLDivElement, DroppableAreaProps>(
                   stroke="currentColor"
                   strokeWidth={1.5}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 4.5v15m7.5-7.5h-15"
-                  />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>
               </div>
-              <p className="text-sm text-secondary-500 dark:text-secondary-400">
-                Drop items here
-              </p>
+              <p className="text-sm text-secondary-500 dark:text-secondary-400">Drop items here</p>
             </div>
           </div>
         )}
       </div>
-    );
+    )
   }
-);
+)
 
-DroppableArea.displayName = 'DroppableArea';
+DroppableArea.displayName = 'DroppableArea'
 
-export { DroppableArea };
+export { DroppableArea }

@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { ModernDashboardView } from './ModernDashboardView';
-import { Button } from '../ui/atoms/Button';
-import { Badge } from '../ui/atoms/Badge';
-import { Card, CardHeader, CardTitle, CardContent } from '../ui/atoms/Card';
-import { Icon, HomeFilledIcon, TaskIcon, CompleteIcon } from '../ui/atoms/Icon';
+import React, { useState } from 'react'
+import { ModernDashboardView } from './ModernDashboardView'
+import { Button } from '../ui/atoms/Button'
+import { Badge } from '../ui/atoms/Badge'
+import { Card, CardHeader, CardTitle, CardContent } from '../ui/atoms/Card'
+import { Icon, HomeFilledIcon, TaskIcon, CompleteIcon } from '../ui/atoms/Icon'
 
 /**
  * Dashboard Demo Component
@@ -12,12 +12,12 @@ import { Icon, HomeFilledIcon, TaskIcon, CompleteIcon } from '../ui/atoms/Icon';
  * and theme switching capabilities.
  */
 export const DashboardDemo: React.FC = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false)
 
   const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
-    document.documentElement.classList.toggle('dark');
-  };
+    setIsDarkMode(!isDarkMode)
+    document.documentElement.classList.toggle('dark')
+  }
 
   return (
     <div className={isDarkMode ? 'dark' : ''}>
@@ -112,7 +112,7 @@ export const DashboardDemo: React.FC = () => {
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default DashboardDemo;
+export default DashboardDemo

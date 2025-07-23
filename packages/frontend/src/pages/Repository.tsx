@@ -1,7 +1,7 @@
-import React from 'react';
-import { 
-  GitBranch, 
-  GitCommit, 
+import React from 'react'
+import {
+  GitBranch,
+  GitCommit,
   GitPullRequest,
   GitMerge,
   Plus,
@@ -16,20 +16,20 @@ import {
   ArrowRight,
   Code2,
   Folder,
-  ArrowUpRight
-} from 'lucide-react';
+  ArrowUpRight,
+} from 'lucide-react'
 
 interface Repository {
-  id: string;
-  name: string;
-  description: string;
-  path: string;
-  status: 'active' | 'inactive' | 'error';
-  commits: number;
-  branches: number;
-  lastActivity: string;
-  currentBranch: string;
-  language: string;
+  id: string
+  name: string
+  description: string
+  path: string
+  status: 'active' | 'inactive' | 'error'
+  commits: number
+  branches: number
+  lastActivity: string
+  currentBranch: string
+  language: string
 }
 
 const Repository: React.FC = () => {
@@ -44,7 +44,7 @@ const Repository: React.FC = () => {
       branches: 5,
       lastActivity: '2 hours ago',
       currentBranch: 'main',
-      language: 'TypeScript'
+      language: 'TypeScript',
     },
     {
       id: '2',
@@ -56,7 +56,7 @@ const Repository: React.FC = () => {
       branches: 3,
       lastActivity: '1 day ago',
       currentBranch: 'develop',
-      language: 'Go'
+      language: 'Go',
     },
     {
       id: '3',
@@ -68,9 +68,9 @@ const Repository: React.FC = () => {
       branches: 2,
       lastActivity: '3 days ago',
       currentBranch: 'main',
-      language: 'Python'
-    }
-  ];
+      language: 'Python',
+    },
+  ]
 
   return (
     <div className="space-y-8">
@@ -237,8 +237,8 @@ const Repository: React.FC = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 // Repository Card Component
 const RepositoryCard: React.FC<{ repo: Repository }> = ({ repo }) => {
@@ -248,17 +248,19 @@ const RepositoryCard: React.FC<{ repo: Repository }> = ({ repo }) => {
         <div className="flex-1">
           <div className="flex items-center gap-3 mb-2">
             <h3 className="text-lg font-semibold text-gray-900">{repo.name}</h3>
-            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-              repo.status === 'active' 
-                ? 'bg-green-100 text-green-700' 
-                : 'bg-gray-100 text-gray-700'
-            }`}>
+            <span
+              className={`px-2 py-1 rounded-full text-xs font-medium ${
+                repo.status === 'active'
+                  ? 'bg-green-100 text-green-700'
+                  : 'bg-gray-100 text-gray-700'
+              }`}
+            >
               {repo.status}
             </span>
           </div>
           <p className="text-sm text-gray-600 mb-2">{repo.description}</p>
           <p className="text-xs text-gray-500 font-mono mb-3">{repo.path}</p>
-          
+
           <div className="flex items-center gap-4 text-sm">
             <span className="flex items-center gap-1">
               <Code2 className="w-4 h-4 text-gray-400" />
@@ -278,7 +280,7 @@ const RepositoryCard: React.FC<{ repo: Repository }> = ({ repo }) => {
             </span>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-2 ml-4">
           <button className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
             <ExternalLink className="w-4 h-4" />
@@ -289,20 +291,22 @@ const RepositoryCard: React.FC<{ repo: Repository }> = ({ repo }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 // Quick Action Component
 const QuickAction: React.FC<{
-  icon: React.ReactNode;
-  iconBg: string;
-  label: string;
-  description: string;
+  icon: React.ReactNode
+  iconBg: string
+  label: string
+  description: string
 }> = ({ icon, iconBg, label, description }) => {
   return (
     <button className="p-4 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 text-left">
       <div className="flex items-start gap-3">
-        <div className={`w-8 h-8 ${iconBg} rounded-lg flex items-center justify-center flex-shrink-0`}>
+        <div
+          className={`w-8 h-8 ${iconBg} rounded-lg flex items-center justify-center flex-shrink-0`}
+        >
           {icon}
         </div>
         <div>
@@ -311,20 +315,22 @@ const QuickAction: React.FC<{
         </div>
       </div>
     </button>
-  );
-};
+  )
+}
 
 // Activity Item Component
 const ActivityItem: React.FC<{
-  icon: React.ReactNode;
-  iconBg: string;
-  title: string;
-  subtitle: string;
-  time: string;
+  icon: React.ReactNode
+  iconBg: string
+  title: string
+  subtitle: string
+  time: string
 }> = ({ icon, iconBg, title, subtitle, time }) => {
   return (
     <div className="flex items-start gap-4">
-      <div className={`w-8 h-8 ${iconBg} rounded-full flex items-center justify-center flex-shrink-0 mt-0.5`}>
+      <div
+        className={`w-8 h-8 ${iconBg} rounded-full flex items-center justify-center flex-shrink-0 mt-0.5`}
+      >
         {icon}
       </div>
       <div className="flex-1 min-w-0">
@@ -333,7 +339,7 @@ const ActivityItem: React.FC<{
         <p className="text-xs text-gray-500 mt-1">{time}</p>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Repository;
+export default Repository

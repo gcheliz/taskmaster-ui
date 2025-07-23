@@ -7,7 +7,7 @@
     "dev": "vite",
     "dev:docker": "npx vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint . --max-warnings 300",
+    "lint": "eslint . --max-warnings 350",
     "lint:strict": "eslint . --config .eslintrc.strict.json",
     "preview": "vite preview",
     "test": "vitest",

@@ -1,10 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { DndContext, DragOverlay, closestCenter } from '@dnd-kit/core';
-import { useState } from 'react';
-import { DroppableArea } from '../../components/ui/atoms/DroppableArea';
-import { DraggableCard } from '../../components/ui/atoms/DraggableCard';
-import { Button } from '../../components/ui/atoms/Button';
-import { Badge } from '../../components/ui/atoms/Badge';
+import type { Meta, StoryObj } from '@storybook/react'
+import { DndContext, DragOverlay, closestCenter } from '@dnd-kit/core'
+import { useState } from 'react'
+import { DroppableArea } from '../../components/ui/atoms/DroppableArea'
+import { DraggableCard } from '../../components/ui/atoms/DraggableCard'
+import { Button } from '../../components/ui/atoms/Button'
+import { Badge } from '../../components/ui/atoms/Badge'
 import {
   Icon,
   PlusIcon,
@@ -12,12 +12,12 @@ import {
   TrashIcon,
   CheckIcon,
   TimeIcon,
-} from '../../components/ui/atoms/Icon';
+} from '../../components/ui/atoms/Icon'
 
 // Create missing icon aliases for compatibility
-const ClockIcon = TimeIcon;
-const FolderIcon = ArchiveIcon; // Use ArchiveIcon as folder substitute
-const InboxIcon = ArchiveIcon; // Use ArchiveIcon as inbox substitute
+const ClockIcon = TimeIcon
+const FolderIcon = ArchiveIcon // Use ArchiveIcon as folder substitute
+const InboxIcon = ArchiveIcon // Use ArchiveIcon as inbox substitute
 
 const meta: Meta<typeof DroppableArea> = {
   title: 'Atoms/DroppableArea',
@@ -65,7 +65,7 @@ const meta: Meta<typeof DroppableArea> = {
     },
   },
   decorators: [
-    Story => (
+    (Story) => (
       <DndContext collisionDetection={closestCenter}>
         <div className="p-8">
           <Story />
@@ -73,17 +73,17 @@ const meta: Meta<typeof DroppableArea> = {
       </DndContext>
     ),
   ],
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {
     id: 'default-drop-zone',
     placeholder: 'Drop items here',
   },
-};
+}
 
 export const WithCustomPlaceholder: Story = {
   args: {
@@ -91,27 +91,19 @@ export const WithCustomPlaceholder: Story = {
     placeholder: (
       <div className="text-center">
         <Icon icon={InboxIcon} size="lg" className="text-secondary-400 mb-2" />
-        <p className="font-medium text-secondary-600">
-          Drop tasks to get started
-        </p>
-        <p className="text-sm text-secondary-500 mt-1">
-          Drag task cards from the sidebar
-        </p>
+        <p className="font-medium text-secondary-600">Drop tasks to get started</p>
+        <p className="text-sm text-secondary-500 mt-1">Drag task cards from the sidebar</p>
       </div>
     ),
   },
-};
+}
 
 export const DifferentVariants: Story = {
   render: () => (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl">
       <div>
         <h4 className="font-medium mb-3">Default</h4>
-        <DroppableArea
-          id="default-variant"
-          variant="default"
-          placeholder="Default styling"
-        />
+        <DroppableArea id="default-variant" variant="default" placeholder="Default styling" />
       </div>
       <div>
         <h4 className="font-medium mb-3">Highlighted</h4>
@@ -123,54 +115,34 @@ export const DifferentVariants: Story = {
       </div>
       <div>
         <h4 className="font-medium mb-3">Minimal</h4>
-        <DroppableArea
-          id="minimal-variant"
-          variant="minimal"
-          placeholder="Minimal styling"
-        />
+        <DroppableArea id="minimal-variant" variant="minimal" placeholder="Minimal styling" />
       </div>
     </div>
   ),
-};
+}
 
 export const DifferentSizes: Story = {
   render: () => (
     <div className="space-y-6 max-w-2xl">
       <div>
         <h4 className="font-medium mb-3">Small (80px min-height)</h4>
-        <DroppableArea
-          id="small-size"
-          size="sm"
-          placeholder="Small drop zone"
-        />
+        <DroppableArea id="small-size" size="sm" placeholder="Small drop zone" />
       </div>
       <div>
         <h4 className="font-medium mb-3">Medium (120px min-height)</h4>
-        <DroppableArea
-          id="medium-size"
-          size="md"
-          placeholder="Medium drop zone"
-        />
+        <DroppableArea id="medium-size" size="md" placeholder="Medium drop zone" />
       </div>
       <div>
         <h4 className="font-medium mb-3">Large (160px min-height)</h4>
-        <DroppableArea
-          id="large-size"
-          size="lg"
-          placeholder="Large drop zone"
-        />
+        <DroppableArea id="large-size" size="lg" placeholder="Large drop zone" />
       </div>
       <div>
         <h4 className="font-medium mb-3">Extra Large (200px min-height)</h4>
-        <DroppableArea
-          id="xl-size"
-          size="xl"
-          placeholder="Extra large drop zone"
-        />
+        <DroppableArea id="xl-size" size="xl" placeholder="Extra large drop zone" />
       </div>
     </div>
   ),
-};
+}
 
 export const Disabled: Story = {
   args: {
@@ -178,7 +150,7 @@ export const Disabled: Story = {
     disabled: true,
     placeholder: 'This drop zone is disabled',
   },
-};
+}
 
 export const WithContent: Story = {
   args: {
@@ -203,32 +175,32 @@ export const WithContent: Story = {
       </div>
     ),
   },
-};
+}
 
 // Interactive demo showing drop functionality
 export const InteractiveDropDemo: Story = {
   render: () => {
-    const [droppedItems, setDroppedItems] = useState<string[]>([]);
+    const [droppedItems, setDroppedItems] = useState<string[]>([])
     const [availableItems] = useState([
       { id: 'item-1', title: 'Task 1', color: 'blue' },
       { id: 'item-2', title: 'Task 2', color: 'green' },
       { id: 'item-3', title: 'Task 3', color: 'yellow' },
-    ]);
+    ])
 
     const handleDragEnd = (event: any) => {
-      const { active, over } = event;
+      const { active, over } = event
 
       if (over && over.id === 'interactive-drop-zone') {
-        const itemId = active.id;
+        const itemId = active.id
         if (!droppedItems.includes(itemId)) {
-          setDroppedItems(prev => [...prev, itemId]);
+          setDroppedItems((prev) => [...prev, itemId])
         }
       }
-    };
+    }
 
     const clearDropZone = () => {
-      setDroppedItems([]);
-    };
+      setDroppedItems([])
+    }
 
     return (
       <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
@@ -237,7 +209,7 @@ export const InteractiveDropDemo: Story = {
           <div>
             <h3 className="font-semibold mb-4">Available Items</h3>
             <div className="space-y-3">
-              {availableItems.map(item => (
+              {availableItems.map((item) => (
                 <DraggableCard
                   key={item.id}
                   id={item.id}
@@ -245,9 +217,7 @@ export const InteractiveDropDemo: Story = {
                   className={droppedItems.includes(item.id) ? 'opacity-50' : ''}
                 >
                   <div className="flex items-center gap-3">
-                    <div
-                      className={`w-3 h-3 rounded-full bg-${item.color}-500`}
-                    />
+                    <div className={`w-3 h-3 rounded-full bg-${item.color}-500`} />
                     <span className="font-medium">{item.title}</span>
                     {droppedItems.includes(item.id) && (
                       <Badge variant="success" size="sm">
@@ -279,15 +249,9 @@ export const InteractiveDropDemo: Story = {
               placeholder={
                 droppedItems.length === 0 ? (
                   <div className="text-center">
-                    <Icon
-                      icon={InboxIcon}
-                      size="lg"
-                      className="text-blue-400 mb-2"
-                    />
+                    <Icon icon={InboxIcon} size="lg" className="text-blue-400 mb-2" />
                     <p className="font-medium text-blue-600">Drop items here</p>
-                    <p className="text-sm text-blue-500 mt-1">
-                      Drag tasks from the left column
-                    </p>
+                    <p className="text-sm text-blue-500 mt-1">Drag tasks from the left column</p>
                   </div>
                 ) : undefined
               }
@@ -295,34 +259,28 @@ export const InteractiveDropDemo: Story = {
               {droppedItems.length > 0 && (
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 mb-3">
-                    <Icon
-                      icon={CheckIcon}
-                      size="sm"
-                      className="text-green-500"
-                    />
+                    <Icon icon={CheckIcon} size="sm" className="text-green-500" />
                     <span className="font-medium text-green-700">
                       {droppedItems.length} item
                       {droppedItems.length > 1 ? 's' : ''} received
                     </span>
                   </div>
-                  {droppedItems.map(itemId => {
-                    const item = availableItems.find(i => i.id === itemId);
+                  {droppedItems.map((itemId) => {
+                    const item = availableItems.find((i) => i.id === itemId)
                     return item ? (
                       <div
                         key={itemId}
                         className="bg-green-50 border border-green-200 rounded-lg p-3"
                       >
                         <div className="flex items-center gap-3">
-                          <div
-                            className={`w-3 h-3 rounded-full bg-${item.color}-500`}
-                          />
+                          <div className={`w-3 h-3 rounded-full bg-${item.color}-500`} />
                           <span className="font-medium">{item.title}</span>
                           <Badge variant="success" size="sm">
                             Received
                           </Badge>
                         </div>
                       </div>
-                    ) : null;
+                    ) : null
                   })}
                 </div>
               )}
@@ -330,9 +288,9 @@ export const InteractiveDropDemo: Story = {
           </div>
         </div>
       </DndContext>
-    );
+    )
   },
-};
+}
 
 export const KanbanColumns: Story = {
   render: () => (
@@ -394,7 +352,7 @@ export const KanbanColumns: Story = {
       </div>
     </div>
   ),
-};
+}
 
 export const FileUploadZones: Story = {
   render: () => (
@@ -407,17 +365,9 @@ export const FileUploadZones: Story = {
           size="lg"
           placeholder={
             <div className="text-center">
-              <Icon
-                icon={FolderIcon}
-                size="xl"
-                className="text-secondary-400 mb-3"
-              />
-              <p className="font-medium text-secondary-700 mb-1">
-                Drop documents here
-              </p>
-              <p className="text-sm text-secondary-500">
-                Supports PDF, DOC, TXT files
-              </p>
+              <Icon icon={FolderIcon} size="xl" className="text-secondary-400 mb-3" />
+              <p className="font-medium text-secondary-700 mb-1">Drop documents here</p>
+              <p className="text-sm text-secondary-500">Supports PDF, DOC, TXT files</p>
               <Button variant="ghost" size="sm" className="mt-3">
                 Or click to browse
               </Button>
@@ -445,21 +395,17 @@ export const FileUploadZones: Story = {
       </div>
     </div>
   ),
-};
+}
 
 export const DragStatesShowcase: Story = {
   render: () => {
-    const [isOver, setIsOver] = useState(false);
+    const [isOver, setIsOver] = useState(false)
 
     return (
       <div className="space-y-6 max-w-2xl">
         <div>
           <h3 className="font-semibold mb-3">Normal State</h3>
-          <DroppableArea
-            id="normal-state"
-            variant="default"
-            placeholder="Ready to receive items"
-          />
+          <DroppableArea id="normal-state" variant="default" placeholder="Ready to receive items" />
         </div>
 
         <div>
@@ -482,9 +428,7 @@ export const DragStatesShowcase: Story = {
               id="hover-state"
               variant="default"
               className={isOver ? 'border-primary-400 bg-primary-100/50' : ''}
-              placeholder={
-                isOver ? 'Drop items now!' : 'Hover to see drop state'
-              }
+              placeholder={isOver ? 'Drop items now!' : 'Hover to see drop state'}
             />
           </div>
         </div>
@@ -499,9 +443,9 @@ export const DragStatesShowcase: Story = {
           />
         </div>
       </div>
-    );
+    )
   },
-};
+}
 
 export const AccessibilityExample: Story = {
   render: () => (
@@ -509,8 +453,7 @@ export const AccessibilityExample: Story = {
       <div>
         <h3 className="font-semibold mb-3">Keyboard Navigation Support</h3>
         <p className="text-sm text-secondary-600 mb-4">
-          Drop zones should be announced to screen readers and support keyboard
-          interactions
+          Drop zones should be announced to screen readers and support keyboard interactions
         </p>
       </div>
 
@@ -523,15 +466,9 @@ export const AccessibilityExample: Story = {
         tabIndex={0}
         placeholder={
           <div className="text-center">
-            <Icon
-              icon={InboxIcon}
-              size="lg"
-              className="text-secondary-400 mb-2"
-            />
+            <Icon icon={InboxIcon} size="lg" className="text-secondary-400 mb-2" />
             <p className="font-medium text-secondary-700">Project Tasks</p>
-            <p className="text-sm text-secondary-500 mt-1">
-              Drop or press Enter to add tasks
-            </p>
+            <p className="text-sm text-secondary-500 mt-1">Drop or press Enter to add tasks</p>
           </div>
         }
       />
@@ -545,21 +482,15 @@ export const AccessibilityExample: Story = {
         tabIndex={0}
         placeholder={
           <div className="text-center">
-            <Icon
-              icon={ArchiveIcon}
-              size="lg"
-              className="text-secondary-400 mb-2"
-            />
+            <Icon icon={ArchiveIcon} size="lg" className="text-secondary-400 mb-2" />
             <p className="font-medium text-secondary-700">Archive</p>
-            <p className="text-sm text-secondary-500 mt-1">
-              Drop completed tasks to archive
-            </p>
+            <p className="text-sm text-secondary-500 mt-1">Drop completed tasks to archive</p>
           </div>
         }
       />
     </div>
   ),
-};
+}
 
 export const RealWorldExample: Story = {
   render: () => (
@@ -600,9 +531,7 @@ export const RealWorldExample: Story = {
                   Configure GitHub Actions for automated testing and deployment
                 </p>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-secondary-500">
-                    Due: Mar 20
-                  </span>
+                  <span className="text-xs text-secondary-500">Due: Mar 20</span>
                   <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center">
                     <span className="text-xs text-white">JD</span>
                   </div>
@@ -611,9 +540,7 @@ export const RealWorldExample: Story = {
 
               <div className="bg-white rounded-lg p-4 border border-secondary-200 shadow-sm">
                 <div className="flex items-start justify-between mb-2">
-                  <h5 className="font-medium text-sm">
-                    Design user onboarding
-                  </h5>
+                  <h5 className="font-medium text-sm">Design user onboarding</h5>
                   <Badge variant="warning" size="sm">
                     Medium
                   </Badge>
@@ -622,9 +549,7 @@ export const RealWorldExample: Story = {
                   Create wireframes and user flow for new user experience
                 </p>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-secondary-500">
-                    Due: Mar 25
-                  </span>
+                  <span className="text-xs text-secondary-500">Due: Mar 25</span>
                   <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center">
                     <span className="text-xs text-white">AM</span>
                   </div>
@@ -651,15 +576,9 @@ export const RealWorldExample: Story = {
             className="min-h-[400px]"
             placeholder={
               <div className="text-center">
-                <Icon
-                  icon={ClockIcon}
-                  size="lg"
-                  className="text-blue-400 mb-3"
-                />
+                <Icon icon={ClockIcon} size="lg" className="text-blue-400 mb-3" />
                 <p className="font-medium text-blue-600">Active Work</p>
-                <p className="text-sm text-blue-500 mt-1">
-                  Drop tasks being worked on
-                </p>
+                <p className="text-sm text-blue-500 mt-1">Drop tasks being worked on</p>
               </div>
             }
           />
@@ -684,17 +603,13 @@ export const RealWorldExample: Story = {
             <div className="space-y-3">
               <div className="bg-white rounded-lg p-4 border border-green-200 shadow-sm opacity-75">
                 <div className="flex items-start justify-between mb-2">
-                  <h5 className="font-medium text-sm line-through">
-                    Setup project structure
-                  </h5>
+                  <h5 className="font-medium text-sm line-through">Setup project structure</h5>
                   <Badge variant="success" size="sm">
                     Done
                   </Badge>
                 </div>
                 <div className="flex items-center justify-between mt-3">
-                  <span className="text-xs text-secondary-500">
-                    Completed Mar 10
-                  </span>
+                  <span className="text-xs text-secondary-500">Completed Mar 10</span>
                   <Icon icon={CheckIcon} size="sm" className="text-green-500" />
                 </div>
               </div>
@@ -704,4 +619,4 @@ export const RealWorldExample: Story = {
       </div>
     </div>
   ),
-};
+}

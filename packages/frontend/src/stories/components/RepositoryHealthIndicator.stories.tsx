@@ -1,12 +1,12 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react'
 import {
   RepositoryHealthIndicator,
   HealthScoreCompact,
-} from '../../components/Repository/RepositoryHealthIndicator';
+} from '../../components/Repository/RepositoryHealthIndicator'
 import type {
   RepositoryHealthMetrics,
   RepositoryStatistics,
-} from '../../services/repositoryService';
+} from '../../services/repositoryService'
 
 const meta: Meta<typeof RepositoryHealthIndicator> = {
   title: 'Components/Repository/RepositoryHealthIndicator',
@@ -56,14 +56,14 @@ const meta: Meta<typeof RepositoryHealthIndicator> = {
       description: 'Size variant',
     },
   },
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 // Helper to generate dates relative to now
 const getRelativeDate = (hoursAgo: number) =>
-  new Date(Date.now() - hoursAgo * 60 * 60 * 1000).toISOString();
+  new Date(Date.now() - hoursAgo * 60 * 60 * 1000).toISOString()
 
 // Mock data for health metrics and statistics
 const excellentHealthMetrics: RepositoryHealthMetrics = {
@@ -110,7 +110,7 @@ const excellentHealthMetrics: RepositoryHealthMetrics = {
       },
     ],
   },
-};
+}
 
 const goodHealthMetrics: RepositoryHealthMetrics = {
   score: 76,
@@ -161,7 +161,7 @@ const goodHealthMetrics: RepositoryHealthMetrics = {
       },
     ],
   },
-};
+}
 
 const poorHealthMetrics: RepositoryHealthMetrics = {
   score: 38,
@@ -217,7 +217,7 @@ const poorHealthMetrics: RepositoryHealthMetrics = {
       },
     ],
   },
-};
+}
 
 const activeStatistics: RepositoryStatistics = {
   commits: {
@@ -276,7 +276,7 @@ const activeStatistics: RepositoryStatistics = {
     peakHour: 14,
     peakDay: 'Tuesday',
   },
-};
+}
 
 const staleStatistics: RepositoryStatistics = {
   commits: {
@@ -335,7 +335,7 @@ const staleStatistics: RepositoryStatistics = {
     peakHour: 10,
     peakDay: 'Monday',
   },
-};
+}
 
 export const ExcellentHealth: Story = {
   args: {
@@ -358,7 +358,7 @@ export const ExcellentHealth: Story = {
       },
     },
   },
-};
+}
 
 export const GoodHealth: Story = {
   args: {
@@ -381,7 +381,7 @@ export const GoodHealth: Story = {
       },
     },
   },
-};
+}
 
 export const FairHealth: Story = {
   args: {
@@ -420,12 +420,11 @@ export const FairHealth: Story = {
   parameters: {
     docs: {
       description: {
-        story:
-          'Repository with fair health score (60-74) - some maintenance needed.',
+        story: 'Repository with fair health score (60-74) - some maintenance needed.',
       },
     },
   },
-};
+}
 
 export const PoorHealth: Story = {
   args: {
@@ -448,7 +447,7 @@ export const PoorHealth: Story = {
       },
     },
   },
-};
+}
 
 export const CriticalHealth: Story = {
   args: {
@@ -487,12 +486,11 @@ export const CriticalHealth: Story = {
   parameters: {
     docs: {
       description: {
-        story:
-          'Repository with critical health score (<40) - urgent attention required.',
+        story: 'Repository with critical health score (<40) - urgent attention required.',
       },
     },
   },
-};
+}
 
 export const WithDetailedBreakdown: Story = {
   args: {
@@ -515,7 +513,7 @@ export const WithDetailedBreakdown: Story = {
       },
     },
   },
-};
+}
 
 export const WithoutScore: Story = {
   args: {
@@ -533,12 +531,11 @@ export const WithoutScore: Story = {
   parameters: {
     docs: {
       description: {
-        story:
-          'Health indicator showing only the level badge without numerical score.',
+        story: 'Health indicator showing only the level badge without numerical score.',
       },
     },
   },
-};
+}
 
 export const LargeSize: Story = {
   args: {
@@ -556,12 +553,11 @@ export const LargeSize: Story = {
   parameters: {
     docs: {
       description: {
-        story:
-          'Large size variant with detailed breakdown for dashboard displays.',
+        story: 'Large size variant with detailed breakdown for dashboard displays.',
       },
     },
   },
-};
+}
 
 export const SmallSize: Story = {
   args: {
@@ -583,7 +579,7 @@ export const SmallSize: Story = {
       },
     },
   },
-};
+}
 
 // Health Score Compact component stories
 const metaCompact: Meta<typeof HealthScoreCompact> = {
@@ -615,7 +611,7 @@ const metaCompact: Meta<typeof HealthScoreCompact> = {
       description: 'Size variant',
     },
   },
-};
+}
 
 export const CompactExcellent: StoryObj<typeof metaCompact> = {
   args: {
@@ -630,7 +626,7 @@ export const CompactExcellent: StoryObj<typeof metaCompact> = {
       },
     },
   },
-};
+}
 
 export const CompactGood: StoryObj<typeof metaCompact> = {
   args: {
@@ -645,7 +641,7 @@ export const CompactGood: StoryObj<typeof metaCompact> = {
       },
     },
   },
-};
+}
 
 export const CompactFair: StoryObj<typeof metaCompact> = {
   args: {
@@ -660,7 +656,7 @@ export const CompactFair: StoryObj<typeof metaCompact> = {
       },
     },
   },
-};
+}
 
 export const CompactPoor: StoryObj<typeof metaCompact> = {
   args: {
@@ -675,7 +671,7 @@ export const CompactPoor: StoryObj<typeof metaCompact> = {
       },
     },
   },
-};
+}
 
 export const CompactCritical: StoryObj<typeof metaCompact> = {
   args: {
@@ -690,7 +686,7 @@ export const CompactCritical: StoryObj<typeof metaCompact> = {
       },
     },
   },
-};
+}
 
 export const CompactSizes: StoryObj<typeof metaCompact> = {
   render: () => (
@@ -707,4 +703,4 @@ export const CompactSizes: StoryObj<typeof metaCompact> = {
       },
     },
   },
-};
+}

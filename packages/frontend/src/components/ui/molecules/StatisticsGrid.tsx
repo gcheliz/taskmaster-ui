@@ -1,46 +1,40 @@
-import React from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from '../atoms/Card';
-import { Badge } from '../atoms/Badge';
-import {
-  Icon,
-  TaskIcon,
-  CompleteIcon,
-  TimeIcon,
-  StarFilledIcon,
-} from '../atoms/Icon';
+import React from 'react'
+import { Card, CardHeader, CardTitle, CardContent } from '../atoms/Card'
+import { Badge } from '../atoms/Badge'
+import { Icon, TaskIcon, CompleteIcon, TimeIcon, StarFilledIcon } from '../atoms/Icon'
 
 export interface TaskMetrics {
-  total: number;
-  completed: number;
-  inProgress: number;
-  pending: number;
-  blocked: number;
-  deferred?: number;
-  completionRate: number;
-  statusBreakdown: Record<string, number>;
+  total: number
+  completed: number
+  inProgress: number
+  pending: number
+  blocked: number
+  deferred?: number
+  completionRate: number
+  statusBreakdown: Record<string, number>
 }
 
 export interface ProjectInsights {
-  totalEstimatedHours: number;
-  averageTaskComplexity: number;
-  productivityScore: number;
-  recommendations: string[];
+  totalEstimatedHours: number
+  averageTaskComplexity: number
+  productivityScore: number
+  recommendations: string[]
 }
 
 export interface ProjectHealth {
-  score: number;
-  status: 'excellent' | 'good' | 'fair' | 'needs-attention';
-  lastChecked?: string;
-  issues?: string[];
+  score: number
+  status: 'excellent' | 'good' | 'fair' | 'needs-attention'
+  lastChecked?: string
+  issues?: string[]
 }
 
 export interface StatisticsGridProps {
-  taskMetrics: TaskMetrics;
-  insights: ProjectInsights;
-  health?: ProjectHealth;
-  className?: string;
-  showHealthIndicator?: boolean;
-  showProgressBars?: boolean;
+  taskMetrics: TaskMetrics
+  insights: ProjectInsights
+  health?: ProjectHealth
+  className?: string
+  showHealthIndicator?: boolean
+  showProgressBars?: boolean
 }
 
 const StatisticsGrid: React.FC<StatisticsGridProps> = ({
@@ -56,25 +50,25 @@ const StatisticsGrid: React.FC<StatisticsGridProps> = ({
   ): 'success' | 'primary' | 'warning' | 'error' | 'secondary' => {
     switch (status) {
       case 'excellent':
-        return 'success';
+        return 'success'
       case 'good':
-        return 'primary';
+        return 'primary'
       case 'fair':
-        return 'warning';
+        return 'warning'
       case 'needs-attention':
-        return 'error';
+        return 'error'
       default:
-        return 'secondary';
+        return 'secondary'
     }
-  };
+  }
 
   const formatPercentage = (value: number): string => {
-    return `${Math.round(value)}%`;
-  };
+    return `${Math.round(value)}%`
+  }
 
   const getHealthStatusText = (status: string): string => {
-    return status.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
-  };
+    return status.replace('-', ' ').replace(/\b\w/g, (l) => l.toUpperCase())
+  }
 
   const statCards = [
     {
@@ -82,13 +76,7 @@ const StatisticsGrid: React.FC<StatisticsGridProps> = ({
       title: 'Total Tasks',
       value: taskMetrics.total,
       icon: TaskIcon,
-      color: 'primary' as
-        | 'primary'
-        | 'secondary'
-        | 'success'
-        | 'warning'
-        | 'error'
-        | 'muted',
+      color: 'primary' as 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'muted',
       badges: [
         {
           variant: 'success' as const,
@@ -106,13 +94,7 @@ const StatisticsGrid: React.FC<StatisticsGridProps> = ({
       title: 'Completion Rate',
       value: formatPercentage(taskMetrics.completionRate),
       icon: CompleteIcon,
-      color: 'success' as
-        | 'primary'
-        | 'secondary'
-        | 'success'
-        | 'warning'
-        | 'error'
-        | 'muted',
+      color: 'success' as 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'muted',
       progressBar: showProgressBars
         ? {
             percentage: taskMetrics.completionRate,
@@ -127,13 +109,7 @@ const StatisticsGrid: React.FC<StatisticsGridProps> = ({
       title: 'Estimated Hours',
       value: `${insights.totalEstimatedHours}h`,
       icon: TimeIcon,
-      color: 'warning' as
-        | 'primary'
-        | 'secondary'
-        | 'success'
-        | 'warning'
-        | 'error'
-        | 'muted',
+      color: 'warning' as 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'muted',
       badges: [
         {
           variant: 'warning' as const,
@@ -146,18 +122,18 @@ const StatisticsGrid: React.FC<StatisticsGridProps> = ({
       ],
       description: 'Total estimated work hours',
     },
-  ];
+  ]
 
   // Add health indicator if enabled
   if (showHealthIndicator) {
-    const healthVariant = health ? getHealthColor(health.status) : 'secondary';
+    const healthVariant = health ? getHealthColor(health.status) : 'secondary'
 
     const healthBadgeVariant =
       healthVariant === 'error'
         ? ('warning' as const)
         : healthVariant === 'primary'
           ? ('success' as const)
-          : ('secondary' as const);
+          : ('secondary' as const)
     const healthBadges = [
       {
         variant: healthBadgeVariant,
@@ -167,32 +143,24 @@ const StatisticsGrid: React.FC<StatisticsGridProps> = ({
         variant: 'secondary' as const,
         text: `Score: ${formatPercentage(insights.productivityScore)}`,
       },
-    ];
+    ]
 
-    (statCards as any).push({
+    ;(statCards as any).push({
       id: 'project-health',
       title: 'Project Health',
       value: health ? Math.round(health.score).toString() : '--',
       icon: StarFilledIcon,
-      color: healthVariant as
-        | 'primary'
-        | 'secondary'
-        | 'success'
-        | 'warning'
-        | 'error'
-        | 'muted',
+      color: healthVariant as 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'muted',
       badges: healthBadges,
       description: health?.lastChecked
         ? `Last checked: ${new Date(health.lastChecked).toLocaleDateString()}`
         : 'Project health metrics',
-    });
+    })
   }
 
   return (
-    <div
-      className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ${className}`}
-    >
-      {statCards.map(card => (
+    <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ${className}`}>
+      {statCards.map((card) => (
         <Card
           key={card.id}
           variant="elevated"
@@ -252,14 +220,12 @@ const StatisticsGrid: React.FC<StatisticsGridProps> = ({
             )}
 
             {/* Description */}
-            <p className="text-sm text-secondary-600 dark:text-secondary-400">
-              {card.description}
-            </p>
+            <p className="text-sm text-secondary-600 dark:text-secondary-400">{card.description}</p>
           </CardContent>
         </Card>
       ))}
     </div>
-  );
-};
+  )
+}
 
-export { StatisticsGrid };
+export { StatisticsGrid }

@@ -1,17 +1,14 @@
-import React from 'react';
-import { cn } from '../../utils/cn';
-import { Card, CardContent } from '../ui/molecules/Card';
-import { Badge } from '../ui/atoms/Badge';
-import { Button } from '../ui/atoms/Button';
-import type { RepositoryCardProps } from './RepositoryCard';
+import React from 'react'
+import { cn } from '../../utils/cn'
+import { Card, CardContent } from '../ui/molecules/Card'
+import { Badge } from '../ui/atoms/Badge'
+import { Button } from '../ui/atoms/Button'
+import type { RepositoryCardProps } from './RepositoryCard'
 
 export interface RepositoryCardCompactProps
-  extends Omit<
-    RepositoryCardProps,
-    'size' | 'showDetails' | 'showHealth' | 'showIntegrations'
-  > {
+  extends Omit<RepositoryCardProps, 'size' | 'showDetails' | 'showHealth' | 'showIntegrations'> {
   /** Whether to show minimal information only */
-  minimal?: boolean;
+  minimal?: boolean
 }
 
 export const RepositoryCardCompact: React.FC<RepositoryCardCompactProps> = ({
@@ -23,23 +20,22 @@ export const RepositoryCardCompact: React.FC<RepositoryCardCompactProps> = ({
   className,
 }) => {
   const getBranchStatusColor = (status: typeof repository.status): string => {
-    if (!status.isClean) return 'text-red-500';
-    if (status.ahead && status.ahead > 0) return 'text-yellow-500';
-    if (status.behind && status.behind > 0) return 'text-yellow-500';
-    return 'text-green-500';
-  };
+    if (!status.isClean) return 'text-red-500'
+    if (status.ahead && status.ahead > 0) return 'text-yellow-500'
+    if (status.behind && status.behind > 0) return 'text-yellow-500'
+    return 'text-green-500'
+  }
 
   const formatLastCommitDate = (date: string): string => {
-    const commitDate = new Date(date);
-    const now = new Date();
-    const diffInHours =
-      (now.getTime() - commitDate.getTime()) / (1000 * 60 * 60);
+    const commitDate = new Date(date)
+    const now = new Date()
+    const diffInHours = (now.getTime() - commitDate.getTime()) / (1000 * 60 * 60)
 
-    if (diffInHours < 1) return 'now';
-    if (diffInHours < 24) return `${Math.floor(diffInHours)}h`;
-    if (diffInHours < 24 * 7) return `${Math.floor(diffInHours / 24)}d`;
-    return `${Math.floor(diffInHours / (24 * 7))}w`;
-  };
+    if (diffInHours < 1) return 'now'
+    if (diffInHours < 24) return `${Math.floor(diffInHours)}h`
+    if (diffInHours < 24 * 7) return `${Math.floor(diffInHours / 24)}d`
+    return `${Math.floor(diffInHours / (24 * 7))}w`
+  }
 
   const getLanguageColor = (language: string): string => {
     const colors: Record<string, string> = {
@@ -51,9 +47,9 @@ export const RepositoryCardCompact: React.FC<RepositoryCardCompactProps> = ({
       go: '#00add8',
       rust: '#dea584',
       react: '#61dafb',
-    };
-    return colors[language.toLowerCase()] || '#6b7280';
-  };
+    }
+    return colors[language.toLowerCase()] || '#6b7280'
+  }
 
   return (
     <Card
@@ -71,9 +67,7 @@ export const RepositoryCardCompact: React.FC<RepositoryCardCompactProps> = ({
         <div className="flex items-start justify-between mb-3">
           <div className="flex-1 min-w-0">
             <div className="flex items-center space-x-2 mb-1">
-              <h4 className="text-sm font-semibold text-gray-900 truncate">
-                {repository.name}
-              </h4>
+              <h4 className="text-sm font-semibold text-gray-900 truncate">{repository.name}</h4>
               {repository.isPrivate && (
                 <Badge variant="secondary" size="sm">
                   Private
@@ -82,9 +76,7 @@ export const RepositoryCardCompact: React.FC<RepositoryCardCompactProps> = ({
             </div>
 
             {!minimal && repository.description && (
-              <p className="text-xs text-gray-600 line-clamp-1 mb-2">
-                {repository.description}
-              </p>
+              <p className="text-xs text-gray-600 line-clamp-1 mb-2">{repository.description}</p>
             )}
           </div>
 
@@ -110,9 +102,7 @@ export const RepositoryCardCompact: React.FC<RepositoryCardCompactProps> = ({
                 {repository.language}
               </span>
             )}
-            {repository.starCount !== undefined && (
-              <span>{repository.starCount} ★</span>
-            )}
+            {repository.starCount !== undefined && <span>{repository.starCount} ★</span>}
           </div>
           <span>{formatLastCommitDate(repository.lastCommit.date)}</span>
         </div>
@@ -121,14 +111,9 @@ export const RepositoryCardCompact: React.FC<RepositoryCardCompactProps> = ({
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center space-x-1">
             <BranchIcon className="w-3 h-3 text-gray-400" />
-            <span className="text-xs text-gray-600">
-              {repository.currentBranch}
-            </span>
+            <span className="text-xs text-gray-600">{repository.currentBranch}</span>
             <span
-              className={cn(
-                'w-1.5 h-1.5 rounded-full',
-                getBranchStatusColor(repository.status)
-              )}
+              className={cn('w-1.5 h-1.5 rounded-full', getBranchStatusColor(repository.status))}
               title={repository.status.isClean ? 'Clean' : 'Modified'}
             />
           </div>
@@ -137,9 +122,9 @@ export const RepositoryCardCompact: React.FC<RepositoryCardCompactProps> = ({
             <Button
               variant="ghost"
               size="sm"
-              onClick={e => {
-                e.stopPropagation();
-                onViewDetails?.(repository.id);
+              onClick={(e) => {
+                e.stopPropagation()
+                onViewDetails?.(repository.id)
               }}
               className="text-xs px-2 py-1 h-auto opacity-0 group-hover:opacity-100 transition-opacity"
             >
@@ -151,31 +136,19 @@ export const RepositoryCardCompact: React.FC<RepositoryCardCompactProps> = ({
         {/* Last commit (only if not minimal) */}
         {!minimal && (
           <div className="bg-gray-50/50 rounded px-2 py-1">
-            <p className="text-xs text-gray-700 truncate">
-              {repository.lastCommit.message}
-            </p>
+            <p className="text-xs text-gray-700 truncate">{repository.lastCommit.message}</p>
           </div>
         )}
       </CardContent>
     </Card>
-  );
-};
+  )
+}
 
 // Simple branch icon
 const BranchIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg
-    className={className}
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={2}
-      d="M8 9l3 3-3 3m5 0h3"
-    />
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l3 3-3 3m5 0h3" />
   </svg>
-);
+)
 
-export default RepositoryCardCompact;
+export default RepositoryCardCompact

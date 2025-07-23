@@ -1,41 +1,39 @@
-import React from 'react';
-import { Badge } from '../ui/atoms/Badge';
-import { cn } from '../../utils/cn';
+import React from 'react'
+import { Badge } from '../ui/atoms/Badge'
+import { cn } from '../../utils/cn'
 import {
   calculateBranchStatus,
   calculateRepositoryHealth,
   getHealthScoreBadge,
   type RepositoryHealthScore,
-} from '../../utils/repositoryHealth';
+} from '../../utils/repositoryHealth'
 import type {
   RepositoryHealthMetrics,
   RepositoryStatistics,
-} from '../../services/repositoryService';
+} from '../../services/repositoryService'
 
 export interface RepositoryHealthIndicatorProps {
   /** Branch status data */
-  ahead?: number;
-  behind?: number;
-  isClean?: boolean;
-  conflicted?: number;
-  lastCommitDate: string;
+  ahead?: number
+  behind?: number
+  isClean?: boolean
+  conflicted?: number
+  lastCommitDate: string
   /** Health metrics from API */
-  healthMetrics?: RepositoryHealthMetrics;
+  healthMetrics?: RepositoryHealthMetrics
   /** Repository statistics from API */
-  statistics?: RepositoryStatistics;
+  statistics?: RepositoryStatistics
   /** Show detailed breakdown */
-  showDetails?: boolean;
+  showDetails?: boolean
   /** Show score number */
-  showScore?: boolean;
+  showScore?: boolean
   /** Size variant */
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg'
   /** Additional CSS classes */
-  className?: string;
+  className?: string
 }
 
-export const RepositoryHealthIndicator: React.FC<
-  RepositoryHealthIndicatorProps
-> = ({
+export const RepositoryHealthIndicator: React.FC<RepositoryHealthIndicatorProps> = ({
   ahead = 0,
   behind = 0,
   isClean = true,
@@ -49,36 +47,20 @@ export const RepositoryHealthIndicator: React.FC<
   className,
 }) => {
   // Calculate branch status first
-  const branchStatus = calculateBranchStatus(
-    ahead,
-    behind,
-    isClean,
-    conflicted,
-    lastCommitDate
-  );
+  const branchStatus = calculateBranchStatus(ahead, behind, isClean, conflicted, lastCommitDate)
 
   // Calculate overall health score
-  const healthScore = calculateRepositoryHealth(
-    branchStatus,
-    statistics,
-    healthMetrics
-  );
-  const badgeInfo = getHealthScoreBadge(healthScore.level);
+  const healthScore = calculateRepositoryHealth(branchStatus, statistics, healthMetrics)
+  const badgeInfo = getHealthScoreBadge(healthScore.level)
 
   const sizeClasses = {
     sm: 'text-xs',
     md: 'text-sm',
     lg: 'text-base',
-  };
+  }
 
   return (
-    <div
-      className={cn(
-        'repository-health-indicator',
-        sizeClasses[size],
-        className
-      )}
-    >
+    <div className={cn('repository-health-indicator', sizeClasses[size], className)}>
       <div className="flex items-center gap-2">
         <Badge
           variant={badgeInfo.variant}
@@ -93,13 +75,9 @@ export const RepositoryHealthIndicator: React.FC<
           <div className="flex items-center">
             {/* Health level indicator */}
             <div
-              className={cn(
-                'px-2 py-1 rounded-md text-xs font-medium border',
-                healthScore.color
-              )}
+              className={cn('px-2 py-1 rounded-md text-xs font-medium border', healthScore.color)}
             >
-              {healthScore.level.charAt(0).toUpperCase() +
-                healthScore.level.slice(1)}
+              {healthScore.level.charAt(0).toUpperCase() + healthScore.level.slice(1)}
             </div>
           </div>
         )}
@@ -111,42 +89,29 @@ export const RepositoryHealthIndicator: React.FC<
           <div className="grid grid-cols-2 gap-2 text-xs">
             <div className="flex justify-between">
               <span className="text-gray-600">Branch Status:</span>
-              <span className="font-medium">
-                {healthScore.factors.branchStatus}/25
-              </span>
+              <span className="font-medium">{healthScore.factors.branchStatus}/25</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">Commit Activity:</span>
-              <span className="font-medium">
-                {healthScore.factors.commitActivity}/25
-              </span>
+              <span className="font-medium">{healthScore.factors.commitActivity}/25</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">Code Quality:</span>
-              <span className="font-medium">
-                {healthScore.factors.codeQuality}/25
-              </span>
+              <span className="font-medium">{healthScore.factors.codeQuality}/25</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">Maintenance:</span>
-              <span className="font-medium">
-                {healthScore.factors.maintenance}/25
-              </span>
+              <span className="font-medium">{healthScore.factors.maintenance}/25</span>
             </div>
           </div>
 
           {/* Issues and recommendations */}
           {healthScore.issues.length > 0 && (
             <div className="mt-3">
-              <h4 className="text-xs font-medium text-gray-700 mb-1">
-                Issues:
-              </h4>
+              <h4 className="text-xs font-medium text-gray-700 mb-1">Issues:</h4>
               <ul className="space-y-1">
                 {healthScore.issues.slice(0, 3).map((issue, index) => (
-                  <li
-                    key={index}
-                    className="text-xs text-red-600 flex items-start gap-1"
-                  >
+                  <li key={index} className="text-xs text-red-600 flex items-start gap-1">
                     <span className="w-1 h-1 bg-red-500 rounded-full mt-1.5 flex-shrink-0" />
                     <span>{issue}</span>
                   </li>
@@ -162,23 +127,17 @@ export const RepositoryHealthIndicator: React.FC<
 
           {healthScore.recommendations.length > 0 && (
             <div className="mt-3">
-              <h4 className="text-xs font-medium text-gray-700 mb-1">
-                Recommendations:
-              </h4>
+              <h4 className="text-xs font-medium text-gray-700 mb-1">Recommendations:</h4>
               <ul className="space-y-1">
                 {healthScore.recommendations.slice(0, 2).map((rec, index) => (
-                  <li
-                    key={index}
-                    className="text-xs text-blue-600 flex items-start gap-1"
-                  >
+                  <li key={index} className="text-xs text-blue-600 flex items-start gap-1">
                     <span className="w-1 h-1 bg-blue-500 rounded-full mt-1.5 flex-shrink-0" />
                     <span>{rec}</span>
                   </li>
                 ))}
                 {healthScore.recommendations.length > 2 && (
                   <li className="text-xs text-gray-500">
-                    +{healthScore.recommendations.length - 2} more
-                    recommendations
+                    +{healthScore.recommendations.length - 2} more recommendations
                   </li>
                 )}
               </ul>
@@ -187,17 +146,17 @@ export const RepositoryHealthIndicator: React.FC<
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
 /**
  * Compact health score display for use in cards
  */
 export interface HealthScoreCompactProps {
-  score: number;
-  level: 'excellent' | 'good' | 'fair' | 'poor' | 'critical';
-  size?: 'sm' | 'md' | 'lg';
-  className?: string;
+  score: number
+  level: 'excellent' | 'good' | 'fair' | 'poor' | 'critical'
+  size?: 'sm' | 'md' | 'lg'
+  className?: string
 }
 
 export const HealthScoreCompact: React.FC<HealthScoreCompactProps> = ({
@@ -206,13 +165,13 @@ export const HealthScoreCompact: React.FC<HealthScoreCompactProps> = ({
   size = 'md',
   className,
 }) => {
-  const badgeInfo = getHealthScoreBadge(level);
+  const badgeInfo = getHealthScoreBadge(level)
 
   const sizeClasses = {
     sm: 'w-8 h-8 text-xs',
     md: 'w-10 h-10 text-sm',
     lg: 'w-12 h-12 text-base',
-  };
+  }
 
   const colorClasses = {
     excellent: 'bg-green-100 text-green-800 border-green-200',
@@ -220,7 +179,7 @@ export const HealthScoreCompact: React.FC<HealthScoreCompactProps> = ({
     fair: 'bg-yellow-100 text-yellow-800 border-yellow-200',
     poor: 'bg-orange-100 text-orange-800 border-orange-200',
     critical: 'bg-red-100 text-red-800 border-red-200',
-  };
+  }
 
   return (
     <div
@@ -235,7 +194,7 @@ export const HealthScoreCompact: React.FC<HealthScoreCompactProps> = ({
     >
       {score}
     </div>
-  );
-};
+  )
+}
 
-export default RepositoryHealthIndicator;
+export default RepositoryHealthIndicator

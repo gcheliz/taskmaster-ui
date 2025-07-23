@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { RepositoryManagementDemoView } from '../../components/Views/RepositoryManagementDemoView';
+import type { Meta, StoryObj } from '@storybook/react'
+import { RepositoryManagementDemoView } from '../../components/Views/RepositoryManagementDemoView'
 
 const meta: Meta<typeof RepositoryManagementDemoView> = {
   title: 'Views/Repository Management Demo',
@@ -20,10 +20,10 @@ const meta: Meta<typeof RepositoryManagementDemoView> = {
       description: 'Additional CSS class names for styling',
     },
   },
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {},
@@ -35,7 +35,7 @@ export const Default: Story = {
       },
     },
   },
-};
+}
 
 export const FullScreenDemo: Story = {
   args: {
@@ -49,7 +49,7 @@ export const FullScreenDemo: Story = {
       },
     },
   },
-};
+}
 
 export const CompactView: Story = {
   args: {
@@ -63,4 +63,4 @@ export const CompactView: Story = {
       },
     },
   },
-};
+}

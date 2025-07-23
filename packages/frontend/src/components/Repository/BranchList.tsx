@@ -1,45 +1,45 @@
-import React from 'react';
+import React from 'react'
 
 export interface BranchInfo {
-  name: string;
-  isLocal: boolean;
-  isRemote: boolean;
-  isCurrent: boolean;
+  name: string
+  isLocal: boolean
+  isRemote: boolean
+  isCurrent: boolean
   lastCommit: {
-    hash: string;
-    date: string;
-    message: string;
+    hash: string
+    date: string
+    message: string
     author: {
-      name: string;
-      email: string;
-    };
-  };
+      name: string
+      email: string
+    }
+  }
   tracking?: {
-    remote: string;
-    ahead?: number;
-    behind?: number;
-  };
+    remote: string
+    ahead?: number
+    behind?: number
+  }
 }
 
 export interface BranchListProps {
   /** Array of branch information to display */
-  branches: BranchInfo[];
+  branches: BranchInfo[]
   /** Whether the component is in a loading state */
-  isLoading?: boolean;
+  isLoading?: boolean
   /** Error message to display */
-  error?: string | null;
+  error?: string | null
   /** Additional CSS class name */
-  className?: string;
+  className?: string
   /** Click handler for branch selection */
-  onBranchClick?: (branch: BranchInfo) => void;
+  onBranchClick?: (branch: BranchInfo) => void
   /** Click handler for checkout action */
-  onCheckoutBranch?: (branchName: string) => void;
+  onCheckoutBranch?: (branchName: string) => void
   /** Whether to show detailed commit information */
-  showCommitDetails?: boolean;
+  showCommitDetails?: boolean
   /** Whether to show tracking information */
-  showTrackingInfo?: boolean;
+  showTrackingInfo?: boolean
   /** Maximum number of branches to display before pagination */
-  maxDisplayCount?: number;
+  maxDisplayCount?: number
 }
 
 /**
@@ -63,7 +63,7 @@ export const BranchList: React.FC<BranchListProps> = ({
   showTrackingInfo = true,
   maxDisplayCount = 50,
 }) => {
-  const [displayCount, setDisplayCount] = React.useState(maxDisplayCount);
+  const [displayCount, setDisplayCount] = React.useState(maxDisplayCount)
 
   if (isLoading) {
     return (
@@ -80,7 +80,7 @@ export const BranchList: React.FC<BranchListProps> = ({
           ))}
         </div>
       </div>
-    );
+    )
   }
 
   if (error) {
@@ -94,86 +94,86 @@ export const BranchList: React.FC<BranchListProps> = ({
           <span className="error-message">{error}</span>
         </div>
       </div>
-    );
+    )
   }
 
   const formatCommitHash = (hash: string, length: number = 7): string => {
-    return hash.substring(0, length);
-  };
+    return hash.substring(0, length)
+  }
 
   const formatDate = (dateString: string): string => {
     try {
-      const date = new Date(dateString);
-      const now = new Date();
-      const diffMs = now.getTime() - date.getTime();
-      const diffMinutes = Math.floor(diffMs / 60000);
-      const diffHours = Math.floor(diffMinutes / 60);
-      const diffDays = Math.floor(diffHours / 24);
+      const date = new Date(dateString)
+      const now = new Date()
+      const diffMs = now.getTime() - date.getTime()
+      const diffMinutes = Math.floor(diffMs / 60000)
+      const diffHours = Math.floor(diffMinutes / 60)
+      const diffDays = Math.floor(diffHours / 24)
 
       if (diffMinutes < 1) {
-        return 'just now';
+        return 'just now'
       } else if (diffMinutes < 60) {
-        return `${diffMinutes}m ago`;
+        return `${diffMinutes}m ago`
       } else if (diffHours < 24) {
-        return `${diffHours}h ago`;
+        return `${diffHours}h ago`
       } else if (diffDays < 7) {
-        return `${diffDays}d ago`;
+        return `${diffDays}d ago`
       } else {
-        return date.toLocaleDateString();
+        return date.toLocaleDateString()
       }
     } catch {
-      return dateString;
+      return dateString
     }
-  };
+  }
 
   const getBranchIcon = (branch: BranchInfo): string => {
     if (branch.isCurrent) {
-      return '🌟';
+      return '🌟'
     } else if (branch.isLocal && branch.isRemote) {
-      return '🔗';
+      return '🔗'
     } else if (branch.isLocal) {
-      return '🌿';
+      return '🌿'
     } else {
-      return '☁️';
+      return '☁️'
     }
-  };
+  }
 
   const getBranchTypeLabel = (branch: BranchInfo): string => {
     if (branch.isCurrent) {
-      return 'Current';
+      return 'Current'
     } else if (branch.isLocal && branch.isRemote) {
-      return 'Local + Remote';
+      return 'Local + Remote'
     } else if (branch.isLocal) {
-      return 'Local';
+      return 'Local'
     } else {
-      return 'Remote';
+      return 'Remote'
     }
-  };
+  }
 
   const handleBranchClick = (branch: BranchInfo) => {
     if (onBranchClick) {
-      onBranchClick(branch);
+      onBranchClick(branch)
     }
-  };
+  }
 
   const handleCheckoutClick = (e: React.MouseEvent, branchName: string) => {
-    e.stopPropagation();
+    e.stopPropagation()
     if (onCheckoutBranch) {
-      onCheckoutBranch(branchName);
+      onCheckoutBranch(branchName)
     }
-  };
+  }
 
-  const displayedBranches = branches.slice(0, displayCount);
-  const hasMoreBranches = branches.length > displayCount;
+  const displayedBranches = branches.slice(0, displayCount)
+  const hasMoreBranches = branches.length > displayCount
 
   // Sort branches: current first, then local, then remote
   const sortedBranches = [...displayedBranches].sort((a, b) => {
-    if (a.isCurrent && !b.isCurrent) return -1;
-    if (!a.isCurrent && b.isCurrent) return 1;
-    if (a.isLocal && !b.isLocal) return -1;
-    if (!a.isLocal && b.isLocal) return 1;
-    return a.name.localeCompare(b.name);
-  });
+    if (a.isCurrent && !b.isCurrent) return -1
+    if (!a.isCurrent && b.isCurrent) return 1
+    if (a.isLocal && !b.isLocal) return -1
+    if (!a.isLocal && b.isLocal) return 1
+    return a.name.localeCompare(b.name)
+  })
 
   return (
     <div className={`branch-list ${className}`}>
@@ -182,10 +182,10 @@ export const BranchList: React.FC<BranchListProps> = ({
         {branches.length > 0 && (
           <div className="branch-list__summary">
             <span className="summary-item">
-              🌿 {branches.filter(b => b.isLocal).length} local
+              🌿 {branches.filter((b) => b.isLocal).length} local
             </span>
             <span className="summary-item">
-              ☁️ {branches.filter(b => b.isRemote && !b.isLocal).length} remote
+              ☁️ {branches.filter((b) => b.isRemote && !b.isLocal).length} remote
             </span>
           </div>
         )}
@@ -210,18 +210,12 @@ export const BranchList: React.FC<BranchListProps> = ({
               >
                 <div className="branch-item__header">
                   <div className="branch-info">
-                    <span
-                      className="branch-icon"
-                      title={getBranchTypeLabel(branch)}
-                    >
+                    <span className="branch-icon" title={getBranchTypeLabel(branch)}>
                       {getBranchIcon(branch)}
                     </span>
                     <span className="branch-name">{branch.name}</span>
                     {branch.isCurrent && (
-                      <span
-                        className="current-indicator"
-                        title="Current branch"
-                      >
+                      <span className="current-indicator" title="Current branch">
                         CURRENT
                       </span>
                     )}
@@ -247,42 +241,30 @@ export const BranchList: React.FC<BranchListProps> = ({
                         ) : null}
                       </div>
                     )}
-                    {!branch.isCurrent &&
-                      branch.isLocal &&
-                      onCheckoutBranch && (
-                        <button
-                          className="checkout-button"
-                          onClick={e => handleCheckoutClick(e, branch.name)}
-                          title={`Checkout branch: ${branch.name}`}
-                        >
-                          Checkout
-                        </button>
-                      )}
+                    {!branch.isCurrent && branch.isLocal && onCheckoutBranch && (
+                      <button
+                        className="checkout-button"
+                        onClick={(e) => handleCheckoutClick(e, branch.name)}
+                        title={`Checkout branch: ${branch.name}`}
+                      >
+                        Checkout
+                      </button>
+                    )}
                   </div>
                 </div>
 
                 {showCommitDetails && (
                   <div className="branch-item__commit">
                     <div className="commit-info">
-                      <span
-                        className="commit-hash"
-                        title={branch.lastCommit.hash}
-                      >
+                      <span className="commit-hash" title={branch.lastCommit.hash}>
                         {formatCommitHash(branch.lastCommit.hash)}
                       </span>
-                      <span className="commit-date">
-                        {formatDate(branch.lastCommit.date)}
-                      </span>
+                      <span className="commit-date">{formatDate(branch.lastCommit.date)}</span>
                     </div>
-                    <div
-                      className="commit-message"
-                      title={branch.lastCommit.message}
-                    >
+                    <div className="commit-message" title={branch.lastCommit.message}>
                       {branch.lastCommit.message}
                     </div>
-                    <div className="commit-author">
-                      by {branch.lastCommit.author.name}
-                    </div>
+                    <div className="commit-author">by {branch.lastCommit.author.name}</div>
                   </div>
                 )}
               </div>
@@ -293,17 +275,16 @@ export const BranchList: React.FC<BranchListProps> = ({
             <div className="branch-list__pagination">
               <button
                 className="load-more-button"
-                onClick={() => setDisplayCount(prev => prev + maxDisplayCount)}
+                onClick={() => setDisplayCount((prev) => prev + maxDisplayCount)}
               >
-                Load {Math.min(maxDisplayCount, branches.length - displayCount)}{' '}
-                more branches
+                Load {Math.min(maxDisplayCount, branches.length - displayCount)} more branches
               </button>
             </div>
           )}
         </>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default BranchList;
+export default BranchList

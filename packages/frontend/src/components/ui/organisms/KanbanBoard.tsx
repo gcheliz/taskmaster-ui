@@ -1,45 +1,34 @@
-import React, { useState, useMemo, useCallback } from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from '../atoms/Card';
-import { Button } from '../atoms/Button';
-import { Badge } from '../atoms/Badge';
-import {
-  Icon,
-  TaskIcon,
-  ArchiveIcon,
-  DuplicateIcon,
-  SettingsIcon,
-  PlusIcon,
-} from '../atoms/Icon';
-import { Input } from '../atoms/Input';
-import { Spinner } from '../atoms/Spinner';
-import { KanbanColumn, type KanbanTask } from '../molecules/KanbanColumn';
-import { DragAndDropProvider } from '../../TaskBoard/DragAndDropProvider';
-import { KanbanDragOverlay } from './KanbanDragOverlay';
-import type { TaskStatus, TaskPriority } from '../../../types/task';
+import React, { useState, useMemo, useCallback } from 'react'
+import { Card, CardHeader, CardTitle, CardContent } from '../atoms/Card'
+import { Button } from '../atoms/Button'
+import { Badge } from '../atoms/Badge'
+import { Icon, TaskIcon, ArchiveIcon, DuplicateIcon, SettingsIcon, PlusIcon } from '../atoms/Icon'
+import { Input } from '../atoms/Input'
+import { Spinner } from '../atoms/Spinner'
+import { KanbanColumn, type KanbanTask } from '../molecules/KanbanColumn'
+import { DragAndDropProvider } from '../../TaskBoard/DragAndDropProvider'
+import { KanbanDragOverlay } from './KanbanDragOverlay'
+import type { TaskStatus, TaskPriority } from '../../../types/task'
 
 export interface KanbanBoardColumn {
-  id: string;
-  title: string;
-  status: TaskStatus;
-  color: string;
-  limit?: number;
+  id: string
+  title: string
+  status: TaskStatus
+  color: string
+  limit?: number
 }
 
 export interface KanbanBoardProps {
-  tasks: KanbanTask[];
-  loading?: boolean;
-  error?: string;
-  onTaskClick?: (taskId: number) => void;
-  onAddTask?: (status: TaskStatus) => void;
-  onTaskMove?: (
-    taskId: number,
-    fromStatus: TaskStatus,
-    toStatus: TaskStatus
-  ) => void;
-  onRefresh?: () => void;
-  showSearch?: boolean;
-  showFilters?: boolean;
-  className?: string;
+  tasks: KanbanTask[]
+  loading?: boolean
+  error?: string
+  onTaskClick?: (taskId: number) => void
+  onAddTask?: (status: TaskStatus) => void
+  onTaskMove?: (taskId: number, fromStatus: TaskStatus, toStatus: TaskStatus) => void
+  onRefresh?: () => void
+  showSearch?: boolean
+  showFilters?: boolean
+  className?: string
 }
 
 const DEFAULT_COLUMNS: KanbanBoardColumn[] = [
@@ -77,7 +66,7 @@ const DEFAULT_COLUMNS: KanbanBoardColumn[] = [
     status: 'done',
     color: 'success',
   },
-];
+]
 
 const KanbanBoard: React.FC<KanbanBoardProps> = ({
   tasks,
@@ -91,121 +80,117 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
   showFilters = true,
   className = '',
 }) => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedPriority, setSelectedPriority] = useState<
-    TaskPriority | 'all'
-  >('all');
-  const [refreshing, setRefreshing] = useState(false);
-  const [activeTask, setActiveTask] = useState<KanbanTask | null>(null);
+  const [searchTerm, setSearchTerm] = useState('')
+  const [selectedPriority, setSelectedPriority] = useState<TaskPriority | 'all'>('all')
+  const [refreshing, setRefreshing] = useState(false)
+  const [activeTask, setActiveTask] = useState<KanbanTask | null>(null)
 
   // Handle task move between columns
   const handleTaskMove = useCallback(
     (taskId: number, fromStatus: TaskStatus, toStatus: TaskStatus) => {
       if (onTaskMove) {
-        onTaskMove(taskId, fromStatus, toStatus);
+        onTaskMove(taskId, fromStatus, toStatus)
       }
     },
     [onTaskMove]
-  );
+  )
 
   // Filter tasks based on search and filters
   const filteredTasks = useMemo(() => {
-    let filtered = tasks;
+    let filtered = tasks
 
     // Apply search filter
     if (searchTerm) {
       filtered = filtered.filter(
-        task =>
+        (task) =>
           task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
           task.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          task.tags?.some(tag =>
-            tag.toLowerCase().includes(searchTerm.toLowerCase())
-          )
-      );
+          task.tags?.some((tag) => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+      )
     }
 
     // Apply priority filter
     if (selectedPriority !== 'all') {
-      filtered = filtered.filter(task => task.priority === selectedPriority);
+      filtered = filtered.filter((task) => task.priority === selectedPriority)
     }
 
-    return filtered;
-  }, [tasks, searchTerm, selectedPriority]);
+    return filtered
+  }, [tasks, searchTerm, selectedPriority])
 
   // Group tasks by status for each column
   const tasksByStatus = useMemo(() => {
-    const grouped: Record<string, KanbanTask[]> = {};
+    const grouped: Record<string, KanbanTask[]> = {}
 
-    DEFAULT_COLUMNS.forEach(column => {
-      grouped[column.id] = [];
-    });
+    DEFAULT_COLUMNS.forEach((column) => {
+      grouped[column.id] = []
+    })
 
-    filteredTasks.forEach(task => {
+    filteredTasks.forEach((task) => {
       // Map task status to columns
       switch (task.status) {
         case 'pending':
-          grouped['todo'].push(task);
-          break;
+          grouped['todo'].push(task)
+          break
         case 'in-progress':
-          grouped['in-progress'].push(task);
-          break;
+          grouped['in-progress'].push(task)
+          break
         case 'done':
           // For now, put all done tasks in the 'done' column
           // In a real app, you'd have more specific status tracking
-          grouped['done'].push(task);
-          break;
+          grouped['done'].push(task)
+          break
         case 'blocked':
-          grouped['todo'].push(task); // Put blocked tasks in todo for now
-          break;
+          grouped['todo'].push(task) // Put blocked tasks in todo for now
+          break
         case 'deferred':
-          grouped['todo'].push(task); // Put deferred tasks in todo for now
-          break;
+          grouped['todo'].push(task) // Put deferred tasks in todo for now
+          break
         default:
-          grouped['todo'].push(task);
+          grouped['todo'].push(task)
       }
-    });
+    })
 
-    return grouped;
-  }, [filteredTasks]);
+    return grouped
+  }, [filteredTasks])
 
   // Handle drag start to track active task
   const handleDragStart = useCallback(
     (taskId: number) => {
-      const task = filteredTasks.find(t => t.id === taskId);
-      setActiveTask(task || null);
+      const task = filteredTasks.find((t) => t.id === taskId)
+      setActiveTask(task || null)
     },
     [filteredTasks]
-  );
+  )
 
   // Handle drag end to clear active task
   const handleDragEnd = useCallback(() => {
-    setActiveTask(null);
-  }, []);
+    setActiveTask(null)
+  }, [])
 
   const handleRefresh = async () => {
-    if (!onRefresh) return;
+    if (!onRefresh) return
 
-    setRefreshing(true);
+    setRefreshing(true)
     try {
-      await onRefresh();
+      await onRefresh()
     } finally {
-      setRefreshing(false);
+      setRefreshing(false)
     }
-  };
+  }
 
   const getTotalTaskCount = () => {
-    return filteredTasks.length;
-  };
+    return filteredTasks.length
+  }
 
   const getCompletedTaskCount = () => {
-    return filteredTasks.filter(task => task.status === 'done').length;
-  };
+    return filteredTasks.filter((task) => task.status === 'done').length
+  }
 
   const getCompletionPercentage = () => {
-    const total = getTotalTaskCount();
-    if (total === 0) return 0;
-    return Math.round((getCompletedTaskCount() / total) * 100);
-  };
+    const total = getTotalTaskCount()
+    if (total === 0) return 0
+    return Math.round((getCompletedTaskCount() / total) * 100)
+  }
 
   // Loading State
   if (loading) {
@@ -216,12 +201,10 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
           <h3 className="text-lg font-semibold text-secondary-900 dark:text-secondary-100 mb-2">
             Loading Kanban Board
           </h3>
-          <p className="text-secondary-600 dark:text-secondary-400">
-            Fetching your tasks...
-          </p>
+          <p className="text-secondary-600 dark:text-secondary-400">Fetching your tasks...</p>
         </CardContent>
       </Card>
-    );
+    )
   }
 
   // Error State
@@ -229,18 +212,11 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
     return (
       <Card variant="elevated" className={className}>
         <CardContent className="text-center py-12">
-          <Icon
-            icon={ArchiveIcon}
-            size="2xl"
-            color="error"
-            className="mx-auto mb-4"
-          />
+          <Icon icon={ArchiveIcon} size="2xl" color="error" className="mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-error-600 dark:text-error-400 mb-2">
             Failed to Load Board
           </h3>
-          <p className="text-secondary-600 dark:text-secondary-400 mb-6">
-            {error}
-          </p>
+          <p className="text-secondary-600 dark:text-secondary-400 mb-6">{error}</p>
           {onRefresh && (
             <Button variant="primary" onClick={handleRefresh}>
               Try Again
@@ -248,7 +224,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
           )}
         </CardContent>
       </Card>
-    );
+    )
   }
 
   return (
@@ -270,12 +246,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
                 {getCompletionPercentage()}% Complete
               </Badge>
               {onRefresh && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleRefresh}
-                  disabled={refreshing}
-                >
+                <Button variant="outline" size="sm" onClick={handleRefresh} disabled={refreshing}>
                   {refreshing ? (
                     <Spinner size="sm" className="mr-2" />
                   ) : (
@@ -305,7 +276,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
                       type="text"
                       placeholder="Search tasks..."
                       value={searchTerm}
-                      onChange={e => setSearchTerm(e.target.value)}
+                      onChange={(e) => setSearchTerm(e.target.value)}
                       className="pl-10 w-full"
                     />
                   </div>
@@ -315,19 +286,10 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
               {/* Filters */}
               {showFilters && (
                 <div className="flex items-center space-x-2 flex-shrink-0">
-                  <Icon 
-                    icon={SettingsIcon} 
-                    size="sm" 
-                    color="muted" 
-                    className="hidden xs:block" 
-                  />
+                  <Icon icon={SettingsIcon} size="sm" color="muted" className="hidden xs:block" />
                   <select
                     value={selectedPriority}
-                    onChange={e =>
-                      setSelectedPriority(
-                        e.target.value as TaskPriority | 'all'
-                      )
-                    }
+                    onChange={(e) => setSelectedPriority(e.target.value as TaskPriority | 'all')}
                     className="px-3 py-2 border border-surface-200 dark:border-surface-700 rounded-md bg-surface-100 dark:bg-surface-800 text-sm w-full sm:w-auto min-w-[120px] touch-target"
                   >
                     <option value="all">All Priorities</option>
@@ -349,13 +311,11 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
           onTaskMove={handleTaskMove}
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
-          dragOverlay={
-            <KanbanDragOverlay task={activeTask} isActive={!!activeTask} />
-          }
+          dragOverlay={<KanbanDragOverlay task={activeTask} isActive={!!activeTask} />}
           className="drag-drop-kanban"
         >
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6 lg:gap-4">
-            {DEFAULT_COLUMNS.map(column => (
+            {DEFAULT_COLUMNS.map((column) => (
               <KanbanColumn
                 key={column.id}
                 id={column.id}
@@ -378,12 +338,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
       {filteredTasks.length === 0 && !loading && (
         <Card variant="outline" className="mt-6">
           <CardContent className="text-center py-12">
-            <Icon
-              icon={ArchiveIcon}
-              size="2xl"
-              color="muted"
-              className="mx-auto mb-4"
-            />
+            <Icon icon={ArchiveIcon} size="2xl" color="muted" className="mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-secondary-900 dark:text-secondary-100 mb-2">
               No Tasks Found
             </h3>
@@ -402,7 +357,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
         </Card>
       )}
     </div>
-  );
-};
+  )
+}
 
-export { KanbanBoard };
+export { KanbanBoard }

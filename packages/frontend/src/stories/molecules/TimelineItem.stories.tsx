@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { TimelineItem } from '../../components/ui/molecules/TimelineItem';
+import type { Meta, StoryObj } from '@storybook/react'
+import { TimelineItem } from '../../components/ui/molecules/TimelineItem'
 
 const meta: Meta<typeof TimelineItem> = {
   title: 'UI/Molecules/TimelineItem',
@@ -17,10 +17,10 @@ const meta: Meta<typeof TimelineItem> = {
     showTimestamp: { control: 'boolean' },
     isLast: { control: 'boolean' },
   },
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 const sampleActivity = {
   id: 'activity-1',
@@ -34,13 +34,13 @@ const sampleActivity = {
     additions: 42,
     deletions: 13,
   },
-};
+}
 
 export const Default: Story = {
   args: {
     ...sampleActivity,
   },
-};
+}
 
 export const CommitActivity: Story = {
   args: {
@@ -55,7 +55,7 @@ export const CommitActivity: Story = {
       deletions: 7,
     },
   },
-};
+}
 
 export const TaskUpdateActivity: Story = {
   args: {
@@ -69,7 +69,7 @@ export const TaskUpdateActivity: Story = {
       assignee: 'Jane Smith',
     },
   },
-};
+}
 
 export const ProjectUpdateActivity: Story = {
   args: {
@@ -82,35 +82,35 @@ export const ProjectUpdateActivity: Story = {
       nextPhase: 'Testing & QA',
     },
   },
-};
+}
 
 export const WithoutAvatar: Story = {
   args: {
     ...sampleActivity,
     showAvatar: false,
   },
-};
+}
 
 export const WithoutTimestamp: Story = {
   args: {
     ...sampleActivity,
     showTimestamp: false,
   },
-};
+}
 
 export const WithoutAuthor: Story = {
   args: {
     ...sampleActivity,
     author: undefined,
   },
-};
+}
 
 export const WithoutDetails: Story = {
   args: {
     ...sampleActivity,
     details: undefined,
   },
-};
+}
 
 export const LongMessage: Story = {
   args: {
@@ -118,25 +118,25 @@ export const LongMessage: Story = {
     message:
       'This is a very long commit message that should be truncated when it exceeds the maximum length limit to ensure proper display in the timeline component without breaking the layout',
   },
-};
+}
 
 export const LastItem: Story = {
   args: {
     ...sampleActivity,
     isLast: true,
   },
-};
+}
 
 export const RecentActivity: Story = {
   args: {
     ...sampleActivity,
     timestamp: new Date(Date.now() - 5 * 60 * 1000).toISOString(), // 5 minutes ago
   },
-};
+}
 
 export const OldActivity: Story = {
   args: {
     ...sampleActivity,
     timestamp: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days ago
   },
-};
+}

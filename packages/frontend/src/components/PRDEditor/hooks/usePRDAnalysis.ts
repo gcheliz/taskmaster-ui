@@ -1,36 +1,33 @@
-import { useState, useCallback } from 'react';
-import { apiService } from '../../../services/api';
-import type {
-  PRDAnalysisRequest,
-  PRDAnalysisResult,
-} from '../../../services/api';
+import { useState, useCallback } from 'react'
+import { apiService } from '../../../services/api'
+import type { PRDAnalysisRequest, PRDAnalysisResult } from '../../../services/api'
 
 export interface UsePRDAnalysisOptions {
-  onAnalysisComplete?: (result: PRDAnalysisResult) => void;
-  onAnalysisError?: (error: Error) => void;
-  onAnalysisStart?: () => void;
+  onAnalysisComplete?: (result: PRDAnalysisResult) => void
+  onAnalysisError?: (error: Error) => void
+  onAnalysisStart?: () => void
 }
 
 export interface UsePRDAnalysisReturn {
   // State
-  isAnalyzing: boolean;
-  analysisResult: PRDAnalysisResult | null;
-  analysisError: Error | null;
-  analysisHistory: PRDAnalysisResult[];
+  isAnalyzing: boolean
+  analysisResult: PRDAnalysisResult | null
+  analysisError: Error | null
+  analysisHistory: PRDAnalysisResult[]
 
   // Actions
   analyzePRD: (
     content: string,
     options?: Partial<PRDAnalysisRequest>
-  ) => Promise<PRDAnalysisResult | null>;
-  clearAnalysis: () => void;
-  clearError: () => void;
-  getAnalysisHistory: (limit?: number) => Promise<void>;
+  ) => Promise<PRDAnalysisResult | null>
+  clearAnalysis: () => void
+  clearError: () => void
+  getAnalysisHistory: (limit?: number) => Promise<void>
 
   // Utilities
-  hasAnalysis: boolean;
-  hasError: boolean;
-  canAnalyze: boolean;
+  hasAnalysis: boolean
+  hasError: boolean
+  canAnalyze: boolean
 }
 
 /**
@@ -39,18 +36,13 @@ export interface UsePRDAnalysisReturn {
  * Provides methods to analyze PRD content using the backend API,
  * manage analysis state, and handle results.
  */
-export const usePRDAnalysis = (
-  options: UsePRDAnalysisOptions = {}
-): UsePRDAnalysisReturn => {
-  const { onAnalysisComplete, onAnalysisError, onAnalysisStart } = options;
+export const usePRDAnalysis = (options: UsePRDAnalysisOptions = {}): UsePRDAnalysisReturn => {
+  const { onAnalysisComplete, onAnalysisError, onAnalysisStart } = options
 
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [analysisResult, setAnalysisResult] =
-    useState<PRDAnalysisResult | null>(null);
-  const [analysisError, setAnalysisError] = useState<Error | null>(null);
-  const [analysisHistory, setAnalysisHistory] = useState<PRDAnalysisResult[]>(
-    []
-  );
+  const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [analysisResult, setAnalysisResult] = useState<PRDAnalysisResult | null>(null)
+  const [analysisError, setAnalysisError] = useState<Error | null>(null)
+  const [analysisHistory, setAnalysisHistory] = useState<PRDAnalysisResult[]>([])
 
   const analyzePRD = useCallback(
     async (
@@ -58,15 +50,15 @@ export const usePRDAnalysis = (
       options: Partial<PRDAnalysisRequest> = {}
     ): Promise<PRDAnalysisResult | null> => {
       if (!content.trim()) {
-        const error = new Error('PRD content cannot be empty');
-        setAnalysisError(error);
-        onAnalysisError?.(error);
-        return null;
+        const error = new Error('PRD content cannot be empty')
+        setAnalysisError(error)
+        onAnalysisError?.(error)
+        return null
       }
 
-      setIsAnalyzing(true);
-      setAnalysisError(null);
-      onAnalysisStart?.();
+      setIsAnalyzing(true)
+      setAnalysisError(null)
+      onAnalysisStart?.()
 
       try {
         const request: PRDAnalysisRequest = {
@@ -78,44 +70,43 @@ export const usePRDAnalysis = (
             includeDependencies: options.options?.includeDependencies ?? true,
             ...options.options,
           },
-        };
+        }
 
-        const result = await apiService.analyzePRD(request);
+        const result = await apiService.analyzePRD(request)
 
-        setAnalysisResult(result);
-        onAnalysisComplete?.(result);
+        setAnalysisResult(result)
+        onAnalysisComplete?.(result)
 
-        return result;
+        return result
       } catch (error) {
-        const analysisError =
-          error instanceof Error ? error : new Error('Analysis failed');
-        setAnalysisError(analysisError);
-        onAnalysisError?.(analysisError);
-        return null;
+        const analysisError = error instanceof Error ? error : new Error('Analysis failed')
+        setAnalysisError(analysisError)
+        onAnalysisError?.(analysisError)
+        return null
       } finally {
-        setIsAnalyzing(false);
+        setIsAnalyzing(false)
       }
     },
     [onAnalysisComplete, onAnalysisError, onAnalysisStart]
-  );
+  )
 
   const clearAnalysis = useCallback(() => {
-    setAnalysisResult(null);
-    setAnalysisError(null);
-  }, []);
+    setAnalysisResult(null)
+    setAnalysisError(null)
+  }, [])
 
   const clearError = useCallback(() => {
-    setAnalysisError(null);
-  }, []);
+    setAnalysisError(null)
+  }, [])
 
   const getAnalysisHistory = useCallback(async (limit?: number) => {
     try {
-      const response = await apiService.getPRDAnalysisHistory(limit);
-      setAnalysisHistory(response.analyses);
+      const response = await apiService.getPRDAnalysisHistory(limit)
+      setAnalysisHistory(response.analyses)
     } catch (error) {
-      console.error('Failed to fetch analysis history:', error);
+      console.error('Failed to fetch analysis history:', error)
     }
-  }, []);
+  }, [])
 
   return {
     // State
@@ -134,5 +125,5 @@ export const usePRDAnalysis = (
     hasAnalysis: analysisResult !== null,
     hasError: analysisError !== null,
     canAnalyze: !isAnalyzing,
-  };
-};
+  }
+}

@@ -26,35 +26,44 @@ export const useAppNavigation = () => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const navigateTo = useCallback((
-    path: string,
-    options?: NavigateOptions
-  ) => {
-    navigate(path, options)
-  }, [navigate])
+  const navigateTo = useCallback(
+    (path: string, options?: NavigateOptions) => {
+      navigate(path, options)
+    },
+    [navigate]
+  )
 
   const navigateBack = useCallback(() => {
     navigate(-1)
   }, [navigate])
 
-  const navigateToLogin = useCallback((from?: string) => {
-    navigate(ROUTES.LOGIN, {
-      state: { from: from || location.pathname },
-      replace: true,
-    })
-  }, [navigate, location])
+  const navigateToLogin = useCallback(
+    (from?: string) => {
+      navigate(ROUTES.LOGIN, {
+        state: { from: from || location.pathname },
+        replace: true,
+      })
+    },
+    [navigate, location]
+  )
 
   const navigateToHome = useCallback(() => {
     navigate(ROUTES.HOME, { replace: true })
   }, [navigate])
 
-  const isCurrentPath = useCallback((path: string) => {
-    return location.pathname === path
-  }, [location])
+  const isCurrentPath = useCallback(
+    (path: string) => {
+      return location.pathname === path
+    },
+    [location]
+  )
 
-  const isChildPath = useCallback((parentPath: string) => {
-    return location.pathname.startsWith(parentPath)
-  }, [location])
+  const isChildPath = useCallback(
+    (parentPath: string) => {
+      return location.pathname.startsWith(parentPath)
+    },
+    [location]
+  )
 
   return {
     navigateTo,

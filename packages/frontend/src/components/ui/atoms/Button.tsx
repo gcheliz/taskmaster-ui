@@ -1,6 +1,6 @@
-import React from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '../../../utils/cn';
+import React from 'react'
+import { cva, type VariantProps } from 'class-variance-authority'
+import { cn } from '../../../utils/cn'
 
 const buttonVariants = cva(
   // Base styles with enhanced dark theme support and micro-interactions
@@ -33,7 +33,7 @@ const buttonVariants = cva(
       size: 'md',
     },
   }
-);
+)
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
@@ -42,49 +42,33 @@ export interface ButtonProps
    * Shows loading spinner and disables the button
    * @default false
    */
-  loading?: boolean;
+  loading?: boolean
   /**
    * Icon to display on the left side of the button text
    */
-  leftIcon?: React.ReactNode;
+  leftIcon?: React.ReactNode
   /**
    * Icon to display on the right side of the button text
    */
-  rightIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode
   /**
    * The visual style variant of the button
    * @default 'primary'
    */
-  variant?:
-    | 'primary'
-    | 'secondary'
-    | 'outline'
-    | 'ghost'
-    | 'link'
-    | 'destructive';
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'link' | 'destructive'
   /**
    * The size of the button
    * @default 'md'
    */
-  size?: 'sm' | 'md' | 'lg' | 'xl' | 'icon';
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'icon'
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
-    {
-      className,
-      variant,
-      size,
-      loading,
-      leftIcon,
-      rightIcon,
-      children,
-      disabled,
-      ...props
-    },
+    { className, variant, size, loading, leftIcon, rightIcon, children, disabled, ...props },
     ref
   ) => {
-    const isDisabled = disabled || loading;
+    const isDisabled = disabled || loading
 
     return (
       <button
@@ -121,10 +105,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {children}
         {!loading && rightIcon && <span className="ml-2">{rightIcon}</span>}
       </button>
-    );
+    )
   }
-);
+)
 
-Button.displayName = 'Button';
+Button.displayName = 'Button'
 
-export { Button, buttonVariants };
+export { Button, buttonVariants }

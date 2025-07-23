@@ -1,21 +1,19 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { EnhancedRepositoryView } from '../../components/Views/EnhancedRepositoryView';
-import type { RepositoryCardProps } from '../../components/Repository/RepositoryCard';
+import type { Meta, StoryObj } from '@storybook/react'
+import { EnhancedRepositoryView } from '../../components/Views/EnhancedRepositoryView'
+import type { RepositoryCardProps } from '../../components/Repository/RepositoryCard'
 
 // Mock repository data for Storybook
 const mockRepositories: RepositoryCardProps['repository'][] = [
   {
     id: 'repo-1',
     name: 'taskmaster-ui',
-    description:
-      'Modern React application for task management with Git integration',
+    description: 'Modern React application for task management with Git integration',
     path: '/Users/dev/projects/taskmaster-ui',
     currentBranch: 'main',
     lastCommit: {
       hash: 'a1b2c3d4e5f6789012345678901234567890abcd',
       date: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-      message:
-        'Implement detailed commit history view with search and pagination',
+      message: 'Implement detailed commit history view with search and pagination',
       author: {
         name: 'John Developer',
         email: 'john@example.com',
@@ -160,7 +158,7 @@ const mockRepositories: RepositoryCardProps['repository'][] = [
     isPrivate: true,
     size: 4096,
   },
-];
+]
 
 // Mock the RepositoryService for Storybook
 const mockCommits = [
@@ -192,24 +190,20 @@ const mockCommits = [
       email: 'bob.johnson@example.com',
     },
   },
-];
+]
 
 const mockRepositoryService = {
-  getCommitHistory: async (
-    repositoryId: string,
-    limit: number = 50,
-    branchName?: string
-  ) => {
-    await new Promise(resolve => setTimeout(resolve, 1000));
+  getCommitHistory: async (repositoryId: string, limit: number = 50, branchName?: string) => {
+    await new Promise((resolve) => setTimeout(resolve, 1000))
     return {
       success: true,
       data: mockCommits,
-    };
+    }
   },
-};
+}
 
 // Replace the actual service with our mock for Storybook
-(window as any).__STORYBOOK_REPOSITORY_SERVICE__ = mockRepositoryService;
+;(window as any).__STORYBOOK_REPOSITORY_SERVICE__ = mockRepositoryService
 
 const meta: Meta<typeof EnhancedRepositoryView> = {
   title: 'Views/EnhancedRepositoryView',
@@ -258,10 +252,10 @@ The view integrates the RepositoryGrid and CommitHistoryModal components, handli
       description: 'Whether to enable real-time updates',
     },
   },
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof EnhancedRepositoryView>;
+export default meta
+type Story = StoryObj<typeof EnhancedRepositoryView>
 
 export const Default: Story = {
   args: {
@@ -270,13 +264,13 @@ export const Default: Story = {
     error: null,
     showEnhanced: true,
     enableRealtime: true,
-    onRepositoryClick: repo => console.log('Repository clicked:', repo.name),
-    onRepositoryRefresh: id => console.log('Refresh repository:', id),
-    onRepositoryDetails: id => console.log('View details:', id),
-    onRepositoryManage: id => console.log('Manage repository:', id),
+    onRepositoryClick: (repo) => console.log('Repository clicked:', repo.name),
+    onRepositoryRefresh: (id) => console.log('Refresh repository:', id),
+    onRepositoryDetails: (id) => console.log('View details:', id),
+    onRepositoryManage: (id) => console.log('Manage repository:', id),
     onRefreshAll: () => console.log('Refresh all repositories'),
   },
-};
+}
 
 export const LoadingState: Story = {
   args: {
@@ -286,18 +280,17 @@ export const LoadingState: Story = {
     showEnhanced: true,
     enableRealtime: true,
   },
-};
+}
 
 export const ErrorState: Story = {
   args: {
     repositories: [],
     isLoading: false,
-    error:
-      'Failed to load repositories. Please check your connection and try again.',
+    error: 'Failed to load repositories. Please check your connection and try again.',
     showEnhanced: true,
     enableRealtime: false,
   },
-};
+}
 
 export const EmptyState: Story = {
   args: {
@@ -307,7 +300,7 @@ export const EmptyState: Story = {
     showEnhanced: true,
     enableRealtime: true,
   },
-};
+}
 
 export const SingleRepository: Story = {
   args: {
@@ -317,7 +310,7 @@ export const SingleRepository: Story = {
     showEnhanced: true,
     enableRealtime: true,
   },
-};
+}
 
 export const BasicFeatures: Story = {
   args: {
@@ -327,7 +320,7 @@ export const BasicFeatures: Story = {
     showEnhanced: false,
     enableRealtime: false,
   },
-};
+}
 
 export const MixedStates: Story = {
   args: {
@@ -346,4 +339,4 @@ export const MixedStates: Story = {
     showEnhanced: true,
     enableRealtime: true,
   },
-};
+}

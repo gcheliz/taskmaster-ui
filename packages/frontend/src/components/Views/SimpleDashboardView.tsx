@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { ErrorTestComponent } from '../ErrorBoundary/ErrorTestComponent';
+import React, { useState } from 'react'
+import { ErrorTestComponent } from '../ErrorBoundary/ErrorTestComponent'
 
 export const SimpleDashboardView: React.FC = () => {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(0)
 
   return (
     <div className="dashboard-view">
@@ -15,17 +15,11 @@ export const SimpleDashboardView: React.FC = () => {
         <div className="dashboard-grid">
           <div className="card">
             <h2>📊 Dashboard Overview</h2>
-            <p>
-              This is the main dashboard where you can manage your tasks and
-              repositories.
-            </p>
+            <p>This is the main dashboard where you can manage your tasks and repositories.</p>
 
             <div className="demo-section">
               <h3>Demo Counter</h3>
-              <button
-                onClick={() => setCount(count => count + 1)}
-                className="demo-button"
-              >
+              <button onClick={() => setCount((count) => count + 1)} className="demo-button">
                 Count is {count}
               </button>
               <p>This demonstrates React state management and routing.</p>
@@ -59,21 +53,15 @@ export const SimpleDashboardView: React.FC = () => {
             <div className="activity-list">
               <div className="activity-item">
                 <span className="activity-time">2 minutes ago</span>
-                <span className="activity-desc">
-                  Task "Fix navigation" completed
-                </span>
+                <span className="activity-desc">Task "Fix navigation" completed</span>
               </div>
               <div className="activity-item">
                 <span className="activity-time">15 minutes ago</span>
-                <span className="activity-desc">
-                  Repository "taskmaster-ui" updated
-                </span>
+                <span className="activity-desc">Repository "taskmaster-ui" updated</span>
               </div>
               <div className="activity-item">
                 <span className="activity-time">1 hour ago</span>
-                <span className="activity-desc">
-                  New task "Add routing" created
-                </span>
+                <span className="activity-desc">New task "Add routing" created</span>
               </div>
             </div>
           </div>
@@ -114,12 +102,12 @@ export const SimpleDashboardView: React.FC = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Error Boundary Testing Component (Development Only) */}
         <ErrorTestComponent />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default SimpleDashboardView;
+export default SimpleDashboardView

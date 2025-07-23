@@ -37,7 +37,7 @@ export const useAuth = (): UseAuthReturn => {
     setIsLoading(true)
     try {
       // Mock login - replace with actual API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      await new Promise((resolve) => setTimeout(resolve, 1000))
       setUser({
         id: '1',
         name: 'John Doe',
@@ -57,7 +57,7 @@ export const useAuth = (): UseAuthReturn => {
     setIsLoading(true)
     try {
       // Mock register - replace with actual API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      await new Promise((resolve) => setTimeout(resolve, 1000))
       setUser({
         id: '1',
         name: data.name,

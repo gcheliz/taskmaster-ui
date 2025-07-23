@@ -1,13 +1,13 @@
 // Type guard utility functions for runtime type checking
 
-import type { 
-  User, 
-  Task, 
-  Repository, 
-  TaskStatus, 
+import type {
+  User,
+  Task,
+  Repository,
+  TaskStatus,
   TaskPriority,
   UserRole,
-  NotificationType 
+  NotificationType,
 } from '../types/common'
 
 // Basic type guards
@@ -31,9 +31,7 @@ export const isArray = <T = unknown>(value: unknown): value is T[] => {
   return Array.isArray(value)
 }
 
-export const isFunction = <T extends (...args: any[]) => any>(
-  value: unknown
-): value is T => {
+export const isFunction = <T extends (...args: any[]) => any>(value: unknown): value is T => {
   return typeof value === 'function'
 }
 
@@ -52,7 +50,7 @@ export const isNullOrUndefined = (value: unknown): value is null | undefined => 
 // Entity type guards
 export const isUser = (value: unknown): value is User => {
   if (!isObject(value)) return false
-  
+
   const user = value as Record<string, unknown>
   return (
     isString(user.id) &&
@@ -65,7 +63,7 @@ export const isUser = (value: unknown): value is User => {
 
 export const isTask = (value: unknown): value is Task => {
   if (!isObject(value)) return false
-  
+
   const task = value as Record<string, unknown>
   return (
     isString(task.id) &&
@@ -80,7 +78,7 @@ export const isTask = (value: unknown): value is Task => {
 
 export const isRepository = (value: unknown): value is Repository => {
   if (!isObject(value)) return false
-  
+
   const repo = value as Record<string, unknown>
   return (
     isString(repo.id) &&
@@ -94,8 +92,7 @@ export const isRepository = (value: unknown): value is Repository => {
 // Enum type guards
 export const isTaskStatus = (value: unknown): value is TaskStatus => {
   return (
-    isString(value) &&
-    ['pending', 'in-progress', 'done', 'blocked', 'deferred'].includes(value)
+    isString(value) && ['pending', 'in-progress', 'done', 'blocked', 'deferred'].includes(value)
   )
 }
 
@@ -128,26 +125,24 @@ export const isNumberArray = (value: unknown): value is number[] => {
 }
 
 // Utility type guard creators
-export const createEnumGuard = <T extends string>(
-  validValues: readonly T[]
-) => {
+export const createEnumGuard = <T extends string>(validValues: readonly T[]) => {
   return (value: unknown): value is T => {
     return isString(value) && validValues.includes(value as T)
   }
 }
 
-export const createObjectGuard = <T extends Record<string, unknown>>(
-  schema: { [K in keyof T]: (value: unknown) => value is T[K] }
-) => {
+export const createObjectGuard = <T extends Record<string, unknown>>(schema: {
+  [K in keyof T]: (value: unknown) => value is T[K]
+}) => {
   return (value: unknown): value is T => {
     if (!isObject(value)) return false
-    
+
     for (const [key, guard] of Object.entries(schema)) {
       if (!guard((value as Record<string, unknown>)[key])) {
         return false
       }
     }
-    
+
     return true
   }
 }
@@ -162,28 +157,19 @@ export function assertDefined<T>(
   }
 }
 
-export function assertString(
-  value: unknown,
-  message?: string
-): asserts value is string {
+export function assertString(value: unknown, message?: string): asserts value is string {
   if (!isString(value)) {
     throw new Error(message || 'Value is not a string')
   }
 }
 
-export function assertNumber(
-  value: unknown,
-  message?: string
-): asserts value is number {
+export function assertNumber(value: unknown, message?: string): asserts value is number {
   if (!isNumber(value)) {
     throw new Error(message || 'Value is not a number')
   }
 }
 
-export function assertArray<T = unknown>(
-  value: unknown,
-  message?: string
-): asserts value is T[] {
+export function assertArray<T = unknown>(value: unknown, message?: string): asserts value is T[] {
   if (!isArray(value)) {
     throw new Error(message || 'Value is not an array')
   }

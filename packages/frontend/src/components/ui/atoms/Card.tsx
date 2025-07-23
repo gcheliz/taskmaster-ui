@@ -1,6 +1,6 @@
-import React from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '../../../utils/cn';
+import React from 'react'
+import { cva, type VariantProps } from 'class-variance-authority'
+import { cn } from '../../../utils/cn'
 
 const cardVariants = cva(
   // Base styles with enhanced dark theme support and micro-interactions
@@ -39,7 +39,7 @@ const cardVariants = cva(
       draggable: false,
     },
   }
-);
+)
 
 const cardHeaderVariants = cva('flex items-center justify-between space-x-2', {
   variants: {
@@ -53,7 +53,7 @@ const cardHeaderVariants = cva('flex items-center justify-between space-x-2', {
   defaultVariants: {
     size: 'md',
   },
-});
+})
 
 const cardTitleVariants = cva(
   'font-semibold leading-none tracking-tight text-secondary-900 dark:text-secondary-100',
@@ -70,24 +70,21 @@ const cardTitleVariants = cva(
       size: 'md',
     },
   }
-);
+)
 
-const cardDescriptionVariants = cva(
-  'text-secondary-600 dark:text-secondary-400',
-  {
-    variants: {
-      size: {
-        sm: 'text-xs',
-        md: 'text-sm',
-        lg: 'text-base',
-        xl: 'text-lg',
-      },
+const cardDescriptionVariants = cva('text-secondary-600 dark:text-secondary-400', {
+  variants: {
+    size: {
+      sm: 'text-xs',
+      md: 'text-sm',
+      lg: 'text-base',
+      xl: 'text-lg',
     },
-    defaultVariants: {
-      size: 'md',
-    },
-  }
-);
+  },
+  defaultVariants: {
+    size: 'md',
+  },
+})
 
 const cardContentVariants = cva('text-secondary-700 dark:text-secondary-300', {
   variants: {
@@ -101,7 +98,7 @@ const cardContentVariants = cva('text-secondary-700 dark:text-secondary-300', {
   defaultVariants: {
     size: 'md',
   },
-});
+})
 
 const cardFooterVariants = cva('flex items-center justify-between space-x-2', {
   variants: {
@@ -115,7 +112,7 @@ const cardFooterVariants = cva('flex items-center justify-between space-x-2', {
   defaultVariants: {
     size: 'md',
   },
-});
+})
 
 export interface CardProps
   extends React.HTMLAttributes<HTMLDivElement>,
@@ -124,32 +121,32 @@ export interface CardProps
    * Makes the card clickable with hover and focus states
    * @default false
    */
-  interactive?: boolean;
+  interactive?: boolean
   /**
    * Enables drag-and-drop functionality
    * @default false
    */
-  draggable?: boolean;
+  draggable?: boolean
   /**
    * Callback fired when the card is clicked (only when interactive is true)
    */
-  onCardClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
+  onCardClick?: (event: React.MouseEvent<HTMLDivElement>) => void
   /**
    * Callback fired when drag starts (only when draggable is true)
    */
-  onDragStart?: (event: React.DragEvent<HTMLDivElement>) => void;
+  onDragStart?: (event: React.DragEvent<HTMLDivElement>) => void
   /**
    * Callback fired when drag ends (only when draggable is true)
    */
-  onDragEnd?: (event: React.DragEvent<HTMLDivElement>) => void;
+  onDragEnd?: (event: React.DragEvent<HTMLDivElement>) => void
   /**
    * Data to pass when dragging (only when draggable is true)
    */
-  dragData?: string;
+  dragData?: string
   /**
    * Accessible label for the card
    */
-  'aria-label'?: string;
+  'aria-label'?: string
 }
 
 export interface CardHeaderProps
@@ -192,35 +189,33 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
   ) => {
     const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
       if (interactive && onCardClick) {
-        onCardClick(event);
+        onCardClick(event)
       }
       if (onClick) {
-        onClick(event);
+        onClick(event)
       }
-    };
+    }
 
     const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
       if (draggable && dragData) {
-        event.dataTransfer.setData('text/plain', dragData);
-        event.dataTransfer.effectAllowed = 'move';
+        event.dataTransfer.setData('text/plain', dragData)
+        event.dataTransfer.effectAllowed = 'move'
       }
       if (onDragStart) {
-        onDragStart(event);
+        onDragStart(event)
       }
-    };
+    }
 
     const handleDragEnd = (event: React.DragEvent<HTMLDivElement>) => {
       if (onDragEnd) {
-        onDragEnd(event);
+        onDragEnd(event)
       }
-    };
+    }
 
     return (
       <div
         ref={ref}
-        className={cn(
-          cardVariants({ variant, size, interactive, draggable, className })
-        )}
+        className={cn(cardVariants({ variant, size, interactive, draggable, className }))}
         onClick={interactive ? handleClick : onClick}
         onDragStart={draggable ? handleDragStart : undefined}
         onDragEnd={draggable ? handleDragEnd : undefined}
@@ -230,67 +225,46 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
         aria-label={ariaLabel}
         {...props}
       />
-    );
+    )
   }
-);
+)
 
 const CardHeader = React.forwardRef<HTMLDivElement, CardHeaderProps>(
   ({ className, size, ...props }, ref) => (
-    <div
-      ref={ref}
-      className={cn(cardHeaderVariants({ size, className }))}
-      {...props}
-    />
+    <div ref={ref} className={cn(cardHeaderVariants({ size, className }))} {...props} />
   )
-);
+)
 
 const CardTitle = React.forwardRef<HTMLHeadingElement, CardTitleProps>(
   ({ className, size, ...props }, ref) => (
-    <h3
-      ref={ref}
-      className={cn(cardTitleVariants({ size, className }))}
-      {...props}
-    />
+    <h3 ref={ref} className={cn(cardTitleVariants({ size, className }))} {...props} />
   )
-);
+)
 
-const CardDescription = React.forwardRef<
-  HTMLParagraphElement,
-  CardDescriptionProps
->(({ className, size, ...props }, ref) => (
-  <p
-    ref={ref}
-    className={cn(cardDescriptionVariants({ size, className }))}
-    {...props}
-  />
-));
+const CardDescription = React.forwardRef<HTMLParagraphElement, CardDescriptionProps>(
+  ({ className, size, ...props }, ref) => (
+    <p ref={ref} className={cn(cardDescriptionVariants({ size, className }))} {...props} />
+  )
+)
 
 const CardContent = React.forwardRef<HTMLDivElement, CardContentProps>(
   ({ className, size, ...props }, ref) => (
-    <div
-      ref={ref}
-      className={cn(cardContentVariants({ size, className }))}
-      {...props}
-    />
+    <div ref={ref} className={cn(cardContentVariants({ size, className }))} {...props} />
   )
-);
+)
 
 const CardFooter = React.forwardRef<HTMLDivElement, CardFooterProps>(
   ({ className, size, ...props }, ref) => (
-    <div
-      ref={ref}
-      className={cn(cardFooterVariants({ size, className }))}
-      {...props}
-    />
+    <div ref={ref} className={cn(cardFooterVariants({ size, className }))} {...props} />
   )
-);
+)
 
-Card.displayName = 'Card';
-CardHeader.displayName = 'CardHeader';
-CardTitle.displayName = 'CardTitle';
-CardDescription.displayName = 'CardDescription';
-CardContent.displayName = 'CardContent';
-CardFooter.displayName = 'CardFooter';
+Card.displayName = 'Card'
+CardHeader.displayName = 'CardHeader'
+CardTitle.displayName = 'CardTitle'
+CardDescription.displayName = 'CardDescription'
+CardContent.displayName = 'CardContent'
+CardFooter.displayName = 'CardFooter'
 
 export {
   Card,
@@ -305,4 +279,4 @@ export {
   cardDescriptionVariants,
   cardContentVariants,
   cardFooterVariants,
-};
+}

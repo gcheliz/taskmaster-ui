@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { IntegrationsSettings } from '../../components/Settings/IntegrationsSettings';
+import type { Meta, StoryObj } from '@storybook/react'
+import { IntegrationsSettings } from '../../components/Settings/IntegrationsSettings'
 
 const meta: Meta<typeof IntegrationsSettings> = {
   title: 'Settings/IntegrationsSettings',
@@ -29,7 +29,7 @@ and custom webhook configurations.
     },
   },
   decorators: [
-    Story => (
+    (Story) => (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-8">
         <div className="max-w-4xl mx-auto">
           <Story />
@@ -37,16 +37,16 @@ and custom webhook configurations.
       </div>
     ),
   ],
-};
+}
 
-export default meta;
+export default meta
 
-type Story = StoryObj<typeof IntegrationsSettings>;
+type Story = StoryObj<typeof IntegrationsSettings>
 
 /**
  * Default integrations settings
  */
-export const Default: Story = {};
+export const Default: Story = {}
 
 /**
  * All integrations connected
@@ -54,7 +54,7 @@ export const Default: Story = {};
 export const AllConnected: Story = {
   // This would require modifying the component to accept initial state
   // For now, it's the same as default but could be extended
-};
+}
 
 /**
  * Mobile responsive view
@@ -66,7 +66,7 @@ export const MobileView: Story = {
     },
   },
   decorators: [
-    Story => (
+    (Story) => (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-4">
         <div className="max-w-full mx-auto">
           <Story />
@@ -74,4 +74,4 @@ export const MobileView: Story = {
       </div>
     ),
   ],
-};
+}

@@ -1,67 +1,54 @@
-import React from 'react';
-import { useDraggable } from '@dnd-kit/core';
-import { CSS } from '@dnd-kit/utilities';
-import { Card, type CardProps } from './Card';
-import { cn } from '../../../utils/cn';
+import React from 'react'
+import { useDraggable } from '@dnd-kit/core'
+import { CSS } from '@dnd-kit/utilities'
+import { Card, type CardProps } from './Card'
+import { cn } from '../../../utils/cn'
 
 export interface DraggableCardProps extends Omit<CardProps, 'draggable'> {
   /**
    * Unique identifier for the draggable card
    */
-  id: string;
+  id: string
   /**
    * Data to pass when dragging
    */
-  data?: Record<string, any>;
+  data?: Record<string, any>
   /**
    * Disable drag functionality
    * @default false
    */
-  disabled?: boolean;
+  disabled?: boolean
   /**
    * Custom handle element selector (optional)
    */
-  handle?: string;
+  handle?: string
 }
 
 const DraggableCard = React.forwardRef<HTMLDivElement, DraggableCardProps>(
-  (
-    {
+  ({ id, data, disabled = false, handle, className, children, style, ...props }, ref) => {
+    const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
       id,
       data,
-      disabled = false,
-      handle,
-      className,
-      children,
-      style,
-      ...props
-    },
-    ref
-  ) => {
-    const { attributes, listeners, setNodeRef, transform, isDragging } =
-      useDraggable({
-        id,
-        data,
-        disabled,
-      });
+      disabled,
+    })
 
     const dragStyle = {
       transform: CSS.Translate.toString(transform),
       ...style,
-    };
+    }
 
     const dragAttributes = handle
       ? {} // If handle is specified, don't add listeners to the card itself
-      : { ...listeners, ...attributes };
+      : { ...listeners, ...attributes }
 
     return (
       <Card
-        ref={node => {
-          setNodeRef(node);
+        ref={(node) => {
+          setNodeRef(node)
           if (typeof ref === 'function') {
-            ref(node);
+            ref(node)
           } else if (ref) {
-            ref.current = node;
+            ref.current = node
           }
         }}
         className={cn(
@@ -76,11 +63,7 @@ const DraggableCard = React.forwardRef<HTMLDivElement, DraggableCardProps>(
             'ring-primary-500',
             'dark:ring-primary-400',
           ],
-          !disabled && [
-            'cursor-grab',
-            'hover:shadow-lg',
-            'active:cursor-grabbing',
-          ],
+          !disabled && ['cursor-grab', 'hover:shadow-lg', 'active:cursor-grabbing'],
           disabled && 'opacity-50 cursor-not-allowed',
           className
         )}
@@ -91,10 +74,10 @@ const DraggableCard = React.forwardRef<HTMLDivElement, DraggableCardProps>(
       >
         {children}
       </Card>
-    );
+    )
   }
-);
+)
 
-DraggableCard.displayName = 'DraggableCard';
+DraggableCard.displayName = 'DraggableCard'
 
-export { DraggableCard };
+export { DraggableCard }

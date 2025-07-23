@@ -1,68 +1,62 @@
-import React, { useState, useEffect } from 'react';
-import { cn } from '../../utils/cn';
-import { Toggle } from '../ui/atoms/Toggle';
-import { Button } from '../ui/atoms/Button';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from '../ui/molecules/Card';
-import { useSettings } from '../../contexts/SettingsContext';
+import React, { useState, useEffect } from 'react'
+import { cn } from '../../utils/cn'
+import { Toggle } from '../ui/atoms/Toggle'
+import { Button } from '../ui/atoms/Button'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/molecules/Card'
+import { useSettings } from '../../contexts/SettingsContext'
 
 export interface NotificationSettingsProps {
   /**
    * Callback when settings are saved
    */
-  onSave?: (settings: NotificationSettingsData) => void;
+  onSave?: (settings: NotificationSettingsData) => void
   /**
    * Additional CSS classes
    */
-  className?: string;
+  className?: string
 }
 
 export interface NotificationSettingsData {
   email: {
-    enabled: boolean;
-    taskUpdates: boolean;
-    projectUpdates: boolean;
-    mentions: boolean;
-    deadlines: boolean;
-    digest: boolean;
-    digestFrequency: 'daily' | 'weekly' | 'monthly';
-  };
+    enabled: boolean
+    taskUpdates: boolean
+    projectUpdates: boolean
+    mentions: boolean
+    deadlines: boolean
+    digest: boolean
+    digestFrequency: 'daily' | 'weekly' | 'monthly'
+  }
   push: {
-    enabled: boolean;
-    taskUpdates: boolean;
-    mentions: boolean;
-    deadlines: boolean;
+    enabled: boolean
+    taskUpdates: boolean
+    mentions: boolean
+    deadlines: boolean
     quietHours: {
-      enabled: boolean;
-      start: string;
-      end: string;
-    };
-  };
+      enabled: boolean
+      start: string
+      end: string
+    }
+  }
   slack: {
-    enabled: boolean;
-    taskUpdates: boolean;
-    mentions: boolean;
-    deadlines: boolean;
-    channel: string;
-  };
+    enabled: boolean
+    taskUpdates: boolean
+    mentions: boolean
+    deadlines: boolean
+    channel: string
+  }
   desktop: {
-    enabled: boolean;
-    taskUpdates: boolean;
-    mentions: boolean;
-    deadlines: boolean;
-  };
+    enabled: boolean
+    taskUpdates: boolean
+    mentions: boolean
+    deadlines: boolean
+  }
 }
 
 interface NotificationCategory {
-  id: keyof NotificationSettingsData;
-  title: string;
-  description: string;
-  icon: React.ReactNode;
+  id: keyof NotificationSettingsData
+  title: string
+  description: string
+  icon: React.ReactNode
 }
 
 const notificationCategories: NotificationCategory[] = [
@@ -71,12 +65,7 @@ const notificationCategories: NotificationCategory[] = [
     title: 'Email Notifications',
     description: 'Receive updates and notifications via email',
     icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -91,12 +80,7 @@ const notificationCategories: NotificationCategory[] = [
     title: 'Push Notifications',
     description: 'Get instant notifications on your device',
     icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -121,12 +105,7 @@ const notificationCategories: NotificationCategory[] = [
     title: 'Desktop Notifications',
     description: 'Native desktop notifications',
     icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -136,13 +115,13 @@ const notificationCategories: NotificationCategory[] = [
       </svg>
     ),
   },
-];
+]
 
 export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
   onSave,
   className,
 }) => {
-  const { state, updateCategory, getSetting } = useSettings();
+  const { state, updateCategory, getSetting } = useSettings()
   const [settings, setSettings] = useState<NotificationSettingsData>({
     email: {
       enabled: false,
@@ -177,15 +156,15 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
       mentions: false,
       deadlines: false,
     },
-  });
+  })
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [isSaved, setIsSaved] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
+  const [isSaved, setIsSaved] = useState(false)
 
   // Load settings data when component mounts or settings change
   useEffect(() => {
     if (state.settings?.notificationSettings) {
-      setSettings(state.settings.notificationSettings);
+      setSettings(state.settings.notificationSettings)
     } else if (state.settings) {
       // Map from flat structure to notification settings structure
       const notificationSettings: NotificationSettingsData = {
@@ -222,10 +201,10 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
           mentions: true,
           deadlines: true,
         },
-      };
-      setSettings(notificationSettings);
+      }
+      setSettings(notificationSettings)
     }
-  }, [state.settings]);
+  }, [state.settings])
 
   const handleToggleCategory = async (
     categoryId: keyof NotificationSettingsData,
@@ -237,24 +216,24 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
         ...settings[categoryId],
         enabled,
       },
-    };
+    }
 
-    setSettings(updatedSettings);
+    setSettings(updatedSettings)
 
     try {
-      await updateCategory('notifications', updatedSettings);
+      await updateCategory('notifications', updatedSettings)
     } catch (error) {
-      console.error('Failed to update notification category:', error);
+      console.error('Failed to update notification category:', error)
       // Revert on error
-      setSettings(prev => ({
+      setSettings((prev) => ({
         ...prev,
         [categoryId]: {
           ...prev[categoryId],
           enabled: !enabled,
         },
-      }));
+      }))
     }
-  };
+  }
 
   const handleToggleSetting = async (
     categoryId: keyof NotificationSettingsData,
@@ -267,23 +246,20 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
         ...settings[categoryId],
         [settingKey]: value,
       },
-    };
+    }
 
-    setSettings(updatedSettings);
+    setSettings(updatedSettings)
 
     try {
-      await updateCategory('notifications', updatedSettings);
+      await updateCategory('notifications', updatedSettings)
     } catch (error) {
-      console.error('Failed to update notification setting:', error);
+      console.error('Failed to update notification setting:', error)
       // Revert on error
-      setSettings(settings);
+      setSettings(settings)
     }
-  };
+  }
 
-  const handleQuietHoursChange = async (
-    field: 'start' | 'end',
-    value: string
-  ) => {
+  const handleQuietHoursChange = async (field: 'start' | 'end', value: string) => {
     const updatedSettings = {
       ...settings,
       push: {
@@ -293,48 +269,45 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
           [field]: value,
         },
       },
-    };
+    }
 
-    setSettings(updatedSettings);
+    setSettings(updatedSettings)
 
     try {
-      await updateCategory('notifications', updatedSettings);
+      await updateCategory('notifications', updatedSettings)
     } catch (error) {
-      console.error('Failed to update quiet hours:', error);
+      console.error('Failed to update quiet hours:', error)
       // Revert on error
-      setSettings(settings);
+      setSettings(settings)
     }
-  };
+  }
 
   const handleSave = async () => {
-    setIsLoading(true);
+    setIsLoading(true)
     try {
-      await updateCategory('notifications', settings);
-      onSave?.(settings);
-      setIsSaved(true);
-      setTimeout(() => setIsSaved(false), 3000);
+      await updateCategory('notifications', settings)
+      onSave?.(settings)
+      setIsSaved(true)
+      setTimeout(() => setIsSaved(false), 3000)
     } catch (error) {
-      console.error('Failed to save notification settings:', error);
+      console.error('Failed to save notification settings:', error)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
-  const renderNotificationOptions = (
-    categoryId: keyof NotificationSettingsData
-  ) => {
-    const categorySettings = settings[categoryId];
+  const renderNotificationOptions = (categoryId: keyof NotificationSettingsData) => {
+    const categorySettings = settings[categoryId]
 
     if (!categorySettings.enabled) {
       return (
         <div className="text-center py-8 text-gray-500">
           <p>
-            Enable{' '}
-            {notificationCategories.find(c => c.id === categoryId)?.title} to
-            configure options
+            Enable {notificationCategories.find((c) => c.id === categoryId)?.title} to configure
+            options
           </p>
         </div>
-      );
+      )
     }
 
     const commonOptions = [
@@ -353,28 +326,19 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
         label: 'Deadlines',
         description: 'Reminders for upcoming task deadlines',
       },
-    ];
+    ]
 
     return (
       <div className="space-y-4">
-        {commonOptions.map(option => (
-          <div
-            key={option.key}
-            className="flex items-center justify-between py-2"
-          >
+        {commonOptions.map((option) => (
+          <div key={option.key} className="flex items-center justify-between py-2">
             <div className="flex-1">
               <div className="font-medium text-gray-900">{option.label}</div>
               <div className="text-sm text-gray-600">{option.description}</div>
             </div>
             <Toggle
-              checked={
-                categorySettings[
-                  option.key as keyof typeof categorySettings
-                ] as boolean
-              }
-              onCheckedChange={checked =>
-                handleToggleSetting(categoryId, option.key, checked)
-              }
+              checked={categorySettings[option.key as keyof typeof categorySettings] as boolean}
+              onCheckedChange={(checked) => handleToggleSetting(categoryId, option.key, checked)}
               size="sm"
             />
           </div>
@@ -386,13 +350,11 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
             <div className="flex items-center justify-between py-2">
               <div className="flex-1">
                 <div className="font-medium text-gray-900">Project Updates</div>
-                <div className="text-sm text-gray-600">
-                  When projects are created or modified
-                </div>
+                <div className="text-sm text-gray-600">When projects are created or modified</div>
               </div>
               <Toggle
                 checked={settings.email.projectUpdates}
-                onCheckedChange={checked =>
+                onCheckedChange={(checked) =>
                   handleToggleSetting('email', 'projectUpdates', checked)
                 }
                 size="sm"
@@ -402,20 +364,12 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
             <div className="flex items-center justify-between py-2">
               <div className="flex-1">
                 <div className="font-medium text-gray-900">Email Digest</div>
-                <div className="text-sm text-gray-600">
-                  Periodic summary of activity
-                </div>
+                <div className="text-sm text-gray-600">Periodic summary of activity</div>
               </div>
               <div className="flex items-center space-x-2">
                 <select
                   value={settings.email.digestFrequency}
-                  onChange={e =>
-                    handleToggleSetting(
-                      'email',
-                      'digestFrequency',
-                      e.target.value
-                    )
-                  }
+                  onChange={(e) => handleToggleSetting('email', 'digestFrequency', e.target.value)}
                   className="text-sm px-2 py-1 border border-gray-300 rounded bg-white/50 backdrop-blur-sm"
                   disabled={!settings.email.digest}
                 >
@@ -425,9 +379,7 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
                 </select>
                 <Toggle
                   checked={settings.email.digest}
-                  onCheckedChange={checked =>
-                    handleToggleSetting('email', 'digest', checked)
-                  }
+                  onCheckedChange={(checked) => handleToggleSetting('email', 'digest', checked)}
                   size="sm"
                 />
               </div>
@@ -446,7 +398,7 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
               </div>
               <Toggle
                 checked={settings.push.quietHours.enabled}
-                onCheckedChange={checked =>
+                onCheckedChange={(checked) =>
                   handleToggleSetting('push', 'quietHours', {
                     ...settings.push.quietHours,
                     enabled: checked,
@@ -459,28 +411,20 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
             {settings.push.quietHours.enabled && (
               <div className="grid grid-cols-2 gap-4 ml-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    From
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">From</label>
                   <input
                     type="time"
                     value={settings.push.quietHours.start}
-                    onChange={e =>
-                      handleQuietHoursChange('start', e.target.value)
-                    }
+                    onChange={(e) => handleQuietHoursChange('start', e.target.value)}
                     className="w-full px-3 py-1 border border-gray-300 rounded bg-white/50 backdrop-blur-sm text-sm"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    To
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">To</label>
                   <input
                     type="time"
                     value={settings.push.quietHours.end}
-                    onChange={e =>
-                      handleQuietHoursChange('end', e.target.value)
-                    }
+                    onChange={(e) => handleQuietHoursChange('end', e.target.value)}
                     className="w-full px-3 py-1 border border-gray-300 rounded bg-white/50 backdrop-blur-sm text-sm"
                   />
                 </div>
@@ -493,33 +437,26 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
           <div className="flex items-center justify-between py-2">
             <div className="flex-1">
               <div className="font-medium text-gray-900">Channel</div>
-              <div className="text-sm text-gray-600">
-                Slack channel for notifications
-              </div>
+              <div className="text-sm text-gray-600">Slack channel for notifications</div>
             </div>
             <input
               type="text"
               value={settings.slack.channel}
-              onChange={e =>
-                handleToggleSetting('slack', 'channel', e.target.value)
-              }
+              onChange={(e) => handleToggleSetting('slack', 'channel', e.target.value)}
               placeholder="#general"
               className="w-32 px-2 py-1 border border-gray-300 rounded bg-white/50 backdrop-blur-sm text-sm"
             />
           </div>
         )}
       </div>
-    );
-  };
+    )
+  }
 
   return (
     <div className={cn('space-y-6', className)}>
       {/* Notification Categories */}
-      {notificationCategories.map(category => (
-        <Card
-          key={category.id}
-          className="bg-white/50 backdrop-blur-sm border border-white/30"
-        >
+      {notificationCategories.map((category) => (
+        <Card key={category.id} className="bg-white/50 backdrop-blur-sm border border-white/30">
           <CardHeader>
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
@@ -531,9 +468,7 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
               </div>
               <Toggle
                 checked={settings[category.id].enabled}
-                onCheckedChange={enabled =>
-                  handleToggleCategory(category.id, enabled)
-                }
+                onCheckedChange={(enabled) => handleToggleCategory(category.id, enabled)}
                 size="md"
               />
             </div>
@@ -547,13 +482,11 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
       <Card className="bg-white/50 backdrop-blur-sm border border-white/30">
         <CardHeader>
           <CardTitle className="text-lg">Test Notifications</CardTitle>
-          <CardDescription>
-            Send test notifications to verify your settings
-          </CardDescription>
+          <CardDescription>Send test notifications to verify your settings</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-            {notificationCategories.map(category => (
+            {notificationCategories.map((category) => (
               <Button
                 key={category.id}
                 variant="outline"
@@ -582,12 +515,7 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
         >
           {isSaved ? (
             <>
-              <svg
-                className="w-4 h-4 mr-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -603,7 +531,7 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
         </Button>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default NotificationSettings;
+export default NotificationSettings

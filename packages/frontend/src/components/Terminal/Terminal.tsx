@@ -1,50 +1,50 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { Terminal as XTerminal } from '@xterm/xterm';
-import { FitAddon } from '@xterm/addon-fit';
-import { WebLinksAddon } from '@xterm/addon-web-links';
-import '@xterm/xterm/css/xterm.css';
+import React, { useEffect, useRef, useState, useCallback } from 'react'
+import { Terminal as XTerminal } from '@xterm/xterm'
+import { FitAddon } from '@xterm/addon-fit'
+import { WebLinksAddon } from '@xterm/addon-web-links'
+import '@xterm/xterm/css/xterm.css'
 
 export interface TerminalProps {
   /** Terminal session ID */
-  sessionId?: string;
+  sessionId?: string
   /** Working directory for the terminal */
-  workingDirectory?: string;
+  workingDirectory?: string
   /** Repository path if terminal is scoped to a repository */
-  repositoryPath?: string;
+  repositoryPath?: string
   /** Terminal display mode */
-  mode?: 'embedded' | 'popup' | 'fullscreen';
+  mode?: 'embedded' | 'popup' | 'fullscreen'
   /** Whether to show the terminal header */
-  showHeader?: boolean;
+  showHeader?: boolean
   /** Whether to show the status bar */
-  showStatusBar?: boolean;
+  showStatusBar?: boolean
   /** Terminal title */
-  title?: string;
+  title?: string
   /** Terminal theme */
-  theme?: 'dark' | 'light';
+  theme?: 'dark' | 'light'
   /** Initial size */
-  initialSize?: { cols: number; rows: number };
+  initialSize?: { cols: number; rows: number }
   /** Callback when terminal is ready */
-  onReady?: (terminal: XTerminal) => void;
+  onReady?: (terminal: XTerminal) => void
   /** Callback when terminal is closed */
-  onClose?: () => void;
+  onClose?: () => void
   /** Callback when command is executed */
-  onCommand?: (command: string) => void;
+  onCommand?: (command: string) => void
   /** Callback when terminal data is received */
-  onData?: (data: string) => void;
+  onData?: (data: string) => void
   /** Callback when terminal size changes */
-  onResize?: (cols: number, rows: number) => void;
+  onResize?: (cols: number, rows: number) => void
   /** WebSocket connection for terminal communication */
-  websocket?: WebSocket;
+  websocket?: WebSocket
   /** Additional CSS class */
-  className?: string;
+  className?: string
   /** Whether the terminal is loading */
-  isLoading?: boolean;
+  isLoading?: boolean
   /** Error message to display */
-  error?: string | null;
+  error?: string | null
   /** Whether to enable web links */
-  enableWebLinks?: boolean;
+  enableWebLinks?: boolean
   /** Whether to enable clipboard */
-  enableClipboard?: boolean;
+  enableClipboard?: boolean
 }
 
 export const Terminal: React.FC<TerminalProps> = ({
@@ -68,21 +68,21 @@ export const Terminal: React.FC<TerminalProps> = ({
   enableWebLinks = true,
   enableClipboard = true,
 }) => {
-  const terminalRef = useRef<HTMLDivElement>(null);
-  const xtermRef = useRef<XTerminal | null>(null);
-  const fitAddonRef = useRef<FitAddon | null>(null);
-  const webLinksAddonRef = useRef<WebLinksAddon | null>(null);
+  const terminalRef = useRef<HTMLDivElement>(null)
+  const xtermRef = useRef<XTerminal | null>(null)
+  const fitAddonRef = useRef<FitAddon | null>(null)
+  const webLinksAddonRef = useRef<WebLinksAddon | null>(null)
 
   const [connectionStatus, setConnectionStatus] = useState<
     'connected' | 'disconnected' | 'connecting'
-  >('disconnected');
-  const [currentDirectory] = useState(workingDirectory);
-  const [isProcessRunning, setIsProcessRunning] = useState(false);
+  >('disconnected')
+  const [currentDirectory] = useState(workingDirectory)
+  const [isProcessRunning, setIsProcessRunning] = useState(false)
 
   // Initialize terminal
   useEffect(() => {
     if (!terminalRef.current || isLoading || error) {
-      return;
+      return
     }
 
     // Create terminal instance
@@ -127,81 +127,81 @@ export const Terminal: React.FC<TerminalProps> = ({
       altClickMovesCursor: true,
       customGlyphs: true,
       smoothScrollDuration: 0,
-    });
+    })
 
     // Create and load addons
-    const fitAddon = new FitAddon();
-    terminal.loadAddon(fitAddon);
-    fitAddonRef.current = fitAddon;
+    const fitAddon = new FitAddon()
+    terminal.loadAddon(fitAddon)
+    fitAddonRef.current = fitAddon
 
     if (enableWebLinks) {
-      const webLinksAddon = new WebLinksAddon();
-      terminal.loadAddon(webLinksAddon);
-      webLinksAddonRef.current = webLinksAddon;
+      const webLinksAddon = new WebLinksAddon()
+      terminal.loadAddon(webLinksAddon)
+      webLinksAddonRef.current = webLinksAddon
     }
 
     // Open terminal
-    terminal.open(terminalRef.current);
+    terminal.open(terminalRef.current)
 
     // Fit terminal to container
-    fitAddon.fit();
+    fitAddon.fit()
 
     // Store terminal reference
-    xtermRef.current = terminal;
+    xtermRef.current = terminal
 
     // Terminal event handlers
-    terminal.onData(data => {
-      onData?.(data);
+    terminal.onData((data) => {
+      onData?.(data)
 
       // Handle special key combinations
       if (data === '\r') {
         // Enter key - might be executing a command
-        setIsProcessRunning(true);
+        setIsProcessRunning(true)
       } else if (data === '\x03') {
         // Ctrl+C - interrupt
-        setIsProcessRunning(false);
+        setIsProcessRunning(false)
       }
-    });
+    })
 
-    terminal.onResize(size => {
-      onResize?.(size.cols, size.rows);
-    });
+    terminal.onResize((size) => {
+      onResize?.(size.cols, size.rows)
+    })
 
-    terminal.onTitleChange(title => {
+    terminal.onTitleChange((title) => {
       // Update terminal title if changed by shell
-      document.title = title;
-    });
+      document.title = title
+    })
 
     terminal.onBell(() => {
       // Flash the terminal container briefly
       if (terminalRef.current) {
-        terminalRef.current.style.backgroundColor = '#ffffff';
+        terminalRef.current.style.backgroundColor = '#ffffff'
         setTimeout(() => {
           if (terminalRef.current) {
-            terminalRef.current.style.backgroundColor = '';
+            terminalRef.current.style.backgroundColor = ''
           }
-        }, 100);
+        }, 100)
       }
-    });
+    })
 
     // Write initial prompt
-    terminal.writeln(`\\x1b[1;32m${title}\\x1b[0m`);
-    terminal.writeln(`Working directory: ${currentDirectory}`);
+    terminal.writeln(`\\x1b[1;32m${title}\\x1b[0m`)
+    terminal.writeln(`Working directory: ${currentDirectory}`)
     if (repositoryPath) {
-      terminal.writeln(`Repository: ${repositoryPath}`);
+      terminal.writeln(`Repository: ${repositoryPath}`)
     }
-    terminal.writeln('');
+    terminal.writeln('')
 
     // Call onReady callback
-    onReady?.(terminal);
+    onReady?.(terminal)
 
     // Cleanup
     return () => {
-      terminal.dispose();
-      xtermRef.current = null;
-      fitAddonRef.current = null;
-      webLinksAddonRef.current = null;
-    };
+      terminal.dispose()
+      xtermRef.current = null
+      fitAddonRef.current = null
+      webLinksAddonRef.current = null
+    }
   }, [
     isLoading,
     error,
@@ -215,98 +215,96 @@ export const Terminal: React.FC<TerminalProps> = ({
     onReady,
     onData,
     onResize,
-  ]);
+  ])
 
   // Handle WebSocket connection
   useEffect(() => {
     if (!websocket || !xtermRef.current) {
-      return;
+      return
     }
 
-    const terminal = xtermRef.current;
+    const terminal = xtermRef.current
 
-    setConnectionStatus('connecting');
+    setConnectionStatus('connecting')
 
     const handleMessage = (event: MessageEvent) => {
       try {
-        const message = JSON.parse(event.data);
+        const message = JSON.parse(event.data)
 
         switch (message.type) {
           case 'output':
             if (message.data.type === 'stdout') {
-              terminal.write(message.data.data);
+              terminal.write(message.data.data)
             } else if (message.data.type === 'stderr') {
-              terminal.write(`\\x1b[31m${message.data.data}\\x1b[0m`);
+              terminal.write(`\\x1b[31m${message.data.data}\\x1b[0m`)
             } else if (message.data.type === 'exit') {
-              terminal.write(`\\x1b[33m${message.data.data}\\x1b[0m`);
-              setIsProcessRunning(false);
+              terminal.write(`\\x1b[33m${message.data.data}\\x1b[0m`)
+              setIsProcessRunning(false)
             }
-            break;
+            break
 
           case 'session-created':
-            setConnectionStatus('connected');
-            break;
+            setConnectionStatus('connected')
+            break
 
           case 'session-closed':
-            setConnectionStatus('disconnected');
-            break;
+            setConnectionStatus('disconnected')
+            break
 
           case 'error':
-            terminal.write(
-              `\\x1b[31mError: ${message.data.message}\\x1b[0m\\r\\n`
-            );
-            setIsProcessRunning(false);
-            break;
+            terminal.write(`\\x1b[31mError: ${message.data.message}\\x1b[0m\\r\\n`)
+            setIsProcessRunning(false)
+            break
         }
       } catch (error) {
-        console.error('Failed to parse WebSocket message:', error);
+        console.error('Failed to parse WebSocket message:', error)
       }
-    };
+    }
 
     const handleOpen = () => {
-      setConnectionStatus('connected');
-    };
+      setConnectionStatus('connected')
+    }
 
     const handleClose = () => {
-      setConnectionStatus('disconnected');
-    };
+      setConnectionStatus('disconnected')
+    }
 
     const handleError = () => {
-      setConnectionStatus('disconnected');
-    };
+      setConnectionStatus('disconnected')
+    }
 
-    websocket.addEventListener('message', handleMessage);
-    websocket.addEventListener('open', handleOpen);
-    websocket.addEventListener('close', handleClose);
-    websocket.addEventListener('error', handleError);
+    websocket.addEventListener('message', handleMessage)
+    websocket.addEventListener('open', handleOpen)
+    websocket.addEventListener('close', handleClose)
+    websocket.addEventListener('error', handleError)
 
     return () => {
-      websocket.removeEventListener('message', handleMessage);
-      websocket.removeEventListener('open', handleOpen);
-      websocket.removeEventListener('close', handleClose);
-      websocket.removeEventListener('error', handleError);
-    };
-  }, [websocket]);
+      websocket.removeEventListener('message', handleMessage)
+      websocket.removeEventListener('open', handleOpen)
+      websocket.removeEventListener('close', handleClose)
+      websocket.removeEventListener('error', handleError)
+    }
+  }, [websocket])
 
   // Handle terminal resize
   const handleResize = useCallback(() => {
     if (fitAddonRef.current) {
-      fitAddonRef.current.fit();
+      fitAddonRef.current.fit()
     }
-  }, []);
+  }, [])
 
   // Handle window resize
   useEffect(() => {
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [handleResize]);
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [handleResize])
 
   // Terminal actions
   const clearTerminal = useCallback(() => {
     if (xtermRef.current) {
-      xtermRef.current.clear();
+      xtermRef.current.clear()
     }
-  }, []);
+  }, [])
 
   const killProcess = useCallback(() => {
     if (websocket && sessionId) {
@@ -315,10 +313,10 @@ export const Terminal: React.FC<TerminalProps> = ({
           type: 'kill',
           sessionId,
         })
-      );
+      )
     }
-    setIsProcessRunning(false);
-  }, [websocket, sessionId]);
+    setIsProcessRunning(false)
+  }, [websocket, sessionId])
 
   const closeTerminal = useCallback(() => {
     if (websocket && sessionId) {
@@ -327,17 +325,15 @@ export const Terminal: React.FC<TerminalProps> = ({
           type: 'close-session',
           sessionId,
         })
-      );
+      )
     }
-    onClose?.();
-  }, [websocket, sessionId, onClose]);
+    onClose?.()
+  }, [websocket, sessionId, onClose])
 
   // Render loading state
   if (isLoading) {
     return (
-      <div
-        className={`terminal-container terminal-container--${mode} ${className}`}
-      >
+      <div className={`terminal-container terminal-container--${mode} ${className}`}>
         {showHeader && (
           <div className="terminal-header">
             <h3 className="terminal-title">{title}</h3>
@@ -347,15 +343,13 @@ export const Terminal: React.FC<TerminalProps> = ({
           <div>Loading terminal...</div>
         </div>
       </div>
-    );
+    )
   }
 
   // Render error state
   if (error) {
     return (
-      <div
-        className={`terminal-container terminal-container--${mode} ${className}`}
-      >
+      <div className={`terminal-container terminal-container--${mode} ${className}`}>
         {showHeader && (
           <div className="terminal-header">
             <h3 className="terminal-title">{title}</h3>
@@ -363,15 +357,12 @@ export const Terminal: React.FC<TerminalProps> = ({
         )}
         <div className="terminal-error">
           <div className="terminal-error-message">{error}</div>
-          <button
-            className="terminal-error-retry"
-            onClick={() => window.location.reload()}
-          >
+          <button className="terminal-error-retry" onClick={() => window.location.reload()}>
             Retry
           </button>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -383,15 +374,8 @@ export const Terminal: React.FC<TerminalProps> = ({
           <div className="terminal-title-section">
             <h3 className="terminal-title">{title}</h3>
             <div className="terminal-session-info">
-              {sessionId && (
-                <span className="terminal-session-badge">
-                  {sessionId.slice(0, 8)}
-                </span>
-              )}
-              <span
-                className="terminal-working-directory"
-                title={currentDirectory}
-              >
+              {sessionId && <span className="terminal-session-badge">{sessionId.slice(0, 8)}</span>}
+              <span className="terminal-working-directory" title={currentDirectory}>
                 {currentDirectory}
               </span>
             </div>
@@ -446,15 +430,13 @@ export const Terminal: React.FC<TerminalProps> = ({
                 : `${initialSize.cols}x${initialSize.rows}`}
             </span>
             {repositoryPath && (
-              <span title={repositoryPath}>
-                {repositoryPath.split('/').pop()}
-              </span>
+              <span title={repositoryPath}>{repositoryPath.split('/').pop()}</span>
             )}
           </div>
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Terminal;
+export default Terminal

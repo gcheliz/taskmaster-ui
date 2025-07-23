@@ -1,6 +1,6 @@
-import React from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '../../../utils/cn';
+import React from 'react'
+import { cva, type VariantProps } from 'class-variance-authority'
+import { cn } from '../../../utils/cn'
 
 const labelVariants = cva(
   'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
@@ -28,7 +28,7 @@ const labelVariants = cva(
       required: false,
     },
   }
-);
+)
 
 export interface LabelProps
   extends React.LabelHTMLAttributes<HTMLLabelElement>,
@@ -37,35 +37,35 @@ export interface LabelProps
    * Shows error state styling
    * @default false
    */
-  error?: boolean;
+  error?: boolean
   /**
    * Shows success state styling
    * @default false
    */
-  success?: boolean;
+  success?: boolean
   /**
    * Description text displayed below the label
    */
-  description?: string;
+  description?: string
   /**
    * Help text displayed below the description
    */
-  helpText?: string;
+  helpText?: string
   /**
    * Visual style variant of the label
    * @default 'default'
    */
-  variant?: 'default' | 'error' | 'success' | 'muted';
+  variant?: 'default' | 'error' | 'success' | 'muted'
   /**
    * Size of the label text
    * @default 'md'
    */
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg'
   /**
    * Shows required indicator (asterisk)
    * @default false
    */
-  required?: boolean;
+  required?: boolean
 }
 
 const Label = React.forwardRef<HTMLLabelElement, LabelProps>(
@@ -85,7 +85,7 @@ const Label = React.forwardRef<HTMLLabelElement, LabelProps>(
     ref
   ) => {
     // Determine variant based on state
-    const computedVariant = error ? 'error' : success ? 'success' : variant;
+    const computedVariant = error ? 'error' : success ? 'success' : variant
 
     return (
       <div className="space-y-1">
@@ -107,11 +107,7 @@ const Label = React.forwardRef<HTMLLabelElement, LabelProps>(
           <p
             className={cn(
               'text-xs',
-              error
-                ? 'text-error-600'
-                : success
-                  ? 'text-success-600'
-                  : 'text-secondary-600'
+              error ? 'text-error-600' : success ? 'text-success-600' : 'text-secondary-600'
             )}
           >
             {description}
@@ -119,10 +115,10 @@ const Label = React.forwardRef<HTMLLabelElement, LabelProps>(
         )}
         {helpText && <p className="text-xs text-secondary-500">{helpText}</p>}
       </div>
-    );
+    )
   }
-);
+)
 
-Label.displayName = 'Label';
+Label.displayName = 'Label'
 
-export { Label, labelVariants };
+export { Label, labelVariants }

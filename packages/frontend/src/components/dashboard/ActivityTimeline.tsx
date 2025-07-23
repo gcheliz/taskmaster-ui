@@ -28,34 +28,58 @@ const ActivityIcon: React.FC<{ type: ActivityItem['type'] }> = ({ type }) => {
   const icons = {
     task: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+        />
       </svg>
     ),
     commit: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-          d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
+        />
       </svg>
     ),
     comment: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-          d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+        />
       </svg>
     ),
     deploy: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+        />
       </svg>
     ),
     review: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+        />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+        />
       </svg>
     ),
   }
@@ -85,7 +109,7 @@ const formatTimestamp = (date: Date) => {
   if (minutes < 60) return `${minutes}m ago`
   if (hours < 24) return `${hours}h ago`
   if (days < 7) return `${days}d ago`
-  
+
   return date.toLocaleDateString()
 }
 
@@ -162,10 +186,12 @@ export const ActivityTimeline: React.FC<ActivityTimelineProps> = ({
                 transition={{ delay: index * 0.1 }}
                 className="relative flex gap-4"
               >
-                <div className={cn(
-                  'relative z-10 w-10 h-10 rounded-lg flex items-center justify-center',
-                  getActivityColor(activity.type)
-                )}>
+                <div
+                  className={cn(
+                    'relative z-10 w-10 h-10 rounded-lg flex items-center justify-center',
+                    getActivityColor(activity.type)
+                  )}
+                >
                   <ActivityIcon type={activity.type} />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -175,9 +201,7 @@ export const ActivityTimeline: React.FC<ActivityTimelineProps> = ({
                         {activity.title}
                       </p>
                       {activity.description && (
-                        <p className="text-sm text-secondary-600 mt-1">
-                          {activity.description}
-                        </p>
+                        <p className="text-sm text-secondary-600 mt-1">{activity.description}</p>
                       )}
                       <div className="flex items-center gap-2 mt-2">
                         <div className="flex items-center gap-2">
@@ -194,9 +218,7 @@ export const ActivityTimeline: React.FC<ActivityTimelineProps> = ({
                               </span>
                             </div>
                           )}
-                          <span className="text-sm text-secondary-600">
-                            {activity.user.name}
-                          </span>
+                          <span className="text-sm text-secondary-600">{activity.user.name}</span>
                         </div>
                         <span className="text-sm text-secondary-500">
                           • {formatTimestamp(activity.timestamp)}
@@ -204,11 +226,15 @@ export const ActivityTimeline: React.FC<ActivityTimelineProps> = ({
                       </div>
                     </div>
                     {activity.meta?.status && (
-                      <Badge variant={
-                        activity.meta.status === 'completed' ? 'success' :
-                        activity.meta.status === 'in-progress' ? 'warning' :
-                        'secondary'
-                      }>
+                      <Badge
+                        variant={
+                          activity.meta.status === 'completed'
+                            ? 'success'
+                            : activity.meta.status === 'in-progress'
+                              ? 'warning'
+                              : 'secondary'
+                        }
+                      >
                         {activity.meta.status}
                       </Badge>
                     )}

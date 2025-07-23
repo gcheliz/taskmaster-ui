@@ -1,9 +1,9 @@
-import { BrowserRouter } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { AppLayout } from './components/Layout';
-import { AppRoutes } from './routes/AppRoutes';
-import { NotificationProvider } from './contexts/NotificationContext';
-import { ThemeProvider } from './contexts/ThemeContext';
+import { BrowserRouter } from 'react-router-dom'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { AppLayout } from './components/Layout'
+import { AppRoutes } from './routes/AppRoutes'
+import { NotificationProvider } from './contexts/NotificationContext'
+import { ThemeProvider } from './contexts/ThemeContext'
 
 // Create a client for React Query
 const queryClient = new QueryClient({
@@ -15,7 +15,7 @@ const queryClient = new QueryClient({
       refetchOnWindowFocus: true,
     },
   },
-});
+})
 
 function App() {
   return (
@@ -30,7 +30,7 @@ function App() {
         </ThemeProvider>
       </BrowserRouter>
     </QueryClientProvider>
-  );
+  )
 }
 
-export default App;
+export default App

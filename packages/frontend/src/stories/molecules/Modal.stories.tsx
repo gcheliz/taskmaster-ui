@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { useState } from 'react';
+import type { Meta, StoryObj } from '@storybook/react'
+import { useState } from 'react'
 import {
   Modal,
   ModalTrigger,
@@ -10,11 +10,11 @@ import {
   ModalBody,
   ModalFooter,
   ModalClose,
-} from '../../components/ui/molecules/Modal';
-import { Button } from '../../components/ui/atoms/Button';
-import { FormField } from '../../components/ui/molecules/FormField';
-import { Card, CardContent } from '../../components/ui/molecules/Card';
-import { Badge } from '../../components/ui/atoms/Badge';
+} from '../../components/ui/molecules/Modal'
+import { Button } from '../../components/ui/atoms/Button'
+import { FormField } from '../../components/ui/molecules/FormField'
+import { Card, CardContent } from '../../components/ui/molecules/Card'
+import { Badge } from '../../components/ui/atoms/Badge'
 
 const meta: Meta<typeof Modal> = {
   title: 'Molecules/Modal',
@@ -40,20 +40,20 @@ const meta: Meta<typeof Modal> = {
     },
   },
   decorators: [
-    Story => (
+    (Story) => (
       <div className="w-full min-h-[200px] flex items-center justify-center">
         <Story />
       </div>
     ),
   ],
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   render: () => {
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(false)
 
     return (
       <Modal open={open} onOpenChange={setOpen}>
@@ -78,13 +78,13 @@ export const Default: Story = {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    );
+    )
   },
-};
+}
 
 export const WithCloseButton: Story = {
   render: () => {
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(false)
 
     return (
       <Modal open={open} onOpenChange={setOpen}>
@@ -99,8 +99,8 @@ export const WithCloseButton: Story = {
           </ModalHeader>
           <ModalBody>
             <p className="text-sm text-secondary-600">
-              You can close this modal by clicking the X button, pressing
-              Escape, or clicking outside.
+              You can close this modal by clicking the X button, pressing Escape, or clicking
+              outside.
             </p>
           </ModalBody>
           <ModalFooter>
@@ -108,16 +108,16 @@ export const WithCloseButton: Story = {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    );
+    )
   },
-};
+}
 
 export const Sizes: Story = {
   render: () => {
-    const [smallOpen, setSmallOpen] = useState(false);
-    const [mediumOpen, setMediumOpen] = useState(false);
-    const [largeOpen, setLargeOpen] = useState(false);
-    const [xlOpen, setXlOpen] = useState(false);
+    const [smallOpen, setSmallOpen] = useState(false)
+    const [mediumOpen, setMediumOpen] = useState(false)
+    const [largeOpen, setLargeOpen] = useState(false)
+    const [xlOpen, setXlOpen] = useState(false)
 
     return (
       <div className="flex gap-4 flex-wrap">
@@ -146,14 +146,10 @@ export const Sizes: Story = {
             <ModalClose />
             <ModalHeader>
               <ModalTitle>Medium Modal</ModalTitle>
-              <ModalDescription>
-                This is a medium-sized modal (default).
-              </ModalDescription>
+              <ModalDescription>This is a medium-sized modal (default).</ModalDescription>
             </ModalHeader>
             <ModalBody>
-              <p className="text-sm">
-                Standard content with moderate amount of information.
-              </p>
+              <p className="text-sm">Standard content with moderate amount of information.</p>
             </ModalBody>
             <ModalFooter>
               <Button onClick={() => setMediumOpen(false)}>Close</Button>
@@ -167,15 +163,12 @@ export const Sizes: Story = {
             <ModalClose />
             <ModalHeader>
               <ModalTitle>Large Modal</ModalTitle>
-              <ModalDescription>
-                This is a large-sized modal for more content.
-              </ModalDescription>
+              <ModalDescription>This is a large-sized modal for more content.</ModalDescription>
             </ModalHeader>
             <ModalBody>
               <p className="text-sm">
-                Extended content area for detailed information, forms, or
-                complex interactions. This size provides more space for
-                comprehensive content.
+                Extended content area for detailed information, forms, or complex interactions. This
+                size provides more space for comprehensive content.
               </p>
             </ModalBody>
             <ModalFooter>
@@ -196,9 +189,8 @@ export const Sizes: Story = {
             </ModalHeader>
             <ModalBody>
               <p className="text-sm">
-                Maximum content area for dashboards, detailed forms, or complex
-                data displays. This size is ideal when you need to show a lot of
-                information without scrolling.
+                Maximum content area for dashboards, detailed forms, or complex data displays. This
+                size is ideal when you need to show a lot of information without scrolling.
               </p>
             </ModalBody>
             <ModalFooter>
@@ -207,24 +199,24 @@ export const Sizes: Story = {
           </ModalContent>
         </Modal>
       </div>
-    );
+    )
   },
-};
+}
 
 export const FormModal: Story = {
   render: () => {
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(false)
     const [formData, setFormData] = useState({
       name: '',
       email: '',
       message: '',
-    });
+    })
 
     const handleSubmit = (e: React.FormEvent) => {
-      e.preventDefault();
-      alert(`Form submitted: ${JSON.stringify(formData, null, 2)}`);
-      setOpen(false);
-    };
+      e.preventDefault()
+      alert(`Form submitted: ${JSON.stringify(formData, null, 2)}`)
+      setOpen(false)
+    }
 
     return (
       <Modal open={open} onOpenChange={setOpen}>
@@ -242,9 +234,7 @@ export const FormModal: Story = {
               <FormField
                 label="Name"
                 value={formData.name}
-                onChange={e =>
-                  setFormData(prev => ({ ...prev, name: e.target.value }))
-                }
+                onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
                 placeholder="Enter your name"
                 required
               />
@@ -252,29 +242,21 @@ export const FormModal: Story = {
                 label="Email"
                 type="email"
                 value={formData.email}
-                onChange={e =>
-                  setFormData(prev => ({ ...prev, email: e.target.value }))
-                }
+                onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
                 placeholder="Enter your email"
                 required
               />
               <FormField
                 label="Message"
                 value={formData.message}
-                onChange={e =>
-                  setFormData(prev => ({ ...prev, message: e.target.value }))
-                }
+                onChange={(e) => setFormData((prev) => ({ ...prev, message: e.target.value }))}
                 placeholder="Enter your message"
                 helpText="Tell us how we can help you"
                 required
               />
             </ModalBody>
             <ModalFooter>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setOpen(false)}
-              >
+              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
                 Cancel
               </Button>
               <Button type="submit">Send Message</Button>
@@ -282,18 +264,18 @@ export const FormModal: Story = {
           </form>
         </ModalContent>
       </Modal>
-    );
+    )
   },
-};
+}
 
 export const ConfirmationModal: Story = {
   render: () => {
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(false)
 
     const handleConfirm = () => {
-      alert('Action confirmed!');
-      setOpen(false);
-    };
+      alert('Action confirmed!')
+      setOpen(false)
+    }
 
     return (
       <Modal open={open} onOpenChange={setOpen}>
@@ -302,8 +284,7 @@ export const ConfirmationModal: Story = {
           <ModalHeader>
             <ModalTitle>Confirm Deletion</ModalTitle>
             <ModalDescription>
-              Are you sure you want to delete this item? This action cannot be
-              undone.
+              Are you sure you want to delete this item? This action cannot be undone.
             </ModalDescription>
           </ModalHeader>
           <ModalFooter>
@@ -316,13 +297,13 @@ export const ConfirmationModal: Story = {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    );
+    )
   },
-};
+}
 
 export const TaskDetailsModal: Story = {
   render: () => {
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(false)
 
     const task = {
       id: 'TSK-001',
@@ -349,7 +330,7 @@ export const TaskDetailsModal: Story = {
           timestamp: '2024-01-21 14:15',
         },
       ],
-    };
+    }
 
     return (
       <Modal open={open} onOpenChange={setOpen}>
@@ -368,29 +349,23 @@ export const TaskDetailsModal: Story = {
           <ModalBody className="space-y-6">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <h4 className="text-sm font-medium text-secondary-700">
-                  Priority
-                </h4>
+                <h4 className="text-sm font-medium text-secondary-700">Priority</h4>
                 <Badge variant={task.priority === 'high' ? 'error' : 'warning'}>
                   {task.priority}
                 </Badge>
               </div>
               <div>
-                <h4 className="text-sm font-medium text-secondary-700">
-                  Assignee
-                </h4>
+                <h4 className="text-sm font-medium text-secondary-700">Assignee</h4>
                 <p className="text-sm">{task.assignee}</p>
               </div>
               <div>
-                <h4 className="text-sm font-medium text-secondary-700">
-                  Due Date
-                </h4>
+                <h4 className="text-sm font-medium text-secondary-700">Due Date</h4>
                 <p className="text-sm">{task.dueDate}</p>
               </div>
               <div>
                 <h4 className="text-sm font-medium text-secondary-700">Tags</h4>
                 <div className="flex gap-1 flex-wrap">
-                  {task.tags.map(tag => (
+                  {task.tags.map((tag) => (
                     <Badge key={tag} variant="secondary" size="sm">
                       {tag}
                     </Badge>
@@ -400,31 +375,21 @@ export const TaskDetailsModal: Story = {
             </div>
 
             <div>
-              <h4 className="text-sm font-medium text-secondary-700 mb-2">
-                Description
-              </h4>
+              <h4 className="text-sm font-medium text-secondary-700 mb-2">Description</h4>
               <p className="text-sm text-secondary-600">{task.description}</p>
             </div>
 
             <div>
-              <h4 className="text-sm font-medium text-secondary-700 mb-3">
-                Comments
-              </h4>
+              <h4 className="text-sm font-medium text-secondary-700 mb-3">Comments</h4>
               <div className="space-y-3">
-                {task.comments.map(comment => (
+                {task.comments.map((comment) => (
                   <Card key={comment.id}>
                     <CardContent className="p-3">
                       <div className="flex justify-between items-start mb-2">
-                        <span className="text-sm font-medium">
-                          {comment.author}
-                        </span>
-                        <span className="text-xs text-secondary-500">
-                          {comment.timestamp}
-                        </span>
+                        <span className="text-sm font-medium">{comment.author}</span>
+                        <span className="text-xs text-secondary-500">{comment.timestamp}</span>
                       </div>
-                      <p className="text-sm text-secondary-600">
-                        {comment.content}
-                      </p>
+                      <p className="text-sm text-secondary-600">{comment.content}</p>
                     </CardContent>
                   </Card>
                 ))}
@@ -439,14 +404,14 @@ export const TaskDetailsModal: Story = {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    );
+    )
   },
-};
+}
 
 export const NestedModals: Story = {
   render: () => {
-    const [firstModalOpen, setFirstModalOpen] = useState(false);
-    const [secondModalOpen, setSecondModalOpen] = useState(false);
+    const [firstModalOpen, setFirstModalOpen] = useState(false)
+    const [secondModalOpen, setSecondModalOpen] = useState(false)
 
     return (
       <>
@@ -462,8 +427,7 @@ export const NestedModals: Story = {
             </ModalHeader>
             <ModalBody>
               <p className="text-sm text-secondary-600 mb-4">
-                Click the button below to open a second modal on top of this
-                one.
+                Click the button below to open a second modal on top of this one.
               </p>
               <Modal open={secondModalOpen} onOpenChange={setSecondModalOpen}>
                 <ModalTrigger variant="outline">Open Second Modal</ModalTrigger>
@@ -477,33 +441,28 @@ export const NestedModals: Story = {
                   </ModalHeader>
                   <ModalBody>
                     <p className="text-sm text-secondary-600">
-                      Nested modals work properly with focus management and
-                      z-index stacking.
+                      Nested modals work properly with focus management and z-index stacking.
                     </p>
                   </ModalBody>
                   <ModalFooter>
-                    <Button onClick={() => setSecondModalOpen(false)}>
-                      Close Second Modal
-                    </Button>
+                    <Button onClick={() => setSecondModalOpen(false)}>Close Second Modal</Button>
                   </ModalFooter>
                 </ModalContent>
               </Modal>
             </ModalBody>
             <ModalFooter>
-              <Button onClick={() => setFirstModalOpen(false)}>
-                Close First Modal
-              </Button>
+              <Button onClick={() => setFirstModalOpen(false)}>Close First Modal</Button>
             </ModalFooter>
           </ModalContent>
         </Modal>
       </>
-    );
+    )
   },
-};
+}
 
 export const AccessibilityExample: Story = {
   render: () => {
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(false)
 
     return (
       <Modal open={open} onOpenChange={setOpen}>
@@ -521,24 +480,16 @@ export const AccessibilityExample: Story = {
               <h4 className="text-sm font-medium mb-2">Keyboard Navigation</h4>
               <ul className="text-sm text-secondary-600 space-y-1">
                 <li>
-                  • Press{' '}
-                  <kbd className="px-1 py-0.5 bg-secondary-100 rounded text-xs">
-                    Tab
-                  </kbd>{' '}
-                  to navigate between focusable elements
+                  • Press <kbd className="px-1 py-0.5 bg-secondary-100 rounded text-xs">Tab</kbd> to
+                  navigate between focusable elements
                 </li>
                 <li>
                   • Press{' '}
-                  <kbd className="px-1 py-0.5 bg-secondary-100 rounded text-xs">
-                    Shift + Tab
-                  </kbd>{' '}
-                  to navigate backwards
+                  <kbd className="px-1 py-0.5 bg-secondary-100 rounded text-xs">Shift + Tab</kbd> to
+                  navigate backwards
                 </li>
                 <li>
-                  • Press{' '}
-                  <kbd className="px-1 py-0.5 bg-secondary-100 rounded text-xs">
-                    Escape
-                  </kbd>{' '}
+                  • Press <kbd className="px-1 py-0.5 bg-secondary-100 rounded text-xs">Escape</kbd>{' '}
                   to close the modal
                 </li>
               </ul>
@@ -573,20 +524,18 @@ export const AccessibilityExample: Story = {
             </div>
           </ModalBody>
           <ModalFooter>
-            <Button onClick={() => setOpen(false)}>
-              Last Focusable Element
-            </Button>
+            <Button onClick={() => setOpen(false)}>Last Focusable Element</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
-    );
+    )
   },
-};
+}
 
 export const ControlledModal: Story = {
   render: () => {
-    const [open, setOpen] = useState(false);
-    const [counter, setCounter] = useState(0);
+    const [open, setOpen] = useState(false)
+    const [counter, setCounter] = useState(0)
 
     return (
       <div className="space-y-4">
@@ -594,14 +543,10 @@ export const ControlledModal: Story = {
           <Button onClick={() => setOpen(true)} disabled={open}>
             Open Modal
           </Button>
-          <Button
-            variant="outline"
-            onClick={() => setOpen(false)}
-            disabled={!open}
-          >
+          <Button variant="outline" onClick={() => setOpen(false)} disabled={!open}>
             Close Modal
           </Button>
-          <Button variant="outline" onClick={() => setCounter(c => c + 1)}>
+          <Button variant="outline" onClick={() => setCounter((c) => c + 1)}>
             Increment: {counter}
           </Button>
         </div>
@@ -611,27 +556,22 @@ export const ControlledModal: Story = {
             <ModalClose />
             <ModalHeader>
               <ModalTitle>Controlled Modal</ModalTitle>
-              <ModalDescription>
-                This modal's state is controlled externally.
-              </ModalDescription>
+              <ModalDescription>This modal's state is controlled externally.</ModalDescription>
             </ModalHeader>
             <ModalBody>
               <p className="text-sm text-secondary-600">
                 Current counter value: <strong>{counter}</strong>
               </p>
               <p className="text-sm text-secondary-600 mt-2">
-                The modal state is managed by external buttons and will update
-                reactively.
+                The modal state is managed by external buttons and will update reactively.
               </p>
             </ModalBody>
             <ModalFooter>
-              <Button onClick={() => setCounter(c => c + 1)}>
-                Increment from Modal
-              </Button>
+              <Button onClick={() => setCounter((c) => c + 1)}>Increment from Modal</Button>
             </ModalFooter>
           </ModalContent>
         </Modal>
       </div>
-    );
+    )
   },
-};
+}

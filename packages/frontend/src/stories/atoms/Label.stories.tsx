@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { Label } from '../../components/ui/atoms/Label';
-import { Input } from '../../components/ui/atoms/Input';
+import type { Meta, StoryObj } from '@storybook/react'
+import { Label } from '../../components/ui/atoms/Label'
+import { Input } from '../../components/ui/atoms/Input'
 
 const meta: Meta<typeof Label> = {
   title: 'Atoms/Label',
@@ -36,43 +36,43 @@ const meta: Meta<typeof Label> = {
     },
   },
   decorators: [
-    Story => (
+    (Story) => (
       <div className="w-80">
         <Story />
       </div>
     ),
   ],
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {
     children: 'Default Label',
   },
-};
+}
 
 export const Required: Story = {
   args: {
     children: 'Required Field',
     required: true,
   },
-};
+}
 
 export const WithDescription: Story = {
   args: {
     children: 'Email Address',
     description: "We'll never share your email with anyone else.",
   },
-};
+}
 
 export const WithHelpText: Story = {
   args: {
     children: 'Password',
     helpText: 'Must be at least 8 characters long',
   },
-};
+}
 
 export const ErrorState: Story = {
   args: {
@@ -80,7 +80,7 @@ export const ErrorState: Story = {
     error: true,
     description: 'Please enter a valid email address',
   },
-};
+}
 
 export const SuccessState: Story = {
   args: {
@@ -88,7 +88,7 @@ export const SuccessState: Story = {
     success: true,
     description: 'Email address is valid and available',
   },
-};
+}
 
 export const Muted: Story = {
   args: {
@@ -96,7 +96,7 @@ export const Muted: Story = {
     variant: 'muted',
     description: 'This field is optional',
   },
-};
+}
 
 export const Sizes: Story = {
   render: () => (
@@ -106,7 +106,7 @@ export const Sizes: Story = {
       <Label size="lg">Large Label Text</Label>
     </div>
   ),
-};
+}
 
 export const AllVariants: Story = {
   render: () => (
@@ -117,7 +117,7 @@ export const AllVariants: Story = {
       <Label variant="muted">Muted Label</Label>
     </div>
   ),
-};
+}
 
 export const ComplexLabels: Story = {
   render: () => (
@@ -148,7 +148,7 @@ export const ComplexLabels: Story = {
       </Label>
     </div>
   ),
-};
+}
 
 export const WithInputs: Story = {
   render: () => (
@@ -161,22 +161,14 @@ export const WithInputs: Story = {
       </div>
 
       <div className="space-y-2">
-        <Label
-          htmlFor="input2"
-          required
-          description="We'll use this to contact you"
-        >
+        <Label htmlFor="input2" required description="We'll use this to contact you">
           Email Address
         </Label>
         <Input id="input2" type="email" placeholder="john@example.com" />
       </div>
 
       <div className="space-y-2">
-        <Label
-          htmlFor="input3"
-          error
-          description="Password must be at least 8 characters"
-        >
+        <Label htmlFor="input3" error description="Password must be at least 8 characters">
           Password
         </Label>
         <Input id="input3" type="password" placeholder="Enter password" error />
@@ -190,26 +182,20 @@ export const WithInputs: Story = {
       </div>
 
       <div className="space-y-2">
-        <Label
-          htmlFor="input5"
-          variant="muted"
-          helpText="This field is optional"
-        >
+        <Label htmlFor="input5" variant="muted" helpText="This field is optional">
           Bio
         </Label>
         <Input id="input5" placeholder="Tell us about yourself..." />
       </div>
     </div>
   ),
-};
+}
 
 export const AccessibilityExample: Story = {
   render: () => (
     <div className="space-y-6">
       <fieldset className="border border-secondary-200 rounded-lg p-4">
-        <legend className="px-2 text-sm font-medium">
-          Personal Information
-        </legend>
+        <legend className="px-2 text-sm font-medium">Personal Information</legend>
 
         <div className="space-y-4">
           <div className="space-y-2">
@@ -244,4 +230,4 @@ export const AccessibilityExample: Story = {
       </fieldset>
     </div>
   ),
-};
+}

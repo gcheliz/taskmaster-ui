@@ -1,65 +1,65 @@
-import type { ProfileSettingsData } from '../components/Settings/ProfileSettings';
-import type { IntegrationsSettingsData } from '../components/Settings/IntegrationsSettings';
-import type { NotificationSettingsData } from '../components/Settings/NotificationSettings';
-import type { SecuritySettingsData } from '../components/Settings/SecuritySettings';
-import type { AppearanceSettingsData } from '../components/Settings/AppearanceSettings';
+import type { ProfileSettingsData } from '../components/Settings/ProfileSettings'
+import type { IntegrationsSettingsData } from '../components/Settings/IntegrationsSettings'
+import type { NotificationSettingsData } from '../components/Settings/NotificationSettings'
+import type { SecuritySettingsData } from '../components/Settings/SecuritySettings'
+import type { AppearanceSettingsData } from '../components/Settings/AppearanceSettings'
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001'
 
 export interface UserSettings {
-  id: string;
-  userId: string;
+  id: string
+  userId: string
   // Profile settings
-  firstName?: string;
-  lastName?: string;
-  bio?: string;
-  jobTitle?: string;
-  company?: string;
-  location?: string;
-  website?: string;
-  timezone?: string;
-  language?: string;
+  firstName?: string
+  lastName?: string
+  bio?: string
+  jobTitle?: string
+  company?: string
+  location?: string
+  website?: string
+  timezone?: string
+  language?: string
   // Appearance settings
-  theme?: string;
-  colorScheme?: string;
-  fontSize?: string;
-  density?: string;
-  animations?: boolean;
-  glassmorphism?: boolean;
+  theme?: string
+  colorScheme?: string
+  fontSize?: string
+  density?: string
+  animations?: boolean
+  glassmorphism?: boolean
   // Notification settings
-  emailNotifications?: boolean;
-  pushNotifications?: boolean;
-  slackNotifications?: boolean;
-  desktopNotifications?: boolean;
-  notificationSettings?: any;
+  emailNotifications?: boolean
+  pushNotifications?: boolean
+  slackNotifications?: boolean
+  desktopNotifications?: boolean
+  notificationSettings?: any
   // Integration settings
-  integrationSettings?: any;
+  integrationSettings?: any
   // Security settings
-  twoFactorEnabled?: boolean;
-  loginNotifications?: boolean;
-  securitySettings?: any;
+  twoFactorEnabled?: boolean
+  loginNotifications?: boolean
+  securitySettings?: any
   // Dashboard preferences
-  dashboardLayout?: string;
-  cardsPerRow?: number;
-  showQuickActions?: boolean;
+  dashboardLayout?: string
+  cardsPerRow?: number
+  showQuickActions?: boolean
   // Accessibility
-  highContrast?: boolean;
-  reducedMotion?: boolean;
-  focusIndicators?: boolean;
+  highContrast?: boolean
+  reducedMotion?: boolean
+  focusIndicators?: boolean
   // Timestamps
-  createdAt: string;
-  updatedAt: string;
+  createdAt: string
+  updatedAt: string
 }
 
 export interface ApiResponse<T = any> {
-  success: boolean;
-  data?: T;
-  message?: string;
+  success: boolean
+  data?: T
+  message?: string
   error?: {
-    code: string;
-    message: string;
-    details?: any[];
-  };
+    code: string
+    message: string
+    details?: any[]
+  }
 }
 
 export type SettingsCategory =
@@ -67,15 +67,15 @@ export type SettingsCategory =
   | 'appearance'
   | 'notifications'
   | 'integrations'
-  | 'security';
+  | 'security'
 
 class SettingsApiService {
   private getAuthHeaders(): HeadersInit {
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem('authToken')
     return {
       'Content-Type': 'application/json',
       ...(token && { Authorization: `Bearer ${token}` }),
-    };
+    }
   }
 
   private async makeRequest<T>(
@@ -89,20 +89,18 @@ class SettingsApiService {
           ...this.getAuthHeaders(),
           ...options.headers,
         },
-      });
+      })
 
-      const data = await response.json();
+      const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(
-          data.error?.message || `HTTP error! status: ${response.status}`
-        );
+        throw new Error(data.error?.message || `HTTP error! status: ${response.status}`)
       }
 
-      return data;
+      return data
     } catch (error) {
-      console.error('Settings API error:', error);
-      throw error;
+      console.error('Settings API error:', error)
+      throw error
     }
   }
 
@@ -110,11 +108,11 @@ class SettingsApiService {
    * Get all user settings
    */
   async getSettings(): Promise<UserSettings> {
-    const response = await this.makeRequest<UserSettings>('');
+    const response = await this.makeRequest<UserSettings>('')
     if (!response.success || !response.data) {
-      throw new Error('Failed to fetch settings');
+      throw new Error('Failed to fetch settings')
     }
-    return response.data;
+    return response.data
   }
 
   /**
@@ -124,39 +122,36 @@ class SettingsApiService {
     const response = await this.makeRequest<UserSettings>('', {
       method: 'PUT',
       body: JSON.stringify(settings),
-    });
+    })
     if (!response.success || !response.data) {
-      throw new Error('Failed to update settings');
+      throw new Error('Failed to update settings')
     }
-    return response.data;
+    return response.data
   }
 
   /**
    * Update specific settings category
    */
-  async updateCategory(
-    category: SettingsCategory,
-    data: any
-  ): Promise<UserSettings> {
+  async updateCategory(category: SettingsCategory, data: any): Promise<UserSettings> {
     const response = await this.makeRequest<UserSettings>('/category', {
       method: 'PUT',
       body: JSON.stringify({ category, data }),
-    });
+    })
     if (!response.success || !response.data) {
-      throw new Error(`Failed to update ${category} settings`);
+      throw new Error(`Failed to update ${category} settings`)
     }
-    return response.data;
+    return response.data
   }
 
   /**
    * Get settings for specific category
    */
   async getCategorySettings(category: SettingsCategory): Promise<any> {
-    const response = await this.makeRequest(`/${category}`);
+    const response = await this.makeRequest(`/${category}`)
     if (!response.success || !response.data) {
-      throw new Error(`Failed to fetch ${category} settings`);
+      throw new Error(`Failed to fetch ${category} settings`)
     }
-    return response.data;
+    return response.data
   }
 
   /**
@@ -165,27 +160,25 @@ class SettingsApiService {
   async resetSettings(): Promise<UserSettings> {
     const response = await this.makeRequest<UserSettings>('/reset', {
       method: 'POST',
-    });
+    })
     if (!response.success || !response.data) {
-      throw new Error('Failed to reset settings');
+      throw new Error('Failed to reset settings')
     }
-    return response.data;
+    return response.data
   }
 
   /**
    * Create initial settings
    */
-  async createSettings(
-    settings: Partial<UserSettings> = {}
-  ): Promise<UserSettings> {
+  async createSettings(settings: Partial<UserSettings> = {}): Promise<UserSettings> {
     const response = await this.makeRequest<UserSettings>('', {
       method: 'POST',
       body: JSON.stringify(settings),
-    });
+    })
     if (!response.success || !response.data) {
-      throw new Error('Failed to create settings');
+      throw new Error('Failed to create settings')
     }
-    return response.data;
+    return response.data
   }
 
   /**
@@ -194,16 +187,14 @@ class SettingsApiService {
   async deleteSettings(): Promise<void> {
     const response = await this.makeRequest('', {
       method: 'DELETE',
-    });
+    })
     if (!response.success) {
-      throw new Error('Failed to delete settings');
+      throw new Error('Failed to delete settings')
     }
   }
 
   // Specific category update methods
-  async updateProfileSettings(
-    data: ProfileSettingsData
-  ): Promise<UserSettings> {
+  async updateProfileSettings(data: ProfileSettingsData): Promise<UserSettings> {
     return this.updateCategory('profile', {
       firstName: data.firstName,
       lastName: data.lastName,
@@ -214,12 +205,10 @@ class SettingsApiService {
       website: data.website,
       timezone: data.timezone,
       language: data.language,
-    });
+    })
   }
 
-  async updateAppearanceSettings(
-    data: AppearanceSettingsData
-  ): Promise<UserSettings> {
+  async updateAppearanceSettings(data: AppearanceSettingsData): Promise<UserSettings> {
     return this.updateCategory('appearance', {
       theme: data.theme,
       colorScheme: data.colorScheme,
@@ -233,12 +222,10 @@ class SettingsApiService {
       highContrast: data.accessibility.highContrast,
       reducedMotion: data.accessibility.reducedMotion,
       focusIndicators: data.accessibility.focusIndicators,
-    });
+    })
   }
 
-  async updateNotificationSettings(
-    data: NotificationSettingsData
-  ): Promise<UserSettings> {
+  async updateNotificationSettings(data: NotificationSettingsData): Promise<UserSettings> {
     return this.updateCategory('notifications', {
       emailNotifications: data.email.enabled,
       pushNotifications: data.push.enabled,
@@ -250,20 +237,16 @@ class SettingsApiService {
         slack: data.slack,
         desktop: data.desktop,
       },
-    });
+    })
   }
 
-  async updateIntegrationSettings(
-    data: IntegrationsSettingsData
-  ): Promise<UserSettings> {
+  async updateIntegrationSettings(data: IntegrationsSettingsData): Promise<UserSettings> {
     return this.updateCategory('integrations', {
       integrationSettings: data,
-    });
+    })
   }
 
-  async updateSecuritySettings(
-    data: SecuritySettingsData
-  ): Promise<UserSettings> {
+  async updateSecuritySettings(data: SecuritySettingsData): Promise<UserSettings> {
     return this.updateCategory('security', {
       twoFactorEnabled: data.twoFactor.enabled,
       loginNotifications: data.loginNotifications.enabled,
@@ -273,9 +256,9 @@ class SettingsApiService {
         loginNotifications: data.loginNotifications,
         apiKeys: data.apiKeys,
       },
-    });
+    })
   }
 }
 
-export const settingsApi = new SettingsApiService();
-export default settingsApi;
+export const settingsApi = new SettingsApiService()
+export default settingsApi

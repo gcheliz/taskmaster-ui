@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { Input } from '../../components/ui/atoms/Input';
-import { Label } from '../../components/ui/atoms/Label';
-import { Icon, EyeIcon, CheckIcon } from '../../components/ui/atoms/Icon';
+import type { Meta, StoryObj } from '@storybook/react'
+import { Input } from '../../components/ui/atoms/Input'
+import { Label } from '../../components/ui/atoms/Label'
+import { Icon, EyeIcon, CheckIcon } from '../../components/ui/atoms/Icon'
 
 const meta: Meta<typeof Input> = {
   title: 'Atoms/Input',
@@ -53,149 +53,98 @@ const meta: Meta<typeof Input> = {
     },
   },
   decorators: [
-    Story => (
+    (Story) => (
       <div className="w-80">
         <Story />
       </div>
     ),
   ],
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {
     placeholder: 'Enter text...',
   },
-};
+}
 
 export const WithLabel: Story = {
-  render: args => (
+  render: (args) => (
     <div className="space-y-2">
       <Label htmlFor="input-with-label">Email Address</Label>
-      <Input
-        id="input-with-label"
-        type="email"
-        placeholder="john@example.com"
-        {...args}
-      />
+      <Input id="input-with-label" type="email" placeholder="john@example.com" {...args} />
     </div>
   ),
-};
+}
 
 export const Required: Story = {
-  render: args => (
+  render: (args) => (
     <div className="space-y-2">
       <Label htmlFor="required-input" required>
         Password
       </Label>
-      <Input
-        id="required-input"
-        type="password"
-        placeholder="Enter password"
-        {...args}
-      />
+      <Input id="required-input" type="password" placeholder="Enter password" {...args} />
     </div>
   ),
-};
+}
 
 export const WithDescription: Story = {
-  render: args => (
+  render: (args) => (
     <div className="space-y-2">
-      <Label
-        htmlFor="input-with-desc"
-        description="We'll never share your email with anyone else."
-      >
+      <Label htmlFor="input-with-desc" description="We'll never share your email with anyone else.">
         Email Address
       </Label>
-      <Input
-        id="input-with-desc"
-        type="email"
-        placeholder="john@example.com"
-        {...args}
-      />
+      <Input id="input-with-desc" type="email" placeholder="john@example.com" {...args} />
     </div>
   ),
-};
+}
 
 export const WithHelpText: Story = {
-  render: args => (
+  render: (args) => (
     <div className="space-y-2">
-      <Label
-        htmlFor="input-with-help"
-        helpText="Must be at least 8 characters long"
-      >
+      <Label htmlFor="input-with-help" helpText="Must be at least 8 characters long">
         Password
       </Label>
-      <Input
-        id="input-with-help"
-        type="password"
-        placeholder="Enter password"
-        {...args}
-      />
+      <Input id="input-with-help" type="password" placeholder="Enter password" {...args} />
     </div>
   ),
-};
+}
 
 export const ErrorState: Story = {
-  render: args => (
+  render: (args) => (
     <div className="space-y-2">
-      <Label
-        htmlFor="error-input"
-        error
-        description="Please enter a valid email address"
-      >
+      <Label htmlFor="error-input" error description="Please enter a valid email address">
         Email Address
       </Label>
-      <Input
-        id="error-input"
-        type="email"
-        placeholder="john@example.com"
-        error
-        {...args}
-      />
+      <Input id="error-input" type="email" placeholder="john@example.com" error {...args} />
     </div>
   ),
-};
+}
 
 export const SuccessState: Story = {
-  render: args => (
+  render: (args) => (
     <div className="space-y-2">
-      <Label
-        htmlFor="success-input"
-        success
-        description="Email address is valid"
-      >
+      <Label htmlFor="success-input" success description="Email address is valid">
         Email Address
       </Label>
-      <Input
-        id="success-input"
-        type="email"
-        value="john@example.com"
-        success
-        {...args}
-      />
+      <Input id="success-input" type="email" value="john@example.com" success {...args} />
     </div>
   ),
-};
+}
 
 export const Disabled: Story = {
-  render: args => (
+  render: (args) => (
     <div className="space-y-2">
       <Label htmlFor="disabled-input">Disabled Input</Label>
-      <Input
-        id="disabled-input"
-        placeholder="This input is disabled"
-        disabled
-        {...args}
-      />
+      <Input id="disabled-input" placeholder="This input is disabled" disabled {...args} />
     </div>
   ),
-};
+}
 
 export const WithLeftIcon: Story = {
-  render: args => (
+  render: (args) => (
     <div className="space-y-2">
       <Label htmlFor="icon-left-input">Search</Label>
       <Input
@@ -206,10 +155,10 @@ export const WithLeftIcon: Story = {
       />
     </div>
   ),
-};
+}
 
 export const WithRightIcon: Story = {
-  render: args => (
+  render: (args) => (
     <div className="space-y-2">
       <Label htmlFor="icon-right-input">Validated Input</Label>
       <Input
@@ -221,7 +170,7 @@ export const WithRightIcon: Story = {
       />
     </div>
   ),
-};
+}
 
 export const Sizes: Story = {
   render: () => (
@@ -240,7 +189,7 @@ export const Sizes: Story = {
       </div>
     </div>
   ),
-};
+}
 
 export const InputTypes: Story = {
   render: () => (
@@ -267,7 +216,7 @@ export const InputTypes: Story = {
       </div>
     </div>
   ),
-};
+}
 
 export const FormExample: Story = {
   render: () => (
@@ -298,24 +247,16 @@ export const FormExample: Story = {
         >
           Password
         </Label>
-        <Input
-          id="form-password"
-          type="password"
-          placeholder="Enter secure password"
-        />
+        <Input id="form-password" type="password" placeholder="Enter secure password" />
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="form-bio">Bio (Optional)</Label>
-        <Input
-          id="form-bio"
-          type="text"
-          placeholder="Tell us about yourself..."
-        />
+        <Input id="form-bio" type="text" placeholder="Tell us about yourself..." />
       </div>
     </form>
   ),
-};
+}
 
 // Dark theme specific stories
 export const DarkThemeVariants: Story = {
@@ -325,9 +266,7 @@ export const DarkThemeVariants: Story = {
   render: () => (
     <div className="">
       <div className="bg-white p-6 rounded-lg space-y-4">
-        <h3 className="text-slate-900 text-lg font-semibold mb-4">
-          Dark Theme Form Elements
-        </h3>
+        <h3 className="text-slate-900 text-lg font-semibold mb-4">Dark Theme Form Elements</h3>
         <div className="space-y-4">
           <div className="space-y-2">
             <Label className="text-slate-900">Default Input</Label>
@@ -353,7 +292,7 @@ export const DarkThemeVariants: Story = {
       </div>
     </div>
   ),
-};
+}
 
 // Accessibility testing story
 export const AccessibilityTest: Story = {
@@ -361,9 +300,7 @@ export const AccessibilityTest: Story = {
     <div className="space-y-6">
       <div className="space-y-2">
         <h3 className="text-lg font-semibold">Keyboard Navigation</h3>
-        <p className="text-sm text-secondary-600">
-          Use Tab to navigate, Enter to submit
-        </p>
+        <p className="text-sm text-secondary-600">Use Tab to navigate, Enter to submit</p>
         <div className="space-y-2">
           <Label htmlFor="accessible-input-1">First Input</Label>
           <Input id="accessible-input-1" placeholder="Tab to next input" />
@@ -406,7 +343,7 @@ export const AccessibilityTest: Story = {
       </div>
     </div>
   ),
-};
+}
 
 // Micro-interactions showcase
 export const MicroInteractions: Story = {
@@ -435,7 +372,7 @@ export const MicroInteractions: Story = {
       </div>
     </div>
   ),
-};
+}
 
 // Responsive design showcase
 export const ResponsiveDesign: Story = {
@@ -443,9 +380,7 @@ export const ResponsiveDesign: Story = {
     <div className="space-y-6">
       <div className="space-y-2">
         <h3 className="text-lg font-semibold">Mobile First Design</h3>
-        <p className="text-sm text-secondary-600">
-          Inputs are optimized for mobile touch targets
-        </p>
+        <p className="text-sm text-secondary-600">Inputs are optimized for mobile touch targets</p>
         <div className="space-y-2">
           <Label>Mobile Friendly Input</Label>
           <Input placeholder="Easy to tap and type" inputSize="lg" />
@@ -460,4 +395,4 @@ export const ResponsiveDesign: Story = {
       </div>
     </div>
   ),
-};
+}

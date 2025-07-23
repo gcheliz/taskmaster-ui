@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { RepositoryCard } from '../../components/Repository/RepositoryCard';
-import type { RepositoryCardProps } from '../../components/Repository/RepositoryCard';
+import type { Meta, StoryObj } from '@storybook/react'
+import { RepositoryCard } from '../../components/Repository/RepositoryCard'
+import type { RepositoryCardProps } from '../../components/Repository/RepositoryCard'
 
 const meta: Meta<typeof RepositoryCard> = {
   title: 'Components/Repository/RepositoryCard',
@@ -43,17 +43,16 @@ const meta: Meta<typeof RepositoryCard> = {
     onViewCommits: { action: 'view commits' },
     onManage: { action: 'manage' },
   },
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof RepositoryCard>;
+export default meta
+type Story = StoryObj<typeof RepositoryCard>
 
 // Sample repository data
 const sampleRepository: RepositoryCardProps['repository'] = {
   id: 'repo-1',
   name: 'taskmaster-ui',
-  description:
-    'A modern task management interface built with React and TypeScript',
+  description: 'A modern task management interface built with React and TypeScript',
   path: '/Users/user/projects/taskmaster-ui',
   currentBranch: 'main',
   lastCommit: {
@@ -80,7 +79,7 @@ const sampleRepository: RepositoryCardProps['repository'] = {
   language: 'TypeScript',
   isPrivate: false,
   size: 2048, // 2MB
-};
+}
 
 const privateRepository: RepositoryCardProps['repository'] = {
   ...sampleRepository,
@@ -101,7 +100,7 @@ const privateRepository: RepositoryCardProps['repository'] = {
     ahead: 2,
     behind: 0,
   },
-};
+}
 
 const outdatedRepository: RepositoryCardProps['repository'] = {
   ...sampleRepository,
@@ -125,7 +124,7 @@ const outdatedRepository: RepositoryCardProps['repository'] = {
   },
   starCount: 45,
   forkCount: 12,
-};
+}
 
 export const Default: Story = {
   args: {
@@ -136,7 +135,7 @@ export const Default: Story = {
     showIntegrations: false,
     enableRealtime: false,
   },
-};
+}
 
 export const WithDetails: Story = {
   args: {
@@ -147,7 +146,7 @@ export const WithDetails: Story = {
     showIntegrations: false,
     enableRealtime: false,
   },
-};
+}
 
 export const WithHealth: Story = {
   args: {
@@ -158,7 +157,7 @@ export const WithHealth: Story = {
     showIntegrations: false,
     enableRealtime: false,
   },
-};
+}
 
 export const WithIntegrations: Story = {
   args: {
@@ -169,7 +168,7 @@ export const WithIntegrations: Story = {
     showIntegrations: true,
     enableRealtime: false,
   },
-};
+}
 
 export const FullyEnhanced: Story = {
   args: {
@@ -180,7 +179,7 @@ export const FullyEnhanced: Story = {
     showIntegrations: true,
     enableRealtime: true,
   },
-};
+}
 
 export const PrivateRepository: Story = {
   args: {
@@ -191,7 +190,7 @@ export const PrivateRepository: Story = {
     showIntegrations: false,
     enableRealtime: false,
   },
-};
+}
 
 export const OutdatedRepository: Story = {
   args: {
@@ -202,7 +201,7 @@ export const OutdatedRepository: Story = {
     showIntegrations: false,
     enableRealtime: false,
   },
-};
+}
 
 export const SmallSize: Story = {
   args: {
@@ -213,7 +212,7 @@ export const SmallSize: Story = {
     showIntegrations: false,
     enableRealtime: false,
   },
-};
+}
 
 export const LargeSize: Story = {
   args: {
@@ -224,7 +223,7 @@ export const LargeSize: Story = {
     showIntegrations: true,
     enableRealtime: true,
   },
-};
+}
 
 // Multiple repositories in different states
 export const MultipleStates: Story = {
@@ -250,7 +249,7 @@ export const MultipleStates: Story = {
       />
     </div>
   ),
-};
+}
 
 export const InteractiveExample: Story = {
   args: {
@@ -269,4 +268,4 @@ export const InteractiveExample: Story = {
       },
     },
   },
-};
+}

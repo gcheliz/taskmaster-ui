@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { ActivityTimeline } from '../../components/ui/organisms/ActivityTimeline';
-import type { ActivityItem } from '../../components/ui/organisms/ActivityTimeline';
+import type { Meta, StoryObj } from '@storybook/react'
+import { ActivityTimeline } from '../../components/ui/organisms/ActivityTimeline'
+import type { ActivityItem } from '../../components/ui/organisms/ActivityTimeline'
 
 const meta: Meta<typeof ActivityTimeline> = {
   title: 'Organisms/ActivityTimeline',
@@ -23,10 +23,10 @@ const meta: Meta<typeof ActivityTimeline> = {
     groupByDate: { control: 'boolean' },
     maxItems: { control: 'number' },
   },
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 const sampleActivities: ActivityItem[] = [
   {
@@ -108,118 +108,114 @@ const sampleActivities: ActivityItem[] = [
       duration: '2 weeks',
     },
   },
-];
+]
 
 export const Default: Story = {
   args: {
     activities: sampleActivities,
   },
-};
+}
 
 export const Loading: Story = {
   args: {
     activities: [],
     loading: true,
   },
-};
+}
 
 export const Error: Story = {
   args: {
     activities: [],
     error: 'Failed to load activity data. Please try again later.',
   },
-};
+}
 
 export const Empty: Story = {
   args: {
     activities: [],
   },
-};
+}
 
 export const WithFilters: Story = {
   args: {
     activities: sampleActivities,
     showFilters: true,
   },
-};
+}
 
 export const WithoutFilters: Story = {
   args: {
     activities: sampleActivities,
     showFilters: false,
   },
-};
+}
 
 export const WithoutAvatars: Story = {
   args: {
     activities: sampleActivities,
     showAvatar: false,
   },
-};
+}
 
 export const WithoutTimestamps: Story = {
   args: {
     activities: sampleActivities,
     showTimestamp: false,
   },
-};
+}
 
 export const GroupedByDate: Story = {
   args: {
     activities: sampleActivities,
     groupByDate: true,
   },
-};
+}
 
 export const LimitedItems: Story = {
   args: {
     activities: sampleActivities,
     maxItems: 3,
   },
-};
+}
 
 export const OnlyCommits: Story = {
   args: {
-    activities: sampleActivities.filter(activity => activity.type === 'commit'),
+    activities: sampleActivities.filter((activity) => activity.type === 'commit'),
   },
-};
+}
 
 export const OnlyTaskUpdates: Story = {
   args: {
-    activities: sampleActivities.filter(
-      activity => activity.type === 'task_update'
-    ),
+    activities: sampleActivities.filter((activity) => activity.type === 'task_update'),
   },
-};
+}
 
 export const OnlyProjectUpdates: Story = {
   args: {
-    activities: sampleActivities.filter(
-      activity => activity.type === 'project_update'
-    ),
+    activities: sampleActivities.filter((activity) => activity.type === 'project_update'),
   },
-};
+}
 
 export const WithRefreshCallback: Story = {
   args: {
     activities: sampleActivities,
     onRefresh: () => {
-      console.log('Refresh clicked');
+      console.log('Refresh clicked')
       // Simulate refresh delay
-      return new Promise(resolve => setTimeout(resolve, 1000));
+      return new Promise((resolve) => setTimeout(resolve, 1000))
     },
   },
-};
+}
 
 export const WithViewAllCallback: Story = {
   args: {
     activities: sampleActivities,
     maxItems: 3,
     onViewAll: () => {
-      console.log('View all clicked');
+      console.log('View all clicked')
     },
   },
-};
+}
 
 export const MixedContent: Story = {
   args: {
@@ -242,4 +238,4 @@ export const MixedContent: Story = {
     ],
     maxItems: 8,
   },
-};
+}

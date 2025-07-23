@@ -1,48 +1,48 @@
-import React from 'react';
-import { useDroppable } from '@dnd-kit/core';
-import { Card, CardHeader, CardTitle, CardContent } from '../atoms/Card';
-import { Badge } from '../atoms/Badge';
-import { Button } from '../atoms/Button';
-import { Icon, PlusIcon } from '../atoms/Icon';
-import { KanbanTaskCard } from './KanbanTaskCard';
-import type { TaskStatus, TaskPriority } from '../../../types/task';
+import React from 'react'
+import { useDroppable } from '@dnd-kit/core'
+import { Card, CardHeader, CardTitle, CardContent } from '../atoms/Card'
+import { Badge } from '../atoms/Badge'
+import { Button } from '../atoms/Button'
+import { Icon, PlusIcon } from '../atoms/Icon'
+import { KanbanTaskCard } from './KanbanTaskCard'
+import type { TaskStatus, TaskPriority } from '../../../types/task'
 
 export interface KanbanTask {
-  id: number;
-  title: string;
-  description: string;
-  status: TaskStatus;
-  priority: TaskPriority;
-  complexity?: number;
-  estimatedHours?: number;
-  assignedTo?: string;
-  tags?: string[];
-  createdAt?: string;
-  updatedAt?: string;
-  dueDate?: string;
+  id: number
+  title: string
+  description: string
+  status: TaskStatus
+  priority: TaskPriority
+  complexity?: number
+  estimatedHours?: number
+  assignedTo?: string
+  tags?: string[]
+  createdAt?: string
+  updatedAt?: string
+  dueDate?: string
   subtasks?: Array<{
-    id: number;
-    title: string;
-    status: TaskStatus;
-  }>;
+    id: number
+    title: string
+    status: TaskStatus
+  }>
 }
 
 export interface DropData {
-  type: 'column';
-  status: TaskStatus;
+  type: 'column'
+  status: TaskStatus
 }
 
 export interface KanbanColumnProps {
-  id: string;
-  title: string;
-  status: TaskStatus;
-  tasks: KanbanTask[];
-  color?: string;
-  limit?: number;
-  onTaskClick?: (taskId: number) => void;
-  onAddTask?: (status: TaskStatus) => void;
-  showAddButton?: boolean;
-  className?: string;
+  id: string
+  title: string
+  status: TaskStatus
+  tasks: KanbanTask[]
+  color?: string
+  limit?: number
+  onTaskClick?: (taskId: number) => void
+  onAddTask?: (status: TaskStatus) => void
+  showAddButton?: boolean
+  className?: string
 }
 
 const KanbanColumn: React.FC<KanbanColumnProps> = ({
@@ -57,68 +57,65 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({
   showAddButton = true,
   className = '',
 }) => {
-  const taskCount = tasks.length;
-  const isOverLimit = limit && taskCount > limit;
+  const taskCount = tasks.length
+  const isOverLimit = limit && taskCount > limit
 
   // Configure droppable behavior
   const dropData: DropData = {
     type: 'column',
     status: status,
-  };
+  }
 
   const { setNodeRef, isOver } = useDroppable({
     id: `column-${id}`,
     data: dropData,
-  });
+  })
 
   const getStatusColor = (columnStatus: TaskStatus) => {
     switch (columnStatus) {
       case 'pending':
-        return 'secondary';
+        return 'secondary'
       case 'in-progress':
-        return 'primary';
+        return 'primary'
       case 'done':
-        return 'success';
+        return 'success'
       case 'blocked':
-        return 'error';
+        return 'error'
       case 'cancelled':
-        return 'error';
+        return 'error'
       case 'deferred':
-        return 'warning';
+        return 'warning'
       default:
-        return 'secondary';
+        return 'secondary'
     }
-  };
+  }
 
   const _getStatusIcon = (columnStatus: TaskStatus) => {
     switch (columnStatus) {
       case 'pending':
-        return 'pending';
+        return 'pending'
       case 'in-progress':
-        return 'in-progress';
+        return 'in-progress'
       case 'done':
-        return 'done';
+        return 'done'
       case 'blocked':
-        return 'blocked';
+        return 'blocked'
       case 'cancelled':
-        return 'blocked';
+        return 'blocked'
       case 'deferred':
-        return 'deferred';
+        return 'deferred'
       default:
-        return 'pending';
+        return 'pending'
     }
-  };
+  }
 
   const formatColumnTitle = (columnTitle: string) => {
-    return (
-      columnTitle.charAt(0).toUpperCase() +
-      columnTitle.slice(1).replace(/-/g, ' ')
-    );
-  };
+    return columnTitle.charAt(0).toUpperCase() + columnTitle.slice(1).replace(/-/g, ' ')
+  }
 
   const handleAddTask = () => {
-    onAddTask?.(status);
-  };
+    onAddTask?.(status)
+  }
 
   return (
     <div
@@ -187,13 +184,11 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({
                   <div className="w-12 h-12 rounded-full bg-surface-200 dark:bg-surface-700 flex items-center justify-center mx-auto mb-2">
                     <Icon icon={PlusIcon} size="md" color="muted" />
                   </div>
-                  <p className="text-sm text-secondary-500 dark:text-secondary-500">
-                    No tasks yet
-                  </p>
+                  <p className="text-sm text-secondary-500 dark:text-secondary-500">No tasks yet</p>
                 </div>
               </div>
             ) : (
-              tasks.map(task => (
+              tasks.map((task) => (
                 <KanbanTaskCard
                   key={task.id}
                   id={task.id}
@@ -219,7 +214,7 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({
         </CardContent>
       </Card>
     </div>
-  );
-};
+  )
+}
 
-export { KanbanColumn };
+export { KanbanColumn }

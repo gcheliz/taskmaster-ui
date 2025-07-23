@@ -3,28 +3,25 @@ import type { HTMLAttributes } from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '../../utils/cn'
 
-const cardVariants = cva(
-  'stat-card',
-  {
-    variants: {
-      variant: {
-        elevated: '',
-        outlined: 'shadow-none hover:shadow-none',
-        filled: 'bg-gray-50',
-      },
-      padding: {
-        none: '',
-        sm: 'p-4',
-        md: 'p-6',
-        lg: 'p-8',
-      },
+const cardVariants = cva('stat-card', {
+  variants: {
+    variant: {
+      elevated: '',
+      outlined: 'shadow-none hover:shadow-none',
+      filled: 'bg-gray-50',
     },
-    defaultVariants: {
-      variant: 'elevated',
-      padding: 'md',
+    padding: {
+      none: '',
+      sm: 'p-4',
+      md: 'p-6',
+      lg: 'p-8',
     },
-  }
-)
+  },
+  defaultVariants: {
+    variant: 'elevated',
+    padding: 'md',
+  },
+})
 
 export interface CardProps
   extends HTMLAttributes<HTMLDivElement>,
@@ -33,30 +30,18 @@ export interface CardProps
 const Card = forwardRef<HTMLDivElement, CardProps>(
   ({ className, variant, padding, ...props }, ref) => {
     return (
-      <div
-        ref={ref}
-        className={cn(cardVariants({ variant, padding, className }))}
-        {...props}
-      />
+      <div ref={ref} className={cn(cardVariants({ variant, padding, className }))} {...props} />
     )
   }
 )
 
 Card.displayName = 'Card'
 
-export interface CardHeaderProps extends HTMLAttributes<HTMLDivElement> {}
+export type CardHeaderProps = HTMLAttributes<HTMLDivElement>
 
-const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(
-  ({ className, ...props }, ref) => {
-    return (
-      <div
-        ref={ref}
-        className={cn('mb-4 space-y-1', className)}
-        {...props}
-      />
-    )
-  }
-)
+const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(({ className, ...props }, ref) => {
+  return <div ref={ref} className={cn('mb-4 space-y-1', className)} {...props} />
+})
 
 CardHeader.displayName = 'CardHeader'
 
@@ -78,51 +63,29 @@ const CardTitle = forwardRef<HTMLHeadingElement, CardTitleProps>(
 
 CardTitle.displayName = 'CardTitle'
 
-export interface CardDescriptionProps extends HTMLAttributes<HTMLParagraphElement> {}
+export type CardDescriptionProps = HTMLAttributes<HTMLParagraphElement>
 
 const CardDescription = forwardRef<HTMLParagraphElement, CardDescriptionProps>(
   ({ className, ...props }, ref) => {
-    return (
-      <p
-        ref={ref}
-        className={cn('text-sm text-gray-600', className)}
-        {...props}
-      />
-    )
+    return <p ref={ref} className={cn('text-sm text-gray-600', className)} {...props} />
   }
 )
 
 CardDescription.displayName = 'CardDescription'
 
-export interface CardContentProps extends HTMLAttributes<HTMLDivElement> {}
+export type CardContentProps = HTMLAttributes<HTMLDivElement>
 
-const CardContent = forwardRef<HTMLDivElement, CardContentProps>(
-  ({ className, ...props }, ref) => {
-    return (
-      <div
-        ref={ref}
-        className={cn('text-gray-700', className)}
-        {...props}
-      />
-    )
-  }
-)
+const CardContent = forwardRef<HTMLDivElement, CardContentProps>(({ className, ...props }, ref) => {
+  return <div ref={ref} className={cn('text-gray-700', className)} {...props} />
+})
 
 CardContent.displayName = 'CardContent'
 
-export interface CardFooterProps extends HTMLAttributes<HTMLDivElement> {}
+export type CardFooterProps = HTMLAttributes<HTMLDivElement>
 
-const CardFooter = forwardRef<HTMLDivElement, CardFooterProps>(
-  ({ className, ...props }, ref) => {
-    return (
-      <div
-        ref={ref}
-        className={cn('mt-6 flex items-center space-x-2', className)}
-        {...props}
-      />
-    )
-  }
-)
+const CardFooter = forwardRef<HTMLDivElement, CardFooterProps>(({ className, ...props }, ref) => {
+  return <div ref={ref} className={cn('mt-6 flex items-center space-x-2', className)} {...props} />
+})
 
 CardFooter.displayName = 'CardFooter'
 

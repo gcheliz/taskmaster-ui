@@ -230,7 +230,7 @@ export const PullRequestStatus: React.FC<PullRequestStatusProps> = ({
     const open = pullRequests.filter(pr => pr.state === 'open' && !pr.draft)
     const draft = pullRequests.filter(pr => pr.draft)
     const merged = pullRequests.filter(pr => pr.state === 'merged')
-    const closed = pullRequests.filter(pr => pr.state === 'closed' && pr.state !== 'merged')
+    const closed = pullRequests.filter(pr => pr.state === 'closed')
 
     // Calculate merge rate
     const totalCompleted = merged.length + closed.length

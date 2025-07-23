@@ -726,7 +726,7 @@ export const useRepositoryRealtime = ({
 }
 
 // Branch-related hooks
-export interface BranchInfo {
+export interface BranchDetailsInfo {
   name: string
   isDefault: boolean
   isProtected: boolean
@@ -752,7 +752,7 @@ export interface UseRepositoryBranchesOptions {
 }
 
 export interface UseRepositoryBranchesReturn {
-  branches: BranchInfo[] | null
+  branches: BranchDetailsInfo[] | null
   isLoading: boolean
   error: string | null
   refresh: () => Promise<void>
@@ -762,7 +762,7 @@ export const useRepositoryBranches = ({
   repositoryId,
   autoFetch = true,
 }: UseRepositoryBranchesOptions): UseRepositoryBranchesReturn => {
-  const [branches, setBranches] = useState<BranchInfo[] | null>(null)
+  const [branches, setBranches] = useState<BranchDetailsInfo[] | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -772,7 +772,7 @@ export const useRepositoryBranches = ({
 
     try {
       // Mock data for now - replace with actual API call
-      const mockBranches: BranchInfo[] = [
+      const mockBranches: BranchDetailsInfo[] = [
         {
           name: 'main',
           isDefault: true,

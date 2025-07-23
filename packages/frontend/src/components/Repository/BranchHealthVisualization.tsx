@@ -18,6 +18,7 @@ import {
   Activity
 } from 'lucide-react'
 import { useRepositoryBranches } from '../../hooks/useRepositoryData'
+import type { BranchDetailsInfo } from '../../hooks/useRepositoryData'
 import { formatDistanceToNow } from 'date-fns'
 
 export interface BranchHealthVisualizationProps {
@@ -27,29 +28,11 @@ export interface BranchHealthVisualizationProps {
 }
 
 interface BranchHealthScoreProps {
-  branch: {
-    name: string
-    isDefault: boolean
-    isProtected: boolean
-    lastCommit: {
-      sha: string
-      message: string
-      author: string
-      date: string
-    }
-    ahead: number
-    behind: number
-    hasConflicts: boolean
-    pullRequests: {
-      open: number
-      merged: number
-      closed: number
-    }
-  }
+  branch: BranchDetailsInfo
   defaultBranch: string
 }
 
-const calculateBranchHealth = (branch: BranchHealthScoreProps['branch']): number => {
+const calculateBranchHealth = (branch: BranchDetailsInfo): number => {
   let score = 100
 
   // Deduct points for being behind

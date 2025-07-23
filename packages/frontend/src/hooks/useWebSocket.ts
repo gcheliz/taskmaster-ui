@@ -44,32 +44,36 @@ export const useWebSocket = (config?: {
         webSocketService.setCurrentUser(config.user);
       }
 
-      webSocketService
-        .connect({
-          url: config.url,
-          options: {
-            heartbeatInterval: 30000,
-            reconnectDelay: 1000,
-            maxReconnectAttempts: 5,
-            timeout: 5000,
-          },
-        })
-        .catch(err => {
-          setError(err);
-          console.error('WebSocket connection failed:', err);
-        });
+      // Only connect if not already connected
+      if (!webSocketService.isConnected() && webSocketService.getState() !== WebSocketState.CONNECTING) {
+        webSocketService
+          .connect({
+            url: config.url,
+            options: {
+              heartbeatInterval: 30000,
+              reconnectDelay: 1000,
+              maxReconnectAttempts: 5,
+              timeout: 5000,
+            },
+          })
+          .catch(err => {
+            setError(err);
+            console.error('WebSocket connection failed:', err);
+          });
+      }
     }
 
     return () => {
-      if (isInitialized.current) {
-        webSocketService.disconnect();
-        isInitialized.current = false;
-      }
+      // Don't disconnect on unmount - keep connection alive for navigation
+      isInitialized.current = false;
     };
   }, [config?.autoConnect, config?.url, config?.user]);
 
   // Subscribe to connection state changes
   useEffect(() => {
+    // Set initial state
+    setState(webSocketService.getState());
+    
     const unsubscribe = webSocketService.subscribe(
       WebSocketEventType.CONNECT,
       (payload: any) => {
@@ -84,14 +88,14 @@ export const useWebSocket = (config?: {
     const unsubscribeUserJoined = webSocketService.subscribe(
       WebSocketEventType.USER_JOINED,
       (payload: any) => {
-        setConnectedUsers(webSocketService.getConnectedUsers());
+        setConnectedUsers(prevUsers => webSocketService.getConnectedUsers());
       }
     );
 
     const unsubscribeUserLeft = webSocketService.subscribe(
       WebSocketEventType.USER_LEFT,
       (payload: any) => {
-        setConnectedUsers(webSocketService.getConnectedUsers());
+        setConnectedUsers(prevUsers => webSocketService.getConnectedUsers());
       }
     );
 
@@ -99,7 +103,7 @@ export const useWebSocket = (config?: {
     const unsubscribeError = webSocketService.subscribe(
       WebSocketEventType.ERROR,
       (payload: any) => {
-        setError(payload.error);
+        setError(payload.error || new Error('WebSocket error'));
       }
     );
 

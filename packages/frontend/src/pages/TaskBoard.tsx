@@ -244,8 +244,8 @@ const TaskBoard: React.FC = () => {
     state: wsState,
     isConnected
   } = useTaskCollaboration(
-    initialTasks.map(convertToWebSocketTask),
-    {
+    React.useMemo(() => initialTasks.map(convertToWebSocketTask), []),
+    React.useMemo(() => ({
       url: process.env.VITE_WS_URL || 'ws://localhost:3001',
       autoConnect: true,
       user: {
@@ -254,7 +254,7 @@ const TaskBoard: React.FC = () => {
         email: 'gonzalo@example.com',
         avatar: ''
       }
-    }
+    }), [])
   );
   
   const wsError = taskError;
@@ -861,7 +861,7 @@ const TaskBoard: React.FC = () => {
       )}
 
       {/* Kanban Board */}
-      <TaskBoardContext.Provider value={{ handleTaskClick, handleTaskEdit, isDraggingRef }}>
+      <TaskBoardContext.Provider value={React.useMemo(() => ({ handleTaskClick, handleTaskEdit, isDraggingRef }), [handleTaskClick, handleTaskEdit])}>
         <DndContext
           sensors={sensors}
           collisionDetection={closestCorners}

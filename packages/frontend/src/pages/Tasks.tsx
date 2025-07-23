@@ -176,10 +176,10 @@ const Tasks = () => {
         title="Tasks" 
         subtitle={`${mockTasks.length} total tasks`}
         actions={
-          <Button className="px-4 py-2 bg-gray-900 text-white text-sm rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2">
+          <button className="px-4 py-2 bg-gray-900 text-white text-sm rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2">
             <Plus className="h-4 w-4" />
             New Task
-          </Button>
+          </button>
         }
       />
       <div className="bg-white p-4 sm:p-6 md:p-8">

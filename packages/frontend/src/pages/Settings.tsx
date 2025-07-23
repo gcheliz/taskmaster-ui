@@ -28,10 +28,10 @@ const Settings: React.FC = () => {
         title="Settings" 
         subtitle="Manage your preferences"
         actions={
-          <Button className="px-4 py-2 bg-gray-900 text-white text-sm rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2">
+          <button className="px-4 py-2 bg-gray-900 text-white text-sm rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2">
             <Save className="h-4 w-4" />
             Save Changes
-          </Button>
+          </button>
         }
       />
       <div className="bg-white p-4 sm:p-6 md:p-8">

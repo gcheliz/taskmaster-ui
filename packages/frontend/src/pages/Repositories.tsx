@@ -263,21 +263,20 @@ const Repositories: React.FC = () => {
         subtitle={`${displayRepositories.length} connected • ${displayRepositories.filter(r => r.status === 'active').length} active`}
         actions={
           <div className="flex items-center gap-3">
-            <Button
-              variant="outline"
+            <button
               onClick={() => refetch()}
-              className="p-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+              className="p-2 text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
               title="Refresh"
             >
               <RefreshCw className="w-4 h-4" />
-            </Button>
-            <Button
+            </button>
+            <button
               onClick={() => setShowAddModal(true)}
               className="px-4 py-2 bg-gray-900 text-white text-sm rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2"
             >
               <Plus className="w-4 h-4" />
               Add Repository
-            </Button>
+            </button>
           </div>
         }
       />

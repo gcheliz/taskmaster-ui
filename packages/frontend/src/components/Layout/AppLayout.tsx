@@ -25,8 +25,8 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       {/* Header */}
       <Header user={user} onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
 
-      {/* Main container */}
-      <div className="flex flex-1 overflow-hidden">
+      {/* Main container - Add padding top for fixed header */}
+      <div className="flex flex-1 overflow-hidden pt-14 sm:pt-16">
         {/* Sidebar */}
         <Sidebar 
           isOpen={sidebarOpen} 

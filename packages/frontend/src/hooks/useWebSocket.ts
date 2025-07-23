@@ -160,13 +160,18 @@ export const useWebSocket = (config?: {
  * Hook for real-time task collaboration
  */
 export const useTaskCollaboration = (
-  initialTasks: Task[] = []
+  initialTasks: Task[] = [],
+  webSocketConfig?: {
+    url?: string;
+    autoConnect?: boolean;
+    user?: User;
+  }
 ): UseTaskCollaborationReturn => {
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [lastUpdate, setLastUpdate] = useState<string | null>(null);
-  const { connectedUsers, send, subscribe, isConnected } = useWebSocket();
+  const { connectedUsers, send, subscribe, isConnected, state } = useWebSocket(webSocketConfig);
 
   // Subscribe to task events
   useEffect(() => {
@@ -378,6 +383,8 @@ export const useTaskCollaboration = (
     error,
     connectedUsers,
     lastUpdate,
+    state,
+    isConnected,
   };
 };
 

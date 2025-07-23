@@ -232,26 +232,32 @@ const TaskBoard: React.FC = () => {
     }
   ];
 
-  // WebSocket integration
-  const { state: wsState, isConnected, error: wsError } = useWebSocket({
-    url: process.env.VITE_WS_URL || 'ws://localhost:3001',
-    autoConnect: true,
-    user: {
-      id: 'user-1',
-      name: 'Gonzalo',
-      email: 'gonzalo@example.com',
-      avatar: ''
-    }
-  });
-
+  // WebSocket integration through useTaskCollaboration
   const {
     tasks: wsTasksRaw,
     moveTask,
     updateTask,
     connectedUsers,
     lastUpdate,
-    error: taskError
-  } = useTaskCollaboration(initialTasks.map(convertToWebSocketTask));
+    error: taskError,
+    isLoading: wsLoading,
+    state: wsState,
+    isConnected
+  } = useTaskCollaboration(
+    initialTasks.map(convertToWebSocketTask),
+    {
+      url: process.env.VITE_WS_URL || 'ws://localhost:3001',
+      autoConnect: true,
+      user: {
+        id: 'user-1',
+        name: 'Gonzalo',
+        email: 'gonzalo@example.com',
+        avatar: ''
+      }
+    }
+  );
+  
+  const wsError = taskError;
   
   // Convert WebSocket tasks to local format
   const tasks = wsTasksRaw.map(convertFromWebSocketTask);
@@ -583,7 +589,7 @@ const TaskBoard: React.FC = () => {
   const filteredOutCount = allTasks - totalTasks;
 
   const getConnectionStatusColor = () => {
-    switch (wsState) {
+    switch (wsState || WebSocketState.DISCONNECTED) {
       case WebSocketState.CONNECTED:
         return 'text-green-600';
       case WebSocketState.CONNECTING:
@@ -595,7 +601,7 @@ const TaskBoard: React.FC = () => {
   };
 
   const getConnectionStatusText = () => {
-    switch (wsState) {
+    switch (wsState || WebSocketState.DISCONNECTED) {
       case WebSocketState.CONNECTED:
         return 'Connected';
       case WebSocketState.CONNECTING:
@@ -622,7 +628,7 @@ const TaskBoard: React.FC = () => {
           {/* Connection Status */}
           <div className="flex items-center space-x-4">
             <div className={`flex items-center space-x-2 text-sm ${getConnectionStatusColor()}`}>
-              {isConnected ? (
+              {isConnected || wsState === WebSocketState.CONNECTED ? (
                 <Wifi className="w-4 h-4" />
               ) : (
                 <WifiOff className="w-4 h-4" />

@@ -232,6 +232,8 @@ export interface UseTaskCollaborationReturn {
   error: Error | null;
   connectedUsers: User[];
   lastUpdate: string | null;
+  state?: WebSocketState;
+  isConnected?: boolean;
 }
 
 export interface UseUserPresenceReturn {

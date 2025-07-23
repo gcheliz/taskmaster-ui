@@ -64,3 +64,9 @@ export type { ContributorsCardProps } from './ContributorsCard'
 
 export { RepositoryDashboard } from './RepositoryDashboard'
 export type { RepositoryDashboardProps } from './RepositoryDashboard'
+
+export { BranchHealthVisualization } from './BranchHealthVisualization'
+export type { BranchHealthVisualizationProps } from './BranchHealthVisualization'
+
+export { PullRequestStatus } from './PullRequestStatus'
+export type { PullRequestStatusProps } from './PullRequestStatus'

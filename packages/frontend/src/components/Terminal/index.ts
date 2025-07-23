@@ -1,4 +1,5 @@
 export { Terminal, type TerminalProps } from './Terminal'
 export { TerminalContainer, type TerminalContainerProps } from './TerminalContainer'
 export { TaskMasterTerminal, type TaskMasterTerminalProps } from './TaskMasterTerminal'
+export { EnhancedTaskMasterTerminal, type EnhancedTaskMasterTerminalProps, type QuickCommand } from './EnhancedTaskMasterTerminal'
 export { default } from './Terminal'

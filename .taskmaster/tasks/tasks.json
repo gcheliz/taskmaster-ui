@@ -944,7 +944,7 @@
             "title": "Real-time Updates with WebSocket Integration",
             "description": "Implement WebSocket connection for real-time board updates across multiple users. Set up Socket.io client, handle connection/reconnection logic, implement event listeners for task updates/moves/additions. Create optimistic UI updates with rollback on failure. Add presence indicators showing active users on the board. Implement conflict resolution for simultaneous edits and connection status indicator.",
             "details": "",
-            "status": "in-progress",
+            "status": "done",
             "dependencies": [],
             "parentTaskId": 67
           },
@@ -953,7 +953,7 @@
             "title": "Board Filters and Sorting Functionality",
             "description": "Create comprehensive filtering and sorting system for the kanban board. Implement filter dropdown with options: priority (high/medium/low), assignee selection, due date ranges, labels/tags, and complexity levels. Add sort options: by priority, due date, created date, alphabetical. Create filter pills showing active filters with remove capability. Implement search bar with instant filtering. Add view options for card size (compact/standard/expanded).",
             "details": "",
-            "status": "pending",
+            "status": "in-progress",
             "dependencies": [],
             "parentTaskId": 67
           },
@@ -1375,7 +1375,7 @@
     ],
     "metadata": {
       "created": "2025-07-15T21:22:03.992Z",
-      "updated": "2025-07-23T07:37:18.417Z",
+      "updated": "2025-07-23T07:42:51.760Z",
       "description": "Tasks for taskmaster-ui context"
     }
   }

@@ -1,18 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { 
   Plus,
   Filter,
   ArrowUpDown,
   Grid3x3,
-  MoreVertical,
-  Clock,
-  AlertTriangle,
-  CheckCircle,
-  Circle,
   User,
   GripVertical,
   Wifi,
-  WifiOff
+  WifiOff,
+  X,
+  ChevronDown
 } from 'lucide-react';
 import {
   DndContext,
@@ -60,6 +57,15 @@ interface Task {
   updatedAt?: string;
 }
 
+interface FilterOptions {
+  priorities: string[];
+  assignees: string[];
+  columns: string[];
+}
+
+type SortOption = 'priority' | 'complexity' | 'assignee' | 'created' | 'updated';
+type SortDirection = 'asc' | 'desc';
+
 interface Column {
   id: string;
   title: string;
@@ -69,6 +75,17 @@ interface Column {
 
 const TaskBoard: React.FC = () => {
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
+  const [showFilterMenu, setShowFilterMenu] = useState(false);
+  const [showSortMenu, setShowSortMenu] = useState(false);
+  const [filters, setFilters] = useState<FilterOptions>({
+    priorities: [],
+    assignees: [],
+    columns: []
+  });
+  const [sortBy, setSortBy] = useState<SortOption>('priority');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
+  const filterRef = useRef<HTMLDivElement>(null);
+  const sortRef = useRef<HTMLDivElement>(null);
   
   // Initial tasks for demo purposes
   const initialTasks: Task[] = [
@@ -189,16 +206,68 @@ const TaskBoard: React.FC = () => {
     { id: 'done', title: 'Done', color: 'bg-green-600', tasks: [] }
   ]);
 
-  // Update columns when tasks change
+  // Get unique values for filter options
+  const getUniqueAssignees = () => {
+    return Array.from(new Set(tasks.map(task => task.assignee.name))).sort();
+  };
+
+  // Filter and sort tasks
+  const getFilteredAndSortedTasks = useCallback((columnTasks: Task[]) => {
+    let filtered = [...columnTasks];
+
+    // Apply filters
+    if (filters.priorities.length > 0) {
+      filtered = filtered.filter(task => filters.priorities.includes(task.priority));
+    }
+    if (filters.assignees.length > 0) {
+      filtered = filtered.filter(task => filters.assignees.includes(task.assignee.name));
+    }
+
+    // Apply sorting
+    filtered.sort((a, b) => {
+      let compareValue = 0;
+      
+      switch (sortBy) {
+        case 'priority':
+          const priorityOrder = { high: 3, medium: 2, low: 1 };
+          compareValue = priorityOrder[a.priority] - priorityOrder[b.priority];
+          break;
+        case 'complexity':
+          compareValue = a.complexity - b.complexity;
+          break;
+        case 'assignee':
+          compareValue = a.assignee.name.localeCompare(b.assignee.name);
+          break;
+        case 'created':
+          compareValue = new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime();
+          break;
+        case 'updated':
+          compareValue = new Date(a.updatedAt || 0).getTime() - new Date(b.updatedAt || 0).getTime();
+          break;
+        default:
+          compareValue = a.position - b.position;
+      }
+
+      return sortDirection === 'asc' ? compareValue : -compareValue;
+    });
+
+    return filtered;
+  }, [filters, sortBy, sortDirection]);
+
+  // Update columns when tasks, filters, or sorting change
   useEffect(() => {
-    const newColumns = columns.map(column => ({
-      ...column,
-      tasks: tasks
-        .filter(task => task.column === column.id)
-        .sort((a, b) => a.position - b.position)
-    }));
-    setColumns(newColumns);
-  }, [tasks]);
+    setColumns(prevColumns => {
+      return prevColumns.map(column => {
+        const columnTasks = tasks.filter(task => task.column === column.id);
+        const filteredAndSorted = getFilteredAndSortedTasks(columnTasks);
+        
+        return {
+          ...column,
+          tasks: filteredAndSorted
+        };
+      });
+    });
+  }, [tasks, filters, sortBy, sortDirection, getFilteredAndSortedTasks]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -316,11 +385,29 @@ const TaskBoard: React.FC = () => {
     return undefined;
   };
 
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
+        setShowFilterMenu(false);
+      }
+      if (sortRef.current && !sortRef.current.contains(event.target as Node)) {
+        setShowSortMenu(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const allTasks = tasks.length;
   const totalTasks = columns.reduce((sum, col) => sum + col.tasks.length, 0);
   const activeTasks = columns
     .filter(col => col.id !== 'done')
     .reduce((sum, col) => sum + col.tasks.length, 0);
   const completedTasks = columns.find(col => col.id === 'done')?.tasks.length || 0;
+  const activeFiltersCount = filters.priorities.length + filters.assignees.length + filters.columns.length;
+  const filteredOutCount = allTasks - totalTasks;
 
   const getConnectionStatusColor = () => {
     switch (wsState) {
@@ -412,14 +499,133 @@ const TaskBoard: React.FC = () => {
       {/* Board Controls */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
-          <button className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium flex items-center gap-1">
-            <Filter className="w-4 h-4" />
-            Filter
-          </button>
-          <button className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium flex items-center gap-1">
-            <ArrowUpDown className="w-4 h-4" />
-            Sort
-          </button>
+          {/* Filter Dropdown */}
+          <div className="relative" ref={filterRef}>
+            <button 
+              onClick={() => setShowFilterMenu(!showFilterMenu)}
+              className={`px-3 py-1.5 ${activeFiltersCount > 0 ? 'bg-blue-100 text-blue-700 border border-blue-300' : 'bg-gray-100 text-gray-700'} rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium flex items-center gap-1`}
+            >
+              <Filter className="w-4 h-4" />
+              Filter
+              {activeFiltersCount > 0 && (
+                <span className="ml-1 bg-blue-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  {activeFiltersCount}
+                </span>
+              )}
+              <ChevronDown className={`w-3 h-3 ml-1 transition-transform ${showFilterMenu ? 'rotate-180' : ''}`} />
+            </button>
+            
+            {showFilterMenu && (
+              <div className="absolute left-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                <div className="p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-medium text-gray-900">Filters</h3>
+                    <button
+                      onClick={() => setFilters({ priorities: [], assignees: [], columns: [] })}
+                      className="text-xs text-blue-600 hover:text-blue-800"
+                    >
+                      Clear all
+                    </button>
+                  </div>
+                  
+                  {/* Priority Filter */}
+                  <div className="mb-4">
+                    <h4 className="text-sm font-medium text-gray-700 mb-2">Priority</h4>
+                    <div className="space-y-1">
+                      {['high', 'medium', 'low'].map(priority => (
+                        <label key={priority} className="flex items-center cursor-pointer hover:bg-gray-50 p-1 rounded">
+                          <input
+                            type="checkbox"
+                            checked={filters.priorities.includes(priority)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setFilters(prev => ({ ...prev, priorities: [...prev.priorities, priority] }));
+                              } else {
+                                setFilters(prev => ({ ...prev, priorities: prev.priorities.filter(p => p !== priority) }));
+                              }
+                            }}
+                            className="mr-2 rounded text-blue-600"
+                          />
+                          <span className="text-sm text-gray-700 capitalize">{priority}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {/* Assignee Filter */}
+                  <div className="mb-4">
+                    <h4 className="text-sm font-medium text-gray-700 mb-2">Assignee</h4>
+                    <div className="space-y-1 max-h-32 overflow-y-auto">
+                      {getUniqueAssignees().map(assignee => (
+                        <label key={assignee} className="flex items-center cursor-pointer hover:bg-gray-50 p-1 rounded">
+                          <input
+                            type="checkbox"
+                            checked={filters.assignees.includes(assignee)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setFilters(prev => ({ ...prev, assignees: [...prev.assignees, assignee] }));
+                              } else {
+                                setFilters(prev => ({ ...prev, assignees: prev.assignees.filter(a => a !== assignee) }));
+                              }
+                            }}
+                            className="mr-2 rounded text-blue-600"
+                          />
+                          <span className="text-sm text-gray-700">{assignee}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Sort Dropdown */}
+          <div className="relative" ref={sortRef}>
+            <button 
+              onClick={() => setShowSortMenu(!showSortMenu)}
+              className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium flex items-center gap-1"
+            >
+              <ArrowUpDown className="w-4 h-4" />
+              Sort
+              <ChevronDown className={`w-3 h-3 ml-1 transition-transform ${showSortMenu ? 'rotate-180' : ''}`} />
+            </button>
+            
+            {showSortMenu && (
+              <div className="absolute left-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                <div className="p-2">
+                  {[
+                    { value: 'priority', label: 'Priority' },
+                    { value: 'complexity', label: 'Complexity' },
+                    { value: 'assignee', label: 'Assignee' },
+                    { value: 'created', label: 'Date Created' },
+                    { value: 'updated', label: 'Last Updated' }
+                  ].map(option => (
+                    <button
+                      key={option.value}
+                      onClick={() => {
+                        if (sortBy === option.value) {
+                          setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
+                        } else {
+                          setSortBy(option.value as SortOption);
+                          setSortDirection('desc');
+                        }
+                      }}
+                      className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded flex items-center justify-between"
+                    >
+                      <span>{option.label}</span>
+                      {sortBy === option.value && (
+                        <span className="text-blue-600">
+                          {sortDirection === 'desc' ? '↓' : '↑'}
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
           <button className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium flex items-center gap-1">
             <Grid3x3 className="w-4 h-4" />
             View
@@ -439,6 +645,38 @@ const TaskBoard: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* Active Filters Message */}
+      {activeFiltersCount > 0 && (
+        <div className="flex items-center justify-between bg-blue-50 border border-blue-200 rounded-lg px-4 py-2">
+          <div className="flex items-center space-x-2 text-sm">
+            <Filter className="w-4 h-4 text-blue-600" />
+            <span className="text-blue-900">
+              Showing {totalTasks} of {allTasks} tasks
+              {filteredOutCount > 0 && ` (${filteredOutCount} hidden by filters)`}
+            </span>
+            <div className="flex items-center space-x-2 ml-4">
+              {filters.priorities.length > 0 && (
+                <span className="inline-flex items-center px-2 py-1 rounded-md bg-blue-100 text-blue-800 text-xs">
+                  Priority: {filters.priorities.join(', ')}
+                </span>
+              )}
+              {filters.assignees.length > 0 && (
+                <span className="inline-flex items-center px-2 py-1 rounded-md bg-blue-100 text-blue-800 text-xs">
+                  Assignee: {filters.assignees.join(', ')}
+                </span>
+              )}
+            </div>
+          </div>
+          <button
+            onClick={() => setFilters({ priorities: [], assignees: [], columns: [] })}
+            className="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
+          >
+            <X className="w-4 h-4" />
+            Clear filters
+          </button>
+        </div>
+      )}
 
       {/* Kanban Board */}
       <DndContext

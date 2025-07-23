@@ -49,3 +49,18 @@ export type {
 
 export { NewBranchModal } from './NewBranchModal'
 export type { NewBranchModalProps } from './NewBranchModal'
+
+export { EnhancedRepositoryCard } from './EnhancedRepositoryCard'
+export type { EnhancedRepositoryCardProps } from './EnhancedRepositoryCard'
+
+export { RepositoryStatisticsCard } from './RepositoryStatisticsCard'
+export type { RepositoryStatisticsCardProps } from './RepositoryStatisticsCard'
+
+export { CommitActivityChart } from './CommitActivityChart'
+export type { CommitActivityChartProps } from './CommitActivityChart'
+
+export { ContributorsCard } from './ContributorsCard'
+export type { ContributorsCardProps } from './ContributorsCard'
+
+export { RepositoryDashboard } from './RepositoryDashboard'
+export type { RepositoryDashboardProps } from './RepositoryDashboard'

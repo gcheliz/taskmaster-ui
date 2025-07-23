@@ -974,7 +974,7 @@
         "description": "Create comprehensive repository management interface with visual statistics, health monitoring, and batch operations.",
         "details": "- Design repository cards with connection status indicators\n- Implement Git statistics display (commits, branches, PRs) with charts\n- Add branch health visualization using progress bars\n- Display last sync timestamp with relative time (e.g., '5 minutes ago')\n- Create quick action buttons (sync, settings, remove) per repository\n- Build add new repository flow with GitHub/GitLab OAuth integration\n- Implement search functionality with debouncing\n- Add filter options (by status, last updated, health)\n- Support batch operations with checkbox selection\n- Create repository health monitoring dashboard view\n- Add repository settings modal for configuration\n- Implement error handling for failed connections",
         "testStrategy": "",
-        "status": "pending",
+        "status": "in-progress",
         "dependencies": [
           65
         ],
@@ -985,7 +985,7 @@
             "title": "Repository Cards with Git Statistics",
             "description": "Implement repository cards component with connection status indicators, Git statistics (commits, branches, contributors), and visual health metrics. Include expandable details section showing recent activity and quick actions.",
             "details": "",
-            "status": "pending",
+            "status": "done",
             "dependencies": [],
             "parentTaskId": 68
           },
@@ -1375,7 +1375,7 @@
     ],
     "metadata": {
       "created": "2025-07-15T21:22:03.992Z",
-      "updated": "2025-07-23T13:28:17.953Z",
+      "updated": "2025-07-23T13:45:07.442Z",
       "description": "Tasks for taskmaster-ui context"
     }
   }

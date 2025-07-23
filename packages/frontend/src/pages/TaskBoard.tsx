@@ -100,6 +100,12 @@ const convertFromWebSocketTask = (task: WebSocketTask): Task => ({
   status: task.status
 });
 
+// Get the board context for task interactions
+const TaskBoardContext = React.createContext<{
+  handleTaskClick: (task: Task) => void;
+  handleTaskEdit: (task: Task, e: React.MouseEvent) => void;
+} | null>(null);
+
 const TaskBoard: React.FC = () => {
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
   const [showFilterMenu, setShowFilterMenu] = useState(false);
@@ -1099,11 +1105,5 @@ const TaskCard: React.FC<{
     </div>
   );
 };
-
-// Get the board context for task interactions
-const TaskBoardContext = React.createContext<{
-  handleTaskClick: (task: Task) => void;
-  handleTaskEdit: (task: Task, e: React.MouseEvent) => void;
-} | null>(null);
 
 export default TaskBoard;

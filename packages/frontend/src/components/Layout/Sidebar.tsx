@@ -15,7 +15,7 @@ interface SidebarProps {
 
 const menuItems = [
   { icon: LayoutGrid, label: 'Dashboard', path: '/dashboard' },
-  { icon: FolderGit2, label: 'Repository Management', path: '/repository-management' },
+  { icon: FolderGit2, label: 'Repositories', path: '/repository-management' },
   { icon: ClipboardList, label: 'Task Board', path: '/task-board' },
   { icon: Terminal, label: 'Terminal', path: '/terminal' },
   { icon: Settings, label: 'Settings', path: '/settings' },

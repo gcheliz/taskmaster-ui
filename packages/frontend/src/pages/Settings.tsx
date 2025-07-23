@@ -1,4 +1,5 @@
 import React from 'react'
+import { Button } from '../components/ui/Button'
 import {
   Palette,
   Bell,
@@ -21,11 +22,20 @@ import {
 
 const Settings: React.FC = () => {
   return (
-    <div className="space-y-8">
-      {/* Page Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold text-gray-900">Settings</h1>
-        <p className="text-gray-600 mt-1">Configure your TaskMaster UI preferences</p>
+    <div className="bg-white p-4 sm:p-6 md:p-8">
+      <div className="max-w-7xl mx-auto space-y-8">
+      {/* Minimalist Header */}
+      <div className="border-b border-gray-100 pb-6 mb-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold text-gray-900">Settings</h1>
+            <p className="text-sm text-gray-500 mt-1">Manage your preferences</p>
+          </div>
+          <Button className="px-4 py-2 bg-gray-900 text-white text-sm rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2">
+            <Save className="h-4 w-4" />
+            Save Changes
+          </Button>
+        </div>
       </div>
 
       {/* Settings Grid */}
@@ -63,7 +73,7 @@ const Settings: React.FC = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-3">Font Size</label>
-              <select className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              <select className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 hover:bg-white text-gray-900 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
                 <option>Small</option>
                 <option selected>Medium</option>
                 <option>Large</option>
@@ -121,7 +131,7 @@ const Settings: React.FC = () => {
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Language</label>
-              <select className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              <select className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 hover:bg-white text-gray-900 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
                 <option>English</option>
                 <option>Spanish</option>
                 <option>French</option>
@@ -133,7 +143,7 @@ const Settings: React.FC = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Timezone</label>
-              <select className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              <select className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 hover:bg-white text-gray-900 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
                 <option>UTC-08:00 Pacific Time</option>
                 <option>UTC-05:00 Eastern Time</option>
                 <option>UTC+00:00 GMT</option>
@@ -144,7 +154,7 @@ const Settings: React.FC = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Date Format</label>
-              <select className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              <select className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 hover:bg-white text-gray-900 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
                 <option>MM/DD/YYYY</option>
                 <option>DD/MM/YYYY</option>
                 <option>YYYY-MM-DD</option>
@@ -162,7 +172,7 @@ const Settings: React.FC = () => {
                   min="10"
                   max="300"
                   step="10"
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="flex-1 px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 hover:bg-white text-gray-900 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                 />
                 <span className="text-sm text-gray-600">seconds</span>
               </div>
@@ -199,11 +209,11 @@ const Settings: React.FC = () => {
             />
 
             <div className="pt-4 space-y-3">
-              <button className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium flex items-center justify-center gap-2">
+              <button className="w-full px-4 py-2 bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-100 transition-all duration-200 text-sm font-medium flex items-center justify-center gap-2 hover:shadow-md hover:-translate-y-0.5">
                 <Key className="w-4 h-4" />
                 Change Password
               </button>
-              <button className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium flex items-center justify-center gap-2">
+              <button className="w-full px-4 py-2 bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-100 transition-all duration-200 text-sm font-medium flex items-center justify-center gap-2 hover:shadow-md hover:-translate-y-0.5">
                 <Download className="w-4 h-4" />
                 Download Security Log
               </button>
@@ -238,11 +248,11 @@ const Settings: React.FC = () => {
             />
 
             <div className="pt-4 space-y-3">
-              <button className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium flex items-center justify-center gap-2">
+              <button className="w-full px-4 py-2 bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-100 transition-all duration-200 text-sm font-medium flex items-center justify-center gap-2 hover:shadow-md hover:-translate-y-0.5">
                 <Download className="w-4 h-4" />
                 Export Settings
               </button>
-              <button className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium flex items-center justify-center gap-2">
+              <button className="w-full px-4 py-2 bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-100 transition-all duration-200 text-sm font-medium flex items-center justify-center gap-2 hover:shadow-md hover:-translate-y-0.5">
                 <Download className="w-4 h-4" />
                 Download Logs
               </button>
@@ -265,7 +275,7 @@ const Settings: React.FC = () => {
               <input
                 type="text"
                 defaultValue="Gonzalo"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 hover:bg-white text-gray-900 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
               />
             </div>
 
@@ -274,7 +284,7 @@ const Settings: React.FC = () => {
               <input
                 type="email"
                 defaultValue="gonzalo@example.com"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 hover:bg-white text-gray-900 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
               />
             </div>
 
@@ -298,14 +308,15 @@ const Settings: React.FC = () => {
       </div>
 
       {/* Save Button */}
-      <div className="flex justify-end space-x-4">
-        <button className="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium">
+      <div className="flex justify-end space-x-4 pb-8">
+        <button className="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all duration-200 font-medium hover:shadow-md">
           Cancel
         </button>
-        <button className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center gap-2">
+        <button className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 font-medium flex items-center gap-2 hover:shadow-md hover:-translate-y-0.5">
           <Save className="w-4 h-4" />
           Save Changes
         </button>
+      </div>
       </div>
     </div>
   )

@@ -117,6 +117,9 @@ export function useTerminalSessions(
           settings: {
             fontSize: 14,
             theme: 'dark',
+            fontFamily: 'Courier New, monospace',
+            cols: 80,
+            rows: 24,
             cursorStyle: 'block',
             scrollback: 1000,
           },
@@ -189,6 +192,9 @@ export function useTerminalSessions(
             settings: {
               fontSize: 14,
               theme: 'dark',
+              fontFamily: 'Courier New, monospace',
+              cols: 80,
+              rows: 24,
               cursorStyle: 'block',
               scrollback: 1000,
             },

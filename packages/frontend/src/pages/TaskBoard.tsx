@@ -256,13 +256,13 @@ const TaskBoard: React.FC = () => {
   // Convert WebSocket tasks to local format
   const tasks = wsTasksRaw.map(convertFromWebSocketTask);
 
-  const [columns, setColumns] = useState<Column[]>([
-    { id: 'todo', title: 'To Do', color: 'bg-gray-500', tasks: [] },
-    { id: 'in-progress', title: 'In Progress', color: 'bg-blue-600', tasks: [] },
-    { id: 'review', title: 'Review', color: 'bg-purple-600', tasks: [] },
-    { id: 'testing', title: 'Testing', color: 'bg-amber-600', tasks: [] },
-    { id: 'done', title: 'Done', color: 'bg-green-600', tasks: [] }
-  ]);
+  const baseColumns = [
+    { id: 'todo', title: 'To Do', color: 'bg-gray-500' },
+    { id: 'in-progress', title: 'In Progress', color: 'bg-blue-600' },
+    { id: 'review', title: 'Review', color: 'bg-purple-600' },
+    { id: 'testing', title: 'Testing', color: 'bg-amber-600' },
+    { id: 'done', title: 'Done', color: 'bg-green-600' }
+  ];
 
   // Get unique values for filter options
   const getUniqueAssignees = () => {
@@ -314,20 +314,16 @@ const TaskBoard: React.FC = () => {
     return filtered;
   }, [filters, sortBy, sortDirection]);
 
-  // Update columns when tasks, filters, or sorting change
-  useEffect(() => {
-    setColumns(prevColumns => {
-      return prevColumns.map(column => {
-        const columnTasks = tasks.filter(task => task.column === column.id);
-        const filteredAndSorted = getFilteredAndSortedTasks(columnTasks);
-        
-        return {
-          ...column,
-          tasks: filteredAndSorted
-        };
-      });
-    });
-  }, [tasks, filters, sortBy, sortDirection, getFilteredAndSortedTasks]);
+  // Compute columns with filtered and sorted tasks
+  const columns: Column[] = baseColumns.map(column => {
+    const columnTasks = tasks.filter(task => task.column === column.id);
+    const filteredAndSorted = getFilteredAndSortedTasks(columnTasks);
+    
+    return {
+      ...column,
+      tasks: filteredAndSorted
+    };
+  });
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -353,46 +349,8 @@ const TaskBoard: React.FC = () => {
   };
 
   const handleDragOver = (event: DragOverEvent) => {
-    const { active, over } = event;
-    if (!over) return;
-
-    const activeColumn = findColumn(active.id);
-    const overColumn = findColumn(over.id);
-
-    if (!activeColumn || !overColumn || activeColumn === overColumn) return;
-
-    setColumns((cols) => {
-      const activeItems = activeColumn.tasks;
-      const overItems = overColumn.tasks;
-      const activeIndex = activeItems.findIndex((i) => i.id === active.id);
-      const overIndex = overItems.findIndex((i) => i.id === over.id);
-
-      let newIndex: number;
-      if (over.id in overColumn.tasks) {
-        newIndex = overIndex >= 0 ? overIndex : overItems.length;
-      } else {
-        newIndex = overItems.length;
-      }
-
-      return cols.map((col) => {
-        if (col.id === activeColumn.id) {
-          return {
-            ...col,
-            tasks: col.tasks.filter((task) => task.id !== active.id),
-          };
-        } else if (col.id === overColumn.id) {
-          const movedTask = activeColumn.tasks[activeIndex];
-          const updatedTask = { ...movedTask, column: col.id };
-          const newTasks = [...col.tasks];
-          newTasks.splice(newIndex, 0, updatedTask);
-          return {
-            ...col,
-            tasks: newTasks,
-          };
-        }
-        return col;
-      });
-    });
+    // Visual feedback is handled by DragOverlay
+    // Actual updates happen via WebSocket in handleDragEnd
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -425,14 +383,6 @@ const TaskBoard: React.FC = () => {
       if (isConnected) {
         moveTask(taskId, activeColumn.id, newPosition);
       }
-      
-      setColumns((cols) =>
-        cols.map((col) =>
-          col.id === activeColumn.id
-            ? { ...col, tasks: arrayMove(col.tasks, activeIndex, overIndex) }
-            : col
-        )
-      );
     }
 
     setActiveId(null);
@@ -913,6 +863,7 @@ const TaskBoard: React.FC = () => {
           setModalMode('edit');
         }}
       />
+      </div>
     </div>
   );
 };

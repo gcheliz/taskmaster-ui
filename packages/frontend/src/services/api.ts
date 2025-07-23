@@ -167,8 +167,32 @@ export interface DashboardData {
 export interface ProjectHealthData {
   score: number
   status: 'excellent' | 'good' | 'fair' | 'needs-attention'
-  metrics: DashboardData['taskMetrics']
+  overallScore?: number
+  metrics?: {
+    codeQuality?: number
+    testCoverage?: number
+    documentation?: number
+    performance?: number
+    security?: number
+  } & Partial<DashboardData['taskMetrics']>
   timestamp: string
+  trends?: {
+    daily: Array<{
+      date: string
+      score: number
+    }>
+    weekly: Array<{
+      date: string
+      score: number
+    }>
+  }
+  issues?: Array<{
+    id: string
+    type: string
+    severity: string
+    message: string
+    timestamp: string
+  }>
 }
 
 export interface CreateProjectResponse {

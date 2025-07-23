@@ -108,6 +108,9 @@ export function useTaskData(options: UseTaskDataOptions = {}): UseTaskDataReturn
             },
           })),
           metadata: {
+            created: new Date().toISOString(),
+            updated: new Date().toISOString(),
+            description: 'Mock tasks data',
             totalTasks: mockTasks.length,
             completedTasks: mockTasks.filter(t => t.status === 'done').length,
             inProgressTasks: mockTasks.filter(t => t.status === 'in-progress').length,

@@ -11,6 +11,7 @@ interface AppLayoutProps {
 
 export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 
   // Mock user data - in real app, this would come from auth context
   const user = {
@@ -20,34 +21,38 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="h-screen bg-white flex flex-col overflow-hidden">
       {/* Header */}
       <Header user={user} onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
 
-      {/* Main container - Mobile-first responsive design */}
-      <div className="flex h-[calc(100vh-56px)] sm:h-[calc(100vh-64px)] mt-14 sm:mt-16">
+      {/* Main container */}
+      <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
-        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+        <Sidebar 
+          isOpen={sidebarOpen} 
+          onClose={() => setSidebarOpen(false)}
+          isCollapsed={sidebarCollapsed}
+          onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
+        />
 
         {/* Content wrapper */}
-        <div className="flex-1 flex flex-col bg-gray-50">
-          {/* Main content - Full width without extra padding */}
-          <main className="flex-1 overflow-y-auto">
-            {children || <Outlet />}
+        <div className="flex-1 flex flex-col overflow-hidden">
+          {/* Main content with scrolling */}
+          <main className="flex-1 bg-white overflow-y-auto">
+            <div className="h-full">
+              {children || <Outlet />}
+            </div>
           </main>
 
-          {/* Footer - Hidden on mobile to save space */}
-          <div className="hidden sm:block">
-            <Footer />
-          </div>
+          {/* Footer - Always visible at bottom */}
+          <Footer />
         </div>
       </div>
 
       {/* Mobile bottom navigation */}
-      <MobileBottomNav />
-      
-      {/* Mobile bottom padding for navigation and iOS safe area */}
-      <div className="h-16 sm:hidden" />
+      <div className="sm:hidden">
+        <MobileBottomNav />
+      </div>
     </div>
   )
 }

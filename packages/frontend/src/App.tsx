@@ -4,6 +4,7 @@ import { AppLayout } from './components/Layout'
 import { AppRoutes } from './routes/AppRoutes'
 import { NotificationProvider } from './contexts/NotificationContext'
 import { ThemeProvider } from './contexts/ThemeContext'
+import { RepositoryProvider } from './contexts/RepositoryContext'
 
 // Create a client for React Query
 const queryClient = new QueryClient({
@@ -23,9 +24,11 @@ function App() {
       <BrowserRouter>
         <ThemeProvider>
           <NotificationProvider>
-            <AppLayout>
-              <AppRoutes />
-            </AppLayout>
+            <RepositoryProvider>
+              <AppLayout>
+                <AppRoutes />
+              </AppLayout>
+            </RepositoryProvider>
           </NotificationProvider>
         </ThemeProvider>
       </BrowserRouter>

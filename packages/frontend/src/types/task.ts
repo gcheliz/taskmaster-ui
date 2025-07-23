@@ -42,11 +42,19 @@ export interface TaskMetadata {
   version?: string
   projectName?: string
   repositoryPath?: string
+  assignee?: string
 }
 
 export interface TasksData {
   tasks: Task[]
-  metadata: TaskMetadata
+  metadata: TaskMetadata & {
+    totalTasks?: number
+    completedTasks?: number
+    inProgressTasks?: number
+    todoTasks?: number
+  }
+  projectTag?: string
+  source?: string
 }
 
 export interface TaskMasterProject {

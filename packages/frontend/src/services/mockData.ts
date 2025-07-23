@@ -396,22 +396,47 @@ export const mockDashboardData: DashboardData = {
       { priority: 'Low', count: 33, percentage: 21.2 },
     ],
     complexityBreakdown: [
-      { complexity: 'Simple', count: 67, percentage: 42.9 },
-      { complexity: 'Moderate', count: 65, percentage: 41.7 },
-      { complexity: 'Complex', count: 24, percentage: 15.4 },
+      { complexity: 'Simple', count: 67, averageTime: 2.5 },
+      { complexity: 'Moderate', count: 65, averageTime: 5.2 },
+      { complexity: 'Complex', count: 24, averageTime: 12.8 },
+    ],
+  },
+  insights: {
+    totalEstimatedHours: 240,
+    averageTaskComplexity: 2.3,
+    productivityScore: 78,
+    recommendations: [
+      'Consider breaking down complex tasks into smaller subtasks',
+      'Allocate more resources to high-priority items',
+      'Review and update blocked tasks',
+      'Improve task estimation accuracy',
     ],
   },
 }
 
 // Mock Project Health Data
 export const mockProjectHealth: ProjectHealthData = {
+  score: 85,
+  status: 'good',
   overallScore: 85,
+  timestamp: new Date().toISOString(),
   metrics: {
     codeQuality: 82,
     testCoverage: 76,
     documentation: 68,
     performance: 90,
     security: 88,
+    total: 156,
+    completed: 123,
+    inProgress: 20,
+    pending: 13,
+    blocked: 0,
+    deferred: 0,
+    cancelled: 0,
+    completionRate: 78.8,
+    statusBreakdown: {},
+    priorityBreakdown: {},
+    complexityDistribution: {},
   },
   trends: {
     daily: Array.from({ length: 7 }, (_, i) => ({
@@ -425,23 +450,19 @@ export const mockProjectHealth: ProjectHealthData = {
   },
   issues: [
     {
+      id: '1',
       type: 'warning',
-      category: 'documentation',
       message: 'API documentation coverage is below 70%',
       severity: 'medium',
+      timestamp: new Date().toISOString(),
     },
     {
+      id: '2',
       type: 'error',
-      category: 'security',
       message: '2 high-severity vulnerabilities in dependencies',
       severity: 'high',
+      timestamp: new Date().toISOString(),
     },
-  ],
-  recommendations: [
-    'Update vulnerable dependencies to latest versions',
-    'Increase test coverage for critical paths',
-    'Add missing API endpoint documentation',
-    'Optimize bundle size for better performance',
   ],
 }
 

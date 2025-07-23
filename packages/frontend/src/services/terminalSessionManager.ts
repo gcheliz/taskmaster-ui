@@ -14,6 +14,8 @@ export interface PersistedTerminalSession {
     fontFamily: string
     cols: number
     rows: number
+    cursorStyle?: 'block' | 'bar' | 'underline'
+    scrollback?: number
   }
 }
 

@@ -16,7 +16,13 @@ import {
   Users,
   Shield,
   MoreVertical,
-  Settings
+  Settings,
+  Search,
+  GitPullRequest,
+  Rocket,
+  TrendingUp,
+  ArrowUpRight,
+  ArrowRight
 } from 'lucide-react'
 import { Card } from '../components/ui/molecules/Card'
 import { Badge } from '../components/ui/atoms/Badge'
@@ -27,6 +33,167 @@ const Repositories: React.FC = () => {
   const { repositories, isLoading, error, refetch } = useRepositoryList()
   const { connectRepository } = useRepositoryOperations()
   const [showAddModal, setShowAddModal] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [statusFilter, setStatusFilter] = useState('all')
+
+  // Enhanced mock repositories with realistic data
+  const mockRepositories = [
+    {
+      id: 'repo-1',
+      name: 'taskmaster-ui',
+      path: '/Users/gonzalo/workspace/taskmaster-ui',
+      status: 'active',
+      isGitRepository: true,
+      isTaskMasterProject: true,
+      gitBranch: 'main',
+      lastUpdated: new Date().toISOString(),
+      connectedAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+      stats: {
+        commits: 487,
+        contributors: 5,
+        branches: 12,
+        openPRs: 3,
+        health: 92
+      }
+    },
+    {
+      id: 'repo-2',
+      name: 'taskmaster-backend',
+      path: '/Users/gonzalo/workspace/taskmaster-backend',
+      status: 'active',
+      isGitRepository: true,
+      isTaskMasterProject: true,
+      gitBranch: 'develop',
+      lastUpdated: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+      connectedAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
+      stats: {
+        commits: 892,
+        contributors: 8,
+        branches: 15,
+        openPRs: 5,
+        health: 88
+      }
+    },
+    {
+      id: 'repo-3',
+      name: 'api-gateway',
+      path: '/Users/gonzalo/workspace/api-gateway',
+      status: 'active',
+      isGitRepository: true,
+      isTaskMasterProject: false,
+      gitBranch: 'feature/auth-integration',
+      lastUpdated: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+      connectedAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+      stats: {
+        commits: 234,
+        contributors: 3,
+        branches: 8,
+        openPRs: 2,
+        health: 75
+      }
+    },
+    {
+      id: 'repo-4',
+      name: 'mobile-app',
+      path: '/Users/gonzalo/workspace/mobile-app',
+      status: 'inactive',
+      isGitRepository: true,
+      isTaskMasterProject: true,
+      gitBranch: 'main',
+      lastUpdated: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+      connectedAt: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString(),
+      stats: {
+        commits: 156,
+        contributors: 2,
+        branches: 4,
+        openPRs: 0,
+        health: 65
+      }
+    },
+    {
+      id: 'repo-5',
+      name: 'documentation',
+      path: '/Users/gonzalo/workspace/documentation',
+      status: 'active',
+      isGitRepository: true,
+      isTaskMasterProject: false,
+      gitBranch: 'main',
+      lastUpdated: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
+      connectedAt: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000).toISOString(),
+      stats: {
+        commits: 89,
+        contributors: 4,
+        branches: 2,
+        openPRs: 1,
+        health: 95
+      }
+    },
+    {
+      id: 'repo-6',
+      name: 'analytics-service',
+      path: '/Users/gonzalo/workspace/analytics-service',
+      status: 'error',
+      isGitRepository: true,
+      isTaskMasterProject: true,
+      gitBranch: 'hotfix/memory-leak',
+      lastUpdated: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
+      connectedAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString(),
+      stats: {
+        commits: 445,
+        contributors: 6,
+        branches: 9,
+        openPRs: 4,
+        health: 45
+      }
+    },
+    {
+      id: 'repo-7',
+      name: 'ml-pipeline',
+      path: '/Users/gonzalo/workspace/ml-pipeline',
+      status: 'active',
+      isGitRepository: true,
+      isTaskMasterProject: false,
+      gitBranch: 'experiment/new-model',
+      lastUpdated: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
+      connectedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+      stats: {
+        commits: 678,
+        contributors: 4,
+        branches: 18,
+        openPRs: 6,
+        health: 82
+      }
+    },
+    {
+      id: 'repo-8',
+      name: 'infrastructure',
+      path: '/Users/gonzalo/workspace/infrastructure',
+      status: 'active',
+      isGitRepository: true,
+      isTaskMasterProject: true,
+      gitBranch: 'main',
+      lastUpdated: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
+      connectedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+      stats: {
+        commits: 312,
+        contributors: 7,
+        branches: 6,
+        openPRs: 2,
+        health: 90
+      }
+    }
+  ]
+
+  // Filter repositories based on search and status
+  const filteredRepositories = mockRepositories.filter(repo => {
+    const matchesSearch = repo.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         repo.path.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesStatus = statusFilter === 'all' || repo.status === statusFilter
+    return matchesSearch && matchesStatus
+  })
+
+  // Use filtered mock data
+  const displayRepositories = filteredRepositories
 
 
   const handleAddRepository = async (path: string) => {
@@ -89,85 +256,134 @@ const Repositories: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white p-4 sm:p-6 md:p-8">
+    <div className="bg-white p-4 sm:p-6 md:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Repository Management</h1>
-          <p className="text-gray-600 mt-1">
-            Connect and manage your Git repositories with TaskMaster integration
-            {repositories.length > 0 && (
-              <span className="ml-2 text-sm font-medium text-gray-700">
-                • {repositories.length} connected
-              </span>
-            )}
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <Button
-            variant="outline"
-            onClick={() => refetch()}
-            className="flex items-center gap-2"
-          >
-            <RefreshCw className="w-4 h-4" />
-            Refresh
-          </Button>
-          <Button
-            variant="primary"
-            onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-2"
-          >
-            <Plus className="w-4 h-4" />
-            Add Repository
-          </Button>
+      {/* Minimalist Header */}
+      <div className="border-b border-gray-100 pb-6 mb-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold text-gray-900">Repositories</h1>
+            <p className="text-sm text-gray-500 mt-1">{displayRepositories.length} connected • {displayRepositories.filter(r => r.status === 'active').length} active</p>
+          </div>
+          <div className="flex items-center gap-3">
+            <Button
+              variant="outline"
+              onClick={() => refetch()}
+              className="p-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+              title="Refresh"
+            >
+              <RefreshCw className="w-4 h-4" />
+            </Button>
+            <Button
+              onClick={() => setShowAddModal(true)}
+              className="px-4 py-2 bg-gray-900 text-white text-sm rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2"
+            >
+              <Plus className="w-4 h-4" />
+              Add Repository
+            </Button>
+          </div>
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="p-6 bg-gradient-to-br from-white to-gray-50 border-gray-200">
-          <div className="flex items-center justify-between">
+      {/* Search and Filter Bar */}
+      <div className="bg-white rounded-xl border border-gray-200 p-4">
+        <div className="flex items-center gap-4">
+          <div className="relative flex-1 max-w-md">
+            <input
+              type="text"
+              placeholder="Search repositories..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+            />
+            <Search className="w-5 h-5 text-gray-400 absolute left-3 top-2.5" />
+          </div>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 hover:bg-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+          >
+            <option value="all">All Status</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+            <option value="error">With Issues</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Stats - Enhanced with more metrics */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-blue-200 transition-all duration-200 transform hover:-translate-y-0.5">
+          <div className="flex items-center justify-between mb-4">
             <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">Total Repositories</p>
-              <p className="text-3xl font-bold text-gray-900">{repositories.length}</p>
-              <p className="text-xs text-gray-500 mt-1">Connected to TaskMaster</p>
+              <p className="text-sm font-medium text-gray-600">Total Repositories</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{displayRepositories.length}</p>
             </div>
-            <div className="p-3 bg-gray-100 rounded-lg">
-              <GitBranch className="w-6 h-6 text-gray-600" />
+            <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center">
+              <GitBranch className="w-6 h-6 text-blue-600" />
             </div>
           </div>
-        </Card>
+          <div className="flex items-center text-sm">
+            <span className="text-gray-600 font-medium">{displayRepositories.filter((r: any) => r.isTaskMasterProject).length}</span>
+            <span className="text-gray-500 ml-1">with TaskMaster</span>
+          </div>
+        </div>
         
-        <Card className="p-6 bg-gradient-to-br from-white to-green-50 border-green-200">
-          <div className="flex items-center justify-between">
+        <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-green-200 transition-all duration-200 transform hover:-translate-y-0.5">
+          <div className="flex items-center justify-between mb-4">
             <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">Active</p>
-              <p className="text-3xl font-bold text-green-600">
-                {repositories.filter((r: any) => r.status === 'active').length}
+              <p className="text-sm font-medium text-gray-600">Active Branches</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">
+                {displayRepositories.reduce((sum: number, r: any) => sum + (r.stats?.branches || 0), 0)}
               </p>
-              <p className="text-xs text-green-600 mt-1">Currently synced</p>
             </div>
-            <div className="p-3 bg-green-100 rounded-lg">
-              <CheckCircle className="w-6 h-6 text-green-600" />
+            <div className="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center">
+              <GitBranch className="w-6 h-6 text-green-600" />
             </div>
           </div>
-        </Card>
+          <div className="flex items-center text-sm">
+            <ArrowUpRight className="w-4 h-4 text-green-600 mr-1" />
+            <span className="text-green-600 font-medium">+12</span>
+            <span className="text-gray-500 ml-1">this week</span>
+          </div>
+        </div>
         
-        <Card className="p-6 bg-gradient-to-br from-white to-red-50 border-red-200">
-          <div className="flex items-center justify-between">
+        <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-amber-200 transition-all duration-200 transform hover:-translate-y-0.5">
+          <div className="flex items-center justify-between mb-4">
             <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">With Issues</p>
-              <p className="text-3xl font-bold text-red-600">
-                {repositories.filter((r: any) => r.status === 'error').length}
+              <p className="text-sm font-medium text-gray-600">Open PRs</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">
+                {displayRepositories.reduce((sum: number, r: any) => sum + (r.stats?.openPRs || 0), 0)}
               </p>
-              <p className="text-xs text-red-600 mt-1">Requires attention</p>
             </div>
-            <div className="p-3 bg-red-100 rounded-lg">
-              <AlertCircle className="w-6 h-6 text-red-600" />
+            <div className="w-12 h-12 bg-amber-50 rounded-lg flex items-center justify-center">
+              <GitPullRequest className="w-6 h-6 text-amber-600" />
             </div>
           </div>
-        </Card>
+          <div className="flex items-center text-sm">
+            <span className="text-amber-600 font-medium">{displayRepositories.filter((r: any) => r.stats?.openPRs > 0).length}</span>
+            <span className="text-gray-500 ml-1">repositories</span>
+          </div>
+        </div>
+        
+        <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-purple-200 transition-all duration-200 transform hover:-translate-y-0.5">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Health Score</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">
+                {Math.round(displayRepositories.reduce((sum: number, r: any) => sum + (r.stats?.health || 0), 0) / displayRepositories.length)}%
+              </p>
+            </div>
+            <div className="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center">
+              <TrendingUp className="w-6 h-6 text-green-600" />
+            </div>
+          </div>
+          <div className="flex items-center text-sm">
+            <ArrowUpRight className="w-4 h-4 text-green-600 mr-1" />
+            <span className="text-green-600 font-medium">+8%</span>
+            <span className="text-gray-500 ml-1">improvement</span>
+          </div>
+        </div>
       </div>
 
       {/* Error Message */}
@@ -179,168 +395,133 @@ const Repositories: React.FC = () => {
       )}
 
       {/* Repository List */}
-      {repositories.length > 0 && (
+      {displayRepositories.length > 0 && (
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-          {repositories.map((repo: any) => {
+          {displayRepositories.map((repo: any) => {
             const statusConfig = getStatusConfig(repo.status || 'inactive')
-            const healthScore = Math.floor(Math.random() * 40) + 60 // Mock health score
             
             return (
-              <Card key={repo.id} className="overflow-hidden hover:shadow-lg transition-all duration-200">
+              <div key={repo.id} className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-all duration-200">
                 {/* Card Header */}
-                <div className="px-6 py-4 bg-gradient-to-r from-gray-50 to-white border-b border-gray-100">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 bg-blue-50 rounded-lg">
-                          <GitBranch className="w-5 h-5 text-blue-600" />
-                        </div>
-                        <div>
-                          <h3 className="text-lg font-semibold text-gray-900 truncate">{repo.name}</h3>
-                          <p className="text-sm text-gray-500 truncate">{repo.path}</p>
-                        </div>
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
+                        <GitBranch className="w-5 h-5 text-blue-600" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-900 truncate">{repo.name}</h3>
+                        <p className="text-sm text-gray-500 truncate">{repo.path}</p>
                       </div>
                     </div>
+                  </div>
                     
-                    {/* Status Badge */}
-                    <div className="flex items-center gap-2">
-                      <Badge 
-                        variant="custom"
-                        className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium border ${statusConfig.color}`}
-                      >
-                        {statusConfig.icon}
-                        <span>{statusConfig.label}</span>
-                      </Badge>
-                      
-                      {/* More Actions */}
-                      <button className="p-1 hover:bg-gray-100 rounded-lg transition-colors">
-                        <MoreVertical className="w-4 h-4 text-gray-400" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Card Body */}
-                <div className="px-6 py-4">
-                  {/* Quick Stats */}
-                  <div className="grid grid-cols-3 gap-4 mb-4">
-                    <div className="text-center">
-                      <div className="flex items-center justify-center gap-1 text-gray-600 mb-1">
-                        <GitCommit className="w-4 h-4" />
-                        <span className="text-xs">Commits</span>
-                      </div>
-                      <p className="text-lg font-semibold text-gray-900">
-                        {Math.floor(Math.random() * 500) + 100}
-                      </p>
-                    </div>
-                    <div className="text-center">
-                      <div className="flex items-center justify-center gap-1 text-gray-600 mb-1">
-                        <Users className="w-4 h-4" />
-                        <span className="text-xs">Contributors</span>
-                      </div>
-                      <p className="text-lg font-semibold text-gray-900">
-                        {Math.floor(Math.random() * 10) + 1}
-                      </p>
-                    </div>
-                    <div className="text-center">
-                      <div className="flex items-center justify-center gap-1 text-gray-600 mb-1">
-                        <Shield className="w-4 h-4" />
-                        <span className="text-xs">Health</span>
-                      </div>
-                      <p className={`text-lg font-semibold ${getHealthScoreColor(healthScore)}`}>
-                        {healthScore}%
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Repository Info */}
-                  <div className="space-y-3 py-3 border-y border-gray-100">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2 text-sm text-gray-600">
-                        <GitBranch className="w-4 h-4" />
-                        <span>Current Branch</span>
-                      </div>
-                      <span className="text-sm font-medium text-gray-900">
-                        {repo.gitBranch || 'main'}
-                      </span>
-                    </div>
-                    
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2 text-sm text-gray-600">
-                        <Clock className="w-4 h-4" />
-                        <span>Last Activity</span>
-                      </div>
-                      <span className="text-sm text-gray-900">
-                        {repo.lastUpdated 
-                          ? formatDistanceToNow(new Date(repo.lastUpdated), { addSuffix: true })
-                          : 'No recent activity'}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Features & Tags */}
-                  <div className="flex items-center gap-2 mt-4">
-                    {repo.isGitRepository && (
-                      <Badge variant="outline" className="text-xs">
-                        <GitCommit className="w-3 h-3 mr-1" />
-                        Git Enabled
-                      </Badge>
-                    )}
-                    {repo.isTaskMasterProject && (
-                      <Badge variant="outline" className="text-xs text-blue-600 border-blue-200 bg-blue-50">
-                        <Activity className="w-3 h-3 mr-1" />
-                        TaskMaster
-                      </Badge>
-                    )}
-                  </div>
-                </div>
-
-                {/* Card Footer */}
-                <div className="px-6 py-3 bg-gray-50 border-t border-gray-100">
+                  {/* Status Badge */}
                   <div className="flex items-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="flex-1 text-sm"
-                      onClick={() => console.log('View details:', repo.id)}
-                    >
-                      View Details
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="px-3"
-                    >
-                      <RefreshCw className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="px-3"
-                    >
-                      <Settings className="w-4 h-4" />
-                    </Button>
+                    <span className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium border ${statusConfig.color}`}>
+                      {statusConfig.icon}
+                      <span>{statusConfig.label}</span>
+                    </span>
                   </div>
                 </div>
-              </Card>
+
+                {/* Quick Stats */}
+                <div className="grid grid-cols-4 gap-4 mb-4">
+                  <div>
+                    <p className="text-2xl font-bold text-gray-900">{repo.stats?.commits || 0}</p>
+                    <p className="text-xs text-gray-500">commits</p>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-gray-900">{repo.stats?.branches || 0}</p>
+                    <p className="text-xs text-gray-500">branches</p>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-gray-900">{repo.stats?.contributors || 0}</p>
+                    <p className="text-xs text-gray-500">contributors</p>
+                  </div>
+                  <div>
+                    <p className={`text-2xl font-bold ${getHealthScoreColor(repo.stats?.health || 0)}`}>
+                      {repo.stats?.health || 0}%
+                    </p>
+                    <p className="text-xs text-gray-500">health</p>
+                  </div>
+                </div>
+
+                {/* Repository Info */}
+                <div className="space-y-3 py-3 border-y border-gray-100">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Current Branch</span>
+                    <span className="text-sm font-medium text-gray-900">
+                      {repo.gitBranch || 'main'}
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Last Activity</span>
+                    <span className="text-sm text-gray-900">
+                      {repo.lastUpdated 
+                        ? formatDistanceToNow(new Date(repo.lastUpdated), { addSuffix: true })
+                        : 'No recent activity'}
+                    </span>
+                  </div>
+                  
+                  {repo.stats?.openPRs > 0 && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-600">Open PRs</span>
+                      <span className="text-sm font-medium text-amber-600">
+                        {repo.stats.openPRs} pending
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Features & Tags */}
+                <div className="flex items-center gap-2 mt-4">
+                  {repo.isGitRepository && (
+                    <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-gray-600 bg-gray-50 rounded-md">
+                      <GitCommit className="w-3 h-3" />
+                      Git
+                    </span>
+                  )}
+                  {repo.isTaskMasterProject && (
+                    <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-blue-600 bg-blue-50 rounded-md">
+                      <Activity className="w-3 h-3" />
+                      TaskMaster
+                    </span>
+                  )}
+                  <button className="ml-auto text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors flex items-center gap-1">
+                    View Details
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+
+              </div>
             )
           })}
         </div>
       )}
 
       {/* Empty State */}
-      {repositories.length === 0 && !error && (
-        <div className="text-center py-12">
-          <GitBranch className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No repositories connected</h3>
-          <p className="text-gray-600 mb-4">Get started by adding your first repository</p>
-          <button 
-            onClick={() => setShowAddModal(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700"
-          >
-            <Plus className="w-4 h-4" />
-            Add Repository
-          </button>
+      {displayRepositories.length === 0 && !error && (
+        <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
+          <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+            <GitBranch className="w-8 h-8 text-gray-400" />
+          </div>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">No repositories found</h3>
+          <p className="text-gray-600 mb-6">
+            {searchTerm || statusFilter !== 'all' 
+              ? 'Try adjusting your search or filters'
+              : 'Get started by adding your first repository'}
+          </p>
+          {(!searchTerm && statusFilter === 'all') && (
+            <button 
+              onClick={() => setShowAddModal(true)}
+              className="inline-flex items-center gap-2 px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              Add Repository
+            </button>
+          )}
         </div>
       )}
 

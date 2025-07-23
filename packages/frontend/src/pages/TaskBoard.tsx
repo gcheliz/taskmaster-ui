@@ -108,18 +108,6 @@ const TaskBoardContext = React.createContext<{
 } | null>(null);
 
 const TaskBoard: React.FC = () => {
-  // Add error boundary to catch any issues
-  React.useEffect(() => {
-    console.log('[TaskBoard] Component mounted');
-    const handleError = (event: ErrorEvent) => {
-      console.error('[TaskBoard] Runtime error:', event.error);
-    };
-    window.addEventListener('error', handleError);
-    return () => {
-      console.log('[TaskBoard] Component unmounting');
-      window.removeEventListener('error', handleError);
-    };
-  }, []);
   
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
   const [showFilterMenu, setShowFilterMenu] = useState(false);
@@ -245,7 +233,7 @@ const TaskBoard: React.FC = () => {
     }
   ];
 
-  // WebSocket integration through useTaskCollaboration - TEMPORARILY DISABLED
+  // WebSocket integration through useTaskCollaboration
   const {
     tasks: wsTasksRaw,
     moveTask,
@@ -260,7 +248,7 @@ const TaskBoard: React.FC = () => {
     React.useMemo(() => initialTasks.map(convertToWebSocketTask), []),
     React.useMemo(() => ({
       url: process.env.VITE_WS_URL || 'ws://localhost:3001',
-      autoConnect: false, // DISABLED for debugging
+      autoConnect: true,
       user: {
         id: 'user-1',
         name: 'Gonzalo',
@@ -272,7 +260,7 @@ const TaskBoard: React.FC = () => {
   
   const wsError = taskError;
   
-  // Convert WebSocket tasks to local format - use initial tasks when WS disabled
+  // Convert WebSocket tasks to local format
   const tasks = wsTasksRaw.length > 0 ? wsTasksRaw.map(convertFromWebSocketTask) : initialTasks;
 
   const [columns, setColumns] = useState<Column[]>([
@@ -288,65 +276,60 @@ const TaskBoard: React.FC = () => {
     return Array.from(new Set(tasks.map(task => task.assignee?.name || 'Unassigned').filter(name => name !== 'Unassigned'))).sort();
   };
 
-  // Filter and sort tasks
-  const getFilteredAndSortedTasks = useCallback((columnTasks: Task[]) => {
-    let filtered = [...columnTasks];
-
-    // Apply filters
-    if (filters.priorities.length > 0) {
-      filtered = filtered.filter(task => filters.priorities.includes(task.priority));
-    }
-    if (filters.assignees.length > 0) {
-      filtered = filtered.filter(task => task.assignee && filters.assignees.includes(task.assignee.name));
-    }
-
-    // Apply sorting
-    filtered.sort((a, b) => {
-      let compareValue = 0;
-      
-      switch (sortBy) {
-        case 'priority':
-          const priorityOrder = { high: 3, medium: 2, low: 1 };
-          compareValue = priorityOrder[a.priority] - priorityOrder[b.priority];
-          break;
-        case 'complexity':
-          compareValue = a.complexity - b.complexity;
-          break;
-        case 'assignee':
-          const aName = a.assignee?.name || '';
-          const bName = b.assignee?.name || '';
-          compareValue = aName.localeCompare(bName);
-          break;
-        case 'created':
-          compareValue = new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime();
-          break;
-        case 'updated':
-          compareValue = new Date(a.updatedAt || 0).getTime() - new Date(b.updatedAt || 0).getTime();
-          break;
-        default:
-          compareValue = a.position - b.position;
-      }
-
-      return sortDirection === 'asc' ? compareValue : -compareValue;
-    });
-
-    return filtered;
-  }, [filters, sortBy, sortDirection]);
-
   // Update columns when tasks, filters, or sorting change
   useEffect(() => {
     setColumns(prevColumns => {
       return prevColumns.map(column => {
         const columnTasks = tasks.filter(task => task.column === column.id);
-        const filteredAndSorted = getFilteredAndSortedTasks(columnTasks);
+        
+        // Filter and sort tasks inline to avoid circular dependency
+        let filtered = [...columnTasks];
+
+        // Apply filters
+        if (filters.priorities.length > 0) {
+          filtered = filtered.filter(task => filters.priorities.includes(task.priority));
+        }
+        if (filters.assignees.length > 0) {
+          filtered = filtered.filter(task => task.assignee && filters.assignees.includes(task.assignee.name));
+        }
+
+        // Apply sorting
+        filtered.sort((a, b) => {
+          let compareValue = 0;
+          
+          switch (sortBy) {
+            case 'priority':
+              const priorityOrder = { high: 3, medium: 2, low: 1 };
+              compareValue = priorityOrder[a.priority] - priorityOrder[b.priority];
+              break;
+            case 'complexity':
+              compareValue = a.complexity - b.complexity;
+              break;
+            case 'assignee':
+              const aName = a.assignee?.name || '';
+              const bName = b.assignee?.name || '';
+              compareValue = aName.localeCompare(bName);
+              break;
+            case 'created':
+              compareValue = new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime();
+              break;
+            case 'updated':
+              compareValue = new Date(a.updatedAt || 0).getTime() - new Date(b.updatedAt || 0).getTime();
+              break;
+            default:
+              compareValue = a.position - b.position;
+          }
+
+          return sortDirection === 'asc' ? compareValue : -compareValue;
+        });
         
         return {
           ...column,
-          tasks: filteredAndSorted
+          tasks: filtered
         };
       });
     });
-  }, [tasks, filters, sortBy, sortDirection, getFilteredAndSortedTasks]);
+  }, [tasks, filters, sortBy, sortDirection]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {

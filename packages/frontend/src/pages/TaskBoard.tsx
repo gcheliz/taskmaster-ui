@@ -100,6 +100,112 @@ const convertFromWebSocketTask = (task: WebSocketTask): Task => ({
   status: task.status
 });
 
+// Initial tasks for demo purposes - defined outside component to prevent recreation
+const NOW = new Date().toISOString();
+const initialTasks: Task[] = [
+  {
+    id: '1',
+    title: 'Setup React Router',
+    description: 'Add navigation between different views',
+    priority: 'high',
+    complexity: 5,
+    assignee: { name: 'Gonzalo', initials: 'GZ', color: 'bg-blue-600' },
+    column: 'todo',
+    position: 0,
+    createdAt: NOW,
+    updatedAt: NOW
+  },
+  {
+    id: '2',
+    title: 'Create Task Board UI',
+    description: 'Design and implement the task board interface',
+    priority: 'medium',
+    complexity: 7,
+    assignee: { name: 'Alex M', initials: 'AM', color: 'bg-green-600' },
+    column: 'todo',
+    position: 1,
+    createdAt: NOW,
+    updatedAt: NOW
+  },
+  {
+    id: '3',
+    title: 'Add drag and drop',
+    description: 'Implement drag and drop functionality',
+    priority: 'medium',
+    complexity: 6,
+    assignee: { name: 'John S', initials: 'JS', color: 'bg-purple-600' },
+    column: 'todo',
+    position: 2,
+    createdAt: NOW,
+    updatedAt: NOW
+  },
+  {
+    id: '4',
+    title: 'Fix navigation links',
+    description: 'Make sidebar navigation functional',
+    priority: 'high',
+    complexity: 4,
+    assignee: { name: 'Gonzalo', initials: 'GZ', color: 'bg-blue-600' },
+    column: 'in-progress',
+    position: 0,
+    progress: 75,
+    createdAt: NOW,
+    updatedAt: NOW
+  },
+  {
+    id: '5',
+    title: 'Add Repository Integration',
+    description: 'Connect to Git repositories',
+    priority: 'medium',
+    complexity: 8,
+    assignee: { name: 'Alex M', initials: 'AM', color: 'bg-green-600' },
+    column: 'in-progress',
+    position: 1,
+    progress: 25,
+    createdAt: NOW,
+    updatedAt: NOW
+  },
+  {
+    id: '6',
+    title: 'API Endpoint Setup',
+    description: 'Create RESTful API endpoints',
+    priority: 'high',
+    complexity: 6,
+    assignee: { name: 'John S', initials: 'JS', color: 'bg-purple-600' },
+    column: 'review',
+    position: 0,
+    progress: 90,
+    createdAt: NOW,
+    updatedAt: NOW
+  },
+  {
+    id: '7',
+    title: 'Unit Test Coverage',
+    description: 'Add comprehensive unit tests',
+    priority: 'medium',
+    complexity: 5,
+    assignee: { name: 'Gonzalo', initials: 'GZ', color: 'bg-blue-600' },
+    column: 'testing',
+    position: 0,
+    progress: 60,
+    createdAt: NOW,
+    updatedAt: NOW
+  },
+  {
+    id: '8',
+    title: 'Authentication Flow',
+    description: 'Implement user authentication',
+    priority: 'high',
+    complexity: 7,
+    assignee: { name: 'Alex M', initials: 'AM', color: 'bg-green-600' },
+    column: 'done',
+    position: 0,
+    progress: 100,
+    createdAt: NOW,
+    updatedAt: NOW
+  }
+];
+
 // Get the board context for task interactions
 const TaskBoardContext = React.createContext<{
   handleTaskClick: (task: Task) => void;
@@ -127,111 +233,6 @@ const TaskBoard: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<TaskModalMode>('create');
   const [selectedTask, setSelectedTask] = useState<LocalTask | undefined>();
-  
-  // Initial tasks for demo purposes
-  const initialTasks: Task[] = [
-    {
-      id: '1',
-      title: 'Setup React Router',
-      description: 'Add navigation between different views',
-      priority: 'high',
-      complexity: 5,
-      assignee: { name: 'Gonzalo', initials: 'GZ', color: 'bg-blue-600' },
-      column: 'todo',
-      position: 0,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    },
-    {
-      id: '2',
-      title: 'Create Task Board UI',
-      description: 'Design and implement the task board interface',
-      priority: 'medium',
-      complexity: 7,
-      assignee: { name: 'Alex M', initials: 'AM', color: 'bg-green-600' },
-      column: 'todo',
-      position: 1,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    },
-    {
-      id: '3',
-      title: 'Add drag and drop',
-      description: 'Implement drag and drop functionality',
-      priority: 'medium',
-      complexity: 6,
-      assignee: { name: 'John S', initials: 'JS', color: 'bg-purple-600' },
-      column: 'todo',
-      position: 2,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    },
-    {
-      id: '4',
-      title: 'Fix navigation links',
-      description: 'Make sidebar navigation functional',
-      priority: 'high',
-      complexity: 4,
-      assignee: { name: 'Gonzalo', initials: 'GZ', color: 'bg-blue-600' },
-      column: 'in-progress',
-      position: 0,
-      progress: 75,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    },
-    {
-      id: '5',
-      title: 'Add Repository Integration',
-      description: 'Connect to Git repositories',
-      priority: 'medium',
-      complexity: 8,
-      assignee: { name: 'Alex M', initials: 'AM', color: 'bg-green-600' },
-      column: 'in-progress',
-      position: 1,
-      progress: 25,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    },
-    {
-      id: '6',
-      title: 'API Endpoint Setup',
-      description: 'Create RESTful API endpoints',
-      priority: 'high',
-      complexity: 6,
-      assignee: { name: 'John S', initials: 'JS', color: 'bg-purple-600' },
-      column: 'review',
-      position: 0,
-      progress: 90,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    },
-    {
-      id: '7',
-      title: 'Unit Test Coverage',
-      description: 'Add comprehensive unit tests',
-      priority: 'medium',
-      complexity: 5,
-      assignee: { name: 'Gonzalo', initials: 'GZ', color: 'bg-blue-600' },
-      column: 'testing',
-      position: 0,
-      progress: 60,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    },
-    {
-      id: '8',
-      title: 'Authentication Flow',
-      description: 'Implement user authentication',
-      priority: 'high',
-      complexity: 7,
-      assignee: { name: 'Alex M', initials: 'AM', color: 'bg-green-600' },
-      column: 'done',
-      position: 0,
-      progress: 100,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    }
-  ];
 
   // WebSocket integration through useTaskCollaboration
   const {
@@ -260,8 +261,10 @@ const TaskBoard: React.FC = () => {
   
   const wsError = taskError;
   
-  // Convert WebSocket tasks to local format
-  const tasks = wsTasksRaw.length > 0 ? wsTasksRaw.map(convertFromWebSocketTask) : initialTasks;
+  // Convert WebSocket tasks to local format - memoized to prevent re-renders
+  const tasks = React.useMemo(() => {
+    return wsTasksRaw.length > 0 ? wsTasksRaw.map(convertFromWebSocketTask) : initialTasks;
+  }, [wsTasksRaw]);
 
   const [columns, setColumns] = useState<Column[]>([
     { id: 'todo', title: 'To Do', color: 'bg-gray-500', tasks: [] },

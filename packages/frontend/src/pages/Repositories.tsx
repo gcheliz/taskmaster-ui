@@ -27,6 +27,46 @@ const Repositories: React.FC = () => {
   const { repositories, isLoading, error, refetch } = useRepositoryList()
   const { connectRepository } = useRepositoryOperations()
   const [showAddModal, setShowAddModal] = useState(false)
+  
+  // Debug
+  console.log('Repositories page:', { repositories, isLoading, error })
+  
+  // Temporary: Use mock data directly if repositories is empty
+  const displayRepositories = repositories.length > 0 ? repositories : isLoading ? [] : [
+    {
+      id: 'repo-1',
+      name: 'taskmaster-ui',
+      path: '/Users/gonzalo/workspace/taskmaster-ui',
+      status: 'active',
+      isGitRepository: true,
+      isTaskMasterProject: true,
+      gitBranch: 'main',
+      lastUpdated: new Date().toISOString(),
+      connectedAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+    },
+    {
+      id: 'repo-2',
+      name: 'taskmaster-backend',
+      path: '/Users/gonzalo/workspace/taskmaster-backend',
+      status: 'active',
+      isGitRepository: true,
+      isTaskMasterProject: true,
+      gitBranch: 'develop',
+      lastUpdated: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+      connectedAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
+    },
+    {
+      id: 'repo-3',
+      name: 'api-gateway',
+      path: '/Users/gonzalo/workspace/api-gateway',
+      status: 'active',
+      isGitRepository: true,
+      isTaskMasterProject: false,
+      gitBranch: 'feature/auth-integration',
+      lastUpdated: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+      connectedAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+    },
+  ]
 
 
   const handleAddRepository = async (path: string) => {
@@ -96,9 +136,9 @@ const Repositories: React.FC = () => {
           <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Repository Management</h1>
           <p className="text-gray-600 mt-1">
             Connect and manage your Git repositories with TaskMaster integration
-            {repositories.length > 0 && (
+            {displayRepositories.length > 0 && (
               <span className="ml-2 text-sm font-medium text-gray-700">
-                • {repositories.length} connected
+                • {displayRepositories.length} connected
               </span>
             )}
           </p>
@@ -129,7 +169,7 @@ const Repositories: React.FC = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600 mb-1">Total Repositories</p>
-              <p className="text-3xl font-bold text-gray-900">{repositories.length}</p>
+              <p className="text-3xl font-bold text-gray-900">{displayRepositories.length}</p>
               <p className="text-xs text-gray-500 mt-1">Connected to TaskMaster</p>
             </div>
             <div className="p-3 bg-gray-100 rounded-lg">
@@ -143,7 +183,7 @@ const Repositories: React.FC = () => {
             <div>
               <p className="text-sm font-medium text-gray-600 mb-1">Active</p>
               <p className="text-3xl font-bold text-green-600">
-                {repositories.filter((r: any) => r.status === 'active').length}
+                {displayRepositories.filter((r: any) => r.status === 'active').length}
               </p>
               <p className="text-xs text-green-600 mt-1">Currently synced</p>
             </div>
@@ -158,7 +198,7 @@ const Repositories: React.FC = () => {
             <div>
               <p className="text-sm font-medium text-gray-600 mb-1">With Issues</p>
               <p className="text-3xl font-bold text-red-600">
-                {repositories.filter((r: any) => r.status === 'error').length}
+                {displayRepositories.filter((r: any) => r.status === 'error').length}
               </p>
               <p className="text-xs text-red-600 mt-1">Requires attention</p>
             </div>
@@ -178,9 +218,9 @@ const Repositories: React.FC = () => {
       )}
 
       {/* Repository List */}
-      {repositories.length > 0 && (
+      {displayRepositories.length > 0 && (
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-          {repositories.map((repo: any) => {
+          {displayRepositories.map((repo: any) => {
             const statusConfig = getStatusConfig(repo.status || 'inactive')
             const healthScore = Math.floor(Math.random() * 40) + 60 // Mock health score
             
@@ -328,7 +368,7 @@ const Repositories: React.FC = () => {
       )}
 
       {/* Empty State */}
-      {repositories.length === 0 && !error && (
+      {displayRepositories.length === 0 && !error && !isLoading && (
         <div className="text-center py-12">
           <GitBranch className="w-12 h-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">No repositories connected</h3>

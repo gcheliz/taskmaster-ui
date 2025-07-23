@@ -7,6 +7,8 @@ import { MobileBottomNav } from './MobileBottomNav'
 import { SkipLink, SkipLinksContainer } from '../common/SkipLink'
 import { KeyboardShortcutsPanel } from '../common/KeyboardShortcutsPanel'
 import { useGlobalKeyboardShortcuts, useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts'
+import { useRouteFocusManagement } from '../../hooks/useFocusManagement'
+import { AriaLiveRegion } from '../common/AriaLiveRegion'
 
 interface AppLayoutProps {
   children?: React.ReactNode
@@ -19,6 +21,9 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
 
   // Initialize global keyboard shortcuts
   useGlobalKeyboardShortcuts()
+
+  // Manage focus on route changes
+  useRouteFocusManagement()
 
   // Add keyboard shortcut to open shortcuts panel
   useKeyboardShortcuts([
@@ -80,6 +85,9 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
 
       {/* Keyboard Shortcuts Panel */}
       <KeyboardShortcutsPanel open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
+      
+      {/* Live Region for Route Announcements */}
+      <AriaLiveRegion politeness="polite" className="sr-only" />
     </div>
   )
 }

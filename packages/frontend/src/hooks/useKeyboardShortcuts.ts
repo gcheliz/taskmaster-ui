@@ -156,7 +156,7 @@ export const useGlobalKeyboardShortcuts = () => {
  */
 export const useSequentialKeys = () => {
   const sequenceRef = useRef<string[]>([])
-  const timeoutRef = useRef<NodeJS.Timeout | undefined>()
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
   const addKey = useCallback((key: string) => {
     sequenceRef.current.push(key)

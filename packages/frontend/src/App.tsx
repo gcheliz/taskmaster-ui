@@ -6,6 +6,7 @@ import { AppRoutes } from './routes/AppRoutes'
 import { NotificationProvider } from './contexts/NotificationContext'
 import { ThemeProvider } from './contexts/ThemeContext'
 import { RepositoryProvider } from './contexts/RepositoryContext'
+import { FocusProvider } from './contexts/FocusContext'
 import { initializeKeyboardDetection } from './utils/keyboard'
 
 // Create a client for React Query
@@ -30,13 +31,15 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <ThemeProvider>
-          <NotificationProvider>
-            <RepositoryProvider>
-              <AppLayout>
-                <AppRoutes />
-              </AppLayout>
-            </RepositoryProvider>
-          </NotificationProvider>
+          <FocusProvider>
+            <NotificationProvider>
+              <RepositoryProvider>
+                <AppLayout>
+                  <AppRoutes />
+                </AppLayout>
+              </RepositoryProvider>
+            </NotificationProvider>
+          </FocusProvider>
         </ThemeProvider>
       </BrowserRouter>
     </QueryClientProvider>

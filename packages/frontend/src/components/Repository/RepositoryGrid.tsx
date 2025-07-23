@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useRef, useEffect } from 'react'
 import { cn } from '../../utils/cn'
 import { Input } from '../ui/atoms/Input'
 import { Select } from '../ui/atoms/Select'
@@ -7,6 +7,7 @@ import { Badge } from '../ui/atoms/Badge'
 import { Spinner } from '../ui/atoms/Spinner'
 import { RepositoryCard, type RepositoryCardProps } from './RepositoryCard'
 import { RepositoryCardCompact } from './RepositoryCardCompact'
+import { RovingTabIndex } from '../../utils/keyboard'
 
 export interface RepositoryGridProps {
   /** Array of repositories to display */
@@ -69,6 +70,28 @@ export const RepositoryGrid: React.FC<RepositoryGridProps> = ({
   const [sortBy, setSortBy] = useState<RepositorySortOption>('updated')
   const [filterBy, setFilterBy] = useState<RepositoryFilterOption>('all')
   const [isRefreshing, setIsRefreshing] = useState(false)
+  const gridRef = useRef<HTMLDivElement>(null)
+  const rovingTabIndexRef = useRef<RovingTabIndex | null>(null)
+
+  // Initialize roving tabindex for keyboard navigation
+  useEffect(() => {
+    if (gridRef.current && repositories.length > 0 && !rovingTabIndexRef.current) {
+      // Look for focusable elements within repository cards
+      rovingTabIndexRef.current = new RovingTabIndex(gridRef.current, '[tabindex="0"], button:not([disabled])')
+    }
+
+    return () => {
+      rovingTabIndexRef.current?.destroy()
+      rovingTabIndexRef.current = null
+    }
+  }, [])
+
+  // Update roving tabindex when repositories change
+  useEffect(() => {
+    if (rovingTabIndexRef.current && gridRef.current && repositories.length > 0) {
+      rovingTabIndexRef.current.updateItems('[tabindex="0"], button:not([disabled])')
+    }
+  }, [repositories, layout])
 
   // Filter and sort repositories
   const filteredAndSortedRepositories = useMemo(() => {
@@ -269,7 +292,7 @@ export const RepositoryGrid: React.FC<RepositoryGridProps> = ({
           </div>
         </div>
       ) : (
-        <div className={cn('grid gap-6', getGridColumns())}>
+        <div ref={gridRef} className={cn('grid gap-6', getGridColumns())} role="grid" aria-label="Repositories grid">
           {filteredAndSortedRepositories.map((repository) =>
             layout === 'compact' ? (
               <RepositoryCardCompact

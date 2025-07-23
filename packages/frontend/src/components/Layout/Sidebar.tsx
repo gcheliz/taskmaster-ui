@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useRef, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { LayoutGrid, FolderGit2, ClipboardList, Terminal, Settings, ChevronLeft, ChevronRight } from 'lucide-react'
+import { RovingTabIndex } from '../../utils/keyboard'
 
 interface SidebarProps {
   isOpen?: boolean
@@ -20,8 +21,28 @@ const menuItems = [
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onClose, isCollapsed = false, onToggleCollapse }) => {
   const navigate = useNavigate()
   const location = useLocation()
+  const navRef = useRef<HTMLElement>(null)
+  const rovingTabIndexRef = useRef<RovingTabIndex | null>(null)
 
   const isActive = (path: string) => location.pathname === path
+
+  // Initialize roving tabindex for keyboard navigation
+  useEffect(() => {
+    if (navRef.current && !rovingTabIndexRef.current) {
+      rovingTabIndexRef.current = new RovingTabIndex(navRef.current, 'button[role="menuitem"]')
+    }
+
+    return () => {
+      rovingTabIndexRef.current?.destroy()
+    }
+  }, [])
+
+  // Update roving tabindex when menu items change
+  useEffect(() => {
+    if (rovingTabIndexRef.current && navRef.current) {
+      rovingTabIndexRef.current.updateItems('button[role="menuitem"]')
+    }
+  }, [isCollapsed])
 
   return (
     <>
@@ -44,8 +65,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onClose, isColl
           <div className="hidden lg:flex justify-end p-2 border-b border-gray-100">
             <button
               onClick={onToggleCollapse}
-              className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+              className="p-2 rounded-lg hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
               title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+              aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             >
               {isCollapsed ? (
                 <ChevronRight className="w-5 h-5 text-gray-600" />
@@ -56,7 +78,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onClose, isColl
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+          <nav ref={navRef} className="flex-1 p-4 space-y-1 overflow-y-auto" role="menu" aria-label="Main navigation">
             {menuItems.map((item) => {
               const Icon = item.icon
               const active = isActive(item.path)
@@ -64,17 +86,28 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onClose, isColl
               return (
                 <button
                   key={item.path}
+                  role="menuitem"
+                  aria-current={active ? 'page' : undefined}
                   onClick={() => {
                     navigate(item.path)
                     onClose?.()
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      navigate(item.path)
+                      onClose?.()
+                    }
                   }}
                   className={`
                     flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3'} 
                     px-${isCollapsed ? '2' : '4'} py-2.5 w-full rounded-lg font-medium text-sm
                     transition-all duration-200 group relative
                     ${active ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-700 hover:bg-gray-100'}
+                    focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
                   `}
                   title={isCollapsed ? item.label : undefined}
+                  tabIndex={-1}
                 >
                   <Icon className={`w-5 h-5 ${isCollapsed ? '' : 'flex-shrink-0'}`} />
                   {!isCollapsed && <span>{item.label}</span>}

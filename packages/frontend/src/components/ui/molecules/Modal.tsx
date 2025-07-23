@@ -4,6 +4,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '../../../utils/cn'
 import { Button } from '../atoms/Button'
 import { Icon, XMarkIcon } from '../atoms/Icon'
+import { FocusTrap } from '../../../utils/keyboard'
 
 const modalOverlayVariants = cva(
   'fixed inset-0 z-50 bg-black/50 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0'
@@ -142,10 +143,15 @@ const ModalContent = React.forwardRef<HTMLDivElement, ModalContentProps>(
     const { open, onOpenChange } = useModalContext()
     const contentRef = useRef<HTMLDivElement>(null)
     const overlayRef = useRef<HTMLDivElement>(null)
+    const focusTrapRef = useRef<FocusTrap | null>(null)
 
-    // Focus management
+    // Focus management with FocusTrap utility
     useEffect(() => {
-      if (!open) return
+      if (!open || !contentRef.current) return
+
+      // Initialize focus trap
+      focusTrapRef.current = new FocusTrap(contentRef.current)
+      focusTrapRef.current.activate()
 
       const handleKeyDown = (event: KeyboardEvent) => {
         if (event.key === 'Escape') {
@@ -155,46 +161,12 @@ const ModalContent = React.forwardRef<HTMLDivElement, ModalContentProps>(
         }
       }
 
-      const handleTabKey = (event: KeyboardEvent) => {
-        if (event.key !== 'Tab') return
-
-        const focusableElements = contentRef.current?.querySelectorAll(
-          'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"]):not([disabled]), details:not([disabled]), summary:not(:disabled)'
-        )
-
-        if (!focusableElements || focusableElements.length === 0) return
-
-        const firstElement = focusableElements[0] as HTMLElement
-        const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement
-
-        if (event.shiftKey) {
-          if (document.activeElement === firstElement) {
-            event.preventDefault()
-            lastElement.focus()
-          }
-        } else {
-          if (document.activeElement === lastElement) {
-            event.preventDefault()
-            firstElement.focus()
-          }
-        }
-      }
-
       document.addEventListener('keydown', handleKeyDown)
-      document.addEventListener('keydown', handleTabKey)
-
-      // Focus the first focusable element when modal opens
-      const focusableElements = contentRef.current?.querySelectorAll(
-        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"]):not([disabled]), details:not([disabled]), summary:not(:disabled)'
-      )
-
-      if (focusableElements && focusableElements.length > 0) {
-        ;(focusableElements[0] as HTMLElement).focus()
-      }
 
       return () => {
         document.removeEventListener('keydown', handleKeyDown)
-        document.removeEventListener('keydown', handleTabKey)
+        focusTrapRef.current?.deactivate()
+        focusTrapRef.current = null
       }
     }, [open, onEscapeKeyDown, onOpenChange])
 

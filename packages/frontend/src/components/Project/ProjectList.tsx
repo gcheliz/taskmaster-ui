@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useRef, useEffect } from 'react'
+import { RovingTabIndex } from '../../utils/keyboard'
 
 export interface Project {
   id: string
@@ -50,6 +51,27 @@ export const ProjectList: React.FC<ProjectListProps> = ({
   showCreateButton = true,
   emptyStateMessage = 'No projects found',
 }) => {
+  const gridRef = useRef<HTMLDivElement>(null)
+  const rovingTabIndexRef = useRef<RovingTabIndex | null>(null)
+
+  // Initialize roving tabindex for keyboard navigation
+  useEffect(() => {
+    if (gridRef.current && projects.length > 0 && !rovingTabIndexRef.current) {
+      rovingTabIndexRef.current = new RovingTabIndex(gridRef.current, '[role="button"]')
+    }
+
+    return () => {
+      rovingTabIndexRef.current?.destroy()
+      rovingTabIndexRef.current = null
+    }
+  }, [])
+
+  // Update roving tabindex when projects change
+  useEffect(() => {
+    if (rovingTabIndexRef.current && gridRef.current && projects.length > 0) {
+      rovingTabIndexRef.current.updateItems('[role="button"]')
+    }
+  }, [projects])
   const formatDate = (dateString: string): string => {
     try {
       const date = new Date(dateString)
@@ -191,14 +213,15 @@ export const ProjectList: React.FC<ProjectListProps> = ({
             )}
           </div>
         ) : (
-          <div className="project-grid">
+          <div ref={gridRef} className="project-grid" role="grid" aria-label="Projects grid">
             {projects.map((project) => (
               <div
                 key={project.id}
                 className={`project-item ${onProjectClick ? 'clickable' : ''}`}
                 onClick={() => handleProjectClick(project)}
                 role={onProjectClick ? 'button' : 'article'}
-                tabIndex={onProjectClick ? 0 : undefined}
+                tabIndex={onProjectClick ? -1 : undefined}
+                aria-label={`Project ${project.name}, ${project.tasksCount || 0} tasks, status ${getStatusLabel(project.status)}`}
                 onKeyDown={(e) => {
                   if (onProjectClick && (e.key === 'Enter' || e.key === ' ')) {
                     e.preventDefault()

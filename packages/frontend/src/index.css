@@ -11,6 +11,40 @@ body {
   color: #111827;
 }
 
+/* Accessibility: Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.not-sr-only {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* Focus visible styles for keyboard navigation */
+.keyboard-user *:focus {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+.mouse-user *:focus {
+  outline: none;
+}
+
 /* Custom components */
   /* Header */
   .header {

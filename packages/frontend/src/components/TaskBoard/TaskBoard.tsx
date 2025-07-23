@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useRef, useEffect } from 'react'
 import type { TaskBoardData, TaskStatus } from '../../types/task'
 import { TaskColumn } from './TaskColumn'
 import { DragAndDropProvider } from './DragAndDropProvider'
+import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts'
 
 export interface TaskBoardProps {
   /** Task board data containing columns and tasks */
@@ -38,6 +39,89 @@ export const TaskBoard: React.FC<TaskBoardProps> = ({
   showCreateButton = true,
   onCreateTask,
 }) => {
+  const boardRef = useRef<HTMLDivElement>(null)
+  const currentColumnRef = useRef<number>(0)
+  const currentCardRef = useRef<number>(0)
+
+  // Keyboard navigation for columns and cards
+  const navigateColumns = (direction: 'left' | 'right') => {
+    if (!data || !boardRef.current) return
+
+    const columns = boardRef.current.querySelectorAll('[data-status]')
+    const totalColumns = columns.length
+
+    if (direction === 'left') {
+      currentColumnRef.current = Math.max(0, currentColumnRef.current - 1)
+    } else {
+      currentColumnRef.current = Math.min(totalColumns - 1, currentColumnRef.current + 1)
+    }
+
+    const targetColumn = columns[currentColumnRef.current] as HTMLElement
+    if (targetColumn) {
+      // Focus first task card in the column
+      const firstCard = targetColumn.querySelector('[role="button"][tabindex="0"]') as HTMLElement
+      if (firstCard) {
+        firstCard.focus()
+        currentCardRef.current = 0
+      } else {
+        targetColumn.focus()
+      }
+    }
+  }
+
+  const navigateCards = (direction: 'up' | 'down') => {
+    if (!data || !boardRef.current) return
+
+    const columns = boardRef.current.querySelectorAll('[data-status]')
+    const currentColumn = columns[currentColumnRef.current] as HTMLElement
+    if (!currentColumn) return
+
+    const cards = currentColumn.querySelectorAll('[role="button"][tabindex="0"]')
+    const totalCards = cards.length
+
+    if (totalCards === 0) return
+
+    if (direction === 'up') {
+      currentCardRef.current = Math.max(0, currentCardRef.current - 1)
+    } else {
+      currentCardRef.current = Math.min(totalCards - 1, currentCardRef.current + 1)
+    }
+
+    const targetCard = cards[currentCardRef.current] as HTMLElement
+    if (targetCard) {
+      targetCard.focus()
+    }
+  }
+
+  // Set up keyboard shortcuts for navigation
+  useKeyboardShortcuts([
+    {
+      key: 'ArrowLeft',
+      description: 'Navigate to previous column',
+      handler: () => navigateColumns('left'),
+    },
+    {
+      key: 'ArrowRight',
+      description: 'Navigate to next column',
+      handler: () => navigateColumns('right'),
+    },
+    {
+      key: 'ArrowUp',
+      description: 'Navigate to previous task',
+      handler: () => navigateCards('up'),
+    },
+    {
+      key: 'ArrowDown',
+      description: 'Navigate to next task',
+      handler: () => navigateCards('down'),
+    },
+  ])
+
+  // Reset navigation indices when data changes
+  useEffect(() => {
+    currentColumnRef.current = 0
+    currentCardRef.current = 0
+  }, [data])
   if (isLoading) {
     return (
       <main className={`task-board loading ${className}`} role="main" aria-label="Task Board">
@@ -201,7 +285,10 @@ export const TaskBoard: React.FC<TaskBoardProps> = ({
           )}
         </header>
 
-        <div className="task-board__columns" role="group" aria-label="Kanban board columns">
+        <div ref={boardRef} className="task-board__columns" role="group" aria-label="Kanban board columns">
+          <div className="sr-only" role="note">
+            Use arrow keys to navigate between columns and tasks. Press Enter or Space to select a task.
+          </div>
           {columns.map((column) => (
             <TaskColumn
               key={column.id}

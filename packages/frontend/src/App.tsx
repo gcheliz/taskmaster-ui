@@ -1,10 +1,12 @@
 import { BrowserRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { useEffect } from 'react'
 import { AppLayout } from './components/Layout'
 import { AppRoutes } from './routes/AppRoutes'
 import { NotificationProvider } from './contexts/NotificationContext'
 import { ThemeProvider } from './contexts/ThemeContext'
 import { RepositoryProvider } from './contexts/RepositoryContext'
+import { initializeKeyboardDetection } from './utils/keyboard'
 
 // Create a client for React Query
 const queryClient = new QueryClient({
@@ -19,6 +21,11 @@ const queryClient = new QueryClient({
 })
 
 function App() {
+  // Initialize keyboard detection on app mount
+  useEffect(() => {
+    initializeKeyboardDetection()
+  }, [])
+
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>

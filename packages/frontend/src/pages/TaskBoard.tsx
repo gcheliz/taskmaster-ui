@@ -13,9 +13,6 @@ import {
 } from 'lucide-react';
 import {
   DndContext,
-  DragEndEvent,
-  DragOverEvent,
-  DragStartEvent,
   closestCorners,
   KeyboardSensor,
   PointerSensor,
@@ -23,8 +20,8 @@ import {
   useSensors,
   DragOverlay,
   defaultDropAnimationSideEffects,
-  UniqueIdentifier,
 } from '@dnd-kit/core';
+import type { DragEndEvent, DragOverEvent, DragStartEvent, UniqueIdentifier } from '@dnd-kit/core';
 import {
   arrayMove,
   SortableContext,
@@ -37,24 +34,19 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { useTaskCollaboration, useWebSocket } from '../hooks/useWebSocket';
 import { WebSocketState } from '../types/websocket';
+import type { Task as WebSocketTask } from '../types/websocket';
 
-interface Task {
-  id: string;
-  title: string;
-  description: string;
-  priority: 'low' | 'medium' | 'high';
-  complexity: number;
+interface Task extends Omit<WebSocketTask, 'status' | 'priority' | 'assignee'> {
+  description: string; // Make required for UI
+  priority: 'low' | 'medium' | 'high'; // Exclude 'critical' for now
+  complexity: number; // Make required
   assignee: {
     name: string;
     initials: string;
     color: string;
   };
   progress?: number;
-  column: string;
-  position: number;
-  status?: string;
-  createdAt?: string;
-  updatedAt?: string;
+  status?: string; // Make optional for compatibility
 }
 
 interface FilterOptions {
@@ -72,6 +64,37 @@ interface Column {
   color: string;
   tasks: Task[];
 }
+
+// Helper to convert between local Task and WebSocketTask
+const convertToWebSocketTask = (task: Task): WebSocketTask => ({
+  ...task,
+  status: (task.status || 'pending') as WebSocketTask['status'],
+  priority: task.priority as WebSocketTask['priority'],
+  description: task.description,
+  assignee: task.assignee ? {
+    id: task.assignee.name.toLowerCase().replace(/\s/g, '-'),
+    name: task.assignee.name,
+    email: `${task.assignee.name.toLowerCase().replace(/\s/g, '.')}@example.com`,
+    color: task.assignee.color
+  } : undefined
+});
+
+const convertFromWebSocketTask = (task: WebSocketTask): Task => ({
+  ...task,
+  description: task.description || '',
+  priority: (task.priority === 'critical' ? 'high' : task.priority) as Task['priority'],
+  complexity: task.complexity || 5,
+  assignee: task.assignee ? {
+    name: task.assignee.name,
+    initials: task.assignee.name.split(' ').map(n => n[0]).join('').toUpperCase(),
+    color: task.assignee.color || 'bg-gray-600'
+  } : {
+    name: 'Unassigned',
+    initials: 'NA',
+    color: 'bg-gray-400'
+  },
+  status: task.status
+});
 
 const TaskBoard: React.FC = () => {
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
@@ -97,7 +120,9 @@ const TaskBoard: React.FC = () => {
       complexity: 5,
       assignee: { name: 'Gonzalo', initials: 'GZ', color: 'bg-blue-600' },
       column: 'todo',
-      position: 0
+      position: 0,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     },
     {
       id: '2',
@@ -107,7 +132,9 @@ const TaskBoard: React.FC = () => {
       complexity: 7,
       assignee: { name: 'Alex M', initials: 'AM', color: 'bg-green-600' },
       column: 'todo',
-      position: 1
+      position: 1,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     },
     {
       id: '3',
@@ -117,7 +144,9 @@ const TaskBoard: React.FC = () => {
       complexity: 6,
       assignee: { name: 'John S', initials: 'JS', color: 'bg-purple-600' },
       column: 'todo',
-      position: 2
+      position: 2,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     },
     {
       id: '4',
@@ -128,7 +157,9 @@ const TaskBoard: React.FC = () => {
       assignee: { name: 'Gonzalo', initials: 'GZ', color: 'bg-blue-600' },
       column: 'in-progress',
       position: 0,
-      progress: 75
+      progress: 75,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     },
     {
       id: '5',
@@ -139,7 +170,9 @@ const TaskBoard: React.FC = () => {
       assignee: { name: 'Alex M', initials: 'AM', color: 'bg-green-600' },
       column: 'in-progress',
       position: 1,
-      progress: 25
+      progress: 25,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     },
     {
       id: '6',
@@ -150,7 +183,9 @@ const TaskBoard: React.FC = () => {
       assignee: { name: 'John S', initials: 'JS', color: 'bg-purple-600' },
       column: 'review',
       position: 0,
-      progress: 90
+      progress: 90,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     },
     {
       id: '7',
@@ -161,7 +196,9 @@ const TaskBoard: React.FC = () => {
       assignee: { name: 'Gonzalo', initials: 'GZ', color: 'bg-blue-600' },
       column: 'testing',
       position: 0,
-      progress: 60
+      progress: 60,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     },
     {
       id: '8',
@@ -172,7 +209,9 @@ const TaskBoard: React.FC = () => {
       assignee: { name: 'Alex M', initials: 'AM', color: 'bg-green-600' },
       column: 'done',
       position: 0,
-      progress: 100
+      progress: 100,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     }
   ];
 
@@ -184,19 +223,21 @@ const TaskBoard: React.FC = () => {
       id: 'user-1',
       name: 'Gonzalo',
       email: 'gonzalo@example.com',
-      avatar: '',
-      role: 'admin'
+      avatar: ''
     }
   });
 
   const {
-    tasks,
+    tasks: wsTasksRaw,
     moveTask,
     updateTask,
     connectedUsers,
     lastUpdate,
     error: taskError
-  } = useTaskCollaboration(initialTasks);
+  } = useTaskCollaboration(initialTasks.map(convertToWebSocketTask));
+  
+  // Convert WebSocket tasks to local format
+  const tasks = wsTasksRaw.map(convertFromWebSocketTask);
 
   const [columns, setColumns] = useState<Column[]>([
     { id: 'todo', title: 'To Do', color: 'bg-gray-500', tasks: [] },
@@ -208,7 +249,7 @@ const TaskBoard: React.FC = () => {
 
   // Get unique values for filter options
   const getUniqueAssignees = () => {
-    return Array.from(new Set(tasks.map(task => task.assignee.name))).sort();
+    return Array.from(new Set(tasks.map(task => task.assignee?.name || 'Unassigned').filter(name => name !== 'Unassigned'))).sort();
   };
 
   // Filter and sort tasks
@@ -220,7 +261,7 @@ const TaskBoard: React.FC = () => {
       filtered = filtered.filter(task => filters.priorities.includes(task.priority));
     }
     if (filters.assignees.length > 0) {
-      filtered = filtered.filter(task => filters.assignees.includes(task.assignee.name));
+      filtered = filtered.filter(task => task.assignee && filters.assignees.includes(task.assignee.name));
     }
 
     // Apply sorting
@@ -236,7 +277,9 @@ const TaskBoard: React.FC = () => {
           compareValue = a.complexity - b.complexity;
           break;
         case 'assignee':
-          compareValue = a.assignee.name.localeCompare(b.assignee.name);
+          const aName = a.assignee?.name || '';
+          const bName = b.assignee?.name || '';
+          compareValue = aName.localeCompare(bName);
           break;
         case 'created':
           compareValue = new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime();

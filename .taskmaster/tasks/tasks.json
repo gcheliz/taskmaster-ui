@@ -935,7 +935,7 @@
             "title": "Drag and Drop Implementation with React DnD Kit",
             "description": "Implement drag and drop functionality using @dnd-kit/sortable for smooth task movement between columns. Set up DndContext, SortableContext for each column, and useSortable hooks for cards. Handle drag start/end events, update task status on drop, implement drag overlay for visual feedback, and add drop zones with hover effects. Include touch support for mobile devices and keyboard navigation.",
             "details": "",
-            "status": "in-progress",
+            "status": "done",
             "dependencies": [],
             "parentTaskId": 67
           },
@@ -944,7 +944,7 @@
             "title": "Real-time Updates with WebSocket Integration",
             "description": "Implement WebSocket connection for real-time board updates across multiple users. Set up Socket.io client, handle connection/reconnection logic, implement event listeners for task updates/moves/additions. Create optimistic UI updates with rollback on failure. Add presence indicators showing active users on the board. Implement conflict resolution for simultaneous edits and connection status indicator.",
             "details": "",
-            "status": "pending",
+            "status": "in-progress",
             "dependencies": [],
             "parentTaskId": 67
           },
@@ -1375,7 +1375,7 @@
     ],
     "metadata": {
       "created": "2025-07-15T21:22:03.992Z",
-      "updated": "2025-07-23T06:54:58.962Z",
+      "updated": "2025-07-23T07:37:18.417Z",
       "description": "Tasks for taskmaster-ui context"
     }
   }

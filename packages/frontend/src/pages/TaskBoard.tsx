@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Plus,
   Filter,
@@ -10,7 +10,9 @@ import {
   CheckCircle,
   Circle,
   User,
-  GripVertical
+  GripVertical,
+  Wifi,
+  WifiOff
 } from 'lucide-react';
 import {
   DndContext,
@@ -36,6 +38,8 @@ import {
   useSortable,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { useTaskCollaboration, useWebSocket } from '../hooks/useWebSocket';
+import { WebSocketState } from '../types/websocket';
 
 interface Task {
   id: string;
@@ -50,6 +54,10 @@ interface Task {
   };
   progress?: number;
   column: string;
+  position: number;
+  status?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 interface Column {
@@ -61,120 +69,136 @@ interface Column {
 
 const TaskBoard: React.FC = () => {
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
-  const [columns, setColumns] = useState<Column[]>([
+  
+  // Initial tasks for demo purposes
+  const initialTasks: Task[] = [
     {
-      id: 'todo',
-      title: 'To Do',
-      color: 'bg-gray-500',
-      tasks: [
-        {
-          id: '1',
-          title: 'Setup React Router',
-          description: 'Add navigation between different views',
-          priority: 'high',
-          complexity: 5,
-          assignee: { name: 'Gonzalo', initials: 'GZ', color: 'bg-blue-600' },
-          column: 'todo'
-        },
-        {
-          id: '2',
-          title: 'Create Task Board UI',
-          description: 'Design and implement the task board interface',
-          priority: 'medium',
-          complexity: 7,
-          assignee: { name: 'Alex M', initials: 'AM', color: 'bg-green-600' },
-          column: 'todo'
-        },
-        {
-          id: '3',
-          title: 'Add drag and drop',
-          description: 'Implement drag and drop functionality',
-          priority: 'medium',
-          complexity: 6,
-          assignee: { name: 'John S', initials: 'JS', color: 'bg-purple-600' },
-          column: 'todo'
-        }
-      ]
+      id: '1',
+      title: 'Setup React Router',
+      description: 'Add navigation between different views',
+      priority: 'high',
+      complexity: 5,
+      assignee: { name: 'Gonzalo', initials: 'GZ', color: 'bg-blue-600' },
+      column: 'todo',
+      position: 0
     },
     {
-      id: 'in-progress',
-      title: 'In Progress',
-      color: 'bg-blue-600',
-      tasks: [
-        {
-          id: '4',
-          title: 'Fix navigation links',
-          description: 'Make sidebar navigation functional',
-          priority: 'high',
-          complexity: 4,
-          assignee: { name: 'Gonzalo', initials: 'GZ', color: 'bg-blue-600' },
-          column: 'in-progress',
-          progress: 75
-        },
-        {
-          id: '5',
-          title: 'Add Repository Integration',
-          description: 'Connect to Git repositories',
-          priority: 'medium',
-          complexity: 8,
-          assignee: { name: 'Alex M', initials: 'AM', color: 'bg-green-600' },
-          column: 'in-progress',
-          progress: 25
-        }
-      ]
+      id: '2',
+      title: 'Create Task Board UI',
+      description: 'Design and implement the task board interface',
+      priority: 'medium',
+      complexity: 7,
+      assignee: { name: 'Alex M', initials: 'AM', color: 'bg-green-600' },
+      column: 'todo',
+      position: 1
     },
     {
-      id: 'review',
-      title: 'Review',
-      color: 'bg-purple-600',
-      tasks: [
-        {
-          id: '6',
-          title: 'API Endpoint Setup',
-          description: 'Create RESTful API endpoints',
-          priority: 'high',
-          complexity: 6,
-          assignee: { name: 'John S', initials: 'JS', color: 'bg-purple-600' },
-          column: 'review',
-          progress: 90
-        }
-      ]
+      id: '3',
+      title: 'Add drag and drop',
+      description: 'Implement drag and drop functionality',
+      priority: 'medium',
+      complexity: 6,
+      assignee: { name: 'John S', initials: 'JS', color: 'bg-purple-600' },
+      column: 'todo',
+      position: 2
     },
     {
-      id: 'testing',
-      title: 'Testing',
-      color: 'bg-amber-600',
-      tasks: [
-        {
-          id: '7',
-          title: 'Unit Test Coverage',
-          description: 'Add comprehensive unit tests',
-          priority: 'medium',
-          complexity: 5,
-          assignee: { name: 'Gonzalo', initials: 'GZ', color: 'bg-blue-600' },
-          column: 'testing',
-          progress: 60
-        }
-      ]
+      id: '4',
+      title: 'Fix navigation links',
+      description: 'Make sidebar navigation functional',
+      priority: 'high',
+      complexity: 4,
+      assignee: { name: 'Gonzalo', initials: 'GZ', color: 'bg-blue-600' },
+      column: 'in-progress',
+      position: 0,
+      progress: 75
     },
     {
-      id: 'done',
-      title: 'Done',
-      color: 'bg-green-600',
-      tasks: [
-        {
-          id: '8',
-          title: 'Authentication Flow',
-          description: 'Implement user authentication',
-          priority: 'high',
-          complexity: 7,
-          assignee: { name: 'Alex M', initials: 'AM', color: 'bg-green-600' },
-          column: 'done',
-          progress: 100
-        }
-      ]
+      id: '5',
+      title: 'Add Repository Integration',
+      description: 'Connect to Git repositories',
+      priority: 'medium',
+      complexity: 8,
+      assignee: { name: 'Alex M', initials: 'AM', color: 'bg-green-600' },
+      column: 'in-progress',
+      position: 1,
+      progress: 25
+    },
+    {
+      id: '6',
+      title: 'API Endpoint Setup',
+      description: 'Create RESTful API endpoints',
+      priority: 'high',
+      complexity: 6,
+      assignee: { name: 'John S', initials: 'JS', color: 'bg-purple-600' },
+      column: 'review',
+      position: 0,
+      progress: 90
+    },
+    {
+      id: '7',
+      title: 'Unit Test Coverage',
+      description: 'Add comprehensive unit tests',
+      priority: 'medium',
+      complexity: 5,
+      assignee: { name: 'Gonzalo', initials: 'GZ', color: 'bg-blue-600' },
+      column: 'testing',
+      position: 0,
+      progress: 60
+    },
+    {
+      id: '8',
+      title: 'Authentication Flow',
+      description: 'Implement user authentication',
+      priority: 'high',
+      complexity: 7,
+      assignee: { name: 'Alex M', initials: 'AM', color: 'bg-green-600' },
+      column: 'done',
+      position: 0,
+      progress: 100
     }
+  ];
+
+  // WebSocket integration
+  const { state: wsState, isConnected, error: wsError } = useWebSocket({
+    url: process.env.VITE_WS_URL || 'ws://localhost:3001',
+    autoConnect: true,
+    user: {
+      id: 'user-1',
+      name: 'Gonzalo',
+      email: 'gonzalo@example.com',
+      avatar: '',
+      role: 'admin'
+    }
+  });
+
+  const {
+    tasks,
+    moveTask,
+    updateTask,
+    connectedUsers,
+    lastUpdate,
+    error: taskError
+  } = useTaskCollaboration(initialTasks);
+
+  const [columns, setColumns] = useState<Column[]>([
+    { id: 'todo', title: 'To Do', color: 'bg-gray-500', tasks: [] },
+    { id: 'in-progress', title: 'In Progress', color: 'bg-blue-600', tasks: [] },
+    { id: 'review', title: 'Review', color: 'bg-purple-600', tasks: [] },
+    { id: 'testing', title: 'Testing', color: 'bg-amber-600', tasks: [] },
+    { id: 'done', title: 'Done', color: 'bg-green-600', tasks: [] }
   ]);
+
+  // Update columns when tasks change
+  useEffect(() => {
+    const newColumns = columns.map(column => ({
+      ...column,
+      tasks: tasks
+        .filter(task => task.column === column.id)
+        .sort((a, b) => a.position - b.position)
+    }));
+    setColumns(newColumns);
+  }, [tasks]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -254,8 +278,24 @@ const TaskBoard: React.FC = () => {
     const overIndex = overColumn.tasks.findIndex((i) => i.id === over.id);
 
     if (activeColumn.id !== overColumn.id) {
-      // Already handled in handleDragOver
+      // Task moved to different column - update via WebSocket
+      const taskId = active.id as string;
+      const newPosition = overIndex >= 0 ? overIndex : overColumn.tasks.length;
+      
+      // Send real-time update
+      if (isConnected) {
+        moveTask(taskId, overColumn.id, newPosition);
+      }
     } else if (activeIndex !== overIndex) {
+      // Task reordered within same column
+      const taskId = active.id as string;
+      const newPosition = overIndex;
+      
+      // Send real-time update
+      if (isConnected) {
+        moveTask(taskId, activeColumn.id, newPosition);
+      }
+      
       setColumns((cols) =>
         cols.map((col) =>
           col.id === activeColumn.id
@@ -282,13 +322,92 @@ const TaskBoard: React.FC = () => {
     .reduce((sum, col) => sum + col.tasks.length, 0);
   const completedTasks = columns.find(col => col.id === 'done')?.tasks.length || 0;
 
+  const getConnectionStatusColor = () => {
+    switch (wsState) {
+      case WebSocketState.CONNECTED:
+        return 'text-green-600';
+      case WebSocketState.CONNECTING:
+      case WebSocketState.RECONNECTING:
+        return 'text-amber-600';
+      default:
+        return 'text-red-600';
+    }
+  };
+
+  const getConnectionStatusText = () => {
+    switch (wsState) {
+      case WebSocketState.CONNECTED:
+        return 'Connected';
+      case WebSocketState.CONNECTING:
+        return 'Connecting...';
+      case WebSocketState.RECONNECTING:
+        return 'Reconnecting...';
+      case WebSocketState.DISCONNECTED:
+        return 'Disconnected';
+      default:
+        return 'Unknown';
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Page Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-semibold text-gray-900">Task Board</h1>
-        <p className="text-gray-600 mt-1">Drag and drop tasks between columns to update their status</p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold text-gray-900">Task Board</h1>
+            <p className="text-gray-600 mt-1">Drag and drop tasks between columns to update their status</p>
+          </div>
+          
+          {/* Connection Status */}
+          <div className="flex items-center space-x-4">
+            <div className={`flex items-center space-x-2 text-sm ${getConnectionStatusColor()}`}>
+              {isConnected ? (
+                <Wifi className="w-4 h-4" />
+              ) : (
+                <WifiOff className="w-4 h-4" />
+              )}
+              <span>{getConnectionStatusText()}</span>
+            </div>
+            
+            {connectedUsers.length > 0 && (
+              <div className="flex items-center space-x-2">
+                <span className="text-sm text-gray-600">Active users:</span>
+                <div className="flex -space-x-2">
+                  {connectedUsers.slice(0, 3).map((user) => (
+                    <div
+                      key={user.id}
+                      className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-medium border-2 border-white"
+                      title={user.name}
+                    >
+                      {user.name.charAt(0).toUpperCase()}
+                    </div>
+                  ))}
+                  {connectedUsers.length > 3 && (
+                    <div className="w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center text-white text-xs font-medium border-2 border-white">
+                      +{connectedUsers.length - 3}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+        
+        {/* Last Update Indicator */}
+        {lastUpdate && (
+          <div className="mt-2 text-xs text-gray-500">
+            Last update: {new Date(lastUpdate).toLocaleTimeString()}
+          </div>
+        )}
       </div>
+
+      {/* Error Messages */}
+      {(wsError || taskError) && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+          <p className="text-sm">{wsError?.message || taskError?.message}</p>
+        </div>
+      )}
 
       {/* Board Controls */}
       <div className="flex items-center justify-between">
@@ -521,6 +640,13 @@ const TaskCard: React.FC<{
             />
           </div>
           <span className="text-gray-500 text-xs ml-2">{task.progress}%</span>
+        </div>
+      )}
+
+      {/* Real-time Indicator */}
+      {task.updatedAt && new Date(task.updatedAt).getTime() > Date.now() - 3000 && (
+        <div className="mt-2 pl-6">
+          <span className="text-xs text-blue-600 animate-pulse">Just updated</span>
         </div>
       )}
     </div>

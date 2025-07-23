@@ -1,9 +1,15 @@
 import { useEffect, useCallback, useRef } from 'react';
-import {
-  useWebSocket,
-  type TaskSyncMessage,
-} from '../contexts/WebSocketContext';
+import { useWebSocket } from './useWebSocket';
 import { useNotification } from '../contexts/NotificationContext';
+
+interface TaskSyncMessage {
+  type: string;
+  payload: {
+    repositoryPath: string;
+    tasks?: any;
+    error?: string;
+  };
+}
 
 export interface TaskUpdateHandler {
   onTasksUpdated?: (repositoryPath: string, tasks: any) => void;

@@ -19,9 +19,9 @@ export type { UseProjectOperationsResult } from './useProjectOperations';
 export { useTaskData } from './useTaskData';
 export type { UseTaskDataOptions, UseTaskDataReturn } from './useTaskData';
 
-export { useWebSocketTaskUpdates } from './useWebSocketTaskUpdates';
-export type {
-  TaskUpdateHandler,
-  UseWebSocketTaskUpdatesOptions,
-  UseWebSocketTaskUpdatesResult,
-} from './useWebSocketTaskUpdates';
+// export { useWebSocketTaskUpdates } from './useWebSocketTaskUpdates';
+// export type {
+//   TaskUpdateHandler,
+//   UseWebSocketTaskUpdatesOptions,
+//   UseWebSocketTaskUpdatesResult,
+// } from './useWebSocketTaskUpdates';

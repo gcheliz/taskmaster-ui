@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AppLayout } from './components/Layout';
 import { RepositoryProvider } from './contexts/RepositoryContext';
 import { NotificationProvider } from './contexts/NotificationContext';
-import { WebSocketProvider } from './contexts/WebSocketContext';
+import { WebSocketProvider } from './providers/WebSocketProvider';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { NotificationContainer } from './components/Notifications';
 import { AppRoutes } from './routes/AppRoutes';
@@ -45,7 +45,7 @@ function App() {
           <ThemeProvider>
             <NotificationProvider>
               <WebSocketErrorBoundary>
-                <WebSocketProvider config={{ autoConnect: true }}>
+                <WebSocketProvider autoConnect={true}>
                   <RepositoryProvider>
                     <AppLayout>
                       <AppRoutes />

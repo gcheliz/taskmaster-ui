@@ -1144,7 +1144,7 @@
             "title": "Login/Register UI with Tabbed Interface",
             "description": "Design and implement tabbed login/register UI with modern form components, including email/password fields, remember me checkbox, and smooth tab transitions between login and registration forms",
             "details": "",
-            "status": "in-progress",
+            "status": "done",
             "dependencies": [],
             "parentTaskId": 71
           },
@@ -1153,7 +1153,7 @@
             "title": "Social Authentication Integration",
             "description": "Implement OAuth2 authentication with GitHub and Google providers, including secure token handling, user profile fetching, and seamless integration with existing authentication flow",
             "details": "",
-            "status": "pending",
+            "status": "in-progress",
             "dependencies": [],
             "parentTaskId": 71
           },
@@ -1375,7 +1375,7 @@
     ],
     "metadata": {
       "created": "2025-07-15T21:22:03.992Z",
-      "updated": "2025-07-23T12:52:23.249Z",
+      "updated": "2025-07-23T12:59:42.600Z",
       "description": "Tasks for taskmaster-ui context"
     }
   }

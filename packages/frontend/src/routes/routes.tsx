@@ -23,6 +23,7 @@ const NotFoundPage = lazy(() => import('../pages/NotFound'))
 
 // Import the Auth page wrapper
 const AuthPageWrapper = lazy(() => import('../pages/Auth'))
+const OAuthCallback = lazy(() => import('../components/Auth/OAuthCallback').then(module => ({ default: module.OAuthCallback })))
 
 export const routes: RouteObject[] = [
   {
@@ -96,6 +97,10 @@ export const routes: RouteObject[] = [
   {
     path: '/auth/reset-password',
     element: <ResetPasswordPage />,
+  },
+  {
+    path: '/auth/callback',
+    element: <OAuthCallback />,
   },
   // Legacy routes for backward compatibility - redirect to new auth page
   {

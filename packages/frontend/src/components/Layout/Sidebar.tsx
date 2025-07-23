@@ -1,207 +1,77 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
-import { cn } from '../../utils/cn';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { 
+  LayoutGrid, 
+  FolderGit2, 
+  ClipboardList, 
+  Terminal, 
+  Settings
+} from 'lucide-react';
 
-export interface SidebarProps {
-  className?: string;
-  open?: boolean;
+interface SidebarProps {
+  isOpen?: boolean;
   onClose?: () => void;
-  isMobile?: boolean;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ 
-  className = '', 
-  open = false,
-  onClose,
-  isMobile = false
-}) => {
+const menuItems = [
+  { icon: LayoutGrid, label: 'Dashboard', path: '/dashboard' },
+  { icon: FolderGit2, label: 'Repository Management', path: '/repository-management' },
+  { icon: ClipboardList, label: 'Task Board', path: '/task-board' },
+  { icon: Terminal, label: 'Terminal', path: '/terminal' },
+  { icon: Settings, label: 'Settings', path: '/settings' },
+];
+
+export const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onClose }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  const isActive = (path: string) => location.pathname === path;
+  
   return (
-    <aside
-      id="sidebar-nav"
-      className={cn(
-        'fixed top-16 left-0 z-50 h-full w-64 bg-slate-900 border-r border-slate-800 p-4 transition-transform duration-300 ease-in-out',
-        // Desktop: Always visible, positioned normally
-        'lg:translate-x-0 lg:static lg:z-auto lg:top-0',
-        // Mobile: Transform based on open state
-        isMobile ? (open ? 'translate-x-0' : '-translate-x-full') : '',
-        className
+    <>
+      {/* Mobile backdrop */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
+          onClick={onClose}
+        />
       )}
-      role="navigation"
-      aria-label="Main navigation"
-    >
-      {/* Close button for mobile */}
-      {isMobile && (
-        <div className="flex justify-between items-center mb-4 lg:hidden">
-          <h2 className="text-lg font-semibold text-white">Navigation</h2>
-          <button
-            onClick={onClose}
-            className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-md transition-colors"
-            aria-label="Close navigation menu"
-          >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
-        </div>
-      )}
-
-      <nav className="space-y-2">
-        <NavLink
-          to="/dashboard"
-          onClick={isMobile ? onClose : undefined}
-          className={({ isActive }) =>
-            cn(
-              'flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors touch-target',
-              isActive
-                ? 'bg-accent-primary text-white'
-                : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-            )
-          }
-        >
-          <svg
-            className="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"
-            ></path>
-          </svg>
-          <span className="font-medium">Dashboard</span>
-        </NavLink>
-
-        <NavLink
-          to="/task-board"
-          onClick={isMobile ? onClose : undefined}
-          className={({ isActive }) =>
-            cn(
-              'flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors touch-target',
-              isActive
-                ? 'bg-accent-primary text-white'
-                : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-            )
-          }
-        >
-          <svg
-            className="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
-            ></path>
-          </svg>
-          <span className="font-medium">Task Board</span>
-        </NavLink>
-
-        <NavLink
-          to="/repository-management"
-          onClick={isMobile ? onClose : undefined}
-          className={({ isActive }) =>
-            cn(
-              'flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors touch-target',
-              isActive
-                ? 'bg-accent-primary text-white'
-                : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-            )
-          }
-        >
-          <svg
-            className="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"
-            />
-          </svg>
-          <span className="font-medium">Repositories</span>
-        </NavLink>
-
-        <NavLink
-          to="/terminal"
-          onClick={isMobile ? onClose : undefined}
-          className={({ isActive }) =>
-            cn(
-              'flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors touch-target',
-              isActive
-                ? 'bg-accent-primary text-white'
-                : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-            )
-          }
-        >
-          <svg
-            className="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-            />
-          </svg>
-          <span className="font-medium">Terminal</span>
-        </NavLink>
-
-        <NavLink
-          to="/settings"
-          onClick={isMobile ? onClose : undefined}
-          className={({ isActive }) =>
-            cn(
-              'flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors touch-target',
-              isActive
-                ? 'bg-accent-primary text-white'
-                : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-            )
-          }
-        >
-          <svg
-            className="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-            ></path>
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-            ></path>
-          </svg>
-          <span className="font-medium">Settings</span>
-        </NavLink>
-      </nav>
-    </aside>
+      
+      {/* Sidebar */}
+      <aside className={`
+        w-64 bg-white border-r border-gray-200 h-full flex-shrink-0
+        lg:relative fixed inset-y-0 left-0 z-40
+        transform transition-transform duration-200 ease-in-out
+        ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+      `}>
+        <nav className="p-4 space-y-1">
+          {menuItems.map((item) => {
+            const Icon = item.icon;
+            const active = isActive(item.path);
+            
+            return (
+              <button
+                key={item.path}
+                onClick={() => {
+                  navigate(item.path);
+                  onClose?.();
+                }}
+                className={`
+                  flex items-center space-x-3 px-4 py-2.5 w-full rounded-lg font-medium text-sm
+                  transition-all duration-200
+                  ${active 
+                    ? 'bg-blue-600 text-white shadow-sm' 
+                    : 'text-gray-700 hover:bg-gray-100'
+                  }
+                `}
+              >
+                <Icon className="w-5 h-5" />
+                <span>{item.label}</span>
+              </button>
+            );
+          })}
+        </nav>
+      </aside>
+    </>
   );
 };

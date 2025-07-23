@@ -1,288 +1,275 @@
-import React, { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import { useNavigate } from 'react-router-dom'
-import { Grid, GridItem } from '../components/layouts/Grid'
+import React from 'react';
 import { 
-  StatisticsCard, 
-  ActivityTimeline, 
-  ProjectHealthIndicator, 
-  QuickActions 
-} from '../components/dashboard'
-import type { ActivityItem } from '../components/dashboard'
-import { ROUTES } from '../routes/navigation'
-import { useActivityStream } from '../hooks/useActivityStream'
+  ClipboardList, 
+  GitBranch, 
+  Users, 
+  TrendingUp,
+  Check,
+  AlertTriangle,
+  CheckCircle2,
+  Plus,
+  Code2,
+  BarChart3,
+  ArrowUpRight,
+  ArrowRight
+} from 'lucide-react';
 
-const Dashboard = () => {
-  const navigate = useNavigate()
-  const [currentTime, setCurrentTime] = useState(new Date())
-  
-  // Update time every minute
-  useEffect(() => {
-    const timer = setInterval(() => setCurrentTime(new Date()), 60000)
-    return () => clearInterval(timer)
-  }, [])
-
-  // Get greeting based on time
-  const getGreeting = () => {
-    const hour = currentTime.getHours()
-    if (hour < 12) return 'Good morning'
-    if (hour < 18) return 'Good afternoon'
-    return 'Good evening'
-  }
-
-  // Mock data - in real app, this would come from API
-  const userName = 'Alex'
-  const statistics = [
-    {
-      title: 'Active Tasks',
-      value: 128,
-      subtitle: 'across 8 projects',
-      trend: { value: 12, isPositive: true },
-      color: 'primary' as const,
-      icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-        </svg>
-      ),
-    },
-    {
-      title: 'Repositories',
-      value: 24,
-      subtitle: '3 need attention',
-      trend: { value: 8, isPositive: true },
-      color: 'success' as const,
-      icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-            d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
-        </svg>
-      ),
-    },
-    {
-      title: 'Team Members',
-      value: 12,
-      subtitle: '3 online now',
-      color: 'warning' as const,
-      icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-        </svg>
-      ),
-    },
-    {
-      title: 'Performance',
-      value: 92,
-      subtitle: 'efficiency score',
-      trend: { value: 5, isPositive: true },
-      color: 'success' as const,
-      icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-            d="M13 10V3L4 14h7v7l9-11h-7z" />
-        </svg>
-      ),
-    },
-  ]
-
-  // Initialize activity stream with mock data
-  const initialActivities: ActivityItem[] = [
-    {
-      id: '1',
-      type: 'task',
-      title: 'Updated task #45: Implement user authentication',
-      user: { name: 'Sarah Chen', avatar: 'https://i.pravatar.cc/40?img=1' },
-      timestamp: new Date(Date.now() - 1000 * 60 * 5),
-      meta: { status: 'in-progress' },
-    },
-    {
-      id: '2',
-      type: 'commit',
-      title: 'Pushed 3 commits to feature/dashboard',
-      description: 'feat: add statistics cards, fix: responsive layout',
-      user: { name: 'Mike Johnson' },
-      timestamp: new Date(Date.now() - 1000 * 60 * 30),
-    },
-    {
-      id: '3',
-      type: 'comment',
-      title: 'Commented on PR #128',
-      description: 'LGTM! Great work on the refactoring.',
-      user: { name: 'Emily Davis', avatar: 'https://i.pravatar.cc/40?img=2' },
-      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2),
-    },
-    {
-      id: '4',
-      type: 'deploy',
-      title: 'Deployed to production',
-      description: 'Version 2.3.0 successfully deployed',
-      user: { name: 'System' },
-      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 4),
-      meta: { status: 'completed' },
-    },
-    {
-      id: '5',
-      type: 'review',
-      title: 'Code review requested on PR #129',
-      user: { name: 'David Kim' },
-      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 6),
-    },
-  ]
-
-  const { activities, isConnected } = useActivityStream({ 
-    initialActivities,
-    maxItems: 20 
-  })
-
-  const projectHealth = {
-    projectName: 'TaskMaster UI',
-    overallHealth: 85,
-    metrics: [
-      { name: 'Code Coverage', value: 78, max: 100, status: 'warning' as const },
-      { name: 'Build Success Rate', value: 95, max: 100, status: 'healthy' as const },
-      { name: 'Open Issues', value: 23, max: 50, status: 'healthy' as const },
-      { name: 'Tech Debt Score', value: 82, max: 100, status: 'healthy' as const },
-    ],
-  }
-
-  const quickActions = [
-    {
-      id: 'create-task',
-      title: 'Create Task',
-      description: 'Start a new task',
-      color: 'primary' as const,
-      icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-        </svg>
-      ),
-      onClick: () => navigate(ROUTES.TASKS),
-    },
-    {
-      id: 'view-repos',
-      title: 'View Repos',
-      description: 'Manage repositories',
-      color: 'success' as const,
-      icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-            d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
-        </svg>
-      ),
-      onClick: () => navigate(ROUTES.REPOSITORIES),
-    },
-    {
-      id: 'open-terminal',
-      title: 'Terminal',
-      description: 'Open terminal',
-      color: 'purple' as const,
-      icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-            d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-        </svg>
-      ),
-      onClick: () => navigate(ROUTES.TERMINAL),
-    },
-    {
-      id: 'analytics',
-      title: 'Analytics',
-      description: 'View insights',
-      color: 'warning' as const,
-      icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-        </svg>
-      ),
-      onClick: () => navigate(ROUTES.ANALYTICS),
-    },
-    {
-      id: 'team',
-      title: 'Team',
-      description: 'Manage team',
-      color: 'pink' as const,
-      icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-        </svg>
-      ),
-      onClick: () => navigate(ROUTES.TEAM),
-    },
-    {
-      id: 'docs',
-      title: 'Documentation',
-      description: 'Browse docs',
-      color: 'error' as const,
-      icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-        </svg>
-      ),
-      onClick: () => navigate(ROUTES.DOCUMENTATION),
-    },
-  ]
-
+const Dashboard: React.FC = () => {
   return (
     <div className="space-y-8">
-      {/* Welcome Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
-      >
-        <div>
-          <h1 className="text-3xl font-bold text-secondary-900">
-            {getGreeting()}, {userName}!
-          </h1>
-          <p className="text-secondary-600 mt-1">
-            Here's what's happening with your projects today.
-          </p>
+      {/* Welcome Section */}
+      <div>
+        <h1 className="text-3xl font-bold text-gray-900">Welcome back, Gonzalo 👋</h1>
+        <p className="text-gray-600 mt-2">Your comprehensive task management dashboard</p>
+      </div>
+
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Active Tasks */}
+        <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-blue-200 transition-all duration-200 transform hover:-translate-y-0.5">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Active Tasks</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">15</p>
+            </div>
+            <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center">
+              <ClipboardList className="w-6 h-6 text-blue-600" />
+            </div>
+          </div>
+          <div className="flex items-center text-sm">
+            <ArrowUpRight className="w-4 h-4 text-green-600 mr-1" />
+            <span className="text-green-600 font-medium">+2</span>
+            <span className="text-gray-500 ml-1">from yesterday</span>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-secondary-500">
-            {currentTime.toLocaleDateString('en-US', { 
-              weekday: 'long', 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric' 
-            })}
-          </span>
+
+        {/* Repositories */}
+        <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-green-200 transition-all duration-200 transform hover:-translate-y-0.5">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Repositories</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">8</p>
+            </div>
+            <div className="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center">
+              <GitBranch className="w-6 h-6 text-green-600" />
+            </div>
+          </div>
+          <div className="flex items-center text-sm">
+            <span className="text-green-600 font-medium">3 active</span>
+            <span className="text-gray-500 ml-1">deployments</span>
+          </div>
         </div>
-      </motion.div>
 
-      {/* Statistics Cards */}
-      <Grid cols={1} md={2} lg={4} gap={6}>
-        {statistics.map((stat, index) => (
-          <GridItem key={stat.title}>
-            <StatisticsCard {...stat} delay={index * 0.1} />
-          </GridItem>
-        ))}
-      </Grid>
+        {/* Team Members */}
+        <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-amber-200 transition-all duration-200 transform hover:-translate-y-0.5">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Team Members</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">3</p>
+            </div>
+            <div className="w-12 h-12 bg-amber-50 rounded-lg flex items-center justify-center">
+              <Users className="w-6 h-6 text-amber-600" />
+            </div>
+          </div>
+          <div className="flex items-center text-sm">
+            <span className="text-green-600 font-medium">2 online</span>
+            <span className="text-gray-500 ml-1">right now</span>
+          </div>
+        </div>
 
-      {/* Main Content Grid */}
-      <Grid cols={1} lg={3} gap={6}>
-        {/* Activity Timeline - 2 columns */}
-        <GridItem lg={2}>
-          <ActivityTimeline 
-            activities={activities} 
-            showLiveIndicator={isConnected}
-          />
-        </GridItem>
+        {/* Performance */}
+        <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-purple-200 transition-all duration-200 transform hover:-translate-y-0.5">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Performance</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">92%</p>
+            </div>
+            <div className="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center">
+              <TrendingUp className="w-6 h-6 text-green-600" />
+            </div>
+          </div>
+          <div className="flex items-center text-sm">
+            <ArrowUpRight className="w-4 h-4 text-green-600 mr-1" />
+            <span className="text-green-600 font-medium">+5%</span>
+            <span className="text-gray-500 ml-1">from last week</span>
+          </div>
+        </div>
+      </div>
 
-        {/* Project Health - 1 column */}
-        <GridItem>
-          <ProjectHealthIndicator {...projectHealth} />
-        </GridItem>
-      </Grid>
+      {/* Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Recent Activity */}
+        <div className="bg-white rounded-xl border border-gray-200 p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-semibold text-gray-900">Recent Activity</h2>
+            <button className="text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors flex items-center gap-1">
+              View All
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+          <div className="space-y-4">
+            <ActivityItem
+              icon={<Check className="w-4 h-4 text-green-600" />}
+              iconBg="bg-green-100"
+              title='Task "Fix navigation routing" completed'
+              time="2 minutes ago"
+            />
+            <ActivityItem
+              icon={<GitBranch className="w-4 h-4 text-blue-600" />}
+              iconBg="bg-blue-100"
+              title='Repository "taskmaster-ui" updated'
+              time="15 minutes ago"
+            />
+            <ActivityItem
+              icon={<AlertTriangle className="w-4 h-4 text-amber-600" />}
+              iconBg="bg-amber-100"
+              title='New task "Add routing" created'
+              time="1 hour ago"
+            />
+            <ActivityItem
+              icon={<CheckCircle2 className="w-4 h-4 text-green-600" />}
+              iconBg="bg-green-100"
+              title="PR #42 merged to main branch"
+              time="3 hours ago"
+            />
+          </div>
+        </div>
+
+        {/* Project Health */}
+        <div className="bg-white rounded-xl border border-gray-200 p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-semibold text-gray-900">Project Health</h2>
+            <button className="text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors">
+              View Details
+            </button>
+          </div>
+          <div className="space-y-5">
+            <HealthMetric label="Overall Health" value={85} color="success" />
+            <HealthMetric label="Task Completion" value={72} color="primary" />
+            <HealthMetric label="Code Quality" value={91} color="success" />
+            <HealthMetric label="Test Coverage" value={67} color="warning" />
+          </div>
+        </div>
+      </div>
 
       {/* Quick Actions */}
-      <QuickActions actions={quickActions} />
+      <div className="bg-white rounded-xl border border-gray-200 p-6">
+        <h2 className="text-xl font-semibold text-gray-900 mb-6">Quick Actions</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <QuickActionButton
+            icon={<Plus className="w-4 h-4 text-blue-600" />}
+            iconBg="bg-blue-100"
+            label="Create Task"
+          />
+          <QuickActionButton
+            icon={<GitBranch className="w-4 h-4 text-green-600" />}
+            iconBg="bg-green-100"
+            label="Add Repository"
+          />
+          <QuickActionButton
+            icon={<Code2 className="w-4 h-4 text-amber-600" />}
+            iconBg="bg-amber-100"
+            label="Open Terminal"
+          />
+          <QuickActionButton
+            icon={<BarChart3 className="w-4 h-4 text-purple-600" />}
+            iconBg="bg-purple-100"
+            label="View Analytics"
+          />
+        </div>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Dashboard
+// Activity Item Component
+const ActivityItem: React.FC<{
+  icon: React.ReactNode;
+  iconBg: string;
+  title: string;
+  time: string;
+}> = ({ icon, iconBg, title, time }) => {
+  return (
+    <div className="flex items-center gap-4">
+      <div className={`w-8 h-8 ${iconBg} rounded-full flex items-center justify-center flex-shrink-0`}>
+        {icon}
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-sm text-gray-900">{title}</p>
+        <p className="text-xs text-gray-500">{time}</p>
+      </div>
+    </div>
+  );
+};
+
+// Health Metric Component
+const HealthMetric: React.FC<{
+  label: string;
+  value: number;
+  color: 'primary' | 'success' | 'warning' | 'error';
+}> = ({ label, value, color }) => {
+  const getColorClasses = () => {
+    switch (color) {
+      case 'primary':
+        return {
+          text: 'text-blue-600',
+          bg: 'bg-blue-600'
+        };
+      case 'success':
+        return {
+          text: 'text-green-600',
+          bg: 'bg-green-600'
+        };
+      case 'warning':
+        return {
+          text: 'text-amber-600',
+          bg: 'bg-amber-600'
+        };
+      case 'error':
+        return {
+          text: 'text-red-600',
+          bg: 'bg-red-600'
+        };
+      default:
+        return {
+          text: 'text-gray-600',
+          bg: 'bg-gray-600'
+        };
+    }
+  };
+
+  const colors = getColorClasses();
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-sm text-gray-700">{label}</span>
+        <span className={`text-sm font-medium ${colors.text}`}>{value}%</span>
+      </div>
+      <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+        <div
+          className={`${colors.bg} h-2 rounded-full transition-all duration-500 ease-out`}
+          style={{ width: `${value}%` }}
+        />
+      </div>
+    </div>
+  );
+};
+
+// Quick Action Button Component
+const QuickActionButton: React.FC<{
+  icon: React.ReactNode;
+  iconBg: string;
+  label: string;
+}> = ({ icon, iconBg, label }) => {
+  return (
+    <button className="flex items-center gap-3 p-4 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 w-full">
+      <div className={`w-8 h-8 ${iconBg} rounded-lg flex items-center justify-center flex-shrink-0`}>
+        {icon}
+      </div>
+      <span className="text-sm font-medium text-gray-900">{label}</span>
+    </button>
+  );
+};
+
+export default Dashboard;

@@ -8,7 +8,7 @@ import type {
   TaskSortOptions,
   TaskBoardData,
 } from '../../types/task';
-import { useRealtimeTaskData } from '../../hooks/useRealtimeTaskData';
+import { useSimpleTaskData } from '../../hooks/useSimpleTaskData';
 import { useTaskUpdates } from '../../hooks/useTaskUpdates';
 import { useNotification } from '../../contexts/NotificationContext';
 import { taskService } from '../../services/taskService';
@@ -103,7 +103,7 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
     clear,
     requestRealtimeRefresh,
     toggleRealtime,
-  } = useRealtimeTaskData({
+  } = useSimpleTaskData({
     repositoryPath,
     projectTag,
     projectId,
@@ -446,7 +446,7 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
       <TaskBoard
         data={currentTaskBoardData || undefined}
         isLoading={isLoading || isUpdating}
-        error={error || updateError}
+        error={typeof error === 'string' ? error : error?.message || updateError}
         onTaskClick={handleTaskClick}
         onTaskMove={handleTaskMove}
         onCreateTask={handleCreateTask}

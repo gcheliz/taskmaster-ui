@@ -370,3 +370,31 @@ ssh -R 8080:localhost:6006 user@remote-server
 - **Document any WebFetch limitations encountered**
 
 **BREAKTHROUGH**: This solution enables Claude Code to actually see and verify web interfaces, solving the critical limitation of localhost access.
+
+## Common Issues and Solutions
+
+### HTML Parsing Error in Vite
+
+**Issue**: Vite throws "Unable to parse HTML; parse5 error code" when index.html has malformed content or escaped characters
+**Symptoms**: 
+- Error: `eof-in-tag` or `invalid-first-character-of-tag-name`
+- Frontend container shows as unhealthy
+- Application fails to load
+
+**Solution**:
+1. Check index.html for unclosed tags or escaped characters (e.g., `<\!--` instead of `<\!--`)
+2. Ensure all HTML tags are properly closed
+3. Fix escaped backslashes in comments or DOCTYPE declarations
+4. If using Docker, recreate the container after fixing:
+   ```bash
+   docker-compose stop frontend && docker-compose rm -f frontend && docker-compose up -d frontend
+   ```
+
+### Mockup Files Location
+
+**Location**: Mockup HTML files are stored in `/docs/ui-mockups/`
+**Access**: Copy to `/packages/frontend/public/` for serving via Vite
+```bash
+cp -r docs/ui-mockups/*.html packages/frontend/public/
+```
+**URLs**: Access at `http://localhost:5173/[filename].html`

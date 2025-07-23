@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 5173,
-    host: process.env.DOCKER_ENV === 'true' ? '0.0.0.0' : false, // Allow external access in Docker
+    host: true, // Allow all connections
     strictPort: false,
     proxy: {
       '/api': {

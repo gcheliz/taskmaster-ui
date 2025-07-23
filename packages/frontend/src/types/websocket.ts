@@ -87,6 +87,11 @@ export const WebSocketEventType = {
   COLLABORATION_START: 'collaboration:start',
   COLLABORATION_END: 'collaboration:end',
   BULK_UPDATE: 'bulk:update',
+  
+  // Additional Events
+  TASK_UPDATE: 'task-update',
+  REPOSITORY_SUBSCRIBE: 'repository:subscribe',
+  REPOSITORY_UNSUBSCRIBE: 'repository:unsubscribe',
 } as const;
 
 export type WebSocketEventType =

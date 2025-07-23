@@ -4,20 +4,24 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '../../utils/cn'
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center rounded-md text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+  'btn',
   {
     variants: {
       variant: {
         primary:
-          'bg-primary-500 text-white hover:bg-primary-600 active:bg-primary-700 focus-visible:ring-primary-500',
+          'btn-primary',
         secondary:
-          'bg-white text-secondary-700 border border-secondary-300 hover:bg-secondary-50 hover:border-secondary-400 active:bg-secondary-100 focus-visible:ring-secondary-500',
+          'btn-secondary',
         ghost:
-          'text-secondary-700 hover:bg-secondary-100 hover:text-secondary-900 active:bg-secondary-200 focus-visible:ring-secondary-500',
+          'text-gray-700 hover:bg-gray-100 hover:text-gray-900 active:bg-gray-200 focus:ring-gray-500',
         danger:
-          'bg-error-500 text-white hover:bg-error-600 active:bg-error-700 focus-visible:ring-error-500',
+          'bg-red-600 text-white hover:bg-red-700 active:bg-red-800 focus:ring-red-600 shadow-sm hover:shadow-md',
+        success:
+          'bg-green-600 text-white hover:bg-green-700 active:bg-green-800 focus:ring-green-600 shadow-sm hover:shadow-md',
+        warning:
+          'bg-amber-600 text-white hover:bg-amber-700 active:bg-amber-800 focus:ring-amber-600 shadow-sm hover:shadow-md',
         link:
-          'text-primary-500 underline-offset-4 hover:underline hover:text-primary-600 active:text-primary-700 focus-visible:ring-primary-500',
+          'text-blue-600 underline-offset-4 hover:underline hover:text-blue-700 active:text-blue-800 focus:ring-blue-600',
       },
       size: {
         sm: 'h-8 px-3 text-xs',
@@ -93,9 +97,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           </>
         ) : (
           <>
-            {leftIcon && <span className="mr-2">{leftIcon}</span>}
+            {leftIcon && <span className="mr-2 flex-shrink-0">{leftIcon}</span>}
             {children}
-            {rightIcon && <span className="ml-2">{rightIcon}</span>}
+            {rightIcon && <span className="ml-2 flex-shrink-0">{rightIcon}</span>}
           </>
         )}
       </button>

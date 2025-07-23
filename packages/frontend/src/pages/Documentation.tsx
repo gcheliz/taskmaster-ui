@@ -1,16 +1,15 @@
 import React from 'react'
-import { PageHeader } from '../components/layouts/PageHeader'
 
 const Documentation = () => {
   return (
     <>
-      <PageHeader
-        title="Documentation"
-        subtitle="Documentation page coming soon"
-      />
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-white">Documentation</h1>
+        <p className="text-slate-400 mt-2">Documentation page coming soon</p>
+      </div>
       
-      <div className="bg-white rounded-lg shadow p-6">
-        <p className="text-secondary-600">Documentation interface will be implemented here</p>
+      <div className="bg-slate-800 rounded-lg shadow border border-slate-700 p-6">
+        <p className="text-slate-400">Documentation interface will be implemented here</p>
       </div>
     </>
   )

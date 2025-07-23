@@ -1,6 +1,6 @@
 import { lazy, Suspense } from 'react'
 import type { RouteObject } from 'react-router-dom'
-import { Layout } from '../components/layouts'
+import { AppLayout } from '../components/Layout'
 import { LoadingScreen } from '../components/common/LoadingScreen'
 import { ProtectedRoute } from './ProtectedRoute'
 import { RoleGuard } from './RoleGuard'
@@ -20,7 +20,7 @@ export const routeConfig: RouteObject[] = [
     element: <ProtectedRoute />,
     children: [
       {
-        element: <Layout />,
+        element: <AppLayout />,
         children: [
           {
             index: true,

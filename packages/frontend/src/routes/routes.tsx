@@ -1,5 +1,5 @@
 import type { RouteObject } from 'react-router-dom'
-import { Layout, AuthLayout } from '../components/layouts'
+import { AppLayout } from '../components/Layout'
 import { ProtectedRoute } from './ProtectedRoute'
 import { lazy } from 'react'
 
@@ -27,7 +27,7 @@ export const routes: RouteObject[] = [
     element: <ProtectedRoute />,
     children: [
       {
-        element: <Layout />,
+        element: <AppLayout />,
         children: [
           {
             index: true,
@@ -84,7 +84,7 @@ export const routes: RouteObject[] = [
   },
   {
     path: '/auth',
-    element: <AuthLayout />,
+    element: <div className="min-h-screen bg-slate-950" />,
     children: [
       {
         path: 'login',

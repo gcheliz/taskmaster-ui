@@ -1,25 +1,18 @@
 import React from 'react';
 
-export interface FooterProps {
-  className?: string;
-}
-
-export const Footer: React.FC<FooterProps> = ({ className = '' }) => {
+export const Footer: React.FC = () => {
   return (
-    <footer className={`app-footer ${className}`.trim()} role="contentinfo">
-      <div className="footer-content">
-        <div className="footer-left">
-          <p>&copy; 2025 TaskMaster UI. All rights reserved.</p>
+    <footer className="bg-white border-t border-gray-200 px-6 py-3">
+      <div className="flex items-center justify-between text-sm">
+        <div className="text-gray-500">
+          © 2025 TaskMaster UI. All rights reserved.
         </div>
-        <div className="footer-center">
-          <span className="app-status" role="status" aria-live="polite">
-            Status: Online
-          </span>
-        </div>
-        <div className="footer-right">
-          <span className="app-version" aria-label="Application version 1.0.0">
-            v1.0.0
-          </span>
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
+            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+            <span className="text-gray-500">Status: Online</span>
+          </div>
+          <span className="text-gray-400">v1.0.0</span>
         </div>
       </div>
     </footer>

@@ -95,7 +95,7 @@ export function useRealtimeTaskData(
     setError(null);
 
     try {
-      const data = await taskService.getTasksForRepository(
+      const data = await taskService.loadTasksFromRepository(
         repositoryPath,
         projectTag
       );
@@ -104,7 +104,7 @@ export function useRealtimeTaskData(
         setTasksData(data);
         
         // Convert to board data
-        const board = taskService.convertToBoardData(
+        const board = taskService.createTaskBoard(
           data,
           filters,
           sortOptions
@@ -130,7 +130,7 @@ export function useRealtimeTaskData(
       (repoPath: string, tasks: any) => {
         if (repoPath === repositoryPath && isMountedRef.current) {
           setTasksData(tasks);
-          const board = taskService.convertToBoardData(
+          const board = taskService.createTaskBoard(
             tasks,
             filters,
             sortOptions
@@ -167,7 +167,7 @@ export function useRealtimeTaskData(
   // Apply filters/sort when they change
   useEffect(() => {
     if (tasksData) {
-      const board = taskService.convertToBoardData(
+      const board = taskService.createTaskBoard(
         tasksData,
         filters,
         sortOptions
@@ -189,7 +189,7 @@ export function useRealtimeTaskData(
       if (!repositoryPath) return;
 
       try {
-        await taskService.createTask(repositoryPath, task);
+        await taskService.createTask(task, projectTag);
         if (!enableRealtime) {
           await loadTasks();
         }
@@ -207,7 +207,7 @@ export function useRealtimeTaskData(
       if (!repositoryPath) return;
 
       try {
-        await taskService.updateTask(repositoryPath, taskId, updates);
+        await taskService.updateTask(parseInt(taskId), updates, projectTag);
         if (!enableRealtime) {
           await loadTasks();
         }
@@ -225,7 +225,7 @@ export function useRealtimeTaskData(
       if (!repositoryPath) return;
 
       try {
-        await taskService.deleteTask(repositoryPath, taskId);
+        await taskService.deleteTask(parseInt(taskId), projectTag);
         if (!enableRealtime) {
           await loadTasks();
         }
@@ -243,11 +243,11 @@ export function useRealtimeTaskData(
       if (!repositoryPath) return;
 
       try {
-        await taskService.moveTask(
-          repositoryPath,
-          taskId,
-          targetColumn,
-          targetIndex
+        // Update task status based on target column
+        await taskService.updateTaskStatus(
+          parseInt(taskId),
+          targetColumn as any,
+          projectTag
         );
         if (!enableRealtime) {
           await loadTasks();

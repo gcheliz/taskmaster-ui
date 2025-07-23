@@ -4,13 +4,13 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '../../utils/cn'
 
 const cardVariants = cva(
-  'rounded-lg bg-white transition-all duration-200',
+  'stat-card',
   {
     variants: {
       variant: {
-        elevated: 'border border-secondary-200 shadow-lg hover:shadow-xl',
-        outlined: 'border border-secondary-200',
-        filled: 'bg-secondary-50 border border-secondary-200',
+        elevated: '',
+        outlined: 'shadow-none hover:shadow-none',
+        filled: 'bg-gray-50',
       },
       padding: {
         none: '',
@@ -69,7 +69,7 @@ const CardTitle = forwardRef<HTMLHeadingElement, CardTitleProps>(
     return (
       <Component
         ref={ref}
-        className={cn('text-xl font-semibold text-secondary-900', className)}
+        className={cn('text-xl font-semibold text-gray-900', className)}
         {...props}
       />
     )
@@ -85,7 +85,7 @@ const CardDescription = forwardRef<HTMLParagraphElement, CardDescriptionProps>(
     return (
       <p
         ref={ref}
-        className={cn('text-sm text-secondary-600', className)}
+        className={cn('text-sm text-gray-600', className)}
         {...props}
       />
     )
@@ -101,7 +101,7 @@ const CardContent = forwardRef<HTMLDivElement, CardContentProps>(
     return (
       <div
         ref={ref}
-        className={cn('text-secondary-700', className)}
+        className={cn('text-gray-700', className)}
         {...props}
       />
     )

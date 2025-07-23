@@ -4,17 +4,18 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '../../utils/cn'
 
 const badgeVariants = cva(
-  'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium transition-colors',
+  'badge',
   {
     variants: {
       variant: {
-        default: 'bg-primary-100 text-primary-700',
-        secondary: 'bg-secondary-100 text-secondary-700',
-        success: 'bg-success-100 text-success-700',
-        warning: 'bg-warning-100 text-warning-700',
-        error: 'bg-error-100 text-error-700',
-        info: 'bg-info-100 text-info-700',
-        outline: 'border border-secondary-300 text-secondary-700',
+        default: 'badge-blue',
+        secondary: 'badge-gray',
+        success: 'badge-green',
+        warning: 'badge-yellow',
+        error: 'badge-red',
+        info: 'bg-cyan-100 text-cyan-800',
+        purple: 'bg-purple-100 text-purple-800',
+        outline: 'border border-gray-300 text-gray-700',
       },
       size: {
         sm: 'px-2 py-0.5 text-xs',
@@ -49,15 +50,17 @@ Badge.displayName = 'Badge'
 
 // Status badge variants for task statuses
 const statusBadgeVariants = cva(
-  'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium',
+  'badge',
   {
     variants: {
       status: {
-        pending: 'bg-status-pending text-white',
-        'in-progress': 'bg-status-in-progress text-white',
-        done: 'bg-status-done text-white',
-        blocked: 'bg-status-blocked text-white',
-        deferred: 'bg-status-deferred text-white',
+        pending: 'status-pending',
+        'in-progress': 'status-in-progress',
+        done: 'status-done',
+        blocked: 'badge-red',
+        deferred: 'badge-yellow',
+        review: 'status-review',
+        testing: 'status-testing',
       },
     },
     defaultVariants: {
@@ -86,13 +89,13 @@ StatusBadge.displayName = 'StatusBadge'
 
 // Priority badge variants
 const priorityBadgeVariants = cva(
-  'inline-flex items-center rounded-md border-l-4 px-2.5 py-0.5 text-xs font-medium',
+  'badge',
   {
     variants: {
       priority: {
-        low: 'border-priority-low bg-priority-low/10 text-priority-low',
-        medium: 'border-priority-medium bg-priority-medium/10 text-priority-medium',
-        high: 'border-priority-high bg-priority-high/10 text-priority-high',
+        low: 'priority-low bg-gray-50 text-gray-700',
+        medium: 'priority-medium bg-amber-50 text-amber-700',
+        high: 'priority-high bg-red-50 text-red-700',
       },
     },
     defaultVariants: {

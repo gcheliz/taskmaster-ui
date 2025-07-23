@@ -1,7 +1,7 @@
 import { useEffect, useCallback, useRef } from 'react';
 import { useNotification } from '../contexts/NotificationContext';
 import { useWebSocket } from './useWebSocket';
-import { WebSocketState } from '../types/websocket';
+import { WebSocketState, WebSocketEventType } from '../types/websocket';
 
 interface TaskSyncMessage {
   type: string;
@@ -174,7 +174,7 @@ export const useWebSocketTaskUpdates = (
   useEffect(() => {
     if (!isConnected) return;
 
-    const unsubscribe = subscribe('task-update', handleTaskUpdate);
+    const unsubscribe = subscribe(WebSocketEventType.TASK_UPDATE, handleTaskUpdate);
     
     log('Subscribed to task updates');
 
@@ -189,8 +189,9 @@ export const useWebSocketTaskUpdates = (
     (repoPath: string) => {
       if (isConnected) {
         send({
-          type: 'repository:subscribe',
+          type: WebSocketEventType.REPOSITORY_SUBSCRIBE,
           payload: { repositoryPath: repoPath },
+          timestamp: new Date().toISOString(),
         });
         log(`Subscribed to repository: ${repoPath}`);
       }
@@ -202,8 +203,9 @@ export const useWebSocketTaskUpdates = (
     (repoPath: string) => {
       if (isConnected) {
         send({
-          type: 'repository:unsubscribe',
+          type: WebSocketEventType.REPOSITORY_UNSUBSCRIBE,
           payload: { repositoryPath: repoPath },
+          timestamp: new Date().toISOString(),
         });
         log(`Unsubscribed from repository: ${repoPath}`);
       }

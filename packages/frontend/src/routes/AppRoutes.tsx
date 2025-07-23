@@ -1,9 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
-// import { SimpleDashboardView } from '../components/Views/SimpleDashboardView';
-import Dashboard from '../pages/Dashboard'
+import DashboardIntegrated from '../pages/DashboardIntegrated'
 import Settings from '../pages/Settings'
-import TaskBoard from '../pages/TaskBoard'
-import TaskBoardSimple from '../pages/TaskBoardSimple'
+import { TaskBoardView } from '../components/Views/TaskBoardView'
 import Repository from '../pages/Repository'
 import Terminal from '../pages/Terminal'
 import TestPage from '../pages/TestPage'
@@ -18,7 +16,7 @@ export function AppRoutes() {
     <RouteErrorBoundary>
       <Routes>
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/dashboard" element={<DashboardIntegrated />} />
         <Route
           path="/repository-management"
           element={
@@ -31,7 +29,7 @@ export function AppRoutes() {
           path="/task-board"
           element={
             <RouteErrorBoundary>
-              <TaskBoard />
+              <TaskBoardView />
             </RouteErrorBoundary>
           }
         />
@@ -45,7 +43,6 @@ export function AppRoutes() {
         />
         <Route path="/settings" element={<Settings />} />
         <Route path="/test" element={<TestPage />} />
-        <Route path="/task-board-simple" element={<TaskBoardSimple />} />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </RouteErrorBoundary>

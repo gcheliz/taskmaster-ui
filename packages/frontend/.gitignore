@@ -25,3 +25,7 @@ dist-ssr
 
 *storybook.log
 storybook-static
+
+# Static HTML files (should not be in React app)
+public/*.html
+public/**/*.html

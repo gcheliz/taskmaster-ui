@@ -6,19 +6,13 @@ import { ProtectedRoute } from './ProtectedRoute'
 import { RoleGuard } from './RoleGuard'
 
 // Lazy load all route components
-const SimpleDashboardView = lazy(() =>
-  import('../components/Views/SimpleDashboardView').then((m) => ({
-    default: m.SimpleDashboardView,
-  }))
+const DashboardIntegrated = lazy(() => import('../pages/DashboardIntegrated'))
+const RepositoryPage = lazy(() => import('../pages/Repository'))
+const TaskBoardView = lazy(() =>
+  import('../components/Views/TaskBoardView').then((m) => ({ default: m.TaskBoardView }))
 )
-const SimpleRepositoryView = lazy(() =>
-  import('../components/Views/SimpleRepositoryView').then((m) => ({
-    default: m.SimpleRepositoryView,
-  }))
-)
-const TaskBoard = lazy(() => import('../pages/TaskBoard'))
-const SimpleTerminalView = lazy(() =>
-  import('../components/Views/SimpleTerminalView').then((m) => ({ default: m.SimpleTerminalView }))
+const TerminalView = lazy(() =>
+  import('../components/Views/TerminalView').then((m) => ({ default: m.TerminalView }))
 )
 const LoginPage = lazy(() => import('../pages/Login'))
 const NotFoundPage = lazy(() => import('../pages/NotFound'))
@@ -34,17 +28,17 @@ export const routeConfig: RouteObject[] = [
         children: [
           {
             index: true,
-            element: <SimpleDashboardView />,
+            element: <DashboardIntegrated />,
           },
           {
             path: 'dashboard',
-            element: <SimpleDashboardView />,
+            element: <DashboardIntegrated />,
           },
           {
             path: 'repository-management',
             element: (
               <Suspense fallback={<LoadingScreen message="Loading repositories..." />}>
-                <SimpleRepositoryView />
+                <RepositoryPage />
               </Suspense>
             ),
           },
@@ -52,7 +46,7 @@ export const routeConfig: RouteObject[] = [
             path: 'task-board',
             element: (
               <Suspense fallback={<LoadingScreen message="Loading tasks..." />}>
-                <TaskBoard />
+                <TaskBoardView />
               </Suspense>
             ),
           },
@@ -60,7 +54,7 @@ export const routeConfig: RouteObject[] = [
             path: 'terminal',
             element: (
               <Suspense fallback={<LoadingScreen message="Loading terminal..." />}>
-                <SimpleTerminalView />
+                <TerminalView />
               </Suspense>
             ),
           },

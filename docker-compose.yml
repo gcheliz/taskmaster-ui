@@ -81,7 +81,7 @@ services:
     container_name: taskmaster-frontend
     build:
       context: .
-      dockerfile: packages/frontend/Dockerfile
+      dockerfile: packages/frontend/Dockerfile.fixed
       target: development
     environment:
       - VITE_API_URL=http://localhost:3001
@@ -89,42 +89,24 @@ services:
       - VITE_NODE_ENV=development
       - DOCKER_ENV=true
     ports:
-      - "5173:3000"
+      - "5173:5173"
     volumes:
-      - ./packages/frontend/src:/app/packages/frontend/src:ro
-      - ./packages/frontend/public:/app/packages/frontend/public:ro
-      - ./packages/frontend/package.json:/app/packages/frontend/package.json:ro
-      - ./packages/frontend/vite.config.ts:/app/packages/frontend/vite.config.ts:ro
-      - ./packages/frontend/tsconfig.json:/app/packages/frontend/tsconfig.json:ro
-      - ./packages/frontend/tsconfig.app.json:/app/packages/frontend/tsconfig.app.json:ro
-      - ./packages/frontend/tsconfig.node.json:/app/packages/frontend/tsconfig.node.json:ro
-      - ./packages/frontend/index.html:/app/packages/frontend/index.html:ro
-      - frontend_node_modules:/app/packages/frontend/node_modules
+      - ./packages/frontend/src:/app/packages/frontend/src:cached
+      - ./packages/frontend/public:/app/packages/frontend/public:cached
+      - ./packages/frontend/index.html:/app/packages/frontend/index.html:cached
+      - ./packages/frontend/vite.config.ts:/app/packages/frontend/vite.config.ts:cached
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
+    networks:
+      - taskmaster-network
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:3000 || exit 1"]
+      test: ["CMD-SHELL", "curl -f http://localhost:5173 || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 30s
     restart: unless-stopped
-    networks:
-      - taskmaster-network
-    develop:
-      watch:
-        - action: sync
-          path: ./packages/frontend/src
-          target: /app/packages/frontend/src
-        - action: sync
-          path: ./packages/frontend/public
-          target: /app/packages/frontend/public
-        - action: rebuild
-          path: ./packages/frontend/package.json
-        - action: rebuild
-          path: ./packages/frontend/vite.config.ts
-        - action: rebuild
-          path: ./packages/frontend/Dockerfile
 
   # Storybook Development Server
   storybook:

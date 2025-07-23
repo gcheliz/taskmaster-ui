@@ -1,0 +1,37 @@
+# Task ID: 52
+# Title: Component Library: Create Atomic Dark Theme Components
+# Status: done
+# Dependencies: 51
+# Priority: high
+# Description: Develop responsive, interactive, and accessible atomic components (Atoms) for the dark theme, ensuring WCAG 2.1 AA compliance and documenting them in Storybook.
+# Details:
+Create dark-theme versions of Buttons, Cards, Form Elements, Navigation, Icons (Heroicons), and Badges. All components must be fully responsive using a mobile-first approach. Implement subtle micro-interactions and animations for state changes (e.g., hover, focus, active). Ensure all components meet WCAG 2.1 AA accessibility standards. For each component, create a Storybook story with interactive controls and accessibility checks.
+
+# Test Strategy:
+Unit tests for each component's props and states. Visual regression testing via Storybook across multiple breakpoints (mobile, tablet, desktop). Automated accessibility testing (e.g., axe-core) in Storybook and manual testing (keyboard navigation, screen readers) to ensure WCAG 2.1 AA compliance. Test animations and interactions for performance and clarity.
+
+# Subtasks:
+## 1. Develop Responsive Dark Theme Button and Badge Components with Micro-interactions [done]
+### Dependencies: None
+### Description: Create responsive dark theme versions of Button and Badge components. Implement micro-interactions for all states and ensure WCAG 2.1 AA compliance. Document in Storybook.
+### Details:
+Implement dark theme styles for all Button and Badge variants. Ensure components are responsive and adapt to different screen sizes. Add subtle animations/transitions for hover, focus, and active states. All components must meet WCAG 2.1 AA contrast and focus visibility requirements. Create comprehensive Storybook stories with interactive controls and automated accessibility checks.
+
+## 2. Develop Responsive and Accessible Dark Theme Form Elements [done]
+### Dependencies: None
+### Description: Create responsive and accessible dark theme versions of core form elements (Input, Textarea, Select, Checkbox, Radio). Implement clear visual feedback and micro-interactions. Document in Storybook.
+### Details:
+Develop responsive, mobile-first dark theme styles for all form elements. Implement micro-interactions for focus and validation states (e.g., error, success). Ensure all elements are fully accessible, meeting WCAG 2.1 AA standards for labels, focus indicators, and ARIA attributes. Each component must have a Storybook story with interactive controls and accessibility checks.
+
+## 3. Develop Interactive Dark Theme Card with Drag-and-Drop and Icon Components [done]
+### Dependencies: None
+### Description: Create a responsive dark theme Card component with support for drag-and-drop functionality. Integrate and style Heroicons for dark mode. Document both in Storybook.
+### Details:
+Design and build a flexible, responsive Card component with dark theme styles. Implement drag-and-drop functionality for use in board layouts, including visual states for dragging and dropping. Add subtle animations for hover and selection. Integrate the Heroicons library, ensuring icons are correctly styled for the dark theme. Document card layouts, drag-and-drop usage, and icon integration in Storybook.
+
+## 4. Develop Responsive and Animated Dark Theme Navigation Components [done]
+### Dependencies: 52.3
+### Description: Create responsive dark theme versions of atomic navigation components (e.g., NavLink, Tab, BreadcrumbLink) with smooth transitions and animations. Document in Storybook.
+### Details:
+Develop responsive, mobile-first dark theme styles for navigation elements. Implement micro-interactions and smooth animations for state changes (hover, focus, active/current). Ensure all components meet WCAG 2.1 AA contrast and keyboard navigation requirements. Create Storybook stories demonstrating responsive patterns (e.g., tabs collapsing into a dropdown on mobile) and states.
+

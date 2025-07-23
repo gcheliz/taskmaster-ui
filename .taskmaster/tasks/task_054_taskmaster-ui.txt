@@ -1,0 +1,37 @@
+# Task ID: 54
+# Title: Page Migration: Implement Kanban Task Board
+# Status: done
+# Dependencies: 52
+# Priority: high
+# Description: Transform the current task list into an advanced Kanban board with 5 columns (To Do, In Progress, Review, Testing, Done), advanced drag-and-drop, and rich metadata display on task cards.
+# Details:
+Implement a 5-column Kanban layout (To Do, In Progress, Review, Testing, Done) with horizontal scrolling. Develop draggable task cards with visual feedback during drag operations. Cards must display priority borders, complexity indicators, user assignment avatars, and progress tracking. Implement search and filter functionality. Ensure real-time collaboration updates and full keyboard accessibility for drag-and-drop.
+
+# Test Strategy:
+Unit test the drag-and-drop logic. Integration tests for state updates. End-to-end tests simulating a user organizing tasks. Manual keyboard accessibility testing. Visual regression tests for card metadata display and board layout.
+
+# Subtasks:
+## 1. Create Kanban Board Layout and Static Task Cards [done]
+### Dependencies: None
+### Description: Develop the foundational UI for the Kanban board, including the 5-column layout with horizontal scrolling and static task cards displaying all required metadata.
+### Details:
+Implement the 5-column structure for the Kanban board: 'To Do', 'In Progress', 'Review', 'Testing', and 'Done', ensuring the layout supports horizontal scrolling. Create the React component for task cards, ensuring it correctly displays static data for priority (as a colored border), complexity indicators, assigned user avatars, and progress tracking. This subtask focuses on the visual structure before interactivity is added.
+
+## 2. Implement Advanced Drag-and-Drop with Visual Feedback and Keyboard Accessibility [done]
+### Dependencies: 54.1
+### Description: Enable users to move task cards between columns using both mouse-based drag-and-drop and full keyboard controls, providing clear visual feedback during the interaction.
+### Details:
+Integrate a drag-and-drop library (e.g., dnd-kit) to handle card movement. Implement visual feedback, such as a ghost element or placeholder, during the drag operation. Update the task's status and position in the local state upon a successful drop. Ensure full keyboard accessibility for these interactions (e.g., using Tab to focus, Spacebar to lift/drop, and Arrow Keys to move between columns).
+
+## 3. Integrate Real-Time Collaboration via WebSockets [done]
+### Dependencies: 54.2
+### Description: Implement real-time synchronization to ensure that all changes made to the Kanban board are instantly reflected for all concurrently active users.
+### Details:
+Establish a WebSocket connection to the backend. When a user moves a task, an event containing the task ID and new status/column will be emitted to the server. The client will listen for broadcasted events from the server and update the UI dynamically to reflect changes made by other users without a page refresh.
+
+## 4. Develop Search and Filter Functionality [done]
+### Dependencies: 54.1
+### Description: Implement UI controls to allow users to search for specific tasks and filter the displayed cards based on metadata like priority, assignee, or complexity.
+### Details:
+Add a text input field for real-time searching of task titles and descriptions. Implement a set of filter controls (e.g., dropdowns or multi-selects) for filtering by priority, complexity, and assigned user. The board view must dynamically update to show only the tasks that match the active search and filter criteria.
+

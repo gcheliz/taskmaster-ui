@@ -1,0 +1,37 @@
+# Task ID: 51
+# Title: Foundation: Implement Dark Theme Design System Core
+# Status: done
+# Dependencies: None
+# Priority: high
+# Description: Configure the foundational elements of the new dark theme design system, including the color palette, typography, and base theme structure.
+# Details:
+Integrate the new color palette (slate, accent colors) into the Tailwind CSS configuration file. Set up the typography system with Inter and JetBrains Mono fonts and defined text scales. Establish the base theme system using CSS Custom Properties and a React context for theme management.
+
+# Test Strategy:
+Verify Tailwind config by applying new color classes to basic elements. Use Storybook to visually confirm font loading and text scales. Unit test the theme context provider to ensure it provides the correct theme values.
+
+# Subtasks:
+## 1. Configure Tailwind CSS with Dark Theme Color Palette [done]
+### Dependencies: None
+### Description: Integrate the specified slate and accent color palettes into the Tailwind CSS configuration file to make them available as utility classes for the dark theme.
+### Details:
+Extend the `theme.colors` object in the `tailwind.config.js` file. Add the full slate palette and the defined accent colors, ensuring they are correctly named and accessible for use throughout the application.
+
+## 2. Set Up Typography System with Custom Fonts and Scales [done]
+### Dependencies: None
+### Description: Configure the project to use the Inter and JetBrains Mono fonts and define the typographic scale in the Tailwind CSS configuration.
+### Details:
+Add the Inter (sans-serif) and JetBrains Mono (monospace) font files to the project or link them via a font service in the main HTML file. Update `tailwind.config.js` to define `fontFamily` for 'sans' and 'mono' stacks. Configure the `fontSize` theme object with the required text scales (e.g., sm, base, lg, xl).
+
+## 3. Define Base Theme Structure with CSS Custom Properties [done]
+### Dependencies: 51.1
+### Description: Establish the core theme structure by defining semantic CSS Custom Properties for colors, which will serve as the foundation for the theme system.
+### Details:
+In a global CSS file, define a `:root` or `[data-theme='dark']` selector. Inside this selector, map the newly configured Tailwind colors to semantic CSS variables (e.g., `--color-background: theme('colors.slate.900');`, `--color-text-primary: theme('colors.slate.100');`, `--color-accent: theme('colors.accent.500');`).
+
+## 4. Implement React Context for Theme Management [done]
+### Dependencies: 51.3
+### Description: Create a React Context and Provider to manage the application's theme state and apply the corresponding data attribute to the root element.
+### Details:
+Develop a `ThemeContext` and `ThemeProvider` component. The provider will manage the current theme state (e.g., 'dark') and apply a `data-theme='dark'` attribute to the `<html>` or `<body>` element. This will activate the CSS Custom Properties defined in the previous subtask.
+

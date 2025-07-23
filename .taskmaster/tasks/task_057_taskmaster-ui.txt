@@ -1,0 +1,37 @@
+# Task ID: 57
+# Title: Enhancement: Overhaul Settings and Authentication Pages
+# Status: done
+# Dependencies: 52
+# Priority: high
+# Description: Modernize the Settings and Authentication (Login/Registration) pages with new UI, features, and third-party integrations.
+# Details:
+For Settings, create a categorized layout with toggles and forms for integrations. For Authentication, implement a tabbed UI, social logins (GitHub, Google) via OAuth, and a password strength indicator. Apply glassmorphism effects as specified.
+
+# Test Strategy:
+Integration tests for OAuth flows with mocked providers. End-to-end tests for the sign-up and sign-in process. Unit tests for form validation and the password strength checker. Test settings persistence.
+
+# Subtasks:
+## 1. Build Authentication Page UI with Tabbed Layout and Glassmorphism [done]
+### Dependencies: None
+### Description: Develop the front-end for the Login and Registration pages, implementing a tabbed UI to switch between them and applying the specified glassmorphism visual effect.
+### Details:
+Create the HTML/CSS structure for the authentication container. Implement a tab component for switching between Login and Registration forms. Style all page elements, including forms, inputs, and buttons, ensuring the glassmorphism effect is correctly applied as per the design specifications.
+
+## 2. Integrate OAuth Social Logins and Password Strength Indicator [done]
+### Dependencies: 57.1
+### Description: Implement the backend and frontend logic for social logins via OAuth 2.0 for Google and GitHub, and add a real-time password strength indicator to the registration form.
+### Details:
+Set up OAuth 2.0 client applications with Google and GitHub. Implement the server-side endpoints and client-side logic for the complete OAuth flow (redirect, callback, token exchange). Integrate a password strength checking library into the registration form to provide real-time visual feedback.
+
+## 3. Develop Categorized Settings Page UI with Forms and Toggles [done]
+### Dependencies: 57.2
+### Description: Create the user interface for the new Settings page, organizing options into logical categories (e.g., Profile, Integrations) and applying the glassmorphism design.
+### Details:
+Structure the Settings page into distinct, expandable sections. Build the reusable form and toggle components needed for these sections. Apply the specified glassmorphism effect to section containers. This subtask focuses on the front-end layout and components, which will be connected to the backend in a subsequent task.
+
+## 4. Implement Settings Persistence and Integration Logic [done]
+### Dependencies: 57.3
+### Description: Connect the Settings page UI to the backend to enable saving and retrieving user settings, ensuring changes are persisted across sessions.
+### Details:
+Create API endpoints (e.g., PUT /api/settings, GET /api/settings) to handle user settings updates and retrieval. Wire up the front-end components from the previous subtask to these endpoints. Ensure that when a user changes a setting, the change is sent to the server and saved. The page must load with the user's previously saved settings.
+

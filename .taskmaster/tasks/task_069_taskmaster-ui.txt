@@ -1,0 +1,55 @@
+# Task ID: 69
+# Title: Terminal Integration: Embedded TaskMaster CLI
+# Status: pending
+# Dependencies: 65
+# Priority: medium
+# Description: Implement fully functional terminal emulator using Xterm.js with TaskMaster CLI integration and advanced features.
+# Details:
+- Integrate Xterm.js for terminal emulation
+- Setup WebSocket connection for command execution
+- Implement proper stdout/stderr handling and display
+- Create command history sidebar with search functionality
+- Add quick command shortcuts bar for common operations
+- Implement macOS-style window controls (minimize, maximize, close)
+- Add syntax highlighting for output using ANSI colors
+- Support copy/paste with keyboard shortcuts (Cmd+C, Cmd+V)
+- Implement session management with multiple tabs
+- Add terminal resize handling and responsive sizing
+- Create command autocomplete functionality
+- Store command history in localStorage
+- Add export session log functionality
+
+# Test Strategy:
+
+
+# Subtasks:
+## 1. Xterm.js Terminal Emulator Setup [pending]
+### Dependencies: None
+### Description: Set up Xterm.js terminal emulator with proper configuration, styling, and event handling. Implement terminal initialization, theme configuration (dark/light mode support), resize handling, and basic terminal controls (clear, reset, font size adjustment).
+### Details:
+
+
+## 2. TaskMaster CLI Command Integration [pending]
+### Dependencies: None
+### Description: Integrate TaskMaster CLI commands with the terminal emulator. Implement command parsing, execution via child processes or WebSocket connection, real-time output streaming, error handling, and command validation. Support all TaskMaster CLI commands with proper argument handling.
+### Details:
+
+
+## 3. Command History and Autocomplete [pending]
+### Dependencies: None
+### Description: Implement command history tracking with persistent storage, search functionality, and intelligent autocomplete. Add arrow key navigation through history, fuzzy search for previous commands, context-aware suggestions based on TaskMaster CLI commands, and tab completion support.
+### Details:
+
+
+## 4. Terminal Session Management [pending]
+### Dependencies: None
+### Description: Create terminal session management with support for multiple tabs, session persistence across page reloads, session export/import functionality, workspace saving, and session restoration. Implement tab management UI with rename, close, and reorder capabilities.
+### Details:
+
+
+## 5. Quick Command Shortcuts and UI Controls [pending]
+### Dependencies: None
+### Description: Build quick command shortcuts bar with customizable buttons for frequent TaskMaster commands. Implement terminal toolbar with font size controls, theme toggle, fullscreen mode, export logs, and search functionality. Add keyboard shortcuts overlay and command palette integration.
+### Details:
+
+

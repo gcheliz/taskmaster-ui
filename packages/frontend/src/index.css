@@ -1,1 +1,6 @@
+/* Import design tokens and base styles */
+@import './styles/design-tokens.css';
+@import './styles/base.css';
+
+/* Import Tailwind CSS */
 @import 'tailwindcss';

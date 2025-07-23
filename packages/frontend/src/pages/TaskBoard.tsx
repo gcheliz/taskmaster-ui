@@ -105,7 +105,6 @@ const TaskBoardContext = React.createContext<{
   handleTaskClick: (task: Task) => void;
   handleTaskEdit: (task: Task, e: React.MouseEvent) => void;
   isDraggingRef: React.MutableRefObject<boolean>;
-  handleTaskDelete?: (task: Task) => void;
 } | null>(null);
 
 const TaskBoard: React.FC = () => {
@@ -236,7 +235,7 @@ const TaskBoard: React.FC = () => {
   // WebSocket integration
   const { state: wsState, isConnected, error: wsError } = useWebSocket({
     url: process.env.VITE_WS_URL || 'ws://localhost:3001',
-    autoConnect: false, // Disable auto-connect for now
+    autoConnect: true,
     user: {
       id: 'user-1',
       name: 'Gonzalo',
@@ -499,124 +498,67 @@ const TaskBoard: React.FC = () => {
 
   // Handle task save from modal
   const handleTaskSave = async (taskData: Partial<LocalTask>) => {
-    // Convert LocalTask to Task format
-    const taskUpdate: Partial<Task> = {
-      title: taskData.title,
-      description: taskData.description || '',
-      priority: taskData.priority as Task['priority'],
-      assignee: taskData.assignedTo ? {
-        name: taskData.assignedTo,
-        initials: taskData.assignedTo.split(' ').map(n => n[0]).join('').toUpperCase(),
-        color: 'bg-blue-600' // Default color, could be mapped from user data
-      } : {
-        name: 'Unassigned',
-        initials: 'NA',
-        color: 'bg-gray-400'
-      }
-    };
-
-    if (modalMode === 'edit' && selectedTask) {
-      // Update existing task
-      const taskId = selectedTask.id.toString();
-      if (isConnected) {
-        updateTask(taskId, convertToWebSocketTask(taskUpdate as Task));
-      }
-    } else {
-      // Create new task - for now, just add to todo column
+    if (modalMode === 'create') {
+      // Create new task
       const newTask: Task = {
-        ...taskUpdate as Task,
         id: Date.now().toString(),
-        column: 'todo',
-        position: columns.find(col => col.id === 'todo')?.tasks.length || 0,
-        complexity: 5, // Default complexity
+        title: taskData.title || 'New Task',
+        description: taskData.description || '',
+        priority: (taskData.priority || 'medium') as Task['priority'],
+        complexity: 5,
+        assignee: taskData.assignedTo ? {
+          name: taskData.assignedTo,
+          initials: taskData.assignedTo.split(' ').map(n => n[0]).join('').toUpperCase(),
+          color: 'bg-' + ['blue', 'green', 'purple', 'amber', 'red'][Math.floor(Math.random() * 5)] + '-600',
+        } : {
+          name: 'Unassigned',
+          initials: 'NA',
+          color: 'bg-gray-400'
+        },
+        column: taskData.status === 'pending' ? 'todo' : taskData.status === 'in-progress' ? 'in-progress' : 'done',
+        position: 0, // Position will be managed by drag and drop
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       };
       
-      // Add to local state
-      setColumns(prevColumns => 
-        prevColumns.map(col => 
-          col.id === 'todo' 
-            ? { ...col, tasks: [...col.tasks, newTask] }
-            : col
-        )
-      );
+      // Send WebSocket update
+      if (isConnected && updateTask) {
+        const wsTask = convertToWebSocketTask(newTask);
+        updateTask(newTask.id, wsTask);
+      }
+    } else if (modalMode === 'edit' && selectedTask) {
+      // Update existing task
+      const taskToUpdate = tasks.find(t => t.id === selectedTask.id.toString());
+      if (taskToUpdate && isConnected && updateTask) {
+        const updates: Partial<WebSocketTask> = {
+          title: taskData.title,
+          description: taskData.description,
+          priority: taskData.priority as WebSocketTask['priority'],
+          assignee: taskData.assignedTo ? {
+            id: taskData.assignedTo.toLowerCase().replace(/\s/g, '-'),
+            name: taskData.assignedTo,
+            email: `${taskData.assignedTo.toLowerCase().replace(/\s/g, '.')}@example.com`,
+            color: taskToUpdate.assignee?.color
+          } : undefined,
+        };
+        
+        updateTask(selectedTask.id.toString(), updates);
+      }
     }
-    
-    if (isMobile) {
-      setShowBottomSheet(false);
-    } else {
-      setIsModalOpen(false);
+    setIsModalOpen(false);
+  };
+
+  // Handle task delete from modal
+  const handleTaskDelete = async (taskId: number) => {
+    // In a real app, this would call the WebSocket deleteTask method
+    // For now, we'll just update the task to a 'deleted' status
+    if (isConnected && updateTask) {
+      updateTask(taskId.toString(), { status: 'deferred' as WebSocketTask['status'] });
     }
+    setIsModalOpen(false);
   };
 
-  // Handle task deletion
-  const handleTaskDelete = async () => {
-    if (!selectedTask) return;
-    
-    // Remove from local state
-    setColumns(prevColumns => 
-      prevColumns.map(col => ({
-        ...col,
-        tasks: col.tasks.filter(t => t.id !== selectedTask.id.toString())
-      }))
-    );
-    
-    if (isMobile) {
-      setShowBottomSheet(false);
-    } else {
-      setIsModalOpen(false);
-    }
-  };
-
-  // Handle quick task delete (for swipe action)
-  const handleQuickTaskDelete = (task: Task) => {
-    // Remove from local state
-    setColumns(prevColumns => 
-      prevColumns.map(col => ({
-        ...col,
-        tasks: col.tasks.filter(t => t.id !== task.id)
-      }))
-    );
-    setSwipedCardId(null);
-  };
-
-  // Handle filter toggle
-  const toggleFilter = (type: keyof FilterOptions, value: string) => {
-    setFilters(prev => {
-      const currentValues = prev[type];
-      const isSelected = currentValues.includes(value);
-      
-      return {
-        ...prev,
-        [type]: isSelected 
-          ? currentValues.filter(v => v !== value)
-          : [...currentValues, value]
-      };
-    });
-  };
-
-  // Handle sort change
-  const handleSortChange = (option: SortOption) => {
-    if (sortBy === option) {
-      setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortBy(option);
-      setSortDirection('desc');
-    }
-    setShowSortMenu(false);
-  };
-
-  // Clear all filters
-  const clearFilters = () => {
-    setFilters({
-      priorities: [],
-      assignees: [],
-      columns: []
-    });
-  };
-
-  // Close menus when clicking outside
+  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
@@ -670,13 +612,13 @@ const TaskBoard: React.FC = () => {
   return (
     <div className="min-h-screen bg-white p-4 sm:p-6 md:p-8">
       <div className="max-w-full space-y-6">
-        {/* Page Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-semibold text-gray-900">Task Board</h1>
-              <p className="text-gray-600 mt-1">Drag and drop tasks between columns to update their status</p>
-            </div>
+      {/* Page Header */}
+      <div className="mb-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold text-gray-900">Task Board</h1>
+            <p className="text-gray-600 mt-1">Drag and drop tasks between columns to update their status</p>
+          </div>
           
           {/* Connection Status */}
           <div className="flex items-center space-x-4">
@@ -719,158 +661,202 @@ const TaskBoard: React.FC = () => {
             Last update: {new Date(lastUpdate).toLocaleTimeString()}
           </div>
         )}
-        
-        {/* Error Display */}
-        {(wsError || taskError) && (
-          <div className="mt-2 p-2 bg-red-50 text-red-700 text-sm rounded">
-            {wsError || taskError}
-          </div>
-        )}
       </div>
 
-      {/* Filters and Controls */}
-      <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            {/* Add Task Button */}
+      {/* Error Messages */}
+      {(wsError || taskError) && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+          <p className="text-sm">{wsError?.message || taskError?.message}</p>
+        </div>
+      )}
+
+      {/* Board Controls */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-2">
+          {/* Filter Dropdown */}
+          <div className="relative" ref={filterRef}>
             <button 
-              onClick={handleAddTask}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2">
-              <Plus size={20} />
-              <span>Add Task</span>
+              onClick={() => setShowFilterMenu(!showFilterMenu)}
+              className={`px-3 py-1.5 ${activeFiltersCount > 0 ? 'bg-blue-100 text-blue-700 border border-blue-300' : 'bg-gray-100 text-gray-700'} rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium flex items-center gap-1`}
+            >
+              <Filter className="w-4 h-4" />
+              Filter
+              {activeFiltersCount > 0 && (
+                <span className="ml-1 bg-blue-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  {activeFiltersCount}
+                </span>
+              )}
+              <ChevronDown className={`w-3 h-3 ml-1 transition-transform ${showFilterMenu ? 'rotate-180' : ''}`} />
             </button>
-
-            {/* Filter Button */}
-            <div className="relative" ref={filterRef}>
-              <button 
-                onClick={() => setShowFilterMenu(!showFilterMenu)}
-                className={`bg-white border ${activeFiltersCount > 0 ? 'border-blue-500 text-blue-600' : 'border-gray-300 text-gray-700'} px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors flex items-center space-x-2`}>
-                <Filter size={18} />
-                <span>Filter</span>
-                {activeFiltersCount > 0 && (
-                  <span className="bg-blue-600 text-white text-xs px-2 py-0.5 rounded-full">
-                    {activeFiltersCount}
-                  </span>
-                )}
-                <ChevronDown size={16} className={`transform transition-transform ${showFilterMenu ? 'rotate-180' : ''}`} />
-              </button>
-
-              {/* Filter Menu */}
-              {showFilterMenu && (
-                <div className="absolute top-full left-0 mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
-                  <div className="p-4">
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="font-semibold text-gray-900">Filter Tasks</h3>
-                      <button
-                        onClick={clearFilters}
-                        className="text-sm text-blue-600 hover:text-blue-700"
-                      >
-                        Clear all
-                      </button>
+            
+            {showFilterMenu && (
+              <div className="absolute left-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                <div className="p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-medium text-gray-900">Filters</h3>
+                    <button
+                      onClick={() => setFilters({ priorities: [], assignees: [], columns: [] })}
+                      className="text-xs text-blue-600 hover:text-blue-800"
+                    >
+                      Clear all
+                    </button>
+                  </div>
+                  
+                  {/* Priority Filter */}
+                  <div className="mb-4">
+                    <h4 className="text-sm font-medium text-gray-700 mb-2">Priority</h4>
+                    <div className="space-y-1">
+                      {['high', 'medium', 'low'].map(priority => (
+                        <label key={priority} className="flex items-center cursor-pointer hover:bg-gray-50 p-1 rounded">
+                          <input
+                            type="checkbox"
+                            checked={filters.priorities.includes(priority)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setFilters(prev => ({ ...prev, priorities: [...prev.priorities, priority] }));
+                              } else {
+                                setFilters(prev => ({ ...prev, priorities: prev.priorities.filter(p => p !== priority) }));
+                              }
+                            }}
+                            className="mr-2 rounded text-blue-600"
+                          />
+                          <span className="text-sm text-gray-700 capitalize">{priority}</span>
+                        </label>
+                      ))}
                     </div>
-                    
-                    {/* Priority Filter */}
-                    <div className="mb-4">
-                      <h4 className="text-sm font-medium text-gray-700 mb-2">Priority</h4>
-                      <div className="space-y-2">
-                        {['high', 'medium', 'low'].map(priority => (
-                          <label key={priority} className="flex items-center">
-                            <input
-                              type="checkbox"
-                              checked={filters.priorities.includes(priority)}
-                              onChange={() => toggleFilter('priorities', priority)}
-                              className="mr-2 h-4 w-4 text-blue-600 rounded border-gray-300"
-                            />
-                            <span className="text-sm text-gray-700 capitalize">{priority}</span>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-                    
-                    {/* Assignee Filter */}
-                    <div className="mb-4">
-                      <h4 className="text-sm font-medium text-gray-700 mb-2">Assignee</h4>
-                      <div className="space-y-2">
-                        {getUniqueAssignees().map(assignee => (
-                          <label key={assignee} className="flex items-center">
-                            <input
-                              type="checkbox"
-                              checked={filters.assignees.includes(assignee)}
-                              onChange={() => toggleFilter('assignees', assignee)}
-                              className="mr-2 h-4 w-4 text-blue-600 rounded border-gray-300"
-                            />
-                            <span className="text-sm text-gray-700">{assignee}</span>
-                          </label>
-                        ))}
-                      </div>
+                  </div>
+                  
+                  {/* Assignee Filter */}
+                  <div className="mb-4">
+                    <h4 className="text-sm font-medium text-gray-700 mb-2">Assignee</h4>
+                    <div className="space-y-1 max-h-32 overflow-y-auto">
+                      {getUniqueAssignees().map(assignee => (
+                        <label key={assignee} className="flex items-center cursor-pointer hover:bg-gray-50 p-1 rounded">
+                          <input
+                            type="checkbox"
+                            checked={filters.assignees.includes(assignee)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setFilters(prev => ({ ...prev, assignees: [...prev.assignees, assignee] }));
+                              } else {
+                                setFilters(prev => ({ ...prev, assignees: prev.assignees.filter(a => a !== assignee) }));
+                              }
+                            }}
+                            className="mr-2 rounded text-blue-600"
+                          />
+                          <span className="text-sm text-gray-700">{assignee}</span>
+                        </label>
+                      ))}
                     </div>
                   </div>
                 </div>
-              )}
-            </div>
-
-            {/* Sort Button */}
-            <div className="relative" ref={sortRef}>
-              <button 
-                onClick={() => setShowSortMenu(!showSortMenu)}
-                className="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors flex items-center space-x-2">
-                <ArrowUpDown size={18} />
-                <span>Sort</span>
-                <ChevronDown size={16} className={`transform transition-transform ${showSortMenu ? 'rotate-180' : ''}`} />
-              </button>
-
-              {/* Sort Menu */}
-              {showSortMenu && (
-                <div className="absolute top-full left-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
-                  <div className="p-2">
-                    {[
-                      { value: 'priority' as SortOption, label: 'Priority' },
-                      { value: 'complexity' as SortOption, label: 'Complexity' },
-                      { value: 'assignee' as SortOption, label: 'Assignee' },
-                      { value: 'created' as SortOption, label: 'Date Created' },
-                      { value: 'updated' as SortOption, label: 'Last Updated' }
-                    ].map(option => (
-                      <button
-                        key={option.value}
-                        onClick={() => handleSortChange(option.value)}
-                        className={`w-full text-left px-3 py-2 text-sm rounded hover:bg-gray-100 flex items-center justify-between ${sortBy === option.value ? 'bg-gray-100 text-blue-600' : 'text-gray-700'}`}
-                      >
-                        <span>{option.label}</span>
-                        {sortBy === option.value && (
-                          <span className="text-xs">
-                            {sortDirection === 'asc' ? '↑' : '↓'}
-                          </span>
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Task Stats */}
-          <div className="flex items-center space-x-6 text-sm">
-            <div className="flex items-center space-x-2">
-              <span className="text-gray-500">Active:</span>
-              <span className="font-semibold text-gray-900">{activeTasks}</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <span className="text-gray-500">Completed:</span>
-              <span className="font-semibold text-green-600">{completedTasks}</span>
-            </div>
-            {filteredOutCount > 0 && (
-              <div className="flex items-center space-x-2">
-                <span className="text-gray-500">Filtered:</span>
-                <span className="font-semibold text-amber-600">{filteredOutCount}</span>
               </div>
             )}
           </div>
+
+          {/* Sort Dropdown */}
+          <div className="relative" ref={sortRef}>
+            <button 
+              onClick={() => setShowSortMenu(!showSortMenu)}
+              className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium flex items-center gap-1"
+            >
+              <ArrowUpDown className="w-4 h-4" />
+              Sort
+              <ChevronDown className={`w-3 h-3 ml-1 transition-transform ${showSortMenu ? 'rotate-180' : ''}`} />
+            </button>
+            
+            {showSortMenu && (
+              <div className="absolute left-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                <div className="p-2">
+                  {[
+                    { value: 'priority', label: 'Priority' },
+                    { value: 'complexity', label: 'Complexity' },
+                    { value: 'assignee', label: 'Assignee' },
+                    { value: 'created', label: 'Date Created' },
+                    { value: 'updated', label: 'Last Updated' }
+                  ].map(option => (
+                    <button
+                      key={option.value}
+                      onClick={() => {
+                        if (sortBy === option.value) {
+                          setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
+                        } else {
+                          setSortBy(option.value as SortOption);
+                          setSortDirection('desc');
+                        }
+                      }}
+                      className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded flex items-center justify-between"
+                    >
+                      <span>{option.label}</span>
+                      {sortBy === option.value && (
+                        <span className="text-blue-600">
+                          {sortDirection === 'desc' ? '↓' : '↑'}
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <button className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium flex items-center gap-1">
+            <Grid3x3 className="w-4 h-4" />
+            View
+          </button>
+        </div>
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 text-sm text-gray-600">
+            <span>Total: {totalTasks}</span>
+            <span>•</span>
+            <span>Active: {activeTasks}</span>
+            <span>•</span>
+            <span>Done: {completedTasks}</span>
+          </div>
+          <button 
+            onClick={handleAddTask}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium flex items-center gap-2"
+          >
+            <Plus className="w-4 h-4" />
+            Add Task
+          </button>
         </div>
       </div>
 
-      {/* Task Board */}
-      <TaskBoardContext.Provider value={{ handleTaskClick, handleTaskEdit, isDraggingRef, handleTaskDelete: handleQuickTaskDelete }}>
+      {/* Active Filters Message */}
+      {activeFiltersCount > 0 && (
+        <div className="flex items-center justify-between bg-blue-50 border border-blue-200 rounded-lg px-4 py-2">
+          <div className="flex items-center space-x-2 text-sm">
+            <Filter className="w-4 h-4 text-blue-600" />
+            <span className="text-blue-900">
+              Showing {totalTasks} of {allTasks} tasks
+              {filteredOutCount > 0 && ` (${filteredOutCount} hidden by filters)`}
+            </span>
+            <div className="flex items-center space-x-2 ml-4">
+              {filters.priorities.length > 0 && (
+                <span className="inline-flex items-center px-2 py-1 rounded-md bg-blue-100 text-blue-800 text-xs">
+                  Priority: {filters.priorities.join(', ')}
+                </span>
+              )}
+              {filters.assignees.length > 0 && (
+                <span className="inline-flex items-center px-2 py-1 rounded-md bg-blue-100 text-blue-800 text-xs">
+                  Assignee: {filters.assignees.join(', ')}
+                </span>
+              )}
+            </div>
+          </div>
+          <button
+            onClick={() => setFilters({ priorities: [], assignees: [], columns: [] })}
+            className="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
+          >
+            <X className="w-4 h-4" />
+            Clear filters
+          </button>
+        </div>
+      )}
+
+      {/* Kanban Board */}
+      <TaskBoardContext.Provider value={{ handleTaskClick, handleTaskEdit, isDraggingRef }}>
         <DndContext
           sensors={sensors}
           collisionDetection={closestCorners}
@@ -878,22 +864,14 @@ const TaskBoard: React.FC = () => {
           onDragOver={handleDragOver}
           onDragEnd={handleDragEnd}
         >
-          <div 
-            ref={boardRef}
-            className={`${isMobile ? 'space-y-4' : 'flex space-x-6 overflow-x-auto pb-4'}`}
-          >
-            {columns.map((column) => (
-              <Column 
-                key={column.id} 
-                column={column} 
-                isMobile={isMobile}
-                isCollapsed={collapsedColumns.includes(column.id)}
-                onToggleCollapse={() => toggleColumnCollapse(column.id)}
-                swipedCardId={swipedCardId}
-                onCardSwipe={handleCardSwipe}
-              />
-            ))}
+          <div className="overflow-x-auto">
+            <div className="flex space-x-6 pb-6" style={{ minWidth: '1200px' }}>
+              {columns.map((column) => (
+                <DroppableColumn key={column.id} column={column} />
+              ))}
+            </div>
           </div>
+          
           <DragOverlay
             dropAnimation={{
               sideEffects: defaultDropAnimationSideEffects({
@@ -910,374 +888,92 @@ const TaskBoard: React.FC = () => {
         </DndContext>
       </TaskBoardContext.Provider>
       
-      {/* Task Modal - Desktop */}
-      {!isMobile && (
-        <TaskModal
-          isOpen={isModalOpen}
-          mode={modalMode}
-          task={selectedTask}
-          availableTasks={tasks.map(t => ({
-            id: Number(t.id),
-            title: t.title,
-            description: t.description || '',
-            priority: t.priority as LocalTask['priority'],
-            status: (t.column === 'todo' ? 'pending' : t.column === 'in-progress' ? 'in-progress' : 'done') as LocalTask['status'],
-            assignedTo: t.assignee?.name !== 'Unassigned' ? t.assignee?.name : undefined,
-            createdAt: t.createdAt,
-            updatedAt: t.updatedAt,
-            position: t.position,
-            tags: [],
-            dependencies: [],
-          }))}
-          onClose={() => setIsModalOpen(false)}
-          onSave={handleTaskSave}
-          onDelete={selectedTask ? handleTaskDelete : undefined}
-          onEdit={() => {
-            setModalMode('edit');
-          }}
-        />
-      )}
-      
-      {/* Bottom Sheet Modal - Mobile */}
-      {isMobile && (
-        <MobileBottomSheet
-          isOpen={showBottomSheet}
-          onClose={() => {
-            setShowBottomSheet(false);
-            setSwipedCardId(null);
-          }}
-          mode={modalMode}
-          task={selectedTask}
-          onSave={handleTaskSave}
-          onDelete={selectedTask ? handleTaskDelete : undefined}
-          onEdit={() => {
-            setModalMode('edit');
-          }}
-        />
-      )}
-      </div>
+      {/* Task Modal */}
+      <TaskModal
+        isOpen={isModalOpen}
+        mode={modalMode}
+        task={selectedTask}
+        availableTasks={tasks.map(t => ({
+          id: Number(t.id),
+          title: t.title,
+          description: t.description || '',
+          priority: t.priority as LocalTask['priority'],
+          status: (t.column === 'todo' ? 'pending' : t.column === 'in-progress' ? 'in-progress' : 'done') as LocalTask['status'],
+          assignedTo: t.assignee?.name !== 'Unassigned' ? t.assignee?.name : undefined,
+          createdAt: t.createdAt,
+          updatedAt: t.updatedAt,
+          position: t.position,
+          tags: [],
+          dependencies: [],
+        }))}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleTaskSave}
+        onDelete={selectedTask ? handleTaskDelete : undefined}
+        onEdit={() => {
+          setModalMode('edit');
+        }}
+      />
     </div>
   );
 };
 
-// Mobile Bottom Sheet Component
-interface MobileBottomSheetProps {
-  isOpen: boolean;
-  onClose: () => void;
-  mode: TaskModalMode;
-  task?: LocalTask;
-  onSave: (task: Partial<LocalTask>) => void;
-  onDelete?: () => void;
-  onEdit?: () => void;
-}
-
-const MobileBottomSheet: React.FC<MobileBottomSheetProps> = ({
-  isOpen,
-  onClose,
-  mode,
-  task,
-  onSave,
-  onDelete,
-  onEdit
-}) => {
-  const [formData, setFormData] = useState<Partial<LocalTask>>({
-    title: '',
-    description: '',
-    priority: 'medium',
-    assignedTo: undefined,
-    tags: [],
-    dependencies: []
+// Droppable Column Component
+const DroppableColumn: React.FC<{ column: Column }> = ({ column }) => {
+  const { setNodeRef } = useSortable({
+    id: column.id,
+    data: {
+      type: 'column',
+    },
   });
 
-  useEffect(() => {
-    if (task) {
-      setFormData(task);
-    } else {
-      setFormData({
-        title: '',
-        description: '',
-        priority: 'medium',
-        assignedTo: undefined,
-        tags: [],
-        dependencies: []
-      });
-    }
-  }, [task]);
-
-  const handleSubmit = () => {
-    onSave(formData);
-    onClose();
-  };
-
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center">
-      {/* Backdrop */}
-      <div 
-        className="absolute inset-0 bg-black bg-opacity-50" 
-        onClick={onClose}
-      />
-      
-      {/* Bottom Sheet */}
-      <div className="relative bg-white w-full max-w-lg rounded-t-2xl shadow-xl animate-slide-up">
-        {/* Handle */}
-        <div className="flex justify-center pt-3">
-          <div className="w-12 h-1 bg-gray-300 rounded-full" />
-        </div>
-        
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b">
-          <h3 className="text-lg font-semibold">
-            {mode === 'create' ? 'New Task' : mode === 'edit' ? 'Edit Task' : 'Task Details'}
-          </h3>
-          <button
-            onClick={onClose}
-            className="p-1 hover:bg-gray-100 rounded-full"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-        
-        {/* Content */}
-        <div className="px-6 py-4 max-h-[60vh] overflow-y-auto">
-          {mode === 'view' ? (
-            <div className="space-y-4">
-              <div>
-                <h4 className="text-lg font-medium">{task?.title}</h4>
-                <p className="text-gray-600 mt-1">{task?.description}</p>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <span className="text-gray-500">Priority:</span>
-                  <span className={`ml-2 px-2 py-1 rounded-full text-xs font-medium ${
-                    task?.priority === 'high' ? 'bg-red-100 text-red-700' :
-                    task?.priority === 'medium' ? 'bg-amber-100 text-amber-700' :
-                    'bg-green-100 text-green-700'
-                  }`}>
-                    {task?.priority?.charAt(0).toUpperCase()}{task?.priority?.slice(1)}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-gray-500">Assigned to:</span>
-                  <span className="ml-2">{task?.assignedTo || 'Unassigned'}</span>
-                </div>
-              </div>
-              
-              <div className="flex gap-2 mt-6">
-                <button
-                  onClick={onEdit}
-                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center justify-center gap-2"
-                >
-                  <Edit2 className="w-4 h-4" />
-                  Edit
-                </button>
-                {onDelete && (
-                  <button
-                    onClick={onDelete}
-                    className="px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 flex items-center justify-center gap-2"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                    Delete
-                  </button>
-                )}
-              </div>
-            </div>
-          ) : (
-            <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Title
-                </label>
-                <input
-                  type="text"
-                  value={formData.title || ''}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  required
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Description
-                </label>
-                <textarea
-                  value={formData.description || ''}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  rows={3}
-                />
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Priority
-                  </label>
-                  <select
-                    value={formData.priority || 'medium'}
-                    onChange={(e) => setFormData({ ...formData, priority: e.target.value as LocalTask['priority'] })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  >
-                    <option value="low">Low</option>
-                    <option value="medium">Medium</option>
-                    <option value="high">High</option>
-                  </select>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Assign to
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.assignedTo || ''}
-                    onChange={(e) => setFormData({ ...formData, assignedTo: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Enter name"
-                  />
-                </div>
-              </div>
-              
-              <div className="flex gap-2 mt-6">
-                <button
-                  type="submit"
-                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                >
-                  {mode === 'create' ? 'Create Task' : 'Save Changes'}
-                </button>
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// Column Component
-interface ColumnProps {
-  column: Column;
-  isMobile?: boolean;
-  isCollapsed?: boolean;
-  onToggleCollapse?: () => void;
-  swipedCardId?: string | null;
-  onCardSwipe?: (taskId: string, direction: 'left' | 'right') => void;
-}
-
-const Column: React.FC<ColumnProps> = ({ 
-  column, 
-  isMobile = false, 
-  isCollapsed = false,
-  onToggleCollapse,
-  swipedCardId,
-  onCardSwipe
-}) => {
-  const getColumnStats = () => {
-    const totalComplexity = column.tasks.reduce((sum, task) => sum + task.complexity, 0);
-    const avgComplexity = column.tasks.length > 0 ? (totalComplexity / column.tasks.length).toFixed(1) : '0';
-    const highPriority = column.tasks.filter(task => task.priority === 'high').length;
-    
-    return { avgComplexity, highPriority };
-  };
-
-  const stats = getColumnStats();
-
-  const columnClasses = isMobile 
-    ? "w-full bg-white rounded-lg shadow-sm border border-gray-200 mb-4"
-    : "flex-shrink-0 w-80";
-
-  return (
-    <div className={columnClasses}>
+    <div className="flex-shrink-0 w-80">
       {/* Column Header */}
-      <div className={`${isMobile ? 'p-4' : 'bg-gray-100 rounded-t-lg p-4 border-b border-gray-200'}`}>
+      <div className="bg-gray-100 rounded-t-lg p-4 border-b border-gray-200">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <div className={`w-3 h-3 ${column.color} rounded-full`}></div>
             <h3 className="font-semibold text-gray-900">{column.title}</h3>
           </div>
           <div className="flex items-center space-x-2">
-            <span className="bg-gray-200 text-gray-700 text-xs px-2 py-1 rounded-full">
+            <span className="bg-gray-200 text-gray-700 px-2 py-1 rounded-full text-xs font-medium">
               {column.tasks.length}
             </span>
-            {isMobile && (
-              <button
-                onClick={onToggleCollapse}
-                className="p-1 hover:bg-gray-100 rounded"
-              >
-                {isCollapsed ? <ChevronDown size={18} /> : <ChevronUp size={18} />}
-              </button>
-            )}
+            <button className="text-gray-500 hover:text-gray-700 transition-colors">
+              <Plus className="w-4 h-4" />
+            </button>
           </div>
-        </div>
-        <div className="mt-2 flex items-center space-x-4 text-xs text-gray-600">
-          <div className="flex items-center space-x-1">
-            <span>Avg complexity:</span>
-            <span className="font-medium">{stats.avgComplexity}</span>
-          </div>
-          {stats.highPriority > 0 && (
-            <div className="flex items-center space-x-1">
-              <span className="text-red-600">High:</span>
-              <span className="font-medium text-red-600">{stats.highPriority}</span>
-            </div>
-          )}
         </div>
       </div>
 
-      {/* Column Tasks */}
-      {(!isMobile || !isCollapsed) && (
-        <div className={`${isMobile ? 'p-4 pt-0' : 'bg-gray-50 rounded-b-lg p-4 min-h-[400px]'} space-y-3`}>
-          <SortableContext
-            items={column.tasks.map(t => t.id)}
-            strategy={verticalListSortingStrategy}
-          >
-            {column.tasks.map((task) => (
-              <SortableTaskCard 
-                key={task.id} 
-                task={task} 
-                isMobile={isMobile}
-                isCardSwiped={swipedCardId === task.id}
-                onSwipe={onCardSwipe}
-              />
-            ))}
-          </SortableContext>
-          
-          {/* Empty State */}
-          {column.tasks.length === 0 && (
-            <div className="text-center py-8 text-gray-400">
-              <p className="text-sm">No tasks in this column</p>
-              <p className="text-xs mt-1">{isMobile ? 'Tap + to add tasks' : 'Drag tasks here to update their status'}</p>
-            </div>
-          )}
-        </div>
-      )}
+      {/* Column Content */}
+      <div 
+        ref={setNodeRef}
+        className="bg-gray-50 rounded-b-lg p-4 space-y-3 min-h-[400px]"
+      >
+        <SortableContext
+          items={column.tasks.map(t => t.id)}
+          strategy={verticalListSortingStrategy}
+        >
+          {column.tasks.map((task) => (
+            <SortableTaskCard key={task.id} task={task} />
+          ))}
+        </SortableContext>
+        
+        {/* Empty State */}
+        {column.tasks.length === 0 && (
+          <div className="text-center py-8 text-gray-400">
+            <p className="text-sm">No tasks in this column</p>
+            <p className="text-xs mt-1">Drag tasks here to update their status</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
 
 // Sortable Task Card Wrapper
-interface SortableTaskCardProps {
-  task: Task;
-  isMobile?: boolean;
-  isCardSwiped?: boolean;
-  onSwipe?: (taskId: string, direction: 'left' | 'right') => void;
-}
-
-const SortableTaskCard: React.FC<SortableTaskCardProps> = ({ 
-  task, 
-  isMobile = false,
-  isCardSwiped = false,
-  onSwipe
-}) => {
+const SortableTaskCard: React.FC<{ task: Task }> = ({ task }) => {
   const context = React.useContext(TaskBoardContext);
   const {
     attributes,
@@ -1302,83 +998,20 @@ const SortableTaskCard: React.FC<SortableTaskCardProps> = ({
         listeners={listeners}
         onClick={context?.handleTaskClick}
         onEdit={context?.handleTaskEdit}
-        isMobile={isMobile}
-        isCardSwiped={isCardSwiped}
-        onSwipe={onSwipe}
       />
     </div>
   );
 };
 
 // Task Card Component
-interface TaskCardProps {
+const TaskCard: React.FC<{ 
   task: Task; 
   isDragging?: boolean;
   attributes?: any;
   listeners?: any;
   onClick?: (task: Task) => void;
   onEdit?: (task: Task, e: React.MouseEvent) => void;
-  isMobile?: boolean;
-  isCardSwiped?: boolean;
-  onSwipe?: (taskId: string, direction: 'left' | 'right') => void;
-}
-
-const TaskCard: React.FC<TaskCardProps> = ({ 
-  task, 
-  isDragging = false, 
-  attributes, 
-  listeners, 
-  onClick, 
-  onEdit,
-  isMobile = false,
-  isCardSwiped = false,
-  onSwipe
-}) => {
-  const context = React.useContext(TaskBoardContext);
-  const cardRef = useRef<HTMLDivElement>(null);
-  const [touchStart, setTouchStart] = useState<number | null>(null);
-  const [touchEnd, setTouchEnd] = useState<number | null>(null);
-  const [swipeOffset, setSwipeOffset] = useState(0);
-
-  // Minimum swipe distance (in px)
-  const minSwipeDistance = 50;
-
-  const onTouchStart = (e: React.TouchEvent) => {
-    if (!isMobile || !onSwipe) return;
-    setTouchEnd(null);
-    setTouchStart(e.targetTouches[0].clientX);
-  };
-
-  const onTouchMove = (e: React.TouchEvent) => {
-    if (!isMobile || !onSwipe || touchStart === null) return;
-    const currentTouch = e.targetTouches[0].clientX;
-    setTouchEnd(currentTouch);
-    
-    // Update swipe offset for visual feedback
-    const distance = touchStart - currentTouch;
-    if (Math.abs(distance) > 20) {
-      setSwipeOffset(-distance);
-    }
-  };
-
-  const onTouchEnd = () => {
-    if (!isMobile || !onSwipe || !touchStart || !touchEnd) {
-      setSwipeOffset(0);
-      return;
-    }
-    
-    const distance = touchStart - touchEnd;
-    const isLeftSwipe = distance > minSwipeDistance;
-    const isRightSwipe = distance < -minSwipeDistance;
-    
-    if (isLeftSwipe) {
-      onSwipe(task.id, 'left');
-    } else if (isRightSwipe) {
-      onSwipe(task.id, 'right');
-    }
-    
-    setSwipeOffset(0);
-  };
+}> = ({ task, isDragging = false, attributes, listeners, onClick, onEdit }) => {
   const getPriorityStyles = (priority: string) => {
     switch (priority) {
       case 'high':
@@ -1414,73 +1047,45 @@ const TaskCard: React.FC<TaskCardProps> = ({
 
   return (
     <div 
-      ref={cardRef}
       {...attributes}
       {...listeners}
       onClick={(e) => {
-        // Prevent click when dragging or swiped
-        if (isDragging || isCardSwiped) return;
+        // Prevent click when dragging
+        if (isDragging) return;
         onClick?.(task);
       }}
-      onTouchStart={onTouchStart}
-      onTouchMove={onTouchMove}
-      onTouchEnd={onTouchEnd}
-      style={{
-        transform: `translateX(${swipeOffset}px)`,
-        transition: swipeOffset === 0 ? 'transform 0.3s ease' : 'none'
-      }}
-      className={`relative bg-white rounded-lg p-3 md:p-4 shadow-sm hover:shadow-md transition-all duration-200 ${isMobile ? '' : 'cursor-grab active:cursor-grabbing'} group select-none ${priorityStyles.border} ${isDragging ? 'shadow-lg ring-2 ring-blue-500' : ''}`}>
-      
-      {/* Swipe Actions - Mobile Only */}
-      {isMobile && isCardSwiped && (
-        <div className="absolute right-0 top-0 bottom-0 flex items-center bg-red-500 rounded-r-lg px-4">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              // Handle delete
-              if (context?.handleTaskDelete) {
-                context.handleTaskDelete(task);
-              }
-            }}
-            className="text-white"
-          >
-            <Trash2 className="w-5 h-5" />
-          </button>
-        </div>
-      )}
+      className={`bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-grab active:cursor-grabbing group select-none ${priorityStyles.border} ${isDragging ? 'shadow-lg ring-2 ring-blue-500' : ''}`}>
       <div className="flex items-start justify-between mb-2">
         <div className="flex items-start gap-2 flex-1">
-          {!isMobile && <GripVertical className="w-4 h-4 text-gray-400 mt-1" />}
-          <h4 className="text-gray-900 font-medium text-sm flex-1 line-clamp-2">{task.title}</h4>
+          <GripVertical className="w-4 h-4 text-gray-400 mt-1" />
+          <h4 className="text-gray-900 font-medium text-sm flex-1">{task.title}</h4>
         </div>
         <div className="flex items-center space-x-1">
-          {!isMobile && (
-            <button
-              onClick={(e) => onEdit?.(task, e)}
-              className="opacity-0 group-hover:opacity-100 p-1 hover:bg-gray-100 rounded transition-opacity"
-              title="Edit task"
-            >
-              <Edit2 size={14} className="text-gray-500" />
-            </button>
-          )}
-          <span className={`px-1.5 md:px-2 py-0.5 md:py-1 rounded-full text-xs font-medium ${priorityStyles.badge}`}>
-            {isMobile ? task.priority.charAt(0).toUpperCase() : task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
+          <button
+            onClick={(e) => onEdit?.(task, e)}
+            className="opacity-0 group-hover:opacity-100 p-1 hover:bg-gray-100 rounded transition-opacity"
+            title="Edit task"
+          >
+            <Edit2 size={14} className="text-gray-500" />
+          </button>
+          <span className={`px-2 py-1 rounded-full text-xs font-medium ${priorityStyles.badge}`}>
+            {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
           </span>
         </div>
       </div>
       
-      <p className={`text-gray-600 text-xs md:text-sm mb-3 ${isMobile ? '' : 'pl-6'} select-none line-clamp-2`}>{task.description}</p>
+      <p className="text-gray-600 text-sm mb-3 pl-6 select-none">{task.description}</p>
       
-      <div className={`flex items-center justify-between ${isMobile ? '' : 'pl-6'}`}>
+      <div className="flex items-center justify-between pl-6">
         <div className="flex items-center space-x-2">
-          <span className="text-gray-500 text-xs hidden sm:inline">Complexity:</span>
+          <span className="text-gray-500 text-xs">Complexity:</span>
           <div className="flex items-center space-x-1">
             <div className={`w-2 h-2 ${getComplexityColor(task.complexity)} rounded-full`}></div>
             <span className="text-gray-600 text-xs font-medium">{task.complexity}</span>
           </div>
         </div>
         <div className="flex items-center space-x-2">
-          <div className={`w-5 h-5 md:w-6 md:h-6 ${task.assignee.color} rounded-full flex items-center justify-center`}>
+          <div className={`w-6 h-6 ${task.assignee.color} rounded-full flex items-center justify-center`}>
             <span className="text-white text-xs font-medium">{task.assignee.initials}</span>
           </div>
         </div>
@@ -1488,10 +1093,10 @@ const TaskCard: React.FC<TaskCardProps> = ({
 
       {/* Progress Bar */}
       {task.progress !== undefined && (
-        <div className={`mt-3 flex items-center justify-between ${isMobile ? '' : 'pl-6'}`}>
-          <div className="w-full bg-gray-200 rounded-full h-1.5 md:h-2">
+        <div className="mt-3 flex items-center justify-between pl-6">
+          <div className="w-full bg-gray-200 rounded-full h-2">
             <div 
-              className="bg-blue-600 h-1.5 md:h-2 rounded-full transition-all duration-300"
+              className="bg-blue-600 h-2 rounded-full transition-all duration-300"
               style={{ width: `${task.progress}%` }}
             />
           </div>
@@ -1499,34 +1104,14 @@ const TaskCard: React.FC<TaskCardProps> = ({
         </div>
       )}
 
-      {/* Mobile Action Buttons */}
-      {isMobile && (
-        <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-100">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onEdit?.(task, e);
-            }}
-            className="p-1.5 text-gray-500 hover:bg-gray-100 rounded"
-          >
-            <Edit2 className="w-4 h-4" />
-          </button>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              // More options can be added here
-            }}
-            className="p-1.5 text-gray-500 hover:bg-gray-100 rounded"
-          >
-            <MoreVertical className="w-4 h-4" />
-          </button>
+      {/* Real-time Indicator */}
+      {task.updatedAt && new Date(task.updatedAt).getTime() > Date.now() - 3000 && (
+        <div className="mt-2 pl-6">
+          <span className="text-xs text-blue-600 animate-pulse">Just updated</span>
         </div>
       )}
     </div>
   );
 };
-
-// Track last update for real-time indication
-let lastUpdate: string | null = null;
 
 export default TaskBoard;

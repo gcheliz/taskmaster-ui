@@ -27,46 +27,6 @@ const Repositories: React.FC = () => {
   const { repositories, isLoading, error, refetch } = useRepositoryList()
   const { connectRepository } = useRepositoryOperations()
   const [showAddModal, setShowAddModal] = useState(false)
-  
-  // Debug
-  console.log('Repositories page:', { repositories, isLoading, error })
-  
-  // Temporary: Use mock data directly if repositories is empty
-  const displayRepositories = repositories.length > 0 ? repositories : isLoading ? [] : [
-    {
-      id: 'repo-1',
-      name: 'taskmaster-ui',
-      path: '/Users/gonzalo/workspace/taskmaster-ui',
-      status: 'active',
-      isGitRepository: true,
-      isTaskMasterProject: true,
-      gitBranch: 'main',
-      lastUpdated: new Date().toISOString(),
-      connectedAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
-    },
-    {
-      id: 'repo-2',
-      name: 'taskmaster-backend',
-      path: '/Users/gonzalo/workspace/taskmaster-backend',
-      status: 'active',
-      isGitRepository: true,
-      isTaskMasterProject: true,
-      gitBranch: 'develop',
-      lastUpdated: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-      connectedAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
-    },
-    {
-      id: 'repo-3',
-      name: 'api-gateway',
-      path: '/Users/gonzalo/workspace/api-gateway',
-      status: 'active',
-      isGitRepository: true,
-      isTaskMasterProject: false,
-      gitBranch: 'feature/auth-integration',
-      lastUpdated: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-      connectedAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
-    },
-  ]
 
 
   const handleAddRepository = async (path: string) => {
@@ -130,82 +90,81 @@ const Repositories: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white p-4 sm:p-6 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6">
-      {/* Header - Mobile responsive */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="max-w-7xl mx-auto space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">Repository Management</h1>
-          <p className="text-sm sm:text-base text-gray-600 mt-1">
-            Connect and manage your Git repositories
-            {displayRepositories.length > 0 && (
-              <span className="ml-2 text-xs sm:text-sm font-medium text-gray-700">
-                • {displayRepositories.length} connected
+          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Repository Management</h1>
+          <p className="text-gray-600 mt-1">
+            Connect and manage your Git repositories with TaskMaster integration
+            {repositories.length > 0 && (
+              <span className="ml-2 text-sm font-medium text-gray-700">
+                • {repositories.length} connected
               </span>
             )}
           </p>
         </div>
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-3">
           <Button
             variant="outline"
             onClick={() => refetch()}
-            className="flex items-center gap-2 text-sm sm:text-base px-3 sm:px-4 py-2 min-h-touch"
+            className="flex items-center gap-2"
           >
             <RefreshCw className="w-4 h-4" />
-            <span className="hidden sm:inline">Refresh</span>
+            Refresh
           </Button>
           <Button
             variant="primary"
             onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-2 text-sm sm:text-base px-3 sm:px-4 py-2 min-h-touch"
+            className="flex items-center gap-2"
           >
             <Plus className="w-4 h-4" />
-            <span className="sm:hidden">Add</span>
-            <span className="hidden sm:inline">Add Repository</span>
+            Add Repository
           </Button>
         </div>
       </div>
 
-      {/* Stats - Mobile responsive grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
-        <Card className="p-4 sm:p-6 bg-gradient-to-br from-white to-gray-50 border-gray-200">
+      {/* Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card className="p-6 bg-gradient-to-br from-white to-gray-50 border-gray-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">Total Repositories</p>
-              <p className="text-2xl sm:text-3xl font-bold text-gray-900">{displayRepositories.length}</p>
-              <p className="text-xs text-gray-500 mt-1 hidden sm:block">Connected to TaskMaster</p>
+              <p className="text-sm font-medium text-gray-600 mb-1">Total Repositories</p>
+              <p className="text-3xl font-bold text-gray-900">{repositories.length}</p>
+              <p className="text-xs text-gray-500 mt-1">Connected to TaskMaster</p>
             </div>
-            <div className="p-2 sm:p-3 bg-gray-100 rounded-lg">
-              <GitBranch className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" />
+            <div className="p-3 bg-gray-100 rounded-lg">
+              <GitBranch className="w-6 h-6 text-gray-600" />
             </div>
           </div>
         </Card>
         
-        <Card className="p-4 sm:p-6 bg-gradient-to-br from-white to-green-50 border-green-200">
+        <Card className="p-6 bg-gradient-to-br from-white to-green-50 border-green-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">Active</p>
-              <p className="text-2xl sm:text-3xl font-bold text-green-600">
-                {displayRepositories.filter((r: any) => r.status === 'active').length}
+              <p className="text-sm font-medium text-gray-600 mb-1">Active</p>
+              <p className="text-3xl font-bold text-green-600">
+                {repositories.filter((r: any) => r.status === 'active').length}
               </p>
-              <p className="text-xs text-green-600 mt-1 hidden sm:block">Currently synced</p>
+              <p className="text-xs text-green-600 mt-1">Currently synced</p>
             </div>
-            <div className="p-2 sm:p-3 bg-green-100 rounded-lg">
-              <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
+            <div className="p-3 bg-green-100 rounded-lg">
+              <CheckCircle className="w-6 h-6 text-green-600" />
             </div>
           </div>
         </Card>
         
-        <Card className="p-4 sm:p-6 bg-gradient-to-br from-white to-red-50 border-red-200">
+        <Card className="p-6 bg-gradient-to-br from-white to-red-50 border-red-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">With Issues</p>
-              <p className="text-2xl sm:text-3xl font-bold text-red-600">
-                {displayRepositories.filter((r: any) => r.status === 'error').length}
+              <p className="text-sm font-medium text-gray-600 mb-1">With Issues</p>
+              <p className="text-3xl font-bold text-red-600">
+                {repositories.filter((r: any) => r.status === 'error').length}
               </p>
-              <p className="text-xs text-red-600 mt-1 hidden sm:block">Requires attention</p>
+              <p className="text-xs text-red-600 mt-1">Requires attention</p>
             </div>
-            <div className="p-2 sm:p-3 bg-red-100 rounded-lg">
-              <AlertCircle className="w-5 h-5 sm:w-6 sm:h-6 text-red-600" />
+            <div className="p-3 bg-red-100 rounded-lg">
+              <AlertCircle className="w-6 h-6 text-red-600" />
             </div>
           </div>
         </Card>
@@ -220,9 +179,9 @@ const Repositories: React.FC = () => {
       )}
 
       {/* Repository List */}
-      {displayRepositories.length > 0 && (
+      {repositories.length > 0 && (
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-          {displayRepositories.map((repo: any) => {
+          {repositories.map((repo: any) => {
             const statusConfig = getStatusConfig(repo.status || 'inactive')
             const healthScore = Math.floor(Math.random() * 40) + 60 // Mock health score
             
@@ -270,7 +229,7 @@ const Repositories: React.FC = () => {
                         <GitCommit className="w-4 h-4" />
                         <span className="text-xs">Commits</span>
                       </div>
-                      <p className="text-base sm:text-lg font-semibold text-gray-900">
+                      <p className="text-lg font-semibold text-gray-900">
                         {Math.floor(Math.random() * 500) + 100}
                       </p>
                     </div>
@@ -279,7 +238,7 @@ const Repositories: React.FC = () => {
                         <Users className="w-4 h-4" />
                         <span className="text-xs">Contributors</span>
                       </div>
-                      <p className="text-base sm:text-lg font-semibold text-gray-900">
+                      <p className="text-lg font-semibold text-gray-900">
                         {Math.floor(Math.random() * 10) + 1}
                       </p>
                     </div>
@@ -288,7 +247,7 @@ const Repositories: React.FC = () => {
                         <Shield className="w-4 h-4" />
                         <span className="text-xs">Health</span>
                       </div>
-                      <p className={`text-base sm:text-lg font-semibold ${getHealthScoreColor(healthScore)}`}>
+                      <p className={`text-lg font-semibold ${getHealthScoreColor(healthScore)}`}>
                         {healthScore}%
                       </p>
                     </div>
@@ -370,7 +329,7 @@ const Repositories: React.FC = () => {
       )}
 
       {/* Empty State */}
-      {displayRepositories.length === 0 && !error && !isLoading && (
+      {repositories.length === 0 && !error && (
         <div className="text-center py-12">
           <GitBranch className="w-12 h-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">No repositories connected</h3>
@@ -385,10 +344,10 @@ const Repositories: React.FC = () => {
         </div>
       )}
 
-        {/* Add Repository Modal */}
-        <Modal open={showAddModal} onOpenChange={setShowAddModal}>
-          <AddRepository onRepositoryAdd={handleAddRepository} />
-        </Modal>
+      {/* Add Repository Modal */}
+      <Modal open={showAddModal} onOpenChange={setShowAddModal}>
+        <AddRepository onRepositoryAdd={handleAddRepository} />
+      </Modal>
       </div>
     </div>
   )

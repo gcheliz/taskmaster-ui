@@ -22,7 +22,13 @@ import {
   XCircle
 } from 'lucide-react'
 import { useRepositoryData, useRepositoryHealth } from '../../hooks/useRepositoryData'
-import { Dropdown } from '../ui/molecules/Dropdown'
+import { 
+  Dropdown, 
+  DropdownTrigger, 
+  DropdownContent, 
+  DropdownItem, 
+  DropdownSeparator 
+} from '../ui/molecules/Dropdown'
 import { formatDistanceToNow } from 'date-fns'
 
 export interface EnhancedRepositoryCardProps {
@@ -78,8 +84,8 @@ export const EnhancedRepositoryCard: React.FC<EnhancedRepositoryCardProps> = ({
   className,
   showBatchSelect = false,
 }) => {
-  const { repository, loading, error } = useRepositoryData(repositoryId)
-  const { health } = useRepositoryHealth(repositoryId)
+  const { metadata: repository, isLoading: loading, error } = useRepositoryData({ repositoryId })
+  const { health } = useRepositoryHealth({ repositoryId })
   const [isSyncing, setIsSyncing] = useState(false)
 
   const handleSync = async () => {
@@ -117,7 +123,7 @@ export const EnhancedRepositoryCard: React.FC<EnhancedRepositoryCardProps> = ({
   }
 
   const connectionStatus = error ? 'error' : isSyncing ? 'syncing' : 'connected'
-  const healthScore = health?.overall || 0
+  const healthScore = health?.score || 0
 
   return (
     <Card 
@@ -133,7 +139,7 @@ export const EnhancedRepositoryCard: React.FC<EnhancedRepositoryCardProps> = ({
           {showBatchSelect && (
             <Checkbox
               checked={isSelected}
-              onCheckedChange={(checked) => onSelect?.(checked as boolean)}
+              onChange={(e) => onSelect?.(e.target.checked)}
               className="mt-1"
             />
           )}
@@ -145,37 +151,37 @@ export const EnhancedRepositoryCard: React.FC<EnhancedRepositoryCardProps> = ({
               <ConnectionStatusIndicator status={connectionStatus} />
             </div>
             <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2">
-              {repository.description || 'No description available'}
+              {repository.path}
             </p>
           </div>
         </div>
 
         {/* Actions Dropdown */}
         <Dropdown>
-          <Dropdown.Trigger asChild>
+          <DropdownTrigger asChild>
             <Button variant="ghost" size="sm" className="p-1">
               <MoreVertical className="w-4 h-4" />
             </Button>
-          </Dropdown.Trigger>
-          <Dropdown.Content align="end">
-            <Dropdown.Item onSelect={handleSync} disabled={isSyncing}>
+          </DropdownTrigger>
+          <DropdownContent align="end">
+            <DropdownItem onSelect={handleSync} disabled={isSyncing}>
               <RefreshCw className="w-4 h-4 mr-2" />
               Sync Repository
-            </Dropdown.Item>
-            <Dropdown.Item onSelect={onViewDetails}>
+            </DropdownItem>
+            <DropdownItem onSelect={onViewDetails}>
               <ExternalLink className="w-4 h-4 mr-2" />
               View Details
-            </Dropdown.Item>
-            <Dropdown.Item onSelect={onSettings}>
+            </DropdownItem>
+            <DropdownItem onSelect={onSettings}>
               <Settings className="w-4 h-4 mr-2" />
               Settings
-            </Dropdown.Item>
-            <Dropdown.Separator />
-            <Dropdown.Item onSelect={onRemove} className="text-red-600">
+            </DropdownItem>
+            <DropdownSeparator />
+            <DropdownItem onSelect={onRemove} className="text-red-600">
               <Trash2 className="w-4 h-4 mr-2" />
               Remove
-            </Dropdown.Item>
-          </Dropdown.Content>
+            </DropdownItem>
+          </DropdownContent>
         </Dropdown>
       </div>
 
@@ -183,20 +189,7 @@ export const EnhancedRepositoryCard: React.FC<EnhancedRepositoryCardProps> = ({
       <div className="flex items-center gap-4 mb-4 text-sm">
         <div className="flex items-center gap-1">
           <GitBranch className="w-4 h-4 text-slate-400" />
-          <span className="font-medium">{repository.defaultBranch}</span>
-        </div>
-        {repository.language && (
-          <Badge variant="secondary" size="sm">
-            {repository.language}
-          </Badge>
-        )}
-        <div className="flex items-center gap-1">
-          <Star className="w-4 h-4 text-yellow-500" />
-          <span>{repository.stars}</span>
-        </div>
-        <div className="flex items-center gap-1">
-          <GitFork className="w-4 h-4 text-slate-400" />
-          <span>{repository.forks}</span>
+          <span className="font-medium">{repository.currentBranch}</span>
         </div>
       </div>
 
@@ -207,7 +200,7 @@ export const EnhancedRepositoryCard: React.FC<EnhancedRepositoryCardProps> = ({
             <GitCommit className="w-4 h-4 text-blue-600" />
             <span className="text-xs text-slate-500">Commits</span>
           </div>
-          <p className="text-lg font-semibold">{repository.stats?.totalCommits?.toLocaleString() || 0}</p>
+          <p className="text-lg font-semibold">-</p>
         </div>
 
         <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800">
@@ -215,7 +208,7 @@ export const EnhancedRepositoryCard: React.FC<EnhancedRepositoryCardProps> = ({
             <Users className="w-4 h-4 text-green-600" />
             <span className="text-xs text-slate-500">Contributors</span>
           </div>
-          <p className="text-lg font-semibold">{repository.stats?.totalContributors || 0}</p>
+          <p className="text-lg font-semibold">-</p>
         </div>
 
         <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800">
@@ -230,24 +223,24 @@ export const EnhancedRepositoryCard: React.FC<EnhancedRepositoryCardProps> = ({
       </div>
 
       {/* Branch Status */}
-      {repository.gitStatus && (
+      {repository.status && (
         <div className="flex items-center justify-between p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 mb-4">
           <div className="flex items-center gap-2">
             <GitBranch className="w-4 h-4 text-blue-600" />
-            <span className="text-sm font-medium">{repository.gitStatus.branch}</span>
-            {repository.gitStatus.isClean ? (
-              <Badge variant="success" size="xs">Clean</Badge>
+            <span className="text-sm font-medium">{repository.currentBranch}</span>
+            {repository.status.isClean ? (
+              <Badge variant="success" size="sm">Clean</Badge>
             ) : (
-              <Badge variant="warning" size="xs">Changes</Badge>
+              <Badge variant="warning" size="sm">Changes</Badge>
             )}
           </div>
-          {(repository.gitStatus.ahead > 0 || repository.gitStatus.behind > 0) && (
+          {(repository.status.ahead && repository.status.ahead > 0) || (repository.status.behind && repository.status.behind > 0) && (
             <div className="flex items-center gap-2 text-xs">
-              {repository.gitStatus.ahead > 0 && (
-                <span className="text-green-600">↑{repository.gitStatus.ahead}</span>
+              {repository.status.ahead && repository.status.ahead > 0 && (
+                <span className="text-green-600">↑{repository.status.ahead}</span>
               )}
-              {repository.gitStatus.behind > 0 && (
-                <span className="text-red-600">↓{repository.gitStatus.behind}</span>
+              {repository.status.behind && repository.status.behind > 0 && (
+                <span className="text-red-600">↓{repository.status.behind}</span>
               )}
             </div>
           )}
@@ -259,8 +252,8 @@ export const EnhancedRepositoryCard: React.FC<EnhancedRepositoryCardProps> = ({
         <div className="flex items-center gap-1">
           <Clock className="w-4 h-4" />
           <span>
-            Last push {repository.lastPush 
-              ? formatDistanceToNow(new Date(repository.lastPush), { addSuffix: true })
+            Last commit {repository.lastCommit 
+              ? formatDistanceToNow(new Date(repository.lastCommit.date), { addSuffix: true })
               : 'Never'
             }
           </span>

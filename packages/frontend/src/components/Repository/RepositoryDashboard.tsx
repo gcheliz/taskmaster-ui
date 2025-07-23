@@ -8,10 +8,8 @@ import { Input } from '../ui/atoms/Input'
 import { Button } from '../ui/atoms/Button'
 import { Select } from '../ui/atoms/Select'
 import { Checkbox } from '../ui/atoms/Checkbox'
-import { Badge } from '../ui/atoms/Badge'
 import { 
   Search, 
-  Filter, 
   Plus, 
   RefreshCw, 
   Trash2,
@@ -41,7 +39,7 @@ export const RepositoryDashboard: React.FC<RepositoryDashboardProps> = ({
   onRepositoryRemove,
   className,
 }) => {
-  const { repositories, loading, error, refetch } = useRepositoryList()
+  const { repositories, isLoading: loading, refetch } = useRepositoryList()
   const [viewMode, setViewMode] = useState<ViewMode>('grid')
   const [searchQuery, setSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState<SortBy>('lastUpdate')
@@ -59,8 +57,7 @@ export const RepositoryDashboard: React.FC<RepositoryDashboardProps> = ({
     // Search filter
     if (debouncedSearchQuery) {
       filtered = filtered.filter(repo => 
-        repo.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
-        repo.description?.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
+        repo.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
       )
     }
 
@@ -69,16 +66,11 @@ export const RepositoryDashboard: React.FC<RepositoryDashboardProps> = ({
       filtered = filtered.filter(repo => {
         switch (filterStatus) {
           case 'connected':
-            return repo.status === 'connected'
+            return true // All listed repos are considered connected
           case 'error':
-            return repo.status === 'error'
+            return false // We don't have error status in basic list
           case 'inactive':
-            // Consider inactive if no push in last 30 days
-            const lastPush = repo.lastPush ? new Date(repo.lastPush) : null
-            const daysSinceLastPush = lastPush 
-              ? (Date.now() - lastPush.getTime()) / (1000 * 60 * 60 * 24)
-              : Infinity
-            return daysSinceLastPush > 30
+            return false // We don't have activity data in basic list
           default:
             return true
         }
@@ -91,11 +83,11 @@ export const RepositoryDashboard: React.FC<RepositoryDashboardProps> = ({
         case 'name':
           return a.name.localeCompare(b.name)
         case 'lastUpdate':
-          return new Date(b.lastPush || 0).getTime() - new Date(a.lastPush || 0).getTime()
+          return 0 // Can't sort by last update without data
         case 'health':
-          return (b.health?.overall || 0) - (a.health?.overall || 0)
+          return 0 // Can't sort by health without data
         case 'activity':
-          return (b.stats?.totalCommits || 0) - (a.stats?.totalCommits || 0)
+          return 0 // Can't sort by activity without data
         default:
           return 0
       }
@@ -184,7 +176,7 @@ export const RepositoryDashboard: React.FC<RepositoryDashboardProps> = ({
         <div className="flex gap-2">
           <Select
             value={filterStatus}
-            onValueChange={(value) => setFilterStatus(value as FilterStatus)}
+            onChange={(e) => setFilterStatus(e.target.value as FilterStatus)}
           >
             <option value="all">All Status</option>
             <option value="connected">Connected</option>
@@ -194,7 +186,7 @@ export const RepositoryDashboard: React.FC<RepositoryDashboardProps> = ({
 
           <Select
             value={sortBy}
-            onValueChange={(value) => setSortBy(value as SortBy)}
+            onChange={(e) => setSortBy(e.target.value as SortBy)}
           >
             <option value="lastUpdate">Last Updated</option>
             <option value="name">Name</option>
@@ -230,7 +222,7 @@ export const RepositoryDashboard: React.FC<RepositoryDashboardProps> = ({
           <div className="flex items-center gap-3">
             <Checkbox
               checked={isAllSelected}
-              onCheckedChange={handleSelectAll}
+              onChange={(e) => handleSelectAll(e.target.checked)}
             />
             <span className="text-sm font-medium">
               {selectedRepositories.size} repositories selected

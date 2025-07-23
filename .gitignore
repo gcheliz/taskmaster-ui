@@ -102,3 +102,4 @@ test-results/
 **/*/generated
 /ssl-certs/
 /secrets/
+/packages/backend/performance-reports/

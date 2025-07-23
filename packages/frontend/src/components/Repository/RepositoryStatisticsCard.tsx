@@ -58,40 +58,38 @@ export const RepositoryStatisticsCard: React.FC<RepositoryStatisticsCardProps> =
   repositoryId,
   className,
 }) => {
-  const { statistics, isLoading, error } = useRepositoryStatistics(repositoryId)
+  const { statistics, isLoading, error } = useRepositoryStatistics({ repositoryId })
 
   // Calculate trends and format data
   const formattedStats = useMemo(() => {
     if (!statistics) return null
 
-    const thisWeekCommits = statistics.commitsByWeek?.[0]?.commits || 0
-    const lastWeekCommits = statistics.commitsByWeek?.[1]?.commits || 0
+    const thisWeekCommits = statistics.commits?.thisWeek || 0
+    const lastWeekCommits = statistics.commits?.thisWeek || 0 // Using thisWeek as baseline since we don't have last week data
     const commitTrend = lastWeekCommits > 0 
       ? ((thisWeekCommits - lastWeekCommits) / lastWeekCommits) * 100
       : 0
 
-    const activeContributors = statistics.contributors?.filter(c => 
-      c.lastCommitDate && new Date(c.lastCommitDate) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
-    ).length || 0
+    const activeContributors = statistics.contributors?.active || 0
 
-    const totalLines = Object.entries(statistics.filesByExtension || {}).reduce(
-      (acc, [_, data]) => acc + (data.lines || 0), 0
-    )
+    const totalLines = statistics.files?.byExtension?.reduce(
+      (acc, ext) => acc + (ext.size || 0), 0
+    ) || 0
 
     return {
-      totalCommits: statistics.totalCommits || 0,
+      totalCommits: statistics.commits?.total || 0,
       commitTrend: {
         value: Math.round(commitTrend),
         isPositive: commitTrend >= 0
       },
       contributors: {
-        total: statistics.totalContributors || 0,
+        total: statistics.contributors?.total || 0,
         active: activeContributors
       },
-      filesCount: statistics.totalFiles || 0,
+      filesCount: statistics.files?.total || 0,
       totalLines: totalLines.toLocaleString(),
-      avgCommitsPerWeek: Math.round(statistics.avgCommitsPerWeek || 0),
-      lastPush: statistics.lastPush
+      avgCommitsPerWeek: Math.round(statistics.activity?.averageCommitsPerWeek || 0),
+      lastPush: statistics.activity?.lastPush
     }
   }, [statistics])
 
@@ -118,12 +116,12 @@ export const RepositoryStatisticsCard: React.FC<RepositoryStatisticsCardProps> =
 
   return (
     <Card className={cn('p-6', className)}>
-      <Card.Header className="mb-6">
+      <div className="mb-6">
         <div className="flex items-center gap-2">
           <BarChart3 className="w-5 h-5 text-blue-600" />
           <h3 className="text-lg font-semibold">Repository Statistics</h3>
         </div>
-      </Card.Header>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <StatItem

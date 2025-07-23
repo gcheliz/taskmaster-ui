@@ -62,9 +62,9 @@ const ContributorItem: React.FC<ContributorItemProps> = ({
             {contributor.name}
           </h4>
           {isTopContributor && (
-            <Badge variant="primary" size="xs">Top Contributor</Badge>
+            <Badge variant="primary" size="sm">Top Contributor</Badge>
           )}
-          <Badge variant={activityStatus.color as any} size="xs">
+          <Badge variant={activityStatus.color as any} size="sm">
             {activityStatus.label}
           </Badge>
         </div>
@@ -93,12 +93,12 @@ export const ContributorsCard: React.FC<ContributorsCardProps> = ({
   className,
   maxContributors = 10,
 }) => {
-  const { statistics, isLoading, error } = useRepositoryStatistics(repositoryId)
+  const { statistics, isLoading, error } = useRepositoryStatistics({ repositoryId })
 
   const sortedContributors = useMemo(() => {
     if (!statistics?.contributors) return []
     
-    return [...statistics.contributors]
+    return [...(statistics.contributors?.list || [])]
       .sort((a, b) => b.commits - a.commits)
       .slice(0, maxContributors)
   }, [statistics, maxContributors])
@@ -106,17 +106,12 @@ export const ContributorsCard: React.FC<ContributorsCardProps> = ({
   const contributorStats = useMemo(() => {
     if (!statistics?.contributors) return null
 
-    const activeCount = statistics.contributors.filter(c => {
-      const daysSinceLastCommit = Math.floor(
-        (Date.now() - new Date(c.lastCommitDate).getTime()) / (1000 * 60 * 60 * 24)
-      )
-      return daysSinceLastCommit <= 30
-    }).length
+    const activeCount = statistics.contributors?.active || 0
 
     return {
-      total: statistics.totalContributors || statistics.contributors.length,
+      total: statistics.contributors?.total || 0,
       active: activeCount,
-      totalCommits: statistics.totalCommits || 0,
+      totalCommits: statistics.commits?.total || 0,
     }
   }, [statistics])
 
@@ -143,7 +138,7 @@ export const ContributorsCard: React.FC<ContributorsCardProps> = ({
 
   return (
     <Card className={cn('p-6', className)}>
-      <Card.Header className="mb-4">
+      <div className="mb-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Users className="w-5 h-5 text-blue-600" />
@@ -160,7 +155,7 @@ export const ContributorsCard: React.FC<ContributorsCardProps> = ({
             </div>
           </div>
         </div>
-      </Card.Header>
+      </div>
 
       {/* Contribution Summary */}
       <div className="mb-6 p-4 rounded-lg bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border border-blue-200 dark:border-blue-800">
@@ -190,17 +185,25 @@ export const ContributorsCard: React.FC<ContributorsCardProps> = ({
         {sortedContributors.map((contributor, index) => (
           <ContributorItem
             key={contributor.email}
-            contributor={contributor}
+            contributor={{
+              name: contributor.name,
+              email: contributor.email,
+              commits: contributor.commits,
+              additions: contributor.linesAdded,
+              deletions: contributor.linesRemoved,
+              firstCommitDate: contributor.lastActivity, // Using lastActivity as we don't have firstCommitDate
+              lastCommitDate: contributor.lastActivity
+            }}
             totalCommits={contributorStats.totalCommits}
             isTopContributor={index === 0}
           />
         ))}
       </div>
 
-      {statistics.contributors && statistics.contributors.length > maxContributors && (
+      {statistics.contributors.list && statistics.contributors.list.length > maxContributors && (
         <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
           <p className="text-sm text-center text-slate-500">
-            And {statistics.contributors.length - maxContributors} more contributors...
+            And {statistics.contributors.list.length - maxContributors} more contributors...
           </p>
         </div>
       )}

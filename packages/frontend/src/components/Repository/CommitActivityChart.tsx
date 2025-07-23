@@ -23,10 +23,10 @@ export const CommitActivityChart: React.FC<CommitActivityChartProps> = ({
   className,
   height = 200,
 }) => {
-  const { statistics, isLoading, error } = useRepositoryStatistics(repositoryId)
+  const { statistics, isLoading, error } = useRepositoryStatistics({ repositoryId })
 
   const activityData = useMemo(() => {
-    if (!statistics?.commitsByDay) return []
+    if (!statistics?.commits?.byDay) return []
 
     // Create a map of the last 52 weeks of activity
     const today = new Date()
@@ -34,8 +34,8 @@ export const CommitActivityChart: React.FC<CommitActivityChartProps> = ({
     const dayMap = new Map<string, number>()
 
     // Map commits by date
-    statistics.commitsByDay.forEach(day => {
-      dayMap.set(day.date, day.commits)
+    statistics.commits.byDay.forEach(day => {
+      dayMap.set(day.date, day.count)
     })
 
     // Generate grid for the last year
@@ -115,7 +115,7 @@ export const CommitActivityChart: React.FC<CommitActivityChartProps> = ({
 
   return (
     <Card className={cn('p-6', className)}>
-      <Card.Header className="mb-4">
+      <div className="mb-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <GitCommit className="w-5 h-5 text-blue-600" />
@@ -125,7 +125,7 @@ export const CommitActivityChart: React.FC<CommitActivityChartProps> = ({
             {totalCommits.toLocaleString()} commits in the last year
           </p>
         </div>
-      </Card.Header>
+      </div>
 
       <div className="relative">
         {/* Month labels */}

@@ -6,9 +6,13 @@ import { RepositoryGrid } from '../components/Repository/RepositoryGrid'
 import { RepositoryDashboard } from '../components/Repository/RepositoryDashboard'
 import { AddRepository } from '../components/Repository/AddRepository'
 import { GitSyncIndicator } from '../components/Repository/GitSyncIndicator'
+import { RepositoryStatisticsCard } from '../components/Repository/RepositoryStatisticsCard'
+import { CommitActivityChart } from '../components/Repository/CommitActivityChart'
+import { ContributorsCard } from '../components/Repository/ContributorsCard'
+import { BranchHealthVisualization } from '../components/Repository/BranchHealthVisualization'
 import { Button } from '../components/ui/atoms/Button'
 import { Modal } from '../components/ui/molecules/Modal'
-import { Tabs } from '../components/ui/molecules/Tabs'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui/molecules/Tabs'
 import { SearchField } from '../components/ui/molecules/SearchField'
 import { Spinner } from '../components/ui/atoms/Spinner'
 import { Alert } from '../components/ui/molecules/Alert'
@@ -24,7 +28,7 @@ import {
 const RepositoriesIntegrated: React.FC = () => {
   const navigate = useNavigate()
   const { repositories, isLoading, error, refetch } = useRepositoryList()
-  const { addRepository, removeRepository, syncRepository } = useRepositoryOperations()
+  const { connectRepository, disconnectRepository, refreshRepository } = useRepositoryOperations()
   const [viewMode, setViewMode] = useState<'grid' | 'dashboard'>('grid')
   const [selectedRepositoryId, setSelectedRepositoryId] = useState<string | null>(null)
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
@@ -33,7 +37,7 @@ const RepositoriesIntegrated: React.FC = () => {
 
   const handleAddRepository = async (data: { name: string; path: string; url?: string }) => {
     try {
-      await addRepository(data)
+      await connectRepository(data.path)
       setIsAddModalOpen(false)
       refetch()
     } catch (err) {
@@ -44,7 +48,7 @@ const RepositoriesIntegrated: React.FC = () => {
   const handleRemoveRepository = async (id: string) => {
     if (window.confirm('Are you sure you want to remove this repository?')) {
       try {
-        await removeRepository(id)
+        await disconnectRepository(id)
         if (selectedRepositoryId === id) {
           setSelectedRepositoryId(null)
         }
@@ -57,7 +61,7 @@ const RepositoriesIntegrated: React.FC = () => {
 
   const handleSyncRepository = async (id: string) => {
     try {
-      await syncRepository(id)
+      await refreshRepository(id)
     } catch (err) {
       console.error('Failed to sync repository:', err)
     }
@@ -120,7 +124,7 @@ const RepositoriesIntegrated: React.FC = () => {
         <div className="flex-1">
           <SearchField
             value={searchTerm}
-            onChange={setSearchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search repositories..."
           />
         </div>
@@ -171,29 +175,26 @@ const RepositoriesIntegrated: React.FC = () => {
         </div>
       ) : viewMode === 'grid' ? (
         <RepositoryGrid
-          repositories={filteredRepositories}
-          onSelect={(repo) => setSelectedRepositoryId(repo.id)}
-          onEdit={(repo) => {
-            // Navigate to repository settings or open edit modal
-            navigate(`/repositories/${repo.id}/settings`)
-          }}
-          onDelete={(repo) => handleRemoveRepository(repo.id)}
-          selectedId={selectedRepositoryId}
+          repositories={filteredRepositories as any}
+          onRepositoryClick={(repo: any) => setSelectedRepositoryId(repo.id)}
+          onRepositoryManage={(id) => navigate(`/repositories/${id}/settings`)}
         />
       ) : (
         <Tabs
-          tabs={filteredRepositories.map(repo => ({
-            id: repo.id,
-            label: repo.name,
-            icon: <GitBranch className="w-4 h-4" />,
-          }))}
-          activeTabId={selectedRepositoryId || filteredRepositories[0]?.id}
-          onTabChange={(tabId) => setSelectedRepositoryId(tabId)}
+          value={selectedRepositoryId || filteredRepositories[0]?.id}
+          onValueChange={setSelectedRepositoryId}
         >
-          {(activeTabId) => {
-            const repository = repositories.find(r => r.id === activeTabId)
-            return repository ? (
-              <div className="space-y-6">
+          <TabsList>
+            {filteredRepositories.map(repo => (
+              <TabsTrigger key={repo.id} value={repo.id}>
+                <GitBranch className="w-4 h-4 mr-2" />
+                {repo.name}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+          {filteredRepositories.map(repository => (
+            <TabsContent key={repository.id} value={repository.id}>
+              <div className="space-y-6 pt-6">
                 <div className="flex items-center justify-between">
                   <div>
                     <h2 className="text-xl font-semibold">{repository.name}</h2>
@@ -217,23 +218,27 @@ const RepositoriesIntegrated: React.FC = () => {
                     </Button>
                   </div>
                 </div>
-                <RepositoryDashboard repositoryId={repository.id} />
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <RepositoryStatisticsCard repositoryId={repository.id} />
+                  <CommitActivityChart repositoryId={repository.id} />
+                  <ContributorsCard repositoryId={repository.id} />
+                  <BranchHealthVisualization repositoryId={repository.id} />
+                </div>
               </div>
-            ) : null
-          }}
+            </TabsContent>
+          ))}
         </Tabs>
       )}
 
       {/* Add Repository Modal */}
       <Modal
-        isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
-        title="Add Repository"
-        size="md"
+        open={isAddModalOpen}
+        onOpenChange={setIsAddModalOpen}
       >
         <AddRepository
-          onAdd={handleAddRepository}
-          onCancel={() => setIsAddModalOpen(false)}
+          onRepositoryAdd={async (path) => {
+            await handleAddRepository({ name: path.split('/').pop() || 'Repository', path })
+          }}
         />
       </Modal>
     </div>

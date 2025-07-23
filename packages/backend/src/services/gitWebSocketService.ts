@@ -105,7 +105,7 @@ class GitWebSocketService {
       
       return null
     } catch (error) {
-      logger.error('Error handling WebSocket message:', error)
+      logger.error('Error handling WebSocket message:', error as any)
       return {
         type: 'repository-error',
         repositoryId: message.repositoryId,
@@ -118,7 +118,7 @@ class GitWebSocketService {
   }
   
   private async subscribeToRepository(clientId: string, repositoryId: string): Promise<void> {
-    const repository = await repositoryService.getRepository(repositoryId)
+    const repository = await repositoryService.getRepositoryById(repositoryId)
     if (repository && repository.path) {
       await this.startMonitoringRepository(repository.path)
     }
@@ -130,7 +130,7 @@ class GitWebSocketService {
   }
   
   private async refreshRepository(repositoryId: string): Promise<void> {
-    const repository = await repositoryService.getRepository(repositoryId)
+    const repository = await repositoryService.getRepositoryById(repositoryId)
     if (repository && repository.path) {
       // Remove and re-add to trigger immediate check
       await gitMonitorService.removeRepository(repository.path)
@@ -139,7 +139,7 @@ class GitWebSocketService {
   }
   
   private async getRepositoryState(repositoryId: string): Promise<unknown> {
-    const repository = await repositoryService.getRepository(repositoryId)
+    const repository = await repositoryService.getRepositoryById(repositoryId)
     if (repository && repository.path) {
       const metadata = await gitDataService.getRepositoryMetadata(repository.path)
       return metadata
@@ -159,7 +159,7 @@ class GitWebSocketService {
       
       logger.info(`Started monitoring ${repositories.length} repositories`)
     } catch (error) {
-      logger.error('Failed to initialize repository monitoring:', error)
+      logger.error('Failed to initialize repository monitoring:', error as any)
     }
   }
   
@@ -181,7 +181,7 @@ class GitWebSocketService {
         this.syncIntervals.set(repositoryPath, interval)
       }
     } catch (error) {
-      logger.error(`Failed to start monitoring repository ${repositoryPath}:`, error)
+      logger.error(`Failed to start monitoring repository ${repositoryPath}:`, error as any)
     }
   }
   
@@ -215,7 +215,7 @@ class GitWebSocketService {
         })
       }
     } catch (error) {
-      logger.error(`Failed to sync repository ${repositoryPath}:`, error)
+      logger.error(`Failed to sync repository ${repositoryPath}:`, error as any)
     }
   }
   
@@ -243,7 +243,7 @@ class GitWebSocketService {
         })
       }
     } catch (error) {
-      logger.error('Failed to handle Git event:', error)
+      logger.error('Failed to handle Git event:', error as any)
     }
   }
   

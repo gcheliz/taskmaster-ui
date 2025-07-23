@@ -118,7 +118,7 @@ class GitMonitorService extends EventEmitter {
 
       logger.info(`Started monitoring repository: ${repositoryPath}`)
     } catch (error) {
-      logger.error(`Failed to add repository for monitoring: ${repositoryPath}`, error)
+      logger.error(`Failed to add repository for monitoring: ${repositoryPath}`, error as any)
       throw error
     }
   }
@@ -165,7 +165,7 @@ class GitMonitorService extends EventEmitter {
         const remoteStatus = await this.getRemoteStatus(repositoryPath)
         state.remoteStatus = remoteStatus
       } catch (error) {
-        logger.debug(`Could not get remote status for ${repositoryPath}:`, error)
+        logger.debug(`Could not get remote status for ${repositoryPath}:`, error as any)
       }
     }
 
@@ -232,7 +232,7 @@ class GitMonitorService extends EventEmitter {
         })
       }
     } catch (error) {
-      logger.error(`Error handling Git change for ${repositoryPath}:`, error)
+      logger.error(`Error handling Git change for ${repositoryPath}:`, error as any)
     }
   }
 
@@ -265,7 +265,7 @@ class GitMonitorService extends EventEmitter {
         })
       }
     } catch (error) {
-      logger.debug(`Error checking remote changes for ${repositoryPath}:`, error)
+      logger.debug(`Error checking remote changes for ${repositoryPath}:`, error as any)
     }
   }
 

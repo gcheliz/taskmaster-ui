@@ -58,6 +58,9 @@ export const WithoutEvents: Story = {
 }
 
 export const MultipleIndicators: Story = {
+  args: {
+    repositoryId: '1',
+  },
   render: () => (
     <div className="space-y-4">
       <div className="p-4 border rounded-lg">
@@ -92,6 +95,9 @@ export const MultipleIndicators: Story = {
 }
 
 export const InDashboard: Story = {
+  args: {
+    repositoryId: '1',
+  },
   render: () => (
     <div className="max-w-6xl mx-auto space-y-6">
       <div className="bg-white dark:bg-slate-900 rounded-lg shadow-sm p-6">

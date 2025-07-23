@@ -56,7 +56,7 @@ export const useGitWebSocket = ({
   onError,
   autoSubscribe = true,
 }: UseGitWebSocketOptions): UseGitWebSocketReturn => {
-  const { isConnected, sendMessage } = useWebSocket()
+  const { isConnected, send } = useWebSocket()
   const [isSubscribed, setIsSubscribed] = useState(false)
   const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'synced' | 'error'>('idle')
   const [lastEvent, setLastEvent] = useState<GitEvent | null>(null)
@@ -64,44 +64,48 @@ export const useGitWebSocket = ({
   // Subscribe to repository
   const subscribe = useCallback(() => {
     if (isConnected && !isSubscribed) {
-      sendMessage({
-        type: 'subscribe-repository',
-        repositoryId,
+      send({
+        type: 'subscribe-repository' as any,
+        payload: { repositoryId },
+        timestamp: new Date().toISOString(),
       })
       setIsSubscribed(true)
     }
-  }, [isConnected, isSubscribed, repositoryId, sendMessage])
+  }, [isConnected, isSubscribed, repositoryId, send])
 
   // Unsubscribe from repository
   const unsubscribe = useCallback(() => {
     if (isConnected && isSubscribed) {
-      sendMessage({
-        type: 'unsubscribe-repository',
-        repositoryId,
+      send({
+        type: 'unsubscribe-repository' as any,
+        payload: { repositoryId },
+        timestamp: new Date().toISOString(),
       })
       setIsSubscribed(false)
     }
-  }, [isConnected, isSubscribed, repositoryId, sendMessage])
+  }, [isConnected, isSubscribed, repositoryId, send])
 
   // Refresh repository
   const refresh = useCallback(() => {
     if (isConnected) {
-      sendMessage({
-        type: 'refresh-repository',
-        repositoryId,
+      send({
+        type: 'refresh-repository' as any,
+        payload: { repositoryId },
+        timestamp: new Date().toISOString(),
       })
     }
-  }, [isConnected, repositoryId, sendMessage])
+  }, [isConnected, repositoryId, send])
 
   // Get repository state
   const getRepositoryState = useCallback(() => {
     if (isConnected) {
-      sendMessage({
-        type: 'get-repository-state',
-        repositoryId,
+      send({
+        type: 'get-repository-state' as any,
+        payload: { repositoryId },
+        timestamp: new Date().toISOString(),
       })
     }
-  }, [isConnected, repositoryId, sendMessage])
+  }, [isConnected, repositoryId, send])
 
   // Handle incoming WebSocket messages
   useEffect(() => {
@@ -115,7 +119,7 @@ export const useGitWebSocket = ({
         }
 
         switch (message.type) {
-          case 'git-event':
+          case 'git-event': {
             const gitEvent: GitEvent = {
               type: message.event as GitEvent['type'],
               repositoryId: message.repositoryId,
@@ -124,8 +128,9 @@ export const useGitWebSocket = ({
             setLastEvent(gitEvent)
             onGitEvent?.(gitEvent)
             break
+          }
 
-          case 'repository-sync':
+          case 'repository-sync': {
             const syncData = message.data as { status: string }
             if (syncData.status === 'syncing') {
               setSyncStatus('syncing')
@@ -135,21 +140,24 @@ export const useGitWebSocket = ({
               onSyncStatusChange?.('synced')
             }
             break
+          }
 
-          case 'repository-error':
+          case 'repository-error': {
             setSyncStatus('error')
             onSyncStatusChange?.('error')
             const errorData = message.data as { error: string }
             onError?.(errorData.error)
             break
+          }
 
-          case 'repository-state':
+          case 'repository-state': {
             // Handle repository state updates
             const stateData = message.data as { subscribed?: boolean; refreshed?: boolean }
             if (stateData.subscribed !== undefined) {
               setIsSubscribed(stateData.subscribed)
             }
             break
+          }
         }
       } catch (error) {
         console.error('Failed to parse WebSocket message:', error)

@@ -175,7 +175,7 @@ export const GitSyncIndicator: React.FC<GitSyncIndicatorProps> = ({
         {isConnected && isSubscribed && (
           <Button
             variant="ghost"
-            size="xs"
+            size="sm"
             onClick={handleRefresh}
             disabled={isRefreshing}
             className="p-1"

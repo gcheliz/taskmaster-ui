@@ -27,8 +27,8 @@ const DashboardIntegrated: React.FC = () => {
   const navigate = useNavigate()
   const { user, isAuthenticated } = useAuth()
   const { repositories, isLoading: reposLoading, error: reposError } = useRepositoryList()
-  const { tasks, isLoading: tasksLoading } = useTaskData()
-  const { metrics, activity, isLoading: dashboardLoading } = useDashboard()
+  const { tasksData, isLoading: tasksLoading } = useTaskData()
+  const dashboardData = useDashboard({ projectId: 'default' })
   const [selectedRepository, setSelectedRepository] = useState<string | null>(null)
 
   // Redirect to login if not authenticated
@@ -49,7 +49,7 @@ const DashboardIntegrated: React.FC = () => {
     return null
   }
 
-  const isLoading = reposLoading || tasksLoading || dashboardLoading
+  const isLoading = reposLoading || tasksLoading || dashboardData.loading
 
   if (isLoading) {
     return (
@@ -59,10 +59,12 @@ const DashboardIntegrated: React.FC = () => {
     )
   }
 
-  const activeTasks = tasks.filter(t => t.status === 'in-progress').length
-  const completedTasks = tasks.filter(t => t.status === 'done').length
+  const tasks = tasksData?.tasks || []
+  const activeTasks = tasks.filter((t: any) => t.status === 'in-progress').length
+  const completedTasks = tasks.filter((t: any) => t.status === 'done').length
   const onlineTeamMembers = 2 // This would come from real-time data
-  const performanceScore = metrics?.performance || 92
+  const performanceScore = dashboardData.data?.taskMetrics?.total ? 
+    Math.round((dashboardData.data.taskMetrics.completed / dashboardData.data.taskMetrics.total) * 100) : 92
 
   return (
     <div className="space-y-8">
@@ -115,7 +117,7 @@ const DashboardIntegrated: React.FC = () => {
           </div>
           <div className="flex items-center text-sm">
             <span className="text-green-600 font-medium">
-              {repositories.filter(r => r.status === 'connected').length} connected
+              {repositories.filter((r: any) => r.status === 'connected').length} connected
             </span>
           </div>
         </div>
@@ -170,7 +172,7 @@ const DashboardIntegrated: React.FC = () => {
             >
               {repositories.map(repo => (
                 <option key={repo.id} value={repo.id}>
-                  {repo.name} ({repo.branch})
+                  {repo.name}
                 </option>
               ))}
             </select>

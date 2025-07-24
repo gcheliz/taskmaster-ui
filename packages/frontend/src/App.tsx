@@ -7,6 +7,7 @@ import { FocusProvider } from './contexts/FocusContext'
 import { initializeKeyboardDetection } from './utils/keyboard'
 import { AppRouter } from './routes/router'
 import { FPSMonitor } from './components/common/FPSMonitor'
+import { WebVitalsMonitor } from './components/Performance/WebVitals'
 
 // Create a client for React Query
 const queryClient = new QueryClient({
@@ -34,6 +35,16 @@ function App() {
             <RepositoryProvider>
               <AppRouter />
               <FPSMonitor enabled={process.env.NODE_ENV === 'development'} />
+              <WebVitalsMonitor 
+                enabled={true}
+                debug={process.env.NODE_ENV === 'development'}
+                onReport={(metric) => {
+                  // Send to analytics in production
+                  if (process.env.NODE_ENV === 'production') {
+                    console.log('Web Vitals:', metric)
+                  }
+                }}
+              />
             </RepositoryProvider>
           </NotificationProvider>
         </FocusProvider>

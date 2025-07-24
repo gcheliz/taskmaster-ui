@@ -1,9 +1,52 @@
-import { defineConfig } from 'vite'
+import { defineConfig, splitVendorChunkPlugin } from 'vite'
 import react from '@vitejs/plugin-react'
+import { visualizer } from 'rollup-plugin-visualizer'
+import compression from 'vite-plugin-compression'
+import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    // Split vendor chunks for better caching
+    splitVendorChunkPlugin(),
+    // Compress assets with gzip and brotli
+    compression({
+      algorithm: 'gzip',
+      ext: '.gz',
+    }),
+    compression({
+      algorithm: 'brotliCompress',
+      ext: '.br',
+    }),
+    // PWA support for offline capabilities
+    VitePWA({
+      registerType: 'autoUpdate',
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/api\./,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'api-cache',
+              expiration: {
+                maxEntries: 50,
+                maxAgeSeconds: 60 * 60 * 24, // 24 hours
+              },
+            },
+          },
+        ],
+      },
+    }),
+    // Bundle analyzer (only in analyze mode)
+    process.env.ANALYZE && visualizer({
+      open: true,
+      filename: 'dist/stats.html',
+      gzipSize: true,
+      brotliSize: true,
+    }),
+  ].filter(Boolean),
   server: {
     port: 5173,
     host: true, // Allow all connections
@@ -24,23 +67,69 @@ export default defineConfig({
     },
   },
   build: {
+    // Target modern browsers for smaller bundles
+    target: 'es2020',
     // Security-focused build options
-    minify: 'esbuild', // Use esbuild for minification (default and faster)
+    minify: 'terser', // Use terser for better minification
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+        pure_funcs: ['console.log', 'console.info', 'console.debug'],
+      },
+    },
+    // Chunk size warnings
+    chunkSizeWarningLimit: 1000, // 1MB
     rollupOptions: {
       output: {
-        // Prevent sensitive information in output
-        manualChunks: undefined,
-        // Generate random file names for better security
+        // Manual chunks for better code splitting
+        manualChunks: (id) => {
+          // Core vendor chunk
+          if (id.includes('node_modules')) {
+            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
+              return 'react-vendor';
+            }
+            if (id.includes('@tanstack/react-query') || id.includes('axios')) {
+              return 'data-fetching';
+            }
+            if (id.includes('recharts') || id.includes('d3')) {
+              return 'charts';
+            }
+            if (id.includes('lucide-react') || id.includes('@heroicons')) {
+              return 'icons';
+            }
+            if (id.includes('date-fns') || id.includes('dayjs')) {
+              return 'date-utils';
+            }
+            // All other vendor modules
+            return 'vendor';
+          }
+        },
+        // Generate optimized file names
         entryFileNames: 'assets/[name]-[hash].js',
-        chunkFileNames: 'assets/[name]-[hash].js',
-        assetFileNames: 'assets/[name]-[hash].[ext]',
+        chunkFileNames: (chunkInfo) => {
+          const facadeModuleId = chunkInfo.facadeModuleId ? chunkInfo.facadeModuleId.split('/').pop() : 'chunk';
+          return `assets/${facadeModuleId}-[hash].js`;
+        },
+        assetFileNames: (assetInfo) => {
+          const info = assetInfo.name.split('.');
+          const ext = info[info.length - 1];
+          if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(ext)) {
+            return `assets/images/[name]-[hash][extname]`;
+          } else if (/woff2?|ttf|otf|eot/i.test(ext)) {
+            return `assets/fonts/[name]-[hash][extname]`;
+          }
+          return `assets/[name]-[hash][extname]`;
+        },
       },
     },
     // Source maps for debugging (disable in production if needed)
     sourcemap: process.env.NODE_ENV === 'development',
     // CSS optimization
     cssMinify: true,
-    cssCodeSplit: false, // Bundle CSS into a single file for better caching
+    cssCodeSplit: true, // Split CSS for better caching
+    // Asset inlining threshold
+    assetsInlineLimit: 4096, // 4kb
   },
   css: {
     // CSS optimization configuration
@@ -56,4 +145,16 @@ export default defineConfig({
   },
   // Prevent leaking environment variables
   envPrefix: 'VITE_TASKMASTER_',
+  // Optimize deps
+  optimizeDeps: {
+    include: [
+      'react',
+      'react-dom',
+      'react-router-dom',
+      '@tanstack/react-query',
+      'axios',
+      'lucide-react',
+    ],
+    exclude: ['@vite-pwa/assets-generator'],
+  },
 })

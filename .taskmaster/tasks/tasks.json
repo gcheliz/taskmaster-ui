@@ -1339,7 +1339,7 @@
             "title": "Integration and E2E Tests with Playwright",
             "description": "Set up Playwright for end-to-end testing of the Task Master UI. Create integration tests for critical user workflows including task creation, status updates, drag-and-drop operations, and filter/search functionality. Implement visual regression testing for UI consistency. Configure test environments and data fixtures. Establish CI-friendly test execution with proper reporting.",
             "details": "",
-            "status": "in-progress",
+            "status": "done",
             "dependencies": [],
             "parentTaskId": 74
           },
@@ -1348,7 +1348,7 @@
             "title": "Performance Optimization and Code Splitting",
             "description": "Implement performance optimizations for production deployment. Configure webpack/vite for optimal code splitting and lazy loading. Implement React.lazy() for route-based code splitting. Optimize bundle sizes with tree shaking and proper externals configuration. Add performance monitoring with Web Vitals. Implement virtualization for large task lists. Configure CDN integration and asset optimization.",
             "details": "",
-            "status": "pending",
+            "status": "in-progress",
             "dependencies": [],
             "parentTaskId": 74
           },
@@ -1375,7 +1375,7 @@
     ],
     "metadata": {
       "created": "2025-07-15T21:22:03.992Z",
-      "updated": "2025-07-24T18:08:18.902Z",
+      "updated": "2025-07-24T18:15:59.666Z",
       "description": "Tasks for taskmaster-ui context"
     }
   },

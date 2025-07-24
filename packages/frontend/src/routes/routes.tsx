@@ -1,34 +1,34 @@
 import type { RouteObject } from 'react-router-dom'
-import { AppLayout } from '../components/Layout'
-import { ProtectedRoute } from './ProtectedRoute'
 import { lazy } from 'react'
 
-// Import pages directly for debugging
-import DashboardPage from '../pages/Dashboard'
-import SettingsPage from '../pages/Settings'
-import RepositoriesPage from '../pages/Repositories'
-import TerminalPage from '../pages/Terminal'
-import TaskBoardPage from '../pages/TaskBoard'
+// Lazy load all components for optimal code splitting
+const AppLayout = lazy(() => import('../components/Layout').then(module => ({ default: module.AppLayout })))
+const ProtectedRoute = lazy(() => import('./ProtectedRoute').then(module => ({ default: module.ProtectedRoute })))
 
-// Lazy load less critical pages
-const TasksPage = lazy(() => import('../pages/Tasks'))
-const TaskDetailPage = lazy(() => import('../pages/TaskDetail'))
-const AnalyticsPage = lazy(() => import('../pages/Analytics'))
-const TeamPage = lazy(() => import('../pages/Team'))
-const CalendarPage = lazy(() => import('../pages/Calendar'))
-const DocumentationPage = lazy(() => import('../pages/Documentation'))
-const ProfilePage = lazy(() => import('../pages/Profile'))
-const LoginPage = lazy(() => import('../pages/Login'))
-const RegisterPage = lazy(() => import('../pages/Register'))
-const ForgotPasswordPage = lazy(() => import('../pages/ForgotPassword'))
-const ResetPasswordPage = lazy(() => import('../pages/ResetPassword'))
-const NotFoundPage = lazy(() => import('../pages/NotFound'))
-const OnboardingPage = lazy(() => import('../pages/Onboarding'))
-const NavigationTestPage = lazy(() => import('../pages/NavigationTest'))
+// Lazy load all pages with webpackChunkName comments for better debugging
+const DashboardPage = lazy(() => import(/* webpackChunkName: "dashboard" */ '../pages/Dashboard'))
+const SettingsPage = lazy(() => import(/* webpackChunkName: "settings" */ '../pages/Settings'))
+const RepositoriesPage = lazy(() => import(/* webpackChunkName: "repositories" */ '../pages/Repositories'))
+const TerminalPage = lazy(() => import(/* webpackChunkName: "terminal" */ '../pages/Terminal'))
+const TaskBoardPage = lazy(() => import(/* webpackChunkName: "task-board" */ '../pages/TaskBoard'))
+const TasksPage = lazy(() => import(/* webpackChunkName: "tasks" */ '../pages/Tasks'))
+const TaskDetailPage = lazy(() => import(/* webpackChunkName: "task-detail" */ '../pages/TaskDetail'))
+const AnalyticsPage = lazy(() => import(/* webpackChunkName: "analytics" */ '../pages/Analytics'))
+const TeamPage = lazy(() => import(/* webpackChunkName: "team" */ '../pages/Team'))
+const CalendarPage = lazy(() => import(/* webpackChunkName: "calendar" */ '../pages/Calendar'))
+const DocumentationPage = lazy(() => import(/* webpackChunkName: "docs" */ '../pages/Documentation'))
+const ProfilePage = lazy(() => import(/* webpackChunkName: "profile" */ '../pages/Profile'))
+const LoginPage = lazy(() => import(/* webpackChunkName: "login" */ '../pages/Login'))
+const RegisterPage = lazy(() => import(/* webpackChunkName: "register" */ '../pages/Register'))
+const ForgotPasswordPage = lazy(() => import(/* webpackChunkName: "forgot-password" */ '../pages/ForgotPassword'))
+const ResetPasswordPage = lazy(() => import(/* webpackChunkName: "reset-password" */ '../pages/ResetPassword'))
+const NotFoundPage = lazy(() => import(/* webpackChunkName: "not-found" */ '../pages/NotFound'))
+const OnboardingPage = lazy(() => import(/* webpackChunkName: "onboarding" */ '../pages/Onboarding'))
+const NavigationTestPage = lazy(() => import(/* webpackChunkName: "nav-test" */ '../pages/NavigationTest'))
 
 // Import the Auth page wrapper
-const AuthPageWrapper = lazy(() => import('../pages/Auth'))
-const OAuthCallback = lazy(() => import('../components/Auth/OAuthCallback').then(module => ({ default: module.OAuthCallback })))
+const AuthPageWrapper = lazy(() => import(/* webpackChunkName: "auth" */ '../pages/Auth'))
+const OAuthCallback = lazy(() => import(/* webpackChunkName: "oauth-callback" */ '../components/Auth/OAuthCallback').then(module => ({ default: module.OAuthCallback })))
 
 export const routes: RouteObject[] = [
   {

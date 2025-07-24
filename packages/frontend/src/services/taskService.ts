@@ -68,7 +68,7 @@ export class TaskService {
         )
       }
 
-      const tasksData: TasksData = await response.json()
+      const tasksData = await response.json() as TasksData
 
       // Validate and transform data
       const validatedData = this.validateTasksData(tasksData)
@@ -231,11 +231,11 @@ export class TaskService {
       let tasksData: TasksData
 
       // Handle TaskMaster project format (project -> tasks structure)
-      if (response && typeof response === 'object' && !Array.isArray(response.tasks)) {
+      if (response && typeof response === 'object' && !Array.isArray((response as any).tasks)) {
         // Check if it's a TaskMaster project format
         const projectKeys = Object.keys(response)
         if (projectKeys.length > 0) {
-          const firstProject = response[projectKeys[0]]
+          const firstProject = (response as any)[projectKeys[0]]
           if (firstProject && firstProject.tasks) {
             tasksData = firstProject
           } else {
@@ -246,7 +246,7 @@ export class TaskService {
         }
       } else {
         // Handle direct TasksData format
-        tasksData = response
+        tasksData = response as TasksData
       }
 
       // Validate and cache the result

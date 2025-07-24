@@ -164,7 +164,7 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
   // Load settings data when component mounts or settings change
   useEffect(() => {
     if (state.settings?.notificationSettings) {
-      setSettings(state.settings.notificationSettings)
+      setSettings(state.settings.notificationSettings as unknown as NotificationSettingsData)
     } else if (state.settings) {
       // Map from flat structure to notification settings structure
       const notificationSettings: NotificationSettingsData = {

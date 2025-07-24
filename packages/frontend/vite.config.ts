@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { visualizer } from 'rollup-plugin-visualizer'
+import type { Plugin } from 'vite'
 import compression from 'vite-plugin-compression'
 import { VitePWA } from 'vite-plugin-pwa'
 
@@ -43,7 +44,7 @@ export default defineConfig({
       filename: 'dist/stats.html',
       gzipSize: true,
       brotliSize: true,
-    })] : []),
+    }) as Plugin] : []),
   ],
   server: {
     port: 5173,

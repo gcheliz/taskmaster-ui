@@ -90,7 +90,7 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave, clas
   // Load settings data when component mounts or settings change
   useEffect(() => {
     if (state.settings?.securitySettings) {
-      setSettings(state.settings.securitySettings)
+      setSettings(state.settings.securitySettings as unknown as SecuritySettingsData)
     } else if (state.settings) {
       // Map from flat structure to security settings structure
       const securitySettings: SecuritySettingsData = {

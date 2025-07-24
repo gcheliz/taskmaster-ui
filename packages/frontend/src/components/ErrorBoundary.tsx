@@ -1,8 +1,9 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react'
+import React, { Component } from 'react'
+import type { ErrorInfo, ReactNode } from 'react'
 import * as Sentry from '@sentry/react'
 import { AlertTriangle, RefreshCw, Home } from 'lucide-react'
 import { Button } from './ui/atoms/Button'
-import { Card } from './ui/molecules/Card'
+import { Card } from './ui/atoms/Card'
 
 interface ErrorBoundaryProps {
   children: ReactNode
@@ -130,7 +131,7 @@ function AppErrorFallback({ error, errorId, onReset }: { error: Error; errorId: 
           </p>
         )}
         <div className="space-x-4">
-          <Button onClick={onReset} variant="default">
+          <Button onClick={onReset} variant="primary">
             <RefreshCw className="h-4 w-4 mr-2" />
             Try Again
           </Button>
@@ -170,7 +171,7 @@ function PageErrorFallback({ error, errorId, onReset }: { error: Error; errorId:
           </p>
         )}
         <div className="space-x-3">
-          <Button onClick={onReset} size="sm" variant="default">
+          <Button onClick={onReset} size="sm" variant="primary">
             Try Again
           </Button>
           <Button onClick={() => window.history.back()} size="sm" variant="outline">

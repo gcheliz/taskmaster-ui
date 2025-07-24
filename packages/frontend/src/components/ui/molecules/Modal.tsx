@@ -282,8 +282,20 @@ const ModalClose = React.forwardRef<
 })
 ModalClose.displayName = 'ModalClose'
 
+// Create compound component
+const ModalComponent = Object.assign(Modal, {
+  Trigger: ModalTrigger,
+  Content: ModalContent,
+  Header: ModalHeader,
+  Title: ModalTitle,
+  Description: ModalDescription,
+  Body: ModalBody,
+  Footer: ModalFooter,
+  Close: ModalClose,
+})
+
 export {
-  Modal,
+  ModalComponent as Modal,
   ModalTrigger,
   ModalContent,
   ModalHeader,

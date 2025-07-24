@@ -47,11 +47,11 @@ const TaskModalDemo = ({ mode = 'create', task = null }: { mode?: 'create' | 'ed
         onClose={() => setIsOpen(false)}
         mode={mode}
         task={task}
-        onSave={(taskData) => {
+        onSave={async (taskData) => {
           console.log('Task saved:', taskData)
           setIsOpen(false)
         }}
-        onDelete={task ? (taskId) => {
+        onDelete={task ? async (taskId) => {
           console.log('Task deleted:', taskId)
           setIsOpen(false)
         } : undefined}

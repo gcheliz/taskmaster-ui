@@ -146,11 +146,11 @@ class TaskMasterWebSocketService implements WebSocketService {
       this.eventListeners.set(eventType, new Set())
     }
 
-    this.eventListeners.get(eventType)!.add(callback)
+    this.eventListeners.get(eventType)!.add(callback as (...args: unknown[]) => void)
 
     // Return unsubscribe function
     return () => {
-      this.unsubscribe(eventType, callback)
+      this.unsubscribe(eventType, callback as (...args: unknown[]) => void)
     }
   }
 

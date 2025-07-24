@@ -22,6 +22,7 @@ const errorHandler_1 = require("./middleware/errorHandler");
 const database_1 = __importDefault(require("./services/database"));
 const environment_1 = require("./config/environment");
 const winston_adapter_1 = require("./utils/winston-adapter");
+const sentry_1 = require("./config/sentry");
 // Validate environment and secrets
 (0, environment_1.validateProductionSecrets)();
 (0, environment_1.logConfiguration)();
@@ -67,6 +68,8 @@ app.use((0, express_session_1.default)({
 // Passport middleware
 app.use(passport_1.default.initialize());
 app.use(passport_1.default.session());
+// Sentry request and tracing middleware (must be after session)
+(0, sentry_1.setupSentryMiddleware)(app);
 // Security headers
 app.use((req, res, next) => {
     res.header('X-Content-Type-Options', 'nosniff');
@@ -92,6 +95,9 @@ app.use('/api/performance', performanceRoutes_1.default);
 app.use('/api/settings', settingsRoutes_1.default);
 // Error handling middleware
 app.use(errorHandler_1.notFoundHandler);
+// Sentry error handler (must be before other error middleware)
+(0, sentry_1.setupSentryErrorHandler)(app);
+// Custom error handler
 app.use(errorHandler_1.errorHandler);
 exports.default = app;
 //# sourceMappingURL=app.js.map

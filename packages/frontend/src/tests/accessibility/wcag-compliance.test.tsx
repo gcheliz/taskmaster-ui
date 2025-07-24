@@ -42,7 +42,7 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
 
       it('should have aria-label for icon buttons', () => {
         render(
-          <Button variant="icon" size="sm">
+          <Button size="icon" aria-label="Menu">
             <span className="sr-only">Menu</span>
             ☰
           </Button>
@@ -313,7 +313,7 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
         
         const results = await axe(container)
         const ariaViolations = results.violations.filter(v => 
-          v.id.includes('aria') || v.tags.includes('aria')
+          v.id.includes('aria') || v.tags.includes('aria' as any)
         )
         
         expect(ariaViolations).toHaveLength(0)

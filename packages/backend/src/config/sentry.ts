@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/node'
 import { ProfilingIntegration } from '@sentry/profiling-node'
 import * as Tracing from '@sentry/tracing'
-import { Express, Request, Response, NextFunction } from 'express'
+import { Application, Request, Response, NextFunction } from 'express'
 import { logger } from '../utils/winston-adapter'
 
 interface SentryConfig {
@@ -13,7 +13,7 @@ interface SentryConfig {
   debug?: boolean
 }
 
-export function initSentry(app: Express): void {
+export function initSentry(app: Application): void {
   const sentryDsn = process.env.SENTRY_DSN
 
   if (!sentryDsn) {
@@ -36,14 +36,14 @@ export function initSentry(app: Express): void {
       // Enable HTTP calls tracing
       new Sentry.Integrations.Http({ tracing: true }),
       // Enable Express.js middleware tracing
-      new Tracing.Integrations.Express({ app }),
+      new Tracing.Integrations.Express({ app: app as any }),
       // Enable profiling
       new ProfilingIntegration(),
       // Prisma integration
       new Tracing.Integrations.Prisma({ client: true }),
       // Additional integrations
       new Sentry.Integrations.OnUncaughtException({
-        onFatalError: (err) => {
+        onFatalError: (err: Error) => {
           logger.error('Fatal error occurred:', err)
           process.exit(1)
         },
@@ -53,7 +53,7 @@ export function initSentry(app: Express): void {
       }),
     ],
     // Configure tracing
-    tracesSampler: (samplingContext) => {
+    tracesSampler: (samplingContext: any) => {
       // Don't trace health checks
       if (samplingContext.request?.url?.includes('/health')) {
         return 0
@@ -66,7 +66,7 @@ export function initSentry(app: Express): void {
       return config.tracesSampleRate || 0.1
     },
     // Filter out certain errors
-    beforeSend(event, hint) {
+    beforeSend(event: any, hint: any) {
       // Filter out expected errors
       if (event.exception?.values?.[0]?.type === 'ValidationError') {
         return null
@@ -83,7 +83,7 @@ export function initSentry(app: Express): void {
       return event
     },
     // Configure breadcrumbs
-    beforeBreadcrumb(breadcrumb, hint) {
+    beforeBreadcrumb(breadcrumb: any, hint: any) {
       // Filter out noisy breadcrumbs
       if (breadcrumb.category === 'console' && breadcrumb.level === 'debug') {
         return null
@@ -103,7 +103,7 @@ export function initSentry(app: Express): void {
 }
 
 // Sentry middleware setup
-export function setupSentryMiddleware(app: Express): void {
+export function setupSentryMiddleware(app: Application): void {
   // RequestHandler creates a separate execution context using domains
   app.use(Sentry.Handlers.requestHandler())
 
@@ -112,7 +112,7 @@ export function setupSentryMiddleware(app: Express): void {
 }
 
 // Sentry error handler (must be before any other error middleware)
-export function setupSentryErrorHandler(app: Express): void {
+export function setupSentryErrorHandler(app: Application): void {
   app.use(Sentry.Handlers.errorHandler({
     shouldHandleError(error) {
       // Capture 4xx errors in development
@@ -120,7 +120,7 @@ export function setupSentryErrorHandler(app: Express): void {
         return true
       }
       // Only capture 5xx errors in production
-      return !error.status || error.status >= 500
+      return !error.status || (typeof error.status === 'number' && error.status >= 500)
     },
   }))
 }

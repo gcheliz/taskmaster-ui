@@ -13,7 +13,7 @@ export interface TerminalSession {
 export interface TerminalWebSocketMessage {
   type: 'command' | 'input' | 'kill' | 'resize' | 'create-session' | 'close-session'
   sessionId?: string
-  data?: string | { cols?: number; rows?: number; command?: string; input?: string }
+  data?: string | { cols?: number; rows?: number; command?: string; input?: string; workingDirectory?: string; repositoryPath?: string }
 }
 
 export interface TerminalWebSocketResponse {

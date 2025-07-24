@@ -8,7 +8,10 @@ const websocket_1 = require("./services/websocket");
 const realtimeTaskSyncService_1 = require("./services/realtimeTaskSyncService");
 const terminalWebSocketService_1 = require("./services/terminalWebSocketService");
 const terminalService_1 = require("./services/terminalService");
+const sentry_1 = require("./config/sentry");
 const PORT = process.env.PORT || 3001;
+// Initialize Sentry before starting the server
+(0, sentry_1.initSentry)(app_1.default);
 // Only start the server if this file is run directly
 if (require.main === module) {
     const server = app_1.default.listen(PORT, () => {

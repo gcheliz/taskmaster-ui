@@ -518,8 +518,20 @@ const DropdownRadioItem = React.forwardRef<HTMLDivElement, DropdownRadioItemProp
 )
 DropdownRadioItem.displayName = 'DropdownRadioItem'
 
+// Create compound component
+const DropdownComponent = Object.assign(Dropdown, {
+  Trigger: DropdownTrigger,
+  Content: DropdownContent,
+  Item: DropdownItem,
+  Label: DropdownLabel,
+  Separator: DropdownSeparator,
+  CheckboxItem: DropdownCheckboxItem,
+  RadioGroup: DropdownRadioGroup,
+  RadioItem: DropdownRadioItem,
+})
+
 export {
-  Dropdown,
+  DropdownComponent as Dropdown,
   DropdownTrigger,
   DropdownContent,
   DropdownItem,

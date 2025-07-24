@@ -319,8 +319,15 @@ const TabsContent = React.forwardRef<HTMLDivElement, TabsContentProps>(
 )
 TabsContent.displayName = 'TabsContent'
 
+// Create compound component
+const TabsComponent = Object.assign(Tabs, {
+  List: TabsList,
+  Trigger: TabsTrigger,
+  Content: TabsContent,
+})
+
 export {
-  Tabs,
+  TabsComponent as Tabs,
   TabsList,
   TabsTrigger,
   TabsContent,

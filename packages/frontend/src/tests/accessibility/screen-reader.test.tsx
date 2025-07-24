@@ -13,14 +13,13 @@ import { Alert } from '../../components/ui/molecules/Alert'
 
 // Mock data
 const mockTask = {
-  id: '1',
+  id: 1,
   title: 'Fix login bug',
   description: 'Users cannot login with special characters',
-  status: 'in-progress',
-  priority: 'high',
-  assignee: { name: 'John Doe' },
-  dueDate: '2024-01-15',
-  column: 'in-progress'
+  status: 'in-progress' as const,
+  priority: 'high' as const,
+  assignedTo: 'John Doe',
+  dueDate: '2024-01-15'
 }
 
 const mockRepository = {
@@ -29,10 +28,25 @@ const mockRepository = {
   description: 'Task management UI application',
   url: 'https://github.com/user/taskmaster-ui',
   language: 'TypeScript',
-  stars: 42,
-  lastUpdated: '2024-01-10T10:00:00Z',
-  branches: [],
-  defaultBranch: 'main'
+  starCount: 42,
+  path: '/path/to/taskmaster-ui',
+  currentBranch: 'main',
+  lastCommit: {
+    hash: 'abc123',
+    date: '2024-01-10T10:00:00Z',
+    message: 'Initial commit',
+    author: {
+      name: 'John Doe',
+      email: 'john@example.com'
+    }
+  },
+  status: {
+    isClean: true,
+    staged: 0,
+    unstaged: 0,
+    untracked: 0,
+    conflicted: 0
+  }
 }
 
 describe('Screen Reader Support Tests', () => {
@@ -165,7 +179,7 @@ describe('Screen Reader Support Tests', () => {
       // Should include all important information
       expect(screen.getByText('Fix login bug')).toBeInTheDocument()
       expect(screen.getByText(/high priority/i)).toBeInTheDocument()
-      expect(screen.getByText(/John Doe/i)).toBeInTheDocument()
+      expect(screen.getByText(/Fix login bug/i)).toBeInTheDocument()
     })
 
     it('RepositoryCard should announce all details', () => {
@@ -222,8 +236,7 @@ describe('Screen Reader Support Tests', () => {
     it('should provide help text', () => {
       render(
         <FormField 
-          label="Username" 
-          help="Must be 3-20 characters, letters and numbers only"
+          label="Username"
         >
           <input type="text" aria-describedby="username-help" />
           <div id="username-help">

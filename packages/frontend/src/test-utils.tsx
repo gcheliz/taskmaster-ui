@@ -1,5 +1,7 @@
-import React, { ReactElement } from 'react'
-import { render, RenderOptions, RenderResult } from '@testing-library/react'
+import React from 'react'
+import type { ReactElement } from 'react'
+import { render } from '@testing-library/react'
+import type { RenderOptions, RenderResult } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { BrowserRouter } from 'react-router-dom'
 import { DndContext } from '@dnd-kit/core'
@@ -81,17 +83,13 @@ export { customRender as render, userEvent }
 
 // Common test data factories
 export const createMockTask = (overrides = {}) => ({
-  id: '1',
+  id: 1,
   title: 'Test Task',
   description: 'Test Description',
+  status: 'pending' as const,
   priority: 'medium' as const,
   complexity: 3,
-  assignee: {
-    name: 'John Doe',
-    initials: 'JD',
-    color: 'bg-blue-500',
-  },
-  column: 'todo',
+  assignedTo: 'John Doe',
   position: 0,
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),

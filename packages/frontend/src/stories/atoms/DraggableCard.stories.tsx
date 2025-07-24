@@ -308,7 +308,7 @@ export const InteractiveDragDemo: Story = {
     }
 
     const getTaskContent = (id: string) => {
-      const tasks: Record<string, unknown> = {
+      const tasks: Record<string, { title: string; priority: string }> = {
         'item-1': { title: 'Review pull request', priority: 'high' },
         'item-2': { title: 'Update documentation', priority: 'medium' },
         'item-3': { title: 'Fix login bug', priority: 'high' },

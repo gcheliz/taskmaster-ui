@@ -37,7 +37,7 @@ export const AnimatedCard: React.FC<AnimatedCardProps> = ({
         borderColor: hoverBorderColor 
       } : hoverLift.whileHover}
       transition={{
-        ...hoverLift.transition,
+        ...(hoverLift.transition || {}),
         delay,
         duration: 0.4,
         ease: 'easeOut'

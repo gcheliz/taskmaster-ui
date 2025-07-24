@@ -22,6 +22,7 @@ import {
   logConfiguration,
 } from './config/environment';
 import { logger } from './utils/winston-adapter';
+import { setupSentryMiddleware, setupSentryErrorHandler } from './config/sentry';
 
 // Validate environment and secrets
 validateProductionSecrets();
@@ -114,6 +115,11 @@ app.use('/api/settings', settingsRoutes);
 
 // Error handling middleware
 app.use(notFoundHandler);
+
+// Sentry error handler (must be before other error middleware)
+setupSentryErrorHandler(app);
+
+// Custom error handler
 app.use(errorHandler);
 
 export default app;

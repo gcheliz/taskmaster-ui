@@ -188,7 +188,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({
   // Load settings data when component mounts or settings change
   useEffect(() => {
     if (state.settings?.integrationSettings) {
-      setSettings(state.settings.integrationSettings)
+      setSettings(state.settings.integrationSettings as unknown as IntegrationsSettingsData)
     }
   }, [state.settings])
 

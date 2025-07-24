@@ -152,7 +152,7 @@ export const hoverLift = {
     scale: 0.98,
     transform: 'scale(0.98) translateZ(0)'
   },
-  transition: smoothTransition,
+  transition: smoothTransition as any,
 }
 
 // Focus animations - using outline instead of box-shadow for better performance

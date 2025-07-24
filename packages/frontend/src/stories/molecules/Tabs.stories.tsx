@@ -7,7 +7,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '../../components/ui/molecules/Card'
+} from '../../components/ui/atoms/Card'
 import { Badge } from '../../components/ui/atoms/Badge'
 import { Button } from '../../components/ui/atoms/Button'
 import {

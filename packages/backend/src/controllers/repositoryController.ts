@@ -29,7 +29,7 @@ export class RepositoryController {
     try {
       logger.logApiRequest(req.method, req.path, context);
 
-      const validateRequest: RepositoryValidateRequest = req.validatedBody;
+      const validateRequest: RepositoryValidateRequest = (req as any).validatedBody || req.body;
       const {
         repositoryPath,
         validateGit = true,

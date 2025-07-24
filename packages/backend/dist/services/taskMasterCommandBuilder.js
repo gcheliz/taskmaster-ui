@@ -28,15 +28,15 @@ class TaskMasterCommandBuilder {
         switch (operation) {
             case 'init':
                 if (args.prdFile) {
-                    commandArgs.push(args.prdFile);
+                    commandArgs.push(String(args.prdFile));
                 }
                 break;
             case 'list':
                 if (args.status) {
-                    commandArgs.push(args.status);
+                    commandArgs.push(String(args.status));
                 }
                 if (args.priority) {
-                    commandArgs.push(args.priority);
+                    commandArgs.push(String(args.priority));
                 }
                 this.addTagFlag(commandArgs, args.tag);
                 break;
@@ -65,7 +65,7 @@ class TaskMasterCommandBuilder {
                 if (!args.file) {
                     throw new Error('PRD file path is required for parse-prd command');
                 }
-                commandArgs.push(args.file);
+                commandArgs.push(String(args.file));
                 if (args.append) {
                     commandArgs.push('--append');
                 }

@@ -50,7 +50,7 @@ class TaskMasterController {
                     if (!args.id || !args.status) {
                         throw new Error('Task ID and status are required for set-status operation');
                     }
-                    result = await this.taskMasterService.updateTaskStatus(repositoryPath, args.id.toString(), args.status, { tag: options.tag });
+                    result = await this.taskMasterService.updateTaskStatus(repositoryPath, args.id.toString(), String(args.status), { tag: options.tag });
                     break;
                 case 'next':
                     result = await this.taskMasterService.getNextTask(repositoryPath, {
@@ -61,7 +61,7 @@ class TaskMasterController {
                     if (!args.file) {
                         throw new Error('PRD file path is required for parse-prd operation');
                     }
-                    result = await this.taskMasterService.parsePRD(repositoryPath, args.file, {
+                    result = await this.taskMasterService.parsePRD(repositoryPath, String(args.file), {
                         append: args.append,
                     });
                     break;
@@ -69,7 +69,7 @@ class TaskMasterController {
                     if (!args.id && !args.all) {
                         throw new Error('Task ID or --all flag is required for expand operation');
                     }
-                    result = await this.taskMasterService.expandTask(repositoryPath, args.id?.toString(), {
+                    result = await this.taskMasterService.expandTask(repositoryPath, args.id?.toString() || '', {
                         research: args.research,
                         force: args.force,
                         tag: options.tag,

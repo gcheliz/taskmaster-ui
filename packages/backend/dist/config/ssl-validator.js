@@ -100,7 +100,7 @@ function validateCertificateFile(filePath, type) {
     catch (error) {
         return {
             valid: false,
-            error: `Failed to validate ${type} file: ${error.message}`,
+            error: `Failed to validate ${type} file: ${error instanceof Error ? error.message : String(error)}`,
         };
     }
 }
@@ -252,7 +252,7 @@ async function testSSLConnection() {
         });
     }
     catch (error) {
-        return { success: false, error: error.message };
+        return { success: false, error: error instanceof Error ? error.message : String(error) };
     }
 }
 /**
@@ -320,7 +320,7 @@ function checkSSLCertificateExpiration() {
         };
     }
     catch (error) {
-        return { expiring: false, error: error.message };
+        return { expiring: false, error: error instanceof Error ? error.message : String(error) };
     }
 }
 //# sourceMappingURL=ssl-validator.js.map

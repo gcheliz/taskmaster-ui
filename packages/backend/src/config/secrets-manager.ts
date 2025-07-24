@@ -235,7 +235,7 @@ export class SecretsManager {
           ),
         ]);
       } catch (error) {
-        lastError = error;
+        lastError = error as Error;
 
         if (attempt === this.config.retries) {
           break;

@@ -89,7 +89,7 @@ function validateCertificateFile(
   } catch (error) {
     return {
       valid: false,
-      error: `Failed to validate ${type} file: ${error.message}`,
+      error: `Failed to validate ${type} file: ${error instanceof Error ? error.message : String(error)}`,
     };
   }
 }
@@ -275,7 +275,7 @@ export async function testSSLConnection(): Promise<{
       });
     });
   } catch (error) {
-    return { success: false, error: error.message };
+    return { success: false, error: error instanceof Error ? error.message : String(error) };
   }
 }
 
@@ -359,6 +359,6 @@ export function checkSSLCertificateExpiration(): {
       daysUntilExpiration,
     };
   } catch (error) {
-    return { expiring: false, error: error.message };
+    return { expiring: false, error: error instanceof Error ? error.message : String(error) };
   }
 }

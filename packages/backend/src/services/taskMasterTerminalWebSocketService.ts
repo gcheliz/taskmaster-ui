@@ -492,7 +492,7 @@ export class TaskMasterTerminalWebSocketService {
   /**
    * Authenticate WebSocket connection
    */
-  private async authenticateConnection(req: IncomingMessage): Promise<unknown> {
+  private async authenticateConnection(req: IncomingMessage): Promise<{ id: string; email: string } | null> {
     // Extract token from query string or headers
     const url = new URL(req.url || '', `http://${req.headers.host}`);
     const token =

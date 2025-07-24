@@ -3,14 +3,10 @@ import AuthService from '../services/authService';
 import { env } from '../config/environment';
 import { logger } from '../utils/winston-adapter';
 import { ApiResponse } from '../types/common';
-import { User } from '@prisma/client';
+import { User, Prisma } from '@prisma/client';
 
-export interface AuthenticatedRequest extends Request {
-  user?: User & {
-    id: string;
-    userId?: string;
-  };
-}
+// Use Express's global Request type which already has user defined
+export type AuthenticatedRequest = Request;
 
 export class AuthController {
   /**
@@ -169,9 +165,8 @@ export class AuthController {
         });
       }
 
-      const user = await AuthService.getUserById(
-        req.user.userId || req.user.id
-      );
+      const userId = (req.user as any).userId || (req.user as any).id || '';
+      const user = await AuthService.getUserById(userId);
 
       res.json({
         success: true,
@@ -200,7 +195,10 @@ export class AuthController {
       }
 
       // The user object contains the result from AuthService.findOrCreateOAuthUser
-      const { user, token } = req.user;
+      // Check if req.user has the OAuth result structure
+      const oauthResult = req.user as unknown as { user?: User; token?: string };
+      const user = oauthResult.user || req.user;
+      const token = oauthResult.token || '';
 
       // Redirect to frontend with token and user data
       const redirectUrl = new URL(`${env.CLIENT_URL}/auth/callback`);

@@ -186,7 +186,7 @@ class DashboardController {
                 id: projectId,
                 name: path_1.default.basename(projectPath),
                 path: projectPath,
-                lastUpdated: metadata.updated || new Date().toISOString(),
+                lastUpdated: String(metadata.updated || new Date().toISOString()),
             },
             taskMetrics,
             subtaskMetrics,
@@ -235,9 +235,9 @@ class DashboardController {
     calculateSubtaskMetrics(tasks) {
         const allSubtasks = tasks.flatMap(task => task.subtasks || []);
         const total = allSubtasks.length;
-        const completed = allSubtasks.filter(subtask => subtask.status === 'done').length;
-        const inProgress = allSubtasks.filter(subtask => subtask.status === 'in-progress').length;
-        const pending = allSubtasks.filter(subtask => subtask.status === 'pending').length;
+        const completed = allSubtasks.filter((subtask) => subtask.status === 'done').length;
+        const inProgress = allSubtasks.filter((subtask) => subtask.status === 'in-progress').length;
+        const pending = allSubtasks.filter((subtask) => subtask.status === 'pending').length;
         return {
             total,
             completed,

@@ -134,7 +134,12 @@ export class PerformanceController {
       const prisma = dbService.getPrisma();
 
       const startTime = Date.now();
-      const results: unknown[] = [];
+      const results: Array<{
+        test: string;
+        duration: number;
+        recordCount: number;
+        status?: string;
+      }> = [];
 
       // Test 1: Simple SELECT query
       const simpleStart = Date.now();
@@ -142,6 +147,7 @@ export class PerformanceController {
       results.push({
         test: 'Simple SELECT',
         duration: Date.now() - simpleStart,
+        recordCount: 1,
         status: 'passed',
       });
 
@@ -154,8 +160,8 @@ export class PerformanceController {
       results.push({
         test: 'Count queries',
         duration: Date.now() - countStart,
+        recordCount: projectCount + taskCount,
         status: 'passed',
-        results: { projectCount, taskCount },
       });
 
       // Test 3: Join query (tasks with projects)
@@ -169,8 +175,8 @@ export class PerformanceController {
       results.push({
         test: 'Join query (tasks with projects)',
         duration: Date.now() - joinStart,
+        recordCount: tasksWithProjects.length,
         status: 'passed',
-        resultCount: tasksWithProjects.length,
       });
 
       // Test 4: Complex query with filtering
@@ -195,8 +201,8 @@ export class PerformanceController {
       results.push({
         test: 'Complex filtered query',
         duration: Date.now() - complexStart,
+        recordCount: complexQuery.length,
         status: 'passed',
-        resultCount: complexQuery.length,
       });
 
       const totalTime = Date.now() - startTime;
@@ -328,20 +334,21 @@ export class PerformanceController {
 
     // Analyze EXPLAIN plans for additional recommendations
     explainResults.forEach(result => {
-      if (result.plan && Array.isArray(result.plan)) {
-        const plan = result.plan[0];
+      const typedResult = result as { plan?: Array<{ Plan?: unknown; 'Execution Time'?: number }> };
+      if (typedResult.plan && Array.isArray(typedResult.plan)) {
+        const plan = typedResult.plan[0];
         if (plan && plan.Plan) {
           const executionTime = plan['Execution Time'];
-          if (executionTime > 100) {
+          if (executionTime && executionTime > 100) {
             recommendations.push(
-              `Consider optimizing: ${result.query} (${executionTime}ms execution time)`
+              `Consider optimizing: ${(result as { query?: string }).query} (${executionTime}ms execution time)`
             );
           }
 
           // Check for sequential scans
           if (this.hasSequentialScan(plan.Plan)) {
             recommendations.push(
-              `Add indexes to avoid sequential scans in: ${result.query}`
+              `Add indexes to avoid sequential scans in: ${(result as any).query || 'unknown query'}`
             );
           }
         }

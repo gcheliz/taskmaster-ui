@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Prisma } from '@prisma/client';
 import { logger } from '../utils/winston-adapter';
 
 const prisma = new PrismaClient();
@@ -24,11 +24,11 @@ export interface CreateUserSettingsData {
   pushNotifications?: boolean | null;
   slackNotifications?: boolean | null;
   desktopNotifications?: boolean | null;
-  notificationSettings?: Record<string, unknown>;
-  integrationSettings?: Record<string, unknown>;
+  notificationSettings?: Prisma.InputJsonValue | null;
+  integrationSettings?: Prisma.InputJsonValue | null;
   twoFactorEnabled?: boolean | null;
   loginNotifications?: boolean | null;
-  securitySettings?: Record<string, unknown>;
+  securitySettings?: Prisma.InputJsonValue | null;
   dashboardLayout?: string | null;
   cardsPerRow?: number | null;
   showQuickActions?: boolean | null;
@@ -46,42 +46,42 @@ export interface UserSettingsResponse {
   id: string;
   userId: string;
   // Profile settings
-  firstName?: string | null;
-  lastName?: string | null;
-  bio?: string | null;
-  jobTitle?: string | null;
-  company?: string | null;
-  location?: string | null;
-  website?: string | null;
-  timezone?: string | null;
-  language?: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  bio: string | null;
+  jobTitle: string | null;
+  company: string | null;
+  location: string | null;
+  website: string | null;
+  timezone: string | null;
+  language: string | null;
   // Appearance settings
-  theme?: string | null;
-  colorScheme?: string | null;
-  fontSize?: string | null;
-  density?: string | null;
-  animations?: boolean | null;
-  glassmorphism?: boolean | null;
+  theme: string | null;
+  colorScheme: string | null;
+  fontSize: string | null;
+  density: string | null;
+  animations: boolean | null;
+  glassmorphism: boolean | null;
   // Notification settings
-  emailNotifications?: boolean | null;
-  pushNotifications?: boolean | null;
-  slackNotifications?: boolean | null;
-  desktopNotifications?: boolean | null;
-  notificationSettings?: Record<string, unknown>;
+  emailNotifications: boolean | null;
+  pushNotifications: boolean | null;
+  slackNotifications: boolean | null;
+  desktopNotifications: boolean | null;
+  notificationSettings: Prisma.JsonValue | null;
   // Integration settings
-  integrationSettings?: Record<string, unknown>;
+  integrationSettings: Prisma.JsonValue | null;
   // Security settings
-  twoFactorEnabled?: boolean | null;
-  loginNotifications?: boolean | null;
-  securitySettings?: Record<string, unknown>;
+  twoFactorEnabled: boolean | null;
+  loginNotifications: boolean | null;
+  securitySettings: Prisma.JsonValue | null;
   // Dashboard preferences
-  dashboardLayout?: string | null;
-  cardsPerRow?: number | null;
-  showQuickActions?: boolean | null;
+  dashboardLayout: string | null;
+  cardsPerRow: number | null;
+  showQuickActions: boolean | null;
   // Accessibility
-  highContrast?: boolean | null;
-  reducedMotion?: boolean | null;
-  focusIndicators?: boolean | null;
+  highContrast: boolean | null;
+  reducedMotion: boolean | null;
+  focusIndicators: boolean | null;
   // Timestamps
   createdAt: Date;
   updatedAt: Date;
@@ -121,7 +121,7 @@ export class SettingsService {
         settings = await this.createUserSettings({ userId });
       }
 
-      return settings as UserSettingsResponse;
+      return settings as unknown as UserSettingsResponse;
     } catch (error) {
       logger.error('Error getting or creating user settings:', error);
       throw new Error('Failed to retrieve or create user settings');
@@ -157,11 +157,11 @@ export class SettingsService {
           pushNotifications: data.pushNotifications,
           slackNotifications: data.slackNotifications,
           desktopNotifications: data.desktopNotifications,
-          notificationSettings: data.notificationSettings,
-          integrationSettings: data.integrationSettings,
+          notificationSettings: data.notificationSettings === null ? Prisma.JsonNull : data.notificationSettings,
+          integrationSettings: data.integrationSettings === null ? Prisma.JsonNull : data.integrationSettings,
           twoFactorEnabled: data.twoFactorEnabled,
           loginNotifications: data.loginNotifications,
-          securitySettings: data.securitySettings,
+          securitySettings: data.securitySettings === null ? Prisma.JsonNull : data.securitySettings,
           dashboardLayout: data.dashboardLayout,
           cardsPerRow: data.cardsPerRow,
           showQuickActions: data.showQuickActions,
@@ -211,11 +211,11 @@ export class SettingsService {
           pushNotifications: data.pushNotifications,
           slackNotifications: data.slackNotifications,
           desktopNotifications: data.desktopNotifications,
-          notificationSettings: data.notificationSettings,
-          integrationSettings: data.integrationSettings,
+          notificationSettings: data.notificationSettings === null ? Prisma.JsonNull : data.notificationSettings,
+          integrationSettings: data.integrationSettings === null ? Prisma.JsonNull : data.integrationSettings,
           twoFactorEnabled: data.twoFactorEnabled,
           loginNotifications: data.loginNotifications,
-          securitySettings: data.securitySettings,
+          securitySettings: data.securitySettings === null ? Prisma.JsonNull : data.securitySettings,
           dashboardLayout: data.dashboardLayout,
           cardsPerRow: data.cardsPerRow,
           showQuickActions: data.showQuickActions,
@@ -246,56 +246,56 @@ export class SettingsService {
       switch (category) {
         case 'profile':
           updateData = {
-            firstName: categoryData.firstName,
-            lastName: categoryData.lastName,
-            bio: categoryData.bio,
-            jobTitle: categoryData.jobTitle,
-            company: categoryData.company,
-            location: categoryData.location,
-            website: categoryData.website,
-            timezone: categoryData.timezone,
-            language: categoryData.language,
+            firstName: categoryData.firstName as string | null | undefined,
+            lastName: categoryData.lastName as string | null | undefined,
+            bio: categoryData.bio as string | null | undefined,
+            jobTitle: categoryData.jobTitle as string | null | undefined,
+            company: categoryData.company as string | null | undefined,
+            location: categoryData.location as string | null | undefined,
+            website: categoryData.website as string | null | undefined,
+            timezone: categoryData.timezone as string | null | undefined,
+            language: categoryData.language as string | null | undefined,
           };
           break;
 
         case 'appearance':
           updateData = {
-            theme: categoryData.theme,
-            colorScheme: categoryData.colorScheme,
-            fontSize: categoryData.fontSize,
-            density: categoryData.density,
-            animations: categoryData.animations,
-            glassmorphism: categoryData.glassmorphism,
-            dashboardLayout: categoryData.dashboardLayout,
-            cardsPerRow: categoryData.cardsPerRow,
-            showQuickActions: categoryData.showQuickActions,
-            highContrast: categoryData.highContrast,
-            reducedMotion: categoryData.reducedMotion,
-            focusIndicators: categoryData.focusIndicators,
+            theme: categoryData.theme as string | null | undefined,
+            colorScheme: categoryData.colorScheme as string | null | undefined,
+            fontSize: categoryData.fontSize as string | null | undefined,
+            density: categoryData.density as string | null | undefined,
+            animations: categoryData.animations as boolean | null | undefined,
+            glassmorphism: categoryData.glassmorphism as boolean | null | undefined,
+            dashboardLayout: categoryData.dashboardLayout as string | null | undefined,
+            cardsPerRow: categoryData.cardsPerRow as number | null | undefined,
+            showQuickActions: categoryData.showQuickActions as boolean | null | undefined,
+            highContrast: categoryData.highContrast as boolean | null | undefined,
+            reducedMotion: categoryData.reducedMotion as boolean | null | undefined,
+            focusIndicators: categoryData.focusIndicators as boolean | null | undefined,
           };
           break;
 
         case 'notifications':
           updateData = {
-            emailNotifications: categoryData.emailNotifications,
-            pushNotifications: categoryData.pushNotifications,
-            slackNotifications: categoryData.slackNotifications,
-            desktopNotifications: categoryData.desktopNotifications,
-            notificationSettings: categoryData.notificationSettings,
+            emailNotifications: categoryData.emailNotifications as boolean | null | undefined,
+            pushNotifications: categoryData.pushNotifications as boolean | null | undefined,
+            slackNotifications: categoryData.slackNotifications as boolean | null | undefined,
+            desktopNotifications: categoryData.desktopNotifications as boolean | null | undefined,
+            notificationSettings: categoryData.notificationSettings as Prisma.InputJsonValue | undefined,
           };
           break;
 
         case 'integrations':
           updateData = {
-            integrationSettings: categoryData.integrationSettings,
+            integrationSettings: categoryData.integrationSettings as Prisma.InputJsonValue | undefined,
           };
           break;
 
         case 'security':
           updateData = {
-            twoFactorEnabled: categoryData.twoFactorEnabled,
-            loginNotifications: categoryData.loginNotifications,
-            securitySettings: categoryData.securitySettings,
+            twoFactorEnabled: categoryData.twoFactorEnabled as boolean | null | undefined,
+            loginNotifications: categoryData.loginNotifications as boolean | null | undefined,
+            securitySettings: categoryData.securitySettings as Prisma.InputJsonValue | undefined,
           };
           break;
 

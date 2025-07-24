@@ -3,6 +3,7 @@ import { renderHook, act, waitFor } from '@testing-library/react'
 import { useRealtimeTaskData } from '../useRealtimeTaskData'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import React from 'react'
+import { NotificationProvider } from '../../contexts/NotificationContext'
 
 // Mock socket.io-client
 const mockSocket = {
@@ -18,7 +19,7 @@ vi.mock('socket.io-client', () => ({
   io: vi.fn(() => mockSocket),
 }))
 
-// Create wrapper with QueryClient
+// Create wrapper with QueryClient and NotificationProvider
 const createWrapper = () => {
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -27,7 +28,9 @@ const createWrapper = () => {
   })
   
   return ({ children }: { children: React.ReactNode }) => (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <QueryClientProvider client={queryClient}>
+      <NotificationProvider>{children}</NotificationProvider>
+    </QueryClientProvider>
   )
 }
 

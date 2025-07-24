@@ -147,7 +147,8 @@ class AuthController {
                     },
                 });
             }
-            const user = await authService_1.default.getUserById(req.user.userId || req.user.id);
+            const userId = req.user.userId || req.user.id || '';
+            const user = await authService_1.default.getUserById(userId);
             res.json({
                 success: true,
                 data: { user },
@@ -173,7 +174,10 @@ class AuthController {
                 return res.redirect(`${environment_1.env.CLIENT_URL}/auth?error=oauth_failed`);
             }
             // The user object contains the result from AuthService.findOrCreateOAuthUser
-            const { user, token } = req.user;
+            // Check if req.user has the OAuth result structure
+            const oauthResult = req.user;
+            const user = oauthResult.user || req.user;
+            const token = oauthResult.token || '';
             // Redirect to frontend with token and user data
             const redirectUrl = new URL(`${environment_1.env.CLIENT_URL}/auth/callback`);
             redirectUrl.searchParams.set('token', token);

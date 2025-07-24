@@ -300,11 +300,11 @@ export class TaskMasterRouteFactory {
       }) as any,
       this.asyncHandler(async (req: Request, res: Response) => {
         // Delegate to execute command with 'init' operation
-        req.validatedBody = {
-          ...req.validatedBody,
+        (req as EnhancedRequest).validatedBody = {
+          ...(req as EnhancedRequest).validatedBody,
           operation: 'init',
         };
-        await this.controller.executeCommand(req, res);
+        await this.controller.executeCommand(req as EnhancedRequest, res as EnhancedResponse);
       })
     );
   }
@@ -410,11 +410,11 @@ export class TaskMasterRouteFactory {
         },
       }) as any,
       this.asyncHandler(async (req: Request, res: Response) => {
-        req.validatedBody = {
+        (req as EnhancedRequest).validatedBody = {
           repositoryPath: req.query.repositoryPath,
           operation: 'next',
         };
-        await this.controller.executeCommand(req, res);
+        await this.controller.executeCommand(req as EnhancedRequest, res as EnhancedResponse);
       })
     );
   }
@@ -456,11 +456,11 @@ export class TaskMasterRouteFactory {
         },
       }) as any,
       this.asyncHandler(async (req: Request, res: Response) => {
-        req.validatedBody = {
+        (req as EnhancedRequest).validatedBody = {
           repositoryPath: req.query.repositoryPath,
           operation: 'validate-dependencies',
         };
-        await this.controller.executeCommand(req, res);
+        await this.controller.executeCommand(req as EnhancedRequest, res as EnhancedResponse);
       })
     );
   }
@@ -500,7 +500,7 @@ export class TaskMasterRouteFactory {
         environment: process.env.NODE_ENV || 'development',
       };
 
-      res.apiSuccess(healthInfo);
+      (res as EnhancedResponse).apiSuccess(healthInfo);
     };
   }
 

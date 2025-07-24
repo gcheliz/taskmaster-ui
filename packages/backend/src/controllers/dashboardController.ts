@@ -7,6 +7,25 @@ import { promisify } from 'util';
 
 const execAsync = promisify(exec);
 
+interface Subtask {
+  id: string;
+  title: string;
+  status: string;
+  [key: string]: unknown;
+}
+
+interface Task {
+  id: string;
+  title: string;
+  status: string;
+  priority: string;
+  complexity?: number;
+  createdAt?: string;
+  updatedAt?: string;
+  subtasks?: Subtask[];
+  [key: string]: unknown;
+}
+
 export interface DashboardData {
   project: {
     id: string;
@@ -128,7 +147,11 @@ export class DashboardController {
       const dashboardData = await this.aggregateDashboardData(
         projectId,
         projectPath,
-        tasksData,
+        tasksData as {
+          metadata?: { [key: string]: unknown };
+          tasks?: Task[];
+          [key: string]: unknown;
+        },
         gitActivity
       );
 
@@ -172,7 +195,11 @@ export class DashboardController {
       );
 
       const tasksData = await this.readTasksFile(tasksJsonPath, projectTag);
-      const health = this.calculateProjectHealth(tasksData);
+      const health = this.calculateProjectHealth(tasksData as {
+        metadata?: { [key: string]: unknown };
+        tasks?: Task[];
+        [key: string]: unknown;
+      });
 
       res.json({
         success: true,
@@ -226,7 +253,14 @@ export class DashboardController {
   /**
    * Get recent Git activity
    */
-  private async getGitActivity(projectPath: string): Promise<any[]> {
+  private async getGitActivity(projectPath: string): Promise<Array<{
+    id: string;
+    type: 'commit' | 'task_update' | 'project_update';
+    timestamp: string;
+    message: string;
+    author?: string;
+    details?: unknown;
+  }>> {
     try {
       const { stdout } = await execAsync(
         'git log --oneline --format="%H|%an|%ad|%s" --date=iso -20',
@@ -259,8 +293,19 @@ export class DashboardController {
   private async aggregateDashboardData(
     projectId: string,
     projectPath: string,
-    tasksData: any,
-    gitActivity: unknown[]
+    tasksData: {
+      metadata?: { [key: string]: unknown };
+      tasks?: Task[];
+      [key: string]: unknown;
+    },
+    gitActivity: Array<{
+      id: string;
+      type: 'commit' | 'task_update' | 'project_update';
+      timestamp: string;
+      message: string;
+      author?: string;
+      details?: unknown;
+    }>
   ): Promise<DashboardData> {
     const tasks = tasksData.tasks || [];
     const metadata = tasksData.metadata || {};
@@ -272,7 +317,14 @@ export class DashboardController {
     const subtaskMetrics = this.calculateSubtaskMetrics(tasks);
 
     // Combine recent activity
-    const recentActivity = [
+    const recentActivity: Array<{
+      id: string;
+      type: 'commit' | 'task_update' | 'project_update';
+      timestamp: string;
+      message: string;
+      author?: string;
+      details?: unknown;
+    }> = [
       ...gitActivity.slice(0, 10), // Latest 10 commits
       ...this.getRecentTaskUpdates(tasks).slice(0, 10), // Latest 10 task updates
     ]
@@ -293,7 +345,7 @@ export class DashboardController {
         id: projectId,
         name: path.basename(projectPath),
         path: projectPath,
-        lastUpdated: metadata.updated || new Date().toISOString(),
+        lastUpdated: String(metadata.updated || new Date().toISOString()),
       },
       taskMetrics,
       subtaskMetrics,
@@ -306,7 +358,7 @@ export class DashboardController {
   /**
    * Calculate task metrics
    */
-  private calculateTaskMetrics(tasks: unknown[]): DashboardData['taskMetrics'] {
+  private calculateTaskMetrics(tasks: Task[]): DashboardData['taskMetrics'] {
     const statusCounts = tasks.reduce(
       (acc, task) => {
         acc[task.status] = (acc[task.status] || 0) + 1;
@@ -356,18 +408,18 @@ export class DashboardController {
    * Calculate subtask metrics
    */
   private calculateSubtaskMetrics(
-    tasks: unknown[]
+    tasks: Task[]
   ): DashboardData['subtaskMetrics'] {
-    const allSubtasks = tasks.flatMap(task => task.subtasks || []);
+    const allSubtasks = tasks.flatMap(task => task.subtasks || []) as Subtask[];
     const total = allSubtasks.length;
     const completed = allSubtasks.filter(
-      subtask => subtask.status === 'done'
+      (subtask): subtask is Subtask => subtask.status === 'done'
     ).length;
     const inProgress = allSubtasks.filter(
-      subtask => subtask.status === 'in-progress'
+      (subtask): subtask is Subtask => subtask.status === 'in-progress'
     ).length;
     const pending = allSubtasks.filter(
-      subtask => subtask.status === 'pending'
+      (subtask): subtask is Subtask => subtask.status === 'pending'
     ).length;
 
     return {
@@ -382,7 +434,7 @@ export class DashboardController {
   /**
    * Get recent task updates
    */
-  private getRecentTaskUpdates(tasks: unknown[]): DashboardData['recentActivity'] {
+  private getRecentTaskUpdates(tasks: Task[]): DashboardData['recentActivity'] {
     const updates: DashboardData['recentActivity'] = [];
 
     tasks.forEach(task => {
@@ -404,8 +456,15 @@ export class DashboardController {
    * Generate chart data
    */
   private generateChartData(
-    tasks: unknown[],
-    gitActivity: unknown[]
+    tasks: Task[],
+    gitActivity: Array<{
+      id: string;
+      type: 'commit' | 'task_update' | 'project_update';
+      timestamp: string;
+      message: string;
+      author?: string;
+      details?: unknown;
+    }>
   ): DashboardData['chartData'] {
     const priorityDistribution = Object.entries(
       tasks.reduce(
@@ -455,7 +514,7 @@ export class DashboardController {
    * Generate completion trend data
    */
   private generateCompletionTrend(
-    tasks: unknown[],
+    tasks: Task[],
     gitActivity: unknown[]
   ): DashboardData['chartData']['taskCompletionTrend'] {
     const days = 7;
@@ -504,7 +563,7 @@ export class DashboardController {
    * Calculate project insights
    */
   private calculateInsights(
-    tasks: unknown[],
+    tasks: Task[],
     taskMetrics: DashboardData['taskMetrics']
   ): DashboardData['insights'] {
     const totalEstimatedHours = tasks.reduce((sum, task) => {
@@ -576,7 +635,16 @@ export class DashboardController {
   /**
    * Calculate project health score
    */
-  private calculateProjectHealth(tasksData: any): any {
+  private calculateProjectHealth(tasksData: {
+    metadata?: { [key: string]: unknown };
+    tasks?: Task[];
+    [key: string]: unknown;
+  }): {
+    score: number;
+    status: string;
+    metrics: DashboardData['taskMetrics'];
+    timestamp: string;
+  } {
     const tasks = tasksData.tasks || [];
     const metrics = this.calculateTaskMetrics(tasks);
 

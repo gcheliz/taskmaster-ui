@@ -354,7 +354,7 @@ export class OptimizedTaskMasterService {
     const groups = new Map<string, any[]>();
 
     for (const op of operations) {
-      const groupKey = `${op.operation}:${op.repositoryPath}`;
+      const groupKey = `${(op as any).operation}:${(op as any).repositoryPath}`;
       if (!groups.has(groupKey)) {
         groups.set(groupKey, []);
       }

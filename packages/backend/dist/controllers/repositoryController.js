@@ -22,7 +22,7 @@ class RepositoryController {
         };
         try {
             logger_1.logger.logApiRequest(req.method, req.path, context);
-            const validateRequest = req.validatedBody;
+            const validateRequest = req.validatedBody || req.body;
             const { repositoryPath, validateGit = true, validateTaskMaster = true, } = validateRequest;
             logger_1.logger.info('Validating repository', {
                 ...context,

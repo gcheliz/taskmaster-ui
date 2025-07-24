@@ -17,6 +17,7 @@ import {
   SortingOptions,
 } from '../types/api';
 import { logger } from '../utils/winston-adapter';
+import { TaskInfo } from '../types/taskMaster';
 
 // Controller Interface for Dependency Injection
 export interface ITaskMasterController {
@@ -76,7 +77,7 @@ export class TaskMasterController implements ITaskMasterController {
         case 'status':
         case 'list':
           result = await this.taskMasterService.listTasks(repositoryPath, {
-            status: args.status,
+            status: args.status as string | undefined,
             tag: options.tag,
           });
           break;
@@ -103,7 +104,7 @@ export class TaskMasterController implements ITaskMasterController {
           result = await this.taskMasterService.updateTaskStatus(
             repositoryPath,
             args.id.toString(),
-            args.status,
+            String(args.status),
             { tag: options.tag }
           );
           break;
@@ -122,9 +123,9 @@ export class TaskMasterController implements ITaskMasterController {
           }
           result = await this.taskMasterService.parsePRD(
             repositoryPath,
-            args.file,
+            String(args.file),
             {
-              append: args.append,
+              append: args.append as boolean | undefined,
             }
           );
           break;
@@ -137,10 +138,10 @@ export class TaskMasterController implements ITaskMasterController {
           }
           result = await this.taskMasterService.expandTask(
             repositoryPath,
-            args.id?.toString(),
+            args.id?.toString() || '',
             {
-              research: args.research,
-              force: args.force,
+              research: args.research as boolean | undefined,
+              force: args.force as boolean | undefined,
               tag: options.tag,
             }
           );
@@ -150,9 +151,9 @@ export class TaskMasterController implements ITaskMasterController {
           result = await this.taskMasterService.analyzeComplexity(
             repositoryPath,
             {
-              from: args.from,
-              to: args.to,
-              research: args.research,
+              from: args.from as number | undefined,
+              to: args.to as number | undefined,
+              research: args.research as boolean | undefined,
               tag: options.tag,
             }
           );
@@ -329,7 +330,7 @@ export class TaskMasterController implements ITaskMasterController {
 
       // Apply sorting
       if (sorting) {
-        filteredTasks = this.sortTasks(filteredTasks, sorting);
+        filteredTasks = this.sortTasks(filteredTasks, sorting) as TaskInfo[];
       }
 
       // Apply pagination
@@ -695,12 +696,12 @@ export class TaskMasterController implements ITaskMasterController {
 
   private calculateProjectStats(tasks: unknown[]): any {
     const totalTasks = tasks.length;
-    const completedTasks = tasks.filter(t => t.status === 'done').length;
+    const completedTasks = tasks.filter(t => (t as any).status === 'done').length;
     const inProgressTasks = tasks.filter(
-      t => t.status === 'in-progress'
+      t => (t as any).status === 'in-progress'
     ).length;
-    const pendingTasks = tasks.filter(t => t.status === 'pending').length;
-    const blockedTasks = tasks.filter(t => t.status === 'blocked').length;
+    const pendingTasks = tasks.filter(t => (t as any).status === 'pending').length;
+    const blockedTasks = tasks.filter(t => (t as any).status === 'blocked').length;
 
     return {
       totalTasks,
@@ -716,8 +717,8 @@ export class TaskMasterController implements ITaskMasterController {
 
   private sortTasks(tasks: unknown[], sorting: SortingOptions): unknown[] {
     return tasks.sort((a, b) => {
-      let aValue = a[sorting.field];
-      let bValue = b[sorting.field];
+      let aValue = (a as any)[sorting.field];
+      let bValue = (b as any)[sorting.field];
 
       // Handle special sorting cases
       if (sorting.field === 'priority') {

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
 import { logger } from '../utils/winston-adapter';
-import SettingsService from '../services/settingsService';
+import SettingsService, { CreateUserSettingsData, UpdateUserSettingsData } from '../services/settingsService';
 import type { AuthenticatedRequest } from '../middleware/auth';
 
 // Validation schemas
@@ -64,6 +64,14 @@ const updateCategorySchema = z.object({
 
 export class SettingsController {
   /**
+   * Helper to get userId from request
+   */
+  private static getUserId(req: Request): string {
+    const user = req.user;
+    if (!user) throw new Error('User not authenticated');
+    return (user as any).userId || (user as any).id || '';
+  }
+  /**
    * Get user settings
    * GET /api/settings
    */
@@ -80,7 +88,7 @@ export class SettingsController {
       }
 
       const settings = await SettingsService.getOrCreateUserSettings(
-        req.user.userId
+        this.getUserId(req)
       );
 
       res.json({
@@ -129,8 +137,8 @@ export class SettingsController {
       }
 
       const settings = await SettingsService.updateUserSettings(
-        req.user.userId,
-        validation.data
+        this.getUserId(req),
+        validation.data as UpdateUserSettingsData
       );
 
       res.json({
@@ -182,7 +190,7 @@ export class SettingsController {
       const { category, data } = validation.data;
 
       const settings = await SettingsService.updateSettingsCategory(
-        req.user.userId,
+        this.getUserId(req),
         category,
         data
       );
@@ -248,9 +256,9 @@ export class SettingsController {
       }
 
       const settings = await SettingsService.createUserSettings({
-        userId: req.user.userId,
+        userId: this.getUserId(req),
         ...validation.data,
-      });
+      } as CreateUserSettingsData);
 
       res.status(201).json({
         success: true,
@@ -285,7 +293,7 @@ export class SettingsController {
         });
       }
 
-      await SettingsService.deleteUserSettings(req.user.userId);
+      await SettingsService.deleteUserSettings(this.getUserId(req));
 
       res.json({
         success: true,
@@ -321,13 +329,13 @@ export class SettingsController {
 
       // Delete existing settings and create new default settings
       try {
-        await SettingsService.deleteUserSettings(req.user.userId);
+        await SettingsService.deleteUserSettings(this.getUserId(req));
       } catch (error) {
         // Settings might not exist, that's okay
       }
 
       const settings = await SettingsService.createUserSettings({
-        userId: req.user.userId,
+        userId: this.getUserId(req),
       });
 
       res.json({
@@ -384,7 +392,7 @@ export class SettingsController {
       }
 
       const settings = await SettingsService.getOrCreateUserSettings(
-        req.user.userId
+        this.getUserId(req)
       );
 
       // Extract category-specific settings

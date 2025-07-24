@@ -495,7 +495,7 @@ export class TaskMasterBatchProcessor implements BatchProcessor<any, any> {
     const grouped = new Map<string, any[]>();
 
     for (const item of items) {
-      const operation = item.operation || 'unknown';
+      const operation = (item as any).operation || 'unknown';
       if (!grouped.has(operation)) {
         grouped.set(operation, []);
       }
@@ -526,7 +526,7 @@ export class TaskMasterBatchProcessor implements BatchProcessor<any, any> {
   private async processList(items: unknown[]): Promise<any[]> {
     // Batch multiple list requests efficiently
     const uniqueRepositories = [
-      ...new Set(items.map(item => item.repositoryPath)),
+      ...new Set(items.map(item => (item as any).repositoryPath)),
     ];
     const repositoryResults = new Map();
 
@@ -542,7 +542,7 @@ export class TaskMasterBatchProcessor implements BatchProcessor<any, any> {
       }
     }
 
-    return items.map(item => repositoryResults.get(item.repositoryPath));
+    return items.map(item => repositoryResults.get((item as any).repositoryPath));
   }
 
   private async processShow(items: unknown[]): Promise<any[]> {
@@ -602,7 +602,7 @@ export class TaskMasterBatchProcessor implements BatchProcessor<any, any> {
     const grouped = new Map<string, any[]>();
 
     for (const item of items) {
-      const repo = item.repositoryPath;
+      const repo = (item as any).repositoryPath;
       if (!grouped.has(repo)) {
         grouped.set(repo, []);
       }

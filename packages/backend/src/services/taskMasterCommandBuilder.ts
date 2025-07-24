@@ -108,16 +108,16 @@ export class TaskMasterCommandBuilder implements ITaskMasterCommandBuilder {
     switch (operation) {
       case 'init':
         if (args.prdFile) {
-          commandArgs.push(args.prdFile);
+          commandArgs.push(String(args.prdFile));
         }
         break;
 
       case 'list':
         if (args.status) {
-          commandArgs.push(args.status);
+          commandArgs.push(String(args.status));
         }
         if (args.priority) {
-          commandArgs.push(args.priority);
+          commandArgs.push(String(args.priority));
         }
         this.addTagFlag(commandArgs, args.tag);
         break;
@@ -150,7 +150,7 @@ export class TaskMasterCommandBuilder implements ITaskMasterCommandBuilder {
         if (!args.file) {
           throw new Error('PRD file path is required for parse-prd command');
         }
-        commandArgs.push(args.file);
+        commandArgs.push(String(args.file));
         if (args.append) {
           commandArgs.push('--append');
         }
@@ -237,7 +237,7 @@ export class TaskMasterCommandBuilder implements ITaskMasterCommandBuilder {
   /**
    * Add tag flag if provided
    */
-  private addTagFlag(commandArgs: string[], tag?: string): void {
+  private addTagFlag(commandArgs: string[], tag?: unknown): void {
     if (tag) {
       commandArgs.push(`--tag=${tag}`);
     }

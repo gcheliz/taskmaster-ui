@@ -50,7 +50,7 @@ const getSecretsHealth = async (req, res) => {
             status: 'ERROR',
             timestamp: new Date().toISOString(),
             service: 'secrets-manager',
-            error: error.message,
+            error: error instanceof Error ? error.message : String(error),
         });
     }
 };
@@ -83,7 +83,7 @@ const getSSLHealth = async (req, res) => {
             status: 'ERROR',
             timestamp: new Date().toISOString(),
             service: 'ssl-validator',
-            error: error.message,
+            error: error instanceof Error ? error.message : String(error),
         });
     }
 };
@@ -127,7 +127,7 @@ const getSystemHealth = async (req, res) => {
             status: 'ERROR',
             timestamp: new Date().toISOString(),
             service: 'taskmaster-ui-backend',
-            error: error.message,
+            error: error instanceof Error ? error.message : String(error),
         });
     }
 };

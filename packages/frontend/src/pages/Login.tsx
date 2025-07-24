@@ -7,7 +7,7 @@ import {
   CardDescription,
   CardContent,
   CardFooter,
-} from '../components/ui/molecules/Card'
+} from '../components/ui/atoms/Card'
 import { Input } from '../components/ui/atoms/Input'
 import { Button } from '../components/ui/atoms/Button'
 import { Checkbox } from '../components/ui/atoms/Checkbox'

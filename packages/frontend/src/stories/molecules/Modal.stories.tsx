@@ -13,7 +13,7 @@ import {
 } from '../../components/ui/molecules/Modal'
 import { Button } from '../../components/ui/atoms/Button'
 import { FormField } from '../../components/ui/molecules/FormField'
-import { Card, CardContent } from '../../components/ui/molecules/Card'
+import { Card, CardContent } from '../../components/ui/atoms/Card'
 import { Badge } from '../../components/ui/atoms/Badge'
 
 const meta: Meta<typeof Modal> = {

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import type { TasksData, TaskBoardData, TaskFilters, TaskSortOptions } from '../types/task'
+import type { TasksData, TaskBoardData, TaskFilters, TaskSortOptions, TaskStatus } from '../types/task'
 import { taskService } from '../services/taskService'
 import { ApiError } from '../services/api'
 import { useWebSocketTaskUpdates, type TaskUpdateHandler } from './useWebSocketTaskUpdates'
@@ -221,7 +221,7 @@ export function useRealtimeTaskData(
 
       try {
         // Update task status based on target column
-        await taskService.updateTaskStatus(parseInt(taskId), targetColumn as any, projectTag)
+        await taskService.updateTaskStatus(parseInt(taskId), targetColumn as TaskStatus, projectTag)
         if (!enableRealtime) {
           await loadTasks()
         }

@@ -13,13 +13,13 @@ export interface TerminalSession {
 export interface TerminalWebSocketMessage {
   type: 'command' | 'input' | 'kill' | 'resize' | 'create-session' | 'close-session'
   sessionId?: string
-  data?: any
+  data?: string | { cols?: number; rows?: number; command?: string; input?: string }
 }
 
 export interface TerminalWebSocketResponse {
   type: 'output' | 'session-created' | 'session-closed' | 'error'
   sessionId?: string
-  data?: any
+  data?: string | { sessionId?: string; error?: string; message?: string }
 }
 
 export interface CreateTerminalSessionRequest {

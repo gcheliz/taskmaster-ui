@@ -25,7 +25,7 @@ import {
   ArrowUpRight,
   ArrowRight
 } from 'lucide-react'
-import { Card } from '../components/ui/molecules/Card'
+import { Card } from '../components/ui/atoms/Card'
 import { Badge } from '../components/ui/atoms/Badge'
 import { Button } from '../components/ui/atoms/Button'
 import { formatDistanceToNow } from 'date-fns'

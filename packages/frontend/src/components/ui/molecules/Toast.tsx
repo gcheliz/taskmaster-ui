@@ -3,7 +3,7 @@
  * Provides feedback for user actions and system events
  */
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { Icon, CheckIcon, XMarkIcon } from '../atoms/Icon'
 import { cn } from '../../../utils/cn'
 
@@ -24,6 +24,7 @@ export const Toast: React.FC<ToastProps> = ({
 }) => {
   const [isVisible, setIsVisible] = useState(true)
   const [isExiting, setIsExiting] = useState(false)
+  const exitTimerRef = useRef<NodeJS.Timeout>()
 
   useEffect(() => {
     if (duration > 0) {
@@ -35,9 +36,18 @@ export const Toast: React.FC<ToastProps> = ({
     }
   }, [duration])
 
+  useEffect(() => {
+    // Cleanup exit timer on unmount
+    return () => {
+      if (exitTimerRef.current) {
+        clearTimeout(exitTimerRef.current)
+      }
+    }
+  }, [])
+
   const handleClose = () => {
     setIsExiting(true)
-    setTimeout(() => {
+    exitTimerRef.current = setTimeout(() => {
       setIsVisible(false)
       onClose?.()
     }, 300) // Match animation duration

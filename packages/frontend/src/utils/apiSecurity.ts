@@ -128,7 +128,7 @@ export class SecureApiClient {
       if (body !== undefined) {
         if (body instanceof FormData) {
           requestBody = body
-          delete (requestHeaders as any)['Content-Type'] // Let browser set it for FormData
+          delete (requestHeaders as Record<string, string>)['Content-Type'] // Let browser set it for FormData
         } else {
           requestBody = JSON.stringify(this.sanitizeRequestBody(body))
         }

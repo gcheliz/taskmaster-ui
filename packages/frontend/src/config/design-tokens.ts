@@ -407,9 +407,13 @@ export type BreakpointToken = keyof typeof designTokens.breakpoints
 // Helper functions to access tokens
 export const getColor = (path: string): string => {
   const keys = path.split('.')
-  let result: any = designTokens.colors
+  let result: unknown = designTokens.colors
   for (const key of keys) {
-    result = result[key]
+    if (result && typeof result === 'object' && key in result) {
+      result = (result as Record<string, unknown>)[key]
+    } else {
+      throw new Error(`Invalid color path: ${path}`)
+    }
   }
   return result as string
 }

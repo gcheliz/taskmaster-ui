@@ -1,38 +1,51 @@
 import { render, screen } from '@testing-library/react'
 import { TaskBoardView } from '../TaskBoardView'
+import { vi } from 'vitest'
+
+// Mock the hooks and components that TaskBoardView uses
+vi.mock('../../hooks/useTaskData', () => ({
+  useTaskData: () => ({
+    taskBoardData: { tasks: [] },
+    isLoading: false,
+    error: null,
+    refresh: vi.fn(),
+    loadSampleTasks: vi.fn(),
+  }),
+}))
+
+vi.mock('../ui/organisms/KanbanBoard', () => ({
+  KanbanBoard: ({ loading }: { loading?: boolean }) => (
+    <div data-testid="kanban-board">
+      {loading ? 'Loading...' : 'Kanban Board'}
+    </div>
+  ),
+}))
+
+vi.mock('../TaskBoard/TaskBoardWithFilters', () => ({
+  TaskBoardWithFilters: () => <div data-testid="task-board-with-filters">Task Board with Filters</div>,
+}))
 
 describe('TaskBoardView', () => {
-  it('renders the main heading', () => {
+  it('renders the Kanban board view', () => {
     render(<TaskBoardView />)
-    expect(screen.getByRole('heading', { level: 1, name: 'Task Board' })).toBeInTheDocument()
+    // The component renders the actual KanbanBoard component which shows loading state
+    expect(screen.getByText('Loading Kanban Board')).toBeInTheDocument()
   })
 
-  it('renders the view description', () => {
-    render(<TaskBoardView />)
-    expect(
-      screen.getByText('Organize and track your tasks with a visual Kanban-style board interface.')
-    ).toBeInTheDocument()
+  it('shows toggle button when filtering is enabled', () => {
+    render(<TaskBoardView enableFiltering={true} />)
+    expect(screen.getByText('📋 Board View')).toBeInTheDocument()
   })
 
-  it('renders coming soon message', () => {
-    render(<TaskBoardView />)
-    expect(screen.getByRole('heading', { level: 2, name: 'Coming Soon' })).toBeInTheDocument()
-    expect(screen.getByText('Task board features will be implemented here.')).toBeInTheDocument()
-  })
-
-  it('renders feature list items', () => {
-    render(<TaskBoardView />)
-
-    const featureItems = [
-      'Kanban-style task organization',
-      'Drag-and-drop task management',
-      'Task status tracking',
-      'Repository-linked task updates',
-    ]
-
-    featureItems.forEach((item) => {
-      expect(screen.getByText(item)).toBeInTheDocument()
-    })
+  it('shows filtered view when repository path is provided', () => {
+    render(<TaskBoardView enableFiltering={true} repositoryPath="/test/path" />)
+    
+    const toggleButton = screen.getByText('📋 Board View')
+    expect(toggleButton).toBeInTheDocument()
+    
+    // When repositoryPath is provided and showFilters is true (default), it shows TaskBoardWithFilters
+    // We can check for elements specific to the filtered view
+    expect(screen.getByText('Loading tasks...')).toBeInTheDocument()
   })
 
   it('has correct CSS class structure', () => {
@@ -42,17 +55,9 @@ describe('TaskBoardView', () => {
     const viewElement = container.querySelector('.task-board-view')
     expect(viewElement).toBeInTheDocument()
 
-    // Check for header section
-    const headerElement = container.querySelector('.view-header')
-    expect(headerElement).toBeInTheDocument()
-
     // Check for content section
     const contentElement = container.querySelector('.view-content')
     expect(contentElement).toBeInTheDocument()
-
-    // Check for placeholder message
-    const placeholderElement = container.querySelector('.placeholder-message')
-    expect(placeholderElement).toBeInTheDocument()
   })
 
   it('accepts and applies custom className', () => {
@@ -61,13 +66,22 @@ describe('TaskBoardView', () => {
     expect(viewElement).toHaveClass('task-board-view', 'custom-task-view')
   })
 
-  it('renders feature list with correct structure', () => {
-    const { container } = render(<TaskBoardView />)
+  it('shows loading state when data is loading', () => {
+    vi.mocked(vi.importActual('../../hooks/useTaskData') as any).useTaskData = () => ({
+      taskBoardData: null,
+      isLoading: true,
+      error: null,
+      refresh: vi.fn(),
+      loadSampleTasks: vi.fn(),
+    })
+    
+    render(<TaskBoardView />)
+    expect(screen.getByText('Loading...')).toBeInTheDocument()
+  })
 
-    const featureList = container.querySelector('.feature-list')
-    expect(featureList).toBeInTheDocument()
-
-    const listItems = container.querySelectorAll('.feature-list li')
-    expect(listItems).toHaveLength(4)
+  it('hides toggle button when filtering is disabled', () => {
+    render(<TaskBoardView enableFiltering={false} />)
+    expect(screen.queryByText('📋 Board View')).not.toBeInTheDocument()
+    expect(screen.queryByText('🔍 Filtered View')).not.toBeInTheDocument()
   })
 })

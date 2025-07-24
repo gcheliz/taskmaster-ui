@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { cn } from '../../utils/cn'
 import { Button } from '../ui/atoms/Button'
 import { Toggle } from '../ui/atoms/Toggle'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/molecules/Card'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/atoms/Card'
 import { Badge } from '../ui/atoms/Badge'
 import { useSettings } from '../../contexts/SettingsContext'
 

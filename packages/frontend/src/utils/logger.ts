@@ -62,7 +62,8 @@ class FrontendLogger {
 
     // In production, we might want to send errors to a monitoring service
     if (import.meta.env.MODE === 'production' && error) {
-      // TODO: Send to error monitoring service (e.g., Sentry)
+      // In production, this should send to error monitoring service (e.g., Sentry)
+      // Example: Sentry.captureException(error, { level, context, ...metadata })
     }
   }
 

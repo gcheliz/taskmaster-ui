@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { cn } from '../../utils/cn'
-import { Card } from '../ui/molecules/Card'
+import { Card } from '../ui/atoms/Card'
 import { Badge } from '../ui/atoms/Badge'
 import { Button } from '../ui/atoms/Button'
 import { Checkbox } from '../ui/atoms/Checkbox'

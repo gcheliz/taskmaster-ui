@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { cn } from '../../utils/cn'
 import { FormField } from '../ui/molecules/FormField'
 import { Button } from '../ui/atoms/Button'
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/molecules/Card'
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/atoms/Card'
 import { Badge } from '../ui/atoms/Badge'
 import { useSettings } from '../../contexts/SettingsContext'
 

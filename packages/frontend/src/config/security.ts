@@ -132,6 +132,8 @@ export const rateLimiters = {
  * Security enforcement functions
  */
 export class SecurityEnforcer {
+  private static devToolsInterval: NodeJS.Timeout | null = null
+
   /**
    * Initialize security policies
    */
@@ -140,6 +142,16 @@ export class SecurityEnforcer {
     this.preventRightClick()
     this.preventDevTools()
     this.enforceSecureConnection()
+  }
+
+  /**
+   * Cleanup security enforcement
+   */
+  static cleanup(): void {
+    if (this.devToolsInterval) {
+      clearInterval(this.devToolsInterval)
+      this.devToolsInterval = null
+    }
   }
 
   /**
@@ -185,7 +197,12 @@ export class SecurityEnforcer {
 
     const threshold = 160
 
-    setInterval(() => {
+    // Clear any existing interval
+    if (this.devToolsInterval) {
+      clearInterval(this.devToolsInterval)
+    }
+
+    this.devToolsInterval = setInterval(() => {
       if (
         window.outerHeight - window.innerHeight > threshold ||
         window.outerWidth - window.innerWidth > threshold
@@ -271,9 +288,11 @@ export class SecurityEnforcer {
   /**
    * Log security events
    */
-  static logSecurityEvent(event: string, details?: any): void {
+  static logSecurityEvent(event: string, details?: Record<string, unknown>): void {
     if (securityConfig.environment.isDevelopment) {
-      console.warn(`[Security] ${event}`, details)
+      import('../utils/logger').then(({ logger }) => {
+        logger.warn(`[Security] ${event}`, details)
+      })
     }
 
     // In production, this could send to a logging service

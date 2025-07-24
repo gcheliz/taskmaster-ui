@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { cn } from '../../utils/cn'
-import { Card, CardContent } from '../ui/molecules/Card'
+import { Card, CardContent } from '../ui/atoms/Card'
 import { ProfileSettings } from './ProfileSettings'
 import { IntegrationsSettings } from './IntegrationsSettings'
 import { NotificationSettings } from './NotificationSettings'

@@ -1,6 +1,6 @@
 import React from 'react'
 import { cn } from '../../utils/cn'
-import { Card, CardContent } from '../ui/molecules/Card'
+import { Card, CardContent } from '../ui/atoms/Card'
 import { Badge } from '../ui/atoms/Badge'
 import { Button } from '../ui/atoms/Button'
 import type { RepositoryCardProps } from './RepositoryCard'

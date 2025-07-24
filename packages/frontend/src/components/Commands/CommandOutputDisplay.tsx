@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/molecules/Card'
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/atoms/Card'
 import { Badge } from '../ui/atoms/Badge'
 import { Button } from '../ui/atoms/Button'
 import type { CommandResult } from '../../services/commandService'

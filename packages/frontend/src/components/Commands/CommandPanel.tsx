@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/molecules/Card'
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/atoms/Card'
 import { Button } from '../ui/atoms/Button'
 import { Badge } from '../ui/atoms/Badge'
 import { Spinner } from '../ui/atoms/Spinner'

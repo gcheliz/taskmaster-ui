@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { cn } from '../../utils/cn'
-import { Card } from '../ui/molecules/Card'
+import { Card } from '../ui/atoms/Card'
 import { Spinner } from '../ui/atoms/Spinner'
 import { GitCommit } from 'lucide-react'
 import { useRepositoryStatistics } from '../../hooks/useRepositoryData'

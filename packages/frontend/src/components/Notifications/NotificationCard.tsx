@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import type { Notification } from '../../contexts/NotificationContext'
 
 export interface NotificationCardProps {
@@ -8,6 +8,7 @@ export interface NotificationCardProps {
 
 export const NotificationCard: React.FC<NotificationCardProps> = ({ notification, onDismiss }) => {
   const [isVisible, setIsVisible] = useState(false)
+  const dismissTimerRef = useRef<NodeJS.Timeout>()
 
   useEffect(() => {
     // Trigger entrance animation
@@ -15,10 +16,19 @@ export const NotificationCard: React.FC<NotificationCardProps> = ({ notification
     return () => clearTimeout(timer)
   }, [])
 
+  useEffect(() => {
+    // Cleanup dismiss timer on unmount
+    return () => {
+      if (dismissTimerRef.current) {
+        clearTimeout(dismissTimerRef.current)
+      }
+    }
+  }, [])
+
   const handleDismiss = () => {
     setIsVisible(false)
     // Wait for exit animation before removing
-    setTimeout(() => onDismiss(notification.id), 300)
+    dismissTimerRef.current = setTimeout(() => onDismiss(notification.id), 300)
   }
 
   const getIcon = () => {

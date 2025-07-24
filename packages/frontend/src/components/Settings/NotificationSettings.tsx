@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { cn } from '../../utils/cn'
 import { Toggle } from '../ui/atoms/Toggle'
 import { Button } from '../ui/atoms/Button'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/molecules/Card'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/atoms/Card'
 import { useSettings } from '../../contexts/SettingsContext'
 
 export interface NotificationSettingsProps {

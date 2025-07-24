@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { onCLS, onFCP, onINP, onLCP, onTTFB, Metric } from 'web-vitals';
+import { onCLS, onFCP, onINP, onLCP, onTTFB, type Metric } from 'web-vitals';
 
 interface WebVitalsConfig {
   enabled?: boolean;
@@ -45,8 +45,8 @@ export const WebVitalsMonitor: React.FC<WebVitalsConfig> = ({
       }
 
       // Send to analytics service
-      if (window.gtag) {
-        window.gtag('event', metric.name, {
+      if ('gtag' in window && typeof (window as any).gtag === 'function') {
+        (window as any).gtag('event', metric.name, {
           event_category: 'Web Vitals',
           event_label: metric.rating,
           value: Math.round(metric.name === 'CLS' ? metric.value * 1000 : metric.value),

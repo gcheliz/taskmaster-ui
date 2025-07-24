@@ -30,14 +30,18 @@ export const AnimatedCard: React.FC<AnimatedCardProps> = ({
       initial="initial"
       animate="animate"
       exit="exit"
-      transition={{
-        delay,
-        duration: 0.4,
-        ease: 'easeOut' as const
-      }}
       className={`bg-white rounded-xl border border-gray-200 ${className}`}
       {...hoverLift}
-      whileHover={hoverBorderColor ? { borderColor: hoverBorderColor } : undefined}
+      whileHover={hoverBorderColor ? { 
+        ...hoverLift.whileHover,
+        borderColor: hoverBorderColor 
+      } : hoverLift.whileHover}
+      transition={{
+        ...hoverLift.transition,
+        delay,
+        duration: 0.4,
+        ease: 'easeOut'
+      }}
     >
       {children}
     </motion.div>

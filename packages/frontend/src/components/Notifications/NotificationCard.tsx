@@ -8,7 +8,7 @@ export interface NotificationCardProps {
 
 export const NotificationCard: React.FC<NotificationCardProps> = ({ notification, onDismiss }) => {
   const [isVisible, setIsVisible] = useState(false)
-  const dismissTimerRef = useRef<NodeJS.Timeout>()
+  const dismissTimerRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     // Trigger entrance animation

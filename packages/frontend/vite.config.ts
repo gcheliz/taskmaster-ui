@@ -1,4 +1,4 @@
-import { defineConfig, splitVendorChunkPlugin } from 'vite'
+import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { visualizer } from 'rollup-plugin-visualizer'
 import compression from 'vite-plugin-compression'
@@ -8,8 +8,6 @@ import { VitePWA } from 'vite-plugin-pwa'
 export default defineConfig({
   plugins: [
     react(),
-    // Split vendor chunks for better caching
-    splitVendorChunkPlugin(),
     // Compress assets with gzip and brotli
     compression({
       algorithm: 'gzip',
@@ -40,13 +38,13 @@ export default defineConfig({
       },
     }),
     // Bundle analyzer (only in analyze mode)
-    process.env.ANALYZE && visualizer({
+    ...(process.env.ANALYZE ? [visualizer({
       open: true,
       filename: 'dist/stats.html',
       gzipSize: true,
       brotliSize: true,
-    }),
-  ].filter(Boolean),
+    })] : []),
+  ],
   server: {
     port: 5173,
     host: true, // Allow all connections
@@ -112,6 +110,7 @@ export default defineConfig({
           return `assets/${facadeModuleId}-[hash].js`;
         },
         assetFileNames: (assetInfo) => {
+          if (!assetInfo.name) return `assets/[name]-[hash][extname]`;
           const info = assetInfo.name.split('.');
           const ext = info[info.length - 1];
           if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(ext)) {

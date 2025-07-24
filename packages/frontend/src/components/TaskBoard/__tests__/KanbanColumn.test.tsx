@@ -2,7 +2,7 @@ import React from 'react'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { render, screen, createMockTask, setupCommonMocks } from '../../../test-utils'
 import { KanbanColumn } from '../../ui/molecules/KanbanColumn'
-import { DndContext, DragEndEvent } from '@dnd-kit/core'
+import { DndContext, type DragEndEvent } from '@dnd-kit/core'
 
 describe('KanbanColumn', () => {
   const mockTasks = [
@@ -14,6 +14,7 @@ describe('KanbanColumn', () => {
   const defaultProps = {
     id: 'todo',
     title: 'To Do',
+    status: 'pending' as const,
     tasks: mockTasks,
     color: 'bg-gray-500',
     onTaskClick: vi.fn(),

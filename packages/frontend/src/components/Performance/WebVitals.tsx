@@ -1,5 +1,12 @@
 import { useEffect } from 'react';
-import { onCLS, onFCP, onINP, onLCP, onTTFB, type Metric } from 'web-vitals';
+
+// Temporarily define types to avoid import issues
+type Metric = {
+  name: 'CLS' | 'FCP' | 'INP' | 'LCP' | 'TTFB';
+  value: number;
+  rating: 'good' | 'needs-improvement' | 'poor';
+  delta: number;
+};
 
 interface WebVitalsConfig {
   enabled?: boolean;
@@ -65,12 +72,16 @@ export const WebVitalsMonitor: React.FC<WebVitalsConfig> = ({
       }
     };
 
-    // Register all Web Vitals
-    onCLS(reportMetric);
-    onFCP(reportMetric);
-    onINP(reportMetric);
-    onLCP(reportMetric);
-    onTTFB(reportMetric);
+    // Dynamically import web-vitals to avoid build issues
+    import('web-vitals').then(({ onCLS, onFCP, onINP, onLCP, onTTFB }) => {
+      onCLS(reportMetric);
+      onFCP(reportMetric);
+      onINP(reportMetric);
+      onLCP(reportMetric);
+      onTTFB(reportMetric);
+    }).catch(err => {
+      console.warn('[Web Vitals] Failed to load web-vitals library:', err);
+    });
   }, [enabled, onReport, threshold, debug]);
 
   return null;
@@ -81,11 +92,15 @@ export const useWebVitals = (callback?: (metric: Metric) => void) => {
   useEffect(() => {
     if (!callback) return;
 
-    onCLS(callback);
-    onFCP(callback);
-    onINP(callback);
-    onLCP(callback);
-    onTTFB(callback);
+    import('web-vitals').then(({ onCLS, onFCP, onINP, onLCP, onTTFB }) => {
+      onCLS(callback);
+      onFCP(callback);
+      onINP(callback);
+      onLCP(callback);
+      onTTFB(callback);
+    }).catch(err => {
+      console.warn('[Web Vitals] Failed to load web-vitals library:', err);
+    });
   }, [callback]);
 };
 

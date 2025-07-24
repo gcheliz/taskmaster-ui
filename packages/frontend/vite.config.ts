@@ -153,6 +153,7 @@ export default defineConfig({
       '@tanstack/react-query',
       'axios',
       'lucide-react',
+      'web-vitals',
     ],
     exclude: ['@vite-pwa/assets-generator'],
   },

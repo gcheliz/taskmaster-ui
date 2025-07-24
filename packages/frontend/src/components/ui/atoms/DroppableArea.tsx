@@ -52,7 +52,7 @@ const DroppableArea = React.forwardRef<HTMLDivElement, DroppableAreaProps>(
     })
 
     const baseStyles = cn(
-      'rounded-lg border-2 border-dashed transition-all duration-200 ease-in-out',
+      'rounded-lg border-2 border-dashed transition-[background-color,border-color] duration-200 ease-in-out',
       {
         // Variant styles
         'border-secondary-300 bg-secondary-50/50 dark:border-surface-600 dark:bg-surface-800/50':

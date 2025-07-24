@@ -332,7 +332,7 @@ const Terminal: React.FC = () => {
 
         {/* Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-blue-200 transition-all duration-200 transform hover:-translate-y-0.5">
+          <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-blue-200 transition-[transform,box-shadow,border-color] duration-200 transform hover:-translate-y-0.5">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <p className="text-sm font-medium text-gray-600">Active Sessions</p>
@@ -348,7 +348,7 @@ const Terminal: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-green-200 transition-all duration-200 transform hover:-translate-y-0.5">
+          <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-green-200 transition-[transform,box-shadow,border-color] duration-200 transform hover:-translate-y-0.5">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <p className="text-sm font-medium text-gray-600">Commands Run</p>
@@ -367,7 +367,7 @@ const Terminal: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-amber-200 transition-all duration-200 transform hover:-translate-y-0.5">
+          <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-amber-200 transition-[transform,box-shadow,border-color] duration-200 transform hover:-translate-y-0.5">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <p className="text-sm font-medium text-gray-600">Success Rate</p>
@@ -383,7 +383,7 @@ const Terminal: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-purple-200 transition-all duration-200 transform hover:-translate-y-0.5">
+          <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-purple-200 transition-[transform,box-shadow,border-color] duration-200 transform hover:-translate-y-0.5">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <p className="text-sm font-medium text-gray-600">Avg Execution</p>
@@ -407,7 +407,7 @@ const Terminal: React.FC = () => {
               key={session.id}
               onClick={() => setActiveSessionId(session.id)}
               className={`
-                flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 whitespace-nowrap
+                flex items-center gap-2 px-4 py-2 rounded-lg transition-[background-color,color] duration-200 whitespace-nowrap
                 ${activeSessionId === session.id 
                   ? 'bg-blue-50 text-blue-700 border border-blue-200' 
                   : 'hover:bg-gray-50 text-gray-700'

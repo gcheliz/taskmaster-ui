@@ -187,7 +187,7 @@ const Tasks = () => {
 
         {/* Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-blue-200 transition-all duration-200 transform hover:-translate-y-0.5">
+          <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-blue-200 transition-[transform,box-shadow,border-color] duration-200 transform hover:-translate-y-0.5">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <p className="text-sm font-medium text-gray-600">Total Tasks</p>
@@ -204,7 +204,7 @@ const Tasks = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-green-200 transition-all duration-200 transform hover:-translate-y-0.5">
+          <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-green-200 transition-[transform,box-shadow,border-color] duration-200 transform hover:-translate-y-0.5">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <p className="text-sm font-medium text-gray-600">Completed</p>
@@ -224,7 +224,7 @@ const Tasks = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-amber-200 transition-all duration-200 transform hover:-translate-y-0.5">
+          <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-amber-200 transition-[transform,box-shadow,border-color] duration-200 transform hover:-translate-y-0.5">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <p className="text-sm font-medium text-gray-600">In Progress</p>
@@ -242,7 +242,7 @@ const Tasks = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-purple-200 transition-all duration-200 transform hover:-translate-y-0.5">
+          <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-purple-200 transition-[transform,box-shadow,border-color] duration-200 transform hover:-translate-y-0.5">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <p className="text-sm font-medium text-gray-600">Due This Week</p>
@@ -292,7 +292,7 @@ const Tasks = () => {
         {/* Task List */}
         <div className="space-y-4">
           {filteredTasks.map((task) => (
-            <div key={task.id} className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-all duration-200">
+            <div key={task.id} className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-[box-shadow] duration-200">
               <div className="flex items-start justify-between">
                 <div className="flex items-start gap-4">
                   {getStatusIcon(task.status)}
@@ -334,7 +334,7 @@ const Tasks = () => {
                         </div>
                         <div className="w-full bg-gray-200 rounded-full h-2">
                           <div 
-                            className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                            className="bg-blue-600 h-2 rounded-full transition-[width] duration-300"
                             style={{ width: `${task.progress}%` }}
                           />
                         </div>

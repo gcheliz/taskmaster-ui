@@ -88,7 +88,7 @@ const DashboardIntegrated: React.FC = () => {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Active Tasks */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-blue-200 transition-all duration-200 transform hover:-translate-y-0.5">
+        <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-blue-200 transition-[transform,box-shadow,border-color] duration-200 transform hover:-translate-y-0.5">
           <div className="flex items-center justify-between mb-4">
             <div>
               <p className="text-sm font-medium text-gray-600">Active Tasks</p>
@@ -105,7 +105,7 @@ const DashboardIntegrated: React.FC = () => {
         </div>
 
         {/* Repositories */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-green-200 transition-all duration-200 transform hover:-translate-y-0.5">
+        <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-green-200 transition-[transform,box-shadow,border-color] duration-200 transform hover:-translate-y-0.5">
           <div className="flex items-center justify-between mb-4">
             <div>
               <p className="text-sm font-medium text-gray-600">Repositories</p>
@@ -123,7 +123,7 @@ const DashboardIntegrated: React.FC = () => {
         </div>
 
         {/* Team Members */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-amber-200 transition-all duration-200 transform hover:-translate-y-0.5">
+        <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-amber-200 transition-[transform,box-shadow,border-color] duration-200 transform hover:-translate-y-0.5">
           <div className="flex items-center justify-between mb-4">
             <div>
               <p className="text-sm font-medium text-gray-600">Team Members</p>
@@ -140,7 +140,7 @@ const DashboardIntegrated: React.FC = () => {
         </div>
 
         {/* Performance */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-purple-200 transition-all duration-200 transform hover:-translate-y-0.5">
+        <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-purple-200 transition-[transform,box-shadow,border-color] duration-200 transform hover:-translate-y-0.5">
           <div className="flex items-center justify-between mb-4">
             <div>
               <p className="text-sm font-medium text-gray-600">Performance</p>

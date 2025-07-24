@@ -36,7 +36,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onClose, isColl
         className={`
         ${isCollapsed ? 'w-16' : 'w-64'} bg-white border-r border-gray-200 flex-shrink-0
         lg:relative fixed inset-y-0 left-0 z-40 h-full
-        transform transition-all duration-200 ease-in-out
+        transform transition-[transform,opacity] duration-200 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}
       >

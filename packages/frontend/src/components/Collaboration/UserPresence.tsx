@@ -124,7 +124,7 @@ export const ConnectedUsers: React.FC<ConnectedUsersProps> = ({ maxVisible = 5, 
             user={user}
             isActive={isUserActive(user.id)}
             size="sm"
-            className="hover:z-10 transition-all duration-200 hover:scale-110"
+            className="hover:z-10 transition-[transform,z-index] duration-200 hover:scale-110"
           />
         ))}
 
@@ -193,7 +193,7 @@ export const UserCursor: React.FC<UserCursorProps> = ({ userId, className }) => 
 
   return (
     <div
-      className={cn('fixed pointer-events-none z-50 transition-all duration-100', className)}
+      className={cn('fixed pointer-events-none z-50 transition-[left,top,transform] duration-100', className)}
       style={{
         left: cursor.x,
         top: cursor.y,

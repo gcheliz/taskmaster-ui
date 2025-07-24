@@ -157,7 +157,7 @@ export const DashboardStaticView: React.FC = () => {
                 </div>
                 <div className="w-full bg-slate-700 rounded-full h-2">
                   <div 
-                    className="bg-green-500 h-2 rounded-full transition-all duration-300"
+                    className="bg-green-500 h-2 rounded-full transition-[width] duration-300"
                     style={{ width: `${dashboardData.health?.overallScore || 85}%` }}
                   ></div>
                 </div>
@@ -170,7 +170,7 @@ export const DashboardStaticView: React.FC = () => {
                 </div>
                 <div className="w-full bg-slate-700 rounded-full h-2">
                   <div 
-                    className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+                    className="bg-blue-500 h-2 rounded-full transition-[width] duration-300"
                     style={{ width: `${performanceScore}%` }}
                   ></div>
                 </div>
@@ -185,7 +185,7 @@ export const DashboardStaticView: React.FC = () => {
                 </div>
                 <div className="w-full bg-slate-700 rounded-full h-2">
                   <div 
-                    className="bg-green-500 h-2 rounded-full transition-all duration-300"
+                    className="bg-green-500 h-2 rounded-full transition-[width] duration-300"
                     style={{ width: `${dashboardData.health?.metrics?.codeQuality || 82}%` }}
                   ></div>
                 </div>
@@ -200,7 +200,7 @@ export const DashboardStaticView: React.FC = () => {
                 </div>
                 <div className="w-full bg-slate-700 rounded-full h-2">
                   <div 
-                    className="bg-purple-500 h-2 rounded-full transition-all duration-300"
+                    className="bg-purple-500 h-2 rounded-full transition-[width] duration-300"
                     style={{ width: `${dashboardData.health?.metrics?.testCoverage || 76}%` }}
                   ></div>
                 </div>

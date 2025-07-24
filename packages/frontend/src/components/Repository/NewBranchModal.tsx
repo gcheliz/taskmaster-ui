@@ -221,7 +221,7 @@ export const NewBranchModal: React.FC<NewBranchModalProps> = ({ className }) => 
                   value={formData.fromBranch}
                   onChange={(e) => handleInputChange('fromBranch')(e.target.value)}
                   disabled={isCreating}
-                  className="flex h-10 w-full items-center justify-between rounded-md border px-3 py-2 text-sm transition-all duration-200 ease-in-out border-secondary-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                  className="flex h-10 w-full items-center justify-between rounded-md border px-3 py-2 text-sm transition-[border-color,box-shadow] duration-200 ease-in-out border-secondary-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {availableBranches.map((branch) => (
                     <option key={branch} value={branch}>

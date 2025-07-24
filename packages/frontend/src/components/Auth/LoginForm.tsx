@@ -131,7 +131,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                 'pl-10 bg-white/60 backdrop-blur-sm',
                 'border-slate-200/60',
                 'focus:bg-white/80 focus:border-blue-300',
-                'transition-all duration-300'
+                'transition-[border-color,background-color,color] duration-300'
               )}
             />
             {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email}</p>}
@@ -156,7 +156,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                 'pl-10 pr-10 bg-white/60 backdrop-blur-sm',
                 'border-slate-200/60',
                 'focus:bg-white/80 focus:border-blue-300',
-                'transition-all duration-300'
+                'transition-[border-color,background-color,color] duration-300'
               )}
             />
             <button
@@ -207,7 +207,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
             'hover:from-blue-700 hover:to-purple-700',
             'shadow-lg hover:shadow-xl',
             'backdrop-blur-sm',
-            'transition-all duration-300'
+            'transition-[border-color,background-color,color] duration-300'
           )}
           size="lg"
         >

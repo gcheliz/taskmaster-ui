@@ -127,7 +127,7 @@ const ResponsiveStatsGrid: React.FC<ResponsiveStatsGridProps> = ({
                       </div>
                       <div className="flex-1 bg-secondary-200 dark:bg-surface-700 rounded-full h-3">
                         <div
-                          className="h-3 rounded-full transition-all duration-500"
+                          className="h-3 rounded-full transition-[width] duration-500"
                           style={{
                             width: `${(count / taskMetrics.total) * 100}%`,
                             backgroundColor: getStatusColor(status),

@@ -352,7 +352,7 @@ const Repositories: React.FC = () => {
 
       {/* Stats - Enhanced with more metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-blue-200 transition-all duration-200 transform hover:-translate-y-0.5">
+        <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-blue-200 transition-[transform,box-shadow,border-color] duration-200 transform hover:-translate-y-0.5">
           <div className="flex items-center justify-between mb-4">
             <div>
               <p className="text-sm font-medium text-gray-600">Total Repositories</p>
@@ -368,7 +368,7 @@ const Repositories: React.FC = () => {
           </div>
         </div>
         
-        <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-green-200 transition-all duration-200 transform hover:-translate-y-0.5">
+        <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-green-200 transition-[transform,box-shadow,border-color] duration-200 transform hover:-translate-y-0.5">
           <div className="flex items-center justify-between mb-4">
             <div>
               <p className="text-sm font-medium text-gray-600">Active Branches</p>
@@ -387,7 +387,7 @@ const Repositories: React.FC = () => {
           </div>
         </div>
         
-        <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-amber-200 transition-all duration-200 transform hover:-translate-y-0.5">
+        <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-amber-200 transition-[transform,box-shadow,border-color] duration-200 transform hover:-translate-y-0.5">
           <div className="flex items-center justify-between mb-4">
             <div>
               <p className="text-sm font-medium text-gray-600">Open PRs</p>
@@ -405,7 +405,7 @@ const Repositories: React.FC = () => {
           </div>
         </div>
         
-        <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-purple-200 transition-all duration-200 transform hover:-translate-y-0.5">
+        <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-purple-200 transition-[transform,box-shadow,border-color] duration-200 transform hover:-translate-y-0.5">
           <div className="flex items-center justify-between mb-4">
             <div>
               <p className="text-sm font-medium text-gray-600">Health Score</p>
@@ -440,7 +440,7 @@ const Repositories: React.FC = () => {
             const statusConfig = getStatusConfig(repo.status || 'inactive')
             
             return (
-              <div key={repo.id} className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-all duration-200">
+              <div key={repo.id} className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-[box-shadow] duration-200">
                 {/* Card Header */}
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex-1 min-w-0">

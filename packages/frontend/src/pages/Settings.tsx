@@ -233,11 +233,11 @@ const Settings: React.FC = () => {
             />
 
             <div className="pt-4 space-y-3">
-              <button className="w-full px-4 py-2 bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-100 transition-all duration-200 text-sm font-medium flex items-center justify-center gap-2 hover:shadow-md hover:-translate-y-0.5">
+              <button className="w-full px-4 py-2 bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-100 transition-[background-color,transform,box-shadow] duration-200 text-sm font-medium flex items-center justify-center gap-2 hover:shadow-md hover:-translate-y-0.5">
                 <Key className="w-4 h-4" />
                 Change Password
               </button>
-              <button className="w-full px-4 py-2 bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-100 transition-all duration-200 text-sm font-medium flex items-center justify-center gap-2 hover:shadow-md hover:-translate-y-0.5">
+              <button className="w-full px-4 py-2 bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-100 transition-[background-color,transform,box-shadow] duration-200 text-sm font-medium flex items-center justify-center gap-2 hover:shadow-md hover:-translate-y-0.5">
                 <Download className="w-4 h-4" />
                 Download Security Log
               </button>
@@ -272,11 +272,11 @@ const Settings: React.FC = () => {
             />
 
             <div className="pt-4 space-y-3">
-              <button className="w-full px-4 py-2 bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-100 transition-all duration-200 text-sm font-medium flex items-center justify-center gap-2 hover:shadow-md hover:-translate-y-0.5">
+              <button className="w-full px-4 py-2 bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-100 transition-[background-color,transform,box-shadow] duration-200 text-sm font-medium flex items-center justify-center gap-2 hover:shadow-md hover:-translate-y-0.5">
                 <Download className="w-4 h-4" />
                 Export Settings
               </button>
-              <button className="w-full px-4 py-2 bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-100 transition-all duration-200 text-sm font-medium flex items-center justify-center gap-2 hover:shadow-md hover:-translate-y-0.5">
+              <button className="w-full px-4 py-2 bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-100 transition-[background-color,transform,box-shadow] duration-200 text-sm font-medium flex items-center justify-center gap-2 hover:shadow-md hover:-translate-y-0.5">
                 <Download className="w-4 h-4" />
                 Download Logs
               </button>
@@ -333,10 +333,10 @@ const Settings: React.FC = () => {
 
       {/* Save Button */}
       <div className="flex justify-end space-x-4 pb-8">
-        <button className="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all duration-200 font-medium hover:shadow-md">
+        <button className="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-[background-color,box-shadow] duration-200 font-medium hover:shadow-md">
           Cancel
         </button>
-        <button className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 font-medium flex items-center gap-2 hover:shadow-md hover:-translate-y-0.5">
+        <button className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-[background-color,transform,box-shadow] duration-200 font-medium flex items-center gap-2 hover:shadow-md hover:-translate-y-0.5">
           <Save className="w-4 h-4" />
           Save Changes
         </button>
@@ -356,7 +356,7 @@ const ThemeOption: React.FC<{
 }> = ({ icon, label, value, selected = false }) => (
   <button
     className={`
-    p-4 rounded-lg border-2 transition-all duration-200 relative
+    p-4 rounded-lg border-2 transition-[border-color,background-color,box-shadow] duration-200 relative
     ${selected ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300 bg-white'}
   `}
   >
@@ -383,7 +383,7 @@ const ColorOption: React.FC<{
 }> = ({ color, selected = false }) => (
   <button
     className={`
-    w-10 h-10 rounded-full ${color} relative transition-all duration-200
+    w-10 h-10 rounded-full ${color} relative transition-[transform,box-shadow] duration-200
     ${selected ? 'ring-2 ring-offset-2 ring-blue-500 ring-offset-white scale-110' : 'hover:scale-105'}
   `}
   >

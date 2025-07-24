@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 
 const buttonVariants = cva(
   // Base styles with enhanced dark theme support and micro-interactions
-  'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 focus-visible:ring-offset-surface-100 dark:focus-visible:ring-offset-surface-900',
+  'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 focus-visible:ring-offset-surface-100 dark:focus-visible:ring-offset-surface-900 will-change-transform',
   {
     variants: {
       variant: {
@@ -84,8 +84,15 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={isDisabled}
         aria-disabled={isDisabled}
         aria-busy={loading}
-        whileHover={!isDisabled ? { scale: 1.05, y: -2 } : undefined}
-        whileTap={!isDisabled ? { scale: 0.95 } : undefined}
+        whileHover={!isDisabled ? { 
+          scale: 1.02, 
+          y: -1,
+          transform: 'translateY(-1px) scale(1.02) translateZ(0)'
+        } : undefined}
+        whileTap={!isDisabled ? { 
+          scale: 0.98,
+          transform: 'scale(0.98) translateZ(0)'
+        } : undefined}
         transition={{
           type: "spring",
           stiffness: 400,

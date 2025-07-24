@@ -104,7 +104,7 @@ export const Toast: React.FC<ToastProps> = ({
   return (
     <div
       className={cn(
-        'flex items-center space-x-3 px-4 py-3 rounded-lg border shadow-lg transition-all duration-300 ease-in-out transform',
+        'flex items-center space-x-3 px-4 py-3 rounded-lg border shadow-lg transition-[transform,opacity] duration-300 ease-in-out transform',
         getToastStyles(),
         isExiting ? 'opacity-0 translate-x-full' : 'opacity-100 translate-x-0',
         className

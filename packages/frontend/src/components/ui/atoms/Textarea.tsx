@@ -4,7 +4,7 @@ import { cn } from '../../../utils/cn'
 
 const textareaVariants = cva(
   // Base styles with enhanced dark theme support and micro-interactions
-  'flex min-h-[80px] w-full rounded-md border px-3 py-2 text-sm transition-all duration-200 ease-in-out placeholder:text-secondary-500 dark:placeholder:text-secondary-400 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 resize-vertical focus-visible:ring-offset-surface-100 dark:focus-visible:ring-offset-surface-900 hover:shadow-sm focus-visible:shadow-md transform-gpu focus-visible:scale-[1.02] focus-visible:z-10',
+  'flex min-h-[80px] w-full rounded-md border px-3 py-2 text-sm transition-[border-color,box-shadow,transform] duration-200 ease-in-out placeholder:text-secondary-500 dark:placeholder:text-secondary-400 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 resize-vertical focus-visible:ring-offset-surface-100 dark:focus-visible:ring-offset-surface-900 hover:shadow-sm focus-visible:shadow-md transform-gpu focus-visible:scale-[1.02] focus-visible:z-10',
   {
     variants: {
       variant: {

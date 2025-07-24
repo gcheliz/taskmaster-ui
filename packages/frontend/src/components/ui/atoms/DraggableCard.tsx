@@ -52,7 +52,7 @@ const DraggableCard = React.forwardRef<HTMLDivElement, DraggableCardProps>(
           }
         }}
         className={cn(
-          'transition-all duration-200 ease-in-out',
+          'transition-[transform,box-shadow,opacity,scale,rotate] duration-200 ease-in-out',
           isDragging && [
             'opacity-50',
             'shadow-2xl',

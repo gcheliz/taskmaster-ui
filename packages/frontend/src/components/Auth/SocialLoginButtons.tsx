@@ -151,7 +151,7 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
             onClick={() => handleSocialLogin(provider)}
             className={cn(
               'w-full flex items-center justify-center space-x-3',
-              'border-2 transition-all duration-300',
+              'border-2 transition-[background-color,border-color,transform,box-shadow] duration-300',
               'shadow-sm hover:shadow-md',
               'backdrop-blur-sm',
               config.bgColor,

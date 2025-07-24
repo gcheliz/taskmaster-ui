@@ -54,7 +54,7 @@ export const RepositoryCardCompact: React.FC<RepositoryCardCompactProps> = ({
   return (
     <Card
       className={cn(
-        'group hover:shadow-md transition-all duration-200',
+        'group hover:shadow-md transition-[box-shadow] duration-200',
         'bg-white/70 backdrop-blur-sm border border-white/20',
         'hover:bg-white/80 hover:border-white/30',
         onClick && 'cursor-pointer',

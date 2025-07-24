@@ -62,7 +62,7 @@ export const Header: React.FC<HeaderProps> = ({
               id="header-search"
               type="search"
               placeholder="Search tasks, repos, commands..."
-              className="w-96 bg-gray-50 text-gray-700 rounded-lg pl-10 pr-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white focus:border-transparent transition-all duration-200"
+              className="w-96 bg-gray-50 text-gray-700 rounded-lg pl-10 pr-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white focus:border-transparent transition-[border-color,background-color,box-shadow] duration-200"
               aria-label="Search tasks, repositories, and commands"
             />
           </div>
@@ -130,7 +130,7 @@ export const Header: React.FC<HeaderProps> = ({
             <input
               type="search"
               placeholder="Search tasks, repos..."
-              className="w-full bg-gray-50 text-gray-700 rounded-lg pl-10 pr-4 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white focus:border-transparent transition-all duration-200"
+              className="w-full bg-gray-50 text-gray-700 rounded-lg pl-10 pr-4 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white focus:border-transparent transition-[border-color,background-color,box-shadow] duration-200"
               autoFocus
               aria-label="Search tasks and repositories"
             />

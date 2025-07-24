@@ -127,7 +127,7 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({
       <Card
         variant="outline"
         className={`
-          flex-1 flex flex-col bg-surface-50 dark:bg-surface-900 transition-all duration-200
+          flex-1 flex flex-col bg-surface-50 dark:bg-surface-900 transition-[background-color] duration-200
           ${isOver ? 'bg-primary-50 dark:bg-primary-900/20 border-primary-300 dark:border-primary-600' : ''}
         `}
       >
@@ -169,7 +169,7 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({
               variant="outline"
               size="sm"
               onClick={handleAddTask}
-              className="w-full justify-center text-xs py-3 border-dashed border-2 hover:border-solid transition-all touch-target"
+              className="w-full justify-center text-xs py-3 border-dashed border-2 hover:border-solid transition-[border-style] touch-target"
             >
               <Icon icon={PlusIcon} size="sm" className="mr-2" />
               Add Task
@@ -206,7 +206,7 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({
                   subtasks={task.subtasks}
                   onClick={onTaskClick}
                   isDraggable={true}
-                  className="transition-all duration-200"
+                  className="transition-[box-shadow,transform] duration-200"
                 />
               ))
             )}

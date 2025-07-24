@@ -1,0 +1,123 @@
+/* Performance optimizations for animations */
+
+/* Use GPU acceleration for frequently animated elements */
+.gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Optimize hover effects with pseudo-elements for shadows */
+.optimized-card {
+  position: relative;
+  transition: transform 0.2s ease-out;
+  transform: translateZ(0);
+}
+
+.optimized-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: inherit;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
+  z-index: -1;
+}
+
+.optimized-card:hover {
+  transform: translateY(-2px) translateZ(0);
+}
+
+.optimized-card:hover::before {
+  opacity: 1;
+}
+
+/* Contain layout for animation boundaries */
+.animation-container {
+  contain: layout style paint;
+}
+
+/* Specific transitions instead of transition-all */
+.optimized-transition {
+  transition-property: transform, opacity;
+  transition-duration: 200ms;
+  transition-timing-function: ease-out;
+}
+
+.optimized-color-transition {
+  transition-property: background-color, border-color, color;
+  transition-duration: 150ms;
+  transition-timing-function: ease-out;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .optimized-card::before {
+    transition: none;
+  }
+  
+  .optimized-card:hover {
+    transform: none;
+  }
+}
+
+/* Performance hints for specific animations */
+.will-animate-transform {
+  will-change: transform;
+}
+
+.will-animate-opacity {
+  will-change: opacity;
+}
+
+.will-animate-all {
+  will-change: transform, opacity;
+}
+
+/* Remove will-change after animation */
+.animation-complete {
+  will-change: auto;
+}
+
+/* Optimize skeleton animations */
+.skeleton-optimized {
+  transform: translateZ(0);
+  will-change: transform;
+  contain: layout style paint;
+}
+
+/* FPS counter for development */
+.fps-counter {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #00ff00;
+  padding: 5px 10px;
+  font-family: monospace;
+  font-size: 12px;
+  border-radius: 4px;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.fps-counter.warning {
+  color: #ffff00;
+}
+
+.fps-counter.critical {
+  color: #ff0000;
+}

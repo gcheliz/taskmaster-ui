@@ -4,7 +4,7 @@ import { cn } from '../../../utils/cn'
 import { Icon, CheckIcon } from './Icon'
 
 const checkboxVariants = cva(
-  'peer h-4 w-4 shrink-0 rounded-sm border border-secondary-300 ring-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary-600 data-[state=checked]:border-primary-600 data-[state=checked]:text-white transition-all duration-200 ease-in-out transform-gpu hover:scale-110 focus-visible:ring-offset-surface-100 dark:focus-visible:ring-offset-surface-900 hover:shadow-md dark:border-secondary-600 dark:data-[state=checked]:bg-primary-500 dark:data-[state=checked]:border-primary-500 dark:focus-visible:ring-primary-400 hover:border-secondary-400 dark:hover:border-secondary-500',
+  'peer h-4 w-4 shrink-0 rounded-sm border border-secondary-300 ring-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary-600 data-[state=checked]:border-primary-600 data-[state=checked]:text-white transition-[transform,box-shadow,background-color,border-color] duration-200 ease-in-out transform-gpu hover:scale-110 focus-visible:ring-offset-surface-100 dark:focus-visible:ring-offset-surface-900 hover:shadow-md dark:border-secondary-600 dark:data-[state=checked]:bg-primary-500 dark:data-[state=checked]:border-primary-500 dark:focus-visible:ring-primary-400 hover:border-secondary-400 dark:hover:border-secondary-500',
   {
     variants: {
       size: {

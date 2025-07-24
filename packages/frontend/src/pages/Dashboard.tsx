@@ -66,9 +66,12 @@ const Dashboard: React.FC = () => {
         {/* Active Tasks */}
         <AnimatedListItem index={0}>
           <motion.div 
-            className="bg-white rounded-xl border border-gray-200 p-6"
+            className="bg-white rounded-xl border border-gray-200 p-6 gpu-accelerated"
             {...hoverLift}
-            whileHover={{ borderColor: 'rgb(191 219 254)' }}
+            whileHover={{ 
+              borderColor: 'rgb(191 219 254)',
+              transition: { duration: 0.2 }
+            }}
           >
           <div className="flex items-center justify-between mb-4">
             <div>
@@ -90,9 +93,12 @@ const Dashboard: React.FC = () => {
         {/* Repositories */}
         <AnimatedListItem index={1}>
           <motion.div 
-            className="bg-white rounded-xl border border-gray-200 p-6"
+            className="bg-white rounded-xl border border-gray-200 p-6 gpu-accelerated"
             {...hoverLift}
-            whileHover={{ borderColor: 'rgb(187 247 208)' }}
+            whileHover={{ 
+              borderColor: 'rgb(187 247 208)',
+              transition: { duration: 0.2 }
+            }}
           >
           <div className="flex items-center justify-between mb-4">
             <div>
@@ -113,9 +119,12 @@ const Dashboard: React.FC = () => {
         {/* Team Members */}
         <AnimatedListItem index={2}>
           <motion.div 
-            className="bg-white rounded-xl border border-gray-200 p-6"
+            className="bg-white rounded-xl border border-gray-200 p-6 gpu-accelerated"
             {...hoverLift}
-            whileHover={{ borderColor: 'rgb(253 230 138)' }}
+            whileHover={{ 
+              borderColor: 'rgb(253 230 138)',
+              transition: { duration: 0.2 }
+            }}
           >
           <div className="flex items-center justify-between mb-4">
             <div>
@@ -136,9 +145,12 @@ const Dashboard: React.FC = () => {
         {/* Performance */}
         <AnimatedListItem index={3}>
           <motion.div 
-            className="bg-white rounded-xl border border-gray-200 p-6"
+            className="bg-white rounded-xl border border-gray-200 p-6 gpu-accelerated"
             {...hoverLift}
-            whileHover={{ borderColor: 'rgb(233 213 255)' }}
+            whileHover={{ 
+              borderColor: 'rgb(233 213 255)',
+              transition: { duration: 0.2 }
+            }}
           >
           <div className="flex items-center justify-between mb-4">
             <div>
@@ -312,7 +324,7 @@ const HealthMetric: React.FC<{
       </div>
       <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
         <div
-          className={`${colors.bg} h-2 rounded-full transition-all duration-500 ease-out`}
+          className={`${colors.bg} h-2 rounded-full transition-[width] duration-500 ease-out`}
           style={{ width: `${value}%` }}
         />
       </div>
@@ -327,7 +339,7 @@ const QuickActionButton: React.FC<{
   label: string;
 }> = ({ icon, iconBg, label }) => {
   return (
-    <button className="flex items-center gap-3 p-4 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 w-full">
+    <button className="flex items-center gap-3 p-4 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg transition-[background-color,transform,box-shadow] duration-200 hover:shadow-md hover:-translate-y-0.5 w-full">
       <div className={`w-8 h-8 ${iconBg} rounded-lg flex items-center justify-center flex-shrink-0`}>
         {icon}
       </div>

@@ -6,6 +6,7 @@ import { RepositoryProvider } from './contexts/RepositoryContext'
 import { FocusProvider } from './contexts/FocusContext'
 import { initializeKeyboardDetection } from './utils/keyboard'
 import { AppRouter } from './routes/router'
+import { FPSMonitor } from './components/common/FPSMonitor'
 
 // Create a client for React Query
 const queryClient = new QueryClient({
@@ -32,6 +33,7 @@ function App() {
           <NotificationProvider>
             <RepositoryProvider>
               <AppRouter />
+              <FPSMonitor enabled={process.env.NODE_ENV === 'development'} />
             </RepositoryProvider>
           </NotificationProvider>
         </FocusProvider>

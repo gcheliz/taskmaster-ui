@@ -8,9 +8,21 @@ export const fadeIn: Variants = {
 }
 
 export const slideUp: Variants = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -20 },
+  initial: { 
+    opacity: 0, 
+    y: 20,
+    transform: 'translateY(20px) translateZ(0)' // Force GPU acceleration
+  },
+  animate: { 
+    opacity: 1, 
+    y: 0,
+    transform: 'translateY(0px) translateZ(0)'
+  },
+  exit: { 
+    opacity: 0, 
+    y: -20,
+    transform: 'translateY(-20px) translateZ(0)'
+  },
 }
 
 export const slideDown: Variants = {
@@ -32,9 +44,21 @@ export const slideRight: Variants = {
 }
 
 export const scale: Variants = {
-  initial: { opacity: 0, scale: 0.95 },
-  animate: { opacity: 1, scale: 1 },
-  exit: { opacity: 0, scale: 0.95 },
+  initial: { 
+    opacity: 0, 
+    scale: 0.95,
+    transform: 'scale(0.95) translateZ(0)' // GPU acceleration
+  },
+  animate: { 
+    opacity: 1, 
+    scale: 1,
+    transform: 'scale(1) translateZ(0)'
+  },
+  exit: { 
+    opacity: 0, 
+    scale: 0.95,
+    transform: 'scale(0.95) translateZ(0)'
+  },
 }
 
 export const staggerContainer: Variants = {
@@ -117,15 +141,52 @@ export const hoverScale = {
   transition: springTransition,
 }
 
+// Optimized hover effect without expensive box-shadow animation
 export const hoverLift = {
-  whileHover: { y: -2, boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)' },
+  whileHover: { 
+    y: -2,
+    scale: 1.02,
+    transform: 'translateY(-2px) scale(1.02) translateZ(0)'
+  },
+  whileTap: { 
+    scale: 0.98,
+    transform: 'scale(0.98) translateZ(0)'
+  },
   transition: smoothTransition,
 }
 
-// Focus animations
+// Focus animations - using outline instead of box-shadow for better performance
 export const focusRing = {
   whileFocus: {
-    boxShadow: '0 0 0 3px rgba(59, 130, 246, 0.5)',
+    outline: '3px solid rgba(59, 130, 246, 0.5)',
+    outlineOffset: '2px',
   },
   transition: quickTransition,
+}
+
+// Performance-optimized variants
+export const optimizedVariants = {
+  container: {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        when: 'beforeChildren',
+        staggerChildren: 0.05,
+        delayChildren: 0.1,
+      },
+    },
+  },
+  item: {
+    hidden: { 
+      opacity: 0, 
+      y: 10,
+      transform: 'translateY(10px) translateZ(0)'
+    },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transform: 'translateY(0px) translateZ(0)'
+    },
+  },
 }

@@ -66,7 +66,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({
           'rounded-2xl',
           'p-8',
           // Subtle animations
-          'transform-gpu transition-all duration-500',
+          'transform-gpu transition-[transform,opacity] duration-500',
           'hover:shadow-3xl hover:shadow-black/10',
           'hover:bg-white/85'
         )}
@@ -104,7 +104,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({
               className={cn(
                 'data-[state=active]:bg-white/90 data-[state=active]:shadow-md',
                 'data-[state=active]:backdrop-blur-xl',
-                'transition-all duration-300'
+                'transition-[color] duration-300'
               )}
             >
               Sign In
@@ -114,7 +114,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({
               className={cn(
                 'data-[state=active]:bg-white/90 data-[state=active]:shadow-md',
                 'data-[state=active]:backdrop-blur-xl',
-                'transition-all duration-300'
+                'transition-[color] duration-300'
               )}
             >
               Create Account

@@ -941,7 +941,7 @@ const TaskCard: React.FC<{
         if (isDragging) return;
         onClick?.(task);
       }}
-      className={`bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-grab active:cursor-grabbing group select-none ${priorityStyles.border} ${isDragging ? 'shadow-lg ring-2 ring-blue-500' : ''}`}>
+      className={`bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-[box-shadow] duration-200 cursor-grab active:cursor-grabbing group select-none ${priorityStyles.border} ${isDragging ? 'shadow-lg ring-2 ring-blue-500' : ''}`}>
       <div className="flex items-start justify-between mb-2">
         <div className="flex items-start gap-2 flex-1">
           <GripVertical className="w-4 h-4 text-gray-400 mt-1" />
@@ -983,7 +983,7 @@ const TaskCard: React.FC<{
         <div className="mt-3 flex items-center justify-between pl-6">
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div 
-              className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+              className="bg-blue-600 h-2 rounded-full transition-[width] duration-300"
               style={{ width: `${task.progress}%` }}
             />
           </div>

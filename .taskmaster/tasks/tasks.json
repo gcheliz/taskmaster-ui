@@ -1227,7 +1227,7 @@
             "title": "Create Loading States and Skeleton Screens",
             "description": "Design and implement comprehensive loading states including skeleton screens for task lists, cards, and data tables. Create shimmer effects for loading placeholders, progress indicators for long-running operations, spinner components with different sizes, loading overlays for form submissions, and progressive content loading animations. Ensure loading states match the visual style of actual content.",
             "details": "",
-            "status": "in-progress",
+            "status": "done",
             "dependencies": [],
             "parentTaskId": 72
           },
@@ -1236,7 +1236,7 @@
             "title": "Optimize Animations for 60fps Performance",
             "description": "Optimize all animations and transitions for consistent 60fps performance. Use CSS transform and opacity for GPU acceleration, implement will-change hints appropriately, debounce scroll animations, use requestAnimationFrame for JavaScript animations, implement Intersection Observer for scroll-triggered animations, add performance monitoring with FPS counter, reduce motion for accessibility preferences, and profile animations with Chrome DevTools Performance tab.",
             "details": "",
-            "status": "pending",
+            "status": "in-progress",
             "dependencies": [],
             "parentTaskId": 72
           }
@@ -1375,7 +1375,7 @@
     ],
     "metadata": {
       "created": "2025-07-15T21:22:03.992Z",
-      "updated": "2025-07-24T16:55:09.520Z",
+      "updated": "2025-07-24T17:08:12.739Z",
       "description": "Tasks for taskmaster-ui context"
     }
   },

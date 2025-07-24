@@ -399,7 +399,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
                         key={index}
                         onClick={() => setCurrentStep(index)}
                         className={cn(
-                          'w-2 h-2 rounded-full transition-all duration-300',
+                          'w-2 h-2 rounded-full transition-[background-color,transform] duration-300',
                           index === currentStep
                             ? 'w-8 bg-gradient-to-r from-blue-500 to-purple-500'
                             : 'bg-gray-300 hover:bg-gray-400'

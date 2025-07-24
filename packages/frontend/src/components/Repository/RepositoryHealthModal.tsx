@@ -90,7 +90,7 @@ const HealthSummaryCard: React.FC<HealthSummaryCardProps> = ({
 
   return (
     <div
-      className={cn('rounded-lg border p-4 transition-all hover:shadow-md', colorClasses[color])}
+      className={cn('rounded-lg border p-4 transition-[box-shadow] hover:shadow-md', colorClasses[color])}
     >
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center space-x-2">

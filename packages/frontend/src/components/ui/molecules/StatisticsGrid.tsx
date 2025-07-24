@@ -164,7 +164,7 @@ const StatisticsGrid: React.FC<StatisticsGridProps> = ({
         <Card
           key={card.id}
           variant="elevated"
-          className="hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
+          className="hover:shadow-lg transition-[box-shadow,transform] duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
         >
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
@@ -188,7 +188,7 @@ const StatisticsGrid: React.FC<StatisticsGridProps> = ({
             {card.progressBar && (
               <div className="w-full bg-secondary-200 dark:bg-surface-700 rounded-full h-2 mb-2">
                 <div
-                  className={`h-2 rounded-full transition-all duration-500 ${
+                  className={`h-2 rounded-full transition-[width] duration-500 ${
                     card.progressBar.color === 'success'
                       ? 'bg-success-500'
                       : card.progressBar.color === 'warning'

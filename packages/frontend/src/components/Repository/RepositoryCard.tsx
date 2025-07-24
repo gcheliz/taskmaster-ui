@@ -233,7 +233,7 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = ({
   return (
     <Card
       className={cn(
-        'relative group hover:shadow-lg transition-all duration-300',
+        'relative group hover:shadow-lg transition-[box-shadow] duration-300',
         'bg-white/80 backdrop-blur-xl border border-white/20',
         'hover:bg-white/90 hover:border-white/30',
         onClick && 'cursor-pointer',

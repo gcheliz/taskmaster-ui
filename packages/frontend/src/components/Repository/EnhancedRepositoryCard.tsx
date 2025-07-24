@@ -128,7 +128,7 @@ export const EnhancedRepositoryCard: React.FC<EnhancedRepositoryCardProps> = ({
   return (
     <Card 
       className={cn(
-        'p-6 transition-all hover:shadow-lg',
+        'p-6 transition-[box-shadow] hover:shadow-lg',
         isSelected && 'ring-2 ring-blue-500',
         className
       )}

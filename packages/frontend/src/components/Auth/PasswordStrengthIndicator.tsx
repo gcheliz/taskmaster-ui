@@ -100,7 +100,7 @@ export const PasswordStrengthIndicator: React.FC<PasswordStrengthIndicatorProps>
         <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
           <div
             className={cn(
-              'h-full transition-all duration-500 ease-out',
+              'h-full transition-[width,background-color] duration-500 ease-out',
               getProgressBarColor(strengthLevel.color),
               'shadow-sm'
             )}
@@ -115,7 +115,7 @@ export const PasswordStrengthIndicator: React.FC<PasswordStrengthIndicatorProps>
           <div key={index} className="flex items-center space-x-2">
             <div
               className={cn(
-                'flex items-center justify-center w-4 h-4 rounded-full transition-all duration-300',
+                'flex items-center justify-center w-4 h-4 rounded-full transition-[background-color,border-color] duration-300',
                 req.met ? 'bg-green-100 text-green-600' : 'bg-slate-100 text-slate-400'
               )}
             >
@@ -123,7 +123,7 @@ export const PasswordStrengthIndicator: React.FC<PasswordStrengthIndicatorProps>
                 icon={req.met ? CheckIcon : XMarkIcon}
                 size="xs"
                 className={cn(
-                  'transition-all duration-300',
+                  'transition-[opacity] duration-300',
                   req.met ? 'text-green-600' : 'text-slate-400'
                 )}
               />

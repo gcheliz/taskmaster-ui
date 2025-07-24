@@ -6,8 +6,12 @@ import {
   terminalWebSocketService,
 } from './services/terminalWebSocketService';
 import { terminalService } from './services/terminalService';
+import { initSentry } from './config/sentry';
 
 const PORT = process.env.PORT || 3001;
+
+// Initialize Sentry before starting the server
+initSentry(app);
 
 // Only start the server if this file is run directly
 if (require.main === module) {

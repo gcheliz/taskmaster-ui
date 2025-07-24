@@ -79,6 +79,9 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Sentry request and tracing middleware (must be after session)
+setupSentryMiddleware(app);
+
 // Security headers
 app.use((req, res, next) => {
   res.header('X-Content-Type-Options', 'nosniff');

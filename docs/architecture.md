@@ -1,143 +1,251 @@
-# TaskMaster UI Architecture
-
-## Overview
-
-TaskMaster UI is a web-based application designed to manage tasks and projects with an intuitive interface for creating, updating, and tracking tasks. The application features a modern technology stack with a React-based frontend and a Node.js backend, designed for deployment in a Kubernetes environment.
+# Architecture Overview
 
 ## System Architecture
 
-### Application Components
+```mermaid
+graph TB
+    subgraph "Client Layer"
+        Browser[Web Browser]
+        Mobile[Mobile App]
+    end
+    
+    subgraph "Frontend Application"
+        React[React 18 SPA]
+        Router[React Router v6]
+        State[State Management]
+        UI[Component Library]
+    end
+    
+    subgraph "API Gateway"
+        Express[Express Server]
+        Auth[Authentication]
+        WS[WebSocket Server]
+    end
+    
+    subgraph "Backend Services"
+        API[REST API]
+        Tasks[Task Service]
+        Repos[Repository Service]
+        Analytics[Analytics Service]
+    end
+    
+    subgraph "Data Layer"
+        PG[(PostgreSQL)]
+        Redis[(Redis Cache)]
+        S3[Object Storage]
+    end
+    
+    subgraph "External Services"
+        GitHub[GitHub API]
+        GitLab[GitLab API]
+        OAuth[OAuth Providers]
+    end
+    
+    Browser --> React
+    Mobile --> React
+    React --> Router
+    Router --> State
+    State --> UI
+    React --> Express
+    Express --> Auth
+    Express --> API
+    API --> Tasks
+    API --> Repos
+    API --> Analytics
+    Tasks --> PG
+    Repos --> PG
+    Analytics --> PG
+    Express --> Redis
+    Repos --> GitHub
+    Repos --> GitLab
+    Auth --> OAuth
+    Express --> WS
+```
 
-The application is composed of two main components:
-- **Frontend**: Single-page application (SPA) built with React
-- **Backend**: RESTful API server built with Node.js/Express
+## Frontend Architecture
 
 ### Technology Stack
-
-#### Frontend
 - **Framework**: React 18 with TypeScript
-- **Build Tool**: Vite
-- **UI Components**: Custom component library  
-- **State Management**: React Context + Hooks
-- **Terminal**: xterm.js integration
+- **Build Tool**: Vite 5
+- **Styling**: TailwindCSS v4 with custom design system
+- **State Management**: React Context + React Query
+- **Routing**: React Router v6
 - **Testing**: Vitest + React Testing Library
-- **Styling**: CSS Modules + PostCSS
 
-#### Backend
-- **Runtime**: Node.js 18+
-- **Framework**: Express.js with TypeScript
-- **Database**: SQLite (development), PostgreSQL (production)
-- **WebSockets**: Native WebSocket support
-- **Testing**: Jest with TypeScript
-- **CLI Integration**: TaskMaster AI CLI wrapper
+### Component Structure
 
-#### Development Tools
-- **Package Manager**: pnpm (recommended)
-- **Linting**: ESLint with TypeScript rules
-- **Formatting**: Prettier
-- **Testing**: Jest, Vitest, Playwright
-- **Type Checking**: TypeScript strict mode
+```
+src/
+├── components/
+│   ├── ui/               # Design system components
+│   │   ├── atoms/        # Basic building blocks
+│   │   ├── molecules/    # Composite components
+│   │   └── organisms/    # Complex components
+│   ├── Layout/           # Layout components
+│   ├── Auth/             # Authentication components
+│   └── Features/         # Feature-specific components
+├── contexts/             # React Context providers
+├── hooks/                # Custom React hooks
+├── pages/                # Route page components
+├── services/             # API and external services
+└── utils/                # Utility functions
+```
 
-## Kubernetes Architecture
+### Key Design Patterns
 
-![Kubernetes Architecture](../diagrams/kubernetes-diagram.png)
+1. **Atomic Design**: Components organized by complexity
+2. **Container/Presenter**: Separation of logic and presentation
+3. **Custom Hooks**: Reusable business logic
+4. **Context Providers**: Global state management
+5. **Lazy Loading**: Code splitting for performance
 
-The application is designed for Kubernetes deployment with the following components:
-- Frontend pods serving the React application
-- Backend pods providing the API services
-- Database persistence layer
-- Load balancer for traffic distribution
+## Backend Architecture
 
-## Data Flow
+### Technology Stack
+- **Runtime**: Node.js 20 LTS
+- **Framework**: Express.js
+- **ORM**: Prisma
+- **Database**: PostgreSQL 15
+- **Cache**: Redis
+- **WebSockets**: Socket.io
 
-### Request Flow
-1. User interacts with React frontend
-2. Frontend makes API calls to Express backend
-3. Backend processes requests and interacts with database
-4. Real-time updates sent via WebSocket connections
-5. Frontend updates UI with new data
+### Service Architecture
 
-### WebSocket Communication
-- Real-time task updates across multiple clients
-- File system monitoring for task.json changes
-- Terminal session management
-- Live collaboration features
+```
+src/
+├── controllers/          # Request handlers
+├── services/             # Business logic
+├── repositories/         # Data access layer
+├── models/               # Data models
+├── middleware/           # Express middleware
+├── utils/                # Utility functions
+└── websocket/            # Real-time features
+```
+
+### API Design
+
+- RESTful endpoints following OpenAPI 3.0
+- JWT-based authentication
+- Rate limiting and request validation
+- Comprehensive error handling
+- Request/response logging
+
+## Database Schema
+
+### Core Tables
+
+```sql
+-- Users and Authentication
+CREATE TABLE users (
+    id UUID PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    name VARCHAR(255),
+    role VARCHAR(50),
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Projects and Tasks
+CREATE TABLE projects (
+    id UUID PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    owner_id UUID REFERENCES users(id),
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE tasks (
+    id UUID PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    status VARCHAR(50),
+    priority VARCHAR(20),
+    project_id UUID REFERENCES projects(id),
+    assignee_id UUID REFERENCES users(id),
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Repository Integration
+CREATE TABLE repositories (
+    id UUID PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    url VARCHAR(500),
+    provider VARCHAR(50),
+    project_id UUID REFERENCES projects(id),
+    last_synced_at TIMESTAMP
+);
+```
 
 ## Security Architecture
 
-### Input Validation
-- Comprehensive sanitization across all user inputs
-- XSS and injection attack prevention
-- Content Security Policy (CSP) implementation
+### Authentication & Authorization
+- JWT tokens with refresh token rotation
+- OAuth2 integration (Google, GitHub)
+- Role-based access control (RBAC)
+- Session management with Redis
 
-### Environment Security
-- Secure configuration management
-- Environment variable isolation
-- API key protection
+### Security Measures
+- HTTPS enforcement
+- CORS configuration
+- Rate limiting
+- Input validation and sanitization
+- SQL injection prevention via Prisma
+- XSS protection headers
+- CSRF tokens for state-changing operations
 
-### API Security
-- Rate limiting and request throttling
-- Secure request handling
-- Authentication and authorization framework
+## Performance Optimizations
 
-## Performance Considerations
-
-### Frontend Optimization
+### Frontend
 - Code splitting and lazy loading
-- Component memoization
+- Image optimization and lazy loading
+- Service Worker for offline capability
 - Bundle size optimization
-- Caching strategies
+- React.memo and useMemo for rendering
 
-### Backend Optimization
+### Backend
 - Database query optimization
+- Redis caching strategy
 - Connection pooling
-- Response caching
-- Efficient WebSocket handling
+- Horizontal scaling support
+- Background job processing
 
-### Build Performance
-- pnpm for faster package management
-- Parallel builds
-- Incremental compilation
-- Development server hot reloading
+## Deployment Architecture
 
-## Scalability Design
+### Container Strategy
+```yaml
+services:
+  frontend:
+    build: ./packages/frontend
+    ports: ["80:80"]
+    
+  backend:
+    build: ./packages/backend
+    ports: ["3001:3001"]
+    
+  postgres:
+    image: postgres:15
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+    
+  redis:
+    image: redis:7-alpine
+```
 
-### Horizontal Scaling
-- Stateless backend design
-- Load balancer distribution
-- Database connection pooling
-- Session persistence strategies
+### Scaling Considerations
+- Stateless application design
+- Database read replicas
+- CDN for static assets
+- Load balancer configuration
+- Auto-scaling policies
 
-### Vertical Scaling
-- Resource-efficient code
-- Memory optimization
-- CPU usage optimization
-- I/O efficiency
+## Monitoring & Observability
 
-## Monitoring and Observability
+### Metrics Collection
+- Application performance monitoring
+- Error tracking and alerting
+- User analytics
+- Infrastructure metrics
 
-### Health Checks
-- API health endpoints
-- Database connectivity monitoring
-- WebSocket connection status
-- Application metrics
-
-### Logging
-- Structured logging
-- Error tracking
-- Performance monitoring
-- Audit trails
-
-## Future Architecture Considerations
-
-### Multi-tenant Support
-- Data isolation strategies
-- Resource allocation
-- Security boundaries
-- Configuration management
-
-### Microservices Evolution
-- Service decomposition strategy
-- API gateway implementation
-- Service mesh integration
-- Event-driven architecture
+### Logging Strategy
+- Structured JSON logging
+- Centralized log aggregation
+- Log levels and filtering
+- Audit trail for sensitive operations

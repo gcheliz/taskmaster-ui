@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { cn } from '../../utils/cn'
-import { Card } from '../ui/Card'
+import { Card } from '../ui/atoms/Card'
 import { Badge } from '../ui/atoms/Badge'
 import { Spinner } from '../ui/atoms/Spinner'
 import { Button } from '../ui/atoms/Button'

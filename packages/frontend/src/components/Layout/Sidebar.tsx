@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { LayoutGrid, FolderGit2, ClipboardList, Terminal, Settings, ChevronLeft, ChevronRight } from 'lucide-react'
 import { RovingTabIndex } from '../../utils/keyboard'
 
@@ -19,30 +19,30 @@ const menuItems = [
 ]
 
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onClose, isCollapsed = false, onToggleCollapse }) => {
-  const navigate = useNavigate()
   const location = useLocation()
+  const navigate = useNavigate()
   const navRef = useRef<HTMLElement>(null)
   const rovingTabIndexRef = useRef<RovingTabIndex | null>(null)
 
   const isActive = (path: string) => location.pathname === path
 
-  // Initialize roving tabindex for keyboard navigation
-  useEffect(() => {
-    if (navRef.current && !rovingTabIndexRef.current) {
-      rovingTabIndexRef.current = new RovingTabIndex(navRef.current, 'button[role="menuitem"]')
-    }
+  // Temporarily disable roving tabindex to fix navigation
+  // useEffect(() => {
+  //   if (navRef.current && !rovingTabIndexRef.current) {
+  //     rovingTabIndexRef.current = new RovingTabIndex(navRef.current, 'a[role="menuitem"]')
+  //   }
 
-    return () => {
-      rovingTabIndexRef.current?.destroy()
-    }
-  }, [])
+  //   return () => {
+  //     rovingTabIndexRef.current?.destroy()
+  //   }
+  // }, [])
 
-  // Update roving tabindex when menu items change
-  useEffect(() => {
-    if (rovingTabIndexRef.current && navRef.current) {
-      rovingTabIndexRef.current.updateItems('button[role="menuitem"]')
-    }
-  }, [isCollapsed])
+  // // Update roving tabindex when menu items change
+  // useEffect(() => {
+  //   if (rovingTabIndexRef.current && navRef.current) {
+  //     rovingTabIndexRef.current.updateItems('a[role="menuitem"]')
+  //   }
+  // }, [isCollapsed])
 
   return (
     <>
@@ -77,6 +77,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onClose, isColl
             </button>
           </div>
 
+
           {/* Navigation */}
           <nav ref={navRef} className="flex-1 p-4 space-y-1 overflow-y-auto" role="menu" aria-label="Main navigation">
             {menuItems.map((item) => {
@@ -84,33 +85,23 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onClose, isColl
               const active = isActive(item.path)
 
               return (
-                <button
+                <Link
                   key={item.path}
-                  role="menuitem"
-                  aria-current={active ? 'page' : undefined}
-                  onClick={() => {
-                    navigate(item.path)
-                    onClose?.()
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault()
-                      navigate(item.path)
-                      onClose?.()
-                    }
-                  }}
+                  to={item.path}
+                  onClick={() => onClose?.()}
                   className={`
-                    flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3'} 
-                    px-${isCollapsed ? '2' : '4'} py-2.5 w-full rounded-lg font-medium text-sm
+                    flex flex-row items-center ${isCollapsed ? 'justify-center px-2' : 'gap-3 px-4'} 
+                    py-2.5 w-full rounded-lg font-medium text-sm
                     transition-all duration-200 group relative
-                    ${active ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-700 hover:bg-gray-100'}
-                    focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
+                    ${active 
+                      ? 'bg-blue-600 text-white shadow-sm hover:bg-blue-700' 
+                      : 'bg-transparent text-gray-700 hover:bg-gray-100 hover:text-gray-900'}
+                    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
                   `}
                   title={isCollapsed ? item.label : undefined}
-                  tabIndex={-1}
                 >
-                  <Icon className={`w-5 h-5 ${isCollapsed ? '' : 'flex-shrink-0'}`} />
-                  {!isCollapsed && <span>{item.label}</span>}
+                  <Icon className="w-5 h-5 flex-shrink-0" />
+                  {!isCollapsed && <span className="flex-1 text-left whitespace-nowrap">{item.label}</span>}
                   
                   {/* Tooltip for collapsed state */}
                   {isCollapsed && (
@@ -119,7 +110,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onClose, isColl
                       {item.label}
                     </div>
                   )}
-                </button>
+                </Link>
               )
             })}
           </nav>

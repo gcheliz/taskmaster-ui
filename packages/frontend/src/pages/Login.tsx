@@ -7,10 +7,10 @@ import {
   CardDescription,
   CardContent,
   CardFooter,
-} from '../components/ui/Card'
-import { Input } from '../components/ui/Input'
-import { Button } from '../components/ui/Button'
-import { Checkbox } from '../components/ui/Checkbox'
+} from '../components/ui/molecules/Card'
+import { Input } from '../components/ui/atoms/Input'
+import { Button } from '../components/ui/atoms/Button'
+import { Checkbox } from '../components/ui/atoms/Checkbox'
 import { useAuth } from '../hooks/useAuth'
 import { useForm } from 'react-hook-form'
 

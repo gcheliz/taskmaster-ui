@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback, useRef } from 'react'
+import React, { createContext, useContext, useState, useCallback, useRef, useMemo } from 'react'
 
 interface FocusContextType {
   /** Last focused element before modal/dialog opened */
@@ -59,7 +59,7 @@ export const FocusProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setFocusTrapStack(prev => prev.slice(0, -1))
   }, [])
 
-  const value: FocusContextType = {
+  const value: FocusContextType = useMemo(() => ({
     lastFocusedElement,
     saveFocus,
     restoreFocus,
@@ -68,7 +68,7 @@ export const FocusProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     focusTrapStack,
     pushFocusTrap,
     popFocusTrap,
-  }
+  }), [lastFocusedElement, saveFocus, restoreFocus, isFocusVisible, focusTrapStack, pushFocusTrap, popFocusTrap])
 
   return <FocusContext.Provider value={value}>{children}</FocusContext.Provider>
 }

@@ -3,18 +3,21 @@ import { AppLayout } from '../components/Layout'
 import { ProtectedRoute } from './ProtectedRoute'
 import { lazy } from 'react'
 
-// Lazy load pages for better performance
-const DashboardPage = lazy(() => import('../pages/Dashboard'))
+// Import pages directly for debugging
+import DashboardPage from '../pages/Dashboard'
+import SettingsPage from '../pages/Settings'
+import RepositoriesPage from '../pages/Repositories'
+import TerminalPage from '../pages/Terminal'
+import TaskBoardPage from '../pages/TaskBoard'
+import NavigationDebugPage from '../pages/NavigationDebug'
+
+// Lazy load less critical pages
 const TasksPage = lazy(() => import('../pages/Tasks'))
-const TaskBoardPage = lazy(() => import('../pages/TaskBoard'))
 const TaskDetailPage = lazy(() => import('../pages/TaskDetail'))
-const RepositoriesPage = lazy(() => import('../pages/Repositories'))
-const TerminalPage = lazy(() => import('../pages/Terminal'))
 const AnalyticsPage = lazy(() => import('../pages/Analytics'))
 const TeamPage = lazy(() => import('../pages/Team'))
 const CalendarPage = lazy(() => import('../pages/Calendar'))
 const DocumentationPage = lazy(() => import('../pages/Documentation'))
-const SettingsPage = lazy(() => import('../pages/Settings'))
 const ProfilePage = lazy(() => import('../pages/Profile'))
 const LoginPage = lazy(() => import('../pages/Login'))
 const RegisterPage = lazy(() => import('../pages/Register'))
@@ -22,6 +25,7 @@ const ForgotPasswordPage = lazy(() => import('../pages/ForgotPassword'))
 const ResetPasswordPage = lazy(() => import('../pages/ResetPassword'))
 const NotFoundPage = lazy(() => import('../pages/NotFound'))
 const OnboardingPage = lazy(() => import('../pages/Onboarding'))
+const NavigationTestPage = lazy(() => import('../pages/NavigationTest'))
 
 // Import the Auth page wrapper
 const AuthPageWrapper = lazy(() => import('../pages/Auth'))
@@ -87,6 +91,14 @@ export const routes: RouteObject[] = [
           {
             path: 'profile',
             element: <ProfilePage />,
+          },
+          {
+            path: 'navigation-test',
+            element: <NavigationTestPage />,
+          },
+          {
+            path: 'navigation-debug',
+            element: <NavigationDebugPage />,
           },
         ],
       },

@@ -1,47 +1,67 @@
 # TaskMaster UI Documentation
 
-Welcome to the TaskMaster UI documentation. This directory contains comprehensive guides and references for developers and users.
+Welcome to the TaskMaster UI documentation. This guide provides comprehensive information about the project architecture, development, and deployment.
+
+## Quick Start
+
+```bash
+# Install dependencies
+pnpm install
+
+# Start development servers
+pnpm run dev
+
+# Run tests
+pnpm test
+
+# Build for production
+pnpm build
+```
 
 ## Documentation Structure
 
-### 🚀 Development
-- **[Development Guide](./development.md)** - Complete setup, commands, and development workflow
-- **[Architecture](./architecture.md)** - System design, technology stack, and technical overview
+- **[Architecture Overview](./architecture.md)** - System design and technical architecture
+- **[Development Guide](./development.md)** - Setup, workflow, and best practices
+- **[API Reference](./api-reference.md)** - Backend API endpoints and usage
+- **[Component Library](./components.md)** - Frontend components and design system
+- **[Deployment Guide](./deployment.md)** - Production deployment and configuration
 
-### 📊 Project Information  
-- **[Project Status](./project-status.md)** - Current progress, completed features, and roadmap
+## Project Overview
 
-### 👥 User Documentation
-- **[User Guide](./user-guide/README.md)** - End-user documentation and tutorials
-- **[Getting Started](./user-guide/getting-started.md)** - Quick start guide for new users
-- **[Repository Management](./user-guide/repository-management.md)** - Managing Git repositories
-- **[Task Board](./user-guide/task-board.md)** - Using the task management interface
+TaskMaster UI is a modern project task management application with repository integration. Built with:
 
-### 📚 Tutorials
-- **[Onboarding Tutorial](./tutorials/onboarding-tutorial.md)** - Step-by-step introduction for new users
+- **Frontend**: React 18, TypeScript, Vite, TailwindCSS
+- **Backend**: Node.js, Express, Prisma, PostgreSQL
+- **Infrastructure**: Docker, GitHub Actions, GCP-ready
 
-## Quick Links
+## Key Features
 
-- **[Main README](../README.md)** - Project overview and quick start
-- **[Contributing Guidelines](../CONTRIBUTING.md)** - How to contribute to the project
-- **[TaskMaster Integration](../CLAUDE.md)** - Claude Code and TaskMaster AI integration
+- 📋 Advanced task management with Kanban boards
+- 🔄 Real-time repository synchronization
+- 👥 Team collaboration tools
+- 📊 Analytics and reporting
+- 🎨 Modern, accessible UI with dark mode
+- 🔒 Enterprise-grade security
+
+## Repository Structure
+
+```
+taskmaster-ui/
+├── packages/
+│   ├── frontend/         # React application
+│   └── backend/          # Node.js API server
+├── docs/                 # Project documentation
+├── .github/              # GitHub Actions workflows
+├── docker/               # Docker configurations
+└── e2e/                  # End-to-end tests
+```
 
 ## Getting Help
 
-If you can't find what you're looking for:
+- Check the [Troubleshooting Guide](./troubleshooting.md)
+- Review [Common Issues](./common-issues.md)
+- Submit issues on [GitHub](https://github.com/your-org/taskmaster-ui)
 
-1. Check the [Development Guide](./development.md) for technical questions
-2. See the [User Guide](./user-guide/README.md) for usage questions  
-3. Visit our [GitHub Issues](https://github.com/gcheliz/taskmaster-ui/issues) for bug reports
-4. Join the discussion in [GitHub Discussions](https://github.com/gcheliz/taskmaster-ui/discussions)
+## Contributing
 
-## Contributing to Documentation
-
-Documentation improvements are always welcome! Please:
-
-1. Follow the existing structure and style
-2. Keep guides focused and concise
-3. Include practical examples where helpful
-4. Test any commands or procedures you document
-
-See our [Contributing Guidelines](../CONTRIBUTING.md) for more details.
+Please read our [Contributing Guidelines](../CONTRIBUTING.md) before submitting PRs.

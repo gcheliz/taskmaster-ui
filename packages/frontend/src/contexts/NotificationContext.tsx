@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer, useCallback } from 'react'
+import React, { createContext, useContext, useReducer, useCallback, useMemo } from 'react'
 import type { ReactNode } from 'react'
 
 // Types
@@ -174,7 +174,7 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
     [addNotification]
   )
 
-  const contextValue: NotificationContextType = {
+  const contextValue: NotificationContextType = useMemo(() => ({
     state,
     dispatch,
     addNotification,
@@ -184,7 +184,7 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
     showError,
     showWarning,
     showInfo,
-  }
+  }), [state, dispatch, addNotification, removeNotification, clearNotifications, showSuccess, showError, showWarning, showInfo])
 
   return (
     <NotificationContext.Provider value={contextValue}>{children}</NotificationContext.Provider>

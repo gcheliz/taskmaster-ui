@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer } from 'react'
+import React, { createContext, useContext, useReducer, useCallback, useMemo } from 'react'
 import type { ReactNode } from 'react'
 import type { RepositoryInfo, RepositoryValidationResult } from '../services/api'
 
@@ -158,43 +158,43 @@ export const RepositoryProvider: React.FC<RepositoryProviderProps> = ({
   })
 
   // Convenience methods
-  const addRepository = (repository: Repository) => {
+  const addRepository = useCallback((repository: Repository) => {
     dispatch({ type: 'ADD_REPOSITORY', payload: repository })
-  }
+  }, [])
 
-  const removeRepository = (id: string) => {
+  const removeRepository = useCallback((id: string) => {
     dispatch({ type: 'REMOVE_REPOSITORY', payload: id })
-  }
+  }, [])
 
-  const selectRepository = (repository: Repository | null) => {
+  const selectRepository = useCallback((repository: Repository | null) => {
     dispatch({ type: 'SELECT_REPOSITORY', payload: repository })
-  }
+  }, [])
 
-  const updateRepository = (id: string, updates: Partial<Repository>) => {
+  const updateRepository = useCallback((id: string, updates: Partial<Repository>) => {
     dispatch({ type: 'UPDATE_REPOSITORY', payload: { id, updates } })
-  }
+  }, [])
 
-  const setLoading = (loading: boolean) => {
+  const setLoading = useCallback((loading: boolean) => {
     dispatch({ type: 'SET_LOADING', payload: loading })
-  }
+  }, [])
 
-  const setError = (error: string | null) => {
+  const setError = useCallback((error: string | null) => {
     dispatch({ type: 'SET_ERROR', payload: error })
-  }
+  }, [])
 
-  const clearRepositories = () => {
+  const clearRepositories = useCallback(() => {
     dispatch({ type: 'CLEAR_REPOSITORIES' })
-  }
+  }, [])
 
-  const getRepositoryById = (id: string): Repository | undefined => {
+  const getRepositoryById = useCallback((id: string): Repository | undefined => {
     return state.repositories.find((repo) => repo.id === id)
-  }
+  }, [state.repositories])
 
-  const getRepositoryByPath = (path: string): Repository | undefined => {
+  const getRepositoryByPath = useCallback((path: string): Repository | undefined => {
     return state.repositories.find((repo) => repo.path === path)
-  }
+  }, [state.repositories])
 
-  const contextValue: RepositoryContextType = {
+  const contextValue: RepositoryContextType = useMemo(() => ({
     state,
     dispatch,
     addRepository,
@@ -206,7 +206,7 @@ export const RepositoryProvider: React.FC<RepositoryProviderProps> = ({
     clearRepositories,
     getRepositoryById,
     getRepositoryByPath,
-  }
+  }), [state, dispatch, addRepository, removeRepository, selectRepository, updateRepository, setLoading, setError, clearRepositories, getRepositoryById, getRepositoryByPath])
 
   return <RepositoryContext.Provider value={contextValue}>{children}</RepositoryContext.Provider>
 }

@@ -1,6 +1,6 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import { Card, CardContent } from '../ui/Card'
+import { Card, CardContent } from '../ui/atoms/Card'
 import { useAnimatedCounter } from '../../hooks/useAnimatedCounter'
 import { cn } from '../../utils/cn'
 

@@ -10,11 +10,7 @@ import { useGlobalKeyboardShortcuts, useKeyboardShortcuts } from '../../hooks/us
 import { useRouteFocusManagement } from '../../hooks/useFocusManagement'
 import { AriaLiveRegion } from '../common/AriaLiveRegion'
 
-interface AppLayoutProps {
-  children?: React.ReactNode
-}
-
-export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
+export const AppLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [shortcutsOpen, setShortcutsOpen] = useState(false)
@@ -22,8 +18,8 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   // Initialize global keyboard shortcuts
   useGlobalKeyboardShortcuts()
 
-  // Manage focus on route changes
-  useRouteFocusManagement()
+  // Manage focus on route changes - Temporarily disabled to debug navigation
+  // useRouteFocusManagement()
 
   // Add keyboard shortcut to open shortcuts panel
   useKeyboardShortcuts([
@@ -69,7 +65,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
           {/* Main content with scrolling */}
           <main id="main-content" tabIndex={-1} className="flex-1 bg-white overflow-y-auto focus:outline-none">
             <div className="h-full">
-              {children || <Outlet />}
+              <Outlet />
             </div>
           </main>
 

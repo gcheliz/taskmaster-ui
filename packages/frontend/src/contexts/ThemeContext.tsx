@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import React, { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react'
 import type { ReactNode } from 'react'
 
 // Theme types
@@ -101,12 +101,12 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   }, [theme])
 
   // Theme setter function
-  const handleSetTheme = (newTheme: ThemeMode) => {
+  const handleSetTheme = useCallback((newTheme: ThemeMode) => {
     setTheme(newTheme)
-  }
+  }, [])
 
   // Toggle between light and dark (ignoring system)
-  const toggleTheme = () => {
+  const toggleTheme = useCallback(() => {
     if (theme === 'system') {
       // If currently system, toggle to the opposite of current resolved theme
       handleSetTheme(resolvedTheme === 'light' ? 'dark' : 'light')
@@ -114,14 +114,14 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
       // Toggle between light and dark
       handleSetTheme(theme === 'light' ? 'dark' : 'light')
     }
-  }
+  }, [theme, resolvedTheme, handleSetTheme])
 
-  const value: ThemeContextType = {
+  const value: ThemeContextType = useMemo(() => ({
     theme,
     resolvedTheme,
     setTheme: handleSetTheme,
     toggleTheme,
-  }
+  }), [theme, resolvedTheme, handleSetTheme, toggleTheme])
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
 }

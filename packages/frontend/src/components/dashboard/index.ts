@@ -1,5 +1,5 @@
 export { StatisticsCard } from './StatisticsCard'
-export { ActivityTimeline } from './ActivityTimeline'
-export type { ActivityItem } from './ActivityTimeline'
-export { ProjectHealthIndicator } from './ProjectHealthIndicator'
+export { ActivityTimeline } from '../ui/organisms/ActivityTimeline'
+export type { ActivityItem } from '../ui/organisms/ActivityTimeline'
+export { ProjectHealthIndicator } from '../ui/molecules/ProjectHealthIndicator'
 export { QuickActions } from './QuickActions'

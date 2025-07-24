@@ -1,5 +1,5 @@
 import React from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { 
   Home, 
   GitBranch, 
@@ -15,7 +15,6 @@ interface NavItem {
 }
 
 export const MobileBottomNav: React.FC = () => {
-  const navigate = useNavigate()
   const location = useLocation()
 
   const navItems: NavItem[] = [
@@ -36,18 +35,19 @@ export const MobileBottomNav: React.FC = () => {
     <nav className="sm:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-mobile-nav">
       <div className="grid grid-cols-5 h-16">
         {navItems.map((item) => (
-          <button
+          <Link
             key={item.path}
-            onClick={() => navigate(item.path)}
-            className={`flex flex-col items-center justify-center space-y-1 transition-colors ${
+            to={item.path}
+            className={`flex flex-col items-center justify-center space-y-1 transition-colors no-underline ${
               isActive(item.path)
                 ? 'text-blue-600'
                 : 'text-gray-500 hover:text-gray-700'
             }`}
+            style={{ textDecoration: 'none' }}
           >
             {item.icon}
             <span className="text-xs font-medium">{item.label}</span>
-          </button>
+          </Link>
         ))}
       </div>
       {/* iOS safe area */}

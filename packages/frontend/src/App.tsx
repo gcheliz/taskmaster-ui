@@ -1,13 +1,11 @@
-import { BrowserRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useEffect } from 'react'
-import { AppLayout } from './components/Layout'
-import { AppRoutes } from './routes/AppRoutes'
 import { NotificationProvider } from './contexts/NotificationContext'
 import { ThemeProvider } from './contexts/ThemeContext'
 import { RepositoryProvider } from './contexts/RepositoryContext'
 import { FocusProvider } from './contexts/FocusContext'
 import { initializeKeyboardDetection } from './utils/keyboard'
+import { AppRouter } from './routes/router'
 
 // Create a client for React Query
 const queryClient = new QueryClient({
@@ -16,7 +14,7 @@ const queryClient = new QueryClient({
       staleTime: 5 * 60 * 1000, // 5 minutes
       gcTime: 10 * 60 * 1000, // 10 minutes
       retry: 3,
-      refetchOnWindowFocus: true,
+      refetchOnWindowFocus: false, // Temporarily disabled to fix infinite loop
     },
   },
 })
@@ -29,19 +27,15 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <ThemeProvider>
-          <FocusProvider>
-            <NotificationProvider>
-              <RepositoryProvider>
-                <AppLayout>
-                  <AppRoutes />
-                </AppLayout>
-              </RepositoryProvider>
-            </NotificationProvider>
-          </FocusProvider>
-        </ThemeProvider>
-      </BrowserRouter>
+      <ThemeProvider>
+        <FocusProvider>
+          <NotificationProvider>
+            <RepositoryProvider>
+              <AppRouter />
+            </RepositoryProvider>
+          </NotificationProvider>
+        </FocusProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   )
 }

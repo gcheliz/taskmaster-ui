@@ -34,23 +34,27 @@ import {
   useSortable,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { useTaskCollaboration, useWebSocket } from '../hooks/useWebSocket';
-import { WebSocketState } from '../types/websocket';
-import type { Task as WebSocketTask } from '../types/websocket';
 import { TaskModal, type TaskModalMode } from '../components/TaskBoard/TaskModal';
 import type { Task as LocalTask } from '../types/task';
 
-interface Task extends Omit<WebSocketTask, 'status' | 'priority' | 'assignee'> {
-  description: string; // Make required for UI
-  priority: 'low' | 'medium' | 'high'; // Exclude 'critical' for now
-  complexity: number; // Make required
+interface Task {
+  id: string;
+  title: string;
+  description: string;
+  priority: 'low' | 'medium' | 'high';
+  complexity: number;
   assignee: {
     name: string;
     initials: string;
     color: string;
   };
   progress?: number;
-  status?: string; // Make optional for compatibility
+  status?: string;
+  column: string;
+  position: number;
+  createdAt?: string;
+  updatedAt?: string;
+  tags?: string[];
 }
 
 interface FilterOptions {
@@ -69,36 +73,6 @@ interface Column {
   tasks: Task[];
 }
 
-// Helper to convert between local Task and WebSocketTask
-const convertToWebSocketTask = (task: Task): WebSocketTask => ({
-  ...task,
-  status: (task.status || 'pending') as WebSocketTask['status'],
-  priority: task.priority as WebSocketTask['priority'],
-  description: task.description,
-  assignee: task.assignee ? {
-    id: task.assignee.name.toLowerCase().replace(/\s/g, '-'),
-    name: task.assignee.name,
-    email: `${task.assignee.name.toLowerCase().replace(/\s/g, '.')}@example.com`,
-    color: task.assignee.color
-  } : undefined
-});
-
-const convertFromWebSocketTask = (task: WebSocketTask): Task => ({
-  ...task,
-  description: task.description || '',
-  priority: (task.priority === 'critical' ? 'high' : task.priority) as Task['priority'],
-  complexity: task.complexity || 5,
-  assignee: task.assignee ? {
-    name: task.assignee.name,
-    initials: task.assignee.name.split(' ').map(n => n[0]).join('').toUpperCase(),
-    color: task.assignee.color || 'bg-gray-600'
-  } : {
-    name: 'Unassigned',
-    initials: 'NA',
-    color: 'bg-gray-400'
-  },
-  status: task.status
-});
 
 // Get the board context for task interactions
 const TaskBoardContext = React.createContext<{
@@ -232,29 +206,8 @@ const TaskBoard: React.FC = () => {
     }
   ];
 
-  // WebSocket integration
-  const { state: wsState, isConnected, error: wsError } = useWebSocket({
-    url: process.env.VITE_WS_URL || 'ws://localhost:3001',
-    autoConnect: true,
-    user: {
-      id: 'user-1',
-      name: 'Gonzalo',
-      email: 'gonzalo@example.com',
-      avatar: ''
-    }
-  });
-
-  const {
-    tasks: wsTasksRaw,
-    moveTask,
-    updateTask,
-    connectedUsers,
-    lastUpdate,
-    error: taskError
-  } = useTaskCollaboration(initialTasks.map(convertToWebSocketTask));
-  
-  // Convert WebSocket tasks to local format
-  const tasks = wsTasksRaw.map(convertFromWebSocketTask);
+  // Local state management
+  const [tasks, setTasks] = useState<Task[]>(initialTasks);
 
   const baseColumns = [
     { id: 'todo', title: 'To Do', color: 'bg-gray-500' },
@@ -366,23 +319,40 @@ const TaskBoard: React.FC = () => {
     const overIndex = overColumn.tasks.findIndex((i) => i.id === over.id);
 
     if (activeColumn.id !== overColumn.id) {
-      // Task moved to different column - update via WebSocket
+      // Task moved to different column
       const taskId = active.id as string;
       const newPosition = overIndex >= 0 ? overIndex : overColumn.tasks.length;
       
-      // Send real-time update
-      if (isConnected) {
-        moveTask(taskId, overColumn.id, newPosition);
-      }
+      // Update local state
+      setTasks(prevTasks => {
+        return prevTasks.map(task => {
+          if (task.id === taskId) {
+            return { ...task, column: overColumn.id, position: newPosition };
+          }
+          return task;
+        });
+      });
     } else if (activeIndex !== overIndex) {
       // Task reordered within same column
       const taskId = active.id as string;
       const newPosition = overIndex;
       
-      // Send real-time update
-      if (isConnected) {
-        moveTask(taskId, activeColumn.id, newPosition);
-      }
+      // Update local state
+      setTasks(prevTasks => {
+        const newTasks = [...prevTasks];
+        const columnTasks = newTasks.filter(t => t.column === activeColumn.id);
+        const sortedTasks = arrayMove(columnTasks, activeIndex, newPosition);
+        
+        // Update positions
+        sortedTasks.forEach((task, index) => {
+          const originalTask = newTasks.find(t => t.id === task.id);
+          if (originalTask) {
+            originalTask.position = index;
+          }
+        });
+        
+        return newTasks;
+      });
     }
 
     setActiveId(null);
@@ -471,40 +441,35 @@ const TaskBoard: React.FC = () => {
         updatedAt: new Date().toISOString(),
       };
       
-      // Send WebSocket update
-      if (isConnected && updateTask) {
-        const wsTask = convertToWebSocketTask(newTask);
-        updateTask(newTask.id, wsTask);
-      }
+      // Add new task to state
+      setTasks(prevTasks => [...prevTasks, newTask]);
     } else if (modalMode === 'edit' && selectedTask) {
       // Update existing task
-      const taskToUpdate = tasks.find(t => t.id === selectedTask.id.toString());
-      if (taskToUpdate && isConnected && updateTask) {
-        const updates: Partial<WebSocketTask> = {
-          title: taskData.title,
-          description: taskData.description,
-          priority: taskData.priority as WebSocketTask['priority'],
-          assignee: taskData.assignedTo ? {
-            id: taskData.assignedTo.toLowerCase().replace(/\s/g, '-'),
-            name: taskData.assignedTo,
-            email: `${taskData.assignedTo.toLowerCase().replace(/\s/g, '.')}@example.com`,
-            color: taskToUpdate.assignee?.color
-          } : undefined,
-        };
-        
-        updateTask(selectedTask.id.toString(), updates);
-      }
+      setTasks(prevTasks => prevTasks.map(task => {
+        if (task.id === selectedTask.id.toString()) {
+          return {
+            ...task,
+            title: taskData.title || task.title,
+            description: taskData.description || task.description,
+            priority: (taskData.priority || task.priority) as Task['priority'],
+            assignee: taskData.assignedTo ? {
+              name: taskData.assignedTo,
+              initials: taskData.assignedTo.split(' ').map(n => n[0]).join('').toUpperCase(),
+              color: task.assignee?.color || 'bg-gray-400'
+            } : task.assignee,
+            updatedAt: new Date().toISOString()
+          };
+        }
+        return task;
+      }));
     }
     setIsModalOpen(false);
   };
 
   // Handle task delete from modal
   const handleTaskDelete = async (taskId: number) => {
-    // In a real app, this would call the WebSocket deleteTask method
-    // For now, we'll just update the task to a 'deleted' status
-    if (isConnected && updateTask) {
-      updateTask(taskId.toString(), { status: 'deferred' as WebSocketTask['status'] });
-    }
+    // Remove task from state
+    setTasks(prevTasks => prevTasks.filter(task => task.id !== taskId.toString()));
     setIsModalOpen(false);
   };
 
@@ -532,32 +497,6 @@ const TaskBoard: React.FC = () => {
   const activeFiltersCount = filters.priorities.length + filters.assignees.length + filters.columns.length;
   const filteredOutCount = allTasks - totalTasks;
 
-  const getConnectionStatusColor = () => {
-    switch (wsState) {
-      case WebSocketState.CONNECTED:
-        return 'text-green-600';
-      case WebSocketState.CONNECTING:
-      case WebSocketState.RECONNECTING:
-        return 'text-amber-600';
-      default:
-        return 'text-red-600';
-    }
-  };
-
-  const getConnectionStatusText = () => {
-    switch (wsState) {
-      case WebSocketState.CONNECTED:
-        return 'Connected';
-      case WebSocketState.CONNECTING:
-        return 'Connecting...';
-      case WebSocketState.RECONNECTING:
-        return 'Reconnecting...';
-      case WebSocketState.DISCONNECTED:
-        return 'Disconnected';
-      default:
-        return 'Unknown';
-    }
-  };
 
   return (
     <div className="min-h-screen bg-white p-4 sm:p-6 md:p-8">
@@ -570,55 +509,10 @@ const TaskBoard: React.FC = () => {
             <p className="text-gray-600 mt-1">Drag and drop tasks between columns to update their status</p>
           </div>
           
-          {/* Connection Status */}
-          <div className="flex items-center space-x-4">
-            <div className={`flex items-center space-x-2 text-sm ${getConnectionStatusColor()}`}>
-              {isConnected ? (
-                <Wifi className="w-4 h-4" />
-              ) : (
-                <WifiOff className="w-4 h-4" />
-              )}
-              <span>{getConnectionStatusText()}</span>
-            </div>
-            
-            {connectedUsers.length > 0 && (
-              <div className="flex items-center space-x-2">
-                <span className="text-sm text-gray-600">Active users:</span>
-                <div className="flex -space-x-2">
-                  {connectedUsers.slice(0, 3).map((user) => (
-                    <div
-                      key={user.id}
-                      className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-medium border-2 border-white"
-                      title={user.name}
-                    >
-                      {user.name.charAt(0).toUpperCase()}
-                    </div>
-                  ))}
-                  {connectedUsers.length > 3 && (
-                    <div className="w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center text-white text-xs font-medium border-2 border-white">
-                      +{connectedUsers.length - 3}
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
         </div>
         
-        {/* Last Update Indicator */}
-        {lastUpdate && (
-          <div className="mt-2 text-xs text-gray-500">
-            Last update: {new Date(lastUpdate).toLocaleTimeString()}
-          </div>
-        )}
       </div>
 
-      {/* Error Messages */}
-      {(wsError || taskError) && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-          <p className="text-sm">{wsError?.message || taskError?.message}</p>
-        </div>
-      )}
 
       {/* Board Controls */}
       <div className="flex items-center justify-between">

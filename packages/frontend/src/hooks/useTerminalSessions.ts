@@ -158,7 +158,7 @@ export function useTerminalSessions(
       console.error('Failed to load sessions:', error)
       setError('Failed to load terminal sessions')
     }
-  }, [activeSessionId])
+  }, [])
 
   // Create a new terminal session
   const createSession = useCallback(

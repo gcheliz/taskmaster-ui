@@ -102,15 +102,7 @@ export const useGlobalKeyboardShortcuts = () => {
         console.log('Command palette triggered')
       },
     },
-    {
-      key: 'cmd+/',
-      description: 'Show keyboard shortcuts',
-      category: 'Help',
-      handler: () => {
-        // TODO: Open keyboard shortcuts modal
-        console.log('Keyboard shortcuts panel triggered')
-      },
-    },
+    // Removed cmd+/ as it's handled in AppLayout
     {
       key: 'g h',
       description: 'Go to dashboard',

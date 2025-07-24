@@ -1,6 +1,6 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import { Card, CardHeader, CardTitle, CardContent } from '../ui/Card'
+import { Card, CardHeader, CardTitle, CardContent } from '../ui/atoms/Card'
 import { cn } from '../../utils/cn'
 
 interface QuickAction {

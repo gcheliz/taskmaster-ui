@@ -18,7 +18,7 @@ import {
   Settings,
   Plus
 } from 'lucide-react'
-import { Button } from '../components/ui/Button'
+import { Button } from '../components/ui/atoms/Button'
 import { PageHeader } from '../components/Layout'
 
 interface CommandHistory {

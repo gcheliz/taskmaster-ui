@@ -1,5 +1,22 @@
 @import "tailwindcss";
 
+/* Reset link styles for navigation */
+a[role="menuitem"] {
+  text-decoration: none !important;
+  display: flex !important;
+  border: none !important;
+  outline: none !important;
+}
+
+/* Ensure text colors are not overridden */
+a[role="menuitem"]:link,
+a[role="menuitem"]:visited,
+a[role="menuitem"]:hover,
+a[role="menuitem"]:active,
+a[role="menuitem"]:focus {
+  text-decoration: none !important;
+}
+
 /* Custom scrollbar styles */
 .custom-scrollbar::-webkit-scrollbar {
   width: 8px;

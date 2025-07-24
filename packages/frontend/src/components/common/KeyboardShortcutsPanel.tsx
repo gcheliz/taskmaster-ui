@@ -50,23 +50,14 @@ export const KeyboardShortcutsPanel: React.FC<KeyboardShortcutsPanelProps> = ({
   additionalShortcuts = [],
   className,
 }) => {
-  const [shortcuts, setShortcuts] = useState<KeyboardShortcut[]>(defaultShortcuts)
   const [searchQuery, setSearchQuery] = useState('')
   const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0
 
   // Combine default and additional shortcuts
-  useEffect(() => {
-    setShortcuts([...defaultShortcuts, ...additionalShortcuts])
-  }, [additionalShortcuts])
+  const shortcuts = [...defaultShortcuts, ...additionalShortcuts]
 
-  // Set up keyboard shortcut to open this panel
-  useKeyboardShortcuts([
-    {
-      key: 'cmd+/',
-      description: 'Show keyboard shortcuts',
-      handler: () => onOpenChange(true),
-    },
-  ])
+  // Don't register the shortcut here as it's already registered in AppLayout
+  // This was causing an infinite loop
 
   // Group shortcuts by category
   const groupedShortcuts = shortcuts.reduce((acc, shortcut) => {

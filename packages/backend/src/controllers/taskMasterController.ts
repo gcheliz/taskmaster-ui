@@ -24,6 +24,7 @@ import {
   PaginationOptions,
   SortingOptions,
 } from '../types/api';
+import { logger } from '../utils/winston-adapter';
 
 // Controller Interface for Dependency Injection
 export interface ITaskMasterController {
@@ -634,7 +635,7 @@ export class TaskMasterController implements ITaskMasterController {
     res: EnhancedResponse,
     operation: string
   ): Promise<void> {
-    console.error(`Error in ${operation} for request ${req.requestId}:`, error);
+    logger.error(`Error in ${operation} for request ${req.requestId}:`, error);
 
     // Emit error event
     this.emitWebSocketEvent('command:error', {

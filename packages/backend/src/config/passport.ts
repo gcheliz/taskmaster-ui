@@ -10,6 +10,7 @@ import {
 } from 'passport-github2';
 import AuthService from '../services/authService';
 import { env } from './environment';
+import { securityLogger } from '../utils/bootstrap-logger';
 
 // User serialization for session
 passport.serializeUser((user: any, done) => {
@@ -74,7 +75,7 @@ if (env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET) {
     )
   );
 } else {
-  console.warn(
+  securityLogger.warn(
     'Google OAuth not configured - missing GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET'
   );
 }
@@ -118,7 +119,7 @@ if (env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET) {
     )
   );
 } else {
-  console.warn(
+  securityLogger.warn(
     'GitHub OAuth not configured - missing GITHUB_CLIENT_ID or GITHUB_CLIENT_SECRET'
   );
 }

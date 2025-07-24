@@ -13,6 +13,7 @@ import { Button } from '../components/ui/atoms/Button'
 import { Checkbox } from '../components/ui/atoms/Checkbox'
 import { useAuth } from '../hooks/useAuth'
 import { useForm } from 'react-hook-form'
+import { logger } from '../utils/logger'
 
 interface LoginFormData {
   email: string
@@ -38,7 +39,7 @@ const Login = () => {
       await login(data.email, data.password)
       navigate(from, { replace: true })
     } catch (error) {
-      console.error('Login failed:', error)
+      logger.error('Login failed', error, { email: data.email })
     }
   }
 

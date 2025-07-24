@@ -40,7 +40,7 @@ const Onboarding = () => {
       // For now, just navigate to dashboard
       navigate('/dashboard', { replace: true })
     } catch (error) {
-      console.error('Failed to update onboarding status:', error)
+      logger.error('Failed to update onboarding status:', error)
       // Still navigate to dashboard even if update fails
       navigate('/dashboard', { replace: true })
     }

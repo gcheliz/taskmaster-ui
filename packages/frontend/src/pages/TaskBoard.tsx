@@ -239,18 +239,20 @@ const TaskBoard: React.FC = () => {
       let compareValue = 0;
       
       switch (sortBy) {
-        case 'priority':
+        case 'priority': {
           const priorityOrder = { high: 3, medium: 2, low: 1 };
           compareValue = priorityOrder[a.priority] - priorityOrder[b.priority];
           break;
+        }
         case 'complexity':
           compareValue = a.complexity - b.complexity;
           break;
-        case 'assignee':
+        case 'assignee': {
           const aName = a.assignee?.name || '';
           const bName = b.assignee?.name || '';
           compareValue = aName.localeCompare(bName);
           break;
+        }
         case 'created':
           compareValue = new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime();
           break;

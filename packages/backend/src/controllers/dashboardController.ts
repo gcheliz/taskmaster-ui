@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { exec } from 'child_process';
+import { logger } from '../utils/winston-adapter';
 import { promises as fs } from 'fs';
 import path from 'path';
 import { promisify } from 'util';
@@ -142,7 +143,7 @@ export class DashboardController {
         },
       });
     } catch (error) {
-      console.error('Dashboard data aggregation error:', error);
+      logger.error('Dashboard data aggregation error:', error);
       res.status(500).json({
         success: false,
         error: {
@@ -247,7 +248,7 @@ export class DashboardController {
           };
         });
     } catch (error) {
-      console.warn('Failed to get Git activity:', error);
+      logger.warn('Failed to get Git activity:', error);
       return [];
     }
   }

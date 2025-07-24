@@ -1,0 +1,67 @@
+import winston from 'winston'
+import { logger as taskMasterLogger } from './logger'
+
+// Create a Winston logger that delegates to our existing TaskMaster logger
+const winstonLogger = winston.createLogger({
+  transports: [
+    new winston.transports.Console({
+      log(info, callback) {
+        const { level, message, ...metadata } = info
+        
+        // Map Winston levels to TaskMaster logger methods
+        switch (level) {
+          case 'error':
+            taskMasterLogger.error(message, metadata, metadata.error, metadata.module)
+            break
+          case 'warn':
+            taskMasterLogger.warn(message, metadata, metadata.module)
+            break
+          case 'info':
+            taskMasterLogger.info(message, metadata, metadata.module)
+            break
+          case 'debug':
+            taskMasterLogger.debug(message, metadata, metadata.module)
+            break
+          default:
+            taskMasterLogger.trace(message, metadata, metadata.module)
+        }
+        
+        if (callback) {
+          callback()
+        }
+      }
+    })
+  ]
+})
+
+// Export a logger object that matches console API but uses our logger
+export const logger = {
+  error: (message: string, ...args: any[]) => {
+    const error = args.find(arg => arg instanceof Error)
+    const metadata = args.filter(arg => !(arg instanceof Error))
+    taskMasterLogger.error(message, metadata[0], error)
+  },
+  
+  warn: (message: string, ...args: any[]) => {
+    taskMasterLogger.warn(message, args[0])
+  },
+  
+  log: (message: string, ...args: any[]) => {
+    taskMasterLogger.info(message, args[0])
+  },
+  
+  info: (message: string, ...args: any[]) => {
+    taskMasterLogger.info(message, args[0])
+  },
+  
+  debug: (message: string, ...args: any[]) => {
+    taskMasterLogger.debug(message, args[0])
+  },
+  
+  trace: (message: string, ...args: any[]) => {
+    taskMasterLogger.trace(message, args[0])
+  }
+}
+
+// Also export the winston logger for libraries that expect it
+export default winstonLogger

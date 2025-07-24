@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import AuthService from '../services/authService';
 import { env } from '../config/environment';
+import { logger } from '../utils/winston-adapter';
 
 export interface AuthenticatedRequest extends Request {
   user?: any;
@@ -52,7 +53,7 @@ export class AuthController {
         message: 'User registered successfully',
       });
     } catch (error) {
-      console.error('Registration error:', error);
+      logger.error('Registration error:', error);
 
       const message =
         error instanceof Error ? error.message : 'Registration failed';
@@ -98,7 +99,7 @@ export class AuthController {
         message: 'Login successful',
       });
     } catch (error) {
-      console.error('Login error:', error);
+      logger.error('Login error:', error);
 
       const message = error instanceof Error ? error.message : 'Login failed';
 
@@ -136,7 +137,7 @@ export class AuthController {
         data: validation,
       });
     } catch (error) {
-      console.error('Password validation error:', error);
+      logger.error('Password validation error:', error);
 
       res.status(500).json({
         success: false,
@@ -172,7 +173,7 @@ export class AuthController {
         data: { user },
       });
     } catch (error) {
-      console.error('Profile fetch error:', error);
+      logger.error('Profile fetch error:', error);
 
       res.status(500).json({
         success: false,
@@ -203,7 +204,7 @@ export class AuthController {
 
       res.redirect(redirectUrl.toString());
     } catch (error) {
-      console.error('OAuth success error:', error);
+      logger.error('OAuth success error:', error);
       res.redirect(`${env.CLIENT_URL}/auth?error=oauth_callback_failed`);
     }
   }
@@ -212,7 +213,7 @@ export class AuthController {
    * OAuth failure callback
    */
   static async oauthFailure(req: Request, res: Response) {
-    console.error('OAuth failure:', req.query);
+    logger.error('OAuth failure:', req.query);
     res.redirect(`${env.CLIENT_URL}/auth?error=oauth_failed`);
   }
 
@@ -224,7 +225,7 @@ export class AuthController {
       // For session-based auth
       req.logout(err => {
         if (err) {
-          console.error('Logout error:', err);
+          logger.error('Logout error:', err);
         }
       });
 
@@ -233,7 +234,7 @@ export class AuthController {
         message: 'Logged out successfully',
       });
     } catch (error) {
-      console.error('Logout error:', error);
+      logger.error('Logout error:', error);
 
       res.status(500).json({
         success: false,

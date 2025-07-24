@@ -21,6 +21,7 @@ import {
   validateProductionSecrets,
   logConfiguration,
 } from './config/environment';
+import { logger } from './utils/winston-adapter';
 
 // Validate environment and secrets
 validateProductionSecrets();
@@ -33,9 +34,9 @@ const initializeDatabase = async () => {
   try {
     await DatabaseService.connect();
     await DatabaseService.initializeSchema();
-    console.log('Database initialized successfully');
+    logger.info('Database initialized successfully');
   } catch (error) {
-    console.error('Failed to initialize database:', error);
+    logger.error('Failed to initialize database:', error);
     process.exit(1);
   }
 };

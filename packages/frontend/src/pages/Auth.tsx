@@ -39,7 +39,7 @@ const Auth = () => {
         })
       }
     } catch (error) {
-      console.error(`${type} failed:`, error)
+      logger.error(`${type} failed:`, error)
       // Error handling is done in the form components
     }
   }

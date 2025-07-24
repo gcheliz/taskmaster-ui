@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import { z } from 'zod';
+import { configLogger } from '../utils/bootstrap-logger';
 
 // Load environment variables
 dotenv.config();
@@ -81,10 +82,10 @@ function validateEnvironment() {
   try {
     return environmentSchema.parse(process.env);
   } catch (error) {
-    console.error('❌ Environment validation failed:');
+    configLogger.error('❌ Environment validation failed:');
     if (error instanceof z.ZodError) {
       error.issues.forEach((err: any) => {
-        console.error(`  - ${err.path.join('.')}: ${err.message}`);
+        configLogger.error(`  - ${err.path.join('.')}: ${err.message}`);
       });
     }
     process.exit(1);
@@ -145,7 +146,7 @@ function generateSecretKey(): string {
   const key = crypto.randomBytes(32).toString('hex');
 
   if (env.NODE_ENV === 'production') {
-    console.warn(
+    configLogger.warn(
       '⚠️  Using auto-generated secret key. Set JWT_SECRET/ENCRYPTION_KEY in production!'
     );
   }
@@ -166,11 +167,11 @@ export function validateProductionSecrets() {
   );
 
   if (missingSecrets.length > 0) {
-    console.error('❌ Missing required production secrets:');
+    configLogger.error('❌ Missing required production secrets:');
     missingSecrets.forEach(secret => {
-      console.error(`  - ${secret}`);
+      configLogger.error(`  - ${secret}`);
     });
-    console.error(
+    configLogger.error(
       'Please set these environment variables before starting the application.'
     );
     process.exit(1);
@@ -183,14 +184,14 @@ export function validateProductionSecrets() {
   });
 
   if (weakSecrets.length > 0) {
-    console.error('❌ Weak secrets detected (must be at least 32 characters):');
+    configLogger.error('❌ Weak secrets detected (must be at least 32 characters):');
     weakSecrets.forEach(secret => {
-      console.error(`  - ${secret}: ${process.env[secret]?.length} characters`);
+      configLogger.error(`  - ${secret}: ${process.env[secret]?.length} characters`);
     });
     process.exit(1);
   }
 
-  console.log('✅ Production secrets validation passed');
+  configLogger.log('✅ Production secrets validation passed');
 }
 
 // Log configuration (without sensitive data)
@@ -205,8 +206,8 @@ export function logConfiguration() {
     queryTimeout: env.QUERY_TIMEOUT,
   };
 
-  console.log('📋 Application Configuration:');
-  console.log(JSON.stringify(safeConfig, null, 2));
+  configLogger.log('📋 Application Configuration:');
+  configLogger.log(JSON.stringify(safeConfig, null, 2));
 }
 
 // Export environment types for TypeScript

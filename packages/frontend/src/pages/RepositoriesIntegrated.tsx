@@ -41,7 +41,7 @@ const RepositoriesIntegrated: React.FC = () => {
       setIsAddModalOpen(false)
       refetch()
     } catch (err) {
-      console.error('Failed to add repository:', err)
+      logger.error('Failed to add repository:', err)
     }
   }
 
@@ -54,7 +54,7 @@ const RepositoriesIntegrated: React.FC = () => {
         }
         refetch()
       } catch (err) {
-        console.error('Failed to remove repository:', err)
+        logger.error('Failed to remove repository:', err)
       }
     }
   }
@@ -63,7 +63,7 @@ const RepositoriesIntegrated: React.FC = () => {
     try {
       await refreshRepository(id)
     } catch (err) {
-      console.error('Failed to sync repository:', err)
+      logger.error('Failed to sync repository:', err)
     }
   }
 

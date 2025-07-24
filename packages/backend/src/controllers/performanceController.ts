@@ -5,6 +5,7 @@
  */
 
 import { Request, Response } from 'express';
+import { logger } from '../utils/winston-adapter';
 import { DatabaseService } from '../services/database';
 import queryAnalyzer from '../services/queryAnalyzer';
 
@@ -22,7 +23,7 @@ export class PerformanceController {
         timestamp: new Date().toISOString(),
       });
     } catch (error) {
-      console.error('Error getting query analysis:', error);
+      logger.error('Error getting query analysis:', error);
       res.status(500).json({
         success: false,
         error: 'Failed to get query analysis',
@@ -43,7 +44,7 @@ export class PerformanceController {
         message: 'Query logs cleared successfully',
       });
     } catch (error) {
-      console.error('Error clearing logs:', error);
+      logger.error('Error clearing logs:', error);
       res.status(500).json({
         success: false,
         error: 'Failed to clear logs',
@@ -64,7 +65,7 @@ export class PerformanceController {
 
       res.download(outputPath, filename, err => {
         if (err) {
-          console.error('Error downloading file:', err);
+          logger.error('Error downloading file:', err);
           res.status(500).json({
             success: false,
             error: 'Failed to download logs',
@@ -72,7 +73,7 @@ export class PerformanceController {
         }
       });
     } catch (error) {
-      console.error('Error exporting logs:', error);
+      logger.error('Error exporting logs:', error);
       res.status(500).json({
         success: false,
         error: 'Failed to export logs',
@@ -115,7 +116,7 @@ export class PerformanceController {
         },
       });
     } catch (error) {
-      console.error('Error getting connection info:', error);
+      logger.error('Error getting connection info:', error);
       res.status(500).json({
         success: false,
         error: 'Failed to get connection info',
@@ -224,7 +225,7 @@ export class PerformanceController {
         },
       });
     } catch (error) {
-      console.error('Error running performance test:', error);
+      logger.error('Error running performance test:', error);
       res.status(500).json({
         success: false,
         error: 'Performance test failed',
@@ -302,7 +303,7 @@ export class PerformanceController {
         },
       });
     } catch (error) {
-      console.error('Error analyzing slow queries:', error);
+      logger.error('Error analyzing slow queries:', error);
       res.status(500).json({
         success: false,
         error: 'Failed to analyze slow queries',
@@ -391,7 +392,7 @@ export class PerformanceController {
         enabled: queryAnalyzer.getEnabled(),
       });
     } catch (error) {
-      console.error('Error toggling analysis:', error);
+      logger.error('Error toggling analysis:', error);
       res.status(500).json({
         success: false,
         error: 'Failed to toggle analysis',

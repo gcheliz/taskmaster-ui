@@ -8,6 +8,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { env } from './environment';
+import { sslLogger } from '../utils/bootstrap-logger';
 
 export interface SSLConfiguration {
   enabled: boolean;
@@ -188,26 +189,26 @@ export function enforceSSLConfiguration(): SSLConfiguration {
   const validation = validateSSLConfiguration();
 
   if (!validation.valid) {
-    console.error('❌ SSL Configuration Validation Failed:');
+    sslLogger.error('❌ SSL Configuration Validation Failed:');
     validation.errors.forEach(error => {
-      console.error(`  - ${error}`);
+      sslLogger.error(`  - ${error}`);
     });
 
     if (env.NODE_ENV === 'production') {
-      console.error('SSL configuration errors are fatal in production');
+      sslLogger.error('SSL configuration errors are fatal in production');
       process.exit(1);
     }
   }
 
   if (validation.warnings.length > 0) {
-    console.warn('⚠️  SSL Configuration Warnings:');
+    sslLogger.warn('⚠️  SSL Configuration Warnings:');
     validation.warnings.forEach(warning => {
-      console.warn(`  - ${warning}`);
+      sslLogger.warn(`  - ${warning}`);
     });
   }
 
   if (validation.configuration.enabled) {
-    console.log('🔒 SSL/TLS encryption enabled for database connections');
+    sslLogger.info('🔒 SSL/TLS encryption enabled for database connections');
   }
 
   return validation.configuration;

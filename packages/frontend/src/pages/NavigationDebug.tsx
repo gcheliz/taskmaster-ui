@@ -6,7 +6,7 @@ export default function NavigationDebug() {
   const location = useLocation()
 
   useEffect(() => {
-    console.log('NavigationDebug: Mounted at path', location.pathname)
+    logger.info('NavigationDebug: Mounted at path', location.pathname)
   }, [location.pathname])
 
   return (
@@ -35,7 +35,7 @@ export default function NavigationDebug() {
           <div className="space-x-4">
             <button
               onClick={() => {
-                console.log('Navigating to /')
+                logger.info('Navigating to /')
                 navigate('/')
               }}
               className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
@@ -44,7 +44,7 @@ export default function NavigationDebug() {
             </button>
             <button
               onClick={() => {
-                console.log('Navigating to /repositories')
+                logger.info('Navigating to /repositories')
                 navigate('/repositories')
               }}
               className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
@@ -53,7 +53,7 @@ export default function NavigationDebug() {
             </button>
             <button
               onClick={() => {
-                console.log('Navigating to /tasks')
+                logger.info('Navigating to /tasks')
                 navigate('/tasks')
               }}
               className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
@@ -67,7 +67,7 @@ export default function NavigationDebug() {
           <h2 className="text-lg font-semibold mb-2">Window Navigation:</h2>
           <button
             onClick={() => {
-              console.log('Using window.location.href')
+              logger.info('Using window.location.href')
               window.location.href = '/repositories'
             }}
             className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"

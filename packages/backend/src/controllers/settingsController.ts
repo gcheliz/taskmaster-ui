@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
+import { logger } from '../utils/winston-adapter';
 import SettingsService from '../services/settingsService';
 import type { AuthenticatedRequest } from '../middleware/auth';
 
@@ -87,7 +88,7 @@ export class SettingsController {
         data: settings,
       });
     } catch (error) {
-      console.error('Error getting settings:', error);
+      logger.error('Error getting settings:', error);
       res.status(500).json({
         success: false,
         error: {
@@ -138,7 +139,7 @@ export class SettingsController {
         message: 'Settings updated successfully',
       });
     } catch (error) {
-      console.error('Error updating settings:', error);
+      logger.error('Error updating settings:', error);
       res.status(500).json({
         success: false,
         error: {
@@ -192,7 +193,7 @@ export class SettingsController {
         message: `${category.charAt(0).toUpperCase() + category.slice(1)} settings updated successfully`,
       });
     } catch (error) {
-      console.error('Error updating settings category:', error);
+      logger.error('Error updating settings category:', error);
       res.status(500).json({
         success: false,
         error: {
@@ -257,7 +258,7 @@ export class SettingsController {
         message: 'Settings created successfully',
       });
     } catch (error) {
-      console.error('Error creating settings:', error);
+      logger.error('Error creating settings:', error);
       res.status(500).json({
         success: false,
         error: {
@@ -291,7 +292,7 @@ export class SettingsController {
         message: 'Settings deleted successfully',
       });
     } catch (error) {
-      console.error('Error deleting settings:', error);
+      logger.error('Error deleting settings:', error);
       res.status(500).json({
         success: false,
         error: {
@@ -335,7 +336,7 @@ export class SettingsController {
         message: 'Settings reset to defaults successfully',
       });
     } catch (error) {
-      console.error('Error resetting settings:', error);
+      logger.error('Error resetting settings:', error);
       res.status(500).json({
         success: false,
         error: {
@@ -447,7 +448,7 @@ export class SettingsController {
         data: categorySettings,
       });
     } catch (error) {
-      console.error('Error getting category settings:', error);
+      logger.error('Error getting category settings:', error);
       res.status(500).json({
         success: false,
         error: {

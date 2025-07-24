@@ -207,7 +207,7 @@ const Repositories: React.FC = () => {
       setShowAddModal(false)
       refetch()
     } catch (error) {
-      console.error('Failed to add repository:', error)
+      logger.error('Failed to add repository:', error)
     }
   }
 

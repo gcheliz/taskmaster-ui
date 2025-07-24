@@ -9,6 +9,7 @@ import { z } from 'zod';
 import { env } from './environment';
 import { promises as fs } from 'fs';
 import path from 'path';
+import { securityLogger } from '../utils/bootstrap-logger';
 
 // Secret value with metadata
 export interface SecretValue {
@@ -334,7 +335,7 @@ export async function getApplicationSecrets(): Promise<{
       sslConfig = { ca, cert, key };
     } catch (error) {
       // SSL certificates not available, continue without SSL
-      console.warn('SSL certificates not available for database connection');
+      securityLogger.warn('SSL certificates not available for database connection');
     }
   }
 

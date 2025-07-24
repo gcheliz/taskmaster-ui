@@ -12,7 +12,7 @@ const RepositoryManagementDemo: React.FC = () => {
   }
 
   const handleRepositoryAdded = async (path: string) => {
-    console.log('Repository added:', path)
+    logger.info('Repository added:', path)
     // In a real app, this would call the API to add the repository
     setShowAddModal(false)
   }

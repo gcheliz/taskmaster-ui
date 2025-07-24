@@ -323,6 +323,12 @@ importers:
       '@jest/globals':
         specifier: ^30.0.4
         version: 30.0.4
+      '@playwright/experimental-ct-react':
+        specifier: ^1.54.1
+        version: 1.54.1(@types/node@20.19.8)(jiti@2.4.2)(lightningcss@1.30.1)(vite@7.0.5(@types/node@20.19.8)(jiti@2.4.2)(lightningcss@1.30.1))
+      '@playwright/test':
+        specifier: ^1.54.1
+        version: 1.54.1
       '@storybook/addon-a11y':
         specifier: ^8.6.14
         version: 8.6.14(storybook@8.6.14(prettier@3.6.2))
@@ -1130,6 +1136,15 @@ packages:
   '@pkgr/core@0.3.4':
     resolution: {integrity: sha512-MrfbnMgfKexic6mxC4xrSBVQHSvmvhz7qtSDG5cHg4xn8kHXkPltUY44R5u4ghYf+1rXpOvC2drbMcE1rZ3a2A==}
     engines: {node: ^14.18.0 || >=16.0.0}
+
+  '@playwright/experimental-ct-core@1.54.1':
+    resolution: {integrity: sha512-iwFdf95m9RCze47jv4hVbg3tDtsh3GFU1StiLludrPStHlZOtDj9/0GImTKrRmXHQCDcQRmQ9HZfJuGGxlWM3g==}
+    engines: {node: '>=18'}
+
+  '@playwright/experimental-ct-react@1.54.1':
+    resolution: {integrity: sha512-hqa/JhMK3qUqwqx8jm0/RJ3lbpGojA3f7UBhp3clFy8hnzMVu0SDba3JemWikS+JhiqYHjxL6Bn6dGxyikCImA==}
+    engines: {node: '>=18'}
+    hasBin: true
 
   '@playwright/test@1.54.1':
     resolution: {integrity: sha512-FS8hQ12acieG2dYSksmLOF7BNxnVf2afRJdCuM1eMSxj6QTSE6G4InGF7oApGgDb65MX7AwMVlIkpru0yZA4Xw==}
@@ -4996,6 +5011,46 @@ packages:
     engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
     hasBin: true
 
+  vite@6.3.5:
+    resolution: {integrity: sha512-cZn6NDFE7wdTpINgs++ZJ4N49W2vRp8LCKrn3Ob1kYNtOo21vfDoaV5GzBfLU4MovSAB8uNRm4jgzVQZ+mBzPQ==}
+    engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': ^18.0.0 || ^20.0.0 || >=22.0.0
+      jiti: '>=1.21.0'
+      less: '*'
+      lightningcss: ^1.21.0
+      sass: '*'
+      sass-embedded: '*'
+      stylus: '*'
+      sugarss: '*'
+      terser: ^5.16.0
+      tsx: ^4.8.1
+      yaml: ^2.4.2
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      jiti:
+        optional: true
+      less:
+        optional: true
+      lightningcss:
+        optional: true
+      sass:
+        optional: true
+      sass-embedded:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+      tsx:
+        optional: true
+      yaml:
+        optional: true
+
   vite@7.0.5:
     resolution: {integrity: sha512-1mncVwJxy2C9ThLwz0+2GKZyEXuC3MyWtAAlNftlZZXZDP3AJt5FmwcMit/IGGaNZ8ZOB2BNO/HFUB+CpN0NQw==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -6043,6 +6098,43 @@ snapshots:
     optional: true
 
   '@pkgr/core@0.3.4': {}
+
+  '@playwright/experimental-ct-core@1.54.1(@types/node@20.19.8)(jiti@2.4.2)(lightningcss@1.30.1)':
+    dependencies:
+      playwright: 1.54.1
+      playwright-core: 1.54.1
+      vite: 6.3.5(@types/node@20.19.8)(jiti@2.4.2)(lightningcss@1.30.1)
+    transitivePeerDependencies:
+      - '@types/node'
+      - jiti
+      - less
+      - lightningcss
+      - sass
+      - sass-embedded
+      - stylus
+      - sugarss
+      - terser
+      - tsx
+      - yaml
+
+  '@playwright/experimental-ct-react@1.54.1(@types/node@20.19.8)(jiti@2.4.2)(lightningcss@1.30.1)(vite@7.0.5(@types/node@20.19.8)(jiti@2.4.2)(lightningcss@1.30.1))':
+    dependencies:
+      '@playwright/experimental-ct-core': 1.54.1(@types/node@20.19.8)(jiti@2.4.2)(lightningcss@1.30.1)
+      '@vitejs/plugin-react': 4.7.0(vite@7.0.5(@types/node@20.19.8)(jiti@2.4.2)(lightningcss@1.30.1))
+    transitivePeerDependencies:
+      - '@types/node'
+      - jiti
+      - less
+      - lightningcss
+      - sass
+      - sass-embedded
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
+      - tsx
+      - vite
+      - yaml
 
   '@playwright/test@1.54.1':
     dependencies:
@@ -10422,6 +10514,20 @@ snapshots:
       - terser
       - tsx
       - yaml
+
+  vite@6.3.5(@types/node@20.19.8)(jiti@2.4.2)(lightningcss@1.30.1):
+    dependencies:
+      esbuild: 0.25.7
+      fdir: 6.4.6(picomatch@4.0.3)
+      picomatch: 4.0.3
+      postcss: 8.5.6
+      rollup: 4.45.1
+      tinyglobby: 0.2.14
+    optionalDependencies:
+      '@types/node': 20.19.8
+      fsevents: 2.3.3
+      jiti: 2.4.2
+      lightningcss: 1.30.1
 
   vite@7.0.5(@types/node@20.19.8)(jiti@2.4.2)(lightningcss@1.30.1):
     dependencies:

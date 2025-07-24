@@ -188,7 +188,7 @@ export interface WebSocketService {
   disconnect(): void
   send<T>(message: WebSocketMessage<T>): void
   subscribe<T>(eventType: WebSocketEventType, callback: (payload: T) => void): () => void
-  unsubscribe(eventType: WebSocketEventType, callback?: (...args: any[]) => void): void
+  unsubscribe(eventType: WebSocketEventType, callback?: (...args: unknown[]) => void): void
   getState(): WebSocketState
   getConnectedUsers(): User[]
   getCurrentUser(): User | null

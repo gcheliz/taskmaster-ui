@@ -36,7 +36,7 @@ export interface UseRepositoryListReturn {
   /** Whether the query has been fetched at least once */
   isFetched: boolean
   /** Manually refetch the list */
-  refetch: () => Promise<any>
+  refetch: () => Promise<unknown>
   /** Invalidate the query cache */
   invalidate: () => Promise<void>
   /** Last successful fetch timestamp */

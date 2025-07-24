@@ -5,7 +5,7 @@ import type { FilterOptions, SortOptions } from './FilterSortControls'
 
 export interface TaskBoardWithFiltersProps {
   repositoryPath: string
-  onTasksChange?: (tasks: any[]) => void
+  onTasksChange?: (tasks: unknown[]) => void
   onLoadingChange?: (loading: boolean) => void
   onErrorChange?: (error: Error | null) => void
   className?: string

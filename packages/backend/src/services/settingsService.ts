@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { logger } from '../utils/winston-adapter';
 
 const prisma = new PrismaClient();
 
@@ -23,11 +24,11 @@ export interface CreateUserSettingsData {
   pushNotifications?: boolean | null;
   slackNotifications?: boolean | null;
   desktopNotifications?: boolean | null;
-  notificationSettings?: any;
-  integrationSettings?: any;
+  notificationSettings?: Record<string, unknown>;
+  integrationSettings?: Record<string, unknown>;
   twoFactorEnabled?: boolean | null;
   loginNotifications?: boolean | null;
-  securitySettings?: any;
+  securitySettings?: Record<string, unknown>;
   dashboardLayout?: string | null;
   cardsPerRow?: number | null;
   showQuickActions?: boolean | null;
@@ -66,13 +67,13 @@ export interface UserSettingsResponse {
   pushNotifications?: boolean | null;
   slackNotifications?: boolean | null;
   desktopNotifications?: boolean | null;
-  notificationSettings?: any;
+  notificationSettings?: Record<string, unknown>;
   // Integration settings
-  integrationSettings?: any;
+  integrationSettings?: Record<string, unknown>;
   // Security settings
   twoFactorEnabled?: boolean | null;
   loginNotifications?: boolean | null;
-  securitySettings?: any;
+  securitySettings?: Record<string, unknown>;
   // Dashboard preferences
   dashboardLayout?: string | null;
   cardsPerRow?: number | null;
@@ -100,7 +101,7 @@ export class SettingsService {
 
       return settings as UserSettingsResponse | null;
     } catch (error) {
-      console.error('Error getting user settings:', error);
+      logger.error('Error getting user settings:', error);
       throw new Error('Failed to retrieve user settings');
     }
   }
@@ -117,12 +118,12 @@ export class SettingsService {
       });
 
       if (!settings) {
-        settings = (await this.createUserSettings({ userId })) as any;
+        settings = await this.createUserSettings({ userId });
       }
 
       return settings as UserSettingsResponse;
     } catch (error) {
-      console.error('Error getting or creating user settings:', error);
+      logger.error('Error getting or creating user settings:', error);
       throw new Error('Failed to retrieve or create user settings');
     }
   }
@@ -172,7 +173,7 @@ export class SettingsService {
 
       return settings as UserSettingsResponse;
     } catch (error) {
-      console.error('Error creating user settings:', error);
+      logger.error('Error creating user settings:', error);
       throw new Error('Failed to create user settings');
     }
   }
@@ -226,7 +227,7 @@ export class SettingsService {
 
       return settings as UserSettingsResponse;
     } catch (error) {
-      console.error('Error updating user settings:', error);
+      logger.error('Error updating user settings:', error);
       throw new Error('Failed to update user settings');
     }
   }
@@ -237,7 +238,7 @@ export class SettingsService {
   static async updateSettingsCategory(
     userId: string,
     category: string,
-    categoryData: any
+    categoryData: Record<string, unknown>
   ): Promise<UserSettingsResponse> {
     try {
       let updateData: UpdateUserSettingsData = {};
@@ -304,7 +305,7 @@ export class SettingsService {
 
       return await this.updateUserSettings(userId, updateData);
     } catch (error) {
-      console.error('Error updating settings category:', error);
+      logger.error('Error updating settings category:', error);
       throw new Error(`Failed to update ${category} settings`);
     }
   }
@@ -318,7 +319,7 @@ export class SettingsService {
         where: { userId },
       });
     } catch (error) {
-      console.error('Error deleting user settings:', error);
+      logger.error('Error deleting user settings:', error);
       throw new Error('Failed to delete user settings');
     }
   }
@@ -335,7 +336,7 @@ export class SettingsService {
 
       return !!settings;
     } catch (error) {
-      console.error('Error checking user settings:', error);
+      logger.error('Error checking user settings:', error);
       return false;
     }
   }
@@ -357,7 +358,7 @@ export class SettingsService {
 
       return settings as UserSettingsResponse[];
     } catch (error) {
-      console.error('Error getting users settings:', error);
+      logger.error('Error getting users settings:', error);
       throw new Error('Failed to retrieve users settings');
     }
   }

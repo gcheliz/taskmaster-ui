@@ -79,7 +79,7 @@ export class TaskMasterCommandBuilder implements ITaskMasterCommandBuilder {
    */
   buildCommand(
     operation: string,
-    args: Record<string, any> = {}
+    args: Record<string, unknown> = {}
   ): TaskMasterCommand {
     const commandTemplate =
       TaskMasterCommandBuilder.COMMANDS_REGISTRY[operation];
@@ -101,7 +101,7 @@ export class TaskMasterCommandBuilder implements ITaskMasterCommandBuilder {
    */
   private buildArgumentsForOperation(
     operation: string,
-    args: Record<string, any>
+    args: Record<string, unknown>
   ): string[] {
     const commandArgs: string[] = [operation];
 
@@ -315,7 +315,7 @@ export class TaskMasterCommandBuilder implements ITaskMasterCommandBuilder {
  */
 class CommandBuilderFluent {
   private operationName: string = '';
-  private args: Record<string, any> = {};
+  private args: Record<string, unknown> = {};
 
   operation(op: string): this {
     this.operationName = op;

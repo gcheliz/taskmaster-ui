@@ -14,7 +14,7 @@ export interface PRDDocument {
   wordCount: number
   charCount: number
   version: string
-  metadata?: Record<string, any>
+  metadata?: Record<string, unknown>
 }
 
 export interface PRDDocumentList {
@@ -29,7 +29,7 @@ export interface CreatePRDRequest {
   content: string
   wordCount: number
   charCount: number
-  metadata?: Record<string, any>
+  metadata?: Record<string, unknown>
 }
 
 export interface UpdatePRDRequest {
@@ -37,7 +37,7 @@ export interface UpdatePRDRequest {
   content?: string
   wordCount?: number
   charCount?: number
-  metadata?: Record<string, any>
+  metadata?: Record<string, unknown>
 }
 
 export interface PRDApiResponse<T = any> {

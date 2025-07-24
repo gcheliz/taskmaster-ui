@@ -1,13 +1,13 @@
 // API Service for TaskMaster UI
 // Handles communication with the backend REST API
 
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean
   data?: T
   error?: {
     code: string
     message: string
-    details?: any
+    details?: unknown
     correlationId?: string
   }
   metadata?: {
@@ -136,7 +136,7 @@ export interface DashboardData {
     timestamp: string
     message: string
     author?: string
-    details?: any
+    details?: unknown
   }>
   chartData: {
     taskCompletionTrend: Array<{
@@ -297,7 +297,7 @@ export class ApiService {
     return this.request<RepositoryInfo>(`/repositories/info?${params}`)
   }
 
-  async getRepositoryHealth(): Promise<any> {
+  async getRepositoryHealth(): Promise<unknown> {
     return this.request('/repositories/health')
   }
 
@@ -324,16 +324,16 @@ export class ApiService {
   }
 
   // Task Management API
-  async getProjectTasks(projectId: string): Promise<any> {
+  async getProjectTasks(projectId: string): Promise<unknown> {
     return this.request<any>(`/projects/${projectId}/tasks`)
   }
 
-  async getTasksFromFile(filePath: string): Promise<any> {
+  async getTasksFromFile(filePath: string): Promise<unknown> {
     const params = new URLSearchParams({ filePath })
     return this.request<any>(`/tasks/file?${params}`)
   }
 
-  async getTasksFromRepository(repositoryPath: string, projectTag?: string): Promise<any> {
+  async getTasksFromRepository(repositoryPath: string, projectTag?: string): Promise<unknown> {
     const params = new URLSearchParams({ repositoryPath })
     if (projectTag) {
       params.append('projectTag', projectTag)
@@ -342,21 +342,21 @@ export class ApiService {
   }
 
   // Task Update API
-  async updateTaskStatus(taskId: number, status: string, projectId?: string): Promise<any> {
+  async updateTaskStatus(taskId: number, status: string, projectId?: string): Promise<unknown> {
     return this.request<any>(`/tasks/${taskId}/status`, {
       method: 'PUT',
       body: JSON.stringify({ status, projectId }),
     })
   }
 
-  async updateTask(taskId: number, updates: any, projectId?: string): Promise<any> {
+  async updateTask(taskId: number, updates: Record<string, unknown>, projectId?: string): Promise<unknown> {
     return this.request<any>(`/tasks/${taskId}`, {
       method: 'PUT',
       body: JSON.stringify({ ...updates, projectId }),
     })
   }
 
-  async createTask(taskData: any, projectId?: string): Promise<any> {
+  async createTask(taskData: Record<string, unknown>, projectId?: string): Promise<unknown> {
     return this.request<any>('/tasks', {
       method: 'POST',
       body: JSON.stringify({ ...taskData, projectId }),

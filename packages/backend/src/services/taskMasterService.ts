@@ -543,7 +543,7 @@ export class TaskMasterService
   private async executeGenericCommand(
     operation: string,
     path: string,
-    args: Record<string, any>
+    args: Record<string, unknown>
   ): Promise<TaskMasterResult> {
     const startTime = Date.now();
 

@@ -35,7 +35,7 @@ export const getAriaStateAttributes = (state: {
   hasError?: boolean
   isRequired?: boolean
 }) => {
-  const attrs: Record<string, any> = {}
+  const attrs: Record<string, unknown> = {}
 
   if (state.isLoading !== undefined) attrs['aria-busy'] = state.isLoading
   if (state.isDisabled !== undefined) attrs['aria-disabled'] = state.isDisabled

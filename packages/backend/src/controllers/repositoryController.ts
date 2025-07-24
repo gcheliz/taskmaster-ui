@@ -17,7 +17,7 @@ export class RepositoryController {
    * Validate a repository path
    * POST /api/repositories/validate
    */
-  async validateRepository(req: any, res: any): Promise<void> {
+  async validateRepository(req: Request, res: Response): Promise<void> {
     const startTime = Date.now();
     const requestId = req.requestId || 'unknown';
     const context = {
@@ -122,7 +122,7 @@ export class RepositoryController {
    * Get repository information
    * GET /api/repositories/info?repositoryPath=<path>
    */
-  async getRepositoryInfo(req: any, res: any): Promise<void> {
+  async getRepositoryInfo(req: Request, res: Response): Promise<void> {
     const startTime = Date.now();
     const requestId = req.requestId || 'unknown';
     const repositoryPath = req.query.repositoryPath as string;
@@ -218,7 +218,7 @@ export class RepositoryController {
    * Health check for repository service
    * GET /api/repositories/health
    */
-  async healthCheck(req: any, res: any): Promise<void> {
+  async healthCheck(req: Request, res: Response): Promise<void> {
     const startTime = Date.now();
     const requestId = req.requestId || 'unknown';
 
@@ -277,7 +277,7 @@ export class RepositoryController {
    * Get detailed repository metadata, branches, and status
    * GET /api/repositories/details?repositoryPath=<path>
    */
-  async getRepositoryDetails(req: any, res: any): Promise<void> {
+  async getRepositoryDetails(req: Request, res: Response): Promise<void> {
     const startTime = Date.now();
     const requestId = req.requestId || 'unknown';
     const repositoryPath = req.query.repositoryPath as string;

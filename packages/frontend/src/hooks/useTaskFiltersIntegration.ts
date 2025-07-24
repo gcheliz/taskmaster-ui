@@ -4,7 +4,7 @@ import type { FilterOptions, SortOptions } from '../components/TaskBoard/FilterS
 
 export interface TaskFiltersIntegrationOptions {
   repositoryPath: string
-  onTasksChange?: (tasks: any[]) => void
+  onTasksChange?: (tasks: unknown[]) => void
   onFilterChange?: (filters: FilterOptions) => void
   onSortChange?: (sorting: SortOptions) => void
   onError?: (error: Error) => void
@@ -12,7 +12,7 @@ export interface TaskFiltersIntegrationOptions {
 
 export interface TaskFiltersIntegrationReturn {
   // Task board state
-  tasks: any[]
+  tasks: unknown[]
   loading: boolean
   error: Error | null
   totalCount: number

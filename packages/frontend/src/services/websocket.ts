@@ -16,7 +16,7 @@ class TaskMasterWebSocketService implements WebSocketService {
   private socket: WebSocket | null = null
   private config: WebSocketConfig | null = null
   private state: WebSocketState = WebSocketState.DISCONNECTED
-  private eventListeners: Map<WebSocketEventType, Set<(...args: any[]) => void>> = new Map()
+  private eventListeners: Map<WebSocketEventType, Set<(...args: unknown[]) => void>> = new Map()
   private reconnectTimer: NodeJS.Timeout | null = null
   private heartbeatTimer: NodeJS.Timeout | null = null
   private reconnectAttempts: number = 0
@@ -157,7 +157,7 @@ class TaskMasterWebSocketService implements WebSocketService {
   /**
    * Unsubscribe from WebSocket events
    */
-  unsubscribe(eventType: WebSocketEventType, callback?: (...args: any[]) => void): void {
+  unsubscribe(eventType: WebSocketEventType, callback?: (...args: unknown[]) => void): void {
     if (!this.eventListeners.has(eventType)) {
       return
     }

@@ -40,7 +40,7 @@ export interface DashboardData {
     timestamp: string;
     message: string;
     author?: string;
-    details?: any;
+    details?: unknown;
   }>;
   chartData: {
     taskCompletionTrend: Array<{
@@ -201,7 +201,7 @@ export class DashboardController {
   private async readTasksFile(
     filePath: string,
     projectTag?: string
-  ): Promise<any> {
+  ): Promise<unknown> {
     try {
       const fileContent = await fs.readFile(filePath, 'utf-8');
       const data = JSON.parse(fileContent);
@@ -260,7 +260,7 @@ export class DashboardController {
     projectId: string,
     projectPath: string,
     tasksData: any,
-    gitActivity: any[]
+    gitActivity: unknown[]
   ): Promise<DashboardData> {
     const tasks = tasksData.tasks || [];
     const metadata = tasksData.metadata || {};
@@ -306,7 +306,7 @@ export class DashboardController {
   /**
    * Calculate task metrics
    */
-  private calculateTaskMetrics(tasks: any[]): DashboardData['taskMetrics'] {
+  private calculateTaskMetrics(tasks: unknown[]): DashboardData['taskMetrics'] {
     const statusCounts = tasks.reduce(
       (acc, task) => {
         acc[task.status] = (acc[task.status] || 0) + 1;
@@ -356,7 +356,7 @@ export class DashboardController {
    * Calculate subtask metrics
    */
   private calculateSubtaskMetrics(
-    tasks: any[]
+    tasks: unknown[]
   ): DashboardData['subtaskMetrics'] {
     const allSubtasks = tasks.flatMap(task => task.subtasks || []);
     const total = allSubtasks.length;
@@ -382,7 +382,7 @@ export class DashboardController {
   /**
    * Get recent task updates
    */
-  private getRecentTaskUpdates(tasks: any[]): DashboardData['recentActivity'] {
+  private getRecentTaskUpdates(tasks: unknown[]): DashboardData['recentActivity'] {
     const updates: DashboardData['recentActivity'] = [];
 
     tasks.forEach(task => {
@@ -404,8 +404,8 @@ export class DashboardController {
    * Generate chart data
    */
   private generateChartData(
-    tasks: any[],
-    gitActivity: any[]
+    tasks: unknown[],
+    gitActivity: unknown[]
   ): DashboardData['chartData'] {
     const priorityDistribution = Object.entries(
       tasks.reduce(
@@ -455,8 +455,8 @@ export class DashboardController {
    * Generate completion trend data
    */
   private generateCompletionTrend(
-    tasks: any[],
-    gitActivity: any[]
+    tasks: unknown[],
+    gitActivity: unknown[]
   ): DashboardData['chartData']['taskCompletionTrend'] {
     const days = 7;
     const trend = [];
@@ -487,7 +487,7 @@ export class DashboardController {
    */
   private getAverageTimeForComplexity(
     complexity: string,
-    tasks: any[]
+    tasks: unknown[]
   ): number {
     const complexityMultiplier = {
       low: 2,
@@ -504,7 +504,7 @@ export class DashboardController {
    * Calculate project insights
    */
   private calculateInsights(
-    tasks: any[],
+    tasks: unknown[],
     taskMetrics: DashboardData['taskMetrics']
   ): DashboardData['insights'] {
     const totalEstimatedHours = tasks.reduce((sum, task) => {

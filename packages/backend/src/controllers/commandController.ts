@@ -63,7 +63,7 @@ export interface CommandResponse {
   error?: {
     code: string;
     message: string;
-    details?: any;
+    details?: unknown;
   };
 }
 

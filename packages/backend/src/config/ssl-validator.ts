@@ -86,7 +86,7 @@ function validateCertificateFile(
     }
 
     return { valid: true };
-  } catch (error: any) {
+  } catch (error) {
     return {
       valid: false,
       error: `Failed to validate ${type} file: ${error.message}`,
@@ -274,7 +274,7 @@ export async function testSSLConnection(): Promise<{
         resolve({ success: false, error: 'Connection timeout' });
       });
     });
-  } catch (error: any) {
+  } catch (error) {
     return { success: false, error: error.message };
   }
 }
@@ -358,7 +358,7 @@ export function checkSSLCertificateExpiration(): {
       expiring: daysUntilExpiration < 30, // Alert if expiring within 30 days
       daysUntilExpiration,
     };
-  } catch (error: any) {
+  } catch (error) {
     return { expiring: false, error: error.message };
   }
 }

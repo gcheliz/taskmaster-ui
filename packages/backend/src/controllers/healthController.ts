@@ -53,7 +53,7 @@ export const getSecretsHealth = async (
     };
 
     res.status(activeProviderAvailable ? 200 : 503).json(response);
-  } catch (error: any) {
+  } catch (error) {
     res.status(500).json({
       status: 'ERROR',
       timestamp: new Date().toISOString(),
@@ -90,7 +90,7 @@ export const getSSLHealth = async (
     };
 
     res.status(validation.valid ? 200 : 503).json(response);
-  } catch (error: any) {
+  } catch (error) {
     res.status(500).json({
       status: 'ERROR',
       timestamp: new Date().toISOString(),
@@ -142,7 +142,7 @@ export const getSystemHealth = async (
     };
 
     res.status(allHealthy ? 200 : 503).json(response);
-  } catch (error: any) {
+  } catch (error) {
     res.status(500).json({
       status: 'ERROR',
       timestamp: new Date().toISOString(),

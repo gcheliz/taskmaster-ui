@@ -148,7 +148,7 @@ export const performanceUtils = {
   /**
    * Debounce function calls
    */
-  debounce<T extends (...args: any[]) => any>(
+  debounce<T extends (...args: unknown[]) => any>(
     func: T,
     wait: number
   ): (...args: Parameters<T>) => void {
@@ -163,7 +163,7 @@ export const performanceUtils = {
   /**
    * Throttle function calls
    */
-  throttle<T extends (...args: any[]) => any>(
+  throttle<T extends (...args: unknown[]) => any>(
     func: T,
     limit: number
   ): (...args: Parameters<T>) => void {
@@ -181,7 +181,7 @@ export const performanceUtils = {
   /**
    * Memoize function results
    */
-  memoize<T extends (...args: any[]) => any>(
+  memoize<T extends (...args: unknown[]) => any>(
     func: T,
     keyGenerator?: (...args: Parameters<T>) => string
   ): T {

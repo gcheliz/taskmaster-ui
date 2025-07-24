@@ -54,7 +54,7 @@ export interface ParsedTaskMasterOutput {
   type: 'success' | 'error' | 'info' | 'warning';
   message: string;
   data?: any;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 // Service Interface - Defines contract for TaskMaster CLI operations
@@ -119,7 +119,7 @@ export interface ITaskMasterService {
 export interface ITaskMasterCommandBuilder {
   buildCommand(
     operation: string,
-    args?: Record<string, any>
+    args?: Record<string, unknown>
   ): TaskMasterCommand;
   validateCommand(command: TaskMasterCommand): boolean;
   getAvailableCommands(): TaskMasterCommand[];

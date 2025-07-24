@@ -6,10 +6,10 @@
  */
 
 interface BootstrapLogger {
-  error: (message: string, ...args: any[]) => void
-  warn: (message: string, ...args: any[]) => void
-  info: (message: string, ...args: any[]) => void
-  log: (message: string, ...args: any[]) => void
+  error: (message: string, ...args: unknown[]) => void
+  warn: (message: string, ...args: unknown[]) => void
+  info: (message: string, ...args: unknown[]) => void
+  log: (message: string, ...args: unknown[]) => void
 }
 
 const createBootstrapLogger = (module: string): BootstrapLogger => {
@@ -19,16 +19,16 @@ const createBootstrapLogger = (module: string): BootstrapLogger => {
   }
 
   return {
-    error: (message: string, ...args: any[]) => {
+    error: (message: string, ...args: unknown[]) => {
       console.error(formatMessage('ERROR', message), ...args)
     },
-    warn: (message: string, ...args: any[]) => {
+    warn: (message: string, ...args: unknown[]) => {
       console.warn(formatMessage('WARN', message), ...args)
     },
-    info: (message: string, ...args: any[]) => {
+    info: (message: string, ...args: unknown[]) => {
       console.info(formatMessage('INFO', message), ...args)
     },
-    log: (message: string, ...args: any[]) => {
+    log: (message: string, ...args: unknown[]) => {
       console.log(formatMessage('INFO', message), ...args)
     }
   }

@@ -2,9 +2,14 @@ import { Request, Response } from 'express';
 import AuthService from '../services/authService';
 import { env } from '../config/environment';
 import { logger } from '../utils/winston-adapter';
+import { ApiResponse } from '../types/common';
+import { User } from '@prisma/client';
 
 export interface AuthenticatedRequest extends Request {
-  user?: any;
+  user?: User & {
+    id: string;
+    userId?: string;
+  };
 }
 
 export class AuthController {

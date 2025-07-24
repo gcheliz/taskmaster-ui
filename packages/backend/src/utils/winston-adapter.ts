@@ -36,29 +36,29 @@ const winstonLogger = winston.createLogger({
 
 // Export a logger object that matches console API but uses our logger
 export const logger = {
-  error: (message: string, ...args: any[]) => {
+  error: (message: string, ...args: unknown[]) => {
     const error = args.find(arg => arg instanceof Error)
     const metadata = args.filter(arg => !(arg instanceof Error))
     taskMasterLogger.error(message, metadata[0], error)
   },
   
-  warn: (message: string, ...args: any[]) => {
+  warn: (message: string, ...args: unknown[]) => {
     taskMasterLogger.warn(message, args[0])
   },
   
-  log: (message: string, ...args: any[]) => {
+  log: (message: string, ...args: unknown[]) => {
     taskMasterLogger.info(message, args[0])
   },
   
-  info: (message: string, ...args: any[]) => {
+  info: (message: string, ...args: unknown[]) => {
     taskMasterLogger.info(message, args[0])
   },
   
-  debug: (message: string, ...args: any[]) => {
+  debug: (message: string, ...args: unknown[]) => {
     taskMasterLogger.debug(message, args[0])
   },
   
-  trace: (message: string, ...args: any[]) => {
+  trace: (message: string, ...args: unknown[]) => {
     taskMasterLogger.trace(message, args[0])
   }
 }

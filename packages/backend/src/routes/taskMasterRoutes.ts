@@ -298,7 +298,7 @@ export class TaskMasterRouteFactory {
           required: ['repositoryPath'],
         },
       }) as any,
-      this.asyncHandler(async (req: any, res: any) => {
+      this.asyncHandler(async (req: Request, res: Response) => {
         // Delegate to execute command with 'init' operation
         req.validatedBody = {
           ...req.validatedBody,
@@ -409,7 +409,7 @@ export class TaskMasterRouteFactory {
           required: ['repositoryPath'],
         },
       }) as any,
-      this.asyncHandler(async (req: any, res: any) => {
+      this.asyncHandler(async (req: Request, res: Response) => {
         req.validatedBody = {
           repositoryPath: req.query.repositoryPath,
           operation: 'next',
@@ -455,7 +455,7 @@ export class TaskMasterRouteFactory {
           required: ['repositoryPath'],
         },
       }) as any,
-      this.asyncHandler(async (req: any, res: any) => {
+      this.asyncHandler(async (req: Request, res: Response) => {
         req.validatedBody = {
           repositoryPath: req.query.repositoryPath,
           operation: 'validate-dependencies',
@@ -489,7 +489,7 @@ export class TaskMasterRouteFactory {
   // Helper Methods and Middleware
 
   private createHealthEndpoint() {
-    return (req: any, res: any) => {
+    return (req: Request, res: Response) => {
       const healthInfo = {
         status: 'healthy',
         timestamp: new Date().toISOString(),
@@ -505,7 +505,7 @@ export class TaskMasterRouteFactory {
   }
 
   private createDocsEndpoint() {
-    return (req: any, res: any) => {
+    return (req: Request, res: Response) => {
       const apiDocs = {
         openapi: '3.0.0',
         info: {

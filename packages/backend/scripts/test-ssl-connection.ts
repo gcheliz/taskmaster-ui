@@ -140,7 +140,7 @@ async function testPrismaIntegration() {
     console.log('\n✅ Prisma SSL configuration loaded successfully');
     
     return config;
-  } catch (error: any) {
+  } catch (error) {
     console.log(`❌ Failed to load Prisma configuration: ${error.message}`);
     return null;
   }
@@ -203,7 +203,7 @@ async function main() {
     
     console.log('\n🎉 SSL/TLS tests completed successfully!');
     
-  } catch (error: any) {
+  } catch (error) {
     console.error('❌ SSL/TLS test failed:', error);
     process.exit(1);
   }

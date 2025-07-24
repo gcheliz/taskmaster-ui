@@ -134,7 +134,7 @@ export class PerformanceController {
       const prisma = dbService.getPrisma();
 
       const startTime = Date.now();
-      const results: any[] = [];
+      const results: unknown[] = [];
 
       // Test 1: Simple SELECT query
       const simpleStart = Date.now();
@@ -317,7 +317,7 @@ export class PerformanceController {
    */
   private generateOptimizationRecommendations(
     analysis: any,
-    explainResults: any[]
+    explainResults: unknown[]
   ): string[] {
     const recommendations: string[] = [];
 

@@ -30,15 +30,15 @@ const updateSettingsSchema = z.object({
   pushNotifications: z.boolean().optional(),
   slackNotifications: z.boolean().optional(),
   desktopNotifications: z.boolean().optional(),
-  notificationSettings: z.any().optional(),
+  notificationSettings: z.record(z.unknown()).optional(),
 
   // Integration settings
-  integrationSettings: z.any().optional(),
+  integrationSettings: z.record(z.unknown()).optional(),
 
   // Security settings
   twoFactorEnabled: z.boolean().optional(),
   loginNotifications: z.boolean().optional(),
-  securitySettings: z.any().optional(),
+  securitySettings: z.record(z.unknown()).optional(),
 
   // Dashboard preferences
   dashboardLayout: z.enum(['grid', 'list']).optional(),
@@ -59,7 +59,7 @@ const updateCategorySchema = z.object({
     'integrations',
     'security',
   ]),
-  data: z.any(),
+  data: z.record(z.unknown()),
 });
 
 export class SettingsController {

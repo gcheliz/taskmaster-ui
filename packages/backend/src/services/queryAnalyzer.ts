@@ -12,7 +12,7 @@ import * as path from 'path';
 interface QueryLog {
   timestamp: Date;
   query: string;
-  params?: any[];
+  params?: unknown[];
   duration?: number;
   target: string;
   level: 'query' | 'info' | 'warn' | 'error';

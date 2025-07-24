@@ -14,7 +14,7 @@ export interface ApiResponse<T = any> {
 export interface ApiError {
   code: string;
   message: string;
-  details?: Record<string, any>;
+  details?: Record<string, unknown>;
   stack?: string;
   correlationId?: string;
 }
@@ -37,7 +37,7 @@ export interface RateLimitInfo {
 export interface CliExecuteRequest {
   repositoryPath: string;
   operation: string;
-  arguments?: Record<string, any>;
+  arguments?: Record<string, unknown>;
   options?: CliExecuteOptions;
 }
 
@@ -148,7 +148,7 @@ export interface TaskHistoryEntry {
   previousValue?: any;
   newValue?: any;
   user?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface TaskUpdateRequest {
@@ -263,7 +263,7 @@ export interface ComplexityMetadata {
 export interface StreamingRequest {
   repositoryPath: string;
   operation: string;
-  arguments?: Record<string, any>;
+  arguments?: Record<string, unknown>;
   streamOptions?: StreamingOptions;
 }
 
@@ -292,7 +292,7 @@ export interface WebSocketMessage {
 export interface WebSocketSubscription {
   repositoryPath: string;
   events: string[];
-  filters?: Record<string, any>;
+  filters?: Record<string, unknown>;
 }
 
 // Validation and Error Types
@@ -356,7 +356,7 @@ export interface RepositoryValidation {
   type: 'path' | 'directory' | 'git' | 'taskmaster' | 'permissions';
   isValid: boolean;
   message: string;
-  details?: Record<string, any>;
+  details?: Record<string, unknown>;
 }
 
 export interface RepositoryInfo {

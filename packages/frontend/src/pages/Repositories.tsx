@@ -4,6 +4,7 @@ import { Spinner } from '../components/ui/atoms/Spinner'
 import { Modal } from '../components/ui/molecules/Modal'
 import { AddRepository } from '../components/Repository/AddRepository'
 import { useRepositoryOperations } from '../hooks/useRepositoryOperations'
+import { logger } from '../utils/logger'
 import { 
   GitBranch, 
   Plus, 
@@ -30,6 +31,27 @@ import { Button } from '../components/ui/atoms/Button'
 import { formatDistanceToNow } from 'date-fns'
 import { PageHeader } from '../components/Layout'
 
+interface RepositoryStats {
+  commits: number
+  contributors: number
+  branches: number
+  openPRs: number
+  health: number
+}
+
+interface Repository {
+  id: string
+  name: string
+  path: string
+  status: string
+  isGitRepository: boolean
+  isTaskMasterProject: boolean
+  gitBranch: string
+  lastUpdated: string
+  connectedAt: string
+  stats?: RepositoryStats
+}
+
 const Repositories: React.FC = () => {
   const { repositories, isLoading, error, refetch } = useRepositoryList()
   const { connectRepository } = useRepositoryOperations()
@@ -38,7 +60,7 @@ const Repositories: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState('all')
 
   // Enhanced mock repositories with realistic data
-  const mockRepositories = [
+  const mockRepositories: Repository[] = [
     {
       id: 'repo-1',
       name: 'taskmaster-ui',
@@ -322,7 +344,7 @@ const Repositories: React.FC = () => {
             </div>
           </div>
           <div className="flex items-center text-sm">
-            <span className="text-gray-600 font-medium">{displayRepositories.filter((r: any) => r.isTaskMasterProject).length}</span>
+            <span className="text-gray-600 font-medium">{displayRepositories.filter((r: Repository) => r.isTaskMasterProject).length}</span>
             <span className="text-gray-500 ml-1">with TaskMaster</span>
           </div>
         </div>
@@ -332,7 +354,7 @@ const Repositories: React.FC = () => {
             <div>
               <p className="text-sm font-medium text-gray-600">Active Branches</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">
-                {displayRepositories.reduce((sum: number, r: any) => sum + (r.stats?.branches || 0), 0)}
+                {displayRepositories.reduce((sum: number, r: Repository) => sum + (r.stats?.branches || 0), 0)}
               </p>
             </div>
             <div className="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center">
@@ -351,7 +373,7 @@ const Repositories: React.FC = () => {
             <div>
               <p className="text-sm font-medium text-gray-600">Open PRs</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">
-                {displayRepositories.reduce((sum: number, r: any) => sum + (r.stats?.openPRs || 0), 0)}
+                {displayRepositories.reduce((sum: number, r: Repository) => sum + (r.stats?.openPRs || 0), 0)}
               </p>
             </div>
             <div className="w-12 h-12 bg-amber-50 rounded-lg flex items-center justify-center">
@@ -359,7 +381,7 @@ const Repositories: React.FC = () => {
             </div>
           </div>
           <div className="flex items-center text-sm">
-            <span className="text-amber-600 font-medium">{displayRepositories.filter((r: any) => r.stats?.openPRs > 0).length}</span>
+            <span className="text-amber-600 font-medium">{displayRepositories.filter((r: Repository) => (r.stats?.openPRs || 0) > 0).length}</span>
             <span className="text-gray-500 ml-1">repositories</span>
           </div>
         </div>
@@ -369,7 +391,7 @@ const Repositories: React.FC = () => {
             <div>
               <p className="text-sm font-medium text-gray-600">Health Score</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">
-                {Math.round(displayRepositories.reduce((sum: number, r: any) => sum + (r.stats?.health || 0), 0) / displayRepositories.length)}%
+                {Math.round(displayRepositories.reduce((sum: number, r: Repository) => sum + (r.stats?.health || 0), 0) / displayRepositories.length)}%
               </p>
             </div>
             <div className="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center">
@@ -395,7 +417,7 @@ const Repositories: React.FC = () => {
       {/* Repository List */}
       {displayRepositories.length > 0 && (
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-          {displayRepositories.map((repo: any) => {
+          {displayRepositories.map((repo: Repository) => {
             const statusConfig = getStatusConfig(repo.status || 'inactive')
             
             return (

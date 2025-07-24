@@ -8,20 +8,12 @@ import {
   CliExecuteRequest,
   CliExecuteResponse,
   ProjectStatusRequest,
-  ProjectStatusResponse,
   TaskListRequest,
-  TaskListResponse,
   TaskDetailRequest,
-  TaskDetailResponse,
   TaskUpdateRequest,
-  TaskUpdateResponse,
   TaskExpansionRequest,
-  TaskExpansionResponse,
   ComplexityAnalysisRequest,
-  ComplexityAnalysisResponse,
   ApiError,
-  TaskFilters,
-  PaginationOptions,
   SortingOptions,
 } from '../types/api';
 import { logger } from '../utils/winston-adapter';
@@ -701,7 +693,7 @@ export class TaskMasterController implements ITaskMasterController {
     return pathParts[pathParts.length - 1] || 'default';
   }
 
-  private calculateProjectStats(tasks: any[]): any {
+  private calculateProjectStats(tasks: unknown[]): any {
     const totalTasks = tasks.length;
     const completedTasks = tasks.filter(t => t.status === 'done').length;
     const inProgressTasks = tasks.filter(
@@ -722,7 +714,7 @@ export class TaskMasterController implements ITaskMasterController {
     };
   }
 
-  private sortTasks(tasks: any[], sorting: SortingOptions): any[] {
+  private sortTasks(tasks: unknown[], sorting: SortingOptions): unknown[] {
     return tasks.sort((a, b) => {
       let aValue = a[sorting.field];
       let bValue = b[sorting.field];

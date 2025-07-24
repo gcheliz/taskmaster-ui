@@ -10,7 +10,7 @@ export interface DroppableAreaProps extends React.HTMLAttributes<HTMLDivElement>
   /**
    * Data to pass when something is dropped
    */
-  data?: Record<string, any>
+  data?: Record<string, unknown>
   /**
    * Disable drop functionality
    * @default false

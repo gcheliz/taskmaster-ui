@@ -22,7 +22,7 @@ export interface Connection {
   lastUsed: number;
   inUse: boolean;
   isHealthy: boolean;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
   destroy(): Promise<void>;
   ping(): Promise<boolean>;
 }
@@ -515,7 +515,7 @@ export class TaskMasterConnection implements Connection {
   public lastUsed: number;
   public inUse: boolean = false;
   public isHealthy: boolean = true;
-  public metadata: Record<string, any> = {};
+  public metadata: Record<string, unknown> = {};
 
   constructor(
     public repositoryPath: string,

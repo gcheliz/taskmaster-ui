@@ -16,8 +16,8 @@ export interface PrdAnalysisRequest {
 export interface PrdAnalysisResponse {
   success: boolean;
   data?: {
-    parsedTasks: any[];
-    complexityAnalysis: any;
+    parsedTasks: unknown[];
+    complexityAnalysis: Record<string, unknown>;
     summary: {
       totalTasks: number;
       averageComplexity: number;
@@ -213,10 +213,10 @@ export class PrdController {
   /**
    * Extract tasks from parse-prd output
    */
-  private extractTasksFromOutput(output: string): any[] {
+  private extractTasksFromOutput(output: string): unknown[] {
     try {
       // Look for task-related patterns in the output
-      const tasks: any[] = [];
+      const tasks: unknown[] = [];
       const lines = output.split('\n');
 
       let currentTask: any = null;
@@ -384,7 +384,7 @@ export class PrdController {
    * Calculate estimated effort
    */
   private calculateEstimatedEffort(
-    tasks: any[],
+    tasks: unknown[],
     complexityAnalysis: any
   ): string {
     if (!tasks || tasks.length === 0) return '0 hours';

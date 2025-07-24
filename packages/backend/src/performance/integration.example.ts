@@ -73,7 +73,7 @@ export class OptimizedTaskMasterService {
   /**
    * High-performance task listing with all optimizations
    */
-  async listTasks(repositoryPath: string, options: any = {}): Promise<any> {
+  async listTasks(repositoryPath: string, options: any = {}): Promise<unknown> {
     return performanceUtils.measureAsync('listTasks', async () => {
       // 1. Check cache first
       const cacheKey = this.generateCacheKey('list', repositoryPath, options);
@@ -129,7 +129,7 @@ export class OptimizedTaskMasterService {
     repositoryPath: string,
     taskId: string,
     options: any = {}
-  ): Promise<any> {
+  ): Promise<unknown> {
     return performanceUtils.measureAsync('getTask', async () => {
       const cacheKey = this.generateCacheKey('show', repositoryPath, {
         id: taskId,
@@ -187,7 +187,7 @@ export class OptimizedTaskMasterService {
 
         // Group operations for optimal batching
         const groupedOps = this.groupOperations(operations);
-        const results: any[] = [];
+        const results: unknown[] = [];
 
         for (const [batchType, ops] of groupedOps.entries()) {
           // Process each group with appropriate optimization
@@ -241,7 +241,7 @@ export class OptimizedTaskMasterService {
   /**
    * Optimize all subsystems
    */
-  async optimizePerformance(): Promise<any> {
+  async optimizePerformance(): Promise<unknown> {
     const results = {
       cache: await this.optimizeCache(),
       memory: await this.memoryManager.optimizeMemory(),
@@ -350,7 +350,7 @@ export class OptimizedTaskMasterService {
     return ttl;
   }
 
-  private groupOperations(operations: any[]): Map<string, any[]> {
+  private groupOperations(operations: unknown[]): Map<string, any[]> {
     const groups = new Map<string, any[]>();
 
     for (const op of operations) {
@@ -369,7 +369,7 @@ export class OptimizedTaskMasterService {
     operation: string,
     repositoryPath: string,
     options: any
-  ): Promise<any> {
+  ): Promise<unknown> {
     // Simulate command execution
     await new Promise(resolve =>
       setTimeout(resolve, 100 + Math.random() * 200)
@@ -383,7 +383,7 @@ export class OptimizedTaskMasterService {
     };
   }
 
-  private async optimizeCache(): Promise<any> {
+  private async optimizeCache(): Promise<unknown> {
     const beforeStats = this.cache.getStatistics();
     const cleanedCount = this.cache.cleanup();
     const afterStats = this.cache.getStatistics();
@@ -396,7 +396,7 @@ export class OptimizedTaskMasterService {
     };
   }
 
-  private async optimizeConnections(): Promise<any> {
+  private async optimizeConnections(): Promise<unknown> {
     await this.connectionPool.performHealthCheck();
     return this.connectionPool.getStatistics();
   }

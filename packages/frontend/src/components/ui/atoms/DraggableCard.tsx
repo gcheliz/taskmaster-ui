@@ -12,7 +12,7 @@ export interface DraggableCardProps extends Omit<CardProps, 'draggable'> {
   /**
    * Data to pass when dragging
    */
-  data?: Record<string, any>
+  data?: Record<string, unknown>
   /**
    * Disable drag functionality
    * @default false

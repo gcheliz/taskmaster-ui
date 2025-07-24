@@ -25,7 +25,7 @@ export interface BatchItem<T = any, R = any> {
   retryCount: number;
   resolve: (result: R) => void;
   reject: (error: Error) => void;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 // Batch Processor Interface
@@ -101,7 +101,7 @@ export class AdvancedBatchProcessor<T, R> extends EventEmitter {
   async add(
     data: T,
     priority: number = 0,
-    metadata?: Record<string, any>
+    metadata?: Record<string, unknown>
   ): Promise<R> {
     return new Promise((resolve, reject) => {
       const item: BatchItem<T, R> = {
@@ -445,10 +445,10 @@ export class AdvancedBatchProcessor<T, R> extends EventEmitter {
 export class TaskMasterBatchProcessor implements BatchProcessor<any, any> {
   constructor(private cliService: any) {}
 
-  async process(items: any[]): Promise<any[]> {
+  async process(items: unknown[]): Promise<any[]> {
     // Group items by operation type for optimal batching
     const groupedItems = this.groupByOperation(items);
-    const results: any[] = [];
+    const results: unknown[] = [];
 
     for (const [operation, operationItems] of groupedItems.entries()) {
       try {
@@ -491,7 +491,7 @@ export class TaskMasterBatchProcessor implements BatchProcessor<any, any> {
     return baseSize * multiplier;
   }
 
-  private groupByOperation(items: any[]): Map<string, any[]> {
+  private groupByOperation(items: unknown[]): Map<string, any[]> {
     const grouped = new Map<string, any[]>();
 
     for (const item of items) {
@@ -507,7 +507,7 @@ export class TaskMasterBatchProcessor implements BatchProcessor<any, any> {
 
   private async processOperationBatch(
     operation: string,
-    items: any[]
+    items: unknown[]
   ): Promise<any[]> {
     // Implement operation-specific batch processing
     switch (operation) {
@@ -523,7 +523,7 @@ export class TaskMasterBatchProcessor implements BatchProcessor<any, any> {
     }
   }
 
-  private async processList(items: any[]): Promise<any[]> {
+  private async processList(items: unknown[]): Promise<any[]> {
     // Batch multiple list requests efficiently
     const uniqueRepositories = [
       ...new Set(items.map(item => item.repositoryPath)),
@@ -545,7 +545,7 @@ export class TaskMasterBatchProcessor implements BatchProcessor<any, any> {
     return items.map(item => repositoryResults.get(item.repositoryPath));
   }
 
-  private async processShow(items: any[]): Promise<any[]> {
+  private async processShow(items: unknown[]): Promise<any[]> {
     // Batch show requests by repository
     const results = [];
     const repositoryItems = this.groupItemsByRepository(items);
@@ -580,12 +580,12 @@ export class TaskMasterBatchProcessor implements BatchProcessor<any, any> {
     return results;
   }
 
-  private async processStatus(items: any[]): Promise<any[]> {
+  private async processStatus(items: unknown[]): Promise<any[]> {
     // Similar to list but for status requests
     return this.processList(items);
   }
 
-  private async processSingle(item: any): Promise<any> {
+  private async processSingle(item: any): Promise<unknown> {
     // Fallback for individual processing
     try {
       return await this.cliService.executeCommand(
@@ -598,7 +598,7 @@ export class TaskMasterBatchProcessor implements BatchProcessor<any, any> {
     }
   }
 
-  private groupItemsByRepository(items: any[]): Map<string, any[]> {
+  private groupItemsByRepository(items: unknown[]): Map<string, any[]> {
     const grouped = new Map<string, any[]>();
 
     for (const item of items) {

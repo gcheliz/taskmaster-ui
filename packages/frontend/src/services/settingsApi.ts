@@ -3,6 +3,7 @@ import type { IntegrationsSettingsData } from '../components/Settings/Integratio
 import type { NotificationSettingsData } from '../components/Settings/NotificationSettings'
 import type { SecuritySettingsData } from '../components/Settings/SecuritySettings'
 import type { AppearanceSettingsData } from '../components/Settings/AppearanceSettings'
+import { logger } from '../utils/logger'
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001'
 
@@ -31,13 +32,13 @@ export interface UserSettings {
   pushNotifications?: boolean
   slackNotifications?: boolean
   desktopNotifications?: boolean
-  notificationSettings?: any
+  notificationSettings?: Record<string, unknown>
   // Integration settings
-  integrationSettings?: any
+  integrationSettings?: Record<string, unknown>
   // Security settings
   twoFactorEnabled?: boolean
   loginNotifications?: boolean
-  securitySettings?: any
+  securitySettings?: Record<string, unknown>
   // Dashboard preferences
   dashboardLayout?: string
   cardsPerRow?: number
@@ -51,14 +52,14 @@ export interface UserSettings {
   updatedAt: string
 }
 
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean
   data?: T
   message?: string
   error?: {
     code: string
     message: string
-    details?: any[]
+    details?: unknown[]
   }
 }
 
@@ -99,7 +100,7 @@ class SettingsApiService {
 
       return data
     } catch (error) {
-      console.error('Settings API error:', error)
+      logger.error('Settings API error:', error)
       throw error
     }
   }
@@ -132,7 +133,7 @@ class SettingsApiService {
   /**
    * Update specific settings category
    */
-  async updateCategory(category: SettingsCategory, data: any): Promise<UserSettings> {
+  async updateCategory(category: SettingsCategory, data: Record<string, unknown>): Promise<UserSettings> {
     const response = await this.makeRequest<UserSettings>('/category', {
       method: 'PUT',
       body: JSON.stringify({ category, data }),
@@ -146,7 +147,7 @@ class SettingsApiService {
   /**
    * Get settings for specific category
    */
-  async getCategorySettings(category: SettingsCategory): Promise<any> {
+  async getCategorySettings(category: SettingsCategory): Promise<unknown> {
     const response = await this.makeRequest(`/${category}`)
     if (!response.success || !response.data) {
       throw new Error(`Failed to fetch ${category} settings`)

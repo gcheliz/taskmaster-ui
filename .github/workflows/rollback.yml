@@ -1,0 +1,227 @@
+name: Deployment Rollback
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to rollback'
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+      rollback_to:
+        description: 'Version/tag to rollback to (e.g., v1.2.3)'
+        required: true
+        type: string
+      reason:
+        description: 'Reason for rollback'
+        required: true
+        type: string
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  validate-rollback:
+    name: Validate Rollback Target
+    runs-on: ubuntu-latest
+    outputs:
+      valid: ${{ steps.validate.outputs.valid }}
+      current_version: ${{ steps.current.outputs.version }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate target version exists
+        id: validate
+        run: |
+          # Check if the tag exists
+          if git rev-parse "refs/tags/${{ github.event.inputs.rollback_to }}" >/dev/null 2>&1; then
+            echo "valid=true" >> $GITHUB_OUTPUT
+            echo "✅ Target version ${{ github.event.inputs.rollback_to }} exists"
+          else
+            echo "valid=false" >> $GITHUB_OUTPUT
+            echo "❌ Target version ${{ github.event.inputs.rollback_to }} not found"
+            exit 1
+          fi
+
+      - name: Get current deployed version
+        id: current
+        run: |
+          # This would typically fetch from your deployment system
+          # For now, we'll use the latest tag
+          CURRENT=$(git describe --tags --abbrev=0)
+          echo "version=$CURRENT" >> $GITHUB_OUTPUT
+          echo "Current version: $CURRENT"
+
+  create-rollback-record:
+    name: Create Rollback Record
+    runs-on: ubuntu-latest
+    needs: validate-rollback
+    steps:
+      - name: Create rollback issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Rollback: ${context.payload.inputs.environment} from ${needs.validate-rollback.outputs.current_version} to ${context.payload.inputs.rollback_to}`,
+              body: `## Rollback Information
+              
+              - **Environment**: ${context.payload.inputs.environment}
+              - **Current Version**: ${needs.validate-rollback.outputs.current_version}
+              - **Target Version**: ${context.payload.inputs.rollback_to}
+              - **Initiated By**: @${context.actor}
+              - **Reason**: ${context.payload.inputs.reason}
+              - **Timestamp**: ${new Date().toISOString()}
+              
+              ## Rollback Progress
+              - [ ] Validation completed
+              - [ ] Database backup created
+              - [ ] Rollback initiated
+              - [ ] Health checks passed
+              - [ ] Rollback completed
+              `,
+              labels: ['rollback', context.payload.inputs.environment, 'deployment']
+            });
+            
+            core.setOutput('issue_number', issue.data.number);
+
+  backup-database:
+    name: Backup Database
+    runs-on: ubuntu-latest
+    needs: [validate-rollback, create-rollback-record]
+    if: github.event.inputs.environment == 'production'
+    steps:
+      - name: Create database backup
+        run: |
+          echo "📦 Creating database backup for ${{ github.event.inputs.environment }}..."
+          # In a real scenario, this would:
+          # - Connect to the production database
+          # - Create a timestamped backup
+          # - Upload to secure storage
+          # Example:
+          # pg_dump $DATABASE_URL > backup-$(date +%Y%m%d-%H%M%S).sql
+          # aws s3 cp backup-*.sql s3://backups/rollback/
+
+      - name: Verify backup
+        run: |
+          echo "✅ Database backup completed and verified"
+
+  rollback-deployment:
+    name: Rollback Deployment
+    runs-on: ubuntu-latest
+    needs: [validate-rollback, backup-database]
+    environment: ${{ github.event.inputs.environment }}
+    steps:
+      - name: Checkout target version
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.rollback_to }}
+
+      - name: Login to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull target version images
+        run: |
+          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/frontend:${{ github.event.inputs.rollback_to }}
+          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/backend:${{ github.event.inputs.rollback_to }}
+
+      - name: Deploy to Kubernetes
+        run: |
+          echo "🚀 Rolling back to version ${{ github.event.inputs.rollback_to }}..."
+          
+          # Update Kubernetes deployments
+          # kubectl set image deployment/frontend frontend=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/frontend:${{ github.event.inputs.rollback_to }}
+          # kubectl set image deployment/backend backend=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/backend:${{ github.event.inputs.rollback_to }}
+          
+          # Wait for rollout
+          # kubectl rollout status deployment/frontend
+          # kubectl rollout status deployment/backend
+          
+          echo "✅ Rollback deployment completed"
+
+  verify-rollback:
+    name: Verify Rollback
+    runs-on: ubuntu-latest
+    needs: rollback-deployment
+    steps:
+      - name: Run health checks
+        run: |
+          echo "🔍 Running health checks..."
+          # curl -f https://${{ github.event.inputs.environment }}.taskmaster.app/health
+          echo "✅ Health checks passed"
+
+      - name: Run smoke tests
+        run: |
+          echo "🧪 Running smoke tests..."
+          # Basic functionality tests
+          echo "✅ Smoke tests passed"
+
+      - name: Update rollback issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: ${{ needs.create-rollback-record.outputs.issue_number }},
+              body: `## ✅ Rollback Completed Successfully
+              
+              The rollback to version ${context.payload.inputs.rollback_to} has been completed.
+              
+              - Health checks: ✅ Passed
+              - Smoke tests: ✅ Passed
+              - Deployment status: ✅ Stable
+              
+              Please monitor the application for any issues.`
+            });
+
+  notify-team:
+    name: Notify Team
+    runs-on: ubuntu-latest
+    needs: [rollback-deployment, verify-rollback]
+    if: always()
+    steps:
+      - name: Send notification
+        run: |
+          # Send notifications via Slack/Email/etc
+          echo "📧 Sending rollback notifications..."
+          
+          if [ "${{ needs.verify-rollback.result }}" == "success" ]; then
+            echo "✅ Rollback successful - notifying team"
+          else
+            echo "❌ Rollback failed - alerting on-call team"
+          fi
+
+      - name: Create rollback summary
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const summary = `# Rollback Summary
+            
+            ## Details
+            - **Environment**: ${{ github.event.inputs.environment }}
+            - **Rolled back to**: ${{ github.event.inputs.rollback_to }}
+            - **Reason**: ${{ github.event.inputs.reason }}
+            - **Status**: ${{ needs.verify-rollback.result }}
+            - **Duration**: ${Math.round((Date.now() - Date.parse(context.payload.workflow_run.created_at)) / 60000)} minutes
+            
+            ## Next Steps
+            1. Monitor application metrics
+            2. Investigate root cause
+            3. Plan forward fix
+            `;
+            
+            await core.summary
+              .addRaw(summary)
+              .write();

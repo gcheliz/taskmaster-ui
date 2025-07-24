@@ -31,12 +31,21 @@ pnpm run dev
 
 ## 📚 Documentation
 
+### Project Documentation
+- **[Project Organization](./docs/development/project-organization.md)** - Directory structure and organization
 - **[Development Guide](./docs/development.md)** - Setup, commands, and development workflow
 - **[Architecture](./docs/architecture.md)** - System design and technical overview
+- **[API Documentation](./docs/api/)** - API endpoints and specifications
+- **[UI Mockups](./docs/ui-mockups/)** - Design mockups and prototypes
+
+### Deployment & Operations
 - **[Docker Setup](./docs/docker-setup.md)** - Docker deployment and containerization
 - **[Production Secrets](./docs/production-secrets.md)** - Security and secrets management
+- **[Deployment Guide](./docs/deployment/)** - Production deployment instructions
+
+### User Documentation
+- **[User Guide](./docs/user-guides/)** - End-user documentation
 - **[Project Status](./docs/project-status.md)** - Current progress and roadmap
-- **[User Guide](./docs/user-guide/README.md)** - End-user documentation
 - **[Contributing](./CONTRIBUTING.md)** - How to contribute to the project
 
 ## 🎯 Key Features

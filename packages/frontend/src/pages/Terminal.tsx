@@ -401,7 +401,7 @@ const Terminal: React.FC = () => {
         </div>
 
         {/* Session Tabs */}
-        <div className="bg-white rounded-xl border border-gray-200 p-2 flex items-center gap-2 overflow-x-auto">
+        <div className="bg-white rounded-xl border border-gray-200 p-2 flex items-center gap-2 overflow-x-auto scrollbar-thin">
           {sessions.map((session) => (
             <button
               key={session.id}
@@ -482,7 +482,7 @@ const Terminal: React.FC = () => {
           {/* Terminal Content */}
           <div
             ref={terminalRef}
-            className="p-4 h-[calc(100%-3.5rem)] overflow-y-auto font-mono text-sm bg-gray-900"
+            className="p-4 h-[calc(100%-3.5rem)] overflow-y-auto font-mono text-sm bg-gray-900 scrollbar-terminal"
             style={{ minHeight: '400px' }}
           >
             {commandHistory.map((entry, index) => (

@@ -135,7 +135,7 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
       </header>
 
       <div
-        className="flex-1 overflow-y-auto"
+        className="flex-1 overflow-y-auto scrollbar-kanban"
         role="group"
         aria-labelledby={`column-title-${status}`}
       >
@@ -163,7 +163,7 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
           </div>
         ) : (
           <div
-            className="space-y-3 overflow-y-auto"
+            className="space-y-3 overflow-y-auto scrollbar-kanban"
             role="group"
             aria-label={`${taskCount} task${taskCount !== 1 ? 's' : ''} in ${title.toLowerCase()}`}
           >

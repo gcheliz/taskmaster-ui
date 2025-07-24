@@ -34,7 +34,7 @@ const modalTitleVariants = cva('text-lg font-semibold leading-none tracking-tigh
 
 const modalDescriptionVariants = cva('text-sm text-secondary-600')
 
-const modalBodyVariants = cva('flex-1 overflow-y-auto')
+const modalBodyVariants = cva('flex-1 overflow-y-auto scrollbar-modal')
 
 const modalFooterVariants = cva(
   'flex flex-col space-y-2 sm:flex-row-reverse sm:space-y-0 sm:space-x-2 sm:space-x-reverse sm:justify-start pt-4 border-t border-secondary-100'

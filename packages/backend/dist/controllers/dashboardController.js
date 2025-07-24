@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.dashboardController = exports.DashboardController = void 0;
 const child_process_1 = require("child_process");
+const winston_adapter_1 = require("../utils/winston-adapter");
 const fs_1 = require("fs");
 const path_1 = __importDefault(require("path"));
 const util_1 = require("util");
@@ -68,7 +69,7 @@ class DashboardController {
             });
         }
         catch (error) {
-            console.error('Dashboard data aggregation error:', error);
+            winston_adapter_1.logger.error('Dashboard data aggregation error:', error);
             res.status(500).json({
                 success: false,
                 error: {
@@ -155,7 +156,7 @@ class DashboardController {
             });
         }
         catch (error) {
-            console.warn('Failed to get Git activity:', error);
+            winston_adapter_1.logger.warn('Failed to get Git activity:', error);
             return [];
         }
     }

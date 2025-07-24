@@ -8,6 +8,7 @@ exports.validateProductionSecrets = validateProductionSecrets;
 exports.logConfiguration = logConfiguration;
 const dotenv_1 = __importDefault(require("dotenv"));
 const zod_1 = require("zod");
+const bootstrap_logger_1 = require("../utils/bootstrap-logger");
 // Load environment variables
 dotenv_1.default.config();
 // Environment validation schema
@@ -77,10 +78,10 @@ function validateEnvironment() {
         return environmentSchema.parse(process.env);
     }
     catch (error) {
-        console.error('❌ Environment validation failed:');
+        bootstrap_logger_1.configLogger.error('❌ Environment validation failed:');
         if (error instanceof zod_1.z.ZodError) {
             error.issues.forEach((err) => {
-                console.error(`  - ${err.path.join('.')}: ${err.message}`);
+                bootstrap_logger_1.configLogger.error(`  - ${err.path.join('.')}: ${err.message}`);
             });
         }
         process.exit(1);
@@ -133,7 +134,7 @@ function generateSecretKey() {
     const crypto = require('crypto');
     const key = crypto.randomBytes(32).toString('hex');
     if (exports.env.NODE_ENV === 'production') {
-        console.warn('⚠️  Using auto-generated secret key. Set JWT_SECRET/ENCRYPTION_KEY in production!');
+        bootstrap_logger_1.configLogger.warn('⚠️  Using auto-generated secret key. Set JWT_SECRET/ENCRYPTION_KEY in production!');
     }
     return key;
 }
@@ -145,11 +146,11 @@ function validateProductionSecrets() {
     const requiredSecrets = ['JWT_SECRET', 'ENCRYPTION_KEY', 'DATABASE_URL'];
     const missingSecrets = requiredSecrets.filter(secret => !process.env[secret] || process.env[secret]?.length === 0);
     if (missingSecrets.length > 0) {
-        console.error('❌ Missing required production secrets:');
+        bootstrap_logger_1.configLogger.error('❌ Missing required production secrets:');
         missingSecrets.forEach(secret => {
-            console.error(`  - ${secret}`);
+            bootstrap_logger_1.configLogger.error(`  - ${secret}`);
         });
-        console.error('Please set these environment variables before starting the application.');
+        bootstrap_logger_1.configLogger.error('Please set these environment variables before starting the application.');
         process.exit(1);
     }
     // Validate secret strength
@@ -158,13 +159,13 @@ function validateProductionSecrets() {
         return value && value.length < 32;
     });
     if (weakSecrets.length > 0) {
-        console.error('❌ Weak secrets detected (must be at least 32 characters):');
+        bootstrap_logger_1.configLogger.error('❌ Weak secrets detected (must be at least 32 characters):');
         weakSecrets.forEach(secret => {
-            console.error(`  - ${secret}: ${process.env[secret]?.length} characters`);
+            bootstrap_logger_1.configLogger.error(`  - ${secret}: ${process.env[secret]?.length} characters`);
         });
         process.exit(1);
     }
-    console.log('✅ Production secrets validation passed');
+    bootstrap_logger_1.configLogger.log('✅ Production secrets validation passed');
 }
 // Log configuration (without sensitive data)
 function logConfiguration() {
@@ -177,7 +178,7 @@ function logConfiguration() {
         connectionPoolSize: exports.env.CONNECTION_POOL_SIZE,
         queryTimeout: exports.env.QUERY_TIMEOUT,
     };
-    console.log('📋 Application Configuration:');
-    console.log(JSON.stringify(safeConfig, null, 2));
+    bootstrap_logger_1.configLogger.log('📋 Application Configuration:');
+    bootstrap_logger_1.configLogger.log(JSON.stringify(safeConfig, null, 2));
 }
 //# sourceMappingURL=environment.js.map

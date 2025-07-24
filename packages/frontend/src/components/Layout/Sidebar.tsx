@@ -59,7 +59,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onClose, isColl
 
 
           {/* Navigation */}
-          <nav ref={navRef} className="flex-1 p-4 space-y-1 overflow-y-auto" role="menu" aria-label="Main navigation">
+          <nav ref={navRef} className="flex-1 p-4 space-y-1 overflow-y-auto scrollbar-minimal" role="menu" aria-label="Main navigation">
             {menuItems.map((item) => {
               const Icon = item.icon
               const active = isActive(item.path)

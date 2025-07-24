@@ -177,7 +177,7 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({
           )}
 
           {/* Tasks Container */}
-          <div className="flex-1 space-y-3 overflow-y-auto">
+          <div className="flex-1 space-y-3 overflow-y-auto scrollbar-kanban">
             {tasks.length === 0 ? (
               <div className="flex-1 flex items-center justify-center py-8">
                 <div className="text-center">

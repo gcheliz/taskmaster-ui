@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./styles/performance.css";
+@import "./styles/scrollbars.css";
 
 /* Reset link styles for navigation */
 a[role="menuitem"] {
@@ -18,30 +19,6 @@ a[role="menuitem"]:focus {
   text-decoration: none !important;
 }
 
-/* Custom scrollbar styles */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 8px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.05);
-  border-radius: 4px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.3);
-}
-
-/* Firefox scrollbar */
-.custom-scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.05);
-}
 
 /* Skeleton wave animation */
 @keyframes skeleton-wave {

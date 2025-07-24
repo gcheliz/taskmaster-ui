@@ -226,7 +226,7 @@ export const GitSyncIndicator: React.FC<GitSyncIndicatorProps> = ({
           <h4 className="text-sm font-medium text-slate-700 dark:text-slate-300">
             Recent Git Events
           </h4>
-          <div className="space-y-1 max-h-48 overflow-y-auto">
+          <div className="space-y-1 max-h-48 overflow-y-auto scrollbar-thin">
             {eventLog.map(event => (
               <div
                 key={event.id}

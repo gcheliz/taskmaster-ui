@@ -266,7 +266,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6">
+        <div className="flex-1 overflow-y-auto scrollbar-modal p-6">
           {error && (
             <div className="flex items-center gap-3 p-4 mb-6 bg-red-50 border border-red-200 rounded-lg">
               <span className="text-red-500" aria-hidden="true">

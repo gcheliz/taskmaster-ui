@@ -21,6 +21,7 @@ const settingsRoutes_1 = __importDefault(require("./routes/settingsRoutes"));
 const errorHandler_1 = require("./middleware/errorHandler");
 const database_1 = __importDefault(require("./services/database"));
 const environment_1 = require("./config/environment");
+const winston_adapter_1 = require("./utils/winston-adapter");
 // Validate environment and secrets
 (0, environment_1.validateProductionSecrets)();
 (0, environment_1.logConfiguration)();
@@ -30,10 +31,10 @@ const initializeDatabase = async () => {
     try {
         await database_1.default.connect();
         await database_1.default.initializeSchema();
-        console.log('Database initialized successfully');
+        winston_adapter_1.logger.info('Database initialized successfully');
     }
     catch (error) {
-        console.error('Failed to initialize database:', error);
+        winston_adapter_1.logger.error('Failed to initialize database:', error);
         process.exit(1);
     }
 };

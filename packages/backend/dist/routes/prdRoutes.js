@@ -146,7 +146,6 @@ const router = express_1.default.Router();
  */
 router.post('/analyze', 
 // rateLimiter.createLimiter({ windowMs: 60000, maxRequests: 10 }), // 10 requests per minute
-// validatePrdAnalysisRequest,
 async (req, res) => {
     await prdController_1.prdController.analyzePrd(req, res);
 });

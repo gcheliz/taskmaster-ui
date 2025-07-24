@@ -8,6 +8,7 @@ const passport_google_oauth20_1 = require("passport-google-oauth20");
 const passport_github2_1 = require("passport-github2");
 const authService_1 = __importDefault(require("../services/authService"));
 const environment_1 = require("./environment");
+const bootstrap_logger_1 = require("../utils/bootstrap-logger");
 // User serialization for session
 passport_1.default.serializeUser((user, done) => {
     done(null, user.id);
@@ -61,7 +62,7 @@ if (environment_1.env.GOOGLE_CLIENT_ID && environment_1.env.GOOGLE_CLIENT_SECRET
     }));
 }
 else {
-    console.warn('Google OAuth not configured - missing GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET');
+    bootstrap_logger_1.securityLogger.warn('Google OAuth not configured - missing GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET');
 }
 // GitHub OAuth Strategy
 if (environment_1.env.GITHUB_CLIENT_ID && environment_1.env.GITHUB_CLIENT_SECRET) {
@@ -91,7 +92,7 @@ if (environment_1.env.GITHUB_CLIENT_ID && environment_1.env.GITHUB_CLIENT_SECRET
     }));
 }
 else {
-    console.warn('GitHub OAuth not configured - missing GITHUB_CLIENT_ID or GITHUB_CLIENT_SECRET');
+    bootstrap_logger_1.securityLogger.warn('GitHub OAuth not configured - missing GITHUB_CLIENT_ID or GITHUB_CLIENT_SECRET');
 }
 exports.default = passport_1.default;
 //# sourceMappingURL=passport.js.map

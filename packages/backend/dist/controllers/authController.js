@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const authService_1 = __importDefault(require("../services/authService"));
 const environment_1 = require("../config/environment");
+const winston_adapter_1 = require("../utils/winston-adapter");
 class AuthController {
     /**
      * Register a new user with email and password
@@ -49,7 +50,7 @@ class AuthController {
             });
         }
         catch (error) {
-            console.error('Registration error:', error);
+            winston_adapter_1.logger.error('Registration error:', error);
             const message = error instanceof Error ? error.message : 'Registration failed';
             const statusCode = message.includes('already exists') ? 409 : 500;
             res.status(statusCode).json({
@@ -89,7 +90,7 @@ class AuthController {
             });
         }
         catch (error) {
-            console.error('Login error:', error);
+            winston_adapter_1.logger.error('Login error:', error);
             const message = error instanceof Error ? error.message : 'Login failed';
             res.status(401).json({
                 success: false,
@@ -122,7 +123,7 @@ class AuthController {
             });
         }
         catch (error) {
-            console.error('Password validation error:', error);
+            winston_adapter_1.logger.error('Password validation error:', error);
             res.status(500).json({
                 success: false,
                 error: {
@@ -153,7 +154,7 @@ class AuthController {
             });
         }
         catch (error) {
-            console.error('Profile fetch error:', error);
+            winston_adapter_1.logger.error('Profile fetch error:', error);
             res.status(500).json({
                 success: false,
                 error: {
@@ -180,7 +181,7 @@ class AuthController {
             res.redirect(redirectUrl.toString());
         }
         catch (error) {
-            console.error('OAuth success error:', error);
+            winston_adapter_1.logger.error('OAuth success error:', error);
             res.redirect(`${environment_1.env.CLIENT_URL}/auth?error=oauth_callback_failed`);
         }
     }
@@ -188,7 +189,7 @@ class AuthController {
      * OAuth failure callback
      */
     static async oauthFailure(req, res) {
-        console.error('OAuth failure:', req.query);
+        winston_adapter_1.logger.error('OAuth failure:', req.query);
         res.redirect(`${environment_1.env.CLIENT_URL}/auth?error=oauth_failed`);
     }
     /**
@@ -199,7 +200,7 @@ class AuthController {
             // For session-based auth
             req.logout(err => {
                 if (err) {
-                    console.error('Logout error:', err);
+                    winston_adapter_1.logger.error('Logout error:', err);
                 }
             });
             res.json({
@@ -208,7 +209,7 @@ class AuthController {
             });
         }
         catch (error) {
-            console.error('Logout error:', error);
+            winston_adapter_1.logger.error('Logout error:', error);
             res.status(500).json({
                 success: false,
                 error: {

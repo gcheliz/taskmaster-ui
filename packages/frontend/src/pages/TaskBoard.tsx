@@ -527,7 +527,7 @@ const TaskBoard: React.FC = () => {
               </div>
               <div className="w-32 h-8 bg-gray-200 rounded-lg animate-pulse"></div>
             </div>
-            <div className="flex space-x-6 overflow-x-auto">
+            <div className="flex space-x-6 overflow-x-auto scrollbar-thin">
               {[1, 2, 3, 4, 5].map((col) => (
                 <div key={col} className="flex-shrink-0 w-80">
                   <div className="bg-gray-100 rounded-t-lg p-4 border-b border-gray-200">
@@ -614,7 +614,7 @@ const TaskBoard: React.FC = () => {
                   {/* Assignee Filter */}
                   <div className="mb-4">
                     <h4 className="text-sm font-medium text-gray-700 mb-2">Assignee</h4>
-                    <div className="space-y-1 max-h-32 overflow-y-auto">
+                    <div className="space-y-1 max-h-32 overflow-y-auto scrollbar-thin">
                       {getUniqueAssignees().map(assignee => (
                         <label key={assignee} className="flex items-center cursor-pointer hover:bg-gray-50 p-1 rounded">
                           <input
@@ -749,7 +749,7 @@ const TaskBoard: React.FC = () => {
           onDragOver={handleDragOver}
           onDragEnd={handleDragEnd}
         >
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto scrollbar-thin">
             <div className="flex space-x-6 pb-6" style={{ minWidth: '1200px' }}>
               {columns.map((column) => (
                 <DroppableColumn key={column.id} column={column} />

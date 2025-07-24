@@ -47,6 +47,7 @@ exports.getSSLCertificateInfo = getSSLCertificateInfo;
 exports.checkSSLCertificateExpiration = checkSSLCertificateExpiration;
 const fs = __importStar(require("fs"));
 const environment_1 = require("./environment");
+const bootstrap_logger_1 = require("../utils/bootstrap-logger");
 /**
  * Validate SSL certificate file
  */
@@ -183,23 +184,23 @@ function validateSSLConfiguration() {
 function enforceSSLConfiguration() {
     const validation = validateSSLConfiguration();
     if (!validation.valid) {
-        console.error('❌ SSL Configuration Validation Failed:');
+        bootstrap_logger_1.sslLogger.error('❌ SSL Configuration Validation Failed:');
         validation.errors.forEach(error => {
-            console.error(`  - ${error}`);
+            bootstrap_logger_1.sslLogger.error(`  - ${error}`);
         });
         if (environment_1.env.NODE_ENV === 'production') {
-            console.error('SSL configuration errors are fatal in production');
+            bootstrap_logger_1.sslLogger.error('SSL configuration errors are fatal in production');
             process.exit(1);
         }
     }
     if (validation.warnings.length > 0) {
-        console.warn('⚠️  SSL Configuration Warnings:');
+        bootstrap_logger_1.sslLogger.warn('⚠️  SSL Configuration Warnings:');
         validation.warnings.forEach(warning => {
-            console.warn(`  - ${warning}`);
+            bootstrap_logger_1.sslLogger.warn(`  - ${warning}`);
         });
     }
     if (validation.configuration.enabled) {
-        console.log('🔒 SSL/TLS encryption enabled for database connections');
+        bootstrap_logger_1.sslLogger.info('🔒 SSL/TLS encryption enabled for database connections');
     }
     return validation.configuration;
 }

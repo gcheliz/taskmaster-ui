@@ -9,6 +9,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PerformanceController = void 0;
+const winston_adapter_1 = require("../utils/winston-adapter");
 const database_1 = require("../services/database");
 const queryAnalyzer_1 = __importDefault(require("../services/queryAnalyzer"));
 class PerformanceController {
@@ -25,7 +26,7 @@ class PerformanceController {
             });
         }
         catch (error) {
-            console.error('Error getting query analysis:', error);
+            winston_adapter_1.logger.error('Error getting query analysis:', error);
             res.status(500).json({
                 success: false,
                 error: 'Failed to get query analysis',
@@ -45,7 +46,7 @@ class PerformanceController {
             });
         }
         catch (error) {
-            console.error('Error clearing logs:', error);
+            winston_adapter_1.logger.error('Error clearing logs:', error);
             res.status(500).json({
                 success: false,
                 error: 'Failed to clear logs',
@@ -63,7 +64,7 @@ class PerformanceController {
             database_1.DatabaseService.getInstance().exportQueryLogs(outputPath);
             res.download(outputPath, filename, err => {
                 if (err) {
-                    console.error('Error downloading file:', err);
+                    winston_adapter_1.logger.error('Error downloading file:', err);
                     res.status(500).json({
                         success: false,
                         error: 'Failed to download logs',
@@ -72,7 +73,7 @@ class PerformanceController {
             });
         }
         catch (error) {
-            console.error('Error exporting logs:', error);
+            winston_adapter_1.logger.error('Error exporting logs:', error);
             res.status(500).json({
                 success: false,
                 error: 'Failed to export logs',
@@ -110,7 +111,7 @@ class PerformanceController {
             });
         }
         catch (error) {
-            console.error('Error getting connection info:', error);
+            winston_adapter_1.logger.error('Error getting connection info:', error);
             res.status(500).json({
                 success: false,
                 error: 'Failed to get connection info',
@@ -206,7 +207,7 @@ class PerformanceController {
             });
         }
         catch (error) {
-            console.error('Error running performance test:', error);
+            winston_adapter_1.logger.error('Error running performance test:', error);
             res.status(500).json({
                 success: false,
                 error: 'Performance test failed',
@@ -278,7 +279,7 @@ class PerformanceController {
             });
         }
         catch (error) {
-            console.error('Error analyzing slow queries:', error);
+            winston_adapter_1.logger.error('Error analyzing slow queries:', error);
             res.status(500).json({
                 success: false,
                 error: 'Failed to analyze slow queries',
@@ -349,7 +350,7 @@ class PerformanceController {
             });
         }
         catch (error) {
-            console.error('Error toggling analysis:', error);
+            winston_adapter_1.logger.error('Error toggling analysis:', error);
             res.status(500).json({
                 success: false,
                 error: 'Failed to toggle analysis',

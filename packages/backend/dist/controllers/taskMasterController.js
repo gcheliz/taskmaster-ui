@@ -3,6 +3,7 @@
 // Demonstrates: Clean architecture, dependency injection, comprehensive error handling
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TaskMasterController = void 0;
+const winston_adapter_1 = require("../utils/winston-adapter");
 // Main Controller Implementation
 class TaskMasterController {
     constructor(taskMasterService, webSocketService) {
@@ -448,7 +449,7 @@ class TaskMasterController {
     }
     // Helper Methods
     async handleError(error, req, res, operation) {
-        console.error(`Error in ${operation} for request ${req.requestId}:`, error);
+        winston_adapter_1.logger.error(`Error in ${operation} for request ${req.requestId}:`, error);
         // Emit error event
         this.emitWebSocketEvent('command:error', {
             requestId: req.requestId,

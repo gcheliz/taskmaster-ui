@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SettingsController = void 0;
 const zod_1 = require("zod");
+const winston_adapter_1 = require("../utils/winston-adapter");
 const settingsService_1 = __importDefault(require("../services/settingsService"));
 // Validation schemas
 const updateSettingsSchema = zod_1.z.object({
@@ -30,13 +31,13 @@ const updateSettingsSchema = zod_1.z.object({
     pushNotifications: zod_1.z.boolean().optional(),
     slackNotifications: zod_1.z.boolean().optional(),
     desktopNotifications: zod_1.z.boolean().optional(),
-    notificationSettings: zod_1.z.any().optional(),
+    notificationSettings: zod_1.z.record(zod_1.z.unknown()).optional(),
     // Integration settings
-    integrationSettings: zod_1.z.any().optional(),
+    integrationSettings: zod_1.z.record(zod_1.z.unknown()).optional(),
     // Security settings
     twoFactorEnabled: zod_1.z.boolean().optional(),
     loginNotifications: zod_1.z.boolean().optional(),
-    securitySettings: zod_1.z.any().optional(),
+    securitySettings: zod_1.z.record(zod_1.z.unknown()).optional(),
     // Dashboard preferences
     dashboardLayout: zod_1.z.enum(['grid', 'list']).optional(),
     cardsPerRow: zod_1.z.number().min(1).max(6).optional(),
@@ -54,7 +55,7 @@ const updateCategorySchema = zod_1.z.object({
         'integrations',
         'security',
     ]),
-    data: zod_1.z.any(),
+    data: zod_1.z.record(zod_1.z.unknown()),
 });
 class SettingsController {
     /**
@@ -79,7 +80,7 @@ class SettingsController {
             });
         }
         catch (error) {
-            console.error('Error getting settings:', error);
+            winston_adapter_1.logger.error('Error getting settings:', error);
             res.status(500).json({
                 success: false,
                 error: {
@@ -124,7 +125,7 @@ class SettingsController {
             });
         }
         catch (error) {
-            console.error('Error updating settings:', error);
+            winston_adapter_1.logger.error('Error updating settings:', error);
             res.status(500).json({
                 success: false,
                 error: {
@@ -170,7 +171,7 @@ class SettingsController {
             });
         }
         catch (error) {
-            console.error('Error updating settings category:', error);
+            winston_adapter_1.logger.error('Error updating settings category:', error);
             res.status(500).json({
                 success: false,
                 error: {
@@ -229,7 +230,7 @@ class SettingsController {
             });
         }
         catch (error) {
-            console.error('Error creating settings:', error);
+            winston_adapter_1.logger.error('Error creating settings:', error);
             res.status(500).json({
                 success: false,
                 error: {
@@ -261,7 +262,7 @@ class SettingsController {
             });
         }
         catch (error) {
-            console.error('Error deleting settings:', error);
+            winston_adapter_1.logger.error('Error deleting settings:', error);
             res.status(500).json({
                 success: false,
                 error: {
@@ -303,7 +304,7 @@ class SettingsController {
             });
         }
         catch (error) {
-            console.error('Error resetting settings:', error);
+            winston_adapter_1.logger.error('Error resetting settings:', error);
             res.status(500).json({
                 success: false,
                 error: {
@@ -405,7 +406,7 @@ class SettingsController {
             });
         }
         catch (error) {
-            console.error('Error getting category settings:', error);
+            winston_adapter_1.logger.error('Error getting category settings:', error);
             res.status(500).json({
                 success: false,
                 error: {

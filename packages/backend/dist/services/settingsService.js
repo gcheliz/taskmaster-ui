@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SettingsService = void 0;
 const client_1 = require("@prisma/client");
+const winston_adapter_1 = require("../utils/winston-adapter");
 const prisma = new client_1.PrismaClient();
 class SettingsService {
     /**
@@ -15,7 +16,7 @@ class SettingsService {
             return settings;
         }
         catch (error) {
-            console.error('Error getting user settings:', error);
+            winston_adapter_1.logger.error('Error getting user settings:', error);
             throw new Error('Failed to retrieve user settings');
         }
     }
@@ -28,12 +29,12 @@ class SettingsService {
                 where: { userId },
             });
             if (!settings) {
-                settings = (await this.createUserSettings({ userId }));
+                settings = await this.createUserSettings({ userId });
             }
             return settings;
         }
         catch (error) {
-            console.error('Error getting or creating user settings:', error);
+            winston_adapter_1.logger.error('Error getting or creating user settings:', error);
             throw new Error('Failed to retrieve or create user settings');
         }
     }
@@ -80,7 +81,7 @@ class SettingsService {
             return settings;
         }
         catch (error) {
-            console.error('Error creating user settings:', error);
+            winston_adapter_1.logger.error('Error creating user settings:', error);
             throw new Error('Failed to create user settings');
         }
     }
@@ -129,7 +130,7 @@ class SettingsService {
             return settings;
         }
         catch (error) {
-            console.error('Error updating user settings:', error);
+            winston_adapter_1.logger.error('Error updating user settings:', error);
             throw new Error('Failed to update user settings');
         }
     }
@@ -196,7 +197,7 @@ class SettingsService {
             return await this.updateUserSettings(userId, updateData);
         }
         catch (error) {
-            console.error('Error updating settings category:', error);
+            winston_adapter_1.logger.error('Error updating settings category:', error);
             throw new Error(`Failed to update ${category} settings`);
         }
     }
@@ -210,7 +211,7 @@ class SettingsService {
             });
         }
         catch (error) {
-            console.error('Error deleting user settings:', error);
+            winston_adapter_1.logger.error('Error deleting user settings:', error);
             throw new Error('Failed to delete user settings');
         }
     }
@@ -226,7 +227,7 @@ class SettingsService {
             return !!settings;
         }
         catch (error) {
-            console.error('Error checking user settings:', error);
+            winston_adapter_1.logger.error('Error checking user settings:', error);
             return false;
         }
     }
@@ -245,7 +246,7 @@ class SettingsService {
             return settings;
         }
         catch (error) {
-            console.error('Error getting users settings:', error);
+            winston_adapter_1.logger.error('Error getting users settings:', error);
             throw new Error('Failed to retrieve users settings');
         }
     }

@@ -1,0 +1,239 @@
+/* Custom Scrollbar Styles */
+
+/* Base scrollbar styles - thin and modern */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.5);
+  border-radius: 3px;
+  transition: background-color 0.2s ease;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(156, 163, 175, 0.8);
+}
+
+/* Dark theme scrollbar */
+.scrollbar-dark {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.scrollbar-dark::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.scrollbar-dark::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+.scrollbar-dark::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.scrollbar-dark::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Minimal scrollbar - almost invisible until hover */
+.scrollbar-minimal {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-minimal::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.scrollbar-minimal::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-minimal::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  border-radius: 2px;
+  transition: background-color 0.3s ease;
+}
+
+.scrollbar-minimal:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.3);
+}
+
+.scrollbar-minimal::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(156, 163, 175, 0.5);
+}
+
+/* Auto-hide scrollbar */
+.scrollbar-auto {
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  transition: scrollbar-color 0.3s ease;
+}
+
+.scrollbar-auto:hover {
+  scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+}
+
+.scrollbar-auto::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.scrollbar-auto::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-auto::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.scrollbar-auto:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.5);
+}
+
+.scrollbar-auto::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(156, 163, 175, 0.8);
+}
+
+/* Modal scrollbar - subtle and modern */
+.scrollbar-modal {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(203, 213, 225, 0.5) rgba(241, 245, 249, 0.5);
+}
+
+.scrollbar-modal::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scrollbar-modal::-webkit-scrollbar-track {
+  background: rgba(241, 245, 249, 0.5);
+  border-radius: 3px;
+}
+
+.scrollbar-modal::-webkit-scrollbar-thumb {
+  background-color: rgba(203, 213, 225, 0.5);
+  border-radius: 3px;
+  transition: background-color 0.2s ease;
+}
+
+.scrollbar-modal::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(203, 213, 225, 0.8);
+}
+
+/* Terminal scrollbar - matches dark terminal theme */
+.scrollbar-terminal {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(99, 102, 241, 0.3) rgba(31, 41, 55, 0.2);
+}
+
+.scrollbar-terminal::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.scrollbar-terminal::-webkit-scrollbar-track {
+  background: rgba(31, 41, 55, 0.2);
+  border-radius: 5px;
+}
+
+.scrollbar-terminal::-webkit-scrollbar-thumb {
+  background-color: rgba(99, 102, 241, 0.3);
+  border-radius: 5px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+  transition: background-color 0.2s ease;
+}
+
+.scrollbar-terminal::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(99, 102, 241, 0.5);
+}
+
+/* Kanban column scrollbar - minimal to save space */
+.scrollbar-kanban {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(209, 213, 219, 0.5) transparent;
+}
+
+.scrollbar-kanban::-webkit-scrollbar {
+  width: 4px;
+}
+
+.scrollbar-kanban::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-kanban::-webkit-scrollbar-thumb {
+  background-color: rgba(209, 213, 219, 0.5);
+  border-radius: 2px;
+  transition: all 0.2s ease;
+}
+
+.scrollbar-kanban:hover::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-kanban::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(156, 163, 175, 0.8);
+}
+
+/* Hide scrollbar but keep functionality */
+.scrollbar-hidden {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+
+/* Global scrollbar override for the application */
+body {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.5) rgba(249, 250, 251, 0.5);
+}
+
+body::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+body::-webkit-scrollbar-track {
+  background: rgba(249, 250, 251, 0.5);
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.5);
+  border-radius: 6px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+  transition: background-color 0.2s ease;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(107, 114, 128, 0.8);
+}
+
+body::-webkit-scrollbar-corner {
+  background: rgba(249, 250, 251, 0.5);
+}

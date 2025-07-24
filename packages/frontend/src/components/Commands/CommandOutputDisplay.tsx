@@ -61,7 +61,7 @@ export const CommandOutputDisplay: React.FC<CommandOutputDisplayProps> = ({
         {result.stdout && (
           <div>
             <h4 className="text-sm font-medium text-secondary-700 mb-2">Standard Output</h4>
-            <div className="bg-secondary-50 rounded-md p-3 font-mono text-sm overflow-x-auto">
+            <div className="bg-secondary-50 rounded-md p-3 font-mono text-sm overflow-x-auto scrollbar-thin">
               <pre className="whitespace-pre-wrap">{formatOutput(result.stdout)}</pre>
             </div>
           </div>
@@ -71,7 +71,7 @@ export const CommandOutputDisplay: React.FC<CommandOutputDisplayProps> = ({
         {result.stderr && (
           <div>
             <h4 className="text-sm font-medium text-error-700 mb-2">Standard Error</h4>
-            <div className="bg-error-50 border border-error-200 rounded-md p-3 font-mono text-sm overflow-x-auto">
+            <div className="bg-error-50 border border-error-200 rounded-md p-3 font-mono text-sm overflow-x-auto scrollbar-thin">
               <pre className="whitespace-pre-wrap text-error-800">
                 {formatOutput(result.stderr)}
               </pre>

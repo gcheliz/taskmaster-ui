@@ -63,7 +63,7 @@ export const AppLayout: React.FC = () => {
         {/* Content wrapper */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Main content with scrolling */}
-          <main id="main-content" tabIndex={-1} className="flex-1 bg-white overflow-y-auto focus:outline-none">
+          <main id="main-content" tabIndex={-1} className="flex-1 bg-white overflow-y-auto focus:outline-none scrollbar-thin">
             <div className="h-full">
               <PageTransitionWrapper />
             </div>

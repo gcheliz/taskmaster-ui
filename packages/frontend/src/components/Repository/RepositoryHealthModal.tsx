@@ -561,7 +561,7 @@ export const RepositoryHealthModal: React.FC<RepositoryHealthModalProps> = ({
           <h4 className="font-medium text-gray-900">
             All Issues ({effectiveHealth.issues.length})
           </h4>
-          <div className="max-h-64 overflow-y-auto space-y-2">
+          <div className="max-h-64 overflow-y-auto scrollbar-thin space-y-2">
             {effectiveHealth.issues.map((issue, index) => {
               const severityColors = {
                 critical: 'bg-red-100 text-red-800 border-red-200',

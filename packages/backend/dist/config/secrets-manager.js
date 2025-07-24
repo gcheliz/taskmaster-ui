@@ -17,6 +17,7 @@ const zod_1 = require("zod");
 const environment_1 = require("./environment");
 const fs_1 = require("fs");
 const path_1 = __importDefault(require("path"));
+const bootstrap_logger_1 = require("../utils/bootstrap-logger");
 // Secrets manager configuration schema
 const secretsManagerConfigSchema = zod_1.z.object({
     provider: zod_1.z
@@ -273,7 +274,7 @@ async function getApplicationSecrets() {
         }
         catch (error) {
             // SSL certificates not available, continue without SSL
-            console.warn('SSL certificates not available for database connection');
+            bootstrap_logger_1.securityLogger.warn('SSL certificates not available for database connection');
         }
     }
     const secrets = {

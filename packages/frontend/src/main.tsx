@@ -6,7 +6,6 @@ import { SecurityEnforcer } from './config/security'
 // Initialize security policies
 SecurityEnforcer.initialize()
 
-// Temporarily remove StrictMode to debug React 19 compatibility issue
 createRoot(document.getElementById('root')!).render(
   <App />
 )

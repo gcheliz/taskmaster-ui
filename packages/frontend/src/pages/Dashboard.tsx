@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   ClipboardList, 
   GitBranch, 
@@ -14,8 +14,38 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { PageHeader } from '../components/Layout';
+import { AnimatedPage, AnimatedList, AnimatedListItem } from '../components/common/AnimatedPage';
+import { motion } from 'framer-motion';
+import { hoverLift } from '../utils/animations';
+import { DashboardSkeleton } from '../components/ui/loading';
 
 const Dashboard: React.FC = () => {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) {
+    return (
+      <>
+        <PageHeader 
+          title="Dashboard" 
+          subtitle="Welcome back, Gonzalo"
+        />
+        <div className="bg-white p-4 sm:p-6 md:p-8">
+          <div className="max-w-7xl mx-auto">
+            <DashboardSkeleton />
+          </div>
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
       <PageHeader 
@@ -32,9 +62,14 @@ const Dashboard: React.FC = () => {
         <div className="max-w-7xl mx-auto space-y-8">
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <AnimatedList className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Active Tasks */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-blue-200 transition-all duration-200 transform hover:-translate-y-0.5">
+        <AnimatedListItem index={0}>
+          <motion.div 
+            className="bg-white rounded-xl border border-gray-200 p-6"
+            {...hoverLift}
+            whileHover={{ borderColor: 'rgb(191 219 254)' }}
+          >
           <div className="flex items-center justify-between mb-4">
             <div>
               <p className="text-sm font-medium text-gray-600">Active Tasks</p>
@@ -49,10 +84,16 @@ const Dashboard: React.FC = () => {
             <span className="text-green-600 font-medium">+2</span>
             <span className="text-gray-500 ml-1">from yesterday</span>
           </div>
-        </div>
+          </motion.div>
+        </AnimatedListItem>
 
         {/* Repositories */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-green-200 transition-all duration-200 transform hover:-translate-y-0.5">
+        <AnimatedListItem index={1}>
+          <motion.div 
+            className="bg-white rounded-xl border border-gray-200 p-6"
+            {...hoverLift}
+            whileHover={{ borderColor: 'rgb(187 247 208)' }}
+          >
           <div className="flex items-center justify-between mb-4">
             <div>
               <p className="text-sm font-medium text-gray-600">Repositories</p>
@@ -66,10 +107,16 @@ const Dashboard: React.FC = () => {
             <span className="text-green-600 font-medium">3 active</span>
             <span className="text-gray-500 ml-1">deployments</span>
           </div>
-        </div>
+          </motion.div>
+        </AnimatedListItem>
 
         {/* Team Members */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-amber-200 transition-all duration-200 transform hover:-translate-y-0.5">
+        <AnimatedListItem index={2}>
+          <motion.div 
+            className="bg-white rounded-xl border border-gray-200 p-6"
+            {...hoverLift}
+            whileHover={{ borderColor: 'rgb(253 230 138)' }}
+          >
           <div className="flex items-center justify-between mb-4">
             <div>
               <p className="text-sm font-medium text-gray-600">Team Members</p>
@@ -83,10 +130,16 @@ const Dashboard: React.FC = () => {
             <span className="text-green-600 font-medium">2 online</span>
             <span className="text-gray-500 ml-1">right now</span>
           </div>
-        </div>
+          </motion.div>
+        </AnimatedListItem>
 
         {/* Performance */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-purple-200 transition-all duration-200 transform hover:-translate-y-0.5">
+        <AnimatedListItem index={3}>
+          <motion.div 
+            className="bg-white rounded-xl border border-gray-200 p-6"
+            {...hoverLift}
+            whileHover={{ borderColor: 'rgb(233 213 255)' }}
+          >
           <div className="flex items-center justify-between mb-4">
             <div>
               <p className="text-sm font-medium text-gray-600">Performance</p>
@@ -101,8 +154,9 @@ const Dashboard: React.FC = () => {
             <span className="text-green-600 font-medium">+5%</span>
             <span className="text-gray-500 ml-1">from last week</span>
           </div>
-        </div>
-      </div>
+          </motion.div>
+        </AnimatedListItem>
+      </AnimatedList>
 
       {/* Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import { SettingsSkeleton } from '../components/ui/loading'
 import { Button } from '../components/ui/atoms/Button'
 import {
   Palette,
@@ -22,6 +23,30 @@ import {
 import { PageHeader } from '../components/Layout'
 
 const Settings: React.FC = () => {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) {
+    return (
+      <>
+        <PageHeader 
+          title="Settings" 
+          subtitle="Loading settings..."
+        />
+        <div className="bg-white p-4 sm:p-6 md:p-8">
+          <div className="max-w-7xl mx-auto space-y-8">
+            <SettingsSkeleton />
+          </div>
+        </div>
+      </>
+    );
+  }
   return (
     <>
       <PageHeader 

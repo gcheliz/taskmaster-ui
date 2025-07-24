@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import { useRepositoryList } from '../hooks/useRepositoryList'
-import { Spinner } from '../components/ui/atoms/Spinner'
+import { Spinner } from '../components/ui/loading'
 import { Modal } from '../components/ui/molecules/Modal'
 import { AddRepository } from '../components/Repository/AddRepository'
 import { useRepositoryOperations } from '../hooks/useRepositoryOperations'
 import { logger } from '../utils/logger'
+import { RepositoryListSkeleton } from '../components/ui/loading'
 import { 
   GitBranch, 
   Plus, 
@@ -58,6 +59,16 @@ const Repositories: React.FC = () => {
   const [showAddModal, setShowAddModal] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
+
+  // Simulate loading state for demo
+  const [initialLoading, setInitialLoading] = useState(true)
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setInitialLoading(false)
+    }, 1000)
+    return () => clearTimeout(timer)
+  }, [])
 
   // Enhanced mock repositories with realistic data
   const mockRepositories: Repository[] = [
@@ -270,11 +281,19 @@ const Repositories: React.FC = () => {
   }
 
 
-  if (isLoading) {
+  if (isLoading || initialLoading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <Spinner size="lg" />
-      </div>
+      <>
+        <PageHeader 
+          title="Repositories" 
+          subtitle="Loading repositories..."
+        />
+        <div className="bg-white p-4 sm:p-6 md:p-8">
+          <div className="max-w-7xl mx-auto">
+            <RepositoryListSkeleton count={4} />
+          </div>
+        </div>
+      </>
     )
   }
 

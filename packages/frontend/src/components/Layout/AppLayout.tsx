@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { Outlet } from 'react-router-dom'
 import { Header } from './Header'
 import { Sidebar } from './Sidebar'
 import { Footer } from './Footer'
@@ -9,6 +8,7 @@ import { KeyboardShortcutsPanel } from '../common/KeyboardShortcutsPanel'
 import { useGlobalKeyboardShortcuts, useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts'
 import { useRouteFocusManagement } from '../../hooks/useFocusManagement'
 import { AriaLiveRegion } from '../common/AriaLiveRegion'
+import { PageTransitionWrapper } from './PageTransitionWrapper'
 
 export const AppLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -18,7 +18,7 @@ export const AppLayout: React.FC = () => {
   // Initialize global keyboard shortcuts
   useGlobalKeyboardShortcuts()
 
-  // Manage focus on route changes - Temporarily disabled to debug navigation
+  // Manage focus on route changes
   // useRouteFocusManagement()
 
   // Add keyboard shortcut to open shortcuts panel
@@ -65,7 +65,7 @@ export const AppLayout: React.FC = () => {
           {/* Main content with scrolling */}
           <main id="main-content" tabIndex={-1} className="flex-1 bg-white overflow-y-auto focus:outline-none">
             <div className="h-full">
-              <Outlet />
+              <PageTransitionWrapper />
             </div>
           </main>
 

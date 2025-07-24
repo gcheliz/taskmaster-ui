@@ -9,7 +9,6 @@ import SettingsPage from '../pages/Settings'
 import RepositoriesPage from '../pages/Repositories'
 import TerminalPage from '../pages/Terminal'
 import TaskBoardPage from '../pages/TaskBoard'
-import NavigationDebugPage from '../pages/NavigationDebug'
 
 // Lazy load less critical pages
 const TasksPage = lazy(() => import('../pages/Tasks'))
@@ -95,10 +94,6 @@ export const routes: RouteObject[] = [
           {
             path: 'navigation-test',
             element: <NavigationTestPage />,
-          },
-          {
-            path: 'navigation-debug',
-            element: <NavigationDebugPage />,
           },
         ],
       },

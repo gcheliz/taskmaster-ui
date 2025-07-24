@@ -1,7 +1,6 @@
-import React, { useRef, useEffect } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import React, { useRef } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import { LayoutGrid, FolderGit2, ClipboardList, Terminal, Settings, ChevronLeft, ChevronRight } from 'lucide-react'
-import { RovingTabIndex } from '../../utils/keyboard'
 
 interface SidebarProps {
   isOpen?: boolean
@@ -20,29 +19,10 @@ const menuItems = [
 
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onClose, isCollapsed = false, onToggleCollapse }) => {
   const location = useLocation()
-  const navigate = useNavigate()
   const navRef = useRef<HTMLElement>(null)
-  const rovingTabIndexRef = useRef<RovingTabIndex | null>(null)
 
   const isActive = (path: string) => location.pathname === path
 
-  // Temporarily disable roving tabindex to fix navigation
-  // useEffect(() => {
-  //   if (navRef.current && !rovingTabIndexRef.current) {
-  //     rovingTabIndexRef.current = new RovingTabIndex(navRef.current, 'a[role="menuitem"]')
-  //   }
-
-  //   return () => {
-  //     rovingTabIndexRef.current?.destroy()
-  //   }
-  // }, [])
-
-  // // Update roving tabindex when menu items change
-  // useEffect(() => {
-  //   if (rovingTabIndexRef.current && navRef.current) {
-  //     rovingTabIndexRef.current.updateItems('a[role="menuitem"]')
-  //   }
-  // }, [isCollapsed])
 
   return (
     <>
@@ -92,7 +72,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onClose, isColl
                   className={`
                     flex flex-row items-center ${isCollapsed ? 'justify-center px-2' : 'gap-3 px-4'} 
                     py-2.5 w-full rounded-lg font-medium text-sm
-                    transition-all duration-200 group relative
+                    transition-colors duration-200 group relative
                     ${active 
                       ? 'bg-blue-600 text-white shadow-sm hover:bg-blue-700' 
                       : 'bg-transparent text-gray-700 hover:bg-gray-100 hover:text-gray-900'}

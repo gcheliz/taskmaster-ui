@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
+import { TerminalSkeleton } from '../components/ui/loading'
 import {
   Terminal as TerminalIcon,
   Copy,
@@ -39,6 +40,14 @@ interface TerminalSession {
 }
 
 const Terminal: React.FC = () => {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
   const [sessions, setSessions] = useState<TerminalSession[]>([
     {
       id: '1',
@@ -275,6 +284,22 @@ const Terminal: React.FC = () => {
     if (!ms) return ''
     if (ms < 1000) return `${ms}ms`
     return `${(ms / 1000).toFixed(2)}s`
+  }
+
+  if (loading) {
+    return (
+      <>
+        <PageHeader 
+          title="Terminal" 
+          subtitle="Loading terminal sessions..."
+        />
+        <div className="bg-white p-4 sm:p-6 md:p-8">
+          <div className="max-w-7xl mx-auto space-y-6">
+            <TerminalSkeleton />
+          </div>
+        </div>
+      </>
+    );
   }
 
   return (

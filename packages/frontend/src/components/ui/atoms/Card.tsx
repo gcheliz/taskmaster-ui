@@ -1,10 +1,11 @@
 import React from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '../../../utils/cn'
+import { motion } from 'framer-motion'
 
 const cardVariants = cva(
   // Base styles with enhanced dark theme support and micro-interactions
-  'relative rounded-lg border transition-all duration-200 ease-in-out transform-gpu hover:shadow-lg focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-surface-100 dark:focus-within:ring-offset-surface-900',
+  'relative rounded-lg border transition-colors duration-200 ease-in-out focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-surface-100 dark:focus-within:ring-offset-surface-900',
   {
     variants: {
       variant: {
@@ -24,7 +25,7 @@ const cardVariants = cva(
         xl: 'p-10',
       },
       interactive: {
-        true: 'cursor-pointer hover:scale-[1.02] active:scale-[0.98]',
+        true: 'cursor-pointer',
         false: '',
       },
       draggable: {
@@ -213,7 +214,7 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
     }
 
     return (
-      <div
+      <motion.div
         ref={ref}
         className={cn(cardVariants({ variant, size, interactive, draggable, className }))}
         onClick={interactive ? handleClick : onClick}
@@ -223,6 +224,17 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
         role={interactive ? 'button' : undefined}
         tabIndex={interactive ? 0 : undefined}
         aria-label={ariaLabel}
+        whileHover={interactive || draggable ? { 
+          scale: 1.02,
+          y: -4,
+          boxShadow: "0 10px 30px rgba(0, 0, 0, 0.1)"
+        } : undefined}
+        whileTap={interactive ? { scale: 0.98 } : undefined}
+        transition={{
+          type: "spring",
+          stiffness: 300,
+          damping: 20
+        }}
         {...props}
       />
     )

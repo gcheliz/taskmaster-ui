@@ -1,10 +1,11 @@
 import React from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '../../../utils/cn'
+import { motion } from 'framer-motion'
 
 const inputVariants = cva(
   // Base styles with enhanced dark theme support and micro-interactions
-  'input-base flex w-full transition-all duration-200 ease-in-out file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-secondary-500 dark:placeholder:text-secondary-400 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 focus-visible:ring-offset-surface-100 dark:focus-visible:ring-offset-surface-900 hover:shadow-sm focus-visible:shadow-md transform-gpu focus-visible:scale-[1.02] focus-visible:z-10',
+  'input-base flex w-full transition-colors duration-200 ease-in-out file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-secondary-500 dark:placeholder:text-secondary-400 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 focus-visible:ring-offset-surface-100 dark:focus-visible:ring-offset-surface-900 focus-visible:z-10',
   {
     variants: {
       variant: {
@@ -67,7 +68,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const computedVariant = error ? 'error' : success ? 'success' : variant
 
     const inputElement = (
-      <input
+      <motion.input
         type={type}
         className={cn(
           inputVariants({ variant: computedVariant, inputSize, className }),
@@ -75,6 +76,15 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           rightIcon && 'pr-10'
         )}
         ref={ref}
+        whileFocus={{ 
+          scale: 1.02,
+          boxShadow: "0 0 0 3px rgba(59, 130, 246, 0.1)"
+        }}
+        transition={{
+          type: "spring",
+          stiffness: 500,
+          damping: 30
+        }}
         {...props}
       />
     )

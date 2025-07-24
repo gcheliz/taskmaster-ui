@@ -1,10 +1,11 @@
 import React from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '../../../utils/cn'
+import { motion } from 'framer-motion'
 
 const buttonVariants = cva(
   // Base styles with enhanced dark theme support and micro-interactions
-  'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-all duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 transform-gpu active:scale-95 hover:shadow-lg focus-visible:ring-offset-surface-100 dark:focus-visible:ring-offset-surface-900',
+  'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 focus-visible:ring-offset-surface-100 dark:focus-visible:ring-offset-surface-900',
   {
     variants: {
       variant: {
@@ -77,12 +78,19 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     }
 
     return (
-      <button
+      <motion.button
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
         disabled={isDisabled}
         aria-disabled={isDisabled}
         aria-busy={loading}
+        whileHover={!isDisabled ? { scale: 1.05, y: -2 } : undefined}
+        whileTap={!isDisabled ? { scale: 0.95 } : undefined}
+        transition={{
+          type: "spring",
+          stiffness: 400,
+          damping: 17
+        }}
         {...props}
       >
         {loading && (
@@ -114,7 +122,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {!loading && leftIcon && <span className="mr-2">{leftIcon}</span>}
         {children}
         {!loading && rightIcon && <span className="ml-2">{rightIcon}</span>}
-      </button>
+      </motion.button>
     )
   }
 )

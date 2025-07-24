@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { TaskListSkeleton } from '../components/ui/loading';
 import { 
   Plus,
   Filter,
@@ -36,6 +37,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { TaskModal, type TaskModalMode } from '../components/TaskBoard/TaskModal';
 import type { Task as LocalTask } from '../types/task';
+import { PageHeader } from '../components/Layout';
 
 interface Task {
   id: string;
@@ -85,6 +87,7 @@ const TaskBoard: React.FC = () => {
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
   const [showFilterMenu, setShowFilterMenu] = useState(false);
   const [showSortMenu, setShowSortMenu] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<FilterOptions>({
     priorities: [],
     assignees: [],
@@ -500,20 +503,56 @@ const TaskBoard: React.FC = () => {
   const filteredOutCount = allTasks - totalTasks;
 
 
-  return (
-    <div className="min-h-screen bg-white p-4 sm:p-6 md:p-8">
-      <div className="max-w-full space-y-6">
-      {/* Page Header */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-semibold text-gray-900">Task Board</h1>
-            <p className="text-gray-600 mt-1">Drag and drop tasks between columns to update their status</p>
+  // Simulate loading effect
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) {
+    return (
+      <>
+        <PageHeader 
+          title="Task Board" 
+          subtitle="Loading tasks..."
+        />
+        <div className="bg-white p-4 sm:p-6 md:p-8">
+          <div className="max-w-full space-y-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <div className="w-20 h-8 bg-gray-200 rounded-lg animate-pulse"></div>
+                <div className="w-20 h-8 bg-gray-200 rounded-lg animate-pulse"></div>
+              </div>
+              <div className="w-32 h-8 bg-gray-200 rounded-lg animate-pulse"></div>
+            </div>
+            <div className="flex space-x-6 overflow-x-auto">
+              {[1, 2, 3, 4, 5].map((col) => (
+                <div key={col} className="flex-shrink-0 w-80">
+                  <div className="bg-gray-100 rounded-t-lg p-4 border-b border-gray-200">
+                    <div className="w-32 h-6 bg-gray-300 rounded animate-pulse"></div>
+                  </div>
+                  <div className="bg-gray-50 rounded-b-lg p-4 min-h-[200px] space-y-3">
+                    <TaskListSkeleton count={3} />
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-          
         </div>
-        
-      </div>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <PageHeader 
+        title="Task Board" 
+        subtitle="Drag and drop tasks between columns to update their status"
+      />
+      <div className="bg-white p-4 sm:p-6 md:p-8">
+        <div className="max-w-full space-y-6">
 
 
       {/* Board Controls */}
@@ -759,8 +798,9 @@ const TaskBoard: React.FC = () => {
           setModalMode('edit');
         }}
       />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -56,7 +56,7 @@ const languages = [
   { value: 'zh', label: '中文' },
 ]
 
-export const ProfileSettings: React.FC<ProfileSettingsProps> = ({ onSave, className }) => {
+export const ProfileSettings = ({ onSave, className }: ProfileSettingsProps) => {
   const { state, updateCategory, getSetting } = useSettings()
   const [formData, setFormData] = useState<ProfileSettingsData>({
     firstName: '',

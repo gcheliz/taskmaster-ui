@@ -56,7 +56,7 @@ export interface RepositoryMetadataProps {
  * - Last commit details (hash, author, message, date)
  * - Working directory status with visual indicator
  */
-export const RepositoryMetadata: React.FC<RepositoryMetadataProps> = ({
+export const RepositoryMetadata = ({
   repository,
   isLoading = false,
   error = null,
@@ -65,7 +65,7 @@ export const RepositoryMetadata: React.FC<RepositoryMetadataProps> = ({
   showCommitDetails = true,
   onRepositoryClick,
   onBranchClick,
-}) => {
+}: RepositoryMetadataProps) => {
   if (isLoading) {
     return (
       <div className={`repository-metadata loading ${className}`}>

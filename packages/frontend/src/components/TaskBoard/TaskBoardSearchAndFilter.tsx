@@ -30,7 +30,7 @@ interface TaskBoardSearchAndFilterProps {
   compact?: boolean
 }
 
-export const TaskBoardSearchAndFilter: React.FC<TaskBoardSearchAndFilterProps> = ({
+export const TaskBoardSearchAndFilter = ({
   searchQuery,
   onSearchChange,
   filters,
@@ -39,7 +39,7 @@ export const TaskBoardSearchAndFilter: React.FC<TaskBoardSearchAndFilterProps> =
   className,
   showFilters = true,
   compact = false,
-}) => {
+}: TaskBoardSearchAndFilterProps) => {
   const [isFiltersExpanded, setIsFiltersExpanded] = useState(!compact)
 
   // Extract unique assignees from all tasks

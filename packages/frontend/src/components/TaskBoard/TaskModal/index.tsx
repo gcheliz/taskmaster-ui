@@ -36,7 +36,7 @@ export interface TaskModalProps {
  * Provides a modal interface for creating, editing, and viewing tasks.
  * Supports full CRUD operations and dependency management.
  */
-export const TaskModal: React.FC<TaskModalProps> = ({
+export const TaskModal = ({
   isOpen,
   mode,
   task,
@@ -46,7 +46,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
   onDelete,
   onEdit,
   className = '',
-}) => {
+}: TaskModalProps) => {
   const isReadOnly = mode === 'view'
   const isCreateMode = mode === 'create'
   const isEditMode = mode === 'edit'

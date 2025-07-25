@@ -273,7 +273,7 @@ class GitMonitorService extends EventEmitter {
     const metadata = await gitDataService.getRepositoryMetadata(repositoryPath)
     const currentBranchData = metadata.branches?.find(b => b.current)
     
-    if (!currentBranchData || !currentBranchData.tracking) {
+    if (!currentBranchData?.tracking) {
       return { ahead: 0, behind: 0 }
     }
 

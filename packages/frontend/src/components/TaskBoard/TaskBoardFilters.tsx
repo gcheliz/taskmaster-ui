@@ -44,14 +44,14 @@ const STATUS_OPTIONS: { value: TaskStatus; label: string; variant: string }[] = 
   { value: 'deferred', label: 'Deferred', variant: 'deferred' },
 ]
 
-export const TaskBoardFilters: React.FC<TaskBoardFiltersProps> = ({
+export const TaskBoardFilters = ({
   filters,
   onChange,
   availableAssignees = [],
   className,
   isCollapsed = false,
   onToggleCollapse,
-}) => {
+}: TaskBoardFiltersProps) => {
   const handlePriorityToggle = (priority: TaskPriority) => {
     const currentPriorities = filters.priority || []
     const newPriorities = currentPriorities.includes(priority)

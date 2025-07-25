@@ -133,10 +133,10 @@ const integrations: Integration[] = [
   },
 ]
 
-export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({
+export const IntegrationsSettings = ({
   onSave,
   className,
-}) => {
+}: IntegrationsSettingsProps) => {
   const { state, updateCategory, getSetting } = useSettings()
   const [settings, setSettings] = useState<IntegrationsSettingsData>({
     github: {

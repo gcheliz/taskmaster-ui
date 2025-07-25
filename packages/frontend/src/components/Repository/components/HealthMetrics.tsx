@@ -17,7 +17,7 @@ export interface HealthMetricsProps {
   metricsData: MetricsDataPoint[]
 }
 
-export const HealthMetrics: React.FC<HealthMetricsProps> = ({ health, metricsData }) => {
+export const HealthMetrics = ({ health, metricsData }: HealthMetricsProps) => {
   return (
     <div className="space-y-6">
       {/* Metrics Comparison Chart */}

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Skeleton } from './Skeleton'
 
-export const TerminalSkeleton: React.FC = () => {
+export const TerminalSkeleton = () => {
   return (
     <>
       {/* Stats Cards */}

@@ -115,11 +115,11 @@ const settingsCategories: SettingsCategory[] = [
   },
 ]
 
-export const SettingsPage: React.FC<SettingsPageProps> = ({
+export const SettingsPage = ({
   defaultCategory = 'profile',
   onSettingsSave,
   className,
-}) => {
+}: SettingsPageProps) => {
   const [activeCategory, setActiveCategory] = useState(defaultCategory)
 
   const currentCategory =

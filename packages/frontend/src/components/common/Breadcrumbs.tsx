@@ -36,12 +36,12 @@ const generateBreadcrumbsFromPath = (pathname: string): BreadcrumbItem[] => {
   return breadcrumbs
 }
 
-export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({
+export const Breadcrumbs = ({
   items,
   className,
   separator = <ChevronRight className="h-4 w-4" />,
   showHome = true,
-}) => {
+}: BreadcrumbsProps) => {
   const location = useLocation()
 
   // Use provided items or generate from path

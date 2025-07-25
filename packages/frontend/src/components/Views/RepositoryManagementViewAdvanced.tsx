@@ -8,9 +8,9 @@ export interface RepositoryManagementViewProps {
   className?: string
 }
 
-export const RepositoryManagementView: React.FC<RepositoryManagementViewProps> = ({
+export const RepositoryManagementView = ({
   className = '',
-}) => {
+}: RepositoryManagementViewProps) => {
   const { connectRepository, disconnectRepository, isLoading, error } = useRepositoryOperations()
   const { state, selectRepository } = useRepository()
   const { showSuccess, showError } = useNotification()

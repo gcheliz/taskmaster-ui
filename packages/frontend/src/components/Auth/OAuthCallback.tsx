@@ -13,7 +13,7 @@ export interface OAuthCallbackProps {
   onError?: (error: string) => void
 }
 
-export const OAuthCallback: React.FC<OAuthCallbackProps> = ({ onSuccess, onError }) => {
+export const OAuthCallback = ({ onSuccess, onError }: OAuthCallbackProps) => {
   const [searchParams] = useSearchParams()
   const [status, setStatus] = useState<'processing' | 'success' | 'error'>('processing')
   const [message, setMessage] = useState('Processing OAuth callback...')

@@ -18,7 +18,7 @@ export interface HealthOverviewProps {
   statistics?: RepositoryStatistics | null
 }
 
-export const HealthOverview: React.FC<HealthOverviewProps> = ({ health, statistics }) => {
+export const HealthOverview = ({ health, statistics }: HealthOverviewProps) => {
   const { getHealthGrade } = useHealthGrade()
   const healthGrade = getHealthGrade(health.score)
 

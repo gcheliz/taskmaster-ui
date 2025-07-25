@@ -476,7 +476,7 @@ export class RepositoryValidationService {
 
         // Count tasks across all project tags
         for (const projectKey in tasksJson) {
-          if (tasksJson[projectKey] && tasksJson[projectKey].tasks) {
+          if (tasksJson[projectKey]?.tasks) {
             taskCount += tasksJson[projectKey].tasks.length;
 
             // Get the most recent update timestamp

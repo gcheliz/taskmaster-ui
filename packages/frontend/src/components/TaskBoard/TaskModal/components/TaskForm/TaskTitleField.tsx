@@ -8,13 +8,13 @@ interface TaskTitleFieldProps {
   readOnly?: boolean
 }
 
-export const TaskTitleField: React.FC<TaskTitleFieldProps> = ({
+export const TaskTitleField = ({
   value,
   onChange,
   error,
   disabled = false,
   readOnly = false,
-}) => {
+}: TaskTitleFieldProps) => {
   return (
     <div className="space-y-2">
       <label htmlFor="task-title" className="block text-sm font-medium text-gray-700">

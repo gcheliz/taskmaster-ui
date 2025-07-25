@@ -25,14 +25,14 @@ export interface PRDAnalysisResultsProps {
  * - Time estimates and recommendations
  * - Export capabilities
  */
-export const PRDAnalysisResults: React.FC<PRDAnalysisResultsProps> = ({
+export const PRDAnalysisResults = ({
   result,
   compact = false,
   className = '',
   onTaskSelect,
   onDependencySelect,
   showExportOptions = true,
-}) => {
+}: PRDAnalysisResultsProps) => {
   const [activeTab, setActiveTab] = useState<
     'tasks' | 'dependencies' | 'summary' | 'recommendations'
   >('summary')

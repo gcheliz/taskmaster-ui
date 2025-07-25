@@ -60,7 +60,7 @@ const TASK_PRIORITIES: { value: TaskPriority; label: string; color: string }[] =
  * Provides a modal interface for creating, editing, and viewing tasks.
  * Supports full CRUD operations and dependency management.
  */
-export const TaskModal: React.FC<TaskModalProps> = ({
+export const TaskModal = ({
   isOpen,
   mode,
   task,
@@ -70,7 +70,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
   onDelete,
   onEdit,
   className = '',
-}) => {
+}: TaskModalProps) => {
   const [formData, setFormData] = useState<Partial<Task>>(DEFAULT_TASK_VALUES)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)

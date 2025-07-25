@@ -84,7 +84,7 @@ export interface NotificationProviderProps {
   children: ReactNode
 }
 
-export const NotificationProvider: React.FC<NotificationProviderProps> = ({ children }) => {
+export const NotificationProvider = ({ children }: NotificationProviderProps) => {
   const [state, dispatch] = useReducer(notificationReducer, initialState)
 
   const generateId = useCallback((): string => {

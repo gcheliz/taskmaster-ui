@@ -16,13 +16,13 @@ export interface CommandWorkspaceProps {
   hasActiveTerminal?: boolean
 }
 
-export const CommandWorkspace: React.FC<CommandWorkspaceProps> = ({
+export const CommandWorkspace = ({
   repositoryPath,
   workingDirectory,
   className,
   onExecuteInTerminal,
   hasActiveTerminal = false,
-}) => {
+}: CommandWorkspaceProps) => {
   const { state, clearResult } = useCommandExecution()
   const { state: repositoryState } = useRepository()
 

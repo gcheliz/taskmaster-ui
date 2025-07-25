@@ -18,7 +18,7 @@ export interface KanbanDragOverlayProps {
  * of the task card being dragged. The overlay follows the cursor and provides
  * clear visual indication of the drag state.
  */
-export const KanbanDragOverlay: React.FC<KanbanDragOverlayProps> = ({
+export const KanbanDragOverlay = ({
   task,
   isActive,
   className = '',

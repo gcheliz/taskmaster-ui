@@ -80,7 +80,7 @@ const TASKMASTER_PATTERNS = {
  * - Command history with TaskMaster command tracking
  * - Integration with TaskMaster command validation
  */
-export const TaskMasterTerminal: React.FC<TaskMasterTerminalProps> = ({
+export const TaskMasterTerminal = ({
   workingDirectory,
   repositoryPath,
   mode = 'embedded',
@@ -95,7 +95,7 @@ export const TaskMasterTerminal: React.FC<TaskMasterTerminalProps> = ({
   enableTaskMasterSuggestions = true,
   enableCommandHistory = true,
   maxHistoryEntries = 100,
-}) => {
+}: TaskMasterTerminalProps) => {
   const [commandHistory, setCommandHistory] = useState<string[]>([])
   const [historyIndex, setHistoryIndex] = useState(-1)
   const [currentInput, setCurrentInput] = useState('')

@@ -13,7 +13,7 @@ export interface SkipLinkProps {
  * Provides keyboard users with a way to skip repetitive navigation
  * and jump directly to main content. Only visible when focused.
  */
-export const SkipLink: React.FC<SkipLinkProps> = ({ href, children }) => {
+export const SkipLink = ({ href, children }: SkipLinkProps) => {
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault()
     const target = document.querySelector(href)
@@ -43,7 +43,7 @@ export const SkipLink: React.FC<SkipLinkProps> = ({ href, children }) => {
  * 
  * Container for multiple skip links
  */
-export const SkipLinksContainer: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const SkipLinksContainer = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="skip-links-container" role="navigation" aria-label="Skip links">
       {children}

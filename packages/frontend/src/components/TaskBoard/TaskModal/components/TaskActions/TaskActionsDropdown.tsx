@@ -34,7 +34,7 @@ interface TaskActionsDropdownProps {
  * Provides a dropdown menu with advanced task actions.
  * Includes keyboard navigation and accessibility features.
  */
-export const TaskActionsDropdown: React.FC<TaskActionsDropdownProps> = ({
+export const TaskActionsDropdown = ({
   task,
   isLoading = false,
   canEdit = true,
@@ -47,7 +47,7 @@ export const TaskActionsDropdown: React.FC<TaskActionsDropdownProps> = ({
   onConvertToSubtask,
   onArchive,
   className = '',
-}) => {
+}: TaskActionsDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)

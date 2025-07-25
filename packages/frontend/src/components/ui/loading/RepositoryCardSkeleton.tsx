@@ -1,7 +1,7 @@
 import React from 'react'
 import { Skeleton, SkeletonText } from './Skeleton'
 
-export const RepositoryCardSkeleton: React.FC = () => {
+export const RepositoryCardSkeleton = () => {
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-6 space-y-4">
       <div className="flex items-start justify-between">
@@ -39,7 +39,7 @@ interface RepositoryListSkeletonProps {
   count?: number
 }
 
-export const RepositoryListSkeleton: React.FC<RepositoryListSkeletonProps> = ({ count = 4 }) => {
+export const RepositoryListSkeleton = ({ count = 4 }: RepositoryListSkeletonProps) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       {Array.from({ length: count }).map((_, index) => (

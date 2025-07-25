@@ -33,7 +33,7 @@ interface CollaborativeTaskBoardProps extends Omit<TaskBoardProps, 'data' | 'onT
   onTaskDelete?: (taskId: string) => void
 }
 
-export const CollaborativeTaskBoard: React.FC<CollaborativeTaskBoardProps> = ({
+export const CollaborativeTaskBoard = ({
   initialTasks = [],
   boardId = 'default',
   showCollaboration = true,
@@ -44,7 +44,7 @@ export const CollaborativeTaskBoard: React.FC<CollaborativeTaskBoardProps> = ({
   onTaskDelete,
   className,
   ...props
-}) => {
+}: CollaborativeTaskBoardProps) => {
   const { isConnected, error: wsError } = useWebSocketContext()
   const { connectedUsers, userPresence } = useUserPresence()
   const { tasks, updateTask, moveTask, createTask, deleteTask, isLoading, error, lastUpdate } =

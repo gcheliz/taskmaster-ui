@@ -27,12 +27,12 @@ export interface PRDEditorSettingsProps {
  * - Content restoration
  * - Storage usage info
  */
-export const PRDEditorSettings: React.FC<PRDEditorSettingsProps> = ({
+export const PRDEditorSettings = ({
   isOpen,
   onClose,
   onRestoreContent,
   className = '',
-}) => {
+}: PRDEditorSettingsProps) => {
   const [autosaveHistory, setAutosaveHistory] = useState<PRDEditorSaveData[]>([])
   const [storageInfo, setStorageInfo] = useState({
     used: 0,

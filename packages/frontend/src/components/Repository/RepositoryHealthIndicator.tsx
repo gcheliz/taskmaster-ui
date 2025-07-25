@@ -33,7 +33,7 @@ export interface RepositoryHealthIndicatorProps {
   className?: string
 }
 
-export const RepositoryHealthIndicator: React.FC<RepositoryHealthIndicatorProps> = ({
+export const RepositoryHealthIndicator = ({
   ahead = 0,
   behind = 0,
   isClean = true,
@@ -45,7 +45,7 @@ export const RepositoryHealthIndicator: React.FC<RepositoryHealthIndicatorProps>
   showScore = true,
   size = 'md',
   className,
-}) => {
+}: RepositoryHealthIndicatorProps) => {
   // Calculate branch status first
   const branchStatus = calculateBranchStatus(ahead, behind, isClean, conflicted, lastCommitDate)
 
@@ -159,12 +159,12 @@ export interface HealthScoreCompactProps {
   className?: string
 }
 
-export const HealthScoreCompact: React.FC<HealthScoreCompactProps> = ({
+export const HealthScoreCompact = ({
   score,
   level,
   size = 'md',
   className,
-}) => {
+}: HealthScoreCompactProps) => {
   const badgeInfo = getHealthScoreBadge(level)
 
   const sizeClasses = {

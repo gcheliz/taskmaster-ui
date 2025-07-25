@@ -7,7 +7,7 @@ interface PageHeaderProps {
   actions?: React.ReactNode
 }
 
-export const PageHeader: React.FC<PageHeaderProps> = ({ title, actions }) => {
+export const PageHeader = ({ title, actions }: PageHeaderProps) => {
   const location = useLocation()
   
   // Generate breadcrumb items based on current path

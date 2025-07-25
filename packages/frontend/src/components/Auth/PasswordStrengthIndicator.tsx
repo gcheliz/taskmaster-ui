@@ -20,11 +20,11 @@ export interface PasswordStrengthIndicatorProps {
   className?: string
 }
 
-export const PasswordStrengthIndicator: React.FC<PasswordStrengthIndicatorProps> = ({
+export const PasswordStrengthIndicator = ({
   password,
   strength,
   className,
-}) => {
+}: PasswordStrengthIndicatorProps) => {
   const getStrengthLevel = (score: number) => {
     if (score < 25) return { label: 'Weak', color: 'red' }
     if (score < 50) return { label: 'Fair', color: 'orange' }

@@ -40,13 +40,13 @@ interface WelcomeHeaderProps {
   userName?: string
 }
 
-const WelcomeHeader: React.FC<WelcomeHeaderProps> = ({
+const WelcomeHeader = ({
   projectName,
   projectPath,
   lastUpdated,
   userAvatar,
   userName = 'User',
-}) => {
+}: WelcomeHeaderProps) => {
   const formatTime = (dateString: string) => {
     return new Date(dateString).toLocaleString()
   }
@@ -148,7 +148,7 @@ interface StatisticsGridProps {
   }
 }
 
-const StatisticsGrid: React.FC<StatisticsGridProps> = ({ taskMetrics, insights, health }) => {
+const StatisticsGrid = ({ taskMetrics, insights, health }: StatisticsGridProps) => {
   const getHealthColor = (status: string) => {
     switch (status) {
       case 'excellent':
@@ -287,11 +287,11 @@ const StatisticsGrid: React.FC<StatisticsGridProps> = ({ taskMetrics, insights, 
  * A comprehensive dashboard built with the new dark theme atomic components,
  * featuring responsive design, interactive widgets, and enhanced user experience.
  */
-export const ModernDashboardView: React.FC<ModernDashboardViewProps> = ({
+export const ModernDashboardView = ({
   projectId,
   projectTag,
   className = '',
-}) => {
+}: ModernDashboardViewProps) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'analytics' | 'activity'>('overview')
   const [refreshing, setRefreshing] = useState(false)
 

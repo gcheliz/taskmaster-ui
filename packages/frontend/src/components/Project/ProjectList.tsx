@@ -41,7 +41,7 @@ export interface ProjectListProps {
  * - Task counts and last accessed time
  * - Create new project functionality
  */
-export const ProjectList: React.FC<ProjectListProps> = ({
+export const ProjectList = ({
   projects,
   isLoading = false,
   error = null,
@@ -50,7 +50,7 @@ export const ProjectList: React.FC<ProjectListProps> = ({
   onCreateProject,
   showCreateButton = true,
   emptyStateMessage = 'No projects found',
-}) => {
+}: ProjectListProps) => {
   const gridRef = useRef<HTMLDivElement>(null)
   const rovingTabIndexRef = useRef<RovingTabIndex | null>(null)
 

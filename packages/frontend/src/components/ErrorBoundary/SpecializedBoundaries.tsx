@@ -13,7 +13,7 @@ interface BoundaryProps {
 /**
  * Specialized error boundary for API/Network related errors
  */
-export const APIErrorBoundary: React.FC<BoundaryProps> = ({ children, onError }) => {
+export const APIErrorBoundary = ({ children, onError }: BoundaryProps) => {
   const networkErrorFallback = (
     <Card className="p-6 border-orange-200 bg-orange-50">
       <div className="text-center">
@@ -45,7 +45,7 @@ export const APIErrorBoundary: React.FC<BoundaryProps> = ({ children, onError })
 /**
  * Specialized error boundary for Database related errors
  */
-export const DatabaseErrorBoundary: React.FC<BoundaryProps> = ({ children, onError }) => {
+export const DatabaseErrorBoundary = ({ children, onError }: BoundaryProps) => {
   const databaseErrorFallback = (
     <Card className="p-6 border-red-200 bg-red-50">
       <div className="text-center">
@@ -77,7 +77,7 @@ export const DatabaseErrorBoundary: React.FC<BoundaryProps> = ({ children, onErr
 /**
  * Specialized error boundary for Terminal/Command execution errors
  */
-export const TerminalErrorBoundary: React.FC<BoundaryProps> = ({ children, onError }) => {
+export const TerminalErrorBoundary = ({ children, onError }: BoundaryProps) => {
   const terminalErrorFallback = (
     <Card className="p-6 border-yellow-200 bg-yellow-50">
       <div className="text-center">
@@ -116,7 +116,7 @@ export const TerminalErrorBoundary: React.FC<BoundaryProps> = ({ children, onErr
 /**
  * Specialized error boundary for Repository/Git related errors
  */
-export const RepositoryErrorBoundary: React.FC<BoundaryProps> = ({ children, onError }) => {
+export const RepositoryErrorBoundary = ({ children, onError }: BoundaryProps) => {
   const repositoryErrorFallback = (
     <Card className="p-6 border-blue-200 bg-blue-50">
       <div className="text-center">
@@ -153,7 +153,7 @@ export const RepositoryErrorBoundary: React.FC<BoundaryProps> = ({ children, onE
 /**
  * Specialized error boundary for Route/Navigation errors
  */
-export const RouteErrorBoundary: React.FC<BoundaryProps> = ({ children, onError }) => {
+export const RouteErrorBoundary = ({ children, onError }: BoundaryProps) => {
   const routeErrorFallback = (
     <div className="min-h-[400px] flex flex-col justify-center items-center">
       <AlertTriangle className="h-12 w-12 text-orange-500 mb-4" />
@@ -185,7 +185,7 @@ export const RouteErrorBoundary: React.FC<BoundaryProps> = ({ children, onError 
 /**
  * Specialized error boundary for WebSocket/Real-time errors
  */
-export const WebSocketErrorBoundary: React.FC<BoundaryProps> = ({ children, onError }) => {
+export const WebSocketErrorBoundary = ({ children, onError }: BoundaryProps) => {
   const websocketErrorFallback = (
     <Card className="p-4 border-purple-200 bg-purple-50">
       <div className="flex items-start">

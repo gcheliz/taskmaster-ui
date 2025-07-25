@@ -4,7 +4,7 @@ import { AddRepository } from '../components/Repository/AddRepository'
 import { Modal } from '../components/ui/molecules/Modal'
 import { useState } from 'react'
 
-const RepositoryManagementDemo: React.FC = () => {
+const RepositoryManagementDemo = () => {
   const [showAddModal, setShowAddModal] = useState(false)
 
   const handleAddRepository = () => {

@@ -5,7 +5,7 @@ interface ErrorAlertProps {
   onDismiss: () => void
 }
 
-export const ErrorAlert: React.FC<ErrorAlertProps> = ({ error, onDismiss }) => {
+export const ErrorAlert = ({ error, onDismiss }: ErrorAlertProps) => {
   return (
     <div className="flex items-center gap-3 p-4 mb-6 bg-red-50 border border-red-200 rounded-lg">
       <span className="text-red-500" aria-hidden="true">

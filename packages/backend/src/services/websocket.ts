@@ -43,7 +43,7 @@ export class WebSocketService {
           console.log('Received message:', message);
 
           // Check if it's a Git-related message
-          if (message.type && message.type.startsWith('git-') || 
+          if (message.type?.startsWith('git-') || 
               ['subscribe-repository', 'unsubscribe-repository', 'refresh-repository', 'get-repository-state'].includes(message.type)) {
             const response = await gitWebSocketService.handleWebSocketMessage(clientId, message);
             if (response) {

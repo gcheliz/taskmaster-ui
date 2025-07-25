@@ -1,7 +1,7 @@
 import React from 'react'
 import { Skeleton, SkeletonText } from './Skeleton'
 
-export const TaskCardSkeleton: React.FC = () => {
+export const TaskCardSkeleton = () => {
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-4 space-y-3">
       <div className="flex items-center justify-between">
@@ -25,7 +25,7 @@ interface TaskListSkeletonProps {
   count?: number
 }
 
-export const TaskListSkeleton: React.FC<TaskListSkeletonProps> = ({ count = 3 }) => {
+export const TaskListSkeleton = ({ count = 3 }: TaskListSkeletonProps) => {
   return (
     <div className="space-y-3">
       {Array.from({ length: count }).map((_, index) => (

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Skeleton } from './Skeleton'
 
-export const StatCardSkeleton: React.FC = () => {
+export const StatCardSkeleton = () => {
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-6 space-y-2">
       <div className="flex items-center justify-between">
@@ -14,7 +14,7 @@ export const StatCardSkeleton: React.FC = () => {
   )
 }
 
-export const DashboardSkeleton: React.FC = () => {
+export const DashboardSkeleton = () => {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

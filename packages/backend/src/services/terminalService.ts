@@ -180,7 +180,7 @@ export class TerminalService extends EventEmitter {
    */
   sendInput(sessionId: string, input: string): void {
     const session = this.sessions.get(sessionId);
-    if (!session || !session.process) {
+    if (!session?.process) {
       throw new Error(`No active process in session: ${sessionId}`);
     }
 
@@ -193,7 +193,7 @@ export class TerminalService extends EventEmitter {
    */
   killProcess(sessionId: string): void {
     const session = this.sessions.get(sessionId);
-    if (!session || !session.process) {
+    if (!session?.process) {
       return;
     }
 

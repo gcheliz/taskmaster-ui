@@ -42,7 +42,7 @@ interface TaskActionsBarProps {
  * Combines inline quick actions with a dropdown menu for advanced actions.
  * Provides a complete action toolbar for task management.
  */
-export const TaskActionsBar: React.FC<TaskActionsBarProps> = ({
+export const TaskActionsBar = ({
   task,
   showInlineActions = true,
   showDropdown = true,
@@ -58,7 +58,7 @@ export const TaskActionsBar: React.FC<TaskActionsBarProps> = ({
   onMoveToProject,
   onConvertToSubtask,
   className = '',
-}) => {
+}: TaskActionsBarProps) => {
   const handleExport = (format?: 'json' | 'csv') => {
     if (onExport) {
       onExport(task, format || 'json')

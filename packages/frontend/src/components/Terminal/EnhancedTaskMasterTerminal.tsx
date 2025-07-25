@@ -88,7 +88,7 @@ const defaultQuickCommands: QuickCommand[] = [
  * - Keyboard shortcuts
  * - Full screen mode
  */
-export const EnhancedTaskMasterTerminal: React.FC<EnhancedTaskMasterTerminalProps> = ({
+export const EnhancedTaskMasterTerminal = ({
   quickCommands = defaultQuickCommands,
   showWindowControls = true,
   showQuickCommands = true,
@@ -101,7 +101,7 @@ export const EnhancedTaskMasterTerminal: React.FC<EnhancedTaskMasterTerminalProp
   title = 'TaskMaster Terminal',
   projectTag,
   ...terminalProps
-}) => {
+}: EnhancedTaskMasterTerminalProps) => {
   const [isFullscreen, setIsFullscreen] = useState(false)
 
   // Handle quick command execution

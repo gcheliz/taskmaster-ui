@@ -53,7 +53,7 @@ export interface SecuritySettingsData {
   }>
 }
 
-export const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave, className }) => {
+export const SecuritySettings = ({ onSave, className }: SecuritySettingsProps) => {
   const { state, updateCategory, getSetting } = useSettings()
   const [settings, setSettings] = useState<SecuritySettingsData>({
     password: {

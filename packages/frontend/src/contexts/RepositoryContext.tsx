@@ -148,10 +148,10 @@ export interface RepositoryProviderProps {
   initialRepositories?: Repository[]
 }
 
-export const RepositoryProvider: React.FC<RepositoryProviderProps> = ({
+export const RepositoryProvider = ({
   children,
   initialRepositories = [],
-}) => {
+}: RepositoryProviderProps) => {
   const [state, dispatch] = useReducer(repositoryReducer, {
     ...initialState,
     repositories: initialRepositories,

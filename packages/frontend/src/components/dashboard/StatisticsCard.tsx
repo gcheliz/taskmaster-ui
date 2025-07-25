@@ -17,7 +17,7 @@ interface StatisticsCardProps {
   delay?: number
 }
 
-export const StatisticsCard: React.FC<StatisticsCardProps> = ({
+export const StatisticsCard = ({
   title,
   value,
   subtitle,
@@ -25,7 +25,7 @@ export const StatisticsCard: React.FC<StatisticsCardProps> = ({
   trend,
   color = 'primary',
   delay = 0,
-}) => {
+}: StatisticsCardProps) => {
   const animatedValue = useAnimatedCounter(value, 1.5, delay)
 
   const colorClasses = {

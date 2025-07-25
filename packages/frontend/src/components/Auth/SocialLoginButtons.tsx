@@ -23,12 +23,12 @@ export interface SocialLoginButtonsProps {
   className?: string
 }
 
-export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
+export const SocialLoginButtons = ({
   onSuccess,
   providers = ['google', 'github'],
   layout = 'vertical',
   className,
-}) => {
+}: SocialLoginButtonsProps) => {
   const [loadingProvider, setLoadingProvider] = useState<string | null>(null)
 
   const handleSocialLogin = async (provider: string) => {

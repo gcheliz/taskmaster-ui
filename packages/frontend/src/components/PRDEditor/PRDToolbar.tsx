@@ -19,22 +19,28 @@ export interface PRDToolbarProps {
  * - Lists (bullet and ordered)
  * - Undo/Redo functionality
  */
-export const PRDToolbar: React.FC<PRDToolbarProps> = ({
+export const PRDToolbar = ({
   editor,
   disabled = false,
   className = '',
-}) => {
+}: PRDToolbarProps) => {
   if (!editor) {
     return null
   }
 
-  const ToolbarButton: React.FC<{
+  const ToolbarButton = ({
+    onClick,
+    isActive = false,
+    disabled = false,
+    title,
+    children,
+  }: {
     onClick: () => void
     isActive?: boolean
     disabled?: boolean
     title: string
     children: React.ReactNode
-  }> = ({ onClick, isActive = false, disabled = false, title, children }) => (
+  }) => (
     <button
       type="button"
       onClick={onClick}

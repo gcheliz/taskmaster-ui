@@ -271,12 +271,12 @@ const defaultSteps: OnboardingStep[] = [
   },
 ]
 
-export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
+export const OnboardingFlow = ({
   userRole,
   userName,
   onComplete,
   className,
-}) => {
+}: OnboardingFlowProps) => {
   const navigate = useNavigate()
   const [currentStep, setCurrentStep] = useState(0)
   const [isExiting, setIsExiting] = useState(false)

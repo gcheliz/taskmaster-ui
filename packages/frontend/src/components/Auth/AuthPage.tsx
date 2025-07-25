@@ -29,13 +29,13 @@ export interface AuthPageProps {
   className?: string
 }
 
-export const AuthPage: React.FC<AuthPageProps> = ({
+export const AuthPage = ({
   defaultTab = 'login',
   onAuthSuccess,
   showSocialLogins = true,
   backgroundImage,
   className,
-}) => {
+}: AuthPageProps) => {
   const [activeTab, setActiveTab] = useState(defaultTab)
 
   const handleAuthSuccess = (type: 'login' | 'register', data: any) => {

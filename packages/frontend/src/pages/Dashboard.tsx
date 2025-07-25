@@ -19,7 +19,7 @@ import { motion } from 'framer-motion';
 import { hoverLift } from '../utils/animations';
 import { DashboardSkeleton } from '../components/ui/loading';
 
-const Dashboard: React.FC = () => {
+const Dashboard = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -251,12 +251,12 @@ const Dashboard: React.FC = () => {
 };
 
 // Activity Item Component
-const ActivityItem: React.FC<{
+const ActivityItem = ({ icon, iconBg, title, time }: {
   icon: React.ReactNode;
   iconBg: string;
   title: string;
   time: string;
-}> = ({ icon, iconBg, title, time }) => {
+}) => {
   return (
     <div className="flex items-center gap-4">
       <div className={`w-8 h-8 ${iconBg} rounded-full flex items-center justify-center flex-shrink-0`}>
@@ -271,11 +271,11 @@ const ActivityItem: React.FC<{
 };
 
 // Health Metric Component
-const HealthMetric: React.FC<{
+const HealthMetric = ({ label, value, color }: {
   label: string;
   value: number;
   color: 'primary' | 'success' | 'warning' | 'error';
-}> = ({ label, value, color }) => {
+}) => {
   const getColorClasses = () => {
     switch (color) {
       case 'primary':
@@ -325,11 +325,11 @@ const HealthMetric: React.FC<{
 };
 
 // Quick Action Button Component
-const QuickActionButton: React.FC<{
+const QuickActionButton = ({ icon, iconBg, label }: {
   icon: React.ReactNode;
   iconBg: string;
   label: string;
-}> = ({ icon, iconBg, label }) => {
+}) => {
   return (
     <button className="flex items-center gap-3 p-4 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg transition-[background-color,transform,box-shadow] duration-200 hover:shadow-md hover:-translate-y-0.5 w-full">
       <div className={`w-8 h-8 ${iconBg} rounded-lg flex items-center justify-center flex-shrink-0`}>

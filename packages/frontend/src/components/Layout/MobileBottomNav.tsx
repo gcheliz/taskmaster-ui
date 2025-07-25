@@ -14,7 +14,7 @@ interface NavItem {
   path: string
 }
 
-export const MobileBottomNav: React.FC = () => {
+export const MobileBottomNav = () => {
   const location = useLocation()
 
   const navItems: NavItem[] = [

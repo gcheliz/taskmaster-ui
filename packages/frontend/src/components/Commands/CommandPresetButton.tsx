@@ -20,7 +20,7 @@ export interface CommandPresetButtonProps {
   onExecutionComplete?: (success: boolean, results?: any) => void
 }
 
-export const CommandPresetButton: React.FC<CommandPresetButtonProps> = ({
+export const CommandPresetButton = ({
   presetName,
   label,
   description,
@@ -34,7 +34,7 @@ export const CommandPresetButton: React.FC<CommandPresetButtonProps> = ({
   className,
   onExecutionStart,
   onExecutionComplete,
-}) => {
+}: CommandPresetButtonProps) => {
   const { state, executePreset } = useCommandExecution()
 
   const handleClick = async () => {

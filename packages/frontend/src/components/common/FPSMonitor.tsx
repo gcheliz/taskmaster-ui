@@ -5,10 +5,10 @@ interface FPSMonitorProps {
   position?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
 }
 
-export const FPSMonitor: React.FC<FPSMonitorProps> = ({ 
+export const FPSMonitor = ({ 
   enabled = process.env.NODE_ENV === 'development',
   position = 'top-right' 
-}) => {
+}: FPSMonitorProps) => {
   const [fps, setFps] = useState(60)
   const frameCount = useRef(0)
   const lastTime = useRef(performance.now())

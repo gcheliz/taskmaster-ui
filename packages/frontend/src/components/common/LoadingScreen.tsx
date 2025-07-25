@@ -6,10 +6,10 @@ export interface LoadingScreenProps {
   message?: string
 }
 
-export const LoadingScreen: React.FC<LoadingScreenProps> = ({
+export const LoadingScreen = ({
   className,
   message = 'Loading...',
-}) => {
+}: LoadingScreenProps) => {
   return (
     <div
       className={cn('fixed inset-0 flex flex-col items-center justify-center bg-white', className)}

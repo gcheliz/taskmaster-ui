@@ -29,12 +29,12 @@ interface WebSocketProviderProps {
   user?: User | null
 }
 
-export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
+export const WebSocketProvider = ({
   children,
   wsUrl = process.env.REACT_APP_WS_URL || 'ws://localhost:8080',
   autoConnect = true,
   user,
-}) => {
+}: WebSocketProviderProps) => {
   const [currentUser, setCurrentUser] = useState<User | null>(user || null)
   const [isInitialized, setIsInitialized] = useState(false)
 

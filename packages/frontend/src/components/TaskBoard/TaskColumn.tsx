@@ -26,14 +26,14 @@ export interface TaskColumnProps {
  * Represents a single column in the Kanban board for a specific task status.
  * Contains task cards and handles column-specific operations.
  */
-export const TaskColumn: React.FC<TaskColumnProps> = ({
+export const TaskColumn = ({
   column,
   onTaskClick,
   onTaskMove: _onTaskMove,
   showCreateButton = true,
   onCreateTask,
   className = '',
-}) => {
+}: TaskColumnProps) => {
   const { title, status, tasks, color, limit } = column
   const taskCount = tasks.length
   const isOverLimit = limit && taskCount > limit

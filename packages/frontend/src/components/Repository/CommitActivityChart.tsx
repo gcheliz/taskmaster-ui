@@ -18,11 +18,11 @@ interface ActivityDay {
   weekNumber: number
 }
 
-export const CommitActivityChart: React.FC<CommitActivityChartProps> = ({
+export const CommitActivityChart = ({
   repositoryId,
   className,
   height = 200,
-}) => {
+}: CommitActivityChartProps) => {
   const { statistics, isLoading, error } = useRepositoryStatistics({ repositoryId })
 
   const activityData = useMemo(() => {

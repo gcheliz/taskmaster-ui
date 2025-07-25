@@ -40,7 +40,7 @@ export interface PRDDocumentManagerProps {
  * - Auto-save functionality
  * - Document export capabilities
  */
-export const PRDDocumentManager: React.FC<PRDDocumentManagerProps> = ({
+export const PRDDocumentManager = ({
   initialDocumentId,
   enableBackendAutoSave = true,
   autoSaveInterval = 5000,
@@ -52,7 +52,7 @@ export const PRDDocumentManager: React.FC<PRDDocumentManagerProps> = ({
   compactAnalysisPanel = false,
   onTaskSelect,
   onDependencySelect,
-}) => {
+}: PRDDocumentManagerProps) => {
   const [showDocumentList, setShowDocumentList] = useState(false)
   const [currentContent, setCurrentContent] = useState('')
   const [currentTitle, setCurrentTitle] = useState('')

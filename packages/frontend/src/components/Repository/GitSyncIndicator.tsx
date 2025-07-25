@@ -30,12 +30,12 @@ interface EventLog {
   icon: React.ReactNode
 }
 
-export const GitSyncIndicator: React.FC<GitSyncIndicatorProps> = ({
+export const GitSyncIndicator = ({
   repositoryId,
   className,
   showEvents = false,
   compact = false,
-}) => {
+}: GitSyncIndicatorProps) => {
   const [eventLog, setEventLog] = useState<EventLog[]>([])
   const [isRefreshing, setIsRefreshing] = useState(false)
   

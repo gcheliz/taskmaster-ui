@@ -1,7 +1,7 @@
 import React from 'react'
 import { Skeleton } from './Skeleton'
 
-const StatCardSkeleton: React.FC = () => {
+const StatCardSkeleton = () => {
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-6">
       <div className="flex items-center justify-between mb-4">
@@ -18,7 +18,7 @@ const StatCardSkeleton: React.FC = () => {
   )
 }
 
-const RepositoryCardSkeleton: React.FC = () => {
+const RepositoryCardSkeleton = () => {
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-6">
       {/* Card Header */}
@@ -65,7 +65,7 @@ const RepositoryCardSkeleton: React.FC = () => {
   )
 }
 
-export const RepositoriesSkeleton: React.FC = () => {
+export const RepositoriesSkeleton = () => {
   return (
     <div className="space-y-6">
       {/* Search and Filter Bar */}

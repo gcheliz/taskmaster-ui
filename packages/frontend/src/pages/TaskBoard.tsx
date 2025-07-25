@@ -88,7 +88,7 @@ const TaskBoardContext = React.createContext<{
   isDraggingRef: React.MutableRefObject<boolean>;
 } | null>(null);
 
-const TaskBoard: React.FC = () => {
+const TaskBoard = () => {
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
   const [showFilterMenu, setShowFilterMenu] = useState(false);
   const [showSortMenu, setShowSortMenu] = useState(false);
@@ -881,7 +881,7 @@ const TaskBoard: React.FC = () => {
 };
 
 // Droppable Column Component
-const DroppableColumn: React.FC<{ column: Column }> = ({ column }) => {
+const DroppableColumn = ({ column }: { column: Column }) => {
   const { setNodeRef, isOver } = useDroppable({
     id: column.id,
     data: {
@@ -937,7 +937,7 @@ const DroppableColumn: React.FC<{ column: Column }> = ({ column }) => {
 };
 
 // Sortable Task Card Wrapper
-const SortableTaskCard: React.FC<{ task: Task }> = ({ task }) => {
+const SortableTaskCard = ({ task }: { task: Task }) => {
   const context = React.useContext(TaskBoardContext);
   const {
     attributes,
@@ -976,7 +976,17 @@ const SortableTaskCard: React.FC<{ task: Task }> = ({ task }) => {
 };
 
 // Task Card Component
-const TaskCard: React.FC<{ 
+const TaskCard = ({ 
+  task,
+  isDragging = false,
+  isOver = false,
+  attributes,
+  listeners,
+  onClick,
+  onEdit,
+  setNodeRef,
+  style,
+}: { 
   task: Task; 
   isDragging?: boolean;
   isOver?: boolean;
@@ -986,7 +996,7 @@ const TaskCard: React.FC<{
   onEdit?: (task: Task, e: React.MouseEvent) => void;
   setNodeRef?: any;
   style?: any;
-}> = ({ task, isDragging = false, isOver = false, attributes, listeners, onClick, onEdit, setNodeRef, style }) => {
+}) => {
   const context = React.useContext(TaskBoardContext);
   const getPriorityStyles = (priority: string) => {
     switch (priority) {

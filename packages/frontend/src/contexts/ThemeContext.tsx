@@ -21,10 +21,10 @@ interface ThemeProviderProps {
   defaultTheme?: ThemeMode
 }
 
-export const ThemeProvider: React.FC<ThemeProviderProps> = ({
+export const ThemeProvider = ({
   children,
   defaultTheme = 'system',
-}) => {
+}: ThemeProviderProps) => {
   const [theme, setTheme] = useState<ThemeMode>(defaultTheme)
   const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light')
 

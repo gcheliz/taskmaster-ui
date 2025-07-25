@@ -26,7 +26,7 @@ const colorClasses = {
   pink: 'bg-pink-100 text-pink-600 hover:bg-pink-200',
 }
 
-export const QuickActions: React.FC<QuickActionsProps> = ({ actions, className }) => {
+export const QuickActions = ({ actions, className }: QuickActionsProps) => {
   return (
     <Card className={className}>
       <CardHeader>

@@ -18,13 +18,13 @@ interface UserAvatarProps {
   className?: string
 }
 
-export const UserAvatar: React.FC<UserAvatarProps> = ({
+export const UserAvatar = ({
   user,
   isActive = false,
   size = 'md',
   showStatus = true,
   className,
-}) => {
+}: UserAvatarProps) => {
   const sizeClasses = {
     sm: 'w-8 h-8 text-xs',
     md: 'w-10 h-10 text-sm',
@@ -105,7 +105,7 @@ interface ConnectedUsersProps {
   className?: string
 }
 
-export const ConnectedUsers: React.FC<ConnectedUsersProps> = ({ maxVisible = 5, className }) => {
+export const ConnectedUsers = ({ maxVisible = 5, className }: ConnectedUsersProps) => {
   const { connectedUsers, isUserActive } = useUserPresence()
 
   if (connectedUsers.length === 0) {
@@ -145,10 +145,10 @@ interface UserPresenceIndicatorProps {
   className?: string
 }
 
-export const UserPresenceIndicator: React.FC<UserPresenceIndicatorProps> = ({
+export const UserPresenceIndicator = ({
   userId,
   className,
-}) => {
+}: UserPresenceIndicatorProps) => {
   const { connectedUsers, isUserActive } = useUserPresence()
   const user = connectedUsers.find((u) => u.id === userId)
 
@@ -182,7 +182,7 @@ interface UserCursorProps {
   className?: string
 }
 
-export const UserCursor: React.FC<UserCursorProps> = ({ userId, className }) => {
+export const UserCursor = ({ userId, className }: UserCursorProps) => {
   const { connectedUsers, getUserCursor } = useUserPresence()
   const user = connectedUsers.find((u) => u.id === userId)
   const cursor = getUserCursor(userId)
@@ -225,7 +225,7 @@ interface CollaborationStatusProps {
   className?: string
 }
 
-export const CollaborationStatus: React.FC<CollaborationStatusProps> = ({ className }) => {
+export const CollaborationStatus = ({ className }: CollaborationStatusProps) => {
   const { connectedUsers } = useUserPresence()
   const activeUsers = connectedUsers.length
 

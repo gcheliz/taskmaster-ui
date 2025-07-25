@@ -4,7 +4,7 @@ import { AddRepository } from '../components/Repository/AddRepository'
 import { Modal } from '../components/ui/molecules/Modal'
 import { useRepositoryOperations } from '../hooks/useRepositoryOperations'
 
-const Repository: React.FC = () => {
+const Repository = () => {
   const [showAddModal, setShowAddModal] = useState(false)
   const { connectRepository } = useRepositoryOperations()
 

@@ -10,13 +10,13 @@ interface TaskPrioritySelectorProps {
   readOnly?: boolean
 }
 
-export const TaskPrioritySelector: React.FC<TaskPrioritySelectorProps> = ({
+export const TaskPrioritySelector = ({
   value,
   onChange,
   error,
   disabled = false,
   readOnly = false,
-}) => {
+}: TaskPrioritySelectorProps) => {
   const getPriorityColor = (priority: TaskPriority) => {
     return TASK_PRIORITIES.find((p) => p.value === priority)?.color || '#6b7280'
   }

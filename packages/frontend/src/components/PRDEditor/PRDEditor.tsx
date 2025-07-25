@@ -42,7 +42,7 @@ export interface PRDEditorProps {
  * - Keyboard shortcuts
  * - Extensible architecture for custom features
  */
-export const PRDEditor: React.FC<PRDEditorProps> = ({
+export const PRDEditor = ({
   initialContent = '',
   onContentChange,
   readOnly = false,
@@ -51,7 +51,7 @@ export const PRDEditor: React.FC<PRDEditorProps> = ({
   autoSave = true,
   autoSaveInterval = 2000,
   onAutoSave,
-}) => {
+}: PRDEditorProps) => {
   const [content, setContent] = useState(initialContent)
   const [isSaving, setIsSaving] = useState(false)
   const [lastSaved, setLastSaved] = useState<Date | null>(null)

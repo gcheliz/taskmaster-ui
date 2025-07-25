@@ -18,11 +18,11 @@ export interface DashboardViewProps {
  * Main dashboard container that displays project metrics, charts, and insights.
  * Provides a comprehensive overview of project health and progress.
  */
-export const DashboardView: React.FC<DashboardViewProps> = ({
+export const DashboardView = ({
   projectId,
   projectTag,
   className = '',
-}) => {
+}: DashboardViewProps) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'analytics' | 'activity'>('overview')
   const [refreshing, setRefreshing] = useState(false)
 

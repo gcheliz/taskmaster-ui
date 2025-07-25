@@ -29,7 +29,7 @@ export interface PRDAnalysisPanelProps {
  * A comprehensive panel that combines analysis trigger and results display.
  * Provides a complete interface for PRD analysis with state management.
  */
-export const PRDAnalysisPanel: React.FC<PRDAnalysisPanelProps> = ({
+export const PRDAnalysisPanel = ({
   content,
   isVisible = true,
   compact = false,
@@ -38,7 +38,7 @@ export const PRDAnalysisPanel: React.FC<PRDAnalysisPanelProps> = ({
   onTaskSelect,
   onDependencySelect,
   onVisibilityChange,
-}) => {
+}: PRDAnalysisPanelProps) => {
   const [analysisResult, setAnalysisResult] = useState<PRDAnalysisResult | null>(null)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [analysisError, setAnalysisError] = useState<Error | null>(null)

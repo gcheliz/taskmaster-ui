@@ -26,11 +26,11 @@ interface ContributorItemProps {
   isTopContributor: boolean
 }
 
-const ContributorItem: React.FC<ContributorItemProps> = ({ 
+const ContributorItem = ({ 
   contributor, 
   totalCommits,
   isTopContributor 
-}) => {
+}: ContributorItemProps) => {
   const percentage = Math.round((contributor.commits / totalCommits) * 100)
   const lastCommitDays = Math.floor(
     (Date.now() - new Date(contributor.lastCommitDate).getTime()) / (1000 * 60 * 60 * 24)
@@ -88,11 +88,11 @@ const ContributorItem: React.FC<ContributorItemProps> = ({
   )
 }
 
-export const ContributorsCard: React.FC<ContributorsCardProps> = ({
+export const ContributorsCard = ({
   repositoryId,
   className,
   maxContributors = 10,
-}) => {
+}: ContributorsCardProps) => {
   const { statistics, isLoading, error } = useRepositoryStatistics({ repositoryId })
 
   const sortedContributors = useMemo(() => {

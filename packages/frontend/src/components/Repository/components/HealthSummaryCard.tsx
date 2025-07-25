@@ -10,14 +10,14 @@ export interface HealthSummaryCardProps {
   icon?: React.ReactNode
 }
 
-export const HealthSummaryCard: React.FC<HealthSummaryCardProps> = ({
+export const HealthSummaryCard = ({
   title,
   score,
   trend,
   subtitle,
   color = 'blue',
   icon,
-}) => {
+}: HealthSummaryCardProps) => {
   const colorClasses = {
     blue: 'bg-blue-50 border-blue-200 text-blue-700',
     green: 'bg-green-50 border-green-200 text-green-700',
@@ -60,19 +60,19 @@ export const HealthSummaryCard: React.FC<HealthSummaryCardProps> = ({
   )
 }
 
-const ArrowUpIcon: React.FC<{ className?: string }> = ({ className }) => (
+const ArrowUpIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 14l5-5 5 5" />
   </svg>
 )
 
-const ArrowDownIcon: React.FC<{ className?: string }> = ({ className }) => (
+const ArrowDownIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 14l-5 5-5-5" />
   </svg>
 )
 
-const ArrowRightIcon: React.FC<{ className?: string }> = ({ className }) => (
+const ArrowRightIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
   </svg>

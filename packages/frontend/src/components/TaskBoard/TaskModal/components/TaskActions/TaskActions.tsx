@@ -30,7 +30,7 @@ interface TaskActionsProps {
  * Provides a set of quick actions for tasks like complete, archive, duplicate, etc.
  * Can be used in task cards, task details view, or as a dropdown menu.
  */
-export const TaskActions: React.FC<TaskActionsProps> = ({
+export const TaskActions = ({
   task,
   isLoading = false,
   canEdit = true,
@@ -41,7 +41,7 @@ export const TaskActions: React.FC<TaskActionsProps> = ({
   onDuplicate,
   onExport,
   className = '',
-}) => {
+}: TaskActionsProps) => {
   const isCompleted = task.status === 'done'
   const isBlocked = task.status === 'blocked'
   const isInProgress = task.status === 'in-progress'

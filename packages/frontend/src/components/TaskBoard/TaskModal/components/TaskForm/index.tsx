@@ -16,7 +16,7 @@ interface TaskFormProps {
   onSubmit: (e: React.FormEvent) => Promise<void>
 }
 
-export const TaskForm: React.FC<TaskFormProps> = ({
+export const TaskForm = ({
   formData,
   validationErrors,
   isLoading,
@@ -24,7 +24,7 @@ export const TaskForm: React.FC<TaskFormProps> = ({
   availableTasks = [],
   onFieldChange,
   onSubmit,
-}) => {
+}: TaskFormProps) => {
   return (
     <form onSubmit={onSubmit} className="space-y-6">
       {/* Title */}

@@ -36,7 +36,7 @@ export interface KanbanTaskCardProps {
   className?: string
 }
 
-const KanbanTaskCard: React.FC<KanbanTaskCardProps> = ({
+const KanbanTaskCard = ({
   id,
   title,
   description,
@@ -54,7 +54,7 @@ const KanbanTaskCard: React.FC<KanbanTaskCardProps> = ({
   isDragging = false,
   isDraggable = true,
   className = '',
-}) => {
+}: KanbanTaskCardProps) => {
   // Configure draggable behavior
   const dragData: DragData = {
     type: 'task',

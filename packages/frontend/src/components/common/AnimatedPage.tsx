@@ -8,11 +8,11 @@ interface AnimatedPageProps {
   className?: string
 }
 
-export const AnimatedPage: React.FC<AnimatedPageProps> = ({ 
+export const AnimatedPage = ({ 
   children, 
   preset = 'fade',
   className = ''
-}) => {
+}: AnimatedPageProps) => {
   const motionProps = motionPresets[preset]
   const variants = getReducedMotionVariants(motionProps.variants)
 
@@ -34,10 +34,10 @@ interface AnimatedListProps {
   className?: string
 }
 
-export const AnimatedList: React.FC<AnimatedListProps> = ({ 
+export const AnimatedList = ({ 
   children, 
   className = ''
-}) => {
+}: AnimatedListProps) => {
   return (
     <motion.div
       initial="initial"
@@ -63,11 +63,11 @@ interface AnimatedListItemProps {
   index?: number
 }
 
-export const AnimatedListItem: React.FC<AnimatedListItemProps> = ({ 
+export const AnimatedListItem = ({ 
   children, 
   className = '',
   index = 0
-}) => {
+}: AnimatedListItemProps) => {
   const variants = getReducedMotionVariants({
     initial: { opacity: 0, y: 20 },
     animate: { 

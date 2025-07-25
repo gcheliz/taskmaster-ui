@@ -68,7 +68,7 @@ const DEFAULT_COLUMNS: KanbanBoardColumn[] = [
   },
 ]
 
-const KanbanBoard: React.FC<KanbanBoardProps> = ({
+const KanbanBoard = ({
   tasks,
   loading = false,
   error,
@@ -79,7 +79,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
   showSearch = true,
   showFilters = true,
   className = '',
-}) => {
+}: KanbanBoardProps) => {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedPriority, setSelectedPriority] = useState<TaskPriority | 'all'>('all')
   const [refreshing, setRefreshing] = useState(false)

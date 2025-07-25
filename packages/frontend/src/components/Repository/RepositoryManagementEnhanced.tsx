@@ -26,10 +26,10 @@ export interface RepositoryManagementEnhancedProps {
   className?: string
 }
 
-export const RepositoryManagementEnhanced: React.FC<RepositoryManagementEnhancedProps> = ({
+export const RepositoryManagementEnhanced = ({
   onAddRepository,
   className
-}) => {
+}: RepositoryManagementEnhancedProps) => {
   const { repositories, isLoading, error, refetch } = useRepositoryList()
   const [selectedRepositories, setSelectedRepositories] = useState<Set<string>>(new Set())
   const [batchOperation, setBatchOperation] = useState<'sync' | 'remove' | 'export' | null>(null)

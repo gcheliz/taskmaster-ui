@@ -56,7 +56,7 @@ const getHealthBadgeVariant = (score: number): 'success' | 'warning' | 'error' =
   return 'error'
 }
 
-const ConnectionStatusIndicator: React.FC<{ status: 'connected' | 'syncing' | 'error' }> = ({ status }) => {
+const ConnectionStatusIndicator = ({ status }: { status: 'connected' | 'syncing' | 'error' }) => {
   const config = {
     connected: { icon: CheckCircle, color: 'text-green-500', label: 'Connected' },
     syncing: { icon: RefreshCw, color: 'text-blue-500 animate-spin', label: 'Syncing' },
@@ -73,7 +73,7 @@ const ConnectionStatusIndicator: React.FC<{ status: 'connected' | 'syncing' | 'e
   )
 }
 
-export const EnhancedRepositoryCard: React.FC<EnhancedRepositoryCardProps> = ({
+export const EnhancedRepositoryCard = ({
   repositoryId,
   onSelect,
   isSelected = false,
@@ -83,7 +83,7 @@ export const EnhancedRepositoryCard: React.FC<EnhancedRepositoryCardProps> = ({
   onViewDetails,
   className,
   showBatchSelect = false,
-}) => {
+}: EnhancedRepositoryCardProps) => {
   const { metadata: repository, isLoading: loading, error } = useRepositoryData({ repositoryId })
   const { health } = useRepositoryHealth({ repositoryId })
   const [isSyncing, setIsSyncing] = useState(false)

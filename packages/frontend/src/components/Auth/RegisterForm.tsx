@@ -82,11 +82,11 @@ const registerSchema = z
 
 type FormData = z.infer<typeof registerSchema>
 
-export const RegisterForm: React.FC<RegisterFormProps> = ({
+export const RegisterForm = ({
   onSuccess,
   showSocialLogins = true,
   className,
-}) => {
+}: RegisterFormProps) => {
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)

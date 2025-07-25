@@ -47,7 +47,7 @@ export interface TerminalProps {
   enableClipboard?: boolean
 }
 
-export const Terminal: React.FC<TerminalProps> = ({
+export const Terminal = ({
   sessionId,
   workingDirectory = process.cwd(),
   repositoryPath,

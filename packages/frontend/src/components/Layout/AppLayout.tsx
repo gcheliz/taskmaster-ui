@@ -12,7 +12,7 @@ import { PageTransitionWrapper } from './PageTransitionWrapper'
 // import { NavigationDebug } from '../Debug/NavigationDebug'
 // import { useNavigationDebug } from '../../hooks/useNavigationDebug'
 
-export const AppLayout: React.FC = () => {
+export const AppLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [shortcutsOpen, setShortcutsOpen] = useState(false)

@@ -10,6 +10,7 @@ import type {
 } from '../../types/task'
 import { useSimpleTaskData } from '../../hooks/useSimpleTaskData'
 import { useTaskUpdates } from '../../hooks/useTaskUpdates'
+import { useOptimisticTaskCreation } from '../../hooks/useOptimisticTaskCreation'
 import { useNotification } from '../../contexts/NotificationContext'
 import { taskService } from '../../services/taskService'
 
@@ -50,7 +51,7 @@ export interface TaskBoardManagerProps {
  * Enhanced wrapper for TaskBoard with additional features like filtering,
  * sorting, data source management, and real-time WebSocket updates.
  */
-export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
+export const TaskBoardManager = ({
   repositoryPath,
   projectTag,
   projectId,
@@ -65,7 +66,7 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
   onTaskClick,
   onTaskMove,
   onCreateTask,
-}) => {
+}: TaskBoardManagerProps) => {
   const [filters, setFilters] = useState<TaskFilters>({})
   const [sortOptions, setSortOptions] = useState<TaskSortOptions>({
     field: 'createdAt',
@@ -124,6 +125,19 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
     optimisticUpdates: true,
   })
 
+  const { isCreating, createError, createTaskOptimistically, clearCreateError } = useOptimisticTaskCreation({
+    repositoryPath,
+    onCreateSuccess: (task) => {
+      showSuccess(`Task "${task.title}" created successfully`)
+      // Refresh data to sync with server and get the real task ID
+      refresh()
+    },
+    onCreateError: (error) => {
+      showError(`Failed to create task: ${error}`)
+    },
+    optimisticUpdates: true,
+  })
+
   // Sync local data with remote data
   useEffect(() => {
     if (taskBoardData) {
@@ -132,8 +146,11 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
       if (updateError) {
         clearUpdateError()
       }
+      if (createError) {
+        clearCreateError()
+      }
     }
-  }, [taskBoardData, updateError, clearUpdateError])
+  }, [taskBoardData, updateError, clearUpdateError, createError, clearCreateError])
 
   // Display current data (local if available, otherwise remote)
   const currentTaskBoardData = localTaskBoardData || taskBoardData
@@ -250,12 +267,18 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
     async (taskData: Partial<Task>) => {
       try {
         if (modalMode === 'create') {
-          // Create new task
-          const newTask = await taskService.createTask(taskData, repositoryPath)
-          showSuccess(`Task "${newTask.title}" created successfully`)
+          // Create new task with optimistic update
+          const { boardData, task } = await createTaskOptimistically(taskData, currentTaskBoardData)
+          
+          if (boardData) {
+            // Apply optimistic update immediately
+            setLocalTaskBoardData(boardData)
+          }
 
-          // Refresh data to sync with server
-          await refresh()
+          if (!task) {
+            // If task creation failed, the error is already handled by the hook
+            return
+          }
         } else if (modalMode === 'edit' && selectedTask) {
           // Update existing task
           const updatedTask = await taskService.updateTask(selectedTask.id, taskData, projectId)
@@ -272,7 +295,7 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
         throw error // Re-throw to let the modal handle the error state
       }
     },
-    [modalMode, selectedTask, projectId, repositoryPath, refresh, showSuccess, showError, handleCloseModal]
+    [modalMode, selectedTask, projectId, currentTaskBoardData, createTaskOptimistically, refresh, showSuccess, showError, handleCloseModal]
   )
 
   const handleDeleteTask = useCallback(
@@ -416,8 +439,8 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
       {/* Task Board */}
       <TaskBoard
         data={currentTaskBoardData || undefined}
-        isLoading={isLoading || isUpdating}
-        error={typeof error === 'string' ? error : error?.message || updateError}
+        isLoading={isLoading || isUpdating || isCreating}
+        error={typeof error === 'string' ? error : error?.message || updateError || createError}
         onTaskClick={handleTaskClick}
         onTaskMove={handleTaskMove}
         onCreateTask={handleCreateTask}

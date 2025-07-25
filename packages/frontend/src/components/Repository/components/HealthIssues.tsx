@@ -17,7 +17,7 @@ export interface HealthIssuesProps {
   issuesBySeverity: IssueDataPoint[]
 }
 
-export const HealthIssues: React.FC<HealthIssuesProps> = ({ health, issuesBySeverity }) => {
+export const HealthIssues = ({ health, issuesBySeverity }: HealthIssuesProps) => {
   if (!health.issues.length) {
     return (
       <div className="text-center py-12">

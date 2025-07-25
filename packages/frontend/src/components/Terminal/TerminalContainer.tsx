@@ -37,7 +37,7 @@ export interface TerminalContainerProps {
  * Complete terminal implementation with integrated session management,
  * WebSocket communication, and xterm.js rendering.
  */
-export const TerminalContainer: React.FC<TerminalContainerProps> = ({
+export const TerminalContainer = ({
   workingDirectory,
   repositoryPath,
   mode = 'embedded',
@@ -51,7 +51,7 @@ export const TerminalContainer: React.FC<TerminalContainerProps> = ({
   showNotifications = true,
   autoCreate = true,
   autoConnect = true,
-}) => {
+}: TerminalContainerProps) => {
   const {
     session,
     websocket,

@@ -60,14 +60,14 @@ export interface HealthSummaryCardProps {
   icon?: React.ReactNode
 }
 
-const HealthSummaryCard: React.FC<HealthSummaryCardProps> = ({
+const HealthSummaryCard = ({
   title,
   score,
   trend,
   subtitle,
   color = 'blue',
   icon,
-}) => {
+}: HealthSummaryCardProps) => {
   const colorClasses = {
     blue: 'bg-blue-50 border-blue-200 text-blue-700',
     green: 'bg-green-50 border-green-200 text-green-700',
@@ -110,13 +110,13 @@ const HealthSummaryCard: React.FC<HealthSummaryCardProps> = ({
   )
 }
 
-export const RepositoryHealthModal: React.FC<RepositoryHealthModalProps> = ({
+export const RepositoryHealthModal = ({
   open,
   onOpenChange,
   repositoryId,
   repositoryName,
   className,
-}) => {
+}: RepositoryHealthModalProps) => {
   const [selectedPeriod, setSelectedPeriod] = useState<'7d' | '30d' | '90d' | '1y'>('30d')
   const [activeView, setActiveView] = useState<'overview' | 'metrics' | 'issues' | 'trends'>(
     'overview'
@@ -843,7 +843,7 @@ export const RepositoryHealthModal: React.FC<RepositoryHealthModalProps> = ({
 }
 
 // Icon components
-const CodeIcon: React.FC<{ className?: string }> = ({ className }) => (
+const CodeIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
@@ -854,7 +854,7 @@ const CodeIcon: React.FC<{ className?: string }> = ({ className }) => (
   </svg>
 )
 
-const ShieldIcon: React.FC<{ className?: string }> = ({ className }) => (
+const ShieldIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
@@ -865,7 +865,7 @@ const ShieldIcon: React.FC<{ className?: string }> = ({ className }) => (
   </svg>
 )
 
-const SpeedIcon: React.FC<{ className?: string }> = ({ className }) => (
+const SpeedIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
@@ -876,7 +876,7 @@ const SpeedIcon: React.FC<{ className?: string }> = ({ className }) => (
   </svg>
 )
 
-const TestIcon: React.FC<{ className?: string }> = ({ className }) => (
+const TestIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
@@ -887,7 +887,7 @@ const TestIcon: React.FC<{ className?: string }> = ({ className }) => (
   </svg>
 )
 
-const DashboardIcon: React.FC<{ className?: string }> = ({ className }) => (
+const DashboardIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
@@ -898,7 +898,7 @@ const DashboardIcon: React.FC<{ className?: string }> = ({ className }) => (
   </svg>
 )
 
-const ChartIcon: React.FC<{ className?: string }> = ({ className }) => (
+const ChartIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
@@ -909,7 +909,7 @@ const ChartIcon: React.FC<{ className?: string }> = ({ className }) => (
   </svg>
 )
 
-const WarningIcon: React.FC<{ className?: string }> = ({ className }) => (
+const WarningIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
@@ -920,7 +920,7 @@ const WarningIcon: React.FC<{ className?: string }> = ({ className }) => (
   </svg>
 )
 
-const TrendIcon: React.FC<{ className?: string }> = ({ className }) => (
+const TrendIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
@@ -931,7 +931,7 @@ const TrendIcon: React.FC<{ className?: string }> = ({ className }) => (
   </svg>
 )
 
-const CheckIcon: React.FC<{ className?: string }> = ({ className }) => (
+const CheckIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
@@ -942,19 +942,19 @@ const CheckIcon: React.FC<{ className?: string }> = ({ className }) => (
   </svg>
 )
 
-const ArrowUpIcon: React.FC<{ className?: string }> = ({ className }) => (
+const ArrowUpIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 14l5-5 5 5" />
   </svg>
 )
 
-const ArrowDownIcon: React.FC<{ className?: string }> = ({ className }) => (
+const ArrowDownIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 14l-5 5-5-5" />
   </svg>
 )
 
-const ArrowRightIcon: React.FC<{ className?: string }> = ({ className }) => (
+const ArrowRightIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
   </svg>

@@ -9,7 +9,7 @@ interface LoadingOverlayProps {
   className?: string
 }
 
-export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
+export const LoadingOverlay = ({
   visible,
   message,
   fullScreen = false,

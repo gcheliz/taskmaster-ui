@@ -31,7 +31,7 @@ interface StatItemProps {
   className?: string
 }
 
-const StatItem: React.FC<StatItemProps> = ({ icon, label, value, trend, className }) => (
+const StatItem = ({ icon, label, value, trend, className }: StatItemProps) => (
   <div className={cn('flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50', className)}>
     <div className="p-2 rounded-md bg-white dark:bg-slate-800 shadow-sm">
       {icon}
@@ -54,10 +54,10 @@ const StatItem: React.FC<StatItemProps> = ({ icon, label, value, trend, classNam
   </div>
 )
 
-export const RepositoryStatisticsCard: React.FC<RepositoryStatisticsCardProps> = ({
+export const RepositoryStatisticsCard = ({
   repositoryId,
   className,
-}) => {
+}: RepositoryStatisticsCardProps) => {
   const { statistics, isLoading, error } = useRepositoryStatistics({ repositoryId })
 
   // Calculate trends and format data

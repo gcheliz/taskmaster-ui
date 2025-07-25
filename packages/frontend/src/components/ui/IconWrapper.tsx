@@ -59,7 +59,7 @@ export interface IconWrapperProps extends Omit<BaseIconProps, 'icon'> {
   name: keyof typeof iconMap
 }
 
-export const Icon: React.FC<IconWrapperProps> = ({ name, ...props }) => {
+export const Icon = ({ name, ...props }) => {
   const IconComponent = iconMap[name]
   
   if (!IconComponent) {

@@ -38,11 +38,11 @@ export interface CommandPanelProps {
   className?: string
 }
 
-export const CommandPanel: React.FC<CommandPanelProps> = ({
+export const CommandPanel = ({
   repositoryPath,
   workingDirectory,
   className,
-}) => {
+}: CommandPanelProps) => {
   const [availableCommands, setAvailableCommands] = useState<AvailableCommand[]>([])
   const [presets, setPresets] = useState<CommandPreset[]>([])
   const [loading, setLoading] = useState(true)

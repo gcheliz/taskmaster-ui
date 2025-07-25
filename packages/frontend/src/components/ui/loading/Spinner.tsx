@@ -21,7 +21,7 @@ const variantClasses = {
   gray: 'text-gray-600',
 }
 
-export const Spinner: React.FC<SpinnerProps> = ({ 
+export const Spinner = ({ 
   size = 'md', 
   variant = 'primary',
   className = '' 

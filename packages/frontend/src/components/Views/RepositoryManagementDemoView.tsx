@@ -254,9 +254,9 @@ export interface RepositoryManagementDemoViewProps {
   className?: string
 }
 
-export const RepositoryManagementDemoView: React.FC<RepositoryManagementDemoViewProps> = ({
+export const RepositoryManagementDemoView = ({
   className,
-}) => {
+}: RepositoryManagementDemoViewProps) => {
   // Fetch the list of repositories using React Query
   const {
     repositories: repositoryList,

@@ -25,12 +25,12 @@ export interface CreateProjectModalProps {
  * Provides a modal interface for creating new TaskMaster projects.
  * Includes repository selection and project name validation.
  */
-export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
+export const CreateProjectModal = ({
   isOpen,
   onClose,
   onCreateProject,
   className = '',
-}) => {
+}: CreateProjectModalProps) => {
   const [repositories, setRepositories] = useState<Repository[]>([])
   const [selectedRepositoryId, setSelectedRepositoryId] = useState<string>('')
   const [projectName, setProjectName] = useState<string>('')

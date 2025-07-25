@@ -18,7 +18,7 @@ const menuItems = [
   { icon: Settings, label: 'Settings', path: '/settings' },
 ]
 
-export const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onClose, isCollapsed = false, onToggleCollapse }) => {
+export const Sidebar = ({ isOpen = true, onClose, isCollapsed = false, onToggleCollapse }: SidebarProps) => {
   const location = useLocation()
   const navRef = useRef<HTMLElement>(null)
 

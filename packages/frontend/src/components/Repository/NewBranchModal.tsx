@@ -55,7 +55,7 @@ const validateBranchName = (name: string): string | null => {
   return null
 }
 
-export const NewBranchModal: React.FC<NewBranchModalProps> = ({ className }) => {
+export const NewBranchModal = ({ className }: NewBranchModalProps) => {
   const { isOpen, repositoryId, isCreating, error } = useNewBranchModal()
   const { closeNewBranchModal, createNewBranch } = useRepositoryActions()
 

@@ -32,7 +32,7 @@ export interface TaskBoardProps {
  * Main Kanban-style board component that displays tasks organized by status columns.
  * Supports drag-and-drop functionality and task management operations.
  */
-export const TaskBoard: React.FC<TaskBoardProps> = ({
+export const TaskBoard = ({
   data,
   isLoading = false,
   error = null,
@@ -41,7 +41,7 @@ export const TaskBoard: React.FC<TaskBoardProps> = ({
   onTaskMove,
   showCreateButton = true,
   onCreateTask,
-}) => {
+}: TaskBoardProps) => {
   const boardRef = useRef<HTMLDivElement>(null)
   const currentColumnRef = useRef<number>(0)
   const currentCardRef = useRef<number>(0)

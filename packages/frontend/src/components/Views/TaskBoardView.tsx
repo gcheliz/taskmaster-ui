@@ -23,7 +23,7 @@ export interface TaskBoardViewProps {
   useKanbanLayout?: boolean
 }
 
-export const TaskBoardView: React.FC<TaskBoardViewProps> = ({
+export const TaskBoardView = ({
   className = '',
   repositoryPath,
   projectTag,
@@ -32,7 +32,7 @@ export const TaskBoardView: React.FC<TaskBoardViewProps> = ({
   refreshInterval = 30000, // 30 seconds default
   enableFiltering = true,
   useKanbanLayout = true,
-}) => {
+}: TaskBoardViewProps) => {
   const [showFilters, setShowFilters] = useState(enableFiltering)
   const [, setFilteredTasks] = useState<unknown[]>([])
   const [isFilterLoading, setIsFilterLoading] = useState(false)

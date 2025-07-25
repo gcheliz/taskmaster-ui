@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const TestPage: React.FC = () => {
+export const TestPage = () => {
   React.useEffect(() => {
     console.info('[TestPage] Component mounted')
     return () => {

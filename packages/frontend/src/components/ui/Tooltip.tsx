@@ -10,7 +10,7 @@ export interface TooltipProps {
   className?: string
 }
 
-export const Tooltip: React.FC<TooltipProps> = ({
+export const Tooltip = ({
   content,
   children,
   placement = 'top',

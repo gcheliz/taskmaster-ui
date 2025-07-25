@@ -30,25 +30,25 @@ const iconVariants = cva('inline-flex items-center justify-center', {
 })
 
 // SVG Icons using Tailwind CSS styling
-export const CheckIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+export const CheckIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" aria-hidden="true" {...props}>
     <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
   </svg>
 )
 
-export const XMarkIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+export const XMarkIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" aria-hidden="true" {...props}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
   </svg>
 )
 
-export const PlusIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+export const PlusIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" aria-hidden="true" {...props}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
   </svg>
 )
 
-export const PencilIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+export const PencilIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
     <path
       strokeLinecap="round"
@@ -58,7 +58,7 @@ export const PencilIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   </svg>
 )
 
-export const TrashIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+export const TrashIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
     <path
       strokeLinecap="round"
@@ -68,7 +68,7 @@ export const TrashIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   </svg>
 )
 
-export const EyeIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+export const EyeIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
     <path
       strokeLinecap="round"
@@ -79,7 +79,7 @@ export const EyeIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   </svg>
 )
 
-export const EyeSlashIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+export const EyeSlashIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
     <path
       strokeLinecap="round"
@@ -89,13 +89,13 @@ export const EyeSlashIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => 
   </svg>
 )
 
-export const ChevronDownIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+export const ChevronDownIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
     <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
   </svg>
 )
 
-export const LoadingIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+export const LoadingIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     fill="none"
     viewBox="0 0 24 24"
@@ -113,7 +113,7 @@ export const LoadingIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
 )
 
 // Task Management Icons
-export const TaskIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+export const TaskIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
     <path
       strokeLinecap="round"
@@ -123,7 +123,7 @@ export const TaskIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   </svg>
 )
 
-export const CompleteIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+export const CompleteIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
     <path
       strokeLinecap="round"
@@ -133,7 +133,7 @@ export const CompleteIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => 
   </svg>
 )
 
-export const WarningIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+export const WarningIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
     <path
       strokeLinecap="round"
@@ -143,7 +143,7 @@ export const WarningIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   </svg>
 )
 
-export const TimeIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+export const TimeIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
     <path
       strokeLinecap="round"
@@ -153,7 +153,7 @@ export const TimeIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   </svg>
 )
 
-export const UserCircleIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+export const UserCircleIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
     <path
       strokeLinecap="round"
@@ -163,7 +163,7 @@ export const UserCircleIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) =
   </svg>
 )
 
-export const UserIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+export const UserIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
     <path
       strokeLinecap="round"
@@ -173,7 +173,7 @@ export const UserIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   </svg>
 )
 
-export const BriefcaseIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+export const BriefcaseIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
     <path
       strokeLinecap="round"
@@ -183,7 +183,7 @@ export const BriefcaseIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) =>
   </svg>
 )
 
-export const CalendarDaysIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+export const CalendarDaysIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
     <path
       strokeLinecap="round"
@@ -193,7 +193,7 @@ export const CalendarDaysIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props)
   </svg>
 )
 
-export const TaggedIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+export const TaggedIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
     <path
       strokeLinecap="round"
@@ -205,7 +205,7 @@ export const TaggedIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
 )
 
 // Navigation Icons
-export const HomeFilledIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+export const HomeFilledIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
     <path
       strokeLinecap="round"
@@ -215,7 +215,7 @@ export const HomeFilledIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) =
   </svg>
 )
 
-export const SettingsIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+export const SettingsIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
     <path
       strokeLinecap="round"
@@ -226,7 +226,7 @@ export const SettingsIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => 
   </svg>
 )
 
-export const NotificationIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+export const NotificationIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
     <path
       strokeLinecap="round"
@@ -237,7 +237,7 @@ export const NotificationIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props)
 )
 
 // Action Icons
-export const DuplicateIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+export const DuplicateIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
     <path
       strokeLinecap="round"
@@ -247,7 +247,7 @@ export const DuplicateIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) =>
   </svg>
 )
 
-export const ArchiveIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+export const ArchiveIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
     <path
       strokeLinecap="round"
@@ -257,7 +257,7 @@ export const ArchiveIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   </svg>
 )
 
-export const ShareSocialIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+export const ShareSocialIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
     <path
       strokeLinecap="round"
@@ -267,7 +267,7 @@ export const ShareSocialIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) 
   </svg>
 )
 
-export const FavoriteIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+export const FavoriteIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
     <path
       strokeLinecap="round"
@@ -277,7 +277,7 @@ export const FavoriteIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => 
   </svg>
 )
 
-export const StarFilledIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+export const StarFilledIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
     <path
       strokeLinecap="round"
@@ -287,7 +287,7 @@ export const StarFilledIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) =
   </svg>
 )
 
-export const DragHandleIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+export const DragHandleIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
     <path
       strokeLinecap="round"
@@ -297,7 +297,7 @@ export const DragHandleIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) =
   </svg>
 )
 
-export const ExpandIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+export const ExpandIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
     <path
       strokeLinecap="round"
@@ -307,7 +307,7 @@ export const ExpandIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   </svg>
 )
 
-export const CursorIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+export const CursorIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
     <path
       strokeLinecap="round"
@@ -318,7 +318,7 @@ export const CursorIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
 )
 
 // Auth icons
-export const LockClosedIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+export const LockClosedIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
     <path
       strokeLinecap="round"
@@ -328,7 +328,7 @@ export const LockClosedIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) =
   </svg>
 )
 
-export const EnvelopeIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+export const EnvelopeIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
     <path
       strokeLinecap="round"

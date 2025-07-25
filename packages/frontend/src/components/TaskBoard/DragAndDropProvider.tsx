@@ -49,14 +49,14 @@ export interface DropData {
  * Handles drag events, accessibility, and provides the necessary context
  * for draggable tasks and droppable columns.
  */
-export const DragAndDropProvider: React.FC<DragAndDropProviderProps> = ({
+export const DragAndDropProvider = ({
   children,
   onTaskMove,
   onDragStart,
   onDragEnd,
   dragOverlay,
   className = '',
-}) => {
+}: DragAndDropProviderProps) => {
   const [activeId, setActiveId] = useState<string | null>(null)
 
   // Configure sensors for different input methods

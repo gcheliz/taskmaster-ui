@@ -92,7 +92,7 @@ const getPRStateBadge = (state: string, draft: boolean) => {
   }
 }
 
-const PullRequestItem: React.FC<PullRequestItemProps> = ({ pr }) => {
+const PullRequestItem = ({ pr }: PullRequestItemProps) => {
   const checksStatus = useMemo(() => {
     if (pr.checks.total === 0) return 'none'
     if (pr.checks.failed > 0) return 'failed'
@@ -217,11 +217,11 @@ const PullRequestItem: React.FC<PullRequestItemProps> = ({ pr }) => {
   )
 }
 
-export const PullRequestStatus: React.FC<PullRequestStatusProps> = ({
+export const PullRequestStatus = ({
   repositoryId,
   className,
   maxPullRequests = 5,
-}) => {
+}: PullRequestStatusProps) => {
   const { pullRequests, isLoading, error } = useRepositoryPullRequests({ repositoryId })
 
   const prStats = useMemo(() => {

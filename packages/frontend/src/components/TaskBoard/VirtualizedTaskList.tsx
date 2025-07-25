@@ -14,7 +14,7 @@ interface VirtualizedTaskListProps {
   className?: string;
 }
 
-export const VirtualizedTaskList: React.FC<VirtualizedTaskListProps> = ({
+export const VirtualizedTaskList = ({
   tasks,
   onTaskClick,
   onTaskUpdate,
@@ -22,7 +22,7 @@ export const VirtualizedTaskList: React.FC<VirtualizedTaskListProps> = ({
   height = '600px',
   itemHeight = 120,
   className,
-}) => {
+}: VirtualizedTaskListProps) => {
   useRenderTime('VirtualizedTaskList');
 
   const renderTask = (task: Task) => (
@@ -56,12 +56,12 @@ export const VirtualizedTaskList: React.FC<VirtualizedTaskListProps> = ({
 };
 
 // Table view with virtualization
-export const VirtualizedTaskTable: React.FC<VirtualizedTaskListProps> = ({
+export const VirtualizedTaskTable = ({
   tasks,
   onTaskClick,
   height = '600px',
   className,
-}) => {
+}: VirtualizedTaskListProps) => {
   useRenderTime('VirtualizedTaskTable');
 
   const renderRow = (task: Task) => (

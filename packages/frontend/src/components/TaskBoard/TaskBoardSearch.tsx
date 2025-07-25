@@ -20,13 +20,13 @@ interface TaskBoardSearchProps {
   isLoading?: boolean
 }
 
-export const TaskBoardSearch: React.FC<TaskBoardSearchProps> = ({
+export const TaskBoardSearch = ({
   value,
   onChange,
   placeholder = 'Search tasks...',
   className,
   isLoading = false,
-}) => {
+}: TaskBoardSearchProps) => {
   const handleClear = () => {
     onChange('')
   }

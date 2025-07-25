@@ -4,9 +4,9 @@ export interface RepositoryManagementViewProps {
   className?: string
 }
 
-export const RepositoryManagementView: React.FC<RepositoryManagementViewProps> = ({
+export const RepositoryManagementView = ({
   className = '',
-}) => {
+}: RepositoryManagementViewProps) => {
   return (
     <div className={`repository-management-view ${className}`.trim()}>
       <div className="view-header">

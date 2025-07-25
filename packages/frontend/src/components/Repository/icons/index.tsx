@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const CodeIcon: React.FC<{ className?: string }> = ({ className }) => (
+export const CodeIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
@@ -11,7 +11,7 @@ export const CodeIcon: React.FC<{ className?: string }> = ({ className }) => (
   </svg>
 )
 
-export const ShieldIcon: React.FC<{ className?: string }> = ({ className }) => (
+export const ShieldIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
@@ -22,7 +22,7 @@ export const ShieldIcon: React.FC<{ className?: string }> = ({ className }) => (
   </svg>
 )
 
-export const SpeedIcon: React.FC<{ className?: string }> = ({ className }) => (
+export const SpeedIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
@@ -33,7 +33,7 @@ export const SpeedIcon: React.FC<{ className?: string }> = ({ className }) => (
   </svg>
 )
 
-export const TestIcon: React.FC<{ className?: string }> = ({ className }) => (
+export const TestIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
@@ -44,7 +44,7 @@ export const TestIcon: React.FC<{ className?: string }> = ({ className }) => (
   </svg>
 )
 
-export const DashboardIcon: React.FC<{ className?: string }> = ({ className }) => (
+export const DashboardIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
@@ -55,7 +55,7 @@ export const DashboardIcon: React.FC<{ className?: string }> = ({ className }) =
   </svg>
 )
 
-export const ChartIcon: React.FC<{ className?: string }> = ({ className }) => (
+export const ChartIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
@@ -66,7 +66,7 @@ export const ChartIcon: React.FC<{ className?: string }> = ({ className }) => (
   </svg>
 )
 
-export const WarningIcon: React.FC<{ className?: string }> = ({ className }) => (
+export const WarningIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
@@ -77,7 +77,7 @@ export const WarningIcon: React.FC<{ className?: string }> = ({ className }) => 
   </svg>
 )
 
-export const TrendIcon: React.FC<{ className?: string }> = ({ className }) => (
+export const TrendIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
@@ -88,7 +88,7 @@ export const TrendIcon: React.FC<{ className?: string }> = ({ className }) => (
   </svg>
 )
 
-export const CheckIcon: React.FC<{ className?: string }> = ({ className }) => (
+export const CheckIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
@@ -99,19 +99,19 @@ export const CheckIcon: React.FC<{ className?: string }> = ({ className }) => (
   </svg>
 )
 
-export const ArrowUpIcon: React.FC<{ className?: string }> = ({ className }) => (
+export const ArrowUpIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 14l5-5 5 5" />
   </svg>
 )
 
-export const ArrowDownIcon: React.FC<{ className?: string }> = ({ className }) => (
+export const ArrowDownIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 14l-5 5-5-5" />
   </svg>
 )
 
-export const ArrowRightIcon: React.FC<{ className?: string }> = ({ className }) => (
+export const ArrowRightIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
   </svg>

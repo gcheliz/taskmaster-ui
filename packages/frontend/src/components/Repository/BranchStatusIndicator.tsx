@@ -27,7 +27,7 @@ export interface BranchStatusIndicatorProps {
   className?: string
 }
 
-export const BranchStatusIndicator: React.FC<BranchStatusIndicatorProps> = ({
+export const BranchStatusIndicator = ({
   ahead = 0,
   behind = 0,
   isClean = true,
@@ -36,7 +36,7 @@ export const BranchStatusIndicator: React.FC<BranchStatusIndicatorProps> = ({
   showDetails = false,
   size = 'md',
   className,
-}) => {
+}: BranchStatusIndicatorProps) => {
   const branchStatus = calculateBranchStatus(ahead, behind, isClean, conflicted, lastCommitDate)
   const badgeInfo = getBranchStatusBadge(branchStatus.status)
   const commitAge = formatCommitAge(branchStatus.lastCommitAge)

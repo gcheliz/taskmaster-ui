@@ -45,7 +45,7 @@ export interface KanbanColumnProps {
   className?: string
 }
 
-const KanbanColumn: React.FC<KanbanColumnProps> = ({
+const KanbanColumn = ({
   id,
   title,
   status,
@@ -56,7 +56,7 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({
   onAddTask,
   showAddButton = true,
   className = '',
-}) => {
+}: KanbanColumnProps) => {
   const taskCount = tasks.length
   const isOverLimit = limit && taskCount > limit
 

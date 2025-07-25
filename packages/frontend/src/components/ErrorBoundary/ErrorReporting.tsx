@@ -30,7 +30,7 @@ interface ErrorReportingProps {
 /**
  * Error Reporting Modal - allows users to view and report errors
  */
-export const ErrorReportingModal: React.FC<ErrorReportingProps> = ({ open, onClose, error }) => {
+export const ErrorReportingModal = ({ open, onClose, error }: ErrorReportingProps) => {
   const [reportSent, setReportSent] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [userFeedback, setUserFeedback] = useState('')
@@ -201,7 +201,7 @@ export const ErrorReportingModal: React.FC<ErrorReportingProps> = ({ open, onClo
 /**
  * Error Reporting Widget - shows in corner when errors occur
  */
-export const ErrorReportingWidget: React.FC = () => {
+export const ErrorReportingWidget = () => {
   const [errors, setErrors] = useState<ErrorReport[]>([])
   const [showModal, setShowModal] = useState(false)
   const [selectedError, setSelectedError] = useState<ErrorReport | null>(null)

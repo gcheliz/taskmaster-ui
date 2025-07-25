@@ -22,7 +22,7 @@ import {
 } from 'lucide-react'
 import { PageHeader } from '../components/Layout'
 
-const Settings: React.FC = () => {
+const Settings = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -340,12 +340,12 @@ const Settings: React.FC = () => {
 }
 
 // Theme Option Component
-const ThemeOption: React.FC<{
+const ThemeOption = ({ icon, label, value, selected = false }: {
   icon: React.ReactNode
   label: string
   value: string
   selected?: boolean
-}> = ({ icon, label, value, selected = false }) => (
+}) => (
   <button
     className={`
     p-4 rounded-lg border-2 transition-[border-color,background-color,box-shadow] duration-200 relative
@@ -369,10 +369,10 @@ const ThemeOption: React.FC<{
 )
 
 // Color Option Component
-const ColorOption: React.FC<{
+const ColorOption = ({ color, selected = false }: {
   color: string
   selected?: boolean
-}> = ({ color, selected = false }) => (
+}) => (
   <button
     className={`
     w-10 h-10 rounded-full ${color} relative transition-[transform,box-shadow] duration-200
@@ -388,12 +388,12 @@ const ColorOption: React.FC<{
 )
 
 // Toggle Setting Component
-const ToggleSetting: React.FC<{
+const ToggleSetting = ({ icon, label, description, defaultChecked = false }: {
   icon?: React.ReactNode
   label: string
   description: string
   defaultChecked?: boolean
-}> = ({ icon, label, description, defaultChecked = false }) => {
+}) => {
   const [checked, setChecked] = React.useState(defaultChecked)
 
   return (

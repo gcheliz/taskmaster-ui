@@ -126,7 +126,7 @@ const DEFAULT_ACTIONS: QuickAction[] = [
   },
 ]
 
-const QuickActionsGrid: React.FC<QuickActionsGridProps> = ({
+const QuickActionsGrid = ({
   actions = DEFAULT_ACTIONS,
   loading = false,
   title = 'Quick Actions',
@@ -135,7 +135,7 @@ const QuickActionsGrid: React.FC<QuickActionsGridProps> = ({
   columns = 4,
   showCategories = false,
   className = '',
-}) => {
+}: QuickActionsGridProps) => {
   const [loadingActions, setLoadingActions] = useState<Set<string>>(new Set())
 
   const displayedActions = maxItems ? actions.slice(0, maxItems) : actions

@@ -25,14 +25,14 @@ export interface RepositoryDetailsViewProps {
  * a comprehensive view of repository information with integrated
  * backend data fetching and Git operations.
  */
-export const RepositoryDetailsView: React.FC<RepositoryDetailsViewProps> = ({
+export const RepositoryDetailsView = ({
   repositoryId,
   className = '',
   refreshInterval = 30000,
   mode = 'full',
   onRepositoryClick,
   onBranchClick,
-}) => {
+}: RepositoryDetailsViewProps) => {
   const [notifications, setNotifications] = useState<
     Array<{
       id: string

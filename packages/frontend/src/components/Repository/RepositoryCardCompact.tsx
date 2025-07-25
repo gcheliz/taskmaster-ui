@@ -11,14 +11,14 @@ export interface RepositoryCardCompactProps
   minimal?: boolean
 }
 
-export const RepositoryCardCompact: React.FC<RepositoryCardCompactProps> = ({
+export const RepositoryCardCompact = ({
   repository,
   minimal = false,
   enableRealtime = false,
   onClick,
   onViewDetails,
   className,
-}) => {
+}: RepositoryCardCompactProps) => {
   const getBranchStatusColor = (status: typeof repository.status): string => {
     if (!status.isClean) return 'text-red-500'
     if (status.ahead && status.ahead > 0) return 'text-yellow-500'
@@ -145,7 +145,7 @@ export const RepositoryCardCompact: React.FC<RepositoryCardCompactProps> = ({
 }
 
 // Simple branch icon
-const BranchIcon: React.FC<{ className?: string }> = ({ className }) => (
+const BranchIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l3 3-3 3m5 0h3" />
   </svg>

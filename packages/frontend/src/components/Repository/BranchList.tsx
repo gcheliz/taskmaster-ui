@@ -52,7 +52,7 @@ export interface BranchListProps {
  * - Branch tracking status (ahead/behind)
  * - Interactive checkout functionality
  */
-export const BranchList: React.FC<BranchListProps> = ({
+export const BranchList = ({
   branches,
   isLoading = false,
   error = null,
@@ -62,7 +62,7 @@ export const BranchList: React.FC<BranchListProps> = ({
   showCommitDetails = true,
   showTrackingInfo = true,
   maxDisplayCount = 50,
-}) => {
+}: BranchListProps) => {
   const [displayCount, setDisplayCount] = React.useState(maxDisplayCount)
 
   if (isLoading) {

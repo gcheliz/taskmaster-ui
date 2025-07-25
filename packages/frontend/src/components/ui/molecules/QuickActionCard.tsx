@@ -23,7 +23,7 @@ export interface QuickActionCardProps {
   className?: string
 }
 
-const QuickActionCard: React.FC<QuickActionCardProps> = ({
+const QuickActionCard = ({
   id: _id,
   title,
   description,
@@ -36,7 +36,7 @@ const QuickActionCard: React.FC<QuickActionCardProps> = ({
   shortcut,
   onClick,
   className = '',
-}) => {
+}: QuickActionCardProps) => {
   const getCardVariant = () => {
     if (variant === 'primary') return 'elevated'
     return 'outline'

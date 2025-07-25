@@ -15,7 +15,7 @@ interface TaskDetailsProps {
   canDelete?: boolean
 }
 
-export const TaskDetails: React.FC<TaskDetailsProps> = ({ 
+export const TaskDetails = ({ 
   task, 
   availableTasks = [],
   onStatusChange,
@@ -25,7 +25,7 @@ export const TaskDetails: React.FC<TaskDetailsProps> = ({
   onArchive,
   canEdit = true,
   canDelete = true
-}) => {
+}: TaskDetailsProps) => {
   const getStatusColor = (status: string) => {
     return TASK_STATUSES.find((s) => s.value === status)?.color || '#6b7280'
   }

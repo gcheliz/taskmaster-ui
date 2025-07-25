@@ -37,14 +37,14 @@ export interface StatisticsGridProps {
   showProgressBars?: boolean
 }
 
-const StatisticsGrid: React.FC<StatisticsGridProps> = ({
+const StatisticsGrid = ({
   taskMetrics,
   insights,
   health,
   className = '',
   showHealthIndicator = true,
   showProgressBars = true,
-}) => {
+}: StatisticsGridProps) => {
   const getHealthColor = (
     status: string
   ): 'success' | 'primary' | 'warning' | 'error' | 'secondary' => {

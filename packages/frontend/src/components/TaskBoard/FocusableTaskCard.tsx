@@ -16,13 +16,13 @@ export interface FocusableTaskCardProps extends Omit<TaskCardProps, 'onTaskClick
 /**
  * Enhanced TaskCard with focus management for drag and drop
  */
-export const FocusableTaskCard: React.FC<FocusableTaskCardProps> = ({
+export const FocusableTaskCard = ({
   isDragging,
   shouldRestoreFocus = true,
   onSelect,
   task,
   ...props
-}) => {
+}: FocusableTaskCardProps) => {
   const cardRef = useRef<HTMLDivElement>(null)
   const { saveFocus, restoreFocus } = useFocusRestore()
 

@@ -6,7 +6,7 @@ import { useDashboard } from '../../hooks/useDashboard'
 import { Spinner } from '../ui/atoms/Spinner'
 import { TrendingUp, ArrowUpRight } from 'lucide-react'
 
-export const DashboardStaticView: React.FC = () => {
+export const DashboardStaticView = () => {
   const { user } = useAuth()
   const { repositories, isLoading: reposLoading } = useRepositoryList()
   const { tasksData, isLoading: tasksLoading } = useTaskData()

@@ -42,14 +42,14 @@ export interface RepositorySort {
   direction: 'asc' | 'desc'
 }
 
-export const RepositorySearch: React.FC<RepositorySearchProps> = ({
+export const RepositorySearch = ({
   onSearchChange,
   onFilterChange,
   onSortChange,
   totalCount,
   filteredCount,
   className,
-}) => {
+}: RepositorySearchProps) => {
   const [searchQuery, setSearchQuery] = useState('')
   const [filters, setFilters] = useState<RepositoryFilters>({
     status: 'all'

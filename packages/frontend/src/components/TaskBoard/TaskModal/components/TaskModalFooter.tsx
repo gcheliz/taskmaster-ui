@@ -12,7 +12,7 @@ interface TaskModalFooterProps {
   onDelete?: () => void
 }
 
-export const TaskModalFooter: React.FC<TaskModalFooterProps> = ({
+export const TaskModalFooter = ({
   mode,
   task,
   isLoading,
@@ -20,7 +20,7 @@ export const TaskModalFooter: React.FC<TaskModalFooterProps> = ({
   onEdit,
   onSubmit,
   onDelete,
-}) => {
+}: TaskModalFooterProps) => {
   const isReadOnly = mode === 'view'
   const isCreateMode = mode === 'create'
   const isEditMode = mode === 'edit'

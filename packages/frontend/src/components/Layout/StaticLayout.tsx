@@ -16,7 +16,7 @@ interface StaticLayoutProps {
   children: React.ReactNode
 }
 
-export const StaticLayout: React.FC<StaticLayoutProps> = ({ children }) => {
+export const StaticLayout = ({ children }: StaticLayoutProps) => {
   const { user } = useAuth()
   const navigate = useNavigate()
 

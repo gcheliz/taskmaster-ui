@@ -33,11 +33,11 @@ export interface RepositoryHealthProviderProps {
   open: boolean
 }
 
-export const RepositoryHealthProvider: React.FC<RepositoryHealthProviderProps> = ({
+export const RepositoryHealthProvider = ({
   children,
   repositoryId,
   open,
-}) => {
+}: RepositoryHealthProviderProps) => {
   const [activeView, setActiveView] = useState<'overview' | 'metrics' | 'issues' | 'trends'>('overview')
   const [selectedPeriod, setSelectedPeriod] = useState<'7d' | '30d' | '90d' | '1y'>('30d')
 

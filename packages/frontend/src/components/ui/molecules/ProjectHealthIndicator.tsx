@@ -30,14 +30,14 @@ export interface ProjectHealthIndicatorProps {
   maxIssues?: number
 }
 
-const ProjectHealthIndicator: React.FC<ProjectHealthIndicatorProps> = ({
+const ProjectHealthIndicator = ({
   health,
   className = '',
   showTrends = true,
   showBreakdown = true,
   showIssues = true,
   maxIssues = 3,
-}) => {
+}: ProjectHealthIndicatorProps) => {
   const getHealthColor = (
     status: string
   ): 'success' | 'primary' | 'warning' | 'error' | 'secondary' => {

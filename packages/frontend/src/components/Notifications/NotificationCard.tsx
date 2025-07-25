@@ -6,7 +6,7 @@ export interface NotificationCardProps {
   onDismiss: (id: string) => void
 }
 
-export const NotificationCard: React.FC<NotificationCardProps> = ({ notification, onDismiss }) => {
+export const NotificationCard = ({ notification, onDismiss }: NotificationCardProps) => {
   const [isVisible, setIsVisible] = useState(false)
   const dismissTimerRef = useRef<NodeJS.Timeout | null>(null)
 

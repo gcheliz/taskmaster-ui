@@ -29,12 +29,12 @@ const defaultThresholds = {
   TTFB: 800,    // Good < 0.8s, Poor > 1.8s
 };
 
-export const WebVitalsMonitor: React.FC<WebVitalsConfig> = ({
+export const WebVitalsMonitor = ({
   enabled = true,
   onReport,
   threshold = defaultThresholds,
   debug = false,
-}) => {
+}: WebVitalsConfig) => {
   useEffect(() => {
     if (!enabled) return;
 

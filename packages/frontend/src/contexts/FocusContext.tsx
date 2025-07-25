@@ -21,7 +21,7 @@ interface FocusContextType {
 
 const FocusContext = createContext<FocusContextType | undefined>(undefined)
 
-export const FocusProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const FocusProvider = ({ children }: { children: React.ReactNode }) => {
   const [lastFocusedElement, setLastFocusedElement] = useState<HTMLElement | null>(null)
   const [isFocusVisible, setFocusVisible] = useState(false)
   const [focusTrapStack, setFocusTrapStack] = useState<HTMLElement[]>([])

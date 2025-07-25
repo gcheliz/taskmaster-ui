@@ -327,7 +327,7 @@ export class OptimizedTaskMasterService {
 
     // Boost priority for urgent tasks
     if (args.urgent) priority += 3;
-    if (args.id && args.id.includes('urgent')) priority += 2;
+    if (args.id?.includes('urgent')) priority += 2;
 
     return priority;
   }

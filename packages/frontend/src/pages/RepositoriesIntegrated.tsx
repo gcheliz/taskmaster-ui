@@ -25,7 +25,7 @@ import {
   Settings,
 } from 'lucide-react'
 
-const RepositoriesIntegrated: React.FC = () => {
+const RepositoriesIntegrated = () => {
   const navigate = useNavigate()
   const { repositories, isLoading, error, refetch } = useRepositoryList()
   const { connectRepository, disconnectRepository, refreshRepository } = useRepositoryOperations()

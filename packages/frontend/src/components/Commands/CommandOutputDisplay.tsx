@@ -12,13 +12,13 @@ export interface CommandOutputDisplayProps {
   className?: string
 }
 
-export const CommandOutputDisplay: React.FC<CommandOutputDisplayProps> = ({
+export const CommandOutputDisplay = ({
   result,
   executionId,
   command,
   onClear,
   className,
-}) => {
+}: CommandOutputDisplayProps) => {
   const formatDuration = (ms: number): string => {
     if (ms < 1000) return `${ms}ms`
     return `${(ms / 1000).toFixed(1)}s`

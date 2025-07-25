@@ -23,11 +23,11 @@ export interface ProjectDashboardProps {
  * - Project creation functionality
  * - Project selection and navigation
  */
-export const ProjectDashboard: React.FC<ProjectDashboardProps> = ({
+export const ProjectDashboard = ({
   className = '',
   onProjectSelect,
   onProjectCreated,
-}) => {
+}: ProjectDashboardProps) => {
   const [projects, setProjects] = useState<Project[]>([])
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [notification, setNotification] = useState<{

@@ -29,14 +29,14 @@ export interface AriaLiveRegionProps extends React.HTMLAttributes<HTMLDivElement
  * Provides a live region for screen reader announcements.
  * Used for dynamic content updates that need to be announced.
  */
-export const AriaLiveRegion: React.FC<AriaLiveRegionProps> = ({
+export const AriaLiveRegion = ({
   message,
   politeness = 'polite',
   clearOnAnnounce = true,
   clearDelay = 1000,
   className,
   ...props
-}) => {
+}: AriaLiveRegionProps) => {
   const [announcement, setAnnouncement] = useState<string>('')
 
   useEffect(() => {

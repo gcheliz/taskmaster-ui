@@ -27,7 +27,7 @@ interface TaskBoardWithSearchProps extends Omit<TaskBoardProps, 'data'> {
   onSearchFilterChange?: (search: string, filters: TaskFilters) => void
 }
 
-export const TaskBoardWithSearch: React.FC<TaskBoardWithSearchProps> = ({
+export const TaskBoardWithSearch = ({
   data,
   showSearchAndFilter = true,
   initialSearch = '',
@@ -36,7 +36,7 @@ export const TaskBoardWithSearch: React.FC<TaskBoardWithSearchProps> = ({
   onSearchFilterChange,
   className,
   ...taskBoardProps
-}) => {
+}: TaskBoardWithSearchProps) => {
   // Extract all tasks from the board data
   const allTasks = useMemo(() => {
     if (!data) return []

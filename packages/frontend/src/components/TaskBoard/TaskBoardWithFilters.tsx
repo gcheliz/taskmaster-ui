@@ -18,13 +18,13 @@ export interface TaskBoardWithFiltersProps {
  * This component combines the FilterSortControls with the backend API integration,
  * providing a complete filtering and sorting solution for the task board.
  */
-export const TaskBoardWithFilters: React.FC<TaskBoardWithFiltersProps> = ({
+export const TaskBoardWithFilters = ({
   repositoryPath,
   onTasksChange,
   onLoadingChange,
   onErrorChange,
   className = '',
-}) => {
+}: TaskBoardWithFiltersProps) => {
   const [, setLastError] = useState<Error | null>(null)
 
   const integration = useTaskFiltersIntegration({

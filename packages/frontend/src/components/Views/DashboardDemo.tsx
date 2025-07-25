@@ -11,7 +11,7 @@ import { Icon, HomeFilledIcon, TaskIcon, CompleteIcon } from '../ui/atoms/Icon'
  * A demo page showcasing the new ModernDashboardView with mock data
  * and theme switching capabilities.
  */
-export const DashboardDemo: React.FC = () => {
+export const DashboardDemo = () => {
   const [isDarkMode, setIsDarkMode] = useState(false)
 
   const toggleTheme = () => {

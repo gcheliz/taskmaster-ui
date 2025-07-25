@@ -20,11 +20,11 @@ export interface HealthTrendsProps {
   onPeriodChange: (period: '7d' | '30d' | '90d' | '1y') => void
 }
 
-export const HealthTrends: React.FC<HealthTrendsProps> = ({
+export const HealthTrends = ({
   chartData,
   selectedPeriod,
   onPeriodChange,
-}) => {
+}: HealthTrendsProps) => {
   if (!chartData.length) {
     return (
       <div className="text-center py-12">

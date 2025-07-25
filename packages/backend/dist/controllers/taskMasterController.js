@@ -100,17 +100,6 @@ class TaskMasterController {
                 duration: result.duration,
                 timestamp: new Date().toISOString(),
             });
-            const response = {
-                success: true,
-                data: result,
-                metadata: {
-                    timestamp: new Date().toISOString(),
-                    requestId: req.requestId,
-                    duration: Date.now() - req.startTime,
-                    version: process.env.API_VERSION || '1.0.0',
-                    rateLimit: req.rateLimit,
-                },
-            };
             res.apiSuccess(result, {
                 rateLimit: req.rateLimit,
             });
@@ -178,22 +167,22 @@ class TaskMasterController {
             let filteredTasks = result.data;
             // Apply filters
             if (filters.status && filters.status.length > 0) {
-                filteredTasks = filteredTasks.filter(task => filters.status.includes(task.status));
+                filteredTasks = filteredTasks.filter(task => filters.status?.includes(task.status) ?? false);
             }
             if (filters.priority && filters.priority.length > 0) {
-                filteredTasks = filteredTasks.filter(task => filters.priority.includes(task.priority));
+                filteredTasks = filteredTasks.filter(task => filters.priority?.includes(task.priority) ?? false);
             }
             if (filters.complexity && filters.complexity.length > 0) {
                 filteredTasks = filteredTasks.filter(task => {
                     const taskComplexity = this.getTaskComplexityLevel(task.complexity || 1);
-                    return filters.complexity.includes(taskComplexity);
+                    return filters.complexity?.includes(taskComplexity) ?? false;
                 });
             }
             if (filters.assignee && filters.assignee.length > 0) {
                 filteredTasks = filteredTasks.filter(task => {
                     // For now, we'll treat all tasks as unassigned since assignee is not in TaskInfo
-                    const taskAssignee = task.assignee || 'unassigned';
-                    return filters.assignee.includes(taskAssignee);
+                    const taskAssignee = task.assignee ?? 'unassigned';
+                    return filters.assignee?.includes(taskAssignee) ?? false;
                 });
             }
             if (filters.complexityRange && filters.complexityRange.length === 2) {
@@ -274,6 +263,108 @@ class TaskMasterController {
         }
     }
     /**
+     * Create Task
+     * POST /api/tasks
+     */
+    async createTask(req, res) {
+        try {
+            const request = req.validatedBody; // TaskCreateRequest type
+            const { repositoryPath, title, description, priority, status = 'pending', dependencies = [], tags = [], ...optionalFields } = request;
+            // Check if repository is initialized
+            const projectStatus = await this.taskMasterService.getProjectStatus(repositoryPath);
+            if (!projectStatus.success || !projectStatus.data?.initialized) {
+                throw new Error('TaskMaster is not initialized in this repository');
+            }
+            // Get current tasks to determine next ID
+            const currentTasks = await this.taskMasterService.listTasks(repositoryPath, {
+                tag: this.extractTagFromPath(repositoryPath),
+            });
+            if (!currentTasks.success || !currentTasks.data) {
+                throw new Error('Failed to retrieve current tasks');
+            }
+            // Calculate next task ID
+            const maxId = currentTasks.data.reduce((max, task) => Math.max(max, task.id), 0);
+            const newTaskId = maxId + 1;
+            // Validate dependencies exist
+            if (dependencies.length > 0) {
+                const existingIds = new Set(currentTasks.data.map(t => t.id));
+                const invalidDeps = dependencies.filter(depId => !existingIds.has(depId));
+                if (invalidDeps.length > 0) {
+                    res.status(400).apiError({
+                        code: 'INVALID_DEPENDENCY',
+                        message: `Dependencies not found: ${invalidDeps.join(', ')}`,
+                    });
+                    return;
+                }
+            }
+            // Check for circular dependencies
+            if (optionalFields.parentTaskId && dependencies.includes(optionalFields.parentTaskId)) {
+                res.status(400).apiError({
+                    code: 'CIRCULAR_DEPENDENCY',
+                    message: 'A subtask cannot depend on its parent task',
+                });
+                return;
+            }
+            // Prepare task object
+            const newTask = {
+                id: newTaskId,
+                title: title.trim(),
+                description: description.trim(),
+                priority,
+                status,
+                dependencies,
+                tags,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                ...optionalFields,
+            };
+            // Create the task using the service
+            const createResult = await this.taskMasterService.createTask(repositoryPath, {
+                prompt: `${title}: ${description}`,
+                priority,
+                status,
+                dependencies: dependencies.length > 0 ? dependencies.join(',') : undefined,
+                tags: tags.length > 0 ? tags.join(',') : undefined,
+            }, {
+                research: optionalFields.aiEnhancement?.generateDetails || false,
+                tag: this.extractTagFromPath(repositoryPath)
+            });
+            if (!createResult.success) {
+                throw new Error('Failed to create task');
+            }
+            // Emit WebSocket notification
+            this.emitWebSocketEvent('task:created', {
+                task: newTask,
+                repositoryPath,
+                timestamp: new Date().toISOString(),
+            });
+            // Send response
+            res.status(201).apiSuccess({
+                task: newTask,
+                metadata: {
+                    createdAt: newTask.createdAt,
+                    createdBy: req.user?.username || 'system',
+                    projectTag: this.extractTagFromPath(repositoryPath),
+                    taskNumber: `${newTaskId}`,
+                },
+                links: {
+                    self: `/api/tasks/${newTaskId}`,
+                    parent: optionalFields.parentTaskId ? `/api/tasks/${optionalFields.parentTaskId}` : undefined,
+                    dependencies: dependencies.map((depId) => `/api/tasks/${depId}`),
+                },
+            });
+            winston_adapter_1.logger.info('Task created successfully', {
+                taskId: newTaskId,
+                title,
+                repositoryPath,
+                requestId: req.id,
+            });
+        }
+        catch (error) {
+            await this.handleError(error, req, res, 'createTask');
+        }
+    }
+    /**
      * Update Task
      * PUT /api/tasks/:taskId
      */
@@ -328,7 +419,7 @@ class TaskMasterController {
             const { taskId } = req.params;
             const request = req.validatedBody;
             const { repositoryPath, options = {} } = request;
-            const result = await this.taskMasterService.expandTask(repositoryPath, taskId, {
+            await this.taskMasterService.expandTask(repositoryPath, taskId, {
                 research: options.research,
                 force: options.force,
                 tag: this.extractTagFromPath(repositoryPath),

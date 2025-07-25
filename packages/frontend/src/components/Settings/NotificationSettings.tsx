@@ -117,10 +117,10 @@ const notificationCategories: NotificationCategory[] = [
   },
 ]
 
-export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
+export const NotificationSettings = ({
   onSave,
   className,
-}) => {
+}: NotificationSettingsProps) => {
   const { state, updateCategory, getSetting } = useSettings()
   const [settings, setSettings] = useState<NotificationSettingsData>({
     email: {

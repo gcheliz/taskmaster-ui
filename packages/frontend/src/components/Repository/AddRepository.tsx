@@ -9,13 +9,13 @@ export interface AddRepositoryProps {
   clearOnSuccess?: boolean
 }
 
-export const AddRepository: React.FC<AddRepositoryProps> = ({
+export const AddRepository = ({
   onRepositoryAdd,
   isLoading = false,
   error = null,
   className = '',
   clearOnSuccess = true,
-}) => {
+}: AddRepositoryProps) => {
   const [repositoryPath, setRepositoryPath] = useState('')
   const [validationError, setValidationError] = useState<string | null>(null)
 

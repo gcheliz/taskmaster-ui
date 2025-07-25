@@ -20,12 +20,12 @@ export interface TerminalViewProps {
  *
  * Provides a terminal interface with repository selection and scoped sessions.
  */
-export const TerminalView: React.FC<TerminalViewProps> = ({
+export const TerminalView = ({
   className = '',
   defaultRepositoryPath,
   theme = 'dark',
   mode = 'embedded',
-}) => {
+}: TerminalViewProps) => {
   const [selectedRepository, setSelectedRepository] = useState<string | null>(
     defaultRepositoryPath || null
   )

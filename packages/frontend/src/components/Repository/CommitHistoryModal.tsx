@@ -51,14 +51,14 @@ export interface CommitHistoryState {
 
 const COMMITS_PER_PAGE = 50
 
-export const CommitHistoryModal: React.FC<CommitHistoryModalProps> = ({
+export const CommitHistoryModal = ({
   open,
   onOpenChange,
   repositoryId,
   repositoryName,
   branchName,
   className,
-}) => {
+}: CommitHistoryModalProps) => {
   const [state, setState] = useState<CommitHistoryState>({
     commits: [],
     isLoading: false,
@@ -409,7 +409,7 @@ export const CommitHistoryModal: React.FC<CommitHistoryModalProps> = ({
 }
 
 // Simple refresh icon component
-const RefreshIcon: React.FC<{ className?: string }> = ({ className }) => (
+const RefreshIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"

@@ -26,7 +26,7 @@ export interface RecentActivityFeedWidgetProps {
  * project activities, including Git commits, task updates, and project changes.
  * Supports filtering, grouping, and customizable display options.
  */
-export const RecentActivityFeedWidget: React.FC<RecentActivityFeedWidgetProps> = ({
+export const RecentActivityFeedWidget = ({
   activities,
   maxItems = 20,
   showFilters = true,
@@ -34,7 +34,7 @@ export const RecentActivityFeedWidget: React.FC<RecentActivityFeedWidgetProps> =
   showTimestamp = true,
   groupByDate = false,
   className = '',
-}) => {
+}: RecentActivityFeedWidgetProps) => {
   // Sort activities by timestamp (newest first)
   const sortedActivities = useMemo(() => {
     return [...activities]

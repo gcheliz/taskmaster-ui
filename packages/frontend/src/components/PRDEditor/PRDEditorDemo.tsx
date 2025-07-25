@@ -7,7 +7,7 @@ import { PRDEditor, PRDEditorWithToolbar, PRDDocumentManager } from './index'
  * Demonstrates all variations of the PRD Editor components
  * for testing and showcasing capabilities.
  */
-export const PRDEditorDemo: React.FC = () => {
+export const PRDEditorDemo = () => {
   const [content, setContent] = useState('')
   const [activeTab, setActiveTab] = useState<
     'basic' | 'with-toolbar' | 'document-manager' | 'separate'

@@ -7,7 +7,7 @@ interface TaskModalHeaderProps {
   isLoading: boolean
 }
 
-export const TaskModalHeader: React.FC<TaskModalHeaderProps> = ({ mode, onClose, isLoading }) => {
+export const TaskModalHeader = ({ mode, onClose, isLoading }: TaskModalHeaderProps) => {
   const getModalTitle = () => {
     switch (mode) {
       case 'create':

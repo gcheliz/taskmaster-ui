@@ -15,13 +15,13 @@ interface ToastProps {
   className?: string
 }
 
-export const Toast: React.FC<ToastProps> = ({
+export const Toast = ({
   type,
   message,
   duration = 5000,
   onClose,
   className,
-}) => {
+}: ToastProps) => {
   const [isVisible, setIsVisible] = useState(true)
   const [isExiting, setIsExiting] = useState(false)
   const exitTimerRef = useRef<NodeJS.Timeout>()

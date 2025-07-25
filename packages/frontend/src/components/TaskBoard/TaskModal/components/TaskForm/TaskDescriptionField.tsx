@@ -8,13 +8,13 @@ interface TaskDescriptionFieldProps {
   readOnly?: boolean
 }
 
-export const TaskDescriptionField: React.FC<TaskDescriptionFieldProps> = ({
+export const TaskDescriptionField = ({
   value,
   onChange,
   error,
   disabled = false,
   readOnly = false,
-}) => {
+}: TaskDescriptionFieldProps) => {
   return (
     <div className="space-y-2">
       <label htmlFor="task-description" className="block text-sm font-medium text-gray-700">

@@ -30,7 +30,7 @@ export interface FilterSortControlsProps {
  * Provides UI controls for filtering tasks by various criteria (priority, status, assignee, complexity)
  * and sorting tasks by different fields. Includes clear filters functionality and task count display.
  */
-export const FilterSortControls: React.FC<FilterSortControlsProps> = ({
+export const FilterSortControls = ({
   filters,
   sorting,
   availableAssignees,
@@ -40,7 +40,7 @@ export const FilterSortControls: React.FC<FilterSortControlsProps> = ({
   taskCount,
   filteredCount,
   className = '',
-}) => {
+}: FilterSortControlsProps) => {
   const handleFilterChange = (key: keyof FilterOptions, value: string) => {
     onFilterChange({
       ...filters,

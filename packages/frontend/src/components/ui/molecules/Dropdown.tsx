@@ -141,11 +141,11 @@ const useRadioGroupContext = () => {
   return context
 }
 
-const Dropdown: React.FC<DropdownProps> = ({
+const Dropdown = ({
   open: controlledOpen,
   onOpenChange: controlledOnOpenChange,
   children,
-}) => {
+}: DropdownProps) => {
   const [internalOpen, setInternalOpen] = useState(false)
   const triggerRef = useRef<HTMLButtonElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
@@ -458,12 +458,12 @@ const DropdownCheckboxItem = React.forwardRef<HTMLDivElement, DropdownCheckboxIt
 )
 DropdownCheckboxItem.displayName = 'DropdownCheckboxItem'
 
-const DropdownRadioGroup: React.FC<DropdownRadioGroupProps> = ({
+const DropdownRadioGroup = ({
   value,
   onValueChange,
   children,
   ...props
-}) => {
+}: DropdownRadioGroupProps) => {
   return (
     <RadioGroupContext.Provider value={{ value, onValueChange }}>
       <div role="group" {...props}>

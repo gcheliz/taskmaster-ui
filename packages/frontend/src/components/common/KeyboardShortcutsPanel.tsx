@@ -44,12 +44,12 @@ const defaultShortcuts: KeyboardShortcut[] = [
  * Displays a modal panel showing all available keyboard shortcuts
  * organized by category
  */
-export const KeyboardShortcutsPanel: React.FC<KeyboardShortcutsPanelProps> = ({
+export const KeyboardShortcutsPanel = ({
   open,
   onOpenChange,
   additionalShortcuts = [],
   className,
-}) => {
+}: KeyboardShortcutsPanelProps) => {
   const [searchQuery, setSearchQuery] = useState('')
   const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0
 

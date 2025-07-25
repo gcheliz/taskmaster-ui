@@ -39,7 +39,7 @@ export interface ProgressVisualizationWidgetProps {
  * line charts or area charts. Shows cumulative task completions, completion rates,
  * and velocity trends against a timeline.
  */
-export const ProgressVisualizationWidget: React.FC<ProgressVisualizationWidgetProps> = ({
+export const ProgressVisualizationWidget = ({
   data,
   chartType = 'line',
   showVelocity = true,
@@ -48,7 +48,7 @@ export const ProgressVisualizationWidget: React.FC<ProgressVisualizationWidgetPr
   width = 800,
   height = 400,
   className = '',
-}) => {
+}: ProgressVisualizationWidgetProps) => {
   // Filter data based on time range
   const filteredData = useMemo(() => {
     if (timeRange === 'all') return data

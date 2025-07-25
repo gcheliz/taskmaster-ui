@@ -23,11 +23,11 @@ export interface LoginFormProps {
   className?: string
 }
 
-export const LoginForm: React.FC<LoginFormProps> = ({
+export const LoginForm = ({
   onSuccess,
   showSocialLogins = true,
   className,
-}) => {
+}: LoginFormProps) => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',

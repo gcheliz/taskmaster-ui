@@ -146,7 +146,7 @@ const colorSchemes: ColorScheme[] = [
   },
 ]
 
-export const AppearanceSettings: React.FC<AppearanceSettingsProps> = ({ onSave, className }) => {
+export const AppearanceSettings = ({ onSave, className }: AppearanceSettingsProps) => {
   const { state, updateCategory, getSetting } = useSettings()
   const [settings, setSettings] = useState<AppearanceSettingsData>({
     theme: 'light',

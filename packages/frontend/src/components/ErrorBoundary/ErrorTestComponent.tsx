@@ -7,7 +7,7 @@ import { useAsyncError } from './AsyncErrorBoundary'
  * Component for testing error boundaries in development
  * This should be removed or disabled in production
  */
-export const ErrorTestComponent: React.FC = () => {
+export const ErrorTestComponent = () => {
   const [shouldError, setShouldError] = useState(false)
   const throwAsyncError = useAsyncError()
 

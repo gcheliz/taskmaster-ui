@@ -51,7 +51,7 @@ export interface PRDEditorWithToolbarProps {
  * - Status indicators
  * - Responsive design
  */
-export const PRDEditorWithToolbar: React.FC<PRDEditorWithToolbarProps> = ({
+export const PRDEditorWithToolbar = ({
   initialContent = '',
   onContentChange,
   readOnly = false,
@@ -63,7 +63,7 @@ export const PRDEditorWithToolbar: React.FC<PRDEditorWithToolbarProps> = ({
   showToolbar = true,
   title = '',
   onTitleChange,
-}) => {
+}: PRDEditorWithToolbarProps) => {
   const [content, setContent] = useState(initialContent)
   const [documentTitle, setDocumentTitle] = useState(title)
   const [isSaving, setIsSaving] = useState(false)

@@ -72,7 +72,7 @@ const getHealthBadgeVariant = (score: number): 'success' | 'warning' | 'error' =
   return 'error'
 }
 
-const BranchHealthScore: React.FC<BranchHealthScoreProps> = ({ branch, defaultBranch }) => {
+const BranchHealthScore = ({ branch, defaultBranch }: BranchHealthScoreProps) => {
   const healthScore = calculateBranchHealth(branch)
   const daysSinceLastCommit = Math.floor(
     (Date.now() - new Date(branch.lastCommit.date).getTime()) / (1000 * 60 * 60 * 24)
@@ -212,11 +212,11 @@ const BranchHealthScore: React.FC<BranchHealthScoreProps> = ({ branch, defaultBr
   )
 }
 
-export const BranchHealthVisualization: React.FC<BranchHealthVisualizationProps> = ({
+export const BranchHealthVisualization = ({
   repositoryId,
   className,
   maxBranches = 6,
-}) => {
+}: BranchHealthVisualizationProps) => {
   const { branches, isLoading, error } = useRepositoryBranches({ repositoryId })
 
   const sortedBranches = useMemo(() => {

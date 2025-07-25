@@ -19,12 +19,12 @@ export interface ScreenReaderOnlyProps extends React.HTMLAttributes<HTMLSpanElem
  * Renders content that is only visible to screen readers.
  * Optionally can become visible when focused for keyboard navigation.
  */
-export const ScreenReaderOnly: React.FC<ScreenReaderOnlyProps> = ({
+export const ScreenReaderOnly = ({
   children,
   focusable = false,
   className,
   ...props
-}) => {
+}: ScreenReaderOnlyProps) => {
   return (
     <span
       className={cn(

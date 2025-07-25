@@ -23,7 +23,7 @@ export interface CommandActionButtonProps {
   onExecutionComplete?: (success: boolean, result?: any) => void
 }
 
-export const CommandActionButton: React.FC<CommandActionButtonProps> = ({
+export const CommandActionButton = ({
   command,
   args = [],
   label,
@@ -39,7 +39,7 @@ export const CommandActionButton: React.FC<CommandActionButtonProps> = ({
   className,
   onExecutionStart,
   onExecutionComplete,
-}) => {
+}: CommandActionButtonProps) => {
   const { state, executeCommand } = useCommandExecution()
 
   const handleClick = async () => {

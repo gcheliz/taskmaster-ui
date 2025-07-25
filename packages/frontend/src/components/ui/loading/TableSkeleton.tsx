@@ -7,7 +7,7 @@ interface TableSkeletonProps {
   showHeader?: boolean
 }
 
-export const TableSkeleton: React.FC<TableSkeletonProps> = ({ 
+export const TableSkeleton = ({ 
   rows = 5, 
   columns = 4,
   showHeader = true 

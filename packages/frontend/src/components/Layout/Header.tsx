@@ -11,10 +11,10 @@ interface HeaderProps {
   onMenuClick?: () => void
 }
 
-export const Header: React.FC<HeaderProps> = ({
+export const Header = ({
   user = { name: 'Gonzalo', initials: 'GZ', role: 'Admin' },
   onMenuClick,
-}) => {
+}: HeaderProps) => {
   const [searchOpen, setSearchOpen] = React.useState(false)
 
   return (

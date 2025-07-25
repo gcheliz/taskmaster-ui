@@ -8,7 +8,7 @@ interface SkeletonProps {
   animation?: 'pulse' | 'wave' | 'none'
 }
 
-export const Skeleton: React.FC<SkeletonProps> = ({
+export const Skeleton = ({
   className = '',
   variant = 'text',
   width,
@@ -46,7 +46,7 @@ interface SkeletonTextProps {
   className?: string
 }
 
-export const SkeletonText: React.FC<SkeletonTextProps> = ({ lines = 3, className = '' }) => {
+export const SkeletonText = ({ lines = 3, className = '' }: SkeletonTextProps) => {
   return (
     <div className={`space-y-2 ${className}`}>
       {Array.from({ length: lines }).map((_, index) => (

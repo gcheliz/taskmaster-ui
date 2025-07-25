@@ -18,7 +18,7 @@ interface AllProvidersProps {
 }
 
 // Mock providers with minimal implementation
-const AllProviders: React.FC<AllProvidersProps> = ({ children, initialRoute = '/' }) => {
+const AllProviders = ({ children, initialRoute = '/' }: AllProvidersProps) => {
   // Create a new QueryClient for each test to ensure isolation
   const queryClient = new QueryClient({
     defaultOptions: {

@@ -335,6 +335,17 @@ class TaskMasterService extends events_1.EventEmitter {
             tag: options.tag || this.extractTagFromPath(path),
         });
     }
+    async createTask(path, taskData, options = {}) {
+        return this.executeGenericCommand('add-task', path, {
+            prompt: taskData.prompt,
+            priority: taskData.priority,
+            status: taskData.status,
+            dependencies: taskData.dependencies,
+            tags: taskData.tags,
+            research: options.research,
+            tag: options.tag || this.extractTagFromPath(path),
+        });
+    }
     /**
      * Generic command execution helper
      */
@@ -421,6 +432,7 @@ class TaskMasterService extends events_1.EventEmitter {
             'expand',
             'analyze-complexity',
             'validate-dependencies',
+            'add-task',
         ];
         if (!validOperations.includes(operation)) {
             throw errorHandler_1.errorHandler.handleValidationError('operation', operation, `Invalid operation. Valid operations: ${validOperations.join(', ')}`, context);

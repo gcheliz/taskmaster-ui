@@ -39,7 +39,7 @@ interface TerminalSession {
   lastActivity: Date
 }
 
-const Terminal: React.FC = () => {
+const Terminal = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

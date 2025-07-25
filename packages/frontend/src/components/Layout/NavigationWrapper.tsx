@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
  * This component ensures React Router is properly initialized
  * and prevents full page reloads on first navigation
  */
-export const NavigationWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const NavigationWrapper = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate()
 
   useEffect(() => {

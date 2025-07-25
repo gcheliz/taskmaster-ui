@@ -1,7 +1,7 @@
 import React from 'react'
 import { Skeleton } from './Skeleton'
 
-export const SettingsSkeleton: React.FC = () => {
+export const SettingsSkeleton = () => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
       {/* Settings Cards */}

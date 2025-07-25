@@ -9,12 +9,12 @@ interface AnimatedCardProps {
   delay?: number
 }
 
-export const AnimatedCard: React.FC<AnimatedCardProps> = ({ 
+export const AnimatedCard = ({ 
   children, 
   className = '',
   hoverBorderColor,
   delay = 0
-}) => {
+}: AnimatedCardProps) => {
   const cardVariants = {
     initial: { opacity: 0, y: 20 },
     animate: { 

@@ -11,7 +11,7 @@ interface AppErrorBoundaryProps {
  * App-level error boundary that wraps the entire application
  * Provides global error handling and reporting capabilities
  */
-export const AppErrorBoundary: React.FC<AppErrorBoundaryProps> = ({ children }) => {
+export const AppErrorBoundary = ({ children }: AppErrorBoundaryProps) => {
   React.useEffect(() => {
     // Setup global error handlers on mount
     setupGlobalErrorHandling()

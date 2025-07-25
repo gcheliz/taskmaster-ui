@@ -16,7 +16,7 @@ export interface TimelineItemProps {
   className?: string
 }
 
-const TimelineItem: React.FC<TimelineItemProps> = ({
+const TimelineItem = ({
   id: _id,
   type,
   timestamp,
@@ -27,7 +27,7 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
   showTimestamp = true,
   isLast = false,
   className = '',
-}) => {
+}: TimelineItemProps) => {
   const getActivityIcon = (activityType: string) => {
     switch (activityType) {
       case 'commit':

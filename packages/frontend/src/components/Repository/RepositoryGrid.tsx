@@ -47,7 +47,7 @@ export interface RepositoryGridProps {
 export type RepositorySortOption = 'name' | 'updated' | 'stars' | 'health' | 'size'
 export type RepositoryFilterOption = 'all' | 'private' | 'public' | 'forked' | 'source'
 
-export const RepositoryGrid: React.FC<RepositoryGridProps> = ({
+export const RepositoryGrid = ({
   repositories,
   isLoading = false,
   error = null,
@@ -65,7 +65,7 @@ export const RepositoryGrid: React.FC<RepositoryGridProps> = ({
   onRepositoryManage,
   onRefreshAll,
   className,
-}) => {
+}: RepositoryGridProps) => {
   const [searchQuery, setSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState<RepositorySortOption>('updated')
   const [filterBy, setFilterBy] = useState<RepositoryFilterOption>('all')
@@ -353,7 +353,7 @@ export const RepositoryGrid: React.FC<RepositoryGridProps> = ({
 }
 
 // Simple SVG icons
-const GridIcon: React.FC<{ className?: string }> = ({ className }) => (
+const GridIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
@@ -364,7 +364,7 @@ const GridIcon: React.FC<{ className?: string }> = ({ className }) => (
   </svg>
 )
 
-const ListIcon: React.FC<{ className?: string }> = ({ className }) => (
+const ListIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
@@ -375,7 +375,7 @@ const ListIcon: React.FC<{ className?: string }> = ({ className }) => (
   </svg>
 )
 
-const CompactIcon: React.FC<{ className?: string }> = ({ className }) => (
+const CompactIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
@@ -386,7 +386,7 @@ const CompactIcon: React.FC<{ className?: string }> = ({ className }) => (
   </svg>
 )
 
-const RefreshIcon: React.FC<{ className?: string }> = ({ className }) => (
+const RefreshIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
@@ -397,7 +397,7 @@ const RefreshIcon: React.FC<{ className?: string }> = ({ className }) => (
   </svg>
 )
 
-const ExclamationIcon: React.FC<{ className?: string }> = ({ className }) => (
+const ExclamationIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
@@ -408,7 +408,7 @@ const ExclamationIcon: React.FC<{ className?: string }> = ({ className }) => (
   </svg>
 )
 
-const FolderIcon: React.FC<{ className?: string }> = ({ className }) => (
+const FolderIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"

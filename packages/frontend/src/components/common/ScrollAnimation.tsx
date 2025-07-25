@@ -29,7 +29,7 @@ const defaultVariants: Variants = {
   }
 }
 
-export const ScrollAnimation: React.FC<ScrollAnimationProps> = ({
+export const ScrollAnimation = ({
   children,
   className = '',
   threshold = 0.1,
@@ -37,7 +37,7 @@ export const ScrollAnimation: React.FC<ScrollAnimationProps> = ({
   animateOnce = true,
   variants = defaultVariants,
   delay = 0
-}) => {
+}: ScrollAnimationProps) => {
   const ref = useRef<HTMLDivElement>(null)
   const [isInView, setIsInView] = useState(false)
   const [hasAnimated, setHasAnimated] = useState(false)
@@ -103,12 +103,12 @@ interface ScrollStaggerProps {
   threshold?: number
 }
 
-export const ScrollStagger: React.FC<ScrollStaggerProps> = ({
+export const ScrollStagger = ({
   children,
   className = '',
   staggerDelay = 0.1,
   threshold = 0.1
-}) => {
+}: ScrollStaggerProps) => {
   const childrenArray = React.Children.toArray(children)
   
   return (

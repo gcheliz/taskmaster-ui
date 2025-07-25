@@ -44,7 +44,7 @@ interface ChartDataItem {
  * showing the distribution of tasks by their status. Supports multiple chart types
  * including pie, donut, and bar charts.
  */
-export const TaskCompletionChart: React.FC<TaskCompletionChartProps> = ({
+export const TaskCompletionChart = ({
   data,
   chartType = 'donut',
   showLegend = true,
@@ -52,7 +52,7 @@ export const TaskCompletionChart: React.FC<TaskCompletionChartProps> = ({
   width = 400,
   height = 300,
   className = '',
-}) => {
+}: TaskCompletionChartProps) => {
   // Color mapping for different task statuses
   const statusColors = {
     completed: '#22c55e',

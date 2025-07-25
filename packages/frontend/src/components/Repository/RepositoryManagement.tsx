@@ -16,10 +16,10 @@ export interface RepositoryManagementProps {
  * This component should wrap the entire application or repository-related sections
  * to provide global modals like NewBranchModal and CommitHistoryModal.
  */
-export const RepositoryManagement: React.FC<RepositoryManagementProps> = ({
+export const RepositoryManagement = ({
   children,
   className,
-}) => {
+}: RepositoryManagementProps) => {
   const { showCommitHistory, repositoryId: commitHistoryRepositoryId } = useCommitHistory()
   const { closeCommitHistory } = useRepositoryActions()
 

@@ -13,10 +13,10 @@ export interface NotificationContainerProps {
   className?: string
 }
 
-export const NotificationContainer: React.FC<NotificationContainerProps> = ({
+export const NotificationContainer = ({
   position = 'top-right',
   className = '',
-}) => {
+}: NotificationContainerProps) => {
   const { state, removeNotification } = useNotification()
 
   if (state.notifications.length === 0) {

@@ -35,13 +35,13 @@ type ViewMode = 'grid' | 'list'
 type SortBy = 'name' | 'lastUpdate' | 'health' | 'activity'
 type FilterStatus = 'all' | 'connected' | 'error' | 'inactive'
 
-export const RepositoryDashboard: React.FC<RepositoryDashboardProps> = ({
+export const RepositoryDashboard = ({
   onAddRepository,
   onRepositoryDetails,
   onRepositorySettings,
   onRepositoryRemove,
   className,
-}) => {
+}: RepositoryDashboardProps) => {
   const { repositories, isLoading: loading, refetch } = useRepositoryList()
   const [viewMode, setViewMode] = useState<ViewMode>('grid')
   const [searchQuery, setSearchQuery] = useState('')

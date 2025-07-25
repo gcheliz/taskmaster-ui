@@ -29,7 +29,7 @@ export interface ActivityTimelineProps {
   className?: string
 }
 
-const ActivityTimeline: React.FC<ActivityTimelineProps> = ({
+const ActivityTimeline = ({
   activities,
   loading = false,
   error,
@@ -41,7 +41,7 @@ const ActivityTimeline: React.FC<ActivityTimelineProps> = ({
   onRefresh,
   onViewAll,
   className = '',
-}) => {
+}: ActivityTimelineProps) => {
   const [filterType, setFilterType] = useState<string>('all')
   const [refreshing, setRefreshing] = useState(false)
 

@@ -107,7 +107,7 @@ const useModalContext = () => {
   return context
 }
 
-const Modal: React.FC<ModalProps> = ({ open, onOpenChange, children }) => {
+const Modal = ({ open, onOpenChange, children }: ModalProps) => {
   return <ModalContext.Provider value={{ open, onOpenChange }}>{children}</ModalContext.Provider>
 }
 

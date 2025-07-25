@@ -53,7 +53,7 @@ interface Repository {
   stats?: RepositoryStats
 }
 
-const Repositories: React.FC = () => {
+const Repositories = () => {
   const { repositories, isLoading, error, refetch } = useRepositoryList()
   const { connectRepository } = useRepositoryOperations()
   const [showAddModal, setShowAddModal] = useState(false)

@@ -23,14 +23,14 @@ export interface PRDAnalysisButtonProps {
  * Provides a button to trigger PRD analysis with loading states
  * and error handling. Integrates with the usePRDAnalysis hook.
  */
-export const PRDAnalysisButton: React.FC<PRDAnalysisButtonProps> = ({
+export const PRDAnalysisButton = ({
   content,
   disabled = false,
   className = '',
   onAnalysisComplete,
   onAnalysisError,
   onAnalysisStart,
-}) => {
+}: PRDAnalysisButtonProps) => {
   const [showOptions, setShowOptions] = useState(false)
   const [analysisOptions, setAnalysisOptions] = useState<Partial<PRDAnalysisRequest>>({
     analysisType: 'detailed',

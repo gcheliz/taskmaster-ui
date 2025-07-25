@@ -14,7 +14,7 @@ interface OptimizedImageProps extends React.ImgHTMLAttributes<HTMLImageElement> 
   quality?: number;
 }
 
-export const OptimizedImage: React.FC<OptimizedImageProps> = ({
+export const OptimizedImage = ({
   src,
   alt,
   width,
@@ -27,7 +27,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   sizes,
   quality = 75,
   ...props
-}) => {
+}: OptimizedImageProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isInView, setIsInView] = useState(priority);
   const imgRef = useRef<HTMLImageElement>(null);
@@ -154,7 +154,12 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
 };
 
 // Picture component for art direction
-export const OptimizedPicture: React.FC<{
+export const OptimizedPicture = ({
+  sources,
+  src,
+  alt,
+  className,
+}: {
   sources: Array<{
     srcSet: string;
     media?: string;
@@ -163,7 +168,7 @@ export const OptimizedPicture: React.FC<{
   src: string;
   alt: string;
   className?: string;
-}> = ({ sources, src, alt, className }) => {
+}) => {
   return (
     <picture>
       {sources.map((source, index) => (

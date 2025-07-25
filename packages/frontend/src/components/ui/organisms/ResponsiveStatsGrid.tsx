@@ -18,7 +18,7 @@ export interface ResponsiveStatsGridProps {
   lastUpdated?: Date
 }
 
-const ResponsiveStatsGrid: React.FC<ResponsiveStatsGridProps> = ({
+const ResponsiveStatsGrid = ({
   taskMetrics,
   insights,
   health,
@@ -28,7 +28,7 @@ const ResponsiveStatsGrid: React.FC<ResponsiveStatsGridProps> = ({
   onRefresh,
   loading = false,
   lastUpdated,
-}) => {
+}: ResponsiveStatsGridProps) => {
   const [activeView, setActiveView] = useState<'overview' | 'detailed'>('overview')
 
   const formatLastUpdated = (date: Date): string => {

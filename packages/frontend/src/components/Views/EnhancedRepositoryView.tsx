@@ -39,7 +39,7 @@ export interface HealthModalState {
   repositoryName: string | null
 }
 
-export const EnhancedRepositoryView: React.FC<EnhancedRepositoryViewProps> = ({
+export const EnhancedRepositoryView = ({
   repositories,
   isLoading = false,
   error = null,
@@ -51,7 +51,7 @@ export const EnhancedRepositoryView: React.FC<EnhancedRepositoryViewProps> = ({
   onRepositoryManage,
   onRefreshAll,
   className,
-}) => {
+}: EnhancedRepositoryViewProps) => {
   const [commitHistoryModal, setCommitHistoryModal] = useState<CommitHistoryModalState>({
     isOpen: false,
     repositoryId: null,

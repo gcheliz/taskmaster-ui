@@ -41,11 +41,15 @@ export interface RepositoryHealthModalProps {
   className?: string
 }
 
-const RepositoryHealthModalContent: React.FC<{
+const RepositoryHealthModalContent = ({
+  repositoryName,
+  onOpenChange,
+  className,
+}: {
   repositoryName: string
   onOpenChange: (open: boolean) => void
   className?: string
-}> = ({ repositoryName, onOpenChange, className }) => {
+}) => {
   const {
     health,
     statistics,
@@ -219,13 +223,13 @@ const RepositoryHealthModalContent: React.FC<{
   )
 }
 
-export const RepositoryHealthModal: React.FC<RepositoryHealthModalProps> = ({
+export const RepositoryHealthModal = ({
   open,
   onOpenChange,
   repositoryId,
   repositoryName,
   className,
-}) => {
+}: RepositoryHealthModalProps) => {
   return (
     <Modal open={open} onOpenChange={onOpenChange}>
       <RepositoryHealthProvider repositoryId={repositoryId} open={open}>

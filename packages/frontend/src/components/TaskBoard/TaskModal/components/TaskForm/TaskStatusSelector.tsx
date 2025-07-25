@@ -10,13 +10,13 @@ interface TaskStatusSelectorProps {
   readOnly?: boolean
 }
 
-export const TaskStatusSelector: React.FC<TaskStatusSelectorProps> = ({
+export const TaskStatusSelector = ({
   value,
   onChange,
   error,
   disabled = false,
   readOnly = false,
-}) => {
+}: TaskStatusSelectorProps) => {
   const getStatusColor = (status: TaskStatus) => {
     return TASK_STATUSES.find((s) => s.value === status)?.color || '#6b7280'
   }

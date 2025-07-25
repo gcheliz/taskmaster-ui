@@ -23,7 +23,7 @@ import {
   BarChart3,
 } from 'lucide-react'
 
-const DashboardIntegrated: React.FC = () => {
+const DashboardIntegrated = () => {
   const navigate = useNavigate()
   const { user, isAuthenticated } = useAuth()
   const { repositories, isLoading: reposLoading, error: reposError } = useRepositoryList()

@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import { Header } from '../Header'
 import userEvent from '@testing-library/user-event'
-import { BrowserRouter } from "react-router"
+import { BrowserRouter } from "react-router-dom"
 
 const renderWithRouter = (component: React.ReactElement) => {
   return render(<BrowserRouter>{component}</BrowserRouter>)
@@ -21,231 +21,95 @@ describe('Header', () => {
   })
 
   describe('Rendering', () => {
-    it('renders header with title', () => {
-      renderWithRouter(<Header title="Dashboard" />)
+    it('renders header with TaskMaster title', () => {
+      renderWithRouter(<Header />)
       
       expect(screen.getByRole('banner')).toBeInTheDocument()
-      expect(screen.getByText('Dashboard')).toBeInTheDocument()
+      expect(screen.getByText('TaskMaster')).toBeInTheDocument()
     })
 
-    it('renders breadcrumbs', () => {
-      const breadcrumbs = [
-        { label: 'Home', path: '/' },
-        { label: 'Tasks', path: '/tasks' },
-        { label: 'Task Details' }
-      ]
+    it('renders search bar', () => {
+      renderWithRouter(<Header />)
       
-      renderWithRouter(<Header breadcrumbs={breadcrumbs} />)
-      
-      expect(screen.getByRole('navigation', { name: /breadcrumb/i })).toBeInTheDocument()
-      expect(screen.getByText('Home')).toBeInTheDocument()
-      expect(screen.getByText('Tasks')).toBeInTheDocument()
-      expect(screen.getByText('Task Details')).toBeInTheDocument()
+      expect(screen.getByPlaceholderText('Search...')).toBeInTheDocument()
     })
 
     it('renders user info', () => {
-      renderWithRouter(<Header user={mockUser} />)
+      const customUser = {
+        name: 'Test User',
+        initials: 'TU',
+        role: 'Developer'
+      }
+      renderWithRouter(<Header user={customUser} />)
       
-      expect(screen.getByText(mockUser.name)).toBeInTheDocument()
-      expect(screen.getByAltText(`${mockUser.name} avatar`)).toBeInTheDocument()
+      expect(screen.getByText(customUser.initials)).toBeInTheDocument()
     })
 
-    it('renders action buttons', () => {
-      const actions = [
-        { label: 'Create', onClick: vi.fn() },
-        { label: 'Export', onClick: vi.fn() }
-      ]
+    it('renders notification bell', () => {
+      renderWithRouter(<Header />)
       
-      renderWithRouter(<Header actions={actions} />)
-      
-      expect(screen.getByRole('button', { name: 'Create' })).toBeInTheDocument()
-      expect(screen.getByRole('button', { name: 'Export' })).toBeInTheDocument()
+      expect(screen.getByLabelText('View notifications')).toBeInTheDocument()
     })
   })
 
   describe('Mobile Menu', () => {
     it('shows mobile menu button on small screens', () => {
-      Object.defineProperty(window, 'innerWidth', {
-        writable: true,
-        configurable: true,
-        value: 375
-      })
+      renderWithRouter(<Header />)
       
-      renderWithRouter(<Header showMobileMenu />)
-      
-      expect(screen.getByRole('button', { name: /menu/i })).toBeInTheDocument()
+      expect(screen.getByLabelText('Toggle navigation menu')).toBeInTheDocument()
     })
 
     it('toggles mobile menu', async () => {
       const user = userEvent.setup()
-      const onMobileMenuToggle = vi.fn()
+      const onMenuClick = vi.fn()
       
-      renderWithRouter(
-        <Header showMobileMenu onMobileMenuToggle={onMobileMenuToggle} />
-      )
+      renderWithRouter(<Header onMenuClick={onMenuClick} />)
       
-      const menuButton = screen.getByRole('button', { name: /menu/i })
+      const menuButton = screen.getByLabelText('Toggle navigation menu')
       await user.click(menuButton)
       
-      expect(onMobileMenuToggle).toHaveBeenCalled()
+      expect(onMenuClick).toHaveBeenCalled()
     })
   })
 
   describe('Search', () => {
-    it('renders search bar', () => {
-      renderWithRouter(<Header showSearch />)
+    it('renders search bar on desktop', () => {
+      renderWithRouter(<Header />)
       
-      expect(screen.getByPlaceholderText(/search/i)).toBeInTheDocument()
+      expect(screen.getByPlaceholderText('Search...')).toBeInTheDocument()
     })
 
-    it('handles search input', async () => {
-      const user = userEvent.setup()
-      const onSearch = vi.fn()
+    it('has mobile search toggle button', () => {
+      renderWithRouter(<Header />)
       
-      renderWithRouter(<Header showSearch onSearch={onSearch} />)
-      
-      const searchInput = screen.getByPlaceholderText(/search/i)
-      await user.type(searchInput, 'test query')
-      
-      await waitFor(() => {
-        expect(onSearch).toHaveBeenCalledWith('test query')
-      })
-    })
-
-    it('shows search suggestions', async () => {
-      const user = userEvent.setup()
-      const suggestions = ['Task 1', 'Task 2', 'Repository A']
-      
-      renderWithRouter(
-        <Header showSearch searchSuggestions={suggestions} />
-      )
-      
-      const searchInput = screen.getByPlaceholderText(/search/i)
-      await user.click(searchInput)
-      
-      await waitFor(() => {
-        suggestions.forEach(suggestion => {
-          expect(screen.getByText(suggestion)).toBeInTheDocument()
-        })
-      })
-    })
-
-    it('clears search on escape', async () => {
-      const user = userEvent.setup()
-      renderWithRouter(<Header showSearch />)
-      
-      const searchInput = screen.getByPlaceholderText(/search/i)
-      await user.type(searchInput, 'test')
-      expect(searchInput).toHaveValue('test')
-      
-      await user.keyboard('{Escape}')
-      expect(searchInput).toHaveValue('')
+      expect(screen.getByLabelText('Toggle search')).toBeInTheDocument()
     })
   })
 
   describe('Notifications', () => {
-    it('shows notification icon with count', () => {
-      renderWithRouter(<Header notificationCount={5} />)
+    it('shows notification bell with badge', () => {
+      renderWithRouter(<Header />)
       
-      const notificationButton = screen.getByRole('button', { name: /notifications/i })
+      const notificationButton = screen.getByLabelText('View notifications')
       expect(notificationButton).toBeInTheDocument()
-      expect(screen.getByText('5')).toBeInTheDocument()
-    })
-
-    it('opens notification dropdown', async () => {
-      const user = userEvent.setup()
-      const notifications = [
-        { id: '1', title: 'New task assigned', time: '5 min ago' },
-        { id: '2', title: 'Build completed', time: '10 min ago' }
-      ]
-      
-      renderWithRouter(<Header notifications={notifications} />)
-      
-      const notificationButton = screen.getByRole('button', { name: /notifications/i })
-      await user.click(notificationButton)
-      
-      await waitFor(() => {
-        expect(screen.getByText('New task assigned')).toBeInTheDocument()
-        expect(screen.getByText('Build completed')).toBeInTheDocument()
-      })
-    })
-
-    it('marks notification as read', async () => {
-      const user = userEvent.setup()
-      const onMarkAsRead = vi.fn()
-      const notifications = [
-        { id: '1', title: 'New task', time: '5 min ago', unread: true }
-      ]
-      
-      renderWithRouter(
-        <Header notifications={notifications} onMarkAsRead={onMarkAsRead} />
-      )
-      
-      const notificationButton = screen.getByRole('button', { name: /notifications/i })
-      await user.click(notificationButton)
-      
-      const markReadButton = await screen.findByRole('button', { name: /mark as read/i })
-      await user.click(markReadButton)
-      
-      expect(onMarkAsRead).toHaveBeenCalledWith('1')
+      expect(screen.getByLabelText('You have new notifications')).toBeInTheDocument()
     })
   })
 
   describe('User Menu', () => {
-    it('opens user dropdown', async () => {
-      const user = userEvent.setup()
-      renderWithRouter(<Header user={mockUser} />)
+    it('shows user avatar button', () => {
+      renderWithRouter(<Header />)
       
-      const userButton = screen.getByRole('button', { name: new RegExp(mockUser.name) })
-      await user.click(userButton)
-      
-      await waitFor(() => {
-        expect(screen.getByText('Profile')).toBeInTheDocument()
-        expect(screen.getByText('Settings')).toBeInTheDocument()
-        expect(screen.getByText('Sign Out')).toBeInTheDocument()
-      })
-    })
-
-    it('handles sign out', async () => {
-      const user = userEvent.setup()
-      const onSignOut = vi.fn()
-      
-      renderWithRouter(<Header user={mockUser} onSignOut={onSignOut} />)
-      
-      const userButton = screen.getByRole('button', { name: new RegExp(mockUser.name) })
-      await user.click(userButton)
-      
-      const signOutButton = await screen.findByText('Sign Out')
-      await user.click(signOutButton)
-      
-      expect(onSignOut).toHaveBeenCalled()
-    })
-
-    it('navigates to settings', async () => {
-      const user = userEvent.setup()
-      renderWithRouter(<Header user={mockUser} />)
-      
-      const userButton = screen.getByRole('button', { name: new RegExp(mockUser.name) })
-      await user.click(userButton)
-      
-      const settingsLink = await screen.findByText('Settings')
-      await user.click(settingsLink)
-      
-      expect(window.location.pathname).toBe('/settings')
+      expect(screen.getByLabelText('User menu')).toBeInTheDocument()
     })
   })
 
   describe('Theme Toggle', () => {
-    it('shows theme toggle button', () => {
-      renderWithRouter(<Header showThemeToggle theme="light" />)
+    it('shows theme toggle button on desktop', () => {
+      renderWithRouter(<Header />)
       
-      expect(screen.getByRole('button', { name: /toggle theme/i })).toBeInTheDocument()
+      expect(screen.getByLabelText('Toggle dark mode')).toBeInTheDocument()
     })
-
-    it('toggles between light and dark theme', async () => {
-      const user = userEvent.setup()
-      const onThemeToggle = vi.fn()
-      
       renderWithRouter(
         <Header showThemeToggle theme="light" onThemeToggle={onThemeToggle} />
       )

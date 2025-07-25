@@ -1,5 +1,5 @@
 import { useEffect, useCallback, useRef } from 'react'
-import { useNavigate } from "react-router"
+import { useNavigate } from "react-router-dom"
 
 export interface KeyboardShortcut {
   /** The key combination (e.g., 'cmd+k', 'ctrl+shift+p') */

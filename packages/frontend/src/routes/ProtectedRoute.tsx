@@ -1,4 +1,4 @@
-import { Navigate, Outlet, useLocation } from "react-router"
+import { Navigate, Outlet, useLocation } from "react-router-dom"
 import { useAuth } from '../hooks/useAuth'
 import { Suspense } from 'react'
 import { LoadingScreen } from '../components/common/LoadingScreen'

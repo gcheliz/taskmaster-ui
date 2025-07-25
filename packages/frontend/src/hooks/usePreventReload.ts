@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useLocation } from "react-router"
+import { useLocation } from "react-router-dom"
 
 /**
  * Hook to prevent full page reloads on navigation

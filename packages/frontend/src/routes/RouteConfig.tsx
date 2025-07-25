@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react'
-import type { RouteObject } from "react-router"
+import type { RouteObject } from "react-router-dom"
 import { AppLayout } from '../components/Layout'
 import { LoadingScreen } from '../components/common/LoadingScreen'
 import { ProtectedRoute } from './ProtectedRoute'

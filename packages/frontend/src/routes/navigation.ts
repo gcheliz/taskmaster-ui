@@ -1,5 +1,5 @@
-import { useNavigate, useLocation } from "react-router"
-import type { NavigateOptions } from "react-router"
+import { useNavigate, useLocation } from "react-router-dom"
+import type { NavigateOptions } from "react-router-dom"
 import { useCallback } from 'react'
 
 // Navigation paths enum for type safety

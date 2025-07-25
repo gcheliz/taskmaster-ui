@@ -1,5 +1,5 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { RepositoryDetailsView } from '../RepositoryDetailsView'
 import { RepositoryService } from '../../../services/repositoryService'
 
@@ -95,6 +95,7 @@ const mockBranches = mockRepositoryDetails.branches
 describe('RepositoryDetailsView', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    vi.useFakeTimers()
 
     // Setup default mocks
     vi.mocked(RepositoryService.getRepositoryDetails).mockResolvedValue({
@@ -104,6 +105,11 @@ describe('RepositoryDetailsView', () => {
 
     vi.mocked(RepositoryService.extractRepositoryMetadata).mockReturnValue(mockMetadata)
     vi.mocked(RepositoryService.extractBranchInfo).mockReturnValue(mockBranches)
+  })
+
+  afterEach(() => {
+    vi.clearAllTimers()
+    vi.useRealTimers()
   })
 
   it('renders repository details view correctly', async () => {
@@ -352,10 +358,15 @@ describe('RepositoryDetailsView', () => {
     })
   })
 
-  it('applies custom className correctly', () => {
+  it('applies custom className correctly', async () => {
     const { container } = render(
       <RepositoryDetailsView repositoryId="test-repo-1" className="custom-class" />
     )
+
+    // Wait for the component to mount and initial data fetch
+    await waitFor(() => {
+      expect(RepositoryService.getRepositoryDetails).toHaveBeenCalled()
+    })
 
     expect(container.firstChild).toHaveClass('repository-details-view', 'custom-class')
   })
@@ -391,8 +402,6 @@ describe('RepositoryDetailsView', () => {
   })
 
   it('handles auto-refresh with custom interval', async () => {
-    vi.useFakeTimers()
-    
     const { unmount } = render(
       <RepositoryDetailsView repositoryId="test-repo-1" refreshInterval={1000} />
     )
@@ -406,7 +415,9 @@ describe('RepositoryDetailsView', () => {
     vi.clearAllMocks()
     
     // Advance time by 1 second for auto-refresh
-    vi.advanceTimersByTime(1000)
+    await act(async () => {
+      vi.advanceTimersByTime(1000)
+    })
     
     // Wait for the refresh to be processed
     await waitFor(() => {
@@ -414,6 +425,5 @@ describe('RepositoryDetailsView', () => {
     })
 
     unmount()
-    vi.useRealTimers()
   })
 })

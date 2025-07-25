@@ -1,6 +1,6 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor, act } from '@testing-library/react'
 import { TaskBoardView } from '../TaskBoardView'
-import { vi } from 'vitest'
+import { vi, beforeEach, afterEach } from 'vitest'
 
 // Mock the hooks and components that TaskBoardView uses
 vi.mock('../../hooks/useTaskData', () => ({
@@ -26,22 +26,40 @@ vi.mock('../TaskBoard/TaskBoardWithFilters', () => ({
 }))
 
 describe('TaskBoardView', () => {
-  it('renders the Kanban board view', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    vi.useFakeTimers()
+  })
+
+  afterEach(() => {
+    vi.clearAllTimers()
+    vi.useRealTimers()
+  })
+
+  it('renders the Kanban board view', async () => {
     render(<TaskBoardView />)
-    // The component renders the actual KanbanBoard component which shows loading state
-    expect(screen.getByText('Loading Kanban Board')).toBeInTheDocument()
+    
+    await waitFor(() => {
+      // The component renders the actual KanbanBoard component which shows loading state
+      expect(screen.getByText('Loading Kanban Board')).toBeInTheDocument()
+    })
   })
 
-  it('shows toggle button when filtering is enabled', () => {
+  it('shows toggle button when filtering is enabled', async () => {
     render(<TaskBoardView enableFiltering={true} />)
-    expect(screen.getByText('📋 Board View')).toBeInTheDocument()
+    
+    await waitFor(() => {
+      expect(screen.getByText('📋 Board View')).toBeInTheDocument()
+    })
   })
 
-  it('shows filtered view when repository path is provided', () => {
+  it('shows filtered view when repository path is provided', async () => {
     render(<TaskBoardView enableFiltering={true} repositoryPath="/test/path" />)
     
-    const toggleButton = screen.getByText('📋 Board View')
-    expect(toggleButton).toBeInTheDocument()
+    await waitFor(() => {
+      const toggleButton = screen.getByText('📋 Board View')
+      expect(toggleButton).toBeInTheDocument()
+    })
     
     // When repositoryPath is provided and showFilters is true (default), it shows TaskBoardWithFilters
     // We can check for elements specific to the filtered view

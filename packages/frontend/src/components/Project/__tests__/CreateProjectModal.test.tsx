@@ -1,5 +1,5 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { CreateProjectModal } from '../CreateProjectModal'
 import { RepositoryService } from '../../../services/repositoryService'
 
@@ -29,10 +29,16 @@ describe('CreateProjectModal', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
+    vi.useFakeTimers()
     vi.mocked(RepositoryService.getRepositories).mockResolvedValue({
       success: true,
       data: mockRepositories,
     })
+  })
+
+  afterEach(() => {
+    vi.clearAllTimers()
+    vi.useRealTimers()
   })
 
   it('does not render when closed', () => {
@@ -366,7 +372,7 @@ describe('CreateProjectModal', () => {
     expect(mockOnClose).not.toHaveBeenCalled()
   })
 
-  it('closes modal when cancel is clicked', () => {
+  it('closes modal when cancel is clicked', async () => {
     render(
       <CreateProjectModal
         isOpen={true}
@@ -375,11 +381,14 @@ describe('CreateProjectModal', () => {
       />
     )
 
-    fireEvent.click(screen.getByText('Cancel'))
+    await act(async () => {
+      fireEvent.click(screen.getByText('Cancel'))
+    })
+    
     expect(mockOnClose).toHaveBeenCalled()
   })
 
-  it('closes modal when close button is clicked', () => {
+  it('closes modal when close button is clicked', async () => {
     render(
       <CreateProjectModal
         isOpen={true}
@@ -388,11 +397,14 @@ describe('CreateProjectModal', () => {
       />
     )
 
-    fireEvent.click(screen.getByLabelText('Close modal'))
+    await act(async () => {
+      fireEvent.click(screen.getByLabelText('Close modal'))
+    })
+    
     expect(mockOnClose).toHaveBeenCalled()
   })
 
-  it('closes modal when backdrop is clicked', () => {
+  it('closes modal when backdrop is clicked', async () => {
     render(
       <CreateProjectModal
         isOpen={true}
@@ -401,12 +413,15 @@ describe('CreateProjectModal', () => {
       />
     )
 
-    const backdrop = screen.getByText('Create New Project').closest('.create-project-modal')
-    fireEvent.click(backdrop!)
+    await act(async () => {
+      const backdrop = screen.getByText('Create New Project').closest('.create-project-modal')
+      fireEvent.click(backdrop!)
+    })
+    
     expect(mockOnClose).toHaveBeenCalled()
   })
 
-  it('does not close modal when content is clicked', () => {
+  it('does not close modal when content is clicked', async () => {
     render(
       <CreateProjectModal
         isOpen={true}
@@ -414,6 +429,11 @@ describe('CreateProjectModal', () => {
         onCreateProject={mockOnCreateProject}
       />
     )
+
+    // Wait for initial load
+    await waitFor(() => {
+      expect(screen.getByText('Create New Project')).toBeInTheDocument()
+    })
 
     const content = screen.getByText('Create New Project').closest('.create-project-modal__content')
     fireEvent.click(content!)
@@ -445,7 +465,7 @@ describe('CreateProjectModal', () => {
     })
   })
 
-  it('applies custom className', () => {
+  it('applies custom className', async () => {
     const { container } = render(
       <CreateProjectModal
         isOpen={true}
@@ -454,6 +474,11 @@ describe('CreateProjectModal', () => {
         className="custom-class"
       />
     )
+
+    // Wait for initial load
+    await waitFor(() => {
+      expect(screen.getByText('Create New Project')).toBeInTheDocument()
+    })
 
     expect(container.querySelector('.create-project-modal')).toHaveClass('custom-class')
   })

@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useNavigate } from "react-router"
+import { useNavigate } from "react-router-dom"
 
 /**
  * This component ensures React Router is properly initialized

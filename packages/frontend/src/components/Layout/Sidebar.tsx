@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'
-import { useLocation } from "react-router"
+import { useLocation } from "react-router-dom"
 import { LayoutGrid, FolderGit2, ClipboardList, Terminal, Settings, ChevronLeft, ChevronRight } from 'lucide-react'
 import { SafeLink } from '../common/SafeLink'
 

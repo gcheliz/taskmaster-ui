@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useSearchParams } from "react-router"
+import { useSearchParams } from "react-router-dom"
 import { Spinner } from '../ui/atoms/Spinner'
 
 export interface OAuthCallbackProps {

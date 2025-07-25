@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/react'
-import { createRoutesFromChildren, matchRoutes, useLocation, useNavigationType } from "react-router"
+import { createRoutesFromChildren, matchRoutes, useLocation, useNavigationType } from "react-router-dom"
 import { useEffect } from 'react'
 
 const SENTRY_DSN = import.meta.env.VITE_SENTRY_DSN

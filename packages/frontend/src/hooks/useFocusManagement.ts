@@ -1,5 +1,5 @@
 import { useEffect, useRef, useCallback } from 'react'
-import { useLocation } from "react-router"
+import { useLocation } from "react-router-dom"
 
 /**
  * Hook to manage focus on route changes

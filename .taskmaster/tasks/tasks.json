@@ -319,7 +319,7 @@
             "id": "4.6",
             "title": "Update integration tests",
             "description": "Update tests for refactored TaskModal",
-            "status": "pending",
+            "status": "in-progress",
             "dependencies": [
               "4.2",
               "4.3",
@@ -773,7 +773,7 @@
     ],
     "metadata": {
       "created": "2025-07-25T09:02:45.000Z",
-      "updated": "2025-07-25T13:04:33.804Z",
+      "updated": "2025-07-25T13:05:37.173Z",
       "description": "TaskMaster UI Modernization - Code quality and performance improvements",
       "projectName": "TaskMaster UI Modernization",
       "sourceFile": "/Users/gonzalo/workspace/taskmaster-ui/.taskmaster/docs/prd.txt"

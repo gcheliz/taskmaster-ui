@@ -106,13 +106,13 @@ interface ProfilerWrapperProps {
   onRender?: ProfilerOnRenderCallback
 }
 
-export function ProfilerWrapper({ 
+export const ProfilerWrapper = ({ 
   id, 
   children, 
   onRender = onRenderCallback 
-}: ProfilerWrapperProps) {
+}: ProfilerWrapperProps) => {
   if (!ENABLE_PROFILING) {
-    return <>{children}</>
+    return children
   }
 
   return (

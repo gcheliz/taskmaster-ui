@@ -145,7 +145,7 @@ export const PRDAnalysisPanel = ({
         <div className="status-indicators">
           {isAnalyzing && (
             <div className="status-item analyzing">
-              <div className="spinner"></div>
+              <div className="spinner" />
               <span>Analyzing...</span>
             </div>
           )}

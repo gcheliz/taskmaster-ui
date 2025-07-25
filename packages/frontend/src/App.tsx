@@ -24,7 +24,7 @@ const queryClient = new QueryClient({
   },
 })
 
-function App() {
+const App = () => {
   // Initialize keyboard detection on app mount
   useEffect(() => {
     initializeKeyboardDetection()

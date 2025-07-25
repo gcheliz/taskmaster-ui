@@ -106,7 +106,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 }
 
 // App-level error fallback
-function AppErrorFallback({ error, errorId, onReset }: { error: Error; errorId: string | null; onReset: () => void }) {
+const AppErrorFallback = ({ error, errorId, onReset }: { error: Error; errorId: string | null; onReset: () => void }) => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="max-w-md w-full text-center">
@@ -146,7 +146,7 @@ function AppErrorFallback({ error, errorId, onReset }: { error: Error; errorId: 
 }
 
 // Page-level error fallback
-function PageErrorFallback({ error, errorId, onReset }: { error: Error; errorId: string | null; onReset: () => void }) {
+const PageErrorFallback = ({ error, errorId, onReset }: { error: Error; errorId: string | null; onReset: () => void }) => {
   return (
     <div className="flex items-center justify-center p-8">
       <Card className="max-w-md w-full p-6 text-center">
@@ -184,7 +184,7 @@ function PageErrorFallback({ error, errorId, onReset }: { error: Error; errorId:
 }
 
 // Component-level error fallback
-function ComponentErrorFallback({ error, errorId, onReset }: { error: Error; errorId: string | null; onReset: () => void }) {
+const ComponentErrorFallback = ({ error, errorId, onReset }: { error: Error; errorId: string | null; onReset: () => void }) => {
   return (
     <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
       <div className="flex items-start">
@@ -220,10 +220,10 @@ function ComponentErrorFallback({ error, errorId, onReset }: { error: Error; err
 export const SentryErrorBoundary = Sentry.ErrorBoundary
 
 // HOC for wrapping components with error boundary
-export function withErrorBoundary<P extends object>(
+export const withErrorBoundary = <P extends object>(
   Component: React.ComponentType<P>,
   errorBoundaryProps?: Omit<ErrorBoundaryProps, 'children'>
-): React.ComponentType<P> {
+): React.ComponentType<P> => {
   const WrappedComponent = (props: P) => (
     <ErrorBoundary {...errorBoundaryProps}>
       <Component {...props} />

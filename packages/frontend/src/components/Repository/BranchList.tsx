@@ -74,8 +74,8 @@ export const BranchList = ({
         <div className="branch-list__skeleton">
           {Array.from({ length: 5 }).map((_, index) => (
             <div key={index} className="branch-item__skeleton">
-              <div className="skeleton-line skeleton-branch-name"></div>
-              <div className="skeleton-line skeleton-commit-info"></div>
+              <div className="skeleton-line skeleton-branch-name" />
+              <div className="skeleton-line skeleton-commit-info" />
             </div>
           ))}
         </div>

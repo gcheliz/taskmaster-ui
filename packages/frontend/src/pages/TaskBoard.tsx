@@ -595,16 +595,16 @@ const TaskBoard = () => {
           <div className="max-w-full space-y-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                <div className="w-20 h-8 bg-gray-200 rounded-lg animate-pulse"></div>
-                <div className="w-20 h-8 bg-gray-200 rounded-lg animate-pulse"></div>
+                <div className="w-20 h-8 bg-gray-200 rounded-lg animate-pulse" />
+                <div className="w-20 h-8 bg-gray-200 rounded-lg animate-pulse" />
               </div>
-              <div className="w-32 h-8 bg-gray-200 rounded-lg animate-pulse"></div>
+              <div className="w-32 h-8 bg-gray-200 rounded-lg animate-pulse" />
             </div>
             <div className="flex space-x-6 overflow-x-auto scrollbar-thin">
               {[1, 2, 3, 4].map((col) => (
                 <div key={col} className="flex-shrink-0 w-80">
                   <div className="bg-gray-100 rounded-t-lg p-4 border-b border-gray-200">
-                    <div className="w-32 h-6 bg-gray-300 rounded animate-pulse"></div>
+                    <div className="w-32 h-6 bg-gray-300 rounded animate-pulse" />
                   </div>
                   <div className="bg-gray-50 rounded-b-lg p-4 min-h-[200px] space-y-3">
                     <TaskListSkeleton count={3} />
@@ -896,7 +896,7 @@ const DroppableColumn = ({ column }: { column: Column }) => {
       <div className="bg-gray-100 rounded-t-lg p-4 border-b border-gray-200">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <div className={`w-3 h-3 ${column.color} rounded-full`}></div>
+            <div className={`w-3 h-3 ${column.color} rounded-full`} />
             <h3 className="font-semibold text-gray-900">{column.title}</h3>
           </div>
           <div className="flex items-center space-x-2">
@@ -1074,7 +1074,7 @@ const TaskCard = ({
         <div className="flex items-center space-x-2">
           <span className="text-gray-500 text-xs">Complexity:</span>
           <div className="flex items-center space-x-1">
-            <div className={`w-2 h-2 ${getComplexityColor(task.complexity)} rounded-full`}></div>
+            <div className={`w-2 h-2 ${getComplexityColor(task.complexity)} rounded-full`} />
             <span className="text-gray-600 text-xs font-medium">{task.complexity}</span>
           </div>
         </div>

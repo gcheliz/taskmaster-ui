@@ -83,7 +83,7 @@ export const PRDEditorSettings = ({
 
   return (
     <div className={`prd-editor-settings ${className}`}>
-      <div className="settings-overlay" onClick={onClose}></div>
+      <div className="settings-overlay" onClick={onClose} />
       <div className="settings-panel">
         <div className="settings-header">
           <h3>PRD Editor Settings</h3>
@@ -101,7 +101,7 @@ export const PRDEditorSettings = ({
                 <div
                   className="storage-used"
                   style={{ width: `${Math.min(storageInfo.percentage, 100)}%` }}
-                ></div>
+                 />
               </div>
               <div className="storage-details">
                 <span>Used: {formatBytes(storageInfo.used)}</span>

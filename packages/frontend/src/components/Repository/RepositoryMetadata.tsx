@@ -70,9 +70,9 @@ export const RepositoryMetadata = ({
     return (
       <div className={`repository-metadata loading ${className}`}>
         <div className="repository-metadata__skeleton">
-          <div className="skeleton-line skeleton-title"></div>
-          <div className="skeleton-line skeleton-branch"></div>
-          <div className="skeleton-line skeleton-commit"></div>
+          <div className="skeleton-line skeleton-title" />
+          <div className="skeleton-line skeleton-branch" />
+          <div className="skeleton-line skeleton-commit" />
         </div>
       </div>
     )

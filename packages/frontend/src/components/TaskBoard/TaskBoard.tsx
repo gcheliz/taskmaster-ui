@@ -159,15 +159,15 @@ const TaskBoardComponent = ({
               aria-label={`Loading column ${index + 1}`}
             >
               <div className="column-header__skeleton">
-                <div className="skeleton-line column-title" aria-hidden="true"></div>
-                <div className="skeleton-line column-count" aria-hidden="true"></div>
+                <div className="skeleton-line column-title" aria-hidden="true" />
+                <div className="skeleton-line column-count" aria-hidden="true" />
               </div>
               <div className="column-content__skeleton">
                 {Array.from({ length: 2 }).map((_, cardIndex) => (
                   <div key={cardIndex} className="task-card__skeleton" aria-hidden="true">
-                    <div className="skeleton-line skeleton-title"></div>
-                    <div className="skeleton-line skeleton-description"></div>
-                    <div className="skeleton-line skeleton-meta"></div>
+                    <div className="skeleton-line skeleton-title" />
+                    <div className="skeleton-line skeleton-description" />
+                    <div className="skeleton-line skeleton-meta" />
                   </div>
                 ))}
               </div>
@@ -376,7 +376,7 @@ const TaskBoardComponent = ({
           role="status"
           aria-live="polite"
           aria-atomic="true"
-        ></div>
+         />
       </main>
     </DragAndDropProvider>
     </ProfilerWrapper>

@@ -128,7 +128,7 @@ export const TaskBoardWithFilters = ({
       {/* Loading State */}
       {loading && (
         <div className="task-board-loading">
-          <div className="loading-spinner"></div>
+          <div className="loading-spinner" />
           <p>Loading tasks...</p>
         </div>
       )}

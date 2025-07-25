@@ -34,5 +34,5 @@ export const NavigationWrapper = ({ children }: { children: React.ReactNode }) =
     }
   }, [navigate])
 
-  return <>{children}</>
+  return children
 }

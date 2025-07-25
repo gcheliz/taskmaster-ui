@@ -17,8 +17,8 @@ export const LoadingScreen = ({
       <div className="flex flex-col items-center space-y-4">
         {/* Spinner */}
         <div className="relative h-16 w-16">
-          <div className="absolute inset-0 rounded-full border-4 border-secondary-200"></div>
-          <div className="absolute inset-0 rounded-full border-4 border-primary-500 border-t-transparent animate-spin"></div>
+          <div className="absolute inset-0 rounded-full border-4 border-secondary-200" />
+          <div className="absolute inset-0 rounded-full border-4 border-primary-500 border-t-transparent animate-spin" />
         </div>
 
         {/* Loading message */}

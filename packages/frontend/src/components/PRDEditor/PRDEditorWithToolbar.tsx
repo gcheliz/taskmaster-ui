@@ -247,7 +247,7 @@ export const PRDEditorWithToolbar = ({
     return (
       <div className={`prd-editor-with-toolbar loading ${className}`}>
         <div className="prd-editor__loading">
-          <div className="loading-spinner"></div>
+          <div className="loading-spinner" />
           <span>Loading editor...</span>
         </div>
       </div>
@@ -270,7 +270,7 @@ export const PRDEditorWithToolbar = ({
           <div className="header-actions">
             {isSaving && (
               <span className="saving-indicator">
-                <div className="saving-spinner"></div>
+                <div className="saving-spinner" />
                 Saving...
               </span>
             )}

@@ -102,7 +102,7 @@ interface SettingsProviderProps {
   autoLoad?: boolean
 }
 
-export function SettingsProvider({ children, autoLoad = true }: SettingsProviderProps) {
+export const SettingsProvider = ({ children, autoLoad = true }: SettingsProviderProps) => {
   const [state, dispatch] = useReducer(settingsReducer, initialState)
 
   // Load settings on mount

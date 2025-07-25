@@ -136,7 +136,7 @@ export const AddRepository = ({
           >
             {isLoading ? (
               <>
-                <span className="loading-spinner" aria-hidden="true"></span>
+                <span className="loading-spinner" aria-hidden="true" />
                 Connecting...
               </>
             ) : (

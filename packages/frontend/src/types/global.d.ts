@@ -11,7 +11,7 @@ declare global {
 // Module declarations
 declare module '*.svg' {
   import * as React from 'react'
-  export const ReactComponent: React.FC<React.SVGProps<SVGSVGElement>>
+  export const ReactComponent: (props: React.SVGProps<SVGSVGElement>) => React.ReactElement
   const src: string
   export default src
 }

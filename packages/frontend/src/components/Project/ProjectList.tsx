@@ -141,9 +141,9 @@ export const ProjectList = ({
         <div className="project-list__content">
           {Array.from({ length: 3 }).map((_, index) => (
             <div key={index} className="project-item__skeleton">
-              <div className="skeleton-line skeleton-title"></div>
-              <div className="skeleton-line skeleton-subtitle"></div>
-              <div className="skeleton-line skeleton-info"></div>
+              <div className="skeleton-line skeleton-title" />
+              <div className="skeleton-line skeleton-subtitle" />
+              <div className="skeleton-line skeleton-info" />
             </div>
           ))}
         </div>

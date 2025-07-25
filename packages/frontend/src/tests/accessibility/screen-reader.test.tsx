@@ -308,9 +308,7 @@ describe('Screen Reader Support Tests', () => {
       const { rerender } = render(
         <>
           <button>Open Modal</button>
-          <div role="status" aria-live="polite" className="sr-only">
-            
-          </div>
+          <div role="status" aria-live="polite" className="sr-only" />
         </>
       )
       

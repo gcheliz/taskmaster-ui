@@ -72,7 +72,7 @@ export const PRDToolbar = ({
         </ToolbarButton>
       </div>
 
-      <div className="toolbar-divider"></div>
+      <div className="toolbar-divider" />
 
       {/* Headings */}
       <div className="toolbar-group">
@@ -115,7 +115,7 @@ export const PRDToolbar = ({
         </select>
       </div>
 
-      <div className="toolbar-divider"></div>
+      <div className="toolbar-divider" />
 
       {/* Text Formatting */}
       <div className="toolbar-group">
@@ -145,7 +145,7 @@ export const PRDToolbar = ({
         </ToolbarButton>
       </div>
 
-      <div className="toolbar-divider"></div>
+      <div className="toolbar-divider" />
 
       {/* Lists */}
       <div className="toolbar-group">
@@ -167,7 +167,7 @@ export const PRDToolbar = ({
         </ToolbarButton>
       </div>
 
-      <div className="toolbar-divider"></div>
+      <div className="toolbar-divider" />
 
       {/* Clear Formatting and Code */}
       <div className="toolbar-group">
@@ -197,7 +197,7 @@ export const PRDToolbar = ({
       </div>
 
       {/* Document Stats */}
-      <div className="toolbar-spacer"></div>
+      <div className="toolbar-spacer" />
       <div className="toolbar-stats">
         <span className="char-count">{editor.getText().length} chars</span>
       </div>

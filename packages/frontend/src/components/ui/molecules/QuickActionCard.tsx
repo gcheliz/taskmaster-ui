@@ -155,7 +155,7 @@ const QuickActionCard = ({
           {/* Loading indicator */}
           {loading && (
             <div className="absolute inset-0 flex items-center justify-center bg-surface-50/50 dark:bg-surface-900/50 rounded-lg">
-              <div className="w-5 h-5 border-2 border-primary-200 border-t-primary-500 rounded-full animate-spin"></div>
+              <div className="w-5 h-5 border-2 border-primary-200 border-t-primary-500 rounded-full animate-spin" />
             </div>
           )}
         </div>

@@ -1,8 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import { exportService, ExportOptions } from '../services/exportService'
-import { taskService } from '../services/taskService'
 import { logger } from '../utils/logger'
-import { AuthRequest } from '../types'
 import { TaskInfo } from '../types/taskMaster'
 
 export class ExportController {
@@ -10,7 +8,7 @@ export class ExportController {
    * Export tasks
    * GET /api/export/tasks
    */
-  async exportTasks(req: AuthRequest, res: Response, next: NextFunction) {
+  async exportTasks(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const options: ExportOptions = {
         format: req.query.format as 'csv' | 'json',
@@ -81,7 +79,7 @@ export class ExportController {
       res.send(result.data)
 
       logger.info('Tasks exported successfully', {
-        userId: req.user!.id,
+        userId: (req as any).user?.id,
         format: options.format,
         count: result.totalCount
       })
@@ -95,7 +93,7 @@ export class ExportController {
    * Export analytics data
    * GET /api/export/analytics
    */
-  async exportAnalytics(req: AuthRequest, res: Response, next: NextFunction) {
+  async exportAnalytics(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const {
         format,
@@ -160,7 +158,7 @@ export class ExportController {
    * Get export progress for async exports
    * GET /api/export/progress/:exportId
    */
-  async getExportProgress(req: AuthRequest, res: Response, next: NextFunction) {
+  async getExportProgress(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { exportId } = req.params
       
@@ -190,7 +188,7 @@ export class ExportController {
    * Initiate async export for large datasets
    * POST /api/export/async
    */
-  async initiateAsyncExport(req: AuthRequest, res: Response, next: NextFunction) {
+  async initiateAsyncExport(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { type, format, filters, notifyEmail } = req.body
 
@@ -224,7 +222,7 @@ export class ExportController {
         type,
         format,
         filters: filters || {},
-        userId: req.user?.id,
+        userId: (req as any).user?.id,
         notifyEmail
       })
 
@@ -234,7 +232,7 @@ export class ExportController {
       })
 
       logger.info('Async export initiated', {
-        userId: req.user?.id,
+        userId: (req as any).user?.id,
         exportId: result.exportId,
         type,
         format
@@ -249,7 +247,7 @@ export class ExportController {
    * Download completed export file
    * GET /api/export/download/:exportId/:filename
    */
-  async downloadExport(req: Request, res: Response, next: NextFunction) {
+  async downloadExport(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { exportId, filename } = req.params
       

@@ -90,7 +90,7 @@ export const Header = ({
               className="absolute top-0.5 right-0.5 w-1.5 h-1.5 bg-red-500 rounded-full"
               role="status"
               aria-label="You have new notifications"
-            ></span>
+            />
           </button>
 
           {/* Theme Toggle - Hidden on mobile */}

@@ -21,7 +21,7 @@ describe('LoginForm', () => {
       
       expect(screen.getByLabelText(/email address/i)).toBeInTheDocument()
       expect(screen.getByLabelText(/^password$/i)).toBeInTheDocument()
-      expect(screen.getByRole('button', { name: /log in/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /sign in/i })).toBeInTheDocument()
       expect(screen.getByLabelText(/remember me/i)).toBeInTheDocument()
     })
 
@@ -44,7 +44,7 @@ describe('LoginForm', () => {
       renderWithRouter(<LoginForm onSuccess={mockOnSuccess} />)
       
       const emailInput = screen.getByLabelText(/email address/i)
-      const submitButton = screen.getByRole('button', { name: /log in/i })
+      const submitButton = screen.getByRole('button', { name: /sign in/i })
       
       await user.type(emailInput, 'invalid-email')
       await user.click(submitButton)
@@ -58,7 +58,7 @@ describe('LoginForm', () => {
       const user = userEvent.setup()
       renderWithRouter(<LoginForm onSuccess={mockOnSuccess} />)
       
-      const submitButton = screen.getByRole('button', { name: /log in/i })
+      const submitButton = screen.getByRole('button', { name: /sign in/i })
       await user.click(submitButton)
       
       await waitFor(() => {
@@ -72,7 +72,7 @@ describe('LoginForm', () => {
       
       const emailInput = screen.getByLabelText(/email address/i)
       const passwordInput = screen.getByLabelText(/^password$/i)
-      const submitButton = screen.getByRole('button', { name: /log in/i })
+      const submitButton = screen.getByRole('button', { name: /sign in/i })
       
       await user.type(emailInput, 'test@example.com')
       await user.type(passwordInput, '123')
@@ -91,7 +91,7 @@ describe('LoginForm', () => {
       
       await user.type(screen.getByLabelText(/email address/i), 'test@example.com')
       await user.type(screen.getByLabelText(/^password$/i), 'password123')
-      await user.click(screen.getByRole('button', { name: /log in/i }))
+      await user.click(screen.getByRole('button', { name: /sign in/i }))
       
       await waitFor(() => {
         expect(mockOnSuccess).toHaveBeenCalledWith({
@@ -108,7 +108,7 @@ describe('LoginForm', () => {
       await user.type(screen.getByLabelText(/email address/i), 'test@example.com')
       await user.type(screen.getByLabelText(/^password$/i), 'password123')
       await user.click(screen.getByLabelText(/remember me/i))
-      await user.click(screen.getByRole('button', { name: /log in/i }))
+      await user.click(screen.getByRole('button', { name: /sign in/i }))
       
       await waitFor(() => {
         expect(mockOnSuccess).toHaveBeenCalled()
@@ -122,7 +122,7 @@ describe('LoginForm', () => {
       await user.type(screen.getByLabelText(/email address/i), 'test@example.com')
       await user.type(screen.getByLabelText(/^password$/i), 'password123')
       
-      const submitButton = screen.getByRole('button', { name: /log in/i })
+      const submitButton = screen.getByRole('button', { name: /sign in/i })
       await user.click(submitButton)
       
       // Should show loading state immediately after click
@@ -155,7 +155,7 @@ describe('LoginForm', () => {
       renderWithRouter(<LoginForm onSuccess={mockOnSuccess} />)
       
       // Submit empty form to trigger errors
-      await user.click(screen.getByRole('button', { name: /log in/i }))
+      await user.click(screen.getByRole('button', { name: /sign in/i }))
       
       await waitFor(() => {
         expect(screen.getByText(/email is required/i)).toBeInTheDocument()

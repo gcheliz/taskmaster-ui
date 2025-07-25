@@ -88,7 +88,7 @@ export const PRDAnalysisButton = ({
         >
           {isAnalyzing ? (
             <>
-              <div className="spinner"></div>
+              <div className="spinner" />
               Analyzing...
             </>
           ) : (

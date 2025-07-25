@@ -9,9 +9,9 @@ const router = Router()
 router.use(authenticateJWT)
 
 // Apply rate limiting for exports (10 requests per hour)
-const exportRateLimiter = rateLimiter({
+const exportRateLimiter = rateLimiter.createLimiter({
   windowMs: 60 * 60 * 1000, // 1 hour
-  max: 10,
+  maxRequests: 10,
   message: 'Export rate limit exceeded. Please try again later.'
 })
 

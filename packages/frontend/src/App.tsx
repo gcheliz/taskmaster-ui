@@ -37,20 +37,31 @@ function App() {
           <NotificationProvider>
             <RepositoryProvider>
               <AppRouter />
-              <FPSMonitor enabled={process.env.NODE_ENV === 'development'} />
-              <WebVitalsMonitor 
-                enabled={true}
-                debug={process.env.NODE_ENV === 'development'}
-                onReport={(metric) => {
-                  // Send to analytics in production
-                  if (process.env.NODE_ENV === 'production') {
-                    console.log('Web Vitals:', metric)
-                  }
-                }}
-              />
-              <PerformanceMonitor />
-              {process.env.NODE_ENV === 'development' && <WebVitalsDashboard />}
-              {process.env.NODE_ENV === 'development' && <PerformanceDashboard />}
+              {import.meta.env.VITE_ENABLE_FPS_MONITOR !== 'false' && 
+                process.env.NODE_ENV === 'development' && 
+                <FPSMonitor enabled={true} />}
+              
+              {import.meta.env.VITE_ENABLE_WEB_VITALS !== 'false' && (
+                <WebVitalsMonitor 
+                  enabled={true}
+                  debug={process.env.NODE_ENV === 'development'}
+                  onReport={(metric) => {
+                    // Send to analytics in production
+                    if (process.env.NODE_ENV === 'production') {
+                      console.log('Web Vitals:', metric)
+                    }
+                  }}
+                />
+              )}
+              
+              {import.meta.env.VITE_ENABLE_PERFORMANCE_MONITORING !== 'false' && 
+                process.env.NODE_ENV === 'development' && (
+                  <>
+                    <PerformanceMonitor />
+                    <WebVitalsDashboard />
+                    <PerformanceDashboard />
+                  </>
+                )}
             </RepositoryProvider>
           </NotificationProvider>
         </FocusProvider>

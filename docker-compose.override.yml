@@ -1,0 +1,15 @@
+services:
+  backend:
+    environment:
+      # Disable performance analysis for better performance
+      - ENABLE_QUERY_ANALYSIS=false
+      - ENABLE_PERFORMANCE_MONITORING=false
+      - ENABLE_PROFILING=false
+      
+  frontend:
+    environment:
+      # Disable performance monitoring in Docker
+      - VITE_ENABLE_PERFORMANCE_MONITORING=false
+      - VITE_ENABLE_WEB_VITALS=false
+      - VITE_ENABLE_FPS_MONITOR=false
+      - VITE_ENABLE_PROFILER=false

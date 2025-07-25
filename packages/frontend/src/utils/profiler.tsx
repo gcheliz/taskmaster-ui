@@ -14,7 +14,8 @@ interface ProfilerData {
 const profilerData: Map<string, ProfilerData[]> = new Map()
 
 // Enable profiler data collection only in development
-const ENABLE_PROFILING = process.env.NODE_ENV === 'development'
+const ENABLE_PROFILING = process.env.NODE_ENV === 'development' && 
+  import.meta.env.VITE_ENABLE_PROFILER !== 'false'
 
 /**
  * Callback function for React Profiler

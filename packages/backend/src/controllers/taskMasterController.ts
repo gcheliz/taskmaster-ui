@@ -183,18 +183,6 @@ export class TaskMasterController implements ITaskMasterController {
         timestamp: new Date().toISOString(),
       });
 
-      const response: CliExecuteResponse = {
-        success: true,
-        data: result,
-        metadata: {
-          timestamp: new Date().toISOString(),
-          requestId: req.requestId,
-          duration: Date.now() - req.startTime,
-          version: process.env.API_VERSION || '1.0.0',
-          rateLimit: req.rateLimit,
-        },
-      };
-
       res.apiSuccess(result, {
         rateLimit: req.rateLimit,
       });
@@ -237,7 +225,7 @@ export class TaskMasterController implements ITaskMasterController {
       }
 
       const responseData = {
-        project: statusResult.data!,
+        project: statusResult.data,
         stats,
         tasks: tasksData,
       };
@@ -284,13 +272,13 @@ export class TaskMasterController implements ITaskMasterController {
       // Apply filters
       if (filters.status && filters.status.length > 0) {
         filteredTasks = filteredTasks.filter(task =>
-          filters.status!.includes(task.status)
+          filters.status?.includes(task.status) ?? false
         );
       }
 
       if (filters.priority && filters.priority.length > 0) {
         filteredTasks = filteredTasks.filter(task =>
-          filters.priority!.includes(task.priority)
+          filters.priority?.includes(task.priority) ?? false
         );
       }
 
@@ -299,15 +287,15 @@ export class TaskMasterController implements ITaskMasterController {
           const taskComplexity = this.getTaskComplexityLevel(
             task.complexity || 1
           );
-          return filters.complexity!.includes(taskComplexity);
+          return filters.complexity?.includes(taskComplexity) ?? false;
         });
       }
 
       if (filters.assignee && filters.assignee.length > 0) {
         filteredTasks = filteredTasks.filter(task => {
           // For now, we'll treat all tasks as unassigned since assignee is not in TaskInfo
-          const taskAssignee = (task as any).assignee || 'unassigned';
-          return filters.assignee!.includes(taskAssignee);
+          const taskAssignee = (task as any).assignee ?? 'unassigned';
+          return filters.assignee?.includes(taskAssignee) ?? false;
         });
       }
 
@@ -480,19 +468,20 @@ export class TaskMasterController implements ITaskMasterController {
         ...optionalFields,
       };
 
-      // For now, we'll need to implement the actual task creation in the service
-      // This is a placeholder that shows the API structure
-      const createResult = await this.taskMasterService.executeCommand(
+      // Create the task using the service
+      const createResult = await this.taskMasterService.createTask(
         repositoryPath,
-        'add-task',
         {
           prompt: `${title}: ${description}`,
           priority,
           status,
-          dependencies: dependencies.join(','),
-          tags: tags.join(','),
+          dependencies: dependencies.length > 0 ? dependencies.join(',') : undefined,
+          tags: tags.length > 0 ? tags.join(',') : undefined,
         },
-        { tag: this.extractTagFromPath(repositoryPath) }
+        { 
+          research: optionalFields.aiEnhancement?.generateDetails || false,
+          tag: this.extractTagFromPath(repositoryPath) 
+        }
       );
 
       if (!createResult.success) {
@@ -529,12 +518,7 @@ export class TaskMasterController implements ITaskMasterController {
         requestId: req.id,
       });
     } catch (error) {
-      this.handleControllerError(
-        error,
-        'createTask',
-        res,
-        'Failed to create task'
-      );
+      await this.handleError(error as Error, req, res, 'createTask');
     }
   }
 
@@ -608,7 +592,7 @@ export class TaskMasterController implements ITaskMasterController {
       const request = req.validatedBody as TaskExpansionRequest;
       const { repositoryPath, options = {} } = request;
 
-      const result = await this.taskMasterService.expandTask(
+      await this.taskMasterService.expandTask(
         repositoryPath,
         taskId,
         {

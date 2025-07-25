@@ -72,6 +72,11 @@ export class TaskMasterCommandBuilder implements ITaskMasterCommandBuilder {
       description: 'Update subtask details',
       requiresRepository: true,
     },
+    'add-task': {
+      command: 'task-master',
+      description: 'Add a new task',
+      requiresRepository: true,
+    },
   };
 
   /**
@@ -222,6 +227,29 @@ export class TaskMasterCommandBuilder implements ITaskMasterCommandBuilder {
         this.addTagFlag(commandArgs, args.tag);
         break;
 
+      case 'add-task':
+        if (!args.prompt) {
+          throw new Error('Task description is required for add-task command');
+        }
+        commandArgs.push(`--prompt=${args.prompt}`);
+        if (args.priority) {
+          commandArgs.push(`--priority=${args.priority}`);
+        }
+        if (args.status) {
+          commandArgs.push(`--status=${args.status}`);
+        }
+        if (args.dependencies) {
+          commandArgs.push(`--dependencies=${args.dependencies}`);
+        }
+        if (args.tags) {
+          commandArgs.push(`--tags=${args.tags}`);
+        }
+        if (args.research) {
+          commandArgs.push('--research');
+        }
+        this.addTagFlag(commandArgs, args.tag);
+        break;
+
       default:
         // For unknown operations, pass through all args as flags
         Object.entries(args).forEach(([key, value]) => {
@@ -283,6 +311,10 @@ export class TaskMasterCommandBuilder implements ITaskMasterCommandBuilder {
       case 'parse-prd':
         // Requires a file path
         return args.length >= 2 && !args[1].startsWith('--');
+
+      case 'add-task':
+        // Requires a prompt/description parameter
+        return args.some(arg => arg.includes('--prompt='));
 
       default:
         return true; // Other commands have optional parameters

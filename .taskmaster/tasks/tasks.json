@@ -482,7 +482,7 @@
             "id": "7.1",
             "title": "Design task creation API endpoint",
             "description": "Design and document the task creation API",
-            "status": "in-progress",
+            "status": "done",
             "dependencies": [],
             "priority": "high",
             "details": "Define API endpoint structure for POST /api/tasks. Document request/response schemas. Define validation rules. Plan error response format.",
@@ -492,7 +492,7 @@
             "id": "7.2",
             "title": "Implement backend task creation logic",
             "description": "Build the server-side task creation functionality",
-            "status": "pending",
+            "status": "done",
             "dependencies": [
               "7.1"
             ],
@@ -773,7 +773,7 @@
     ],
     "metadata": {
       "created": "2025-07-25T09:02:45.000Z",
-      "updated": "2025-07-25T13:34:55.171Z",
+      "updated": "2025-07-25T13:45:26.855Z",
       "description": "TaskMaster UI Modernization - Code quality and performance improvements",
       "projectName": "TaskMaster UI Modernization",
       "sourceFile": "/Users/gonzalo/workspace/taskmaster-ui/.taskmaster/docs/prd.txt"

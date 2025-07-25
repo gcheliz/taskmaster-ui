@@ -76,6 +76,17 @@ export interface ITaskMasterService {
     taskId: string,
     options?: { tag?: string }
   ): Promise<TaskMasterResult<TaskInfo>>;
+  createTask(
+    path: string,
+    taskData: {
+      prompt: string;
+      priority?: string;
+      status?: string;
+      dependencies?: string;
+      tags?: string;
+    },
+    options?: { research?: boolean; tag?: string }
+  ): Promise<TaskMasterResult>;
   updateTaskStatus(
     path: string,
     taskId: string,

@@ -537,6 +537,28 @@ export class TaskMasterService
     });
   }
 
+  async createTask(
+    path: string,
+    taskData: {
+      prompt: string;
+      priority?: string;
+      status?: string;
+      dependencies?: string;
+      tags?: string;
+    },
+    options: { research?: boolean; tag?: string } = {}
+  ): Promise<TaskMasterResult> {
+    return this.executeGenericCommand('add-task', path, {
+      prompt: taskData.prompt,
+      priority: taskData.priority,
+      status: taskData.status,
+      dependencies: taskData.dependencies,
+      tags: taskData.tags,
+      research: options.research,
+      tag: options.tag || this.extractTagFromPath(path),
+    });
+  }
+
   /**
    * Generic command execution helper
    */
@@ -674,6 +696,7 @@ export class TaskMasterService
       'expand',
       'analyze-complexity',
       'validate-dependencies',
+      'add-task',
     ];
 
     if (!validOperations.includes(operation)) {

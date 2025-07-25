@@ -35,27 +35,29 @@ describe('AddRepository', () => {
     render(<AddRepository />)
 
     const input = screen.getByLabelText('Repository Path')
-    const clearButton = screen.getByLabelText('Clear path')
 
-    // Initially no clear button visible
-    expect(clearButton).not.toBeVisible()
+    // Initially no clear button exists
+    expect(screen.queryByLabelText('Clear path')).not.toBeInTheDocument()
 
     // Type something
     fireEvent.change(input, { target: { value: '/test' } })
 
-    // Clear button should be visible
-    expect(clearButton).toBeVisible()
+    // Clear button should now exist
+    const clearButton = screen.getByLabelText('Clear path')
+    expect(clearButton).toBeInTheDocument()
   })
 
   it('clears input when clear button is clicked', () => {
     render(<AddRepository />)
 
     const input = screen.getByLabelText('Repository Path')
-    const clearButton = screen.getByLabelText('Clear path')
 
-    // Type something
+    // Type something first to make clear button appear
     fireEvent.change(input, { target: { value: '/test/path' } })
     expect(input).toHaveValue('/test/path')
+
+    // Get the clear button after it appears
+    const clearButton = screen.getByLabelText('Clear path')
 
     // Click clear
     fireEvent.click(clearButton)
@@ -65,15 +67,20 @@ describe('AddRepository', () => {
   it('validates empty input', async () => {
     render(<AddRepository onRepositoryAdd={mockOnRepositoryAdd} />)
 
+    const input = screen.getByLabelText('Repository Path')
     const submitButton = screen.getByRole('button', {
       name: 'Connect Repository',
     })
 
-    // Submit empty form
+    // Type a very short path that will pass the trim check but fail validation
+    fireEvent.change(input, { target: { value: 'a' } })
+
+    // Submit form with too short path
     fireEvent.click(submitButton)
 
     await waitFor(() => {
-      expect(screen.getByRole('alert')).toHaveTextContent('Repository path is required')
+      // Path with 1 character is too short (minimum is 2)
+      expect(screen.getByRole('alert')).toHaveTextContent('Path is too short')
     })
 
     expect(mockOnRepositoryAdd).not.toHaveBeenCalled()
@@ -172,13 +179,16 @@ describe('AddRepository', () => {
       name: 'Connect Repository',
     })
 
+    // Type invalid path to enable button but trigger validation
+    fireEvent.change(input, { target: { value: 'relative/path' } })
+    
     // Trigger validation error
     fireEvent.click(submitButton)
     await waitFor(() => {
-      expect(screen.getByRole('alert')).toBeInTheDocument()
+      expect(screen.getByRole('alert')).toHaveTextContent('Please provide an absolute path')
     })
 
-    // Start typing
+    // Start typing a valid path
     fireEvent.change(input, { target: { value: '/test' } })
 
     // Error should be cleared
@@ -207,15 +217,23 @@ describe('AddRepository', () => {
     const externalError = 'External error'
     render(<AddRepository error={externalError} onRepositoryAdd={mockOnRepositoryAdd} />)
 
+    const input = screen.getByLabelText('Repository Path')
     const submitButton = screen.getByRole('button', {
       name: 'Connect Repository',
     })
+
+    // Initially should show external error
+    expect(screen.getByRole('alert')).toHaveTextContent(externalError)
+
+    // Type a very short path to enable button but fail validation
+    fireEvent.change(input, { target: { value: 'a' } })
 
     // Trigger validation error
     fireEvent.click(submitButton)
 
     await waitFor(() => {
-      expect(screen.getByRole('alert')).toHaveTextContent('Repository path is required')
+      // Should show validation error instead of external error
+      expect(screen.getByRole('alert')).toHaveTextContent('Path is too short')
       expect(screen.getByRole('alert')).not.toHaveTextContent(externalError)
     })
   })

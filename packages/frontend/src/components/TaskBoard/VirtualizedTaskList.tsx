@@ -1,6 +1,6 @@
 import React from 'react';
-import { Task } from '../../types/task';
-import { TaskCard } from '../ui/molecules/TaskCard';
+import type { Task } from '../../types/task';
+import { TaskCard } from './TaskCard';
 import { VirtualizedList } from '../common/VirtualizedList';
 import { useRenderTime } from '../Performance/WebVitals';
 

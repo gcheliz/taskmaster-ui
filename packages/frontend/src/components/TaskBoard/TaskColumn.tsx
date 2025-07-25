@@ -1,5 +1,6 @@
 import React from 'react'
 import { useDroppable } from '@dnd-kit/core'
+import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import type { TaskColumn as TaskColumnType, TaskStatus } from '../../types/task'
 import { TaskCard } from './TaskCard'
 import type { DropData } from './DragAndDropProvider'
@@ -167,14 +168,19 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
             role="group"
             aria-label={`${taskCount} task${taskCount !== 1 ? 's' : ''} in ${title.toLowerCase()}`}
           >
-            {tasks.map((task) => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                onTaskClick={handleTaskClick}
-                showFullDetails={true}
-              />
-            ))}
+            <SortableContext 
+              items={tasks.map(task => `task-${task.id}`)}
+              strategy={verticalListSortingStrategy}
+            >
+              {tasks.map((task) => (
+                <TaskCard
+                  key={task.id}
+                  task={task}
+                  onTaskClick={handleTaskClick}
+                  showFullDetails={true}
+                />
+              ))}
+            </SortableContext>
           </div>
         )}
       </div>

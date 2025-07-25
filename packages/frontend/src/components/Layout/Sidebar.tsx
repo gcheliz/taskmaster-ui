@@ -1,6 +1,7 @@
 import React, { useRef } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { LayoutGrid, FolderGit2, ClipboardList, Terminal, Settings, ChevronLeft, ChevronRight } from 'lucide-react'
+import { SafeLink } from '../common/SafeLink'
 
 interface SidebarProps {
   isOpen?: boolean
@@ -45,7 +46,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onClose, isColl
           <div className="hidden lg:flex justify-end p-2 border-b border-gray-100">
             <button
               onClick={onToggleCollapse}
-              className="p-2 rounded-lg hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+              className="p-2 rounded-lg hover:bg-gray-100 transition-colors focus:outline-none text-gray-600 hover:text-gray-900"
               title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
               aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             >
@@ -65,10 +66,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onClose, isColl
               const active = isActive(item.path)
 
               return (
-                <Link
+                <SafeLink
                   key={item.path}
                   to={item.path}
-                  onClick={() => onClose?.()}
+                  onClick={() => {
+                    onClose?.()
+                  }}
                   className={`
                     flex flex-row items-center ${isCollapsed ? 'justify-center px-2' : 'gap-3 px-4'} 
                     py-2.5 w-full rounded-lg font-medium text-sm
@@ -76,7 +79,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onClose, isColl
                     ${active 
                       ? 'bg-blue-600 text-white shadow-sm hover:bg-blue-700' 
                       : 'bg-transparent text-gray-700 hover:bg-gray-100 hover:text-gray-900'}
-                    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+                    focus:outline-none
                   `}
                   title={isCollapsed ? item.label : undefined}
                 >
@@ -85,12 +88,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onClose, isColl
                   
                   {/* Tooltip for collapsed state */}
                   {isCollapsed && (
-                    <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded 
+                    <div className="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-xs rounded shadow-lg
                       opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
                       {item.label}
                     </div>
                   )}
-                </Link>
+                </SafeLink>
               )
             })}
           </nav>

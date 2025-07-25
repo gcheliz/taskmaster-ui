@@ -9,6 +9,8 @@ import { useGlobalKeyboardShortcuts, useKeyboardShortcuts } from '../../hooks/us
 import { useRouteFocusManagement } from '../../hooks/useFocusManagement'
 import { AriaLiveRegion } from '../common/AriaLiveRegion'
 import { PageTransitionWrapper } from './PageTransitionWrapper'
+// import { NavigationDebug } from '../Debug/NavigationDebug'
+// import { useNavigationDebug } from '../../hooks/useNavigationDebug'
 
 export const AppLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -20,6 +22,9 @@ export const AppLayout: React.FC = () => {
 
   // Manage focus on route changes
   // useRouteFocusManagement()
+  
+  // Debug navigation issues
+  // useNavigationDebug()
 
   // Add keyboard shortcut to open shortcuts panel
   useKeyboardShortcuts([
@@ -84,6 +89,9 @@ export const AppLayout: React.FC = () => {
       
       {/* Live Region for Route Announcements */}
       <AriaLiveRegion politeness="polite" className="sr-only" />
+      
+      {/* Navigation Debug */}
+      {/* <NavigationDebug /> */}
     </div>
   )
 }

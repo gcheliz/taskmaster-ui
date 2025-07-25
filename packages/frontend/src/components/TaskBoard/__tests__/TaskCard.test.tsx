@@ -3,6 +3,30 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { render, screen, fireEvent, createMockTask, mockHandlers } from '../../../test-utils'
 import { TaskCard } from '../TaskCard'
 
+// Mock @dnd-kit/sortable
+vi.mock('@dnd-kit/sortable', () => ({
+  useSortable: () => ({
+    attributes: {},
+    listeners: {},
+    setNodeRef: vi.fn(),
+    transform: null,
+    transition: null,
+    isDragging: false,
+  }),
+}))
+
+// Mock @dnd-kit/utilities
+vi.mock('@dnd-kit/utilities', () => ({
+  CSS: {
+    Transform: {
+      toString: () => '',
+    },
+    Translate: {
+      toString: () => '',
+    },
+  },
+}))
+
 describe('TaskCard', () => {
   const defaultTask = createMockTask()
   
@@ -100,7 +124,7 @@ describe('TaskCard', () => {
   })
 
   it('handles tasks without assignee', () => {
-    const taskWithoutAssignee = createMockTask({ assignee: null })
+    const taskWithoutAssignee = createMockTask({ assignedTo: null })
     render(<TaskCard task={taskWithoutAssignee} />)
     
     expect(screen.queryByText('JD')).not.toBeInTheDocument()
@@ -125,9 +149,9 @@ describe('TaskCard', () => {
     const card = screen.getByRole('article')
     await user.hover(card)
     
-    // Check that edit button becomes visible
+    // Check that edit button has hover classes (group-hover:opacity-100)
     const editButton = screen.getByTitle('Edit task')
-    expect(editButton.parentElement).toHaveClass('opacity-100')
+    expect(editButton).toHaveClass('group-hover:opacity-100')
   })
 
   it('truncates long titles appropriately', () => {

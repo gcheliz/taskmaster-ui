@@ -41,6 +41,19 @@ export const DashboardSkeleton: React.FC = () => {
           <Skeleton variant="rectangular" height={200} className="rounded-md" />
         </div>
       </div>
+      
+      {/* Quick Actions Skeleton */}
+      <div className="bg-white rounded-xl border border-gray-200 p-6">
+        <Skeleton variant="text" height={28} width="30%" className="mb-6" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <div key={index} className="flex items-center gap-3 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+              <Skeleton variant="circular" width={32} height={32} />
+              <Skeleton variant="text" height={16} width="70%" />
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   )
 }

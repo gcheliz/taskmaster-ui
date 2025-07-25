@@ -17,10 +17,14 @@ import {
 import {
   DndContext,
   closestCorners,
+  closestCenter,
+  pointerWithin,
+  rectIntersection,
   KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
+  useDroppable,
   DragOverlay,
   defaultDropAnimationSideEffects,
 } from '@dnd-kit/core';
@@ -57,6 +61,7 @@ interface Task {
   createdAt?: string;
   updatedAt?: string;
   tags?: string[];
+  justUpdated?: boolean;
 }
 
 interface FilterOptions {
@@ -93,7 +98,7 @@ const TaskBoard: React.FC = () => {
     assignees: [],
     columns: []
   });
-  const [sortBy, setSortBy] = useState<SortOption>('priority');
+  const [sortBy, setSortBy] = useState<SortOption | null>(null);
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const filterRef = useRef<HTMLDivElement>(null);
   const sortRef = useRef<HTMLDivElement>(null);
@@ -175,7 +180,7 @@ const TaskBoard: React.FC = () => {
       priority: 'high',
       complexity: 6,
       assignee: { name: 'John S', initials: 'JS', color: 'bg-purple-600' },
-      column: 'review',
+      column: 'testing',
       position: 0,
       progress: 90,
       createdAt: new Date().toISOString(),
@@ -189,7 +194,7 @@ const TaskBoard: React.FC = () => {
       complexity: 5,
       assignee: { name: 'Gonzalo', initials: 'GZ', color: 'bg-blue-600' },
       column: 'testing',
-      position: 0,
+      position: 1,
       progress: 60,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
@@ -215,7 +220,6 @@ const TaskBoard: React.FC = () => {
   const baseColumns = [
     { id: 'todo', title: 'To Do', color: 'bg-gray-500' },
     { id: 'in-progress', title: 'In Progress', color: 'bg-blue-600' },
-    { id: 'review', title: 'Review', color: 'bg-purple-600' },
     { id: 'testing', title: 'Testing', color: 'bg-amber-600' },
     { id: 'done', title: 'Done', color: 'bg-green-600' }
   ];
@@ -241,6 +245,11 @@ const TaskBoard: React.FC = () => {
     filtered.sort((a, b) => {
       let compareValue = 0;
       
+      if (!sortBy) {
+        // Default to position-based sorting when no sort is selected
+        return a.position - b.position;
+      }
+      
       switch (sortBy) {
         case 'priority': {
           const priorityOrder = { high: 3, medium: 2, low: 1 };
@@ -262,8 +271,6 @@ const TaskBoard: React.FC = () => {
         case 'updated':
           compareValue = new Date(a.updatedAt || 0).getTime() - new Date(b.updatedAt || 0).getTime();
           break;
-        default:
-          compareValue = a.position - b.position;
       }
 
       return sortDirection === 'asc' ? compareValue : -compareValue;
@@ -274,7 +281,9 @@ const TaskBoard: React.FC = () => {
 
   // Compute columns with filtered and sorted tasks
   const columns: Column[] = baseColumns.map(column => {
-    const columnTasks = tasks.filter(task => task.column === column.id);
+    const columnTasks = tasks
+      .filter(task => task.column === column.id)
+      .sort((a, b) => a.position - b.position);
     const filteredAndSorted = getFilteredAndSortedTasks(columnTasks);
     
     return {
@@ -307,57 +316,122 @@ const TaskBoard: React.FC = () => {
   };
 
   const handleDragOver = (event: DragOverEvent) => {
-    // Visual feedback is handled by DragOverlay
-    // Actual updates happen via WebSocket in handleDragEnd
+    const { active, over } = event;
+    
+    if (!over) return;
+    
+    const activeId = active.id;
+    const overId = over.id;
+    
+    if (activeId === overId) return;
+    
+    // Check if we're over a column directly
+    if (over.data.current?.type === 'column') {
+      const activeTask = tasks.find(t => t.id === activeId);
+      const targetColumnId = over.data.current.columnId;
+      
+      if (activeTask && activeTask.column !== targetColumnId) {
+        setTasks(prevTasks => {
+          return prevTasks.map(task => {
+            if (task.id === activeId) {
+              return { ...task, column: targetColumnId };
+            }
+            return task;
+          });
+        });
+      }
+    } else {
+      // We're over another task
+      const activeColumn = findColumn(activeId);
+      const overColumn = findColumn(overId);
+      
+      if (!activeColumn || !overColumn) return;
+      
+      if (activeColumn !== overColumn) {
+        // Moving between columns
+        setTasks(prevTasks => {
+          const activeTask = prevTasks.find(t => t.id === activeId);
+          if (!activeTask) return prevTasks;
+          
+          return prevTasks.map(task => {
+            if (task.id === activeId) {
+              return { ...task, column: overColumn.id };
+            }
+            return task;
+          });
+        });
+      }
+    }
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (!over) return;
 
-    const activeColumn = findColumn(active.id);
-    const overColumn = findColumn(over.id);
-
-    if (!activeColumn || !overColumn) return;
-
-    const activeIndex = activeColumn.tasks.findIndex((i) => i.id === active.id);
-    const overIndex = overColumn.tasks.findIndex((i) => i.id === over.id);
-
-    if (activeColumn.id !== overColumn.id) {
-      // Task moved to different column
-      const taskId = active.id as string;
-      const newPosition = overIndex >= 0 ? overIndex : overColumn.tasks.length;
+    const activeTask = tasks.find(t => t.id === active.id);
+    if (!activeTask) return;
+    
+    // Check if we're dropping on a column
+    const overData = over.data.current;
+    if (overData?.type === 'column') {
+      // Dropped directly on a column (empty space)
+      const targetColumnId = overData.columnId;
       
-      // Update local state
       setTasks(prevTasks => {
         return prevTasks.map(task => {
-          if (task.id === taskId) {
-            return { ...task, column: overColumn.id, position: newPosition };
+          if (task.id === activeTask.id) {
+            return { ...task, column: targetColumnId };
           }
           return task;
         });
       });
-    } else if (activeIndex !== overIndex) {
-      // Task reordered within same column
-      const taskId = active.id as string;
-      const newPosition = overIndex;
-      
-      // Update local state
-      setTasks(prevTasks => {
-        const newTasks = [...prevTasks];
-        const columnTasks = newTasks.filter(t => t.column === activeColumn.id);
-        const sortedTasks = arrayMove(columnTasks, activeIndex, newPosition);
+    } else {
+      // Dropped on another task
+      const activeColumn = findColumn(active.id);
+      const overColumn = findColumn(over.id);
+
+      if (!activeColumn || !overColumn) return;
+
+      const activeIndex = activeColumn.tasks.findIndex((i) => i.id === active.id);
+      const overIndex = overColumn.tasks.findIndex((i) => i.id === over.id);
+
+      if (activeColumn.id !== overColumn.id) {
+        // Task moved to different column
+        const taskId = active.id as string;
+        const newPosition = overIndex >= 0 ? overIndex : overColumn.tasks.length;
         
-        // Update positions
-        sortedTasks.forEach((task, index) => {
-          const originalTask = newTasks.find(t => t.id === task.id);
-          if (originalTask) {
-            originalTask.position = index;
-          }
+        // Update local state
+        setTasks(prevTasks => {
+          return prevTasks.map(task => {
+            if (task.id === taskId) {
+              return { ...task, column: overColumn.id, position: newPosition };
+            }
+            return task;
+          });
         });
-        
-        return newTasks;
-      });
+      } else if (activeIndex !== overIndex && activeIndex !== -1 && overIndex !== -1) {
+        // Task reordered within same column
+        setTasks(prevTasks => {
+          // Get tasks for this column in their current order
+          const columnId = activeColumn.id;
+          const otherTasks = prevTasks.filter(t => t.column !== columnId);
+          const columnTasks = prevTasks
+            .filter(t => t.column === columnId)
+            .sort((a, b) => a.position - b.position);
+          
+          // Reorder the tasks
+          const reorderedColumnTasks = arrayMove(columnTasks, activeIndex, overIndex);
+          
+          // Update positions
+          const updatedColumnTasks = reorderedColumnTasks.map((task, index) => ({
+            ...task,
+            position: index
+          }));
+          
+          // Combine with other tasks
+          return [...otherTasks, ...updatedColumnTasks];
+        });
+      }
     }
 
     setActiveId(null);
@@ -515,8 +589,7 @@ const TaskBoard: React.FC = () => {
     return (
       <>
         <PageHeader 
-          title="Task Board" 
-          subtitle="Loading tasks..."
+          title="Task Board"
         />
         <div className="bg-white p-4 sm:p-6 md:p-8">
           <div className="max-w-full space-y-6">
@@ -528,7 +601,7 @@ const TaskBoard: React.FC = () => {
               <div className="w-32 h-8 bg-gray-200 rounded-lg animate-pulse"></div>
             </div>
             <div className="flex space-x-6 overflow-x-auto scrollbar-thin">
-              {[1, 2, 3, 4, 5].map((col) => (
+              {[1, 2, 3, 4].map((col) => (
                 <div key={col} className="flex-shrink-0 w-80">
                   <div className="bg-gray-100 rounded-t-lg p-4 border-b border-gray-200">
                     <div className="w-32 h-6 bg-gray-300 rounded animate-pulse"></div>
@@ -548,8 +621,7 @@ const TaskBoard: React.FC = () => {
   return (
     <>
       <PageHeader 
-        title="Task Board" 
-        subtitle="Drag and drop tasks between columns to update their status"
+        title="Task Board"
       />
       <div className="bg-white p-4 sm:p-6 md:p-8">
         <div className="max-w-full space-y-6">
@@ -744,13 +816,13 @@ const TaskBoard: React.FC = () => {
       <TaskBoardContext.Provider value={{ handleTaskClick, handleTaskEdit, isDraggingRef }}>
         <DndContext
           sensors={sensors}
-          collisionDetection={closestCorners}
+          collisionDetection={closestCenter}
           onDragStart={handleDragStart}
           onDragOver={handleDragOver}
           onDragEnd={handleDragEnd}
         >
           <div className="overflow-x-auto scrollbar-thin">
-            <div className="flex space-x-6 pb-6" style={{ minWidth: '1200px' }}>
+            <div className="flex space-x-6 pb-6">
               {columns.map((column) => (
                 <DroppableColumn key={column.id} column={column} />
               ))}
@@ -768,7 +840,11 @@ const TaskBoard: React.FC = () => {
               }),
             }}
           >
-            {activeId ? <TaskCard task={getTaskById(activeId)!} isDragging /> : null}
+            {activeId ? (
+              <div className="transform rotate-3 opacity-80">
+                <TaskCard task={getTaskById(activeId)!} />
+              </div>
+            ) : null}
           </DragOverlay>
         </DndContext>
       </TaskBoardContext.Provider>
@@ -806,10 +882,11 @@ const TaskBoard: React.FC = () => {
 
 // Droppable Column Component
 const DroppableColumn: React.FC<{ column: Column }> = ({ column }) => {
-  const { setNodeRef } = useSortable({
+  const { setNodeRef, isOver } = useDroppable({
     id: column.id,
     data: {
       type: 'column',
+      columnId: column.id,
     },
   });
 
@@ -836,7 +913,7 @@ const DroppableColumn: React.FC<{ column: Column }> = ({ column }) => {
       {/* Column Content */}
       <div 
         ref={setNodeRef}
-        className="bg-gray-50 rounded-b-lg p-4 space-y-3 min-h-[400px]"
+        className={`bg-gray-50 rounded-b-lg p-4 space-y-3 min-h-[400px] transition-colors ${isOver ? 'bg-blue-50 ring-2 ring-blue-300' : ''}`}
       >
         <SortableContext
           items={column.tasks.map(t => t.id)}
@@ -869,24 +946,32 @@ const SortableTaskCard: React.FC<{ task: Task }> = ({ task }) => {
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: task.id });
+    isOver,
+  } = useSortable({ 
+    id: task.id,
+    data: {
+      type: 'task',
+      task
+    }
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging ? 0.5 : 1,
   };
 
   return (
-    <div ref={setNodeRef} style={style}>
-      <TaskCard 
-        task={task} 
-        attributes={attributes} 
-        listeners={listeners}
-        onClick={context?.handleTaskClick}
-        onEdit={context?.handleTaskEdit}
-      />
-    </div>
+    <TaskCard 
+      task={task} 
+      attributes={attributes} 
+      listeners={listeners}
+      onClick={context?.handleTaskClick}
+      onEdit={context?.handleTaskEdit}
+      isDragging={isDragging}
+      isOver={isOver}
+      setNodeRef={setNodeRef}
+      style={style}
+    />
   );
 };
 
@@ -894,11 +979,15 @@ const SortableTaskCard: React.FC<{ task: Task }> = ({ task }) => {
 const TaskCard: React.FC<{ 
   task: Task; 
   isDragging?: boolean;
+  isOver?: boolean;
   attributes?: any;
   listeners?: any;
   onClick?: (task: Task) => void;
   onEdit?: (task: Task, e: React.MouseEvent) => void;
-}> = ({ task, isDragging = false, attributes, listeners, onClick, onEdit }) => {
+  setNodeRef?: any;
+  style?: any;
+}> = ({ task, isDragging = false, isOver = false, attributes, listeners, onClick, onEdit, setNodeRef, style }) => {
+  const context = React.useContext(TaskBoardContext);
   const getPriorityStyles = (priority: string) => {
     switch (priority) {
       case 'high':
@@ -934,24 +1023,32 @@ const TaskCard: React.FC<{
 
   return (
     <div 
+      ref={setNodeRef}
+      style={style}
       {...attributes}
       {...listeners}
       onClick={(e) => {
         // Prevent click when dragging
-        if (isDragging) return;
+        if (isDragging || context?.isDraggingRef?.current) return;
+        // Don't trigger click if clicking on edit button
+        const target = e.target as HTMLElement;
+        if (target.closest('button')) return;
         onClick?.(task);
       }}
-      className={`bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-[box-shadow] duration-200 cursor-grab active:cursor-grabbing group select-none ${priorityStyles.border} ${isDragging ? 'shadow-lg ring-2 ring-blue-500' : ''}`}>
+      className={`bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow duration-200 group select-none ${priorityStyles.border} ${isDragging ? 'ring-2 ring-blue-500 cursor-grabbing' : 'cursor-grab'} ${isOver && !isDragging ? 'ring-2 ring-blue-300 bg-blue-50' : ''}`}>
       <div className="flex items-start justify-between mb-2">
         <div className="flex items-start gap-2 flex-1">
-          <GripVertical className="w-4 h-4 text-gray-400 mt-1" />
+          <div className="drag-handle cursor-grab">
+            <GripVertical className="w-4 h-4 text-gray-600 mt-1" />
+          </div>
           <h4 className="text-gray-900 font-medium text-sm flex-1">{task.title}</h4>
         </div>
         <div className="flex items-center space-x-1">
           <button
             onClick={(e) => onEdit?.(task, e)}
-            className="opacity-0 group-hover:opacity-100 p-1 hover:bg-gray-100 rounded transition-opacity"
+            className="opacity-0 group-hover:opacity-100 p-1 hover:bg-gray-100 rounded transition-opacity duration-200"
             title="Edit task"
+            style={{ transition: 'opacity 200ms ease-in-out' }}
           >
             <Edit2 size={14} className="text-gray-500" />
           </button>
@@ -991,8 +1088,8 @@ const TaskCard: React.FC<{
         </div>
       )}
 
-      {/* Real-time Indicator */}
-      {task.updatedAt && new Date(task.updatedAt).getTime() > Date.now() - 3000 && (
+      {/* Real-time Indicator - Only show if task was actually just updated */}
+      {task.justUpdated && (
         <div className="mt-2 pl-6">
           <span className="text-xs text-blue-600 animate-pulse">Just updated</span>
         </div>

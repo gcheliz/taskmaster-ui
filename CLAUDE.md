@@ -390,11 +390,5 @@ ssh -R 8080:localhost:6006 user@remote-server
    docker-compose stop frontend && docker-compose rm -f frontend && docker-compose up -d frontend
    ```
 
-### Mockup Files Location
-
-**Location**: Mockup HTML files are stored in `/docs/ui-mockups/`
-**Access**: Copy to `/packages/frontend/public/` for serving via Vite
-```bash
-cp -r docs/ui-mockups/*.html packages/frontend/public/
-```
-**URLs**: Access at `http://localhost:5173/[filename].html`
+- always check if the stack it's running via the command pnpm run docker:dev before to realize any check to the application. Do not kill the docker compose process with the kill command, use the pnpm
+commands destinated for that

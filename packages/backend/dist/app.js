@@ -36,7 +36,8 @@ const initializeDatabase = async () => {
     }
     catch (error) {
         winston_adapter_1.logger.error('Failed to initialize database:', error);
-        process.exit(1);
+        // process.exit(1);
+        winston_adapter_1.logger.warn('Running without database connection - some features will be unavailable');
     }
 };
 // Initialize database (skip during tests)

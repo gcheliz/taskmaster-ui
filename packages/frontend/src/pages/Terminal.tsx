@@ -290,8 +290,7 @@ const Terminal: React.FC = () => {
     return (
       <>
         <PageHeader 
-          title="Terminal" 
-          subtitle="Loading terminal sessions..."
+          title="Terminal"
         />
         <div className="bg-white p-4 sm:p-6 md:p-8">
           <div className="max-w-7xl mx-auto space-y-6">
@@ -305,27 +304,7 @@ const Terminal: React.FC = () => {
   return (
     <>
       <PageHeader 
-        title="Terminal" 
-        subtitle={`${sessions.length} sessions • ${commandHistory.length} commands`}
-        actions={
-          <button 
-            className="px-4 py-2 bg-gray-900 text-white text-sm rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2"
-            onClick={() => {
-              const newId = String(sessions.length + 1)
-              setSessions([...sessions, {
-                id: newId,
-                name: `Session ${sessions.length + 1}`,
-                path: '/Users/gonzalo/workspace',
-                isActive: false,
-                commands: 0,
-                lastActivity: new Date()
-              }])
-            }}
-          >
-            <Plus className="h-4 w-4" />
-            New Session
-          </button>
-        }
+        title="Terminal"
       />
       <div className="bg-white p-4 sm:p-6 md:p-8">
         <div className="max-w-7xl mx-auto flex flex-col space-y-6">

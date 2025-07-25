@@ -8,6 +8,8 @@ import {
   closestCenter,
   KeyboardSensor,
   TouchSensor,
+  pointerWithin,
+  rectIntersection,
 } from '@dnd-kit/core'
 import type { DragEndEvent, DragOverEvent, DragStartEvent } from '@dnd-kit/core'
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable'
@@ -102,7 +104,7 @@ export const DragAndDropProvider: React.FC<DragAndDropProviderProps> = ({
     [onDragStart]
   )
 
-  // Handle drag over (for visual feedback)
+  // Handle drag over (for visual feedback and cross-column movement)
   const handleDragOver = useCallback((event: DragOverEvent) => {
     const { active, over } = event
 
@@ -110,8 +112,24 @@ export const DragAndDropProvider: React.FC<DragAndDropProviderProps> = ({
       return
     }
 
-    // Optional: Add custom drag over logic
-    console.log('Drag over:', { active: active.id, over: over.id })
+    const activeData = active.data.current as DragData
+    const overData = over.data.current as DropData | DragData
+
+    // If we're over a column and it's different from the current one
+    if (activeData?.type === 'task' && overData?.type === 'column') {
+      const fromStatus = activeData.status
+      const toStatus = overData.status
+
+      if (fromStatus !== toStatus) {
+        console.log('Dragging over different column:', { from: fromStatus, to: toStatus })
+        // The visual feedback is handled by the column's isOver state
+      }
+    }
+    
+    // If we're over another task
+    if (activeData?.type === 'task' && overData?.type === 'task') {
+      console.log('Dragging over task:', { activeId: active.id, overId: over.id })
+    }
   }, [])
 
   // Handle drag end
@@ -189,7 +207,7 @@ export const DragAndDropProvider: React.FC<DragAndDropProviderProps> = ({
   return (
     <DndContext
       sensors={sensors}
-      collisionDetection={closestCenter}
+      collisionDetection={rectIntersection}
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
@@ -199,7 +217,11 @@ export const DragAndDropProvider: React.FC<DragAndDropProviderProps> = ({
         {children}
 
         {/* Drag Overlay */}
-        <DragOverlay dropAnimation={null}>
+        <DragOverlay 
+          dropAnimation={{
+            duration: 200,
+            easing: 'cubic-bezier(0.18, 0.67, 0.6, 1.22)',
+          }}>
           {activeId
             ? dragOverlay || (
                 <div className="drag-overlay">
@@ -221,38 +243,21 @@ export const DragAndDropProvider: React.FC<DragAndDropProviderProps> = ({
         }
         
         .drag-overlay {
-          background: rgba(0, 123, 255, 0.1);
-          border: 2px dashed #007bff;
+          background: transparent;
+          border: none;
           border-radius: 8px;
-          padding: 16px;
+          padding: 0;
           pointer-events: none;
-          transform: rotate(5deg);
-          opacity: 0.8;
-          box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+          transform: rotate(2deg);
+          opacity: 0.9;
+          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
         }
         
-        .drag-overlay-content {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          font-size: 14px;
-          color: #007bff;
-          font-weight: 500;
+        /* Remove default drag overlay styles */
+        [data-dnd-drag-overlay] > * {
+          cursor: grabbing !important;
         }
         
-        .drag-overlay-icon {
-          font-size: 16px;
-          animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        
-        .drag-overlay-text {
-          white-space: nowrap;
-        }
         
         /* Global drag state styles */
         :global(.dragging) {

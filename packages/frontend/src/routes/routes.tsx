@@ -1,9 +1,9 @@
 import type { RouteObject } from 'react-router-dom'
 import { lazy } from 'react'
 
-// Lazy load all components for optimal code splitting
-const AppLayout = lazy(() => import('../components/Layout').then(module => ({ default: module.AppLayout })))
-const ProtectedRoute = lazy(() => import('./ProtectedRoute').then(module => ({ default: module.ProtectedRoute })))
+// Import core layout components directly (not lazy loaded)
+import { AppLayout } from '../components/Layout'
+import { ProtectedRoute } from './ProtectedRoute'
 
 // Lazy load all pages with webpackChunkName comments for better debugging
 const DashboardPage = lazy(() => import(/* webpackChunkName: "dashboard" */ '../pages/Dashboard'))

@@ -34,8 +34,7 @@ const Dashboard: React.FC = () => {
     return (
       <>
         <PageHeader 
-          title="Dashboard" 
-          subtitle="Welcome back, Gonzalo"
+          title="Dashboard"
         />
         <div className="bg-white p-4 sm:p-6 md:p-8">
           <div className="max-w-7xl mx-auto">
@@ -49,14 +48,7 @@ const Dashboard: React.FC = () => {
   return (
     <>
       <PageHeader 
-        title="Dashboard" 
-        subtitle="Welcome back, Gonzalo"
-        actions={
-          <button className="px-4 py-2 bg-gray-900 text-white text-sm rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2">
-            <Plus className="w-4 h-4" />
-            Quick Action
-          </button>
-        }
+        title="Dashboard"
       />
       <div className="bg-white p-4 sm:p-6 md:p-8">
         <div className="max-w-7xl mx-auto space-y-8">

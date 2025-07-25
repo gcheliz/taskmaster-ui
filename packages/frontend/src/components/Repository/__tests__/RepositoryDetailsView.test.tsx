@@ -391,6 +391,8 @@ describe('RepositoryDetailsView', () => {
   })
 
   it('handles auto-refresh with custom interval', async () => {
+    vi.useFakeTimers()
+    
     const { unmount } = render(
       <RepositoryDetailsView repositoryId="test-repo-1" refreshInterval={1000} />
     )
@@ -400,14 +402,18 @@ describe('RepositoryDetailsView', () => {
       expect(RepositoryService.getRepositoryDetails).toHaveBeenCalledTimes(1)
     })
 
-    // Wait for auto-refresh (should happen after 1 second)
-    await waitFor(
-      () => {
-        expect(RepositoryService.getRepositoryDetails).toHaveBeenCalledTimes(2)
-      },
-      { timeout: 2000 }
-    )
+    // Clear the call count
+    vi.clearAllMocks()
+    
+    // Advance time by 1 second for auto-refresh
+    vi.advanceTimersByTime(1000)
+    
+    // Wait for the refresh to be processed
+    await waitFor(() => {
+      expect(RepositoryService.getRepositoryDetails).toHaveBeenCalledTimes(1)
+    })
 
     unmount()
+    vi.useRealTimers()
   })
 })

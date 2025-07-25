@@ -7,7 +7,7 @@ const TaskDetail = () => {
   return (
     <>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white">Task #{taskId}</h1>
+        <h1 className="text-3xl font-bold text-gray-900">Task #{taskId}</h1>
         <p className="text-slate-400 mt-2">Task details and management</p>
       </div>
 

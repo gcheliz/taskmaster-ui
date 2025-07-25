@@ -8,6 +8,9 @@ import { initializeKeyboardDetection } from './utils/keyboard'
 import { AppRouter } from './routes/router'
 import { FPSMonitor } from './components/common/FPSMonitor'
 import { WebVitalsMonitor } from './components/Performance/WebVitals'
+import { PerformanceMonitor } from './components/Performance/PerformanceMonitor'
+import { WebVitalsDashboard } from './components/Performance/WebVitalsDashboard'
+import { PerformanceDashboard } from './components/Performance/PerformanceDashboard'
 
 // Create a client for React Query
 const queryClient = new QueryClient({
@@ -45,6 +48,9 @@ function App() {
                   }
                 }}
               />
+              <PerformanceMonitor />
+              {process.env.NODE_ENV === 'development' && <WebVitalsDashboard />}
+              {process.env.NODE_ENV === 'development' && <PerformanceDashboard />}
             </RepositoryProvider>
           </NotificationProvider>
         </FocusProvider>

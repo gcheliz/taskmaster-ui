@@ -18,6 +18,7 @@ const prdRoutes_1 = __importDefault(require("./routes/prdRoutes"));
 const dashboardRoutes_1 = __importDefault(require("./routes/dashboardRoutes"));
 const performanceRoutes_1 = __importDefault(require("./routes/performanceRoutes"));
 const settingsRoutes_1 = __importDefault(require("./routes/settingsRoutes"));
+const exportRoutes_1 = __importDefault(require("./routes/exportRoutes"));
 const errorHandler_1 = require("./middleware/errorHandler");
 const database_1 = __importDefault(require("./services/database"));
 const environment_1 = require("./config/environment");
@@ -94,6 +95,7 @@ app.use('/api/prd', prdRoutes_1.default);
 app.use('/api/dashboard', dashboardRoutes_1.default);
 app.use('/api/performance', performanceRoutes_1.default);
 app.use('/api/settings', settingsRoutes_1.default);
+app.use('/api/export', exportRoutes_1.default);
 // Error handling middleware
 app.use(errorHandler_1.notFoundHandler);
 // Sentry error handler (must be before other error middleware)

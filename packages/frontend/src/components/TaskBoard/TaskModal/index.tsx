@@ -125,7 +125,12 @@ export const TaskModal = ({
       className={`fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 ${className}`}
       onClick={handleBackdropClick}
     >
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-hidden flex flex-col">
+      <div 
+        className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-hidden flex flex-col"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="task-modal-title"
+      >
         <TaskModalHeader mode={mode} onClose={handleClose} isLoading={isLoading} />
 
         <div className="flex-1 overflow-y-auto scrollbar-modal p-6">

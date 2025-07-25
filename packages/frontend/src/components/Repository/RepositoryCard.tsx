@@ -90,7 +90,7 @@ export interface RepositoryCardEnhancedData {
   integrations?: RepositoryIntegrationStatus
 }
 
-export const RepositoryCard = ({
+const RepositoryCardComponent = ({
   repository,
   size = 'md',
   showDetails = false,
@@ -577,5 +577,34 @@ const RefreshIcon = ({ className }: { className?: string }) => (
     />
   </svg>
 )
+
+// Memoize RepositoryCard to prevent unnecessary re-renders
+export const RepositoryCard = React.memo(RepositoryCardComponent, (prevProps, nextProps) => {
+  // Custom comparison function for deep equality check
+  return (
+    prevProps.repository.id === nextProps.repository.id &&
+    prevProps.repository.name === nextProps.repository.name &&
+    prevProps.repository.description === nextProps.repository.description &&
+    prevProps.repository.path === nextProps.repository.path &&
+    prevProps.repository.currentBranch === nextProps.repository.currentBranch &&
+    prevProps.repository.lastCommit?.hash === nextProps.repository.lastCommit?.hash &&
+    prevProps.repository.status?.isClean === nextProps.repository.status?.isClean &&
+    prevProps.repository.status?.ahead === nextProps.repository.status?.ahead &&
+    prevProps.repository.status?.behind === nextProps.repository.status?.behind &&
+    prevProps.size === nextProps.size &&
+    prevProps.showDetails === nextProps.showDetails &&
+    prevProps.showHealth === nextProps.showHealth &&
+    prevProps.showIntegrations === nextProps.showIntegrations &&
+    prevProps.enableRealtime === nextProps.enableRealtime &&
+    prevProps.className === nextProps.className &&
+    prevProps.onClick === nextProps.onClick &&
+    prevProps.onRefresh === nextProps.onRefresh &&
+    prevProps.onViewDetails === nextProps.onViewDetails &&
+    prevProps.onViewCommits === nextProps.onViewCommits &&
+    prevProps.onManage === nextProps.onManage
+  )
+})
+
+RepositoryCard.displayName = 'RepositoryCard'
 
 export default RepositoryCard

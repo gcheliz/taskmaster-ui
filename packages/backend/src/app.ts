@@ -13,6 +13,7 @@ import prdRoutes from './routes/prdRoutes';
 import dashboardRoutes from './routes/dashboardRoutes';
 import performanceRoutes from './routes/performanceRoutes';
 import settingsRoutes from './routes/settingsRoutes';
+import exportRoutes from './routes/exportRoutes';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 import DatabaseService from './services/database';
 import {
@@ -113,6 +114,7 @@ app.use('/api/prd', prdRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/performance', performanceRoutes);
 app.use('/api/settings', settingsRoutes);
+app.use('/api/export', exportRoutes);
 
 // Error handling middleware
 app.use(notFoundHandler);

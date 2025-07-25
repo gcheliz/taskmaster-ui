@@ -4,6 +4,8 @@ import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import type { TaskColumn as TaskColumnType, TaskStatus } from '../../types/task'
 import { TaskCard } from './TaskCard'
 import type { DropData } from './DragAndDropProvider'
+import { VirtualizedList } from '../common/VirtualizedList'
+import { ProfilerWrapper } from '../../utils/profiler'
 
 export interface TaskColumnProps {
   /** Column data including title, status, and tasks */
@@ -26,7 +28,7 @@ export interface TaskColumnProps {
  * Represents a single column in the Kanban board for a specific task status.
  * Contains task cards and handles column-specific operations.
  */
-export const TaskColumn = ({
+const TaskColumnComponent = ({
   column,
   onTaskClick,
   onTaskMove: _onTaskMove,
@@ -61,6 +63,7 @@ export const TaskColumn = ({
     }
   }
 
+
   const getStatusIcon = (status: TaskStatus): string => {
     switch (status) {
       case 'pending':
@@ -81,15 +84,16 @@ export const TaskColumn = ({
   }
 
   return (
-    <section
-      ref={setNodeRef}
-      className={`bg-gray-50 rounded-lg p-4 min-h-96 flex flex-col ${isOver ? 'bg-blue-50 border-2 border-blue-300 border-dashed' : 'border border-gray-200'} ${className}`}
-      style={{ '--column-color': color } as React.CSSProperties}
-      role="region"
-      aria-labelledby={`column-title-${status}`}
-      aria-describedby={`column-count-${status}`}
-      data-status={status}
-    >
+    <ProfilerWrapper id={`TaskColumn-${status}`}>
+      <section
+        ref={setNodeRef}
+        className={`bg-gray-50 rounded-lg p-4 min-h-96 flex flex-col ${isOver ? 'bg-blue-50 border-2 border-blue-300 border-dashed' : 'border border-gray-200'} ${className}`}
+        style={{ '--column-color': color } as React.CSSProperties}
+        role="region"
+        aria-labelledby={`column-title-${status}`}
+        aria-describedby={`column-count-${status}`}
+        data-status={status}
+      >
       <header className="mb-4">
         <div className="flex items-center justify-between">
           <h3
@@ -164,7 +168,7 @@ export const TaskColumn = ({
           </div>
         ) : (
           <div
-            className="space-y-3 overflow-y-auto scrollbar-kanban"
+            className="flex-1 overflow-hidden"
             role="group"
             aria-label={`${taskCount} task${taskCount !== 1 ? 's' : ''} in ${title.toLowerCase()}`}
           >
@@ -172,20 +176,52 @@ export const TaskColumn = ({
               items={tasks.map(task => `task-${task.id}`)}
               strategy={verticalListSortingStrategy}
             >
-              {tasks.map((task) => (
-                <TaskCard
-                  key={task.id}
-                  task={task}
-                  onTaskClick={handleTaskClick}
-                  showFullDetails={true}
-                />
-              ))}
+              <VirtualizedList
+                items={tasks}
+                height={400}
+                itemHeight={150}
+                gap={12}
+                className="scrollbar-kanban"
+                overscan={3}
+                renderItem={(task) => (
+                  <TaskCard
+                    key={task.id}
+                    task={task}
+                    onTaskClick={handleTaskClick}
+                    showFullDetails={true}
+                  />
+                )}
+                getItemKey={(index) => `task-${tasks[index].id}`}
+              />
             </SortableContext>
           </div>
         )}
       </div>
     </section>
+    </ProfilerWrapper>
   )
 }
+
+// Memoize TaskColumn to prevent unnecessary re-renders
+export const TaskColumn = React.memo(TaskColumnComponent, (prevProps, nextProps) => {
+  // Custom comparison function
+  return (
+    prevProps.column.id === nextProps.column.id &&
+    prevProps.column.title === nextProps.column.title &&
+    prevProps.column.status === nextProps.column.status &&
+    prevProps.column.color === nextProps.column.color &&
+    prevProps.column.limit === nextProps.column.limit &&
+    prevProps.column.tasks.length === nextProps.column.tasks.length &&
+    prevProps.showCreateButton === nextProps.showCreateButton &&
+    prevProps.className === nextProps.className &&
+    prevProps.onTaskClick === nextProps.onTaskClick &&
+    prevProps.onTaskMove === nextProps.onTaskMove &&
+    prevProps.onCreateTask === nextProps.onCreateTask &&
+    // Deep comparison of task IDs to check if list has changed
+    prevProps.column.tasks.map(t => t.id).join(',') === nextProps.column.tasks.map(t => t.id).join(',')
+  )
+})
+
+TaskColumn.displayName = 'TaskColumn'
 
 export default TaskColumn

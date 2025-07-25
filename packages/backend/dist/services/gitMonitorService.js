@@ -237,7 +237,7 @@ class GitMonitorService extends events_1.EventEmitter {
     async getRemoteStatus(repositoryPath) {
         const metadata = await gitDataService_1.gitDataService.getRepositoryMetadata(repositoryPath);
         const currentBranchData = metadata.branches?.find(b => b.current);
-        if (!currentBranchData || !currentBranchData.tracking) {
+        if (!currentBranchData?.tracking) {
             return { ahead: 0, behind: 0 };
         }
         return {

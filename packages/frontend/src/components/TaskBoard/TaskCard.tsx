@@ -27,7 +27,7 @@ export interface TaskCardProps {
  * Reusable card component that displays a single task with all its details.
  * Supports different display modes and handles task interaction events.
  */
-export const TaskCard = ({
+const TaskCardComponent = ({
   task,
   onTaskClick,
   className = '',
@@ -332,5 +332,29 @@ export const TaskCard = ({
     </div>
   )
 }
+
+// Memoize TaskCard to prevent unnecessary re-renders when task data hasn't changed
+export const TaskCard = React.memo(TaskCardComponent, (prevProps, nextProps) => {
+  // Custom comparison function for deep equality check
+  return (
+    prevProps.task.id === nextProps.task.id &&
+    prevProps.task.title === nextProps.task.title &&
+    prevProps.task.description === nextProps.task.description &&
+    prevProps.task.status === nextProps.task.status &&
+    prevProps.task.priority === nextProps.task.priority &&
+    prevProps.task.assignee === nextProps.task.assignee &&
+    prevProps.task.dueDate === nextProps.task.dueDate &&
+    prevProps.task.updatedAt === nextProps.task.updatedAt &&
+    prevProps.compact === nextProps.compact &&
+    prevProps.showFullDetails === nextProps.showFullDetails &&
+    prevProps.isDraggable === nextProps.isDraggable &&
+    prevProps.className === nextProps.className &&
+    prevProps.onTaskClick === nextProps.onTaskClick &&
+    JSON.stringify(prevProps.task.tags) === JSON.stringify(nextProps.task.tags) &&
+    JSON.stringify(prevProps.task.dependencies) === JSON.stringify(nextProps.task.dependencies)
+  )
+})
+
+TaskCard.displayName = 'TaskCard'
 
 export default TaskCard

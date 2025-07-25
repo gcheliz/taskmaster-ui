@@ -302,7 +302,7 @@ class PerformanceController {
             const typedResult = result;
             if (typedResult.plan && Array.isArray(typedResult.plan)) {
                 const plan = typedResult.plan[0];
-                if (plan && plan.Plan) {
+                if (plan?.Plan) {
                     const executionTime = plan['Execution Time'];
                     if (executionTime && executionTime > 100) {
                         recommendations.push(`Consider optimizing: ${result.query} (${executionTime}ms execution time)`);

@@ -6,6 +6,8 @@ import { DragAndDropProvider } from './DragAndDropProvider'
 import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts'
 import { AriaLiveRegion } from '../common/AriaLiveRegion'
 import { useAriaAnnouncements } from '../../hooks/useAriaAnnouncements'
+import { ExportButton } from '../Export/ExportButton'
+import { ProfilerWrapper } from '../../utils/profiler'
 
 export interface TaskBoardProps {
   /** Task board data containing columns and tasks */
@@ -24,6 +26,10 @@ export interface TaskBoardProps {
   showCreateButton?: boolean
   /** Callback when create task is clicked */
   onCreateTask?: (status: TaskStatus) => void
+  /** Whether to show the export button */
+  showExportButton?: boolean
+  /** Project ID for export functionality */
+  projectId?: string
 }
 
 /**
@@ -32,7 +38,7 @@ export interface TaskBoardProps {
  * Main Kanban-style board component that displays tasks organized by status columns.
  * Supports drag-and-drop functionality and task management operations.
  */
-export const TaskBoard = ({
+const TaskBoardComponent = ({
   data,
   isLoading = false,
   error = null,
@@ -41,6 +47,8 @@ export const TaskBoard = ({
   onTaskMove,
   showCreateButton = true,
   onCreateTask,
+  showExportButton = true,
+  projectId,
 }: TaskBoardProps) => {
   const boardRef = useRef<HTMLDivElement>(null)
   const currentColumnRef = useRef<number>(0)
@@ -242,11 +250,12 @@ export const TaskBoard = ({
     : null
 
   return (
-    <DragAndDropProvider 
-      onTaskMove={handleTaskMove} 
-      onDragStart={setDraggedTaskId}
-      onDragEnd={() => setDraggedTaskId(null)}
-      dragOverlay={
+    <ProfilerWrapper id="TaskBoard">
+      <DragAndDropProvider 
+        onTaskMove={handleTaskMove} 
+        onDragStart={setDraggedTaskId}
+        onDragEnd={() => setDraggedTaskId(null)}
+        dragOverlay={
         draggedTask ? (
           <TaskCard
             task={draggedTask}
@@ -311,19 +320,27 @@ export const TaskBoard = ({
             </div>
           </div>
 
-          {showCreateButton && (
+          {(showCreateButton || showExportButton) && (
             <div className="header-actions">
-              <button
-                className="create-task-button"
-                onClick={() => onCreateTask?.('pending')}
-                aria-label="Create new task"
-                title="Create new task"
-              >
-                <span className="button-icon" aria-hidden="true">
-                  ➕
-                </span>
-                New Task
-              </button>
+              {showCreateButton && (
+                <button
+                  className="create-task-button"
+                  onClick={() => onCreateTask?.('pending')}
+                  aria-label="Create new task"
+                  title="Create new task"
+                >
+                  <span className="button-icon" aria-hidden="true">
+                    ➕
+                  </span>
+                  New Task
+                </button>
+              )}
+              {showExportButton && (
+                <ExportButton
+                  projectId={projectId}
+                  currentFilters={{}}
+                />
+              )}
             </div>
           )}
         </header>
@@ -362,7 +379,27 @@ export const TaskBoard = ({
         ></div>
       </main>
     </DragAndDropProvider>
+    </ProfilerWrapper>
   )
 }
+
+// Memoize TaskBoard to prevent unnecessary re-renders
+export const TaskBoard = React.memo(TaskBoardComponent, (prevProps, nextProps) => {
+  return (
+    prevProps.isLoading === nextProps.isLoading &&
+    prevProps.error === nextProps.error &&
+    prevProps.className === nextProps.className &&
+    prevProps.showCreateButton === nextProps.showCreateButton &&
+    prevProps.showExportButton === nextProps.showExportButton &&
+    prevProps.projectId === nextProps.projectId &&
+    prevProps.onTaskClick === nextProps.onTaskClick &&
+    prevProps.onTaskMove === nextProps.onTaskMove &&
+    prevProps.onCreateTask === nextProps.onCreateTask &&
+    // Deep comparison of task board data
+    JSON.stringify(prevProps.data) === JSON.stringify(nextProps.data)
+  )
+})
+
+TaskBoard.displayName = 'TaskBoard'
 
 export default TaskBoard

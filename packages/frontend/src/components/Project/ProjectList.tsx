@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from 'react'
 import { RovingTabIndex } from '../../utils/keyboard'
+import { VirtualizedList } from '../common/VirtualizedList'
 
 export interface Project {
   id: string

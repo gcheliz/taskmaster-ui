@@ -253,7 +253,7 @@ class PrdController {
      * Calculate average complexity
      */
     calculateAverageComplexity(complexityAnalysis) {
-        if (!complexityAnalysis || !complexityAnalysis.tasks)
+        if (!complexityAnalysis?.tasks)
             return 0;
         const tasks = complexityAnalysis.tasks;
         if (tasks.length === 0)
@@ -268,7 +268,7 @@ class PrdController {
         if (!tasks || tasks.length === 0)
             return '0 hours';
         let totalHours = 0;
-        if (complexityAnalysis && complexityAnalysis.tasks) {
+        if (complexityAnalysis?.tasks) {
             // Use complexity-based estimation
             complexityAnalysis.tasks.forEach((task) => {
                 // Base hours per complexity point

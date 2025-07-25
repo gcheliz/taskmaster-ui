@@ -51,7 +51,7 @@ export interface TaskBoardManagerProps {
  * Enhanced wrapper for TaskBoard with additional features like filtering,
  * sorting, data source management, and real-time WebSocket updates.
  */
-export const TaskBoardManager = ({
+const TaskBoardManagerComponent = ({
   repositoryPath,
   projectTag,
   projectId,
@@ -445,6 +445,8 @@ export const TaskBoardManager = ({
         onTaskMove={handleTaskMove}
         onCreateTask={handleCreateTask}
         showCreateButton={true}
+        showExportButton={true}
+        projectId={projectId}
         className="task-board-manager__board"
       />
 
@@ -579,5 +581,27 @@ export const TaskBoardManager = ({
     </div>
   )
 }
+
+// Memoize TaskBoardManager to prevent unnecessary re-renders
+export const TaskBoardManager = React.memo(TaskBoardManagerComponent, (prevProps, nextProps) => {
+  return (
+    prevProps.repositoryPath === nextProps.repositoryPath &&
+    prevProps.projectTag === nextProps.projectTag &&
+    prevProps.projectId === nextProps.projectId &&
+    prevProps.filePath === nextProps.filePath &&
+    prevProps.refreshInterval === nextProps.refreshInterval &&
+    prevProps.className === nextProps.className &&
+    prevProps.showDevTools === nextProps.showDevTools &&
+    prevProps.showFilters === nextProps.showFilters &&
+    prevProps.showSorting === nextProps.showSorting &&
+    prevProps.enableRealtime === nextProps.enableRealtime &&
+    prevProps.showRealtimeNotifications === nextProps.showRealtimeNotifications &&
+    prevProps.onTaskClick === nextProps.onTaskClick &&
+    prevProps.onTaskMove === nextProps.onTaskMove &&
+    prevProps.onCreateTask === nextProps.onCreateTask
+  )
+})
+
+TaskBoardManager.displayName = 'TaskBoardManager'
 
 export default TaskBoardManager

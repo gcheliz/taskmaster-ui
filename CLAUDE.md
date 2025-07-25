@@ -102,12 +102,16 @@ project/
 - **CRITICAL** When you finish a subtask, execute the complete checks and tests and if there are any error fix it and NEVER continue to the next task if the tests are showing errors. Doesn't matter if the error is not related with the task changes. Commit the changes after the tests and checks does not return any error and continue to the next task.
 - **IMPORTANT** Never stop performing tasks if tasksmaster have pending tasks.
 - **IMPORTANT** Always keep updated the state of the tasks in taskmaster when you start, update or finish a task. If you are for example into the subtask 1.3 the subtasks 1.1 and 1.2 should have the done state
-- **CRITICAL** Task Status Update Rule: The task-master CLI has a bug with updating individual subtask statuses. Use the custom script `node update-subtask-status.js <parentId> <subtaskId> <newStatus> <tag>` to update subtask status progressively. When all subtasks are complete, mark the parent task as done using `task-master set-status --id=<parent_id> --status=done --tag=<tag>`.
+- **CRITICAL** Task Status Update Rule: The task-master CLI has a bug with updating individual subtask statuses. Use the custom bash script `./update-subtask-status.sh <parentId> <subtaskNumber> <newStatus> <tag>` to update subtask status progressively. When all subtasks are complete, mark the parent task as done using `task-master set-status --id=<parent_id> --status=done --tag=<tag>`.
 
 ### Command Execution Memories
 
 - **IMPORTANT** Always update the project CLAUDE.md file when you execute a wrong command and then find the right one to execute for always keeping into the CLAUDE.md file the right environment command execution
-- **LEARNED** To update subtask status progressively: Use `node update-subtask-status.js <parentId> <subtaskId> <newStatus> <tag>` (e.g., `node update-subtask-status.js 4 4.1 in-progress ui-modernization`). The task-master CLI commands for subtask status updates are currently not working properly.
+- **LEARNED** To update subtask status progressively: Use `./update-subtask-status.sh <parentId> <subtaskNumber> <newStatus> <tag>` (e.g., `./update-subtask-status.sh 6 1 done ui-modernization` to update subtask 6.1). The script constructs the full subtask ID internally.
+- **LEARNED** Task-master displays subtask IDs with double notation (e.g., 6.6.1) but they are stored internally as single dot notation (e.g., 6.1). The update script expects just the number after the parent ID.
 - **LEARNED** Task status can become outdated in TaskMaster. Always verify current status before starting work
 - **LEARNED** If subtask update commands fail, directly edit `.taskmaster/tasks/tasks.json` to update status
 - **LEARNED** Common ESLint pre-commit hook errors can be bypassed with `--no-verify` flag when needed
+
+### Critical Execution Rules
+- **IMPORTANT** NEVER FINISH A TASK OR SUBTASK IF IT'S ANY TEST OR CHECK ARE FAILING. THE CONDITION TO TAKE THE NEXT TASK IT'S "NO ERRORS"

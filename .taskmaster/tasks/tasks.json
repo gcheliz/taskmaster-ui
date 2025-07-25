@@ -396,7 +396,7 @@
         "id": 6,
         "title": "Implement route-based code splitting",
         "description": "Add React.lazy and Suspense for route-level code splitting",
-        "status": "in-progress",
+        "status": "done",
         "dependencies": [
           3,
           4
@@ -409,7 +409,7 @@
             "id": "6.1",
             "title": "Analyze current bundle and identify split points",
             "description": "Analyze bundle size and identify optimal code split boundaries",
-            "status": "pending",
+            "status": "done",
             "dependencies": [],
             "priority": "high",
             "details": "Use bundle analyzer to review current bundle. Identify large dependencies and components. Map route components for splitting. Calculate potential size savings.",
@@ -419,7 +419,7 @@
             "id": "6.2",
             "title": "Implement React.lazy for route components",
             "description": "Convert route components to use dynamic imports",
-            "status": "pending",
+            "status": "done",
             "dependencies": [
               "6.1"
             ],
@@ -431,7 +431,7 @@
             "id": "6.3",
             "title": "Add Suspense boundaries with loading states",
             "description": "Implement loading UI for lazy-loaded components",
-            "status": "pending",
+            "status": "done",
             "dependencies": [
               "6.2"
             ],
@@ -443,7 +443,7 @@
             "id": "6.4",
             "title": "Configure Vite for optimal chunking",
             "description": "Optimize Vite build configuration for code splitting",
-            "status": "pending",
+            "status": "done",
             "dependencies": [
               "6.2"
             ],
@@ -455,7 +455,7 @@
             "id": "6.5",
             "title": "Measure and optimize bundle sizes",
             "description": "Verify bundle size reduction and optimize further",
-            "status": "pending",
+            "status": "done",
             "dependencies": [
               "6.3",
               "6.4"
@@ -554,7 +554,7 @@
         "id": 8,
         "title": "Add data export functionality",
         "description": "Implement missing export features for tasks and analytics",
-        "status": "pending",
+        "status": "done",
         "dependencies": [
           7
         ],
@@ -566,7 +566,7 @@
             "id": "8.1",
             "title": "Design export API endpoints",
             "description": "Design API for data export functionality",
-            "status": "pending",
+            "status": "done",
             "dependencies": [],
             "priority": "medium",
             "details": "Design GET /api/export/tasks endpoint. Support format query parameter (csv, json). Plan pagination for large datasets. Define response headers.",
@@ -576,7 +576,7 @@
             "id": "8.2",
             "title": "Implement CSV export logic",
             "description": "Build CSV generation functionality",
-            "status": "pending",
+            "status": "done",
             "dependencies": [
               "8.1"
             ],
@@ -588,7 +588,7 @@
             "id": "8.3",
             "title": "Implement JSON export logic",
             "description": "Build JSON export functionality",
-            "status": "pending",
+            "status": "done",
             "dependencies": [
               "8.1"
             ],
@@ -600,7 +600,7 @@
             "id": "8.4",
             "title": "Add export UI components",
             "description": "Create export buttons and UI elements",
-            "status": "pending",
+            "status": "done",
             "dependencies": [],
             "priority": "medium",
             "details": "Add export buttons to task lists and analytics. Create format selection dropdown. Implement download progress indicator. Add success/error notifications.",
@@ -610,7 +610,7 @@
             "id": "8.5",
             "title": "Handle large dataset exports with progress",
             "description": "Implement streaming and progress for large exports",
-            "status": "pending",
+            "status": "done",
             "dependencies": [
               "8.2",
               "8.3",
@@ -626,7 +626,7 @@
         "id": 9,
         "title": "Optimize performance and add monitoring",
         "description": "Implement memoization, virtual scrolling, and performance monitoring",
-        "status": "pending",
+        "status": "in-progress",
         "dependencies": [
           6
         ],
@@ -773,7 +773,7 @@
     ],
     "metadata": {
       "created": "2025-07-25T09:02:45.000Z",
-      "updated": "2025-07-25T14:48:08.022Z",
+      "updated": "2025-07-25T15:47:54.086Z",
       "description": "TaskMaster UI Modernization - Code quality and performance improvements",
       "projectName": "TaskMaster UI Modernization",
       "sourceFile": "/Users/gonzalo/workspace/taskmaster-ui/.taskmaster/docs/prd.txt"

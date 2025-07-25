@@ -14,6 +14,7 @@ import { Button } from '../ui/atoms/Button'
 import { Badge } from '../ui/atoms/Badge'
 import { Spinner } from '../ui/atoms/Spinner'
 import { RepositoryService } from '../../services/repositoryService'
+import { VirtualizedList } from '../common/VirtualizedList'
 
 export interface CommitData {
   hash: string
@@ -317,12 +318,15 @@ export const CommitHistoryModal = ({
           )}
 
           {/* Commit List */}
-          <div className="space-y-3">
-            {filteredCommits.map((commit) => (
-              <div
-                key={commit.hash}
-                className="bg-gray-50/50 rounded-lg p-4 hover:bg-gray-100/50 transition-colors"
-              >
+          <VirtualizedList
+            items={filteredCommits}
+            height={400}
+            itemHeight={120}
+            gap={12}
+            overscan={3}
+            className="pr-2"
+            renderItem={(commit) => (
+              <div className="bg-gray-50/50 rounded-lg p-4 hover:bg-gray-100/50 transition-colors">
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex-1 min-w-0 pr-4">
                     <div className="flex items-center space-x-2 mb-1">
@@ -363,8 +367,9 @@ export const CommitHistoryModal = ({
                   </details>
                 )}
               </div>
-            ))}
-          </div>
+            )}
+            getItemKey={(index) => filteredCommits[index].hash}
+          />
 
           {/* Load More Button */}
           {state.hasMore && !searchQuery && (

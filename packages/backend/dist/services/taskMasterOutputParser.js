@@ -583,7 +583,7 @@ class TaskMasterOutputParser {
     extractTaskInfo(output) {
         const parsed = this.parseOutput(output, 'show');
         const taskData = parsed.find(p => p.metadata?.type === 'task_detail' || p.metadata?.type === 'next_task');
-        if (taskData && taskData.data) {
+        if (taskData?.data) {
             return {
                 id: taskData.data.id,
                 title: taskData.data.title,
@@ -623,7 +623,7 @@ class TaskMasterOutputParser {
     extractComplexityAnalysis(output) {
         const parsed = this.parseOutput(output, 'analyze-complexity');
         const analysisData = parsed.find(p => p.metadata?.type === 'complexity_analysis');
-        if (analysisData && analysisData.data) {
+        if (analysisData?.data) {
             return analysisData.data;
         }
         return null;
@@ -634,7 +634,7 @@ class TaskMasterOutputParser {
     extractNextTask(output) {
         const parsed = this.parseOutput(output, 'next');
         const nextTaskData = parsed.find(p => p.metadata?.type === 'next_task');
-        if (nextTaskData && nextTaskData.data) {
+        if (nextTaskData?.data) {
             return {
                 id: nextTaskData.data.id,
                 title: nextTaskData.data.title,

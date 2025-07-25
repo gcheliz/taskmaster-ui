@@ -18,7 +18,7 @@ export interface ResponsiveStatsGridProps {
   lastUpdated?: Date
 }
 
-const ResponsiveStatsGrid = ({
+const ResponsiveStatsGridComponent = ({
   taskMetrics,
   insights,
   health,
@@ -315,5 +315,23 @@ const ResponsiveStatsGrid = ({
     </div>
   )
 }
+
+// Memoize ResponsiveStatsGrid to prevent unnecessary re-renders
+const ResponsiveStatsGrid = React.memo(ResponsiveStatsGridComponent, (prevProps, nextProps) => {
+  return (
+    prevProps.className === nextProps.className &&
+    prevProps.showHealthDetails === nextProps.showHealthDetails &&
+    prevProps.showTaskBreakdown === nextProps.showTaskBreakdown &&
+    prevProps.loading === nextProps.loading &&
+    prevProps.onRefresh === nextProps.onRefresh &&
+    prevProps.lastUpdated?.getTime() === nextProps.lastUpdated?.getTime() &&
+    // Deep comparison of complex objects
+    JSON.stringify(prevProps.taskMetrics) === JSON.stringify(nextProps.taskMetrics) &&
+    JSON.stringify(prevProps.insights) === JSON.stringify(nextProps.insights) &&
+    JSON.stringify(prevProps.health) === JSON.stringify(nextProps.health)
+  )
+})
+
+ResponsiveStatsGrid.displayName = 'ResponsiveStatsGrid'
 
 export { ResponsiveStatsGrid }

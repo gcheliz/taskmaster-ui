@@ -171,7 +171,7 @@ class TerminalService extends events_1.EventEmitter {
      */
     sendInput(sessionId, input) {
         const session = this.sessions.get(sessionId);
-        if (!session || !session.process) {
+        if (!session?.process) {
             throw new Error(`No active process in session: ${sessionId}`);
         }
         session.process.stdin.write(input);
@@ -182,7 +182,7 @@ class TerminalService extends events_1.EventEmitter {
      */
     killProcess(sessionId) {
         const session = this.sessions.get(sessionId);
-        if (!session || !session.process) {
+        if (!session?.process) {
             return;
         }
         session.process.kill('SIGTERM');

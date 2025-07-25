@@ -1,0 +1,31 @@
+# Task ID: 4
+# Title: Update React Router from v6 to v7 with route configuration updates and navigation testing
+# Status: pending
+# Dependencies: 2
+# Priority: high
+# Description: Upgrade React Router from version 6 to version 7, updating route configurations, navigation patterns, and testing to ensure compatibility with the new major version.
+# Details:
+1. **Pre-migration Assessment**: Audit current React Router v6 usage by examining all route configurations, navigation hooks (useNavigate, useLocation, etc.), and route components. Review the official React Router v7 migration guide to identify breaking changes and new features. Document current routing patterns and components that will require updates. 2. **Update Core Dependencies**: Upgrade react-router-dom and related routing packages to v7 using pnpm. Check for peer dependency updates required for React Router v7 compatibility. 3. **Route Configuration Migration**: Update route definitions to v7 patterns - migrate from Routes/Route JSX to data router configurations if beneficial, update loader and action patterns, and modify route component structures as needed. Update any custom route guards or middleware. 4. **Navigation Updates**: Update navigation code to use v7 APIs - replace deprecated navigation methods, update programmatic navigation calls, and modify any custom navigation components. Ensure proper handling of route parameters and search params with v7 patterns. 5. **Component Updates**: Update route components to work with v7 - modify data loading patterns, update outlet usage if applicable, and ensure proper error boundary integration. Update any custom route-related hooks or utilities. 6. **Type Safety**: Update TypeScript definitions for React Router v7, ensuring proper typing for route parameters, loader data, and navigation functions.
+
+# Test Strategy:
+1. **Route Navigation Testing**: Test all application routes to ensure proper navigation between pages, correct parameter passing, and proper component rendering. Verify programmatic navigation works correctly using updated v7 APIs. 2. **Data Loading Testing**: If using data router features, test route loaders and actions to ensure proper data fetching and form submissions. Verify error handling and loading states work as expected. 3. **Browser Integration Testing**: Test browser back/forward functionality, URL updates, and deep linking to ensure React Router v7 properly integrates with browser navigation. Test page refreshes maintain correct route state. 4. **TypeScript Compilation**: Run TypeScript compilation to ensure all React Router types are correctly updated and no type errors exist from the v7 migration. 5. **End-to-End Testing**: Run existing navigation tests and create additional tests for any new v7-specific features being utilized. Test complete user journeys through the application routing system.
+
+# Subtasks:
+## 1. Audit current React Router v6 implementation and analyze v7 migration requirements [pending]
+### Dependencies: None
+### Description: Conduct a comprehensive audit of the current React Router v6 usage throughout the application, identify all route configurations, navigation patterns, and prepare a migration plan based on the official v7 migration guide.
+### Details:
+Search and document all React Router v6 usage patterns including: route configurations in App.tsx and other components, usage of hooks (useNavigate, useLocation, useParams, useSearchParams), route guards and protected routes, nested routing patterns, error boundaries, and custom route components. Review the React Router v7 migration guide to identify breaking changes, deprecated APIs, and new features. Create a migration checklist documenting all components and patterns that need updates.
+
+## 2. Update React Router dependencies and migrate route configurations to v7 [pending]
+### Dependencies: 4.1
+### Description: Upgrade react-router-dom to version 7 and update all route configurations, switching from JSX-based routes to data router patterns where beneficial, and updating route component structures.
+### Details:
+Update react-router-dom and related packages to v7 using pnpm. Migrate route configurations from Routes/Route JSX patterns to createBrowserRouter or createMemoryRouter data router configurations if applicable. Update route definitions to use v7 patterns including loaders, actions, and error elements. Modify route guards and authentication wrappers to work with v7 APIs. Update TypeScript types for route parameters and navigation functions. Ensure proper integration with existing error boundaries.
+
+## 3. Update navigation code and test all routing functionality [pending]
+### Dependencies: 4.2
+### Description: Update all navigation-related code to use React Router v7 APIs, including programmatic navigation, link components, and custom navigation utilities, then thoroughly test all routing functionality.
+### Details:
+Replace deprecated navigation methods with v7 equivalents throughout the codebase. Update all useNavigate usage to handle v7 navigation patterns. Modify Link and NavLink components to use new prop patterns if changed. Update any custom navigation components or utilities to work with v7 APIs. Ensure proper handling of route parameters and search params with new patterns. Update navigation-related TypeScript definitions. Test all navigation flows including programmatic navigation, browser back/forward, deep linking, and protected route redirects.
+

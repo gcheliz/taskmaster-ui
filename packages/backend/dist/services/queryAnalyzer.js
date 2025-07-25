@@ -49,8 +49,8 @@ class QueryAnalyzer {
         this.performanceMetrics = [];
         this.logFile = path.join(process.cwd(), 'logs', 'query-performance.log');
         this.isEnabled =
-            process.env.NODE_ENV === 'development' ||
-                process.env.ENABLE_QUERY_ANALYSIS === 'true';
+            process.env.ENABLE_QUERY_ANALYSIS === 'true' ||
+                (process.env.NODE_ENV === 'development' && process.env.ENABLE_QUERY_ANALYSIS !== 'false');
         this.ensureLogDirectory();
     }
     /**

@@ -1,5 +1,4 @@
 import * as Sentry from '@sentry/react'
-import { BrowserTracing } from '@sentry/tracing'
 import { createRoutesFromChildren, matchRoutes, useLocation, useNavigationType } from 'react-router-dom'
 import { useEffect } from 'react'
 
@@ -18,7 +17,7 @@ export function initSentry() {
     environment: ENVIRONMENT,
     release: RELEASE,
     integrations: [
-      new BrowserTracing({
+      Sentry.browserTracingIntegration({
         // Set 'tracePropagationTargets' to control for which URLs distributed tracing should be enabled
         tracePropagationTargets: [
           'localhost',
@@ -34,25 +33,21 @@ export function initSentry() {
           matchRoutes
         ),
       }),
-      new Sentry.Replay({
+      Sentry.replayIntegration({
         // Mask all text content, but keep media playback
+        maskAllMedia: false,
         maskAllText: true,
-        blockAllMedia: false,
-        // Capture 10% of all sessions
-        sessionSampleRate: 0.1,
-        // Capture 100% of sessions with an error
-        errorSampleRate: 1.0,
       }),
     ],
     // Performance Monitoring
     tracesSampleRate: ENVIRONMENT === 'production' ? 0.1 : 1.0,
-    // Session Replay
+    // Session Replay configuration
     replaysSessionSampleRate: 0.1,
     replaysOnErrorSampleRate: 1.0,
     // Release Health
     autoSessionTracking: true,
     // Environment
-    beforeSend(event, hint) {
+    beforeSend(event, _hint) {
       // Filter out certain errors in production
       if (ENVIRONMENT === 'production') {
         // Ignore browser extension errors
@@ -78,7 +73,7 @@ export function initSentry() {
       return event
     },
     // Breadcrumbs
-    beforeBreadcrumb(breadcrumb, hint) {
+    beforeBreadcrumb(breadcrumb, _hint) {
       // Filter out noisy breadcrumbs
       if (breadcrumb.category === 'console' && breadcrumb.level === 'debug') {
         return null
@@ -99,31 +94,25 @@ export function captureException(error: Error, context?: Record<string, any>) {
 
 // Performance monitoring helpers
 export function startTransaction(name: string, op: string) {
-  return Sentry.startTransaction({ name, op })
+  // In v9, use startSpan for performance monitoring
+  const span = Sentry.getCurrentScope().getActiveSpan()
+  if (span) {
+    return span.startChild({ op, name })
+  }
+  // Fallback: create a simple transaction-like object
+  return {
+    finish: () => {},
+    setStatus: () => {},
+  }
 }
 
 export function measurePerformance<T>(
   name: string,
   operation: () => T | Promise<T>
 ): T | Promise<T> {
-  const transaction = startTransaction(name, 'custom')
-  
-  try {
-    const result = operation()
-    
-    if (result instanceof Promise) {
-      return result.finally(() => {
-        transaction.finish()
-      })
-    }
-    
-    transaction.finish()
-    return result
-  } catch (error) {
-    transaction.setStatus('internal_error')
-    transaction.finish()
-    throw error
-  }
+  return Sentry.startSpan({ name, op: 'custom' }, () => {
+    return operation()
+  })
 }
 
 // User context helper (implement based on your auth system)

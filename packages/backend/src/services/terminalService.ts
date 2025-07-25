@@ -61,12 +61,15 @@ export class TerminalService extends EventEmitter {
     const session: TerminalSession = {
       id: sessionId,
       workingDirectory: cwd,
-      repositoryPath,
       shell: defaultShell,
       isActive: true,
       createdAt: new Date(),
       lastActivity: new Date(),
     };
+
+    if (repositoryPath) {
+      session.repositoryPath = repositoryPath;
+    }
 
     this.sessions.set(sessionId, session);
     logger.info(`Created terminal session ${sessionId} in ${cwd}`);
@@ -104,14 +107,14 @@ export class TerminalService extends EventEmitter {
       const childProcess = spawn(cmd, args, {
         cwd: session.workingDirectory,
         shell: true,
-        stdio: 'pipe',
+        stdio: ['pipe', 'pipe', 'pipe'],
         env: {
           ...process.env,
           TERM: 'xterm-256color',
           COLUMNS: '80',
           LINES: '24',
         },
-      });
+      }) as ChildProcessWithoutNullStreams;
 
       // Store the process reference
       session.process = childProcess;
@@ -150,7 +153,7 @@ export class TerminalService extends EventEmitter {
 
         // Clear the process reference
         if (session.process === childProcess) {
-          session.process = undefined;
+          delete session.process;
         }
       });
 
@@ -198,7 +201,7 @@ export class TerminalService extends EventEmitter {
     }
 
     session.process.kill('SIGTERM');
-    session.process = undefined;
+    delete session.process;
     session.lastActivity = new Date();
   }
 
@@ -279,8 +282,9 @@ export class TerminalService extends EventEmitter {
    */
   private isBuiltInCommand(command: string): boolean {
     const builtInCommands = ['cd', 'pwd', 'clear', 'exit'];
-    const cmd = command.trim().split(/\\s+/)[0];
-    return builtInCommands.includes(cmd);
+    const parts = command.trim().split(/\\s+/);
+    const cmd = parts[0];
+    return cmd ? builtInCommands.includes(cmd) : false;
   }
 
   /**
@@ -303,7 +307,10 @@ export class TerminalService extends EventEmitter {
           // Change to home directory
           this.changeDirectory(sessionId, os.homedir());
         } else {
-          this.changeDirectory(sessionId, args[0]);
+          const dir = args[0];
+          if (dir) {
+            this.changeDirectory(sessionId, dir);
+          }
         }
         break;
 

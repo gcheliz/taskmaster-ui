@@ -1,0 +1,21 @@
+{
+	"meta": {
+		"generatedAt": "2025-07-25T19:32:43.347Z",
+		"tasksAnalyzed": 1,
+		"totalTasks": 10,
+		"analysisCount": 1,
+		"thresholdScore": 5,
+		"projectName": "Taskmaster UI",
+		"usedResearch": true
+	},
+	"complexityAnalysis": [
+		{
+			"taskId": 7,
+			"taskTitle": "Update Jest from v29 to v30 and update all testing dependencies and configurations",
+			"complexityScore": 7,
+			"recommendedSubtasks": 8,
+			"expansionPrompt": "Break down the Jest v29 to v30 migration into subtasks covering: 1) Pre-migration audit and breaking changes documentation, 2) Core Jest and types package updates, 3) Jest configuration migration and deprecated option replacement, 4) Test file updates for deprecated APIs and new syntax, 5) Testing utility dependencies update (testing-library, jest-dom), 6) Mock and matcher migration to v30 patterns, 7) CI/CD pipeline and tooling integration updates, 8) Full test suite validation and performance benchmarking",
+			"reasoning": "Jest v30 is a major version upgrade with potential breaking changes in configuration, APIs, and testing patterns. The complexity is high due to: extensive test file updates across workspaces, configuration migration requirements, dependency compatibility checks, potential breaking changes in mocking/matching APIs, and the need to maintain test coverage while updating. The monorepo structure with multiple workspaces adds complexity as each may have different Jest configurations."
+		}
+	]
+}

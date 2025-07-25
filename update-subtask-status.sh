@@ -1,39 +1,23 @@
 #!/bin/bash
-# Helper script to update subtask status correctly
 
-TASK_ID=$1
-SUBTASK_ID=$2
-STATUS=$3
-TAG=${4:-ui-modernization}
+# Script to update subtask status in task-master
+# Usage: ./update-subtask-status.sh <parentId> <subtaskNumber> <newStatus> <tag>
 
-if [ -z "$TASK_ID" ] || [ -z "$SUBTASK_ID" ] || [ -z "$STATUS" ]; then
-    echo "Usage: $0 <task_id> <subtask_id> <status> [tag]"
-    echo "Example: $0 2 1 in-progress ui-modernization"
+if [ $# -ne 4 ]; then
+    echo "Usage: $0 <parentId> <subtaskNumber> <newStatus> <tag>"
+    echo "Example: $0 6 1 done ui-modernization"
     exit 1
 fi
 
-# Construct the correct subtask ID
-FULL_SUBTASK_ID="${TASK_ID}.${SUBTASK_ID}"
+PARENT_ID=$1
+SUBTASK_NUMBER=$2
+NEW_STATUS=$3
+TAG=$4
 
-echo "Updating subtask ${FULL_SUBTASK_ID} to status: ${STATUS}"
+# Construct the full subtask ID
+SUBTASK_ID="${PARENT_ID}.${SUBTASK_NUMBER}"
 
-# Use jq to update the JSON directly
-jq --arg taskId "$TASK_ID" \
-   --arg subtaskId "$FULL_SUBTASK_ID" \
-   --arg status "$STATUS" \
-   --arg tag "$TAG" \
-   '.[$tag].tasks |= map(
-     if .id == ($taskId | tonumber) then
-       .subtasks |= map(
-         if .id == $subtaskId then
-           .status = $status
-         else . end
-       )
-     else . end
-   )' .taskmaster/tasks/tasks.json > .taskmaster/tasks/tasks.json.tmp && \
-   mv .taskmaster/tasks/tasks.json.tmp .taskmaster/tasks/tasks.json
+echo "Updating subtask ${SUBTASK_ID} to status: ${NEW_STATUS} (tag: ${TAG})"
 
-echo "✓ Subtask status updated successfully"
-
-# Regenerate task files
-task-master generate --tag=$TAG
+# Use task-master to update the subtask status
+task-master set-status --id="${SUBTASK_ID}" --status="${NEW_STATUS}" --tag="${TAG}"

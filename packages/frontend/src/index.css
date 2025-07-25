@@ -4,6 +4,79 @@
 @import "tailwindcss";
 @import "./styles/components.css";
 
+/* Global focus/outline reset - Remove default blue borders */
+*,
+*::before,
+*::after {
+  outline: none !important;
+  outline-width: 0 !important;
+  outline-style: none !important;
+  outline-color: transparent !important;
+}
+
+*:focus,
+*:focus-within,
+*:focus-visible {
+  outline: none !important;
+  outline-width: 0 !important;
+  outline-style: none !important;
+  outline-color: transparent !important;
+  box-shadow: none !important;
+  border-color: inherit !important;
+}
+
+/* Remove blue highlight on mobile tap */
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: text;
+}
+
+/* Remove default browser focus styles for all elements */
+button:focus,
+button:focus-visible,
+button:focus-within,
+input:focus,
+input:focus-visible,
+input:focus-within,
+textarea:focus,
+textarea:focus-visible,
+textarea:focus-within,
+select:focus,
+select:focus-visible,
+select:focus-within,
+a:focus,
+a:focus-visible,
+a:focus-within,
+[tabindex]:focus,
+[tabindex]:focus-visible,
+[tabindex]:focus-within {
+  outline: none !important;
+  outline-width: 0 !important;
+  box-shadow: none !important;
+  border-color: inherit !important;
+}
+
+/* Override Tailwind focus utilities */
+[class*="focus:ring"],
+[class*="focus:border"],
+[class*="focus:outline"],
+[class*="focus-visible:ring"],
+[class*="focus-visible:border"],
+[class*="focus-visible:outline"] {
+  --tw-ring-shadow: none !important;
+  --tw-ring-color: transparent !important;
+  --tw-ring-offset-shadow: none !important;
+  --tw-ring-offset-width: 0 !important;
+  --tw-ring-offset-color: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
 /* Base styles */
 body {
   font-family: "Inter", sans-serif;
@@ -35,10 +108,9 @@ body {
   white-space: normal;
 }
 
-/* Focus visible styles for keyboard navigation */
+/* Focus visible styles for keyboard navigation - Disabled */
 .keyboard-user *:focus {
-  outline: 2px solid #2563eb;
-  outline-offset: 2px;
+  outline: none;
 }
 
 .mouse-user *:focus {
@@ -206,11 +278,8 @@ body {
   }
 
   .btn:focus {
-    outline: 2px solid transparent;
-    outline-offset: 2px;
-    box-shadow:
-      0 0 0 2px #ffffff,
-      0 0 0 4px currentColor;
+    outline: none;
+    box-shadow: none;
   }
 
   .btn-primary {
@@ -252,11 +321,8 @@ body {
   }
 
   .search-input:focus {
-    outline: 2px solid transparent;
-    outline-offset: 2px;
-    box-shadow:
-      0 0 0 2px #ffffff,
-      0 0 0 4px #2563eb;
+    outline: none;
+    box-shadow: none;
     background-color: #ffffff;
   }
 
@@ -274,11 +340,8 @@ body {
   }
 
   .icon-btn:focus {
-    outline: 2px solid transparent;
-    outline-offset: 2px;
-    box-shadow:
-      0 0 0 2px #ffffff,
-      0 0 0 4px #2563eb;
+    outline: none;
+    box-shadow: none;
   }
 
   /* User Avatar */
@@ -447,13 +510,10 @@ body {
 
 /* Global scrollbar styling now handled in scrollbars.css */
 
-/* Focus styles */
+/* Focus styles - Disabled */
 .focus-ring:focus {
-  outline: 2px solid transparent;
-  outline-offset: 2px;
-  box-shadow:
-    0 0 0 2px #ffffff,
-    0 0 0 4px #2563eb;
+  outline: none;
+  box-shadow: none;
 }
 
 /* Remove spinner buttons from number inputs */
@@ -567,4 +627,53 @@ input[type="number"] {
   .show-on-mobile {
     display: none;
   }
+}
+
+/* FINAL OVERRIDE - Remove ALL focus styles */
+/* This must be at the end of the file to ensure highest specificity */
+* {
+  outline: 0 !important;
+  outline: none !important;
+}
+
+*:focus,
+*:focus-visible,
+*:focus-within,
+*:active,
+*:target {
+  outline: 0 !important;
+  outline: none !important;
+  outline-width: 0 !important;
+  outline-style: none !important;
+  box-shadow: none !important;
+  border-color: currentColor !important;
+}
+
+/* Target all Tailwind ring classes */
+[class*="ring-"],
+[class*="focus:ring"],
+[class*="focus-visible:ring"],
+[class*="focus:border-blue"],
+[class*="focus-visible:border-blue"],
+[class*="focus:outline"],
+[class*="focus-visible:outline"] {
+  --tw-ring-shadow: 0 0 transparent !important;
+  --tw-ring-offset-shadow: 0 0 transparent !important;
+  --tw-shadow: 0 0 transparent !important;
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 transparent), var(--tw-ring-shadow, 0 0 transparent), var(--tw-shadow) !important;
+}
+
+/* Specific overrides for common focus classes */
+.focus\:ring-2:focus,
+.focus\:ring-blue-500:focus,
+.focus\:ring-blue-600:focus,
+.focus\:border-blue-500:focus,
+.focus\:border-blue-600:focus,
+.focus-visible\:ring-2:focus-visible,
+.focus-visible\:ring-blue-500:focus-visible,
+.focus-visible\:ring-blue-600:focus-visible {
+  --tw-ring-shadow: 0 0 transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  border-color: currentColor !important;
 }

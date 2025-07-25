@@ -1,0 +1,55 @@
+# Task ID: 1
+# Title: Update Sentry packages from v7 to v9 in both frontend and backend following the official migration guide
+# Status: pending
+# Dependencies: None
+# Priority: high
+# Description: Upgrade Sentry SDK packages from version 7 to version 9 across the entire application stack, including frontend and backend components, while following the official migration documentation.
+# Details:
+1. **Audit Current Sentry Implementation**: Review existing Sentry usage in both frontend and backend code to identify all imports, configurations, and custom integrations. 2. **Update Package Dependencies**: Upgrade @sentry/node, @sentry/react, @sentry/tracing, and any other Sentry-related packages to v9 using pnpm. Remove deprecated packages if any. 3. **Configuration Migration**: Update Sentry initialization code following v9 patterns - replace deprecated options, update integration configurations, and modify error handling setup. Key changes include new SDK initialization patterns, updated performance monitoring setup, and revised error boundary implementations. 4. **Code Refactoring**: Update all Sentry method calls throughout the codebase - replace deprecated APIs like `Sentry.getCurrentHub()` with new equivalents, update transaction creation patterns, and modify context setting methods. 5. **Integration Updates**: Review and update custom Sentry integrations, ensuring compatibility with v9 architecture changes. Update any middleware configurations and error capture mechanisms. 6. **Environment Configuration**: Update environment-specific Sentry configurations, including DSN settings, environment detection, and release tracking setup.
+
+# Test Strategy:
+1. **Functionality Testing**: Verify error capture works correctly by triggering test errors in both frontend and backend. Confirm errors appear in Sentry dashboard with proper context and stack traces. 2. **Performance Monitoring**: Test transaction creation and performance monitoring features. Verify custom transactions are properly tracked and appear in Sentry performance monitoring. 3. **Integration Testing**: Test Sentry integration with existing error boundaries, async error handling, and custom error reporting mechanisms. 4. **Environment Testing**: Verify Sentry works correctly across development, staging, and production environments with appropriate configuration. 5. **Regression Testing**: Run full test suite to ensure no existing functionality is broken. Pay special attention to error handling flows and user experience during errors. 6. **Dashboard Verification**: Confirm all expected data (errors, performance metrics, user context) appears correctly in the Sentry dashboard with proper formatting and filtering.
+
+# Subtasks:
+## 1. Audit and document current Sentry v7 implementation [pending]
+### Dependencies: None
+### Description: Conduct a comprehensive audit of all Sentry v7 usage across frontend and backend codebases, documenting all imports, configurations, custom integrations, and deprecated APIs that need migration
+### Details:
+1. Search and catalog all Sentry imports across the codebase using grep/find for patterns like '@sentry/', 'Sentry.', and sentry configuration files. 2. Document all Sentry initialization code in both frontend (likely in main.tsx or App.tsx) and backend (server entry points). 3. Identify all custom Sentry integrations, error boundaries, and context providers. 4. List all deprecated v7 APIs in use such as getCurrentHub(), custom transports, and legacy configuration options. 5. Create a migration checklist documenting: current DSN configurations, environment-specific settings, custom error handling logic, performance monitoring setup, and any Sentry-specific middleware. 6. Review package.json files to identify exact versions of all Sentry packages currently installed.
+
+## 2. Update Sentry packages and resolve dependency conflicts [pending]
+### Dependencies: 1.1
+### Description: Upgrade all Sentry-related packages from v7 to v9 using pnpm, remove deprecated packages, and resolve any dependency conflicts that arise during the upgrade process
+### Details:
+1. Update package.json files to specify Sentry v9 versions: @sentry/node@^9.0.0, @sentry/react@^9.0.0, and remove deprecated @sentry/tracing package (now included in core SDKs). 2. Run 'pnpm update @sentry/node @sentry/react' in respective workspaces to upgrade packages. 3. Remove any deprecated Sentry packages that are no longer needed in v9 (e.g., @sentry/integrations if using built-in integrations). 4. Check for peer dependency warnings and update any related packages that may have Sentry version constraints. 5. Run 'pnpm install' to ensure lockfile is updated and all dependencies are resolved correctly. 6. Verify no duplicate Sentry versions exist by running 'pnpm list @sentry/core' to check for version conflicts.
+
+## 3. Migrate Sentry initialization and configuration code [pending]
+### Dependencies: 1.2
+### Description: Update all Sentry initialization code to follow v9 patterns, replacing deprecated configuration options and updating integration setup according to the official migration guide
+### Details:
+1. Update frontend Sentry initialization: replace Sentry.init() deprecated options like 'integrations' array syntax with new v9 patterns, update dsn configuration, and migrate from old BrowserTracing to new browserTracingIntegration(). 2. Update backend initialization: migrate from hub-based architecture to new scope-based approach, update Node.js specific integrations, and replace deprecated transport configurations. 3. Update error boundary implementations in React: migrate from legacy Sentry.ErrorBoundary to new patterns, update fallback components, and ensure proper error context propagation. 4. Configure new v9 features: set up new replay integration if needed, configure new performance monitoring options, and update release tracking configuration. 5. Update environment-specific configurations: ensure development, staging, and production environments use proper v9 configuration patterns. 6. Remove any deprecated initialization patterns like manual hub creation or legacy integration instantiation.
+
+## 4. Refactor Sentry API calls and validate error tracking [pending]
+### Dependencies: 1.3
+### Description: Update all Sentry method calls throughout the codebase to use v9 APIs, replace deprecated methods, and thoroughly test error capture and performance monitoring functionality
+### Details:
+1. Search and replace deprecated API calls: update all instances of 'Sentry.getCurrentHub()' to 'Sentry.getCurrentScope()', migrate from 'hub.getClient()' to 'Sentry.getClient()', and update context setting from 'hub.configureScope()' to 'Sentry.withScope()'. 2. Update transaction creation: migrate from 'hub.startTransaction()' to 'Sentry.startSpan()' or 'Sentry.startInactiveSpan()', update span creation patterns, and ensure proper transaction finishing. 3. Update error capture patterns: replace any custom hub-based error capture with new v9 methods, update breadcrumb additions to use new API, and migrate user context setting to v9 patterns. 4. Update custom integrations: rewrite any custom integrations to follow v9 integration interface, update middleware to use new scope propagation, and ensure proper async context handling. 5. Add proper TypeScript types: update any custom Sentry type imports to use v9 types, fix any type errors from API changes. 6. Clean up any remaining deprecated code patterns identified during refactoring.
+
+## 5. Audit and document current Sentry v7 implementation [pending]
+### Dependencies: None
+### Description: Conduct a comprehensive audit of all Sentry v7 usage across frontend and backend codebases, documenting all imports, configurations, custom integrations, and identifying deprecated features that need migration.
+### Details:
+1. **Frontend Audit**: Search and document all @sentry/react imports, Sentry.init() configurations, ErrorBoundary implementations, custom error handlers, and performance monitoring setup in React components. 2. **Backend Audit**: Identify all @sentry/node usage, Express middleware integrations, custom error capturing logic, and transaction tracking implementations. 3. **Configuration Review**: Document environment-specific configurations, DSN settings, release tracking setup, and any custom integrations or plugins. 4. **Deprecation Analysis**: Cross-reference current implementation with Sentry v7-to-v9 migration guide to identify all deprecated APIs like getCurrentHub(), deprecated options in init(), and outdated integration patterns.
+
+## 6. Update Sentry packages and migrate initialization code [pending]
+### Dependencies: 1.5
+### Description: Upgrade all Sentry packages from v7 to v9 using pnpm, remove deprecated packages, and update initialization code in both frontend and backend following the v9 patterns and best practices.
+### Details:
+1. **Package Updates**: Use pnpm to upgrade @sentry/react from v7 to v9, @sentry/node from v7 to v9, and update or remove @sentry/tracing (now included in core SDKs). Update @sentry/integrations if used. 2. **Frontend Init Migration**: Update Sentry.init() in React app - replace deprecated dsn format, update integrations array syntax, migrate from hub-based to scope-based API, update BrowserTracing configuration. 3. **Backend Init Migration**: Modify Sentry.init() in Node.js - update Express error handler integration, migrate performance monitoring setup, update request handler middleware configuration. 4. **Environment Config**: Update all environment-specific Sentry configurations to use v9 patterns, ensuring proper TypeScript types are imported.
+
+## 7. Refactor Sentry API usage and validate migration [pending]
+### Dependencies: 1.6
+### Description: Update all Sentry method calls throughout the codebase to use v9 APIs, refactor deprecated patterns, update error boundaries and custom integrations, then perform comprehensive testing of the migration.
+### Details:
+1. **API Migration**: Replace all deprecated Sentry API calls - migrate from getCurrentHub() to getCurrentScope(), update captureException() calls with new scope syntax, refactor transaction creation from startTransaction() to startSpan(), update context setting from configureScope() to new patterns. 2. **React Updates**: Update React ErrorBoundary components to use new Sentry.ErrorBoundary syntax, migrate withProfiler HOC if used, update any custom React integrations. 3. **Middleware Updates**: Refactor Express middleware to use new Sentry handlers, update any custom error handling middleware, ensure proper async error capturing. 4. **Integration Testing**: Test all critical user flows to ensure errors are captured correctly, verify performance monitoring works, check that all custom integrations function properly.
+

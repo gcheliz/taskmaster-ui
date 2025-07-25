@@ -11,15 +11,36 @@ export class ExportController {
   async exportTasks(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const options: ExportOptions = {
-        format: req.query.format as 'csv' | 'json',
-        projectId: req.query.projectId as string,
-        status: req.query.status as string,
-        priority: req.query.priority as string,
-        assigneeId: req.query.assigneeId as string,
-        dateFrom: req.query.dateFrom ? new Date(req.query.dateFrom as string) : undefined,
-        dateTo: req.query.dateTo ? new Date(req.query.dateTo as string) : undefined,
-        includeSubtasks: req.query.includeSubtasks === 'true',
-        fields: req.query.fields ? (req.query.fields as string).split(',') : undefined
+        format: req.query['format'] as 'csv' | 'json' || 'json',
+      }
+
+      // Add optional properties only if they have values
+      const projectId = req.query['projectId'] as string;
+      if (projectId) options.projectId = projectId;
+
+      const status = req.query['status'] as string;
+      if (status) options.status = status;
+
+      const priority = req.query['priority'] as string;
+      if (priority) options.priority = priority;
+
+      const assigneeId = req.query['assigneeId'] as string;
+      if (assigneeId) options.assigneeId = assigneeId;
+
+      if (req.query['dateFrom']) {
+        options.dateFrom = new Date(req.query['dateFrom'] as string);
+      }
+
+      if (req.query['dateTo']) {
+        options.dateTo = new Date(req.query['dateTo'] as string);
+      }
+
+      if (req.query['includeSubtasks'] === 'true') {
+        options.includeSubtasks = true;
+      }
+
+      if (req.query['fields']) {
+        options.fields = (req.query['fields'] as string).split(',');
       }
 
       // Validate export request
@@ -36,8 +57,6 @@ export class ExportController {
           priority: 'high',
           complexity: 5,
           dependencies: [],
-          details: 'Implementation details',
-          testStrategy: 'Unit tests required'
         },
         {
           id: '2',
@@ -47,8 +66,6 @@ export class ExportController {
           priority: 'medium',
           complexity: 3,
           dependencies: ['1'],
-          details: 'Follow-up task',
-          testStrategy: 'Integration tests'
         }
       ]
       
@@ -58,13 +75,14 @@ export class ExportController {
       // Check export size limit
       const EXPORT_LIMIT = 50000
       if (tasks.length > EXPORT_LIMIT) {
-        return res.status(413).json({
+        res.status(413).json({
           error: 'Export size exceeds limit',
           code: 'EXPORT_TOO_LARGE',
           recordCount: tasks.length,
           limit: EXPORT_LIMIT,
           suggestion: 'Use async export endpoint for large datasets'
         })
+        return
       }
 
       // Generate export

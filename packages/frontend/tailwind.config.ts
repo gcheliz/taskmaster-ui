@@ -101,5 +101,36 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    // Disable default focus ring utilities
+    function({ addBase }) {
+      addBase({
+        '*': {
+          '@apply focus:outline-none': {},
+        },
+        '*:focus': {
+          outline: 'none !important',
+          boxShadow: 'none !important',
+        },
+        '*:focus-visible': {
+          outline: 'none !important',
+          boxShadow: 'none !important',
+        },
+        // Remove Tailwind's default ring utilities on focus
+        '.ring-0:focus, .ring-1:focus, .ring-2:focus, .ring:focus, .ring-4:focus, .ring-8:focus': {
+          '--tw-ring-shadow': 'none !important',
+          boxShadow: 'none !important',
+        },
+        '.focus\\:ring-0:focus, .focus\\:ring-1:focus, .focus\\:ring-2:focus, .focus\\:ring:focus, .focus\\:ring-4:focus, .focus\\:ring-8:focus': {
+          '--tw-ring-shadow': 'none !important',
+          boxShadow: 'none !important',
+        },
+        // Remove blue ring colors
+        '.ring-blue-500:focus, .ring-blue-600:focus, .focus\\:ring-blue-500:focus, .focus\\:ring-blue-600:focus': {
+          '--tw-ring-color': 'transparent !important',
+          '--tw-ring-shadow': 'none !important',
+        },
+      });
+    },
+  ],
 } satisfies Config

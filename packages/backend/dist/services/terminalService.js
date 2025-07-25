@@ -66,12 +66,14 @@ class TerminalService extends events_1.EventEmitter {
         const session = {
             id: sessionId,
             workingDirectory: cwd,
-            repositoryPath,
             shell: defaultShell,
             isActive: true,
             createdAt: new Date(),
             lastActivity: new Date(),
         };
+        if (repositoryPath) {
+            session.repositoryPath = repositoryPath;
+        }
         this.sessions.set(sessionId, session);
         logger_1.logger.info(`Created terminal session ${sessionId} in ${cwd}`);
         return sessionId;
@@ -101,7 +103,7 @@ class TerminalService extends events_1.EventEmitter {
             const childProcess = (0, child_process_1.spawn)(cmd, args, {
                 cwd: session.workingDirectory,
                 shell: true,
-                stdio: 'pipe',
+                stdio: ['pipe', 'pipe', 'pipe'],
                 env: {
                     ...process.env,
                     TERM: 'xterm-256color',
@@ -142,7 +144,7 @@ class TerminalService extends events_1.EventEmitter {
                 this.emit('output', output);
                 // Clear the process reference
                 if (session.process === childProcess) {
-                    session.process = undefined;
+                    delete session.process;
                 }
             });
             // Handle process error
@@ -186,7 +188,7 @@ class TerminalService extends events_1.EventEmitter {
             return;
         }
         session.process.kill('SIGTERM');
-        session.process = undefined;
+        delete session.process;
         session.lastActivity = new Date();
     }
     /**
@@ -252,8 +254,9 @@ class TerminalService extends events_1.EventEmitter {
      */
     isBuiltInCommand(command) {
         const builtInCommands = ['cd', 'pwd', 'clear', 'exit'];
-        const cmd = command.trim().split(/\\s+/)[0];
-        return builtInCommands.includes(cmd);
+        const parts = command.trim().split(/\\s+/);
+        const cmd = parts[0];
+        return cmd ? builtInCommands.includes(cmd) : false;
     }
     /**
      * Handle built-in commands
@@ -271,7 +274,10 @@ class TerminalService extends events_1.EventEmitter {
                     this.changeDirectory(sessionId, os.homedir());
                 }
                 else {
-                    this.changeDirectory(sessionId, args[0]);
+                    const dir = args[0];
+                    if (dir) {
+                        this.changeDirectory(sessionId, dir);
+                    }
                 }
                 break;
             case 'pwd': {

@@ -339,7 +339,33 @@ export async function getApplicationSecrets(): Promise<{
     }
   }
 
-  const secrets = {
+  const githubToken =
+    env.GITHUB_TOKEN ||
+    (await secretsManager.getSecret('github_token').catch(() => undefined));
+  const slackToken =
+    env.SLACK_BOT_TOKEN ||
+    (await secretsManager
+      .getSecret('slack_bot_token')
+      .catch(() => undefined));
+  const anthropicKey =
+    env.ANTHROPIC_API_KEY ||
+    (await secretsManager
+      .getSecret('anthropic_api_key')
+      .catch(() => undefined));
+
+  const secrets: {
+    jwtSecret: string;
+    encryptionKey: string;
+    databaseUrl: string;
+    githubToken?: string;
+    slackToken?: string;
+    anthropicKey?: string;
+    sslConfig?: {
+      ca: string;
+      cert: string;
+      key: string;
+    };
+  } = {
     jwtSecret:
       env.JWT_SECRET ||
       (await secretsManager.getSecret('jwt_secret').catch(() => '')),
@@ -349,21 +375,13 @@ export async function getApplicationSecrets(): Promise<{
     databaseUrl:
       databaseUrl ||
       (await secretsManager.getSecret('DATABASE_URL').catch(() => '')),
-    githubToken:
-      env.GITHUB_TOKEN ||
-      (await secretsManager.getSecret('github_token').catch(() => undefined)),
-    slackToken:
-      env.SLACK_BOT_TOKEN ||
-      (await secretsManager
-        .getSecret('slack_bot_token')
-        .catch(() => undefined)),
-    anthropicKey:
-      env.ANTHROPIC_API_KEY ||
-      (await secretsManager
-        .getSecret('anthropic_api_key')
-        .catch(() => undefined)),
-    sslConfig,
   };
+
+  // Only add optional properties if they have values
+  if (githubToken) secrets.githubToken = githubToken;
+  if (slackToken) secrets.slackToken = slackToken;
+  if (anthropicKey) secrets.anthropicKey = anthropicKey;
+  if (sslConfig) secrets.sslConfig = sslConfig;
 
   return secrets;
 }

@@ -48,11 +48,14 @@ class TaskMasterError extends Error {
         this.type = details.type;
         this.severity = details.severity;
         this.code = details.code;
-        this.context = details.context;
-        this.originalError = details.originalError;
+        if (details.context)
+            this.context = details.context;
+        if (details.originalError)
+            this.originalError = details.originalError;
         this.suggestions = details.suggestions || [];
         this.isRetryable = details.isRetryable || false;
-        this.retryAfter = details.retryAfter;
+        if (details.retryAfter)
+            this.retryAfter = details.retryAfter;
         this.userMessage = details.userMessage || this.generateUserMessage();
         // Maintain proper stack trace
         if (Error.captureStackTrace) {
@@ -327,7 +330,7 @@ class ErrorHandler {
             errorType = ErrorType.INVALID_TOKEN;
             code = 'SEC_003';
         }
-        return new TaskMasterError({
+        const errorDetails = {
             type: errorType,
             severity,
             message: `Security violation: ${event}`,
@@ -339,8 +342,11 @@ class ErrorHandler {
                 'Wait before retrying if rate limited',
             ],
             isRetryable: errorType === ErrorType.RATE_LIMIT_EXCEEDED,
-            retryAfter: errorType === ErrorType.RATE_LIMIT_EXCEEDED ? 60000 : undefined,
-        });
+        };
+        if (errorType === ErrorType.RATE_LIMIT_EXCEEDED) {
+            errorDetails.retryAfter = 60000;
+        }
+        return new TaskMasterError(errorDetails);
     }
     /**
      * Convert unknown errors to TaskMasterError

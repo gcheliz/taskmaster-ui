@@ -6,14 +6,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const supertest_1 = __importDefault(require("supertest"));
 const express_1 = __importDefault(require("express"));
 const taskMasterRoutes_1 = require("../../routes/taskMasterRoutes");
-const taskMasterController_1 = require("../taskMasterController");
 const taskMasterService_1 = require("../../services/taskMasterService");
 const projectService_1 = require("../../services/projectService");
 const errorMiddleware_1 = require("../../middleware/errorMiddleware");
 // Mock the services
 jest.mock('../../services/taskMasterService');
 jest.mock('../../services/projectService');
-describe('Task Creation API Integration Tests', () => {
+describe('TaskInfo Creation API Integration Tests', () => {
     let app;
     let mockTaskMasterService;
     let mockProjectService;
@@ -25,17 +24,17 @@ describe('Task Creation API Integration Tests', () => {
         app.use(express_1.default.json());
         // Create mocked services
         mockTaskMasterService = new taskMasterService_1.TaskMasterService();
-        mockProjectService = new projectService_1.ProjectService({});
-        // Create controller with mocked services
-        const controller = new taskMasterController_1.TaskMasterController(mockTaskMasterService, mockProjectService);
+        mockProjectService = new projectService_1.ProjectService();
+        // Create routes with mocked services
+        const taskMasterRoutes = (0, taskMasterRoutes_1.createTaskMasterRoutes)(mockTaskMasterService);
         // Apply routes
-        app.use('/api', (0, taskMasterRoutes_1.taskMasterRouter)(controller));
+        app.use('/api', taskMasterRoutes);
         app.use(errorMiddleware_1.errorMiddleware);
     });
     describe('POST /api/tasks', () => {
-        const validTaskData = {
+        const validTaskInfoData = {
             repositoryPath: '/test/repo',
-            title: 'New Test Task',
+            title: 'New Test TaskInfo',
             description: 'This is a test task description',
             priority: 'high',
             status: 'pending',
@@ -57,31 +56,31 @@ describe('Task Creation API Integration Tests', () => {
                 mockTaskMasterService.listTasks.mockResolvedValue({
                     success: true,
                     data: [
-                        { id: 1, title: 'Existing Task 1' },
-                        { id: 2, title: 'Existing Task 2' },
+                        { id: '1', title: 'Existing TaskInfo 1', status: 'pending', priority: 'medium' },
+                        { id: '2', title: 'Existing TaskInfo 2', status: 'pending', priority: 'medium' },
                     ],
                 });
-                const createdTask = {
+                const createdTaskInfo = {
                     id: 3,
-                    ...validTaskData,
+                    ...validTaskInfoData,
                     createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString(),
                 };
                 mockTaskMasterService.createTask.mockResolvedValue({
                     success: true,
-                    data: createdTask,
+                    data: createdTaskInfo,
                 });
                 const response = await (0, supertest_1.default)(app)
                     .post('/api/tasks')
-                    .send(validTaskData)
+                    .send(validTaskInfoData)
                     .expect(201);
                 expect(response.body).toMatchObject({
                     task: expect.objectContaining({
                         id: 3,
-                        title: validTaskData.title,
-                        description: validTaskData.description,
-                        priority: validTaskData.priority,
-                        status: validTaskData.status,
+                        title: validTaskInfoData.title,
+                        description: validTaskInfoData.description,
+                        priority: validTaskInfoData.priority,
+                        status: validTaskInfoData.status,
                     }),
                     metadata: expect.objectContaining({
                         createdAt: expect.any(String),
@@ -89,20 +88,20 @@ describe('Task Creation API Integration Tests', () => {
                     }),
                 });
                 // Verify service calls
-                expect(mockTaskMasterService.getProjectStatus).toHaveBeenCalledWith(validTaskData.repositoryPath);
-                expect(mockTaskMasterService.listTasks).toHaveBeenCalledWith(validTaskData.repositoryPath, {});
-                expect(mockTaskMasterService.createTask).toHaveBeenCalledWith(validTaskData.repositoryPath, expect.objectContaining({
-                    prompt: validTaskData.title,
-                    priority: validTaskData.priority,
-                    status: validTaskData.status,
+                expect(mockTaskMasterService.getProjectStatus).toHaveBeenCalledWith(validTaskInfoData.repositoryPath);
+                expect(mockTaskMasterService.listTasks).toHaveBeenCalledWith(validTaskInfoData.repositoryPath, {});
+                expect(mockTaskMasterService.createTask).toHaveBeenCalledWith(validTaskInfoData.repositoryPath, expect.objectContaining({
+                    prompt: validTaskInfoData.title,
+                    priority: validTaskInfoData.priority,
+                    status: validTaskInfoData.status,
                     dependencies: '1,2',
                     tags: 'test,integration',
                 }), {});
             });
             it('should create a task with minimal required fields', async () => {
-                const minimalTaskData = {
+                const minimalTaskInfoData = {
                     repositoryPath: '/test/repo',
-                    title: 'Minimal Task',
+                    title: 'Minimal TaskInfo',
                     description: 'Minimal task description',
                     priority: 'medium',
                 };
@@ -118,7 +117,7 @@ describe('Task Creation API Integration Tests', () => {
                     success: true,
                     data: {
                         id: 1,
-                        ...minimalTaskData,
+                        ...minimalTaskInfoData,
                         status: 'pending',
                         tags: [],
                         dependencies: [],
@@ -126,20 +125,20 @@ describe('Task Creation API Integration Tests', () => {
                 });
                 const response = await (0, supertest_1.default)(app)
                     .post('/api/tasks')
-                    .send(minimalTaskData)
+                    .send(minimalTaskInfoData)
                     .expect(201);
                 expect(response.body.task).toMatchObject({
                     id: 1,
-                    title: minimalTaskData.title,
-                    description: minimalTaskData.description,
-                    priority: minimalTaskData.priority,
+                    title: minimalTaskInfoData.title,
+                    description: minimalTaskInfoData.description,
+                    priority: minimalTaskInfoData.priority,
                     status: 'pending',
                 });
             });
         });
         describe('Validation Errors', () => {
             it('should return 400 for missing repository path', async () => {
-                const invalidData = { ...validTaskData };
+                const invalidData = { ...validTaskInfoData };
                 delete invalidData.repositoryPath;
                 const response = await (0, supertest_1.default)(app)
                     .post('/api/tasks')
@@ -152,7 +151,7 @@ describe('Task Creation API Integration Tests', () => {
             });
             it('should return 400 for title too short', async () => {
                 const invalidData = {
-                    ...validTaskData,
+                    ...validTaskInfoData,
                     title: 'AB', // Less than 3 characters
                 };
                 const response = await (0, supertest_1.default)(app)
@@ -166,7 +165,7 @@ describe('Task Creation API Integration Tests', () => {
             });
             it('should return 400 for description too short', async () => {
                 const invalidData = {
-                    ...validTaskData,
+                    ...validTaskInfoData,
                     description: 'Too short', // Less than 10 characters
                 };
                 const response = await (0, supertest_1.default)(app)
@@ -180,7 +179,7 @@ describe('Task Creation API Integration Tests', () => {
             });
             it('should return 400 for invalid priority', async () => {
                 const invalidData = {
-                    ...validTaskData,
+                    ...validTaskInfoData,
                     priority: 'super-high', // Invalid priority
                 };
                 const response = await (0, supertest_1.default)(app)
@@ -194,7 +193,7 @@ describe('Task Creation API Integration Tests', () => {
             });
             it('should return 400 for past due date', async () => {
                 const invalidData = {
-                    ...validTaskData,
+                    ...validTaskInfoData,
                     dueDate: new Date(Date.now() - 86400000).toISOString(), // Yesterday
                 };
                 const response = await (0, supertest_1.default)(app)
@@ -208,7 +207,7 @@ describe('Task Creation API Integration Tests', () => {
             });
             it('should return 400 for invalid tags', async () => {
                 const invalidData = {
-                    ...validTaskData,
+                    ...validTaskInfoData,
                     tags: ['valid-tag', 'invalid tag!'], // Tag with invalid characters
                 };
                 const response = await (0, supertest_1.default)(app)
@@ -222,14 +221,14 @@ describe('Task Creation API Integration Tests', () => {
             });
         });
         describe('Business Logic Errors', () => {
-            it('should return 400 if TaskMaster not initialized', async () => {
+            it('should return 400 if TaskInfoMaster not initialized', async () => {
                 mockTaskMasterService.getProjectStatus.mockResolvedValue({
                     success: true,
                     data: { initialized: false },
                 });
                 const response = await (0, supertest_1.default)(app)
                     .post('/api/tasks')
-                    .send(validTaskData)
+                    .send(validTaskInfoData)
                     .expect(400);
                 expect(response.body.error).toMatchObject({
                     code: 'NOT_INITIALIZED',
@@ -244,13 +243,13 @@ describe('Task Creation API Integration Tests', () => {
                 mockTaskMasterService.listTasks.mockResolvedValue({
                     success: true,
                     data: [
-                        { id: 1, title: 'Task 1' },
-                        // Task 2 doesn't exist
+                        { id: 1, title: 'TaskInfo 1' },
+                        // TaskInfo 2 doesn't exist
                     ],
                 });
                 const response = await (0, supertest_1.default)(app)
                     .post('/api/tasks')
-                    .send(validTaskData)
+                    .send(validTaskInfoData)
                     .expect(400);
                 expect(response.body.error).toMatchObject({
                     code: 'INVALID_DEPENDENCY',
@@ -259,7 +258,7 @@ describe('Task Creation API Integration Tests', () => {
             });
             it('should return 400 for circular dependency on subtask', async () => {
                 const subtaskData = {
-                    ...validTaskData,
+                    ...validTaskInfoData,
                     dependencies: [1], // Depends on parent task
                 };
                 // Mock as subtask (ID format 1.1)
@@ -270,7 +269,7 @@ describe('Task Creation API Integration Tests', () => {
                 mockTaskMasterService.listTasks.mockResolvedValue({
                     success: true,
                     data: [
-                        { id: 1, title: 'Parent Task' },
+                        { id: 1, title: 'Parent TaskInfo' },
                         { id: 1.1, title: 'Current Subtask' }, // This would be the current task
                     ],
                 });
@@ -289,14 +288,14 @@ describe('Task Creation API Integration Tests', () => {
                 mockTaskMasterService.getProjectStatus.mockRejectedValue(new Error('Service unavailable'));
                 const response = await (0, supertest_1.default)(app)
                     .post('/api/tasks')
-                    .send(validTaskData)
+                    .send(validTaskInfoData)
                     .expect(500);
                 expect(response.body.error).toMatchObject({
                     code: 'INTERNAL_ERROR',
                     message: 'An unexpected error occurred',
                 });
             });
-            it('should handle TaskMaster CLI errors', async () => {
+            it('should handle TaskInfoMaster CLI errors', async () => {
                 mockTaskMasterService.getProjectStatus.mockResolvedValue({
                     success: true,
                     data: { initialized: true },
@@ -307,11 +306,11 @@ describe('Task Creation API Integration Tests', () => {
                 });
                 mockTaskMasterService.createTask.mockResolvedValue({
                     success: false,
-                    error: 'TaskMaster CLI error: Invalid command',
+                    error: 'TaskInfoMaster CLI error: Invalid command',
                 });
                 const response = await (0, supertest_1.default)(app)
                     .post('/api/tasks')
-                    .send(validTaskData)
+                    .send(validTaskInfoData)
                     .expect(500);
                 expect(response.body.error).toMatchObject({
                     code: 'CREATE_FAILED',
@@ -322,8 +321,8 @@ describe('Task Creation API Integration Tests', () => {
         describe('Edge Cases', () => {
             it('should handle special characters in task fields', async () => {
                 const specialCharData = {
-                    ...validTaskData,
-                    title: 'Task with "quotes" and \'apostrophes\'',
+                    ...validTaskInfoData,
+                    title: 'TaskInfo with "quotes" and \'apostrophes\'',
                     description: 'Description with special chars: <>&$#@!',
                     details: 'Code snippet: `const x = "test"`',
                 };
@@ -348,7 +347,7 @@ describe('Task Creation API Integration Tests', () => {
             });
             it('should handle maximum length fields', async () => {
                 const maxLengthData = {
-                    ...validTaskData,
+                    ...validTaskInfoData,
                     title: 'A'.repeat(100), // Max length
                     description: 'B'.repeat(500), // Max length
                     repositoryPath: '/very/long/path/' + 'x'.repeat(450), // Near max of 500
@@ -381,31 +380,32 @@ describe('Task Creation API Integration Tests', () => {
                 mockTaskMasterService.listTasks.mockResolvedValue({
                     success: true,
                     data: [
-                        { id: 1, title: 'Task 1' },
-                        { id: 2, title: 'Task 2' },
+                        { id: 1, title: 'TaskInfo 1' },
+                        { id: 2, title: 'TaskInfo 2' },
                     ],
                 });
                 // Simulate concurrent requests
                 const promises = [
-                    (0, supertest_1.default)(app).post('/api/tasks').send(validTaskData),
-                    (0, supertest_1.default)(app).post('/api/tasks').send({ ...validTaskData, title: 'Concurrent Task 2' }),
+                    (0, supertest_1.default)(app).post('/api/tasks').send(validTaskInfoData),
+                    (0, supertest_1.default)(app).post('/api/tasks').send({ ...validTaskInfoData, title: 'Concurrent TaskInfo 2' }),
                 ];
                 // Mock different responses for each call
                 mockTaskMasterService.createTask
                     .mockResolvedValueOnce({
                     success: true,
-                    data: { id: 3, ...validTaskData },
+                    data: { id: 3, ...validTaskInfoData },
                 })
                     .mockResolvedValueOnce({
                     success: true,
-                    data: { id: 4, title: 'Concurrent Task 2' },
+                    data: { id: 4, title: 'Concurrent TaskInfo 2' },
                 });
                 const responses = await Promise.all(promises);
                 // Both should succeed with different IDs
-                expect(responses[0].status).toBe(201);
-                expect(responses[1].status).toBe(201);
-                expect(responses[0].body.task.id).toBe(3);
-                expect(responses[1].body.task.id).toBe(4);
+                const [response1, response2] = responses;
+                expect(response1?.status).toBe(201);
+                expect(response2?.status).toBe(201);
+                expect(response1?.body.task.id).toBe(3);
+                expect(response2?.body.task.id).toBe(4);
             });
         });
     });

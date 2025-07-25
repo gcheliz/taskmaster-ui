@@ -4,7 +4,7 @@ import {
   CommandResult,
   CommandOptions,
 } from '../services/commandExecutor';
-import { logger } from '../utils/logger';
+import { logger, LogContext } from '../utils/logger';
 import path from 'path';
 import fs from 'fs';
 
@@ -322,7 +322,7 @@ export class CommandController {
   /**
    * Get common command presets
    */
-  async getCommandPresets(req: Request, res: Response): Promise<void> {
+  async getCommandPresets(_req: Request, res: Response): Promise<void> {
     try {
       const presets = [
         {
@@ -410,7 +410,7 @@ export class CommandController {
     // Check if subcommand is valid (for commands that have subcommands)
     if (args.length > 0) {
       const subcommand = args[0];
-      if (!allowedCommand.commands.includes(subcommand)) {
+      if (subcommand && !allowedCommand.commands.includes(subcommand)) {
         return {
           isValid: false,
           message: `Subcommand '${subcommand}' is not allowed for '${command}'. Allowed: ${allowedCommand.commands.join(', ')}`,
@@ -448,11 +448,13 @@ export class CommandController {
 
       return resolvedPath;
     } catch (error) {
-      logger.warn('Invalid working directory:', {
-        workingDirectory,
-        repositoryPath,
+      const context: LogContext = {
         error,
-      });
+      };
+      if (workingDirectory) context['workingDirectory'] = workingDirectory;
+      if (repositoryPath) context.repositoryPath = repositoryPath;
+      
+      logger.warn('Invalid working directory:', context);
       return null;
     }
   }

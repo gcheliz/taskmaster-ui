@@ -1,6 +1,4 @@
 import * as Sentry from '@sentry/node'
-// import { ProfilingIntegration } from '@sentry/profiling-node'
-import * as Tracing from '@sentry/tracing'
 import { Application, Request, Response, NextFunction } from 'express'
 import { logger } from '../utils/winston-adapter'
 
@@ -34,21 +32,19 @@ export function initSentry(app: Application): void {
     ...config,
     integrations: [
       // Enable HTTP calls tracing
-      new Sentry.Integrations.Http({ tracing: true }),
+      Sentry.httpIntegration(),
       // Enable Express.js middleware tracing
-      new Tracing.Integrations.Express({ app: app as any }),
-      // Enable profiling (disabled due to missing native module)
-      // new ProfilingIntegration(),
+      Sentry.expressIntegration(),
       // Prisma integration
-      new Tracing.Integrations.Prisma({ client: true }),
+      Sentry.prismaIntegration(),
       // Additional integrations
-      new Sentry.Integrations.OnUncaughtException({
+      Sentry.onUncaughtExceptionIntegration({
         onFatalError: (err: Error) => {
           logger.error('Fatal error occurred:', err)
           process.exit(1)
         },
       }),
-      new Sentry.Integrations.OnUnhandledRejection({
+      Sentry.onUnhandledRejectionIntegration({
         mode: 'warn',
       }),
     ],
@@ -105,16 +101,16 @@ export function initSentry(app: Application): void {
 // Sentry middleware setup
 export function setupSentryMiddleware(app: Application): void {
   // RequestHandler creates a separate execution context using domains
-  app.use(Sentry.Handlers.requestHandler())
+  app.use(Sentry.expressRequestHandler())
 
   // TracingHandler creates a trace for every incoming request
-  app.use(Sentry.Handlers.tracingHandler())
+  app.use(Sentry.expressTracingHandler())
 }
 
 // Sentry error handler (must be before any other error middleware)
 export function setupSentryErrorHandler(app: Application): void {
-  app.use(Sentry.Handlers.errorHandler({
-    shouldHandleError(error) {
+  app.use(Sentry.expressErrorHandler({
+    shouldHandleError(error: any) {
       // Capture 4xx errors in development
       if (process.env['NODE_ENV'] !== 'production') {
         return true
@@ -193,7 +189,17 @@ export class RateLimitError extends ApplicationError {
 
 // Performance monitoring helpers
 export function startTransaction(name: string, op: string) {
-  return Sentry.startTransaction({ name, op })
+  // In v9, use startSpan for performance monitoring
+  const span = Sentry.getActiveSpan()
+  if (span) {
+    return span.startChild({ op, name })
+  }
+  // Fallback: create a simple transaction-like object
+  return {
+    finish: () => {},
+    setStatus: () => {},
+    startChild: () => ({ finish: () => {} }),
+  }
 }
 
 export function measurePerformance<T>(
@@ -201,32 +207,9 @@ export function measurePerformance<T>(
   operation: () => T | Promise<T>,
   op: string = 'function'
 ): T | Promise<T> {
-  const transaction = startTransaction(name, op)
-  const span = transaction.startChild({
-    op: `${op}.execution`,
-    description: name,
+  return Sentry.startSpan({ name, op }, () => {
+    return operation()
   })
-
-  try {
-    const result = operation()
-    
-    if (result instanceof Promise) {
-      return result.finally(() => {
-        span.finish()
-        transaction.finish()
-      })
-    }
-    
-    span.finish()
-    transaction.finish()
-    return result
-  } catch (error) {
-    span.setStatus('internal_error')
-    transaction.setStatus('internal_error')
-    span.finish()
-    transaction.finish()
-    throw error
-  }
 }
 
 // Express async handler wrapper with Sentry integration
@@ -234,20 +217,16 @@ export function asyncHandler(
   fn: (req: Request, res: Response, next: NextFunction) => Promise<any>
 ) {
   return (req: Request, res: Response, next: NextFunction) => {
-    const transaction = Sentry.getCurrentHub().getScope()?.getTransaction()
-    const span = transaction?.startChild({
+    return Sentry.startSpan({
       op: 'request.handler',
-      description: `${req.method} ${req.route?.path || req.path}`,
-    })
-
-    Promise.resolve(fn(req, res, next))
-      .catch((error) => {
-        span?.setStatus('internal_error')
+      name: `${req.method} ${req.route?.path || req.path}`,
+    }, async () => {
+      try {
+        await fn(req, res, next)
+      } catch (error) {
         next(error)
-      })
-      .finally(() => {
-        span?.finish()
-      })
+      }
+    })
   }
 }
 
@@ -261,7 +240,7 @@ export function captureErrorWithContext(
     tags?: Record<string, string>
   }
 ): string {
-  const scope = new Sentry.Scope()
+  const scope = Sentry.getCurrentScope().clone()
 
   if (context.user) {
     scope.setUser(context.user)

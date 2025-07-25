@@ -1,0 +1,37 @@
+# Task ID: 7
+# Title: Update Jest from v29 to v30 and update all testing dependencies and configurations
+# Status: pending
+# Dependencies: 2, 6
+# Priority: medium
+# Description: Upgrade Jest testing framework from version 29 to version 30, updating all related testing dependencies, configurations, and test files to ensure compatibility with the new major version.
+# Details:
+1. **Pre-migration Assessment**: Audit current Jest v29 configuration by examining jest.config.js, package.json test scripts, and all test files across workspaces. Review Jest v30 migration guide to identify breaking changes, deprecated APIs, and new features. Document current testing patterns, custom matchers, and configurations that require updates. 2. **Update Core Dependencies**: Upgrade jest, @types/jest, ts-jest, and jest-environment-jsdom to v30 using pnpm. Update related testing utilities like @testing-library/jest-dom, @testing-library/react, and any custom Jest plugins to compatible versions. 3. **Configuration Migration**: Update jest.config.js files following v30 patterns - replace deprecated configuration options, update preset configurations, and modify transform settings for TypeScript and modern JavaScript features. Update test scripts in package.json to use new CLI options if needed. 4. **Test File Updates**: Review and update test files that use deprecated Jest APIs or matchers. Update mock implementations, custom matchers, and test utilities to use v30 compatible syntax. Address any breaking changes in snapshot testing, async testing patterns, or module mocking. 5. **Integration Updates**: Ensure Jest v30 works correctly with existing tools like ESLint, TypeScript, and CI/CD pipelines. Update any Jest-related ESLint rules or configurations to be compatible with the new version.
+
+# Test Strategy:
+1. **Configuration Verification**: Run Jest with --init flag to verify configuration is valid and all options are recognized. Test configuration loading by running jest --showConfig to ensure no deprecated warnings appear. 2. **Test Suite Execution**: Run full test suite using pnpm test across all workspaces to ensure all existing tests pass with Jest v30. Address any test failures or deprecation warnings that appear. 3. **Feature Testing**: Test key Jest v30 features like improved error messages, updated snapshot format, and any new assertion methods. Verify that test coverage reports generate correctly and match expected coverage metrics. 4. **Performance Validation**: Compare test execution times between v29 and v30 to ensure performance improvements are realized. Run tests in CI environment to verify compatibility with build pipelines and deployment processes.
+
+# Subtasks:
+## 1. Audit current Jest v29 setup and analyze migration requirements [pending]
+### Dependencies: None
+### Description: Perform comprehensive assessment of current Jest v29 configuration, test patterns, and dependencies to identify migration requirements for Jest v30
+### Details:
+Review all jest.config.js files across workspaces, analyze package.json test scripts, document current Jest plugins and custom matchers. Study Jest v30 migration guide for breaking changes, deprecated APIs, and new features. Create migration checklist documenting: current test patterns, custom matchers, snapshot configurations, module mocking patterns, and TypeScript integration settings that require updates
+
+## 2. Update Jest core and testing dependencies to v30 [pending]
+### Dependencies: 7.1
+### Description: Upgrade Jest framework and all related testing dependencies to v30-compatible versions using pnpm
+### Details:
+Update jest, @types/jest, ts-jest to v30 using pnpm commands. Upgrade jest-environment-jsdom, @testing-library/jest-dom, @testing-library/react to latest compatible versions. Update any Jest plugins like jest-extended or jest-mock-extended. Resolve any peer dependency conflicts and ensure all testing utilities are compatible with Jest v30
+
+## 3. Migrate Jest configurations and test scripts to v30 patterns [pending]
+### Dependencies: 7.2
+### Description: Update all Jest configuration files and package.json scripts to use Jest v30 syntax and remove deprecated options
+### Details:
+Update jest.config.js files to replace deprecated options like testURL with testEnvironmentOptions. Migrate transform configurations for TypeScript and ESM support. Update coverage configurations if using deprecated coverage providers. Modify package.json test scripts to use new Jest v30 CLI options. Update preset configurations and ensure proper workspace resolution for monorepo setup
+
+## 4. Update test files and verify CI/CD integration compatibility [pending]
+### Dependencies: 7.3
+### Description: Refactor test files to use Jest v30 APIs and ensure all tests pass with proper CI/CD integration
+### Details:
+Update test files using deprecated Jest APIs like jest.runTimersToTime() to jest.advanceTimersByTime(). Refactor mock implementations using new v30 patterns. Update snapshot tests if serialization changes occurred. Fix async test patterns if breaking changes exist. Verify ESLint jest plugin rules are compatible. Update CI/CD configurations if Jest v30 requires different flags or environment variables
+

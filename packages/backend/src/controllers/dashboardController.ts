@@ -99,7 +99,7 @@ export class DashboardController {
   async getDashboardData(req: Request, res: Response): Promise<void> {
     try {
       const { projectId } = req.params;
-      const projectTag = req.query.tag as string;
+      const projectTag = req.query['tag'] as string;
 
       if (!projectId) {
         res.status(400).json({
@@ -184,7 +184,7 @@ export class DashboardController {
   async getProjectHealth(req: Request, res: Response): Promise<void> {
     try {
       const { projectId } = req.params;
-      const projectTag = req.query.tag as string;
+      const projectTag = req.query['tag'] as string;
 
       const projectPath = process.cwd();
       const tasksJsonPath = path.join(
@@ -241,7 +241,10 @@ export class DashboardController {
       // Otherwise, return the first project or entire data
       const keys = Object.keys(data);
       if (keys.length === 1) {
-        return data[keys[0]];
+        const firstKey = keys[0];
+        if (firstKey) {
+          return data[firstKey];
+        }
       }
 
       return data;
@@ -271,7 +274,12 @@ export class DashboardController {
         .split('\n')
         .filter(line => line.trim())
         .map(line => {
-          const [hash, author, date, ...messageParts] = line.split('|');
+          const parts = line.split('|');
+          const hash = parts[0] || '';
+          const author = parts[1] || '';
+          const date = parts[2] || new Date().toISOString();
+          const messageParts = parts.slice(3);
+          
           return {
             id: hash,
             type: 'commit' as const,
@@ -345,7 +353,7 @@ export class DashboardController {
         id: projectId,
         name: path.basename(projectPath),
         path: projectPath,
-        lastUpdated: String(metadata.updated || new Date().toISOString()),
+        lastUpdated: String(metadata['updated'] || new Date().toISOString()),
       },
       taskMetrics,
       subtaskMetrics,
@@ -515,7 +523,7 @@ export class DashboardController {
    */
   private generateCompletionTrend(
     tasks: Task[],
-    gitActivity: unknown[]
+    _gitActivity: unknown[]
   ): DashboardData['chartData']['taskCompletionTrend'] {
     const days = 7;
     const trend = [];
@@ -529,8 +537,9 @@ export class DashboardController {
       ).length;
       const totalTasks = tasks.length;
 
+      const dateStr = date.toISOString().split('T')[0] || date.toISOString();
       trend.push({
-        date: date.toISOString().split('T')[0],
+        date: dateStr,
         completed: completedTasks,
         total: totalTasks,
         completionRate:
@@ -546,7 +555,7 @@ export class DashboardController {
    */
   private getAverageTimeForComplexity(
     complexity: string,
-    tasks: unknown[]
+    _tasks: unknown[]
   ): number {
     const complexityMultiplier = {
       low: 2,

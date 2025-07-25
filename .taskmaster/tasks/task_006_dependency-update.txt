@@ -1,0 +1,31 @@
+# Task ID: 6
+# Title: Update ESLint to v9 with flat config format and update TypeScript ESLint plugins to v8
+# Status: pending
+# Dependencies: 2
+# Priority: high
+# Description: Upgrade ESLint from current version to v9 implementing the new flat config format, and update all TypeScript ESLint plugins to version 8 for improved compatibility and performance.
+# Details:
+1. **Pre-migration Assessment**: Audit current ESLint configuration by examining .eslintrc files, package.json eslint configs, and all custom rules across the project. Review ESLint v9 migration guide focusing on flat config format changes and breaking changes from current version. Document current rule sets, plugins, and configurations that require updates. 2. **Update Core Dependencies**: Upgrade eslint package to v9 using pnpm, then update @typescript-eslint/parser and @typescript-eslint/eslint-plugin to v8. Update related ESLint plugins (eslint-plugin-react, eslint-plugin-import, etc.) to versions compatible with ESLint v9. 3. **Migrate to Flat Config Format**: Convert existing .eslintrc.js/.eslintrc.json files to the new eslint.config.js flat config format. Restructure configuration objects to use the new flat config syntax, updating extends, plugins, and rules properties. Handle workspace-specific configurations for monorepo structure. 4. **Update TypeScript Integration**: Configure @typescript-eslint/parser v8 with updated options and ensure proper TypeScript project references. Update parser options, project paths, and type-aware rules to work with the new plugin version. 5. **Rule Configuration Updates**: Review and update all ESLint rules, particularly those that changed behavior or syntax in v9. Update any custom rules or rule configurations that are no longer compatible. Test rule inheritance and overrides in the flat config format. 6. **IDE and Tool Integration**: Update VS Code settings, CI/CD pipeline configurations, and any other tooling that references ESLint configuration files. Ensure proper integration with build scripts and pre-commit hooks.
+
+# Test Strategy:
+1. **Linting Verification**: Run pnpm lint across all workspaces to ensure ESLint v9 processes files correctly without configuration errors. Verify that all existing code passes linting rules or shows expected violations. 2. **TypeScript Rule Testing**: Test TypeScript-specific ESLint rules by running linting on TypeScript files to ensure @typescript-eslint/eslint-plugin v8 works correctly with type-aware rules and project references. 3. **Configuration Validation**: Validate flat config format by testing ESLint in different directories of the monorepo to ensure proper rule inheritance and workspace-specific overrides work as expected. 4. **IDE Integration Testing**: Test ESLint integration in VS Code or other IDEs to ensure real-time error reporting works correctly with the new configuration format. Verify that auto-fix functionality works properly. 5. **CI/CD Pipeline Testing**: Run the complete CI/CD pipeline to ensure ESLint checks pass in the build environment and that the new configuration works correctly in automated testing contexts. 6. **Performance Testing**: Compare linting performance before and after the upgrade to ensure the new version maintains or improves execution speed, especially for large codebases.
+
+# Subtasks:
+## 1. Audit and prepare ESLint v9 migration plan [pending]
+### Dependencies: None
+### Description: Conduct comprehensive assessment of current ESLint v8 configuration, analyze breaking changes for v9 flat config format, and create detailed migration strategy
+### Details:
+Review all existing .eslintrc.js/.eslintrc.json files across workspaces to catalog current rules, plugins, and extends configurations. Analyze ESLint v9 migration guide focusing on flat config format requirements, removed formatters, and API changes. Document all custom rules, shared configurations, and workspace-specific overrides that need conversion. Create a migration checklist identifying deprecated features, plugin compatibility issues, and required configuration restructuring. Assess impact on build scripts, pre-commit hooks, and CI/CD pipelines.
+
+## 2. Upgrade ESLint and TypeScript ESLint to latest versions [pending]
+### Dependencies: 6.1
+### Description: Update ESLint to v9 and @typescript-eslint packages to v8, ensuring all related plugins and dependencies are compatible
+### Details:
+Execute pnpm update eslint@^9.0.0 @typescript-eslint/parser@^8.0.0 @typescript-eslint/eslint-plugin@^8.0.0 across all workspaces. Update essential plugins including eslint-plugin-react, eslint-plugin-react-hooks, eslint-plugin-import to ESLint v9 compatible versions. Handle any peer dependency conflicts by updating or replacing incompatible plugins. Update eslint-config-prettier and related formatting integrations. Verify all dependencies resolve correctly without version conflicts in pnpm lockfile.
+
+## 3. Convert to flat config format and verify functionality [pending]
+### Dependencies: 6.2
+### Description: Transform existing ESLint configurations to new flat config format, update all references, and ensure proper rule inheritance across workspaces
+### Details:
+Create new eslint.config.js files replacing .eslintrc configurations using ES modules syntax. Convert extends arrays to imported configurations, transform plugin references to new format, and restructure rule definitions. Handle monorepo workspace configurations by creating appropriate config exports and imports. Update languageOptions for TypeScript parser configuration, configure sourceType and ecmaVersion appropriately. Migrate environment settings, globals, and ignore patterns to new flat config structure. Update all package.json scripts and tool configurations to reference new config files.
+

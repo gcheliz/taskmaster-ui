@@ -39,11 +39,11 @@ export class TaskService {
       const task = await prisma.task.create({
         data: {
           title: data.title,
-          description: data.description,
+          description: data.description || null,
           status: data.status || TaskStatus.PENDING,
           priority: data.priority || Priority.MEDIUM,
           order: data.order || 0,
-          dueDate: data.dueDate,
+          dueDate: data.dueDate || null,
           projectId: data.projectId,
         },
         include: {
@@ -120,11 +120,9 @@ export class TaskService {
         orderBy.createdAt = 'desc';
       }
 
-      const tasks = await prisma.task.findMany({
+      const findOptions: any = {
         where,
         orderBy,
-        take: options?.limit,
-        skip: options?.offset,
         include: {
           project: {
             select: {
@@ -134,7 +132,16 @@ export class TaskService {
             },
           },
         },
-      });
+      };
+
+      if (options?.limit !== undefined) {
+        findOptions.take = options.limit;
+      }
+      if (options?.offset !== undefined) {
+        findOptions.skip = options.offset;
+      }
+
+      const tasks = await prisma.task.findMany(findOptions);
       return tasks;
     } catch (error) {
       console.error('Error getting tasks by project ID:', error);
@@ -171,11 +178,9 @@ export class TaskService {
         orderBy.createdAt = 'desc';
       }
 
-      const tasks = await prisma.task.findMany({
+      const findOptions: any = {
         where,
         orderBy,
-        take: options?.limit,
-        skip: options?.offset,
         include: {
           project: {
             select: {
@@ -185,7 +190,16 @@ export class TaskService {
             },
           },
         },
-      });
+      };
+
+      if (options?.limit !== undefined) {
+        findOptions.take = options.limit;
+      }
+      if (options?.offset !== undefined) {
+        findOptions.skip = options.offset;
+      }
+
+      const tasks = await prisma.task.findMany(findOptions);
       return tasks;
     } catch (error) {
       console.error('Error getting all tasks:', error);
@@ -462,6 +476,9 @@ export class TaskService {
       // Validate all tasks have required fields
       for (let i = 0; i < tasks.length; i++) {
         const task = tasks[i];
+        if (!task) {
+          throw new Error(`Task at index ${i} is undefined`);
+        }
         if (!task.title || task.title.trim().length === 0) {
           throw new Error(`Task at index ${i} must have a title`);
         }
@@ -473,11 +490,11 @@ export class TaskService {
       return await this.dbService.transaction(async prisma => {
         const taskData = tasks.map(task => ({
           title: task.title.trim(),
-          description: task.description?.trim(),
+          description: task.description?.trim() || null,
           status: task.status || TaskStatus.PENDING,
           priority: task.priority || Priority.MEDIUM,
           order: task.order || 0,
-          dueDate: task.dueDate,
+          dueDate: task.dueDate || null,
           projectId: task.projectId,
         }));
 

@@ -18,11 +18,11 @@ class TaskMasterLogger {
         // Add console handler by default
         this.addHandler(new ConsoleLogHandler());
         // Add file handler in production
-        if (process.env.NODE_ENV === 'production') {
+        if (process.env['NODE_ENV'] === 'production') {
             this.addHandler(new FileLogHandler());
         }
         // Set log level from environment
-        const envLogLevel = process.env.LOG_LEVEL?.toLowerCase();
+        const envLogLevel = process.env['LOG_LEVEL']?.toLowerCase();
         if (envLogLevel &&
             Object.values(LogLevel).includes(envLogLevel)) {
             this.logLevel = envLogLevel;
@@ -59,14 +59,19 @@ class TaskMasterLogger {
         const logEntry = {
             level,
             message,
-            context: {
-                ...context,
-                timestamp: new Date().toISOString(),
-            },
-            error,
             timestamp: new Date().toISOString(),
             module,
         };
+        // Only add optional properties if they have values
+        if (context || error) {
+            logEntry.context = {
+                ...context,
+                timestamp: new Date().toISOString(),
+            };
+        }
+        if (error) {
+            logEntry.error = error;
+        }
         // Send to all handlers
         this.logHandlers.forEach(handler => {
             try {

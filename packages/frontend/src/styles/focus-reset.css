@@ -1,0 +1,171 @@
+/* FOCUS RESET - Remove all blue borders and focus styles */
+/* This file must be imported LAST to ensure it overrides everything */
+
+/* Reset all elements */
+*,
+*::before,
+*::after,
+*:focus,
+*:focus-visible,
+*:focus-within,
+*:active,
+*:hover {
+  outline: 0 !important;
+  outline: none !important;
+  outline-width: 0px !important;
+  outline-style: none !important;
+  outline-color: transparent !important;
+  outline-offset: 0px !important;
+}
+
+/* Reset focus styles on all interactive elements */
+a,
+button,
+input,
+textarea,
+select,
+details,
+summary,
+[tabindex],
+[contenteditable],
+[role="button"],
+[role="link"],
+[role="checkbox"],
+[role="radio"],
+[role="switch"],
+[role="tab"],
+[role="menuitem"],
+[role="option"],
+[role="listbox"],
+[role="combobox"],
+[role="textbox"] {
+  outline: 0 !important;
+  outline: none !important;
+}
+
+a:focus,
+a:focus-visible,
+a:focus-within,
+button:focus,
+button:focus-visible,
+button:focus-within,
+input:focus,
+input:focus-visible,
+input:focus-within,
+textarea:focus,
+textarea:focus-visible,
+textarea:focus-within,
+select:focus,
+select:focus-visible,
+select:focus-within,
+details:focus,
+details:focus-visible,
+details:focus-within,
+summary:focus,
+summary:focus-visible,
+summary:focus-within,
+[tabindex]:focus,
+[tabindex]:focus-visible,
+[tabindex]:focus-within,
+[contenteditable]:focus,
+[contenteditable]:focus-visible,
+[contenteditable]:focus-within,
+[role="button"]:focus,
+[role="button"]:focus-visible,
+[role="button"]:focus-within,
+[role="link"]:focus,
+[role="link"]:focus-visible,
+[role="link"]:focus-within,
+[role="checkbox"]:focus,
+[role="checkbox"]:focus-visible,
+[role="checkbox"]:focus-within,
+[role="radio"]:focus,
+[role="radio"]:focus-visible,
+[role="radio"]:focus-within,
+[role="switch"]:focus,
+[role="switch"]:focus-visible,
+[role="switch"]:focus-within,
+[role="tab"]:focus,
+[role="tab"]:focus-visible,
+[role="tab"]:focus-within,
+[role="menuitem"]:focus,
+[role="menuitem"]:focus-visible,
+[role="menuitem"]:focus-within,
+[role="option"]:focus,
+[role="option"]:focus-visible,
+[role="option"]:focus-within,
+[role="listbox"]:focus,
+[role="listbox"]:focus-visible,
+[role="listbox"]:focus-within,
+[role="combobox"]:focus,
+[role="combobox"]:focus-visible,
+[role="combobox"]:focus-within,
+[role="textbox"]:focus,
+[role="textbox"]:focus-visible,
+[role="textbox"]:focus-within {
+  outline: 0 !important;
+  outline: none !important;
+  outline-width: 0px !important;
+  outline-style: none !important;
+  outline-color: transparent !important;
+  box-shadow: none !important;
+  border-color: currentColor !important;
+}
+
+/* Override ALL Tailwind focus/ring classes */
+[class*="focus:"]:focus,
+[class*="focus-visible:"]:focus-visible,
+[class*="focus-within:"]:focus-within {
+  --tw-ring-shadow: 0 0 transparent !important;
+  --tw-ring-offset-shadow: 0 0 transparent !important;
+  --tw-ring-offset-width: 0px !important;
+  --tw-ring-offset-color: transparent !important;
+  --tw-ring-color: transparent !important;
+  --tw-ring-opacity: 0 !important;
+  --tw-shadow: 0 0 transparent !important;
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 transparent), var(--tw-ring-shadow, 0 0 transparent), var(--tw-shadow) !important;
+  outline: 0 !important;
+  outline: none !important;
+  border-color: currentColor !important;
+}
+
+/* Specific class overrides */
+.ring-0, .ring-1, .ring-2, .ring-4, .ring-8,
+.ring-blue-100, .ring-blue-200, .ring-blue-300, .ring-blue-400, .ring-blue-500, .ring-blue-600, .ring-blue-700, .ring-blue-800, .ring-blue-900,
+.focus\:ring-0:focus, .focus\:ring-1:focus, .focus\:ring-2:focus, .focus\:ring-4:focus, .focus\:ring-8:focus,
+.focus\:ring-blue-100:focus, .focus\:ring-blue-200:focus, .focus\:ring-blue-300:focus, .focus\:ring-blue-400:focus, .focus\:ring-blue-500:focus, .focus\:ring-blue-600:focus, .focus\:ring-blue-700:focus, .focus\:ring-blue-800:focus, .focus\:ring-blue-900:focus,
+.focus-visible\:ring-0:focus-visible, .focus-visible\:ring-1:focus-visible, .focus-visible\:ring-2:focus-visible, .focus-visible\:ring-4:focus-visible, .focus-visible\:ring-8:focus-visible,
+.focus-visible\:ring-blue-100:focus-visible, .focus-visible\:ring-blue-200:focus-visible, .focus-visible\:ring-blue-300:focus-visible, .focus-visible\:ring-blue-400:focus-visible, .focus-visible\:ring-blue-500:focus-visible, .focus-visible\:ring-blue-600:focus-visible, .focus-visible\:ring-blue-700:focus-visible, .focus-visible\:ring-blue-800:focus-visible, .focus-visible\:ring-blue-900:focus-visible,
+.focus\:border-blue-100:focus, .focus\:border-blue-200:focus, .focus\:border-blue-300:focus, .focus\:border-blue-400:focus, .focus\:border-blue-500:focus, .focus\:border-blue-600:focus, .focus\:border-blue-700:focus, .focus\:border-blue-800:focus, .focus\:border-blue-900:focus,
+.focus\:outline-none:focus, .focus-visible\:outline-none:focus-visible {
+  --tw-ring-shadow: 0 0 transparent !important;
+  --tw-ring-offset-shadow: 0 0 transparent !important;
+  --tw-shadow: 0 0 transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  border-color: currentColor !important;
+}
+
+/* Remove mobile tap highlight */
+* {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+/* Disable focus styles for mouse users, but this also removes it for keyboard users */
+:focus:not(:focus-visible) {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Final catch-all rule with maximum specificity */
+html body * {
+  outline: none !important;
+}
+
+html body *:focus,
+html body *:focus-visible,
+html body *:focus-within {
+  outline: none !important;
+  box-shadow: none !important;
+}

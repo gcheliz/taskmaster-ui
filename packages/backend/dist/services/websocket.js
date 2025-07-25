@@ -15,7 +15,7 @@ class WebSocketService {
         gitWebSocketService_1.gitWebSocketService.initialize((message) => {
             this.broadcast(message);
         });
-        this.wss.on('connection', (ws, req) => {
+        this.wss.on('connection', (ws, _req) => {
             const clientId = `client-${++this.clientIdCounter}`;
             console.log(`New WebSocket connection established: ${clientId}`);
             const clientInfo = { id: clientId, ws };

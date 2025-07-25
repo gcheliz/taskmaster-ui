@@ -20,7 +20,7 @@ export class WebSocketService {
       this.broadcast(message);
     });
 
-    this.wss.on('connection', (ws: WebSocket, req) => {
+    this.wss.on('connection', (ws: WebSocket, _req) => {
       const clientId = `client-${++this.clientIdCounter}`;
       console.log(`New WebSocket connection established: ${clientId}`);
       

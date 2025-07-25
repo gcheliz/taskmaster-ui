@@ -1,4 +1,37 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.exportController = exports.ExportController = void 0;
 const exportService_1 = require("../services/exportService");
@@ -11,16 +44,33 @@ class ExportController {
     async exportTasks(req, res, next) {
         try {
             const options = {
-                format: req.query.format,
-                projectId: req.query.projectId,
-                status: req.query.status,
-                priority: req.query.priority,
-                assigneeId: req.query.assigneeId,
-                dateFrom: req.query.dateFrom ? new Date(req.query.dateFrom) : undefined,
-                dateTo: req.query.dateTo ? new Date(req.query.dateTo) : undefined,
-                includeSubtasks: req.query.includeSubtasks === 'true',
-                fields: req.query.fields ? req.query.fields.split(',') : undefined
+                format: req.query['format'] || 'json',
             };
+            // Add optional properties only if they have values
+            const projectId = req.query['projectId'];
+            if (projectId)
+                options.projectId = projectId;
+            const status = req.query['status'];
+            if (status)
+                options.status = status;
+            const priority = req.query['priority'];
+            if (priority)
+                options.priority = priority;
+            const assigneeId = req.query['assigneeId'];
+            if (assigneeId)
+                options.assigneeId = assigneeId;
+            if (req.query['dateFrom']) {
+                options.dateFrom = new Date(req.query['dateFrom']);
+            }
+            if (req.query['dateTo']) {
+                options.dateTo = new Date(req.query['dateTo']);
+            }
+            if (req.query['includeSubtasks'] === 'true') {
+                options.includeSubtasks = true;
+            }
+            if (req.query['fields']) {
+                options.fields = req.query['fields'].split(',');
+            }
             // Validate export request
             exportService_1.exportService.validateExportRequest(options);
             // Get tasks from TaskMaster service
@@ -34,8 +84,6 @@ class ExportController {
                     priority: 'high',
                     complexity: 5,
                     dependencies: [],
-                    details: 'Implementation details',
-                    testStrategy: 'Unit tests required'
                 },
                 {
                     id: '2',
@@ -45,8 +93,6 @@ class ExportController {
                     priority: 'medium',
                     complexity: 3,
                     dependencies: ['1'],
-                    details: 'Follow-up task',
-                    testStrategy: 'Integration tests'
                 }
             ];
             // TODO: Replace with actual TaskMaster service call
@@ -54,13 +100,14 @@ class ExportController {
             // Check export size limit
             const EXPORT_LIMIT = 50000;
             if (tasks.length > EXPORT_LIMIT) {
-                return res.status(413).json({
+                res.status(413).json({
                     error: 'Export size exceeds limit',
                     code: 'EXPORT_TOO_LARGE',
                     recordCount: tasks.length,
                     limit: EXPORT_LIMIT,
                     suggestion: 'Use async export endpoint for large datasets'
                 });
+                return;
             }
             // Generate export
             const result = await exportService_1.exportService.exportTasks(tasks, options);
@@ -71,7 +118,7 @@ class ExportController {
             // Send file
             res.send(result.data);
             logger_1.logger.info('Tasks exported successfully', {
-                userId: req.user.id,
+                userId: req.user?.id,
                 format: options.format,
                 count: result.totalCount
             });
@@ -142,16 +189,19 @@ class ExportController {
     async getExportProgress(req, res, next) {
         try {
             const { exportId } = req.params;
-            // TODO: Implement actual progress tracking
-            // For now, return a mock response
+            const { asyncExportService } = await Promise.resolve().then(() => __importStar(require('../services/asyncExportService')));
+            const exportJob = await asyncExportService.getExportProgress(exportId);
+            if (!exportJob) {
+                return res.status(404).json({
+                    success: false,
+                    error: 'Export not found'
+                });
+            }
             res.json({
-                exportId,
-                status: 'processing',
-                progress: 0.65,
-                totalRecords: 10000,
-                processedRecords: 6500,
-                estimatedTimeRemaining: 30,
-                downloadUrl: null
+                status: exportJob.status,
+                progress: exportJob.progress / 100, // Convert to 0-1 range
+                downloadUrl: exportJob.downloadUrl,
+                error: exportJob.error
             });
         }
         catch (error) {
@@ -172,24 +222,90 @@ class ExportController {
                     required: ['type', 'format']
                 });
             }
-            // TODO: Implement async export with job queue
-            // For now, return a mock response
-            const exportId = `export-${Date.now()}`;
+            // Validate export type
+            const validTypes = ['tasks', 'analytics', 'repository-activity'];
+            if (!validTypes.includes(type)) {
+                return res.status(400).json({
+                    error: 'Invalid export type',
+                    valid: validTypes
+                });
+            }
+            // Validate format
+            const validFormats = ['csv', 'json'];
+            if (!validFormats.includes(format)) {
+                return res.status(400).json({
+                    error: 'Invalid export format',
+                    valid: validFormats
+                });
+            }
+            const { asyncExportService } = await Promise.resolve().then(() => __importStar(require('../services/asyncExportService')));
+            const result = await asyncExportService.initiateExport({
+                type,
+                format,
+                filters: filters || {},
+                userId: req.user?.id,
+                notifyEmail
+            });
             res.json({
-                exportId,
-                status: 'initiated',
-                estimatedRecords: 10000,
-                estimatedTime: 120
+                exportId: result.exportId,
+                estimatedTime: result.estimatedTime
             });
             logger_1.logger.info('Async export initiated', {
-                userId: req.user.id,
-                exportId,
+                userId: req.user?.id,
+                exportId: result.exportId,
                 type,
                 format
             });
         }
         catch (error) {
             logger_1.logger.error('Error initiating async export', error);
+            next(error);
+        }
+    }
+    /**
+     * Download completed export file
+     * GET /api/export/download/:exportId/:filename
+     */
+    async downloadExport(req, res, next) {
+        try {
+            const { exportId, filename } = req.params;
+            // Validate export exists and is completed
+            const { asyncExportService } = await Promise.resolve().then(() => __importStar(require('../services/asyncExportService')));
+            const exportJob = await asyncExportService.getExportProgress(exportId);
+            if (!exportJob) {
+                return res.status(404).json({
+                    success: false,
+                    error: 'Export not found'
+                });
+            }
+            if (exportJob.status !== 'completed') {
+                return res.status(400).json({
+                    success: false,
+                    error: 'Export not completed yet',
+                    status: exportJob.status
+                });
+            }
+            // In production, redirect to S3 signed URL
+            // For now, serve from local filesystem
+            const path = require('path');
+            const fs = require('fs');
+            const filepath = path.join(process.cwd(), 'exports', `${exportId}-${filename}`);
+            if (!fs.existsSync(filepath)) {
+                return res.status(404).json({
+                    success: false,
+                    error: 'Export file not found'
+                });
+            }
+            // Set appropriate headers
+            const contentType = filename.endsWith('.csv') ? 'text/csv' : 'application/json';
+            res.setHeader('Content-Type', contentType);
+            res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+            // Stream the file
+            const stream = fs.createReadStream(filepath);
+            stream.pipe(res);
+        }
+        catch (error) {
+            logger_1.logger.error('Error downloading export', error);
             next(error);
         }
     }

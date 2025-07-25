@@ -277,6 +277,16 @@ async function getApplicationSecrets() {
             bootstrap_logger_1.securityLogger.warn('SSL certificates not available for database connection');
         }
     }
+    const githubToken = environment_1.env.GITHUB_TOKEN ||
+        (await secretsManager.getSecret('github_token').catch(() => undefined));
+    const slackToken = environment_1.env.SLACK_BOT_TOKEN ||
+        (await secretsManager
+            .getSecret('slack_bot_token')
+            .catch(() => undefined));
+    const anthropicKey = environment_1.env.ANTHROPIC_API_KEY ||
+        (await secretsManager
+            .getSecret('anthropic_api_key')
+            .catch(() => undefined));
     const secrets = {
         jwtSecret: environment_1.env.JWT_SECRET ||
             (await secretsManager.getSecret('jwt_secret').catch(() => '')),
@@ -284,18 +294,16 @@ async function getApplicationSecrets() {
             (await secretsManager.getSecret('encryption_key').catch(() => '')),
         databaseUrl: databaseUrl ||
             (await secretsManager.getSecret('DATABASE_URL').catch(() => '')),
-        githubToken: environment_1.env.GITHUB_TOKEN ||
-            (await secretsManager.getSecret('github_token').catch(() => undefined)),
-        slackToken: environment_1.env.SLACK_BOT_TOKEN ||
-            (await secretsManager
-                .getSecret('slack_bot_token')
-                .catch(() => undefined)),
-        anthropicKey: environment_1.env.ANTHROPIC_API_KEY ||
-            (await secretsManager
-                .getSecret('anthropic_api_key')
-                .catch(() => undefined)),
-        sslConfig,
     };
+    // Only add optional properties if they have values
+    if (githubToken)
+        secrets.githubToken = githubToken;
+    if (slackToken)
+        secrets.slackToken = slackToken;
+    if (anthropicKey)
+        secrets.anthropicKey = anthropicKey;
+    if (sslConfig)
+        secrets.sslConfig = sslConfig;
     return secrets;
 }
 /**

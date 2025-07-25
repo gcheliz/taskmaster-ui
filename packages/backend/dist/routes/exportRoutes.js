@@ -6,11 +6,11 @@ const auth_1 = require("../middleware/auth");
 const rateLimiter_1 = require("../middleware/rateLimiter");
 const router = (0, express_1.Router)();
 // Apply authentication to all export routes
-router.use(auth_1.authenticate);
+router.use(auth_1.authenticateJWT);
 // Apply rate limiting for exports (10 requests per hour)
-const exportRateLimiter = (0, rateLimiter_1.rateLimiter)({
+const exportRateLimiter = rateLimiter_1.rateLimiter.createLimiter({
     windowMs: 60 * 60 * 1000, // 1 hour
-    max: 10,
+    maxRequests: 10,
     message: 'Export rate limit exceeded. Please try again later.'
 });
 // Export tasks
@@ -21,5 +21,7 @@ router.get('/analytics', exportRateLimiter, exportController_1.exportController.
 router.get('/progress/:exportId', exportController_1.exportController.getExportProgress.bind(exportController_1.exportController));
 // Initiate async export
 router.post('/async', exportRateLimiter, exportController_1.exportController.initiateAsyncExport.bind(exportController_1.exportController));
+// Download completed export
+router.get('/download/:exportId/:filename', exportController_1.exportController.downloadExport.bind(exportController_1.exportController));
 exports.default = router;
 //# sourceMappingURL=exportRoutes.js.map

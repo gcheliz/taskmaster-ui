@@ -6,7 +6,6 @@
  */
 
 import * as fs from 'fs';
-import * as path from 'path';
 import { env } from './environment';
 import { sslLogger } from '../utils/bootstrap-logger';
 
@@ -161,16 +160,20 @@ export function validateSSLConfiguration(): SSLValidationResult {
     warnings.push('No client certificate specified - using server-only SSL');
   }
 
+  const ca = env.SSL_CA_PATH ? fs.readFileSync(env.SSL_CA_PATH, 'utf8') : undefined;
+  const cert = env.SSL_CERT_PATH
+    ? fs.readFileSync(env.SSL_CERT_PATH, 'utf8')
+    : undefined;
+  const key = env.SSL_KEY_PATH
+    ? fs.readFileSync(env.SSL_KEY_PATH, 'utf8')
+    : undefined;
+
   const configuration: SSLConfiguration = {
     enabled: sslEnabled,
     rejectUnauthorized: isProduction,
-    ca: env.SSL_CA_PATH ? fs.readFileSync(env.SSL_CA_PATH, 'utf8') : undefined,
-    cert: env.SSL_CERT_PATH
-      ? fs.readFileSync(env.SSL_CERT_PATH, 'utf8')
-      : undefined,
-    key: env.SSL_KEY_PATH
-      ? fs.readFileSync(env.SSL_KEY_PATH, 'utf8')
-      : undefined,
+    ...(ca !== undefined && { ca }),
+    ...(cert !== undefined && { cert }),
+    ...(key !== undefined && { key }),
     checkServerIdentity: isProduction,
   };
 

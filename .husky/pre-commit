@@ -1,0 +1,22 @@
+# Run lint-staged
+echo "🔍 Running lint-staged..."
+pnpm exec lint-staged
+
+# Check if lint-staged failed
+if [ $? -ne 0 ]; then
+  echo "❌ Lint-staged checks failed. Please fix the issues before committing."
+  exit 1
+fi
+
+# Run TypeScript type checking
+echo "🔍 Running TypeScript type checks..."
+pnpm run type-check
+
+# If type-check fails, show a helpful message
+if [ $? -ne 0 ]; then
+  echo "❌ TypeScript errors found. Please fix them before committing."
+  echo "💡 Run 'pnpm run type-check' to see all errors."
+  exit 1
+fi
+
+echo "✅ All pre-commit checks passed!"

@@ -1,0 +1,11 @@
+# Post-merge hook to automatically install dependencies
+echo "🔍 Checking for dependency changes..."
+
+# Check if pnpm-lock.yaml changed
+if git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD | grep -q "pnpm-lock.yaml"; then
+  echo "📦 Dependencies changed, running pnpm install..."
+  pnpm install
+  echo "✅ Dependencies updated!"
+else
+  echo "✅ No dependency changes detected."
+fi

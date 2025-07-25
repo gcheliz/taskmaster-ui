@@ -1,0 +1,32 @@
+{
+  "extends": "./eslint.config.js",
+  "rules": {
+    "no-restricted-syntax": [
+      "warn",
+      {
+        "selector": "TSTypeReference[typeName.name=\"FC\"], TSTypeReference[typeName.left.name=\"React\"][typeName.right.name=\"FC\"]",
+        "message": "⚠️ React.FC is deprecated. Migrate to explicit typing: `const Component = ({ prop }: { prop: string }) => {}`"
+      },
+      {
+        "selector": "TSTypeReference[typeName.name=\"FunctionComponent\"], TSTypeReference[typeName.left.name=\"React\"][typeName.right.name=\"FunctionComponent\"]",
+        "message": "⚠️ React.FunctionComponent is deprecated. Migrate to explicit typing: `const Component = ({ prop }: { prop: string }) => {}`"
+      },
+      {
+        "selector": "TSTypeReference[typeName.name=\"SFC\"], TSTypeReference[typeName.left.name=\"React\"][typeName.right.name=\"SFC\"]",
+        "message": "⚠️ React.SFC is deprecated. Migrate to explicit typing: `const Component = ({ prop }: { prop: string }) => {}`"
+      },
+      {
+        "selector": "TSTypeReference[typeName.name=\"StatelessComponent\"], TSTypeReference[typeName.left.name=\"React\"][typeName.right.name=\"StatelessComponent\"]",  
+        "message": "⚠️ React.StatelessComponent is deprecated. Migrate to explicit typing: `const Component = ({ prop }: { prop: string }) => {}`"
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["*.tsx"],
+      "rules": {
+        "react/prop-types": "off"
+      }
+    }
+  ]
+}

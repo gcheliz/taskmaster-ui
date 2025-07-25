@@ -14,7 +14,7 @@ interface SentryConfig {
 }
 
 export function initSentry(app: Application): void {
-  const sentryDsn = process.env.SENTRY_DSN
+  const sentryDsn = process.env['SENTRY_DSN']
 
   if (!sentryDsn) {
     logger.info('Sentry DSN not configured, skipping initialization')
@@ -23,11 +23,11 @@ export function initSentry(app: Application): void {
 
   const config: SentryConfig = {
     dsn: sentryDsn,
-    environment: process.env.NODE_ENV || 'development',
-    release: process.env.APP_VERSION || 'unknown',
-    tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
-    profilesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
-    debug: process.env.NODE_ENV !== 'production',
+    environment: process.env['NODE_ENV'] || 'development',
+    release: process.env['APP_VERSION'] || 'unknown',
+    tracesSampleRate: process.env['NODE_ENV'] === 'production' ? 0.1 : 1.0,
+    profilesSampleRate: process.env['NODE_ENV'] === 'production' ? 0.1 : 1.0,
+    debug: process.env['NODE_ENV'] !== 'production',
   }
 
   Sentry.init({
@@ -66,7 +66,7 @@ export function initSentry(app: Application): void {
       return config.tracesSampleRate || 0.1
     },
     // Filter out certain errors
-    beforeSend(event: any, hint: any) {
+    beforeSend(event: any, _hint: any) {
       // Filter out expected errors
       if (event.exception?.values?.[0]?.type === 'ValidationError') {
         return null
@@ -83,7 +83,7 @@ export function initSentry(app: Application): void {
       return event
     },
     // Configure breadcrumbs
-    beforeBreadcrumb(breadcrumb: any, hint: any) {
+    beforeBreadcrumb(breadcrumb: any, _hint: any) {
       // Filter out noisy breadcrumbs
       if (breadcrumb.category === 'console' && breadcrumb.level === 'debug') {
         return null
@@ -116,7 +116,7 @@ export function setupSentryErrorHandler(app: Application): void {
   app.use(Sentry.Handlers.errorHandler({
     shouldHandleError(error) {
       // Capture 4xx errors in development
-      if (process.env.NODE_ENV !== 'production') {
+      if (process.env['NODE_ENV'] !== 'production') {
         return true
       }
       // Only capture 5xx errors in production

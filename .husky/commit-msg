@@ -1,0 +1,31 @@
+# Conventional commit pattern
+commit_regex='^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\(.+\))?: .{1,100}$'
+commit_msg=$(cat "$1")
+
+# Check if commit message follows conventional commit format
+if ! echo "$commit_msg" | grep -qE "$commit_regex"; then
+  echo "❌ Invalid commit message format!"
+  echo ""
+  echo "📝 Your commit message must follow the Conventional Commits format:"
+  echo "  <type>(<scope>): <subject>"
+  echo ""
+  echo "🎯 Examples:"
+  echo "  feat(frontend): add new dashboard component"
+  echo "  fix(backend): resolve database connection issue"
+  echo "  docs: update README with installation instructions"
+  echo ""
+  echo "📚 Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert"
+  echo ""
+  echo "Your commit message: $commit_msg"
+  exit 1
+fi
+
+# Check commit message length
+if [ ${#commit_msg} -gt 100 ]; then
+  echo "❌ Commit message is too long!"
+  echo "📏 Keep your commit message under 100 characters."
+  echo "   Current length: ${#commit_msg} characters"
+  exit 1
+fi
+
+echo "✅ Commit message is valid!"

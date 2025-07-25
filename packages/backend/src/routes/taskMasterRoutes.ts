@@ -138,6 +138,77 @@ const schemas = {
       },
     },
   },
+
+  TaskCreateRequest: {
+    type: 'object',
+    required: ['repositoryPath', 'title', 'description', 'priority'],
+    properties: {
+      repositoryPath: { type: 'string' },
+      title: { 
+        type: 'string', 
+        minLength: 3, 
+        maxLength: 100,
+        description: 'Task title'
+      },
+      description: { 
+        type: 'string', 
+        minLength: 10, 
+        maxLength: 500,
+        description: 'Task description'
+      },
+      priority: { 
+        type: 'string', 
+        enum: ['low', 'medium', 'high', 'urgent'],
+        description: 'Task priority level'
+      },
+      status: {
+        type: 'string',
+        enum: ['pending', 'in-progress', 'done', 'blocked', 'deferred'],
+        default: 'pending',
+        description: 'Initial task status'
+      },
+      assignedTo: { type: 'string', description: 'Username or email of assignee' },
+      dueDate: { type: 'string', format: 'date-time', description: 'Due date in ISO 8601 format' },
+      estimatedHours: { 
+        type: 'number', 
+        minimum: 0, 
+        maximum: 999,
+        description: 'Estimated hours to complete'
+      },
+      tags: { 
+        type: 'array', 
+        items: { type: 'string', pattern: '^[a-zA-Z0-9-_]+$' },
+        maxItems: 10,
+        description: 'Task tags for categorization'
+      },
+      dependencies: { 
+        type: 'array', 
+        items: { type: 'number' },
+        description: 'IDs of tasks this task depends on'
+      },
+      details: { type: 'string', description: 'Additional implementation details' },
+      testStrategy: { type: 'string', description: 'Testing approach for the task' },
+      parentTaskId: { type: 'number', description: 'Parent task ID if creating a subtask' },
+      position: { type: 'number', description: 'Position in task list' },
+      aiEnhancement: {
+        type: 'object',
+        properties: {
+          generateDetails: { type: 'boolean' },
+          generateTestStrategy: { type: 'boolean' },
+          suggestDependencies: { type: 'boolean' },
+          estimateComplexity: { type: 'boolean' },
+        },
+      },
+      options: {
+        type: 'object',
+        properties: {
+          validateDependencies: { type: 'boolean', default: true },
+          notifyAssignee: { type: 'boolean', default: true },
+          createInKanban: { type: 'boolean', default: true },
+        },
+      },
+    },
+  },
 };
 
 // Route Factory Pattern
@@ -353,6 +424,41 @@ export class TaskMasterRouteFactory {
         },
       }) as any,
       this.asyncHandler(this.controller.getTask.bind(this.controller))
+    );
+
+    /**
+     * @openapi
+     * /api/tasks:
+     *   post:
+     *     tags:
+     *       - Task Management
+     *     summary: Create a new task
+     *     description: Create a new task with validation and dependency checking
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             $ref: '#/components/schemas/TaskCreateRequest'
+     *     responses:
+     *       201:
+     *         description: Task created successfully
+     *       400:
+     *         description: Validation error
+     *       409:
+     *         description: Conflict (e.g., duplicate title)
+     */
+    router.post(
+      '/tasks',
+      validationMiddleware({
+        bodySchema: {
+          required: ['repositoryPath', 'title', 'description', 'priority'],
+        },
+        customValidators: [
+          this.validateTaskCreation,
+        ],
+      }) as any,
+      this.asyncHandler(this.controller.createTask.bind(this.controller))
     );
 
     /**
@@ -620,6 +726,129 @@ export class TaskMasterRouteFactory {
           value: repositoryPath,
         });
       }
+    }
+
+    return errors;
+  };
+
+  private validateTaskCreation = (req: EnhancedRequest) => {
+    const errors = [];
+    const { 
+      title, 
+      description, 
+      priority, 
+      dueDate, 
+      estimatedHours,
+      tags,
+      dependencies 
+    } = req.body;
+
+    // Title validation
+    if (title) {
+      const trimmed = title.trim();
+      if (trimmed.length < 3) {
+        errors.push({
+          field: 'title',
+          code: 'TOO_SHORT',
+          message: 'Title must be at least 3 characters long',
+          value: title,
+        });
+      }
+      if (trimmed.length > 100) {
+        errors.push({
+          field: 'title',
+          code: 'TOO_LONG',
+          message: 'Title must be less than 100 characters',
+          value: title,
+        });
+      }
+    }
+
+    // Description validation
+    if (description) {
+      const trimmed = description.trim();
+      if (trimmed.length < 10) {
+        errors.push({
+          field: 'description',
+          code: 'TOO_SHORT',
+          message: 'Description must be at least 10 characters long',
+          value: description,
+        });
+      }
+      if (trimmed.length > 500) {
+        errors.push({
+          field: 'description',
+          code: 'TOO_LONG',
+          message: 'Description must be less than 500 characters',
+          value: description,
+        });
+      }
+    }
+
+    // Due date validation
+    if (dueDate) {
+      const date = new Date(dueDate);
+      if (isNaN(date.getTime())) {
+        errors.push({
+          field: 'dueDate',
+          code: 'INVALID_FORMAT',
+          message: 'Due date must be a valid ISO 8601 date string',
+          value: dueDate,
+        });
+      } else {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        if (date < today) {
+          errors.push({
+            field: 'dueDate',
+            code: 'PAST_DATE',
+            message: 'Due date cannot be in the past',
+            value: dueDate,
+          });
+        }
+      }
+    }
+
+    // Estimated hours validation
+    if (estimatedHours !== undefined) {
+      if (typeof estimatedHours !== 'number' || estimatedHours < 0) {
+        errors.push({
+          field: 'estimatedHours',
+          code: 'INVALID_VALUE',
+          message: 'Estimated hours must be a positive number',
+          value: estimatedHours,
+        });
+      }
+      if (estimatedHours > 999) {
+        errors.push({
+          field: 'estimatedHours',
+          code: 'TOO_HIGH',
+          message: 'Estimated hours cannot exceed 999',
+          value: estimatedHours,
+        });
+      }
+    }
+
+    // Tags validation
+    if (tags && Array.isArray(tags)) {
+      if (tags.length > 10) {
+        errors.push({
+          field: 'tags',
+          code: 'TOO_MANY',
+          message: 'Maximum 10 tags allowed',
+          value: tags,
+        });
+      }
+      tags.forEach((tag, index) => {
+        if (!/^[a-zA-Z0-9-_]+$/.test(tag)) {
+          errors.push({
+            field: `tags[${index}]`,
+            code: 'INVALID_FORMAT',
+            message: 'Tags can only contain letters, numbers, hyphens, and underscores',
+            value: tag,
+          });
+        }
+      });
     }
 
     return errors;

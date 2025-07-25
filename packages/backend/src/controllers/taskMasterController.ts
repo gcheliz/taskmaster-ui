@@ -25,6 +25,7 @@ export interface ITaskMasterController {
   getProjectStatus(req: EnhancedRequest, res: EnhancedResponse): Promise<void>;
   listTasks(req: EnhancedRequest, res: EnhancedResponse): Promise<void>;
   getTask(req: EnhancedRequest, res: EnhancedResponse): Promise<void>;
+  createTask(req: EnhancedRequest, res: EnhancedResponse): Promise<void>;
   updateTask(req: EnhancedRequest, res: EnhancedResponse): Promise<void>;
   expandTask(req: EnhancedRequest, res: EnhancedResponse): Promise<void>;
   analyzeComplexity(req: EnhancedRequest, res: EnhancedResponse): Promise<void>;
@@ -401,6 +402,139 @@ export class TaskMasterController implements ITaskMasterController {
       });
     } catch (error) {
       await this.handleError(error as Error, req, res, 'getTask');
+    }
+  }
+
+  /**
+   * Create Task
+   * POST /api/tasks
+   */
+  async createTask(req: EnhancedRequest, res: EnhancedResponse): Promise<void> {
+    try {
+      const request = req.validatedBody as any; // TaskCreateRequest type
+      const { 
+        repositoryPath, 
+        title,
+        description,
+        priority,
+        status = 'pending',
+        dependencies = [],
+        tags = [],
+        ...optionalFields 
+      } = request;
+
+      // Check if repository is initialized
+      const projectStatus = await this.taskMasterService.getProjectStatus(repositoryPath);
+      if (!projectStatus.success || !projectStatus.data?.initialized) {
+        throw new Error('TaskMaster is not initialized in this repository');
+      }
+
+      // Get current tasks to determine next ID
+      const currentTasks = await this.taskMasterService.listTasks(repositoryPath, {
+        tag: this.extractTagFromPath(repositoryPath),
+      });
+
+      if (!currentTasks.success || !currentTasks.data) {
+        throw new Error('Failed to retrieve current tasks');
+      }
+
+      // Calculate next task ID
+      const maxId = currentTasks.data.reduce((max, task) => 
+        Math.max(max, task.id), 0
+      );
+      const newTaskId = maxId + 1;
+
+      // Validate dependencies exist
+      if (dependencies.length > 0) {
+        const existingIds = new Set(currentTasks.data.map(t => t.id));
+        const invalidDeps = dependencies.filter(depId => !existingIds.has(depId));
+        if (invalidDeps.length > 0) {
+          res.status(400).apiError({
+            code: 'INVALID_DEPENDENCY',
+            message: `Dependencies not found: ${invalidDeps.join(', ')}`,
+          });
+          return;
+        }
+      }
+
+      // Check for circular dependencies
+      if (optionalFields.parentTaskId && dependencies.includes(optionalFields.parentTaskId)) {
+        res.status(400).apiError({
+          code: 'CIRCULAR_DEPENDENCY',
+          message: 'A subtask cannot depend on its parent task',
+        });
+        return;
+      }
+
+      // Prepare task object
+      const newTask = {
+        id: newTaskId,
+        title: title.trim(),
+        description: description.trim(),
+        priority,
+        status,
+        dependencies,
+        tags,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        ...optionalFields,
+      };
+
+      // For now, we'll need to implement the actual task creation in the service
+      // This is a placeholder that shows the API structure
+      const createResult = await this.taskMasterService.executeCommand(
+        repositoryPath,
+        'add-task',
+        {
+          prompt: `${title}: ${description}`,
+          priority,
+          status,
+          dependencies: dependencies.join(','),
+          tags: tags.join(','),
+        },
+        { tag: this.extractTagFromPath(repositoryPath) }
+      );
+
+      if (!createResult.success) {
+        throw new Error('Failed to create task');
+      }
+
+      // Emit WebSocket notification
+      this.emitWebSocketEvent('task:created', {
+        task: newTask,
+        repositoryPath,
+        timestamp: new Date().toISOString(),
+      });
+
+      // Send response
+      res.status(201).apiSuccess({
+        task: newTask,
+        metadata: {
+          createdAt: newTask.createdAt,
+          createdBy: req.user?.username || 'system',
+          projectTag: this.extractTagFromPath(repositoryPath),
+          taskNumber: `${newTaskId}`,
+        },
+        links: {
+          self: `/api/tasks/${newTaskId}`,
+          parent: optionalFields.parentTaskId ? `/api/tasks/${optionalFields.parentTaskId}` : undefined,
+          dependencies: dependencies.map((depId: number) => `/api/tasks/${depId}`),
+        },
+      });
+
+      logger.info('Task created successfully', {
+        taskId: newTaskId,
+        title,
+        repositoryPath,
+        requestId: req.id,
+      });
+    } catch (error) {
+      this.handleControllerError(
+        error,
+        'createTask',
+        res,
+        'Failed to create task'
+      );
     }
   }
 

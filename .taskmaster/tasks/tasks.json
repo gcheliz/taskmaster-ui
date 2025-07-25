@@ -249,7 +249,7 @@
         "id": 4,
         "title": "Refactor large components - TaskModal",
         "description": "Break down TaskModal (712 lines) into smaller, reusable components",
-        "status": "in-progress",
+        "status": "done",
         "dependencies": [
           2
         ],
@@ -319,7 +319,7 @@
             "id": "4.6",
             "title": "Update integration tests",
             "description": "Update tests for refactored TaskModal",
-            "status": "in-progress",
+            "status": "done",
             "dependencies": [
               "4.2",
               "4.3",
@@ -470,7 +470,7 @@
         "id": 7,
         "title": "Implement missing task creation functionality",
         "description": "Complete the TODO for task creation modal and API integration",
-        "status": "pending",
+        "status": "in-progress",
         "dependencies": [
           4
         ],
@@ -482,7 +482,7 @@
             "id": "7.1",
             "title": "Design task creation API endpoint",
             "description": "Design and document the task creation API",
-            "status": "pending",
+            "status": "in-progress",
             "dependencies": [],
             "priority": "high",
             "details": "Define API endpoint structure for POST /api/tasks. Document request/response schemas. Define validation rules. Plan error response format.",
@@ -773,7 +773,7 @@
     ],
     "metadata": {
       "created": "2025-07-25T09:02:45.000Z",
-      "updated": "2025-07-25T13:05:37.173Z",
+      "updated": "2025-07-25T13:34:55.171Z",
       "description": "TaskMaster UI Modernization - Code quality and performance improvements",
       "projectName": "TaskMaster UI Modernization",
       "sourceFile": "/Users/gonzalo/workspace/taskmaster-ui/.taskmaster/docs/prd.txt"

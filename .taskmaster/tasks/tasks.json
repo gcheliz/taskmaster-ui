@@ -841,7 +841,7 @@
         "description": "Replace deprecated TypeScript type packages including @types/terser, @types/bcryptjs, and @types/bull with actively maintained alternatives or built-in types to ensure compatibility and security updates.",
         "details": "1. **Audit Deprecated Type Packages**: Identify all deprecated @types packages currently in use, focusing on @types/terser, @types/bcryptjs, and @types/bull. Check package.json files in all workspaces and verify their deprecation status and last update dates. 2. **Research Modern Alternatives**: For each deprecated package, research maintained alternatives: - @types/terser: Check if terser now includes built-in TypeScript definitions or use community-maintained alternatives - @types/bcryptjs: Evaluate bcrypt vs bcryptjs and their respective type support, consider migrating to bcrypt which has better type support - @types/bull: Research bullmq as a modern alternative to bull with built-in TypeScript support. 3. **Update Dependencies**: Remove deprecated type packages using pnpm and install their replacements. Update any related runtime packages if needed (e.g., bull to bullmq migration). 4. **Code Migration**: Update import statements and type annotations throughout the codebase to use the new packages. Pay special attention to: - Queue implementations if migrating from bull to bullmq - Hashing functions if switching bcryptjs implementations - Build tool configurations if updating terser types. 5. **Configuration Updates**: Update any configuration files, build scripts, or CI/CD pipelines that reference the old packages. Ensure webpack, vite, or other build tools work with the new type definitions.",
         "testStrategy": "1. **Type Checking Verification**: Run TypeScript compilation across all workspaces using pnpm build to ensure no type errors from the package replacements. Verify that all imports resolve correctly and type definitions are properly recognized. 2. **Runtime Functionality Testing**: Test all functionality that depends on the replaced packages: - For terser: Verify minification still works in production builds - For bcrypt/bcryptjs: Test password hashing and verification functions - For bull/bullmq: Test job queue creation, processing, and monitoring. 3. **Integration Testing**: Run the full test suite with pnpm test to ensure no breaking changes in business logic. Pay special attention to authentication flows (bcrypt), build processes (terser), and background job processing (bull/bullmq). 4. **Dependency Audit**: Run pnpm audit to confirm no new security vulnerabilities are introduced and verify all packages are actively maintained with recent updates.",
-        "status": "pending",
+        "status": "done",
         "dependencies": [
           1
         ],
@@ -853,7 +853,7 @@
             "description": "Perform a comprehensive audit of all TypeScript type packages in the project, focusing on @types/terser, @types/bcryptjs, and @types/bull. Verify their deprecation status and identify exact versions in use.",
             "dependencies": [],
             "details": "1. Scan all package.json files in frontend/, backend/, and root directories to identify exact versions of @types/terser, @types/bcryptjs, and @types/bull currently in use. 2. Check npm registry for deprecation warnings and last update dates for each package. 3. Document current usage patterns by searching for imports and type references across the codebase using grep or similar tools. 4. Create an inventory of which workspaces use which deprecated packages and their specific version numbers. 5. Identify any other @types packages that might be deprecated beyond the three mentioned.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Run pnpm list across all workspaces to verify the complete list of @types packages. Use pnpm outdated to check for version discrepancies. Verify that the audit captures all instances of the deprecated packages by cross-referencing with import statements in TypeScript files."
           },
           {
@@ -864,7 +864,7 @@
               "2.1"
             ],
             "details": "1. For @types/terser: Check if terser v5+ includes built-in TypeScript definitions. Research @types/terser-webpack-plugin as an alternative if using webpack integration. 2. For @types/bcryptjs: Compare bcrypt vs bcryptjs packages - bcrypt has native bindings and built-in types, while bcryptjs is pure JavaScript. Evaluate if switching to bcrypt with its included types is feasible. 3. For @types/bull: Research BullMQ as the modern successor to Bull, which includes built-in TypeScript support. Compare API differences and migration requirements. 4. Document breaking changes, API differences, and migration complexity for each alternative. 5. Verify compatibility with current Node.js and TypeScript versions in use.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Create small proof-of-concept implementations for each alternative to verify type definitions work correctly. Test basic functionality like queue operations for BullMQ, hashing for bcrypt, and minification for terser to ensure feature parity."
           },
           {
@@ -875,7 +875,7 @@
               "2.2"
             ],
             "details": "1. Use pnpm remove to uninstall @types/terser, @types/bcryptjs, and @types/bull from relevant workspaces. 2. Install replacements: terser (if it includes types), bcrypt (instead of bcryptjs), and bullmq (instead of bull) using pnpm add. 3. Update all import statements from 'bull' to 'bullmq' and adjust queue initialization code according to BullMQ API. 4. Replace bcryptjs imports with bcrypt and verify hash/compare function signatures remain compatible. 5. Update any terser-related imports and ensure build tools recognize the new type definitions. 6. Fix any TypeScript errors that arise from API changes between old and new packages.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Run pnpm build across all workspaces to ensure TypeScript compilation succeeds with new type definitions. Execute existing unit tests for queue operations, password hashing, and build processes to verify functionality remains intact."
           },
           {
@@ -886,39 +886,8 @@
               "2.3"
             ],
             "details": "1. Update webpack, vite, or other build tool configurations that may reference terser options or plugins. 2. Modify any Docker files or deployment scripts that might have specific package requirements for bcrypt native bindings. 3. Update CI/CD pipeline configurations if they have specific steps for installing native dependencies required by bcrypt. 4. Review and update any queue configuration files or environment variables specific to Bull that need adjustment for BullMQ. 5. Update any documentation or README files that reference the old packages. 6. Run full test suite including unit, integration, and end-to-end tests to ensure no regressions.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Execute full CI/CD pipeline to verify builds pass in all environments. Run load tests on queue operations to ensure BullMQ performs equivalently to Bull. Verify password hashing performance meets requirements. Test production build output to ensure terser minification works correctly."
-          },
-          {
-            "id": 5,
-            "title": "Audit and verify deprecated type packages",
-            "description": "Identify and document all deprecated @types packages in the codebase, verify their deprecation status, and catalog their usage patterns across all workspaces",
-            "dependencies": [],
-            "details": "1. **Scan all package.json files**: Use pnpm workspace commands to list all dependencies across packages/frontend, packages/backend, and root directories. Filter for @types/* packages and create an inventory. 2. **Verify deprecation status**: Check npm registry for @types/terser, @types/bcryptjs, and @types/bull to confirm deprecation notices and last update dates. Document any security advisories or compatibility warnings. 3. **Analyze usage patterns**: Search codebase for imports and type references from these packages using grep/ripgrep. Document which files and modules depend on each deprecated type package. 4. **Check transitive dependencies**: Identify if any other packages indirectly depend on these deprecated types to ensure complete migration coverage.",
-            "status": "pending",
-            "testStrategy": "Run TypeScript compilation with --listFiles flag to verify all type dependencies are correctly identified. Use pnpm why command to trace dependency chains for each deprecated package."
-          },
-          {
-            "id": 6,
-            "title": "Research and select maintained alternatives",
-            "description": "Investigate modern replacements for each deprecated type package, evaluating built-in TypeScript support, community alternatives, and migration complexity",
-            "dependencies": [
-              "2.5"
-            ],
-            "details": "1. **Terser alternatives**: Check if terser v5+ includes built-in TypeScript definitions by examining their package.json and GitHub repository. If not, research @types/terser-webpack-plugin or other maintained alternatives. 2. **Bcrypt migration options**: Compare bcrypt vs bcryptjs current maintenance status, TypeScript support, and performance. Evaluate if bcrypt's native bindings are suitable for the deployment environment. Check for @types/bcrypt availability and maintenance status. 3. **Bull to BullMQ evaluation**: Research BullMQ as the modern successor to Bull, noting its built-in TypeScript support, API differences, and migration guides. Document breaking changes in queue configuration, job processing, and event handling. 4. **Compatibility matrix**: Create a compatibility chart showing which versions of replacement packages work with current Node.js, TypeScript, and other core dependencies.",
-            "status": "pending",
-            "testStrategy": "Create small proof-of-concept files testing basic functionality with each alternative package to verify TypeScript definitions work correctly before full migration."
-          },
-          {
-            "id": 7,
-            "title": "Implement package replacements and migrate code",
-            "description": "Execute the migration by removing deprecated packages, installing replacements, updating all import statements and type annotations, and ensuring all functionality remains intact",
-            "dependencies": [
-              "2.6"
-            ],
-            "details": "1. **Package updates**: Use pnpm remove to uninstall @types/terser, @types/bcryptjs, and @types/bull from all workspaces. Install replacement packages using pnpm add with appropriate workspace flags. 2. **Import statement updates**: Update all TypeScript import statements to use new package names. For BullMQ migration, change from 'import Bull from \"bull\"' to 'import { Queue, Worker } from \"bullmq\"'. 3. **Type annotation migration**: Update all type annotations that reference old types, paying attention to generic parameters, interface implementations, and function signatures. 4. **API compatibility changes**: For Bull to BullMQ, update queue creation syntax, job processing patterns, and event listeners according to migration guide. For bcrypt changes, ensure hash and compare functions maintain same signatures. 5. **Configuration updates**: Modify any webpack, vite, or build tool configurations that reference old packages, especially for terser plugin configurations.",
-            "status": "pending",
-            "testStrategy": "1. Run pnpm build across all workspaces to ensure TypeScript compilation succeeds without type errors. 2. Execute existing test suites with pnpm test to verify runtime functionality. 3. Manually test critical paths: password hashing/verification, job queue processing, and build minification."
           }
         ]
       },
@@ -1342,7 +1311,7 @@
     ],
     "metadata": {
       "created": "2025-07-25T18:35:51.262Z",
-      "updated": "2025-07-25T20:50:18.996Z",
+      "updated": "2025-07-25T21:24:58.851Z",
       "description": "Tag created on 25/7/2025"
     }
   }

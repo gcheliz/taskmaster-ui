@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/node'
+import { expressIntegration } from '@sentry/node'
 import { Application, Request, Response, NextFunction } from 'express'
 import { logger } from '../utils/winston-adapter'
 
@@ -34,7 +35,7 @@ export function initSentry(app: Application): void {
       // Enable HTTP calls tracing
       Sentry.httpIntegration(),
       // Enable Express.js middleware tracing
-      Sentry.expressIntegration(),
+      expressIntegration({ app }),
       // Prisma integration
       Sentry.prismaIntegration(),
       // Additional integrations
@@ -100,25 +101,27 @@ export function initSentry(app: Application): void {
 
 // Sentry middleware setup
 export function setupSentryMiddleware(app: Application): void {
-  // RequestHandler creates a separate execution context using domains
-  app.use(Sentry.expressRequestHandler())
-
-  // TracingHandler creates a trace for every incoming request
-  app.use(Sentry.expressTracingHandler())
+  // In Sentry v9, Express handlers are part of the Express integration
+  // No need for separate request/tracing handlers - they're handled automatically
+  // by the Express integration during Sentry.init()
 }
 
 // Sentry error handler (must be before any other error middleware)
 export function setupSentryErrorHandler(app: Application): void {
-  app.use(Sentry.expressErrorHandler({
-    shouldHandleError(error: any) {
-      // Capture 4xx errors in development
-      if (process.env['NODE_ENV'] !== 'production') {
-        return true
-      }
-      // Only capture 5xx errors in production
-      return !error.status || (typeof error.status === 'number' && error.status >= 500)
-    },
-  }))
+  // In Sentry v9, the error handling is done automatically by the Express integration
+  // We can add a custom error handler if needed
+  app.use((error: any, _req: Request, _res: Response, next: NextFunction) => {
+    // Check if we should handle this error
+    const shouldHandle = process.env['NODE_ENV'] !== 'production' 
+      ? true 
+      : !error.status || (typeof error.status === 'number' && error.status >= 500)
+    
+    if (shouldHandle) {
+      Sentry.captureException(error)
+    }
+    
+    next(error)
+  })
 }
 
 // Custom error classes for better tracking
@@ -189,17 +192,37 @@ export class RateLimitError extends ApplicationError {
 
 // Performance monitoring helpers
 export function startTransaction(name: string, op: string) {
-  // In v9, use startSpan for performance monitoring
-  const span = Sentry.getActiveSpan()
-  if (span) {
-    return span.startChild({ op, name })
+  // In v9, create a transaction-like wrapper around startSpan
+  let spanFinished = false
+  
+  const transactionLike = {
+    finish: () => {
+      spanFinished = true
+    },
+    setStatus: (status: any) => {
+      // Status is handled within the span callback
+    },
+    startChild: (childOp: { op: string; name: string }) => ({
+      finish: () => {}
+    })
   }
-  // Fallback: create a simple transaction-like object
-  return {
-    finish: () => {},
-    setStatus: () => {},
-    startChild: () => ({ finish: () => {} }),
-  }
+  
+  // Start the span asynchronously
+  Sentry.startSpan({ name, op }, () => {
+    // Wait for finish to be called
+    return new Promise((resolve) => {
+      const checkFinished = () => {
+        if (spanFinished) {
+          resolve(undefined)
+        } else {
+          setTimeout(checkFinished, 10)
+        }
+      }
+      checkFinished()
+    })
+  })
+  
+  return transactionLike
 }
 
 export function measurePerformance<T>(

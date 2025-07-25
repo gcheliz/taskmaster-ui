@@ -356,10 +356,26 @@ export class ApiService {
     })
   }
 
-  async createTask(taskData: Record<string, unknown>, projectId?: string): Promise<unknown> {
+  async createTask(taskData: Record<string, unknown>, repositoryPath: string): Promise<unknown> {
+    // Prepare the request payload according to our backend API
+    const payload = {
+      repositoryPath,
+      title: taskData.title as string,
+      description: taskData.description as string,
+      priority: taskData.priority as string,
+      status: taskData.status as string || 'pending',
+      assignedTo: taskData.assignedTo as string | undefined,
+      dueDate: taskData.dueDate as string | undefined,
+      estimatedHours: taskData.estimatedHours as number | undefined,
+      tags: taskData.tags as string[] | undefined,
+      dependencies: taskData.dependencies as number[] | undefined,
+      details: taskData.details as string | undefined,
+      testStrategy: taskData.testStrategy as string | undefined,
+    }
+    
     return this.request<any>('/tasks', {
       method: 'POST',
-      body: JSON.stringify({ ...taskData, projectId }),
+      body: JSON.stringify(payload),
     })
   }
 

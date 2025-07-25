@@ -122,11 +122,16 @@ export class TaskService {
   /**
    * Create a new task
    */
-  async createTask(taskData: Partial<Task>, projectId?: string): Promise<Task> {
-    const cacheKey = `tasks-${projectId || 'default'}`
+  async createTask(taskData: Partial<Task>, repositoryPath?: string): Promise<Task> {
+    const repoPath = repositoryPath || this.config.repositoryPath
+    if (!repoPath) {
+      throw new ApiError('MISSING_REPOSITORY', 'Repository path is required to create a task', 400)
+    }
+
+    const cacheKey = `tasks-${repoPath}`
 
     try {
-      const createdTask = await apiService.createTask(taskData, projectId || this.config.projectId)
+      const createdTask = await apiService.createTask(taskData, repoPath)
 
       // Clear cache to force reload
       if (this.config.enableCache) {

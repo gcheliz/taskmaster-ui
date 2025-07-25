@@ -251,7 +251,7 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
       try {
         if (modalMode === 'create') {
           // Create new task
-          const newTask = await taskService.createTask(taskData, projectId)
+          const newTask = await taskService.createTask(taskData, repositoryPath)
           showSuccess(`Task "${newTask.title}" created successfully`)
 
           // Refresh data to sync with server
@@ -272,7 +272,7 @@ export const TaskBoardManager: React.FC<TaskBoardManagerProps> = ({
         throw error // Re-throw to let the modal handle the error state
       }
     },
-    [modalMode, selectedTask, projectId, refresh, showSuccess, showError, handleCloseModal]
+    [modalMode, selectedTask, projectId, repositoryPath, refresh, showSuccess, showError, handleCloseModal]
   )
 
   const handleDeleteTask = useCallback(

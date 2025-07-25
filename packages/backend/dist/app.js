@@ -41,7 +41,7 @@ const initializeDatabase = async () => {
     }
 };
 // Initialize database (skip during tests)
-if (process.env.NODE_ENV !== 'test') {
+if (process.env['NODE_ENV'] !== 'test') {
     initializeDatabase();
 }
 // Security configuration
@@ -72,7 +72,7 @@ app.use(passport_1.default.session());
 // Sentry request and tracing middleware (must be after session)
 (0, sentry_1.setupSentryMiddleware)(app);
 // Security headers
-app.use((req, res, next) => {
+app.use((_req, res, next) => {
     res.header('X-Content-Type-Options', 'nosniff');
     res.header('X-Frame-Options', 'DENY');
     res.header('X-XSS-Protection', '1; mode=block');

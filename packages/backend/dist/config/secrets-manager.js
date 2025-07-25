@@ -218,12 +218,12 @@ let defaultSecretsManager;
 function getSecretsManager() {
     if (!defaultSecretsManager) {
         // Auto-detect provider based on environment
-        let provider = process.env.SECRETS_PROVIDER;
+        let provider = process.env['SECRETS_PROVIDER'];
         // If no provider specified, auto-detect
         if (!provider) {
             // In production Docker environments, prefer file-based secrets
-            if (process.env.NODE_ENV === 'production' &&
-                process.env.DOCKER_SECRETS === 'true') {
+            if (process.env['NODE_ENV'] === 'production' &&
+                process.env['DOCKER_SECRETS'] === 'true') {
                 provider = 'file';
             }
             else {
@@ -232,10 +232,10 @@ function getSecretsManager() {
         }
         const config = {
             provider,
-            timeout: parseInt(process.env.SECRETS_TIMEOUT || '5000'),
-            retries: parseInt(process.env.SECRETS_RETRIES || '3'),
-            cacheTtl: parseInt(process.env.SECRETS_CACHE_TTL || '300000'),
-            secretsPath: process.env.SECRETS_PATH || '/run/secrets',
+            timeout: parseInt(process.env['SECRETS_TIMEOUT'] || '5000'),
+            retries: parseInt(process.env['SECRETS_RETRIES'] || '3'),
+            cacheTtl: parseInt(process.env['SECRETS_CACHE_TTL'] || '300000'),
+            secretsPath: process.env['SECRETS_PATH'] || '/run/secrets',
         };
         defaultSecretsManager = new SecretsManager(config);
     }

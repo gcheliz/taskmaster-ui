@@ -43,7 +43,7 @@ class AuthController {
                 password,
                 provider: 'local',
             });
-            res.status(201).json({
+            return res.status(201).json({
                 success: true,
                 data: result,
                 message: 'User registered successfully',
@@ -53,7 +53,7 @@ class AuthController {
             winston_adapter_1.logger.error('Registration error:', error);
             const message = error instanceof Error ? error.message : 'Registration failed';
             const statusCode = message.includes('already exists') ? 409 : 500;
-            res.status(statusCode).json({
+            return res.status(statusCode).json({
                 success: false,
                 error: {
                     code: statusCode === 409 ? 'USER_EXISTS' : 'REGISTRATION_FAILED',
@@ -83,7 +83,7 @@ class AuthController {
                 email,
                 password,
             });
-            res.json({
+            return res.json({
                 success: true,
                 data: result,
                 message: 'Login successful',
@@ -92,7 +92,7 @@ class AuthController {
         catch (error) {
             winston_adapter_1.logger.error('Login error:', error);
             const message = error instanceof Error ? error.message : 'Login failed';
-            res.status(401).json({
+            return res.status(401).json({
                 success: false,
                 error: {
                     code: 'LOGIN_FAILED',
@@ -117,14 +117,14 @@ class AuthController {
                 });
             }
             const validation = authService_1.default.validatePasswordStrength(password);
-            res.json({
+            return res.json({
                 success: true,
                 data: validation,
             });
         }
         catch (error) {
             winston_adapter_1.logger.error('Password validation error:', error);
-            res.status(500).json({
+            return res.status(500).json({
                 success: false,
                 error: {
                     code: 'VALIDATION_ERROR',
@@ -149,14 +149,14 @@ class AuthController {
             }
             const userId = req.user.userId || req.user.id || '';
             const user = await authService_1.default.getUserById(userId);
-            res.json({
+            return res.json({
                 success: true,
                 data: { user },
             });
         }
         catch (error) {
             winston_adapter_1.logger.error('Profile fetch error:', error);
-            res.status(500).json({
+            return res.status(500).json({
                 success: false,
                 error: {
                     code: 'PROFILE_FETCH_FAILED',
@@ -194,7 +194,7 @@ class AuthController {
      */
     static async oauthFailure(req, res) {
         winston_adapter_1.logger.error('OAuth failure:', req.query);
-        res.redirect(`${environment_1.env.CLIENT_URL}/auth?error=oauth_failed`);
+        return res.redirect(`${environment_1.env.CLIENT_URL}/auth?error=oauth_failed`);
     }
     /**
      * Logout
@@ -207,14 +207,14 @@ class AuthController {
                     winston_adapter_1.logger.error('Logout error:', err);
                 }
             });
-            res.json({
+            return res.json({
                 success: true,
                 message: 'Logged out successfully',
             });
         }
         catch (error) {
             winston_adapter_1.logger.error('Logout error:', error);
-            res.status(500).json({
+            return res.status(500).json({
                 success: false,
                 error: {
                     code: 'LOGOUT_FAILED',

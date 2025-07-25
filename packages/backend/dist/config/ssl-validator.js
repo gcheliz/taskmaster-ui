@@ -159,16 +159,19 @@ function validateSSLConfiguration() {
     if (isProduction && (!environment_1.env.SSL_CERT_PATH || !environment_1.env.SSL_KEY_PATH)) {
         warnings.push('No client certificate specified - using server-only SSL');
     }
+    const ca = environment_1.env.SSL_CA_PATH ? fs.readFileSync(environment_1.env.SSL_CA_PATH, 'utf8') : undefined;
+    const cert = environment_1.env.SSL_CERT_PATH
+        ? fs.readFileSync(environment_1.env.SSL_CERT_PATH, 'utf8')
+        : undefined;
+    const key = environment_1.env.SSL_KEY_PATH
+        ? fs.readFileSync(environment_1.env.SSL_KEY_PATH, 'utf8')
+        : undefined;
     const configuration = {
         enabled: sslEnabled,
         rejectUnauthorized: isProduction,
-        ca: environment_1.env.SSL_CA_PATH ? fs.readFileSync(environment_1.env.SSL_CA_PATH, 'utf8') : undefined,
-        cert: environment_1.env.SSL_CERT_PATH
-            ? fs.readFileSync(environment_1.env.SSL_CERT_PATH, 'utf8')
-            : undefined,
-        key: environment_1.env.SSL_KEY_PATH
-            ? fs.readFileSync(environment_1.env.SSL_KEY_PATH, 'utf8')
-            : undefined,
+        ...(ca !== undefined && { ca }),
+        ...(cert !== undefined && { cert }),
+        ...(key !== undefined && { key }),
         checkServerIdentity: isProduction,
     };
     return {

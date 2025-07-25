@@ -46,18 +46,18 @@ const Sentry = __importStar(require("@sentry/node"));
 const Tracing = __importStar(require("@sentry/tracing"));
 const winston_adapter_1 = require("../utils/winston-adapter");
 function initSentry(app) {
-    const sentryDsn = process.env.SENTRY_DSN;
+    const sentryDsn = process.env['SENTRY_DSN'];
     if (!sentryDsn) {
         winston_adapter_1.logger.info('Sentry DSN not configured, skipping initialization');
         return;
     }
     const config = {
         dsn: sentryDsn,
-        environment: process.env.NODE_ENV || 'development',
-        release: process.env.APP_VERSION || 'unknown',
-        tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
-        profilesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
-        debug: process.env.NODE_ENV !== 'production',
+        environment: process.env['NODE_ENV'] || 'development',
+        release: process.env['APP_VERSION'] || 'unknown',
+        tracesSampleRate: process.env['NODE_ENV'] === 'production' ? 0.1 : 1.0,
+        profilesSampleRate: process.env['NODE_ENV'] === 'production' ? 0.1 : 1.0,
+        debug: process.env['NODE_ENV'] !== 'production',
     };
     Sentry.init({
         ...config,
@@ -95,7 +95,7 @@ function initSentry(app) {
             return config.tracesSampleRate || 0.1;
         },
         // Filter out certain errors
-        beforeSend(event, hint) {
+        beforeSend(event, _hint) {
             // Filter out expected errors
             if (event.exception?.values?.[0]?.type === 'ValidationError') {
                 return null;
@@ -110,7 +110,7 @@ function initSentry(app) {
             return event;
         },
         // Configure breadcrumbs
-        beforeBreadcrumb(breadcrumb, hint) {
+        beforeBreadcrumb(breadcrumb, _hint) {
             // Filter out noisy breadcrumbs
             if (breadcrumb.category === 'console' && breadcrumb.level === 'debug') {
                 return null;
@@ -139,7 +139,7 @@ function setupSentryErrorHandler(app) {
     app.use(Sentry.Handlers.errorHandler({
         shouldHandleError(error) {
             // Capture 4xx errors in development
-            if (process.env.NODE_ENV !== 'production') {
+            if (process.env['NODE_ENV'] !== 'production') {
                 return true;
             }
             // Only capture 5xx errors in production

@@ -79,7 +79,7 @@
         "id": 2,
         "title": "Configure TypeScript strict mode and linting rules",
         "description": "Set up TypeScript strict mode and ESLint rules to prevent React.FC usage",
-        "status": "in-progress",
+        "status": "done",
         "dependencies": [
           1
         ],
@@ -137,7 +137,7 @@
             "id": "2.5",
             "title": "Fix initial TypeScript strict mode errors",
             "description": "Address type errors introduced by enabling strict mode",
-            "status": "in-progress",
+            "status": "done",
             "dependencies": [
               "2.1"
             ],
@@ -151,7 +151,7 @@
         "id": 3,
         "title": "Refactor large components - RepositoryHealthModal",
         "description": "Break down RepositoryHealthModal (963 lines) into smaller, composable components",
-        "status": "pending",
+        "status": "in-progress",
         "dependencies": [
           2
         ],
@@ -773,7 +773,7 @@
     ],
     "metadata": {
       "created": "2025-07-25T09:02:45.000Z",
-      "updated": "2025-07-25T09:38:49.369Z",
+      "updated": "2025-07-25T09:58:56.433Z",
       "description": "TaskMaster UI Modernization - Code quality and performance improvements",
       "projectName": "TaskMaster UI Modernization",
       "sourceFile": "/Users/gonzalo/workspace/taskmaster-ui/.taskmaster/docs/prd.txt"

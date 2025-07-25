@@ -92,3 +92,7 @@ project/
 - **CRITICAL** When you finish a subtask, execute the complete checks and tests and if there are any error fix it and NEVER continue to the next task if the tests are showing errors. Doesn't matter if the error is not related with the task changes. Commit the changes after the tests and checks does not return any error and continue to the next task.
 - **IMPORTANT** Never stop performing tasks if tasksmaster have pending tasks.
 - **IMPORTANT** Always keep updated the state of the tasks in taskmaster when you start, update or finish a task. If you are for example into the subtask 1.3 the subtasks 1.1 and 1.2 should have the done state
+
+### Command Execution Memories
+
+- **IMPORTANT** Always update the project CLAUDE.md file when you execute a wrong command and then find the right one to execute for always keeping into the CLAUDE.md file the right environment command execution

@@ -38,8 +38,9 @@ if (environment_1.env.GOOGLE_CLIENT_ID && environment_1.env.GOOGLE_CLIENT_SECRET
         clientID: environment_1.env.GOOGLE_CLIENT_ID,
         clientSecret: environment_1.env.GOOGLE_CLIENT_SECRET,
         callbackURL: environment_1.env.GOOGLE_CALLBACK_URL || '/api/auth/google/callback',
-    }, async (accessToken, refreshToken, profile, done) => {
+    }, async (_accessToken, _refreshToken, profile, done) => {
         try {
+            const avatar = profile.photos?.[0]?.value;
             const userResult = await authService_1.default.findOrCreateOAuthUser({
                 provider: 'google',
                 providerId: profile.id,
@@ -47,7 +48,7 @@ if (environment_1.env.GOOGLE_CLIENT_ID && environment_1.env.GOOGLE_CLIENT_SECRET
                 name: profile.displayName ||
                     profile.name?.givenName + ' ' + profile.name?.familyName ||
                     '',
-                avatar: profile.photos?.[0]?.value,
+                ...(avatar !== undefined && { avatar }),
             });
             const passportUser = {
                 userId: userResult.user.id,
@@ -70,7 +71,7 @@ if (environment_1.env.GITHUB_CLIENT_ID && environment_1.env.GITHUB_CLIENT_SECRET
         clientID: environment_1.env.GITHUB_CLIENT_ID,
         clientSecret: environment_1.env.GITHUB_CLIENT_SECRET,
         callbackURL: environment_1.env.GITHUB_CALLBACK_URL || '/api/auth/github/callback',
-    }, async (accessToken, refreshToken, profile, done) => {
+    }, async (_accessToken, _refreshToken, profile, done) => {
         try {
             const userResult = await authService_1.default.findOrCreateOAuthUser({
                 provider: 'github',

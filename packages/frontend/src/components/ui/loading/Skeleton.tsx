@@ -6,6 +6,7 @@ interface SkeletonProps {
   width?: string | number
   height?: string | number
   animation?: 'pulse' | 'wave' | 'none'
+  'aria-label'?: string
 }
 
 export const Skeleton = ({
@@ -14,7 +15,8 @@ export const Skeleton = ({
   width,
   height,
   animation = 'pulse',
-}) => {
+  'aria-label': ariaLabel,
+}: SkeletonProps) => {
   const variantClasses = {
     text: 'rounded',
     circular: 'rounded-full',
@@ -36,7 +38,10 @@ export const Skeleton = ({
     <div
       className={`bg-gray-200 ${variantClasses[variant]} ${animationClasses[animation]} ${className}`}
       style={style}
-      aria-hidden="true"
+      aria-hidden={!ariaLabel}
+      aria-label={ariaLabel}
+      role={ariaLabel ? "status" : undefined}
+      aria-busy={ariaLabel ? "true" : undefined}
     />
   )
 }

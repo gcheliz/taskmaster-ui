@@ -95,6 +95,21 @@ const TaskCardComponent = ({
     }
   }
 
+  const getPriorityLabel = (priority: string): string => {
+    switch (priority) {
+      case 'urgent':
+        return 'Urgent priority'
+      case 'high':
+        return 'High priority'
+      case 'medium':
+        return 'Medium priority'
+      case 'low':
+        return 'Low priority'
+      default:
+        return 'No priority'
+    }
+  }
+
   const getPriorityColor = (priority: string): string => {
     switch (priority) {
       case 'urgent':
@@ -126,6 +141,25 @@ const TaskCardComponent = ({
         return '⏸️'
       default:
         return '📋'
+    }
+  }
+
+  const getStatusLabel = (status: string): string => {
+    switch (status) {
+      case 'pending':
+        return 'Pending'
+      case 'in-progress':
+        return 'In Progress'
+      case 'done':
+        return 'Done'
+      case 'blocked':
+        return 'Blocked'
+      case 'cancelled':
+        return 'Cancelled'
+      case 'deferred':
+        return 'Deferred'
+      default:
+        return status
     }
   }
 

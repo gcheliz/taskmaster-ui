@@ -126,6 +126,9 @@ export const LoginForm = ({
               value={formData.email}
               onChange={handleInputChange('email')}
               error={!!errors.email}
+              aria-invalid={!!errors.email}
+              aria-describedby={errors.email ? "email-error" : undefined}
+              aria-required="true"
               leftIcon={<Icon icon={UserIcon} size="sm" className="text-slate-400" />}
               className={cn(
                 'pl-10 bg-white/60 backdrop-blur-sm',
@@ -134,7 +137,11 @@ export const LoginForm = ({
                 'transition-[border-color,background-color,color] duration-300'
               )}
             />
-            {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email}</p>}
+            {errors.email && (
+              <p id="email-error" className="text-xs text-red-500 mt-1" role="alert">
+                {errors.email}
+              </p>
+            )}
           </div>
         </div>
 
@@ -151,6 +158,9 @@ export const LoginForm = ({
               value={formData.password}
               onChange={handleInputChange('password')}
               error={!!errors.password}
+              aria-invalid={!!errors.password}
+              aria-describedby={errors.password ? "password-error" : undefined}
+              aria-required="true"
               leftIcon={<Icon icon={LockClosedIcon} size="sm" className="text-slate-400" />}
               className={cn(
                 'pl-10 pr-10 bg-white/60 backdrop-blur-sm',
@@ -163,10 +173,15 @@ export const LoginForm = ({
               type="button"
               onClick={() => setShowPassword(!showPassword)}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+              aria-label={showPassword ? "Hide password" : "Show password"}
             >
-              <Icon icon={showPassword ? EyeSlashIcon : EyeIcon} size="sm" />
+              <Icon icon={showPassword ? EyeSlashIcon : EyeIcon} size="sm" aria-hidden="true" />
             </button>
-            {errors.password && <p className="text-xs text-red-500 mt-1">{errors.password}</p>}
+            {errors.password && (
+              <p id="password-error" className="text-xs text-red-500 mt-1" role="alert">
+                {errors.password}
+              </p>
+            )}
           </div>
         </div>
 

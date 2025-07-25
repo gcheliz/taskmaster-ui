@@ -115,3 +115,10 @@ project/
 
 ### Critical Execution Rules
 - **IMPORTANT** NEVER FINISH A TASK OR SUBTASK IF IT'S ANY TEST OR CHECK ARE FAILING. THE CONDITION TO TAKE THE NEXT TASK IT'S "NO ERRORS"
+
+### Test Execution Guidelines
+- **CRITICAL** Always run tests with `pnpm test` (not `pnpm test:watch`) to prevent CPU overload
+- **IMPORTANT** Vitest is configured with resource limits: max 2 threads, 30s timeout, no watch mode by default
+- **LEARNED** If Vitest processes hang and consume 100% CPU, kill them with: `ps aux | grep vitest` then `kill -9 [PIDs]`
+- **IMPORTANT** Test scripts now use `--run` flag by default to ensure tests exit after completion
+- **IMPORTANT** Use `pnpm test:watch` only when actively developing and remember to stop it with Ctrl+C when done

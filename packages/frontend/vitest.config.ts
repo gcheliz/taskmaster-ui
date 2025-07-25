@@ -7,6 +7,22 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: './src/setupTests.ts',
+    // Performance and resource management
+    pool: 'threads',
+    poolOptions: {
+      threads: {
+        // Limit threads to prevent CPU overload
+        maxThreads: 2,
+        minThreads: 1,
+      }
+    },
+    // Prevent hanging tests
+    testTimeout: 30000, // 30 seconds
+    hookTimeout: 30000,
+    // Disable watch mode by default
+    watch: false,
+    // Run tests sequentially to reduce CPU load
+    maxConcurrency: 1,
     coverage: {
       reporter: ['text', 'json', 'html'],
       exclude: [

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import type { Task } from '../../../types/task'
 import type { TaskModalMode } from './types'
 import { useTaskForm } from './hooks/useTaskForm'
@@ -8,6 +8,7 @@ import { TaskModalHeader } from './components/TaskModalHeader'
 import { TaskModalFooter } from './components/TaskModalFooter'
 import { ErrorAlert } from './components/common/ErrorAlert'
 import { convertTaskToCSV } from './utils/taskExport'
+import { useFocusTrap, useScrollLock } from '../../../hooks/useFocusTrap'
 
 export interface TaskModalProps {
   /** Whether the modal is open */
@@ -50,6 +51,7 @@ export const TaskModal = ({
   const isReadOnly = mode === 'view'
   const isCreateMode = mode === 'create'
   const isEditMode = mode === 'edit'
+  const modalRef = useRef<HTMLDivElement>(null)
 
   const {
     formData,
@@ -68,6 +70,16 @@ export const TaskModal = ({
       onClose()
     },
   })
+
+  // Use focus trap and scroll lock for modal
+  useFocusTrap(modalRef, {
+    enabled: isOpen,
+    returnFocus: true,
+    initialFocus: mode === 'create' || mode === 'edit' ? '#title' : null,
+    preventScroll: true,
+  })
+  
+  useScrollLock(isOpen)
 
   // Reset form when modal opens or task changes
   useEffect(() => {
@@ -116,6 +128,20 @@ export const TaskModal = ({
     }
   }
 
+  // Handle escape key
+  useEffect(() => {
+    if (!isOpen) return
+
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && !isLoading) {
+        handleClose()
+      }
+    }
+
+    modalRef.current?.addEventListener('keydown', handleEscape)
+    return () => modalRef.current?.removeEventListener('keydown', handleEscape)
+  }, [isOpen, isLoading])
+
   if (!isOpen) {
     return null
   }
@@ -126,10 +152,12 @@ export const TaskModal = ({
       onClick={handleBackdropClick}
     >
       <div 
+        ref={modalRef}
         className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-hidden flex flex-col"
         role="dialog"
         aria-modal="true"
         aria-labelledby="task-modal-title"
+        tabIndex={-1}
       >
         <TaskModalHeader mode={mode} onClose={handleClose} isLoading={isLoading} />
 

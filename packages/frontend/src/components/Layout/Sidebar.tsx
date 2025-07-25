@@ -60,7 +60,7 @@ export const Sidebar = ({ isOpen = true, onClose, isCollapsed = false, onToggleC
 
 
           {/* Navigation */}
-          <nav ref={navRef} className="flex-1 p-4 space-y-1 overflow-y-auto scrollbar-minimal" role="menu" aria-label="Main navigation">
+          <nav ref={navRef} className="flex-1 p-4 space-y-1 overflow-y-auto scrollbar-minimal" aria-label="Main navigation">
             {menuItems.map((item) => {
               const Icon = item.icon
               const active = isActive(item.path)
@@ -79,17 +79,21 @@ export const Sidebar = ({ isOpen = true, onClose, isCollapsed = false, onToggleC
                     ${active 
                       ? 'bg-blue-600 text-white shadow-sm hover:bg-blue-700' 
                       : 'bg-transparent text-gray-700 hover:bg-gray-100 hover:text-gray-900'}
-                    focus:outline-none
+                    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
                   `}
-                  title={isCollapsed ? item.label : undefined}
+                  aria-current={active ? 'page' : undefined}
+                  aria-label={isCollapsed ? item.label : undefined}
                 >
-                  <Icon className="w-5 h-5 flex-shrink-0" />
+                  <Icon className="w-5 h-5 flex-shrink-0" aria-hidden="true" />
                   {!isCollapsed && <span className="flex-1 text-left whitespace-nowrap">{item.label}</span>}
                   
                   {/* Tooltip for collapsed state */}
                   {isCollapsed && (
-                    <div className="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-xs rounded shadow-lg
-                      opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
+                    <div 
+                      className="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-xs rounded shadow-lg
+                      opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50"
+                      role="tooltip"
+                    >
                       {item.label}
                     </div>
                   )}

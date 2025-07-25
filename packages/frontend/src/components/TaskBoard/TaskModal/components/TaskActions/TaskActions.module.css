@@ -1,0 +1,76 @@
+/* Task Actions Styles */
+
+.task-action-btn {
+  @apply p-2 rounded-md transition-colors duration-200;
+  @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+  @apply disabled:cursor-not-allowed;
+}
+
+.task-action-btn:hover:not(:disabled) {
+  @apply bg-gray-100;
+}
+
+/* Task Actions Bar */
+.task-actions-bar {
+  @apply border-t border-gray-200 pt-4;
+}
+
+/* Quick Actions */
+.task-actions {
+  @apply flex-wrap;
+}
+
+.task-actions .task-action-btn {
+  @apply text-sm;
+}
+
+/* Dropdown Styles */
+.task-actions-dropdown {
+  @apply inline-block text-left;
+}
+
+.task-actions-dropdown button[aria-expanded="true"] {
+  @apply bg-gray-100;
+}
+
+/* Action Icons */
+.action-icon {
+  @apply inline-flex items-center justify-center w-5 h-5;
+}
+
+.action-icon svg {
+  @apply w-4 h-4;
+}
+
+/* Status Icons */
+.status-icon-complete {
+  @apply text-green-600;
+}
+
+.status-icon-progress {
+  @apply text-blue-600;
+}
+
+.status-icon-blocked {
+  @apply text-red-600;
+}
+
+.status-icon-deferred {
+  @apply text-yellow-600;
+}
+
+/* Loading State */
+.task-action-btn.loading {
+  @apply animate-pulse;
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .task-actions {
+    @apply justify-center;
+  }
+  
+  .task-action-btn {
+    @apply p-1.5 text-xs;
+  }
+}

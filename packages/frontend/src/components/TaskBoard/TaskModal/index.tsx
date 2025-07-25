@@ -3,7 +3,11 @@ import type { Task } from '../../../types/task'
 import type { TaskModalMode } from './types'
 import { useTaskForm } from './hooks/useTaskForm'
 import { TaskForm } from './components/TaskForm'
+import { TaskDetails } from './components/TaskDetails'
+import { TaskModalHeader } from './components/TaskModalHeader'
+import { TaskModalFooter } from './components/TaskModalFooter'
 import { ErrorAlert } from './components/common/ErrorAlert'
+import { convertTaskToCSV } from './utils/taskExport'
 
 export interface TaskModalProps {
   /** Whether the modal is open */
@@ -112,19 +116,6 @@ export const TaskModal: React.FC<TaskModalProps> = ({
     }
   }
 
-  const getModalTitle = () => {
-    switch (mode) {
-      case 'create':
-        return 'Create New Task'
-      case 'edit':
-        return 'Edit Task'
-      case 'view':
-        return 'Task Details'
-      default:
-        return 'Task'
-    }
-  }
-
   if (!isOpen) {
     return null
   }
@@ -135,99 +126,79 @@ export const TaskModal: React.FC<TaskModalProps> = ({
       onClick={handleBackdropClick}
     >
       <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-hidden flex flex-col">
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-900">{getModalTitle()}</h2>
-          <button
-            className="inline-flex items-center justify-center w-8 h-8 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
-            onClick={handleClose}
-            disabled={isLoading}
-            aria-label="Close modal"
-          >
-            ×
-          </button>
-        </div>
+        <TaskModalHeader mode={mode} onClose={handleClose} isLoading={isLoading} />
 
         <div className="flex-1 overflow-y-auto scrollbar-modal p-6">
           {error && <ErrorAlert error={error} onDismiss={() => setError(null)} />}
 
-          <TaskForm
-            formData={formData}
-            validationErrors={validationErrors}
-            isLoading={isLoading}
-            isReadOnly={isReadOnly}
-            availableTasks={availableTasks}
-            onFieldChange={updateField}
-            onSubmit={handleSubmit}
-          />
-        </div>
-
-        <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200 bg-gray-50">
-          <button
-            type="button"
-            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-            onClick={handleClose}
-            disabled={isLoading}
-          >
-            {isReadOnly ? 'Close' : 'Cancel'}
-          </button>
-
-          {isReadOnly && onEdit && (
-            <button
-              type="button"
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-              onClick={onEdit}
-              disabled={isLoading}
-              data-testid="task-edit-button"
-            >
-              Edit Task
-            </button>
-          )}
-
-          {!isReadOnly && (
-            <button
-              type="submit"
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-              onClick={handleSubmit}
-              disabled={isLoading}
-              data-testid="task-save-button"
-            >
-              {isLoading ? (
-                <>
-                  <span className="animate-spin" aria-hidden="true">
-                    ⏳
-                  </span>
-                  {isCreateMode ? 'Creating...' : 'Saving...'}
-                </>
-              ) : (
-                <>{isCreateMode ? 'Create Task' : 'Save Changes'}</>
-              )}
-            </button>
-          )}
-
-          {isEditMode && onDelete && task?.id && (
-            <button
-              type="button"
-              className="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50"
-              onClick={handleDelete}
-              disabled={isLoading}
-              data-testid="task-delete-button"
-            >
-              {isLoading ? (
-                <>
-                  <span className="animate-spin" aria-hidden="true">
-                    ⏳
-                  </span>
-                  Deleting...
-                </>
-              ) : (
-                'Delete Task'
-              )}
-            </button>
+          {isReadOnly && task ? (
+            <TaskDetails 
+              task={task} 
+              availableTasks={availableTasks}
+              onStatusChange={async (taskId, status) => {
+                await onSave({ ...task, id: taskId, status })
+              }}
+              onComplete={async (taskId) => {
+                await onSave({ ...task, id: taskId, status: 'done' })
+              }}
+              onDuplicate={async (taskToDuplicate) => {
+                // Close current modal and trigger create with duplicated data
+                const { id, createdAt, updatedAt, ...duplicateData } = taskToDuplicate
+                await onSave({
+                  ...duplicateData,
+                  title: `${duplicateData.title} (Copy)`,
+                  status: 'pending'
+                })
+              }}
+              onExport={(taskToExport, format) => {
+                // Export task data
+                const dataStr = format === 'json' 
+                  ? JSON.stringify(taskToExport, null, 2)
+                  : convertTaskToCSV(taskToExport)
+                const dataUri = `data:text/${format === 'json' ? 'json' : 'csv'};charset=utf-8,${encodeURIComponent(dataStr)}`
+                const exportFileDefaultName = `task-${taskToExport.id}.${format || 'json'}`
+                
+                const linkElement = document.createElement('a')
+                linkElement.setAttribute('href', dataUri)
+                linkElement.setAttribute('download', exportFileDefaultName)
+                linkElement.click()
+              }}
+              onArchive={async (taskId) => {
+                if (onDelete) {
+                  await onDelete(taskId)
+                }
+              }}
+              canEdit={!!onEdit}
+              canDelete={!!onDelete}
+            />
+          ) : (
+            <TaskForm
+              formData={formData}
+              validationErrors={validationErrors}
+              isLoading={isLoading}
+              isReadOnly={isReadOnly}
+              availableTasks={availableTasks}
+              onFieldChange={updateField}
+              onSubmit={handleSubmit}
+            />
           )}
         </div>
+
+        <TaskModalFooter
+          mode={mode}
+          task={task}
+          isLoading={isLoading}
+          onClose={handleClose}
+          onEdit={onEdit}
+          onSubmit={handleSubmit}
+          onDelete={handleDelete}
+        />
       </div>
     </div>
   )
 }
 
+export { TaskModal }
 export default TaskModal
+export type { TaskModalProps }
+export type { TaskModalMode } from './types'

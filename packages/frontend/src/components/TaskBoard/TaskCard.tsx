@@ -37,11 +37,11 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   attributes: customAttributes,
 }) => {
   // Configure draggable behavior
-  const dragData: DragData = {
-    type: 'task',
+  const dragData = {
+    type: 'task' as const,
     taskId: task.id,
     status: task.status,
-  }
+  } satisfies DragData
 
   const { 
     attributes, 

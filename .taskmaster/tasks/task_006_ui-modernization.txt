@@ -1,0 +1,43 @@
+# Task ID: 6
+# Title: Implement route-based code splitting
+# Status: pending
+# Dependencies: 3, 4
+# Priority: high
+# Description: Add React.lazy and Suspense for route-level code splitting
+# Details:
+Implement React.lazy for all route components. Add proper Suspense boundaries with loading states. Configure Vite for optimal chunk splitting. Target 30% bundle size reduction.
+
+# Test Strategy:
+Measure bundle sizes before and after implementation. Verify lazy loading works correctly. Test loading states appear properly. Check network tab for proper chunk loading.
+
+# Subtasks:
+## 6.1. Analyze current bundle and identify split points [pending]
+### Dependencies: None
+### Description: Analyze bundle size and identify optimal code split boundaries
+### Details:
+Use bundle analyzer to review current bundle. Identify large dependencies and components. Map route components for splitting. Calculate potential size savings.
+
+## 6.2. Implement React.lazy for route components [pending]
+### Dependencies: 6.1
+### Description: Convert route components to use dynamic imports
+### Details:
+Wrap route components with React.lazy. Use dynamic import() syntax. Maintain TypeScript types. Handle error boundaries.
+
+## 6.3. Add Suspense boundaries with loading states [pending]
+### Dependencies: 6.2
+### Description: Implement loading UI for lazy-loaded components
+### Details:
+Add Suspense boundaries at route level. Create consistent loading components. Implement skeleton screens where appropriate. Handle loading errors gracefully.
+
+## 6.4. Configure Vite for optimal chunking [pending]
+### Dependencies: 6.2
+### Description: Optimize Vite build configuration for code splitting
+### Details:
+Configure manualChunks in Vite. Optimize chunk sizes. Set up vendor splitting. Configure preloading strategies.
+
+## 6.5. Measure and optimize bundle sizes [pending]
+### Dependencies: 6.3, 6.4
+### Description: Verify bundle size reduction and optimize further
+### Details:
+Measure new bundle sizes. Compare with baseline. Optimize chunks that are still too large. Document size improvements.
+

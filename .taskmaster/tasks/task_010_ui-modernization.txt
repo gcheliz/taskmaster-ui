@@ -1,0 +1,49 @@
+# Task ID: 10
+# Title: Add comprehensive test coverage and accessibility
+# Status: pending
+# Dependencies: 7, 8, 9
+# Priority: medium
+# Description: Achieve 80% test coverage and full accessibility compliance
+# Details:
+Write unit tests for all components and hooks. Add integration tests for critical user flows. Implement E2E tests with Playwright. Perform accessibility audit and add ARIA labels.
+
+# Test Strategy:
+Run coverage reports to verify 80% threshold. Execute axe accessibility tests. Run E2E tests in multiple browsers. Perform manual keyboard navigation testing.
+
+# Subtasks:
+## 10.1. Write unit tests for components [pending]
+### Dependencies: None
+### Description: Create comprehensive unit tests for all components
+### Details:
+Write tests for all UI components. Test props, states, and events. Mock dependencies appropriately. Aim for high branch coverage.
+
+## 10.2. Write unit tests for hooks [pending]
+### Dependencies: None
+### Description: Test all custom React hooks
+### Details:
+Test hook state changes. Verify effect cleanup. Test error scenarios. Mock external dependencies.
+
+## 10.3. Create integration tests for user flows [pending]
+### Dependencies: 10.1, 10.2
+### Description: Test critical user workflows end-to-end
+### Details:
+Test task creation flow. Test task editing flow. Test data export flow. Test authentication flow.
+
+## 10.4. Set up E2E tests with Playwright [pending]
+### Dependencies: None
+### Description: Implement browser automation tests
+### Details:
+Set up Playwright framework. Write tests for main user journeys. Test cross-browser compatibility. Add visual regression tests.
+
+## 10.5. Perform accessibility audit [pending]
+### Dependencies: None
+### Description: Ensure WCAG 2.1 AA compliance
+### Details:
+Run axe-core accessibility tests. Test keyboard navigation. Verify screen reader compatibility. Check color contrast ratios.
+
+## 10.6. Implement ARIA improvements [pending]
+### Dependencies: 10.5
+### Description: Add proper ARIA labels and roles
+### Details:
+Add ARIA labels to all interactive elements. Implement live regions for dynamic content. Add proper roles and landmarks. Fix any accessibility issues found.
+

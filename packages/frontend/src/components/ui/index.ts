@@ -11,7 +11,7 @@ export * from './atoms/Radio'
 export * from './atoms/Textarea'
 
 // Molecules
-export * from './molecules/Card'
+// export * from './molecules/Card' // Card is in atoms
 export * from './molecules/Modal'
 export * from './molecules/ProjectHealthIndicator'
 

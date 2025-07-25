@@ -39,10 +39,10 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
   const isOverLimit = limit && taskCount > limit
 
   // Configure droppable behavior
-  const dropData: DropData = {
-    type: 'column',
+  const dropData = {
+    type: 'column' as const,
     status: status,
-  }
+  } satisfies DropData
 
   const { isOver, setNodeRef } = useDroppable({
     id: `column-${status}`,

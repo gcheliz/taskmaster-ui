@@ -1,0 +1,82 @@
+[
+  {
+    "taskId": 1,
+    "taskTitle": "Remove .bak files and organize project structure",
+    "complexityScore": 3,
+    "recommendedSubtasks": 4,
+    "expansionPrompt": "Break down the cleanup and organization task into subtasks: 1) Scan and remove all .bak files, 2) Reorganize component structure following atomic design, 3) Update import paths, 4) Configure .gitignore rules",
+    "reasoning": "This is a straightforward cleanup task with low technical complexity but requires careful execution to avoid breaking imports"
+  },
+  {
+    "taskId": 2,
+    "taskTitle": "Configure TypeScript strict mode and linting rules",
+    "complexityScore": 5,
+    "recommendedSubtasks": 5,
+    "expansionPrompt": "Configure TypeScript and ESLint for strict React development: 1) Enable TypeScript strict mode flags, 2) Configure ESLint rules for React.FC deprecation, 3) Set up Husky pre-commit hooks, 4) Create documentation for coding standards, 5) Fix initial TypeScript strict mode errors",
+    "reasoning": "Medium complexity due to potential breaking changes from strict mode and need to configure multiple tools correctly"
+  },
+  {
+    "taskId": 3,
+    "taskTitle": "Refactor large components - RepositoryHealthModal",
+    "complexityScore": 8,
+    "recommendedSubtasks": 7,
+    "expansionPrompt": "Refactor the 963-line RepositoryHealthModal component: 1) Analyze component structure and identify logical boundaries, 2) Extract custom hooks for business logic, 3) Create sub-components for health metrics section, 4) Create charts sub-component, 5) Create actions sub-component, 6) Implement context for state management, 7) Update tests and ensure functionality",
+    "reasoning": "High complexity due to large component size, need to maintain functionality while restructuring, and proper testing requirements"
+  },
+  {
+    "taskId": 4,
+    "taskTitle": "Refactor large components - TaskModal",
+    "complexityScore": 7,
+    "recommendedSubtasks": 6,
+    "expansionPrompt": "Refactor the 712-line TaskModal component: 1) Analyze TaskModal structure and dependencies, 2) Extract TaskForm component with validation, 3) Create TaskDetails display component, 4) Create TaskActions component, 5) Implement shared form hooks, 6) Update integration tests",
+    "reasoning": "High complexity due to form handling, validation logic, and need to maintain complex interactions"
+  },
+  {
+    "taskId": 5,
+    "taskTitle": "Remove React.FC anti-patterns",
+    "complexityScore": 4,
+    "recommendedSubtasks": 4,
+    "expansionPrompt": "Systematically remove React.FC from 185 files: 1) Create automated script to identify React.FC usage, 2) Update component definitions in batches, 3) Fix TypeScript errors from prop typing changes, 4) Run comprehensive test suite",
+    "reasoning": "Medium complexity but high volume task that can be partially automated with careful testing"
+  },
+  {
+    "taskId": 6,
+    "taskTitle": "Implement route-based code splitting",
+    "complexityScore": 6,
+    "recommendedSubtasks": 5,
+    "expansionPrompt": "Implement React.lazy for route-level code splitting: 1) Analyze current bundle and identify split points, 2) Implement React.lazy for route components, 3) Add Suspense boundaries with loading states, 4) Configure Vite for optimal chunking, 5) Measure and optimize bundle sizes",
+    "reasoning": "Medium-high complexity requiring performance analysis and careful implementation to avoid UX degradation"
+  },
+  {
+    "taskId": 7,
+    "taskTitle": "Implement missing task creation functionality",
+    "complexityScore": 7,
+    "recommendedSubtasks": 6,
+    "expansionPrompt": "Complete task creation feature: 1) Design task creation API endpoint, 2) Implement backend task creation logic, 3) Create frontend task creation form, 4) Add validation and error handling, 5) Implement optimistic updates, 6) Add integration tests",
+    "reasoning": "High complexity due to full-stack implementation, API design, and UX considerations"
+  },
+  {
+    "taskId": 8,
+    "taskTitle": "Add data export functionality",
+    "complexityScore": 5,
+    "recommendedSubtasks": 5,
+    "expansionPrompt": "Implement data export feature: 1) Design export API endpoints, 2) Implement CSV export logic, 3) Implement JSON export logic, 4) Add export UI components, 5) Handle large dataset exports with progress",
+    "reasoning": "Medium complexity with straightforward implementation but needs proper handling of large datasets"
+  },
+  {
+    "taskId": 9,
+    "taskTitle": "Optimize performance and add monitoring",
+    "complexityScore": 6,
+    "recommendedSubtasks": 5,
+    "expansionPrompt": "Implement performance optimizations: 1) Add React.memo to expensive components, 2) Implement virtual scrolling for lists, 3) Set up React DevTools Profiler integration, 4) Add web vitals monitoring, 5) Create performance dashboard",
+    "reasoning": "Medium-high complexity requiring performance profiling and careful optimization to avoid over-engineering"
+  },
+  {
+    "taskId": 10,
+    "taskTitle": "Add comprehensive test coverage and accessibility",
+    "complexityScore": 8,
+    "recommendedSubtasks": 6,
+    "expansionPrompt": "Achieve 80% test coverage and accessibility: 1) Write unit tests for components, 2) Write unit tests for hooks, 3) Create integration tests for user flows, 4) Set up E2E tests with Playwright, 5) Perform accessibility audit, 6) Implement ARIA improvements",
+    "reasoning": "High complexity due to comprehensive testing requirements and accessibility compliance needs"
+  }
+]

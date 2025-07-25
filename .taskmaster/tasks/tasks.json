@@ -14,5 +14,769 @@
       "updated": "2025-07-24T12:40:56.294Z",
       "description": "Tag created on 24/7/2025"
     }
+  },
+  "ui-modernization": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Remove .bak files and organize project structure",
+        "description": "Clean up the codebase by removing all .bak files and establishing a proper project structure",
+        "status": "in-progress",
+        "dependencies": [],
+        "priority": "high",
+        "details": "Remove all .bak files from the codebase (ActivityTimeline.tsx.bak, BranchHealthVisualization.tsx.bak, etc.). Organize components into proper directories following atomic design pattern. Set up .gitignore rules to prevent future .bak file commits.",
+        "testStrategy": "Verify all .bak files are removed using find command. Ensure project builds successfully. Check that no functionality is broken by running existing tests.",
+        "subtasks": [
+          {
+            "id": "1.1",
+            "title": "Scan and remove all .bak files",
+            "description": "Identify and safely remove all .bak files from the codebase",
+            "status": "pending",
+            "dependencies": [],
+            "priority": "high",
+            "details": "Use find command to locate all .bak files in the project. Create a list of files to be removed for review. Execute removal of all .bak files. Verify no critical files were accidentally removed.",
+            "testStrategy": "Run find command to confirm no .bak files remain. Check git status to ensure only .bak files were removed."
+          },
+          {
+            "id": "1.2",
+            "title": "Reorganize component structure following atomic design",
+            "description": "Restructure components into atoms, molecules, organisms, templates, and pages",
+            "status": "pending",
+            "dependencies": [
+              "1.1"
+            ],
+            "priority": "high",
+            "details": "Create directory structure for atomic design pattern. Move existing components to appropriate directories based on their complexity and reusability. Ensure proper categorization of each component.",
+            "testStrategy": "Verify new directory structure exists. Check that all components are properly categorized. Run build to ensure no missing components."
+          },
+          {
+            "id": "1.3",
+            "title": "Update import paths",
+            "description": "Fix all import statements to reflect new component locations",
+            "status": "pending",
+            "dependencies": [
+              "1.2"
+            ],
+            "priority": "high",
+            "details": "Update all import paths throughout the codebase to reflect new component locations. Use automated tools where possible. Manually verify complex import cases.",
+            "testStrategy": "Run TypeScript compiler to check for import errors. Execute full test suite. Build application successfully."
+          },
+          {
+            "id": "1.4",
+            "title": "Configure .gitignore rules",
+            "description": "Add rules to prevent .bak files and temporary files from being committed",
+            "status": "pending",
+            "dependencies": [
+              "1.1"
+            ],
+            "priority": "medium",
+            "details": "Add *.bak pattern to .gitignore. Include other common temporary file patterns. Add IDE-specific ignore patterns. Document the gitignore rules.",
+            "testStrategy": "Create test .bak file and verify it's ignored by git. Run git status to confirm ignore rules work correctly."
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Configure TypeScript strict mode and linting rules",
+        "description": "Set up TypeScript strict mode and ESLint rules to prevent React.FC usage",
+        "status": "pending",
+        "dependencies": [
+          1
+        ],
+        "priority": "high",
+        "details": "Enable TypeScript strict mode in tsconfig.json. Configure ESLint rules to warn against React.FC usage. Set up pre-commit hooks to enforce these rules. Document the new coding standards.",
+        "testStrategy": "Run TypeScript compiler with strict mode enabled. Verify ESLint catches React.FC patterns. Test pre-commit hooks block commits with violations.",
+        "subtasks": [
+          {
+            "id": "2.1",
+            "title": "Enable TypeScript strict mode flags",
+            "description": "Configure tsconfig.json with all strict mode compiler options",
+            "status": "pending",
+            "dependencies": [],
+            "priority": "high",
+            "details": "Enable strict, noImplicitAny, strictNullChecks, strictFunctionTypes, strictBindCallApply, strictPropertyInitialization, noImplicitThis, and alwaysStrict flags in tsconfig.json.",
+            "testStrategy": "Run tsc --noEmit to verify configuration. Check that strict mode flags are properly applied."
+          },
+          {
+            "id": "2.2",
+            "title": "Configure ESLint rules for React.FC deprecation",
+            "description": "Add ESLint rules to discourage React.FC usage",
+            "status": "pending",
+            "dependencies": [],
+            "priority": "high",
+            "details": "Install necessary ESLint plugins. Configure rules to warn against React.FC usage. Add custom rule or use existing plugin to enforce function component patterns.",
+            "testStrategy": "Create test file with React.FC and verify ESLint warning. Run ESLint on entire codebase to identify violations."
+          },
+          {
+            "id": "2.3",
+            "title": "Set up Husky pre-commit hooks",
+            "description": "Install and configure Husky for pre-commit validation",
+            "status": "pending",
+            "dependencies": [
+              "2.1",
+              "2.2"
+            ],
+            "priority": "high",
+            "details": "Install Husky and lint-staged. Configure pre-commit hook to run TypeScript compiler and ESLint. Ensure hooks prevent commits with violations.",
+            "testStrategy": "Test commit with TypeScript error and verify it's blocked. Test commit with ESLint violation and verify it's blocked."
+          },
+          {
+            "id": "2.4",
+            "title": "Create documentation for coding standards",
+            "description": "Document TypeScript and React coding standards for the team",
+            "status": "pending",
+            "dependencies": [
+              "2.1",
+              "2.2"
+            ],
+            "priority": "medium",
+            "details": "Create CODING_STANDARDS.md documenting TypeScript strict mode benefits, React component patterns without FC, and linting rules. Include examples of dos and don'ts.",
+            "testStrategy": "Review documentation for completeness. Ensure examples compile and follow standards."
+          },
+          {
+            "id": "2.5",
+            "title": "Fix initial TypeScript strict mode errors",
+            "description": "Address type errors introduced by enabling strict mode",
+            "status": "pending",
+            "dependencies": [
+              "2.1"
+            ],
+            "priority": "high",
+            "details": "Run TypeScript compiler and identify all strict mode errors. Fix type annotations, null checks, and implicit any types. Ensure no suppressions are used unless absolutely necessary.",
+            "testStrategy": "Run tsc --noEmit with zero errors. Verify no @ts-ignore or @ts-expect-error comments added."
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Refactor large components - RepositoryHealthModal",
+        "description": "Break down RepositoryHealthModal (963 lines) into smaller, composable components",
+        "status": "pending",
+        "dependencies": [
+          2
+        ],
+        "priority": "high",
+        "details": "Extract business logic into custom hooks. Create separate components for different sections (health metrics, charts, actions). Implement proper prop drilling prevention with context. Target < 300 lines per component.",
+        "testStrategy": "Verify component functionality remains intact. Check that all interactions work as before. Measure component sizes to ensure < 300 lines. Run performance tests to ensure no regression.",
+        "subtasks": [
+          {
+            "id": "3.1",
+            "title": "Analyze component structure and identify logical boundaries",
+            "description": "Map out the current structure and plan the refactoring approach",
+            "status": "pending",
+            "dependencies": [],
+            "priority": "high",
+            "details": "Review RepositoryHealthModal code structure. Identify distinct sections and responsibilities. Create component hierarchy diagram. Plan data flow and state management approach.",
+            "testStrategy": "Document analysis results. Create refactoring plan with component boundaries clearly defined."
+          },
+          {
+            "id": "3.2",
+            "title": "Extract custom hooks for business logic",
+            "description": "Move business logic from component into reusable hooks",
+            "status": "pending",
+            "dependencies": [
+              "3.1"
+            ],
+            "priority": "high",
+            "details": "Create useRepositoryHealth hook for data fetching. Create useHealthMetrics hook for calculations. Create useChartData hook for data transformation. Ensure hooks are properly typed and tested.",
+            "testStrategy": "Unit test each hook independently. Verify hooks return expected data shapes. Test error handling in hooks."
+          },
+          {
+            "id": "3.3",
+            "title": "Create sub-components for health metrics section",
+            "description": "Extract health metrics display into separate component",
+            "status": "pending",
+            "dependencies": [
+              "3.2"
+            ],
+            "priority": "high",
+            "details": "Create HealthMetricsPanel component. Define props interface for metrics data. Implement metric cards and status indicators. Ensure responsive design.",
+            "testStrategy": "Test component renders all metrics correctly. Verify responsive behavior. Check accessibility of metric displays."
+          },
+          {
+            "id": "3.4",
+            "title": "Create charts sub-component",
+            "description": "Extract chart rendering logic into dedicated component",
+            "status": "pending",
+            "dependencies": [
+              "3.2"
+            ],
+            "priority": "high",
+            "details": "Create RepositoryCharts component. Handle different chart types (line, bar, pie). Implement chart configuration and theming. Add loading and error states.",
+            "testStrategy": "Test charts render with various data sets. Verify chart interactions work. Test loading and error states."
+          },
+          {
+            "id": "3.5",
+            "title": "Create actions sub-component",
+            "description": "Extract repository actions into separate component",
+            "status": "pending",
+            "dependencies": [
+              "3.1"
+            ],
+            "priority": "high",
+            "details": "Create RepositoryActions component. Implement action buttons and handlers. Add confirmation dialogs where needed. Handle action state and feedback.",
+            "testStrategy": "Test all actions trigger correctly. Verify confirmation dialogs work. Test loading states during actions."
+          },
+          {
+            "id": "3.6",
+            "title": "Implement context for state management",
+            "description": "Create context to manage shared state and prevent prop drilling",
+            "status": "pending",
+            "dependencies": [
+              "3.3",
+              "3.4",
+              "3.5"
+            ],
+            "priority": "high",
+            "details": "Create RepositoryHealthContext. Define context value interface. Implement context provider with state logic. Update components to use context.",
+            "testStrategy": "Test context provides correct values. Verify state updates propagate correctly. Check no prop drilling remains."
+          },
+          {
+            "id": "3.7",
+            "title": "Update tests and ensure functionality",
+            "description": "Update all tests and verify refactored component works correctly",
+            "status": "pending",
+            "dependencies": [
+              "3.6"
+            ],
+            "priority": "high",
+            "details": "Update existing tests for new component structure. Add integration tests for component interactions. Perform manual testing of all features. Check performance metrics.",
+            "testStrategy": "All existing tests pass. New integration tests cover refactored structure. Manual testing confirms no regressions."
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Refactor large components - TaskModal",
+        "description": "Break down TaskModal (712 lines) into smaller, reusable components",
+        "status": "pending",
+        "dependencies": [
+          2
+        ],
+        "priority": "high",
+        "details": "Split TaskModal into TaskForm, TaskDetails, TaskActions components. Extract validation logic into custom hooks. Implement proper state management. Create reusable form components.",
+        "testStrategy": "Test all task CRUD operations work correctly. Verify form validation behaves as expected. Check modal interactions and animations. Ensure no performance degradation.",
+        "subtasks": [
+          {
+            "id": "4.1",
+            "title": "Analyze TaskModal structure and dependencies",
+            "description": "Map out current TaskModal implementation and plan refactoring",
+            "status": "pending",
+            "dependencies": [],
+            "priority": "high",
+            "details": "Review TaskModal code and identify distinct sections. Map dependencies and state management. Plan component split strategy. Document current functionality to preserve.",
+            "testStrategy": "Create detailed documentation of current behavior. List all user interactions and states."
+          },
+          {
+            "id": "4.2",
+            "title": "Extract TaskForm component with validation",
+            "description": "Create separate form component with built-in validation",
+            "status": "pending",
+            "dependencies": [
+              "4.1"
+            ],
+            "priority": "high",
+            "details": "Create TaskForm component with all form fields. Implement form validation rules. Use React Hook Form or similar. Handle form state and submission.",
+            "testStrategy": "Test all form fields work correctly. Verify validation rules trigger appropriately. Test form submission and error handling."
+          },
+          {
+            "id": "4.3",
+            "title": "Create TaskDetails display component",
+            "description": "Extract read-only task details into separate component",
+            "status": "pending",
+            "dependencies": [
+              "4.1"
+            ],
+            "priority": "high",
+            "details": "Create TaskDetails component for viewing task information. Implement proper data display formatting. Add loading and empty states. Ensure responsive design.",
+            "testStrategy": "Test component displays all task fields correctly. Verify different task states render properly. Check responsive behavior."
+          },
+          {
+            "id": "4.4",
+            "title": "Create TaskActions component",
+            "description": "Extract task action buttons and handlers",
+            "status": "pending",
+            "dependencies": [
+              "4.1"
+            ],
+            "priority": "high",
+            "details": "Create TaskActions component with edit, delete, complete actions. Implement action handlers and confirmations. Add proper loading states. Handle permissions.",
+            "testStrategy": "Test all actions work correctly. Verify confirmations appear when needed. Test permission-based visibility."
+          },
+          {
+            "id": "4.5",
+            "title": "Implement shared form hooks",
+            "description": "Create reusable hooks for form logic",
+            "status": "pending",
+            "dependencies": [
+              "4.2"
+            ],
+            "priority": "high",
+            "details": "Create useTaskForm hook for form state. Create useTaskValidation hook for validation logic. Create useTaskSubmit hook for submission handling. Ensure proper TypeScript typing.",
+            "testStrategy": "Unit test each hook. Verify hooks work together correctly. Test error scenarios."
+          },
+          {
+            "id": "4.6",
+            "title": "Update integration tests",
+            "description": "Update tests for refactored TaskModal",
+            "status": "pending",
+            "dependencies": [
+              "4.2",
+              "4.3",
+              "4.4",
+              "4.5"
+            ],
+            "priority": "high",
+            "details": "Update existing TaskModal tests. Add tests for new components. Test component integration. Verify no functionality lost.",
+            "testStrategy": "All existing tests pass. New component tests provide full coverage. Integration tests verify complete flow."
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Remove React.FC anti-patterns",
+        "description": "Replace all 185 instances of React.FC with direct function components",
+        "status": "pending",
+        "dependencies": [
+          2
+        ],
+        "priority": "medium",
+        "details": "Systematically replace React.FC patterns with proper function component definitions. Update component prop types to use interface definitions. Ensure children props are explicitly typed where needed.",
+        "testStrategy": "Use grep to verify no React.FC patterns remain. Run TypeScript compiler to check for type errors. Execute full test suite to ensure no regressions.",
+        "subtasks": [
+          {
+            "id": "5.1",
+            "title": "Create automated script to identify React.FC usage",
+            "description": "Build tool to find and list all React.FC occurrences",
+            "status": "pending",
+            "dependencies": [],
+            "priority": "high",
+            "details": "Create Node.js script using AST parsing or regex. Generate report of all files using React.FC. Group by directory for batch processing. Include line numbers for reference.",
+            "testStrategy": "Verify script finds all 185 known instances. Test script on sample files with various React.FC patterns."
+          },
+          {
+            "id": "5.2",
+            "title": "Update component definitions in batches",
+            "description": "Systematically replace React.FC in groups of related components",
+            "status": "pending",
+            "dependencies": [
+              "5.1"
+            ],
+            "priority": "high",
+            "details": "Process components by feature/directory. Replace React.FC with explicit function syntax. Update prop type definitions to interfaces. Handle special cases like children props.",
+            "testStrategy": "Run TypeScript check after each batch. Verify components still render correctly. Check prop types are properly defined."
+          },
+          {
+            "id": "5.3",
+            "title": "Fix TypeScript errors from prop typing changes",
+            "description": "Resolve type errors introduced by removing React.FC",
+            "status": "pending",
+            "dependencies": [
+              "5.2"
+            ],
+            "priority": "high",
+            "details": "Address missing children type definitions. Fix event handler typings. Update generic component patterns. Ensure all components have explicit return types.",
+            "testStrategy": "Run tsc --noEmit with zero errors. Verify all prop types are explicit. Check no implicit any types introduced."
+          },
+          {
+            "id": "5.4",
+            "title": "Run comprehensive test suite",
+            "description": "Execute all tests to ensure no regressions",
+            "status": "pending",
+            "dependencies": [
+              "5.3"
+            ],
+            "priority": "high",
+            "details": "Run unit tests for all modified components. Execute integration tests. Run E2E tests if available. Fix any test failures.",
+            "testStrategy": "All tests pass. No new warnings in test output. Manual smoke test of key features."
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "Implement route-based code splitting",
+        "description": "Add React.lazy and Suspense for route-level code splitting",
+        "status": "pending",
+        "dependencies": [
+          3,
+          4
+        ],
+        "priority": "high",
+        "details": "Implement React.lazy for all route components. Add proper Suspense boundaries with loading states. Configure Vite for optimal chunk splitting. Target 30% bundle size reduction.",
+        "testStrategy": "Measure bundle sizes before and after implementation. Verify lazy loading works correctly. Test loading states appear properly. Check network tab for proper chunk loading.",
+        "subtasks": [
+          {
+            "id": "6.1",
+            "title": "Analyze current bundle and identify split points",
+            "description": "Analyze bundle size and identify optimal code split boundaries",
+            "status": "pending",
+            "dependencies": [],
+            "priority": "high",
+            "details": "Use bundle analyzer to review current bundle. Identify large dependencies and components. Map route components for splitting. Calculate potential size savings.",
+            "testStrategy": "Generate bundle analysis report. Document current bundle sizes. Identify top 10 largest modules."
+          },
+          {
+            "id": "6.2",
+            "title": "Implement React.lazy for route components",
+            "description": "Convert route components to use dynamic imports",
+            "status": "pending",
+            "dependencies": [
+              "6.1"
+            ],
+            "priority": "high",
+            "details": "Wrap route components with React.lazy. Use dynamic import() syntax. Maintain TypeScript types. Handle error boundaries.",
+            "testStrategy": "Verify each route loads dynamically. Check TypeScript types are preserved. Test error handling."
+          },
+          {
+            "id": "6.3",
+            "title": "Add Suspense boundaries with loading states",
+            "description": "Implement loading UI for lazy-loaded components",
+            "status": "pending",
+            "dependencies": [
+              "6.2"
+            ],
+            "priority": "high",
+            "details": "Add Suspense boundaries at route level. Create consistent loading components. Implement skeleton screens where appropriate. Handle loading errors gracefully.",
+            "testStrategy": "Test loading states appear correctly. Verify smooth transitions. Check error boundaries work."
+          },
+          {
+            "id": "6.4",
+            "title": "Configure Vite for optimal chunking",
+            "description": "Optimize Vite build configuration for code splitting",
+            "status": "pending",
+            "dependencies": [
+              "6.2"
+            ],
+            "priority": "high",
+            "details": "Configure manualChunks in Vite. Optimize chunk sizes. Set up vendor splitting. Configure preloading strategies.",
+            "testStrategy": "Review generated chunks. Verify optimal chunk sizes. Test preloading works correctly."
+          },
+          {
+            "id": "6.5",
+            "title": "Measure and optimize bundle sizes",
+            "description": "Verify bundle size reduction and optimize further",
+            "status": "pending",
+            "dependencies": [
+              "6.3",
+              "6.4"
+            ],
+            "priority": "high",
+            "details": "Measure new bundle sizes. Compare with baseline. Optimize chunks that are still too large. Document size improvements.",
+            "testStrategy": "Achieve 30% bundle size reduction. Verify no performance regressions. Test on slow network conditions."
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "title": "Implement missing task creation functionality",
+        "description": "Complete the TODO for task creation modal and API integration",
+        "status": "pending",
+        "dependencies": [
+          4
+        ],
+        "priority": "high",
+        "details": "Implement full task creation flow in TaskModal. Add API endpoints for task creation. Handle validation and error states. Add optimistic updates for better UX.",
+        "testStrategy": "Test task creation end-to-end. Verify API integration works correctly. Test error handling for various failure scenarios. Check optimistic updates and rollback.",
+        "subtasks": [
+          {
+            "id": "7.1",
+            "title": "Design task creation API endpoint",
+            "description": "Design and document the task creation API",
+            "status": "pending",
+            "dependencies": [],
+            "priority": "high",
+            "details": "Define API endpoint structure for POST /api/tasks. Document request/response schemas. Define validation rules. Plan error response format.",
+            "testStrategy": "Review API design documentation. Validate schema definitions. Ensure consistency with existing APIs."
+          },
+          {
+            "id": "7.2",
+            "title": "Implement backend task creation logic",
+            "description": "Build the server-side task creation functionality",
+            "status": "pending",
+            "dependencies": [
+              "7.1"
+            ],
+            "priority": "high",
+            "details": "Implement task creation endpoint. Add input validation middleware. Implement database operations. Handle unique ID generation.",
+            "testStrategy": "Unit test endpoint with various inputs. Test validation rules. Verify database persistence. Test error scenarios."
+          },
+          {
+            "id": "7.3",
+            "title": "Create frontend task creation form",
+            "description": "Build the UI for creating new tasks",
+            "status": "pending",
+            "dependencies": [],
+            "priority": "high",
+            "details": "Implement task creation form in modal. Add all required fields. Implement client-side validation. Create intuitive UI/UX.",
+            "testStrategy": "Test form renders correctly. Verify all fields work. Test client-side validation. Check accessibility."
+          },
+          {
+            "id": "7.4",
+            "title": "Add validation and error handling",
+            "description": "Implement comprehensive validation and error handling",
+            "status": "pending",
+            "dependencies": [
+              "7.2",
+              "7.3"
+            ],
+            "priority": "high",
+            "details": "Implement field-level validation. Add form-level validation. Handle server validation errors. Display user-friendly error messages.",
+            "testStrategy": "Test all validation rules. Verify error messages display correctly. Test edge cases. Check error recovery."
+          },
+          {
+            "id": "7.5",
+            "title": "Implement optimistic updates",
+            "description": "Add optimistic UI updates for better user experience",
+            "status": "pending",
+            "dependencies": [
+              "7.3",
+              "7.4"
+            ],
+            "priority": "high",
+            "details": "Implement optimistic task addition to UI. Handle rollback on error. Update local state immediately. Sync with server response.",
+            "testStrategy": "Test optimistic updates work smoothly. Verify rollback on error. Test race conditions. Check UI consistency."
+          },
+          {
+            "id": "7.6",
+            "title": "Add integration tests",
+            "description": "Create comprehensive tests for task creation flow",
+            "status": "pending",
+            "dependencies": [
+              "7.5"
+            ],
+            "priority": "high",
+            "details": "Write E2E tests for task creation. Test happy path and error scenarios. Test form validation flow. Verify API integration.",
+            "testStrategy": "All integration tests pass. Cover success and failure paths. Test performance under load."
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "title": "Add data export functionality",
+        "description": "Implement missing export features for tasks and analytics",
+        "status": "pending",
+        "dependencies": [
+          7
+        ],
+        "priority": "medium",
+        "details": "Add export buttons to relevant components. Implement CSV and JSON export formats. Create backend endpoints for data export. Add proper error handling and progress indicators.",
+        "testStrategy": "Test export functionality for different data types. Verify exported files are correctly formatted. Test large data exports for performance. Check error handling for edge cases.",
+        "subtasks": [
+          {
+            "id": "8.1",
+            "title": "Design export API endpoints",
+            "description": "Design API for data export functionality",
+            "status": "pending",
+            "dependencies": [],
+            "priority": "medium",
+            "details": "Design GET /api/export/tasks endpoint. Support format query parameter (csv, json). Plan pagination for large datasets. Define response headers.",
+            "testStrategy": "Review API design. Validate query parameters. Check header specifications."
+          },
+          {
+            "id": "8.2",
+            "title": "Implement CSV export logic",
+            "description": "Build CSV generation functionality",
+            "status": "pending",
+            "dependencies": [
+              "8.1"
+            ],
+            "priority": "medium",
+            "details": "Implement CSV generation library integration. Handle data transformation to CSV format. Manage special characters and escaping. Set proper MIME types.",
+            "testStrategy": "Test CSV generation with various data. Verify special characters handled. Check file downloads correctly."
+          },
+          {
+            "id": "8.3",
+            "title": "Implement JSON export logic",
+            "description": "Build JSON export functionality",
+            "status": "pending",
+            "dependencies": [
+              "8.1"
+            ],
+            "priority": "medium",
+            "details": "Implement JSON formatting for export. Handle nested data structures. Add metadata to exports. Implement pretty printing option.",
+            "testStrategy": "Test JSON exports are valid. Verify data completeness. Check formatting options work."
+          },
+          {
+            "id": "8.4",
+            "title": "Add export UI components",
+            "description": "Create export buttons and UI elements",
+            "status": "pending",
+            "dependencies": [],
+            "priority": "medium",
+            "details": "Add export buttons to task lists and analytics. Create format selection dropdown. Implement download progress indicator. Add success/error notifications.",
+            "testStrategy": "Test UI components render correctly. Verify format selection works. Check progress indicators display."
+          },
+          {
+            "id": "8.5",
+            "title": "Handle large dataset exports with progress",
+            "description": "Implement streaming and progress for large exports",
+            "status": "pending",
+            "dependencies": [
+              "8.2",
+              "8.3",
+              "8.4"
+            ],
+            "priority": "medium",
+            "details": "Implement streaming for large datasets. Add progress tracking. Handle memory efficiently. Implement cancelation support.",
+            "testStrategy": "Test with large datasets (10k+ records). Monitor memory usage. Verify progress updates. Test cancelation."
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "title": "Optimize performance and add monitoring",
+        "description": "Implement memoization, virtual scrolling, and performance monitoring",
+        "status": "pending",
+        "dependencies": [
+          6
+        ],
+        "priority": "medium",
+        "details": "Add React.memo to expensive components. Implement virtual scrolling for long lists. Set up performance monitoring with React DevTools Profiler. Add web vitals tracking.",
+        "testStrategy": "Measure render performance before and after optimization. Test virtual scrolling with large datasets. Verify memoization prevents unnecessary re-renders. Check Lighthouse scores > 90.",
+        "subtasks": [
+          {
+            "id": "9.1",
+            "title": "Add React.memo to expensive components",
+            "description": "Optimize component rendering with memoization",
+            "status": "pending",
+            "dependencies": [],
+            "priority": "medium",
+            "details": "Identify components with expensive renders. Wrap components with React.memo. Implement custom comparison functions where needed. Verify prop stability.",
+            "testStrategy": "Use React DevTools Profiler to measure. Verify re-renders reduced. Test functionality unchanged."
+          },
+          {
+            "id": "9.2",
+            "title": "Implement virtual scrolling for lists",
+            "description": "Add virtualization to long list components",
+            "status": "pending",
+            "dependencies": [],
+            "priority": "medium",
+            "details": "Integrate react-window or similar library. Implement for task lists and data tables. Handle dynamic row heights. Maintain scroll position.",
+            "testStrategy": "Test with 10k+ items. Verify smooth scrolling. Check memory usage reduced. Test keyboard navigation."
+          },
+          {
+            "id": "9.3",
+            "title": "Set up React DevTools Profiler integration",
+            "description": "Configure performance profiling tools",
+            "status": "pending",
+            "dependencies": [],
+            "priority": "medium",
+            "details": "Add Profiler components to key areas. Set up performance marks. Create performance baseline. Document profiling process.",
+            "testStrategy": "Verify profiler data collected. Test performance marks work. Check no production impact."
+          },
+          {
+            "id": "9.4",
+            "title": "Add web vitals monitoring",
+            "description": "Implement Core Web Vitals tracking",
+            "status": "pending",
+            "dependencies": [],
+            "priority": "medium",
+            "details": "Integrate web-vitals library. Track LCP, FID, CLS metrics. Send metrics to analytics. Create performance dashboard.",
+            "testStrategy": "Verify metrics collected correctly. Test analytics integration. Check dashboard displays data."
+          },
+          {
+            "id": "9.5",
+            "title": "Create performance dashboard",
+            "description": "Build dashboard to monitor performance metrics",
+            "status": "pending",
+            "dependencies": [
+              "9.3",
+              "9.4"
+            ],
+            "priority": "medium",
+            "details": "Create performance monitoring view. Display web vitals trends. Show component render times. Add performance alerts.",
+            "testStrategy": "Test dashboard shows real data. Verify trends calculated correctly. Check alerts trigger appropriately."
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "title": "Add comprehensive test coverage and accessibility",
+        "description": "Achieve 80% test coverage and full accessibility compliance",
+        "status": "pending",
+        "dependencies": [
+          7,
+          8,
+          9
+        ],
+        "priority": "medium",
+        "details": "Write unit tests for all components and hooks. Add integration tests for critical user flows. Implement E2E tests with Playwright. Perform accessibility audit and add ARIA labels.",
+        "testStrategy": "Run coverage reports to verify 80% threshold. Execute axe accessibility tests. Run E2E tests in multiple browsers. Perform manual keyboard navigation testing.",
+        "subtasks": [
+          {
+            "id": "10.1",
+            "title": "Write unit tests for components",
+            "description": "Create comprehensive unit tests for all components",
+            "status": "pending",
+            "dependencies": [],
+            "priority": "medium",
+            "details": "Write tests for all UI components. Test props, states, and events. Mock dependencies appropriately. Aim for high branch coverage.",
+            "testStrategy": "Achieve 80% component coverage. All critical paths tested. No untested branches in key components."
+          },
+          {
+            "id": "10.2",
+            "title": "Write unit tests for hooks",
+            "description": "Test all custom React hooks",
+            "status": "pending",
+            "dependencies": [],
+            "priority": "medium",
+            "details": "Test hook state changes. Verify effect cleanup. Test error scenarios. Mock external dependencies.",
+            "testStrategy": "100% hook coverage. Test all state transitions. Verify no memory leaks."
+          },
+          {
+            "id": "10.3",
+            "title": "Create integration tests for user flows",
+            "description": "Test critical user workflows end-to-end",
+            "status": "pending",
+            "dependencies": [
+              "10.1",
+              "10.2"
+            ],
+            "priority": "medium",
+            "details": "Test task creation flow. Test task editing flow. Test data export flow. Test authentication flow.",
+            "testStrategy": "All critical paths covered. Test happy and error paths. Verify data persistence."
+          },
+          {
+            "id": "10.4",
+            "title": "Set up E2E tests with Playwright",
+            "description": "Implement browser automation tests",
+            "status": "pending",
+            "dependencies": [],
+            "priority": "medium",
+            "details": "Set up Playwright framework. Write tests for main user journeys. Test cross-browser compatibility. Add visual regression tests.",
+            "testStrategy": "Test in Chrome, Firefox, Safari. All user journeys tested. Visual regressions caught."
+          },
+          {
+            "id": "10.5",
+            "title": "Perform accessibility audit",
+            "description": "Ensure WCAG 2.1 AA compliance",
+            "status": "pending",
+            "dependencies": [],
+            "priority": "high",
+            "details": "Run axe-core accessibility tests. Test keyboard navigation. Verify screen reader compatibility. Check color contrast ratios.",
+            "testStrategy": "Zero accessibility violations. All interactive elements keyboard accessible. Screen reader testing passes."
+          },
+          {
+            "id": "10.6",
+            "title": "Implement ARIA improvements",
+            "description": "Add proper ARIA labels and roles",
+            "status": "pending",
+            "dependencies": [
+              "10.5"
+            ],
+            "priority": "high",
+            "details": "Add ARIA labels to all interactive elements. Implement live regions for dynamic content. Add proper roles and landmarks. Fix any accessibility issues found.",
+            "testStrategy": "All ARIA labels meaningful. Live regions announce correctly. Landmarks properly structured."
+          }
+        ]
+      }
+    ],
+    "metadata": {
+      "created": "2025-07-25T09:02:45.000Z",
+      "updated": "2025-07-25T09:27:42.585Z",
+      "description": "TaskMaster UI Modernization - Code quality and performance improvements",
+      "projectName": "TaskMaster UI Modernization",
+      "sourceFile": "/Users/gonzalo/workspace/taskmaster-ui/.taskmaster/docs/prd.txt"
+    }
   }
 }

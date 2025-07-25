@@ -83,6 +83,13 @@ node_modules/
 *.sw?
 # OS specific
 
+# Backup files
+*.bak
+**/*.bak
+*~
+.#*
+\#*#
+
 .taskmaster/docs/
 /scripts/
 taskmapper.db

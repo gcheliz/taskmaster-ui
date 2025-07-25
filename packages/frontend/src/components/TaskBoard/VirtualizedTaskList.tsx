@@ -29,9 +29,7 @@ export const VirtualizedTaskList: React.FC<VirtualizedTaskListProps> = ({
     <div className="px-4 py-2">
       <TaskCard
         task={task}
-        onClick={() => onTaskClick?.(task)}
-        onUpdate={onTaskUpdate}
-        onDelete={() => onTaskDelete?.(task.id)}
+        onTaskClick={() => onTaskClick?.(task)}
       />
     </div>
   );
@@ -93,7 +91,7 @@ export const VirtualizedTaskTable: React.FC<VirtualizedTaskListProps> = ({
         </span>
       </td>
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-        {new Date(task.createdAt).toLocaleDateString()}
+        {task.createdAt ? new Date(task.createdAt).toLocaleDateString() : 'N/A'}
       </td>
     </tr>
   );

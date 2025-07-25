@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react'
 import { FilterSortControls } from './FilterSortControls'
 import { useTaskFiltersIntegration } from '../../hooks/useTaskFiltersIntegration'
 import type { FilterOptions, SortOptions } from './FilterSortControls'
+import type { Task } from '../../types/task'
 
 export interface TaskBoardWithFiltersProps {
   repositoryPath: string
@@ -183,7 +184,7 @@ export const TaskBoardWithFilters: React.FC<TaskBoardWithFiltersProps> = ({
       <div className="task-list-container">
         {!loading && !error && tasks.length > 0 && (
           <div className="task-list">
-            {tasks.map((task) => (
+            {(tasks as Task[]).map((task) => (
               <div key={task.id} className="task-item">
                 <div className="task-header">
                   <h4 className="task-title">{task.title}</h4>

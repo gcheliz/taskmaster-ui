@@ -86,7 +86,7 @@ export const DragAndDropProvider: React.FC<DragAndDropProviderProps> = ({
       // Add visual feedback
       document.body.style.cursor = 'grabbing'
 
-      const activeData = active.data.current as DragData
+      const activeData = active.data.current as unknown as DragData
       if (activeData && activeData.type === 'task') {
         announceToScreenReader(
           `Started moving task ${activeData.taskId} from ${activeData.status}`,
@@ -112,8 +112,8 @@ export const DragAndDropProvider: React.FC<DragAndDropProviderProps> = ({
       return
     }
 
-    const activeData = active.data.current as DragData
-    const overData = over.data.current as DropData | DragData
+    const activeData = active.data.current as unknown as DragData
+    const overData = over.data.current as unknown as DropData | DragData
 
     // If we're over a column and it's different from the current one
     if (activeData?.type === 'task' && overData?.type === 'column') {
@@ -147,8 +147,8 @@ export const DragAndDropProvider: React.FC<DragAndDropProviderProps> = ({
         return
       }
 
-      const activeData = active.data.current as DragData
-      const overData = over.data.current as DropData
+      const activeData = active.data.current as unknown as DragData
+      const overData = over.data.current as unknown as DropData
 
       // Validate drag data
       if (!activeData || activeData.type !== 'task') {

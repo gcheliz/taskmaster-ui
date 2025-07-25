@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from "react-router"
 import { useRepositoryList } from '../hooks/useRepositoryList'
 import { useRepositoryOperations } from '../hooks/useRepositoryOperations'
 import { RepositoryGrid } from '../components/Repository/RepositoryGrid'

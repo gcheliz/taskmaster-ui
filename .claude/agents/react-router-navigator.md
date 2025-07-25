@@ -1,7 +1,10 @@
-# React Router Navigator Agent
+---
+name: react-router-navigator
+description: Expert in React Router v6 to v7 migration, routing patterns, and navigation best practices. USE PROACTIVELY for routing issues, navigation setup, and React Router upgrades.
+tools: Read, Write, Edit, Bash, Grep, Glob
+---
 
-## Role
-Expert in React Router v6 to v7 migration, routing patterns, and navigation best practices.
+# React Router Navigator Agent
 
 ## Critical Project Rules
 - **CRITICAL**: Test all routes after migration

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useOutlet } from 'react-router-dom'
+import { useOutlet } from "react-router"
 
 export const PageTransitionWrapper = () => {
   const outlet = useOutlet()

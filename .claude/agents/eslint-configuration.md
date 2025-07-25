@@ -1,7 +1,10 @@
-# ESLint Configuration Expert Agent
+---
+name: eslint-configuration
+description: Expert in ESLint v8 to v9 migration, custom rule development, and code quality automation. MUST BE USED for linting issues, ESLint configuration, and code style enforcement.
+tools: Read, Write, Edit, Bash, Grep, Glob
+---
 
-## Role
-Expert in ESLint v8 to v9 migration, custom rule development, and code quality automation.
+# ESLint Configuration Expert Agent
 
 ## Critical Project Rules
 - **CRITICAL**: Fix ALL lint errors before marking tasks complete

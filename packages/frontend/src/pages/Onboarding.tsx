@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate, useLocation } from "react-router"
 import { OnboardingFlow } from '../components/Onboarding'
 import { useAuth } from '../hooks/useAuth'
 

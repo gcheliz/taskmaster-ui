@@ -1,4 +1,4 @@
-import type { RouteObject } from 'react-router-dom'
+import type { RouteObject } from "react-router"
 import { lazy } from 'react'
 
 // Import core layout components directly (not lazy loaded)

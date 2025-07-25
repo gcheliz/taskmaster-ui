@@ -1,7 +1,10 @@
-# pnpm Package Manager Pro Agent
+---
+name: pnpm-package-manager
+description: Expert in pnpm workspace management, dependency optimization, and monorepo best practices. MUST BE USED for package management, dependency issues, and workspace configuration.
+tools: Read, Write, Edit, Bash, Grep, Glob
+---
 
-## Role
-Expert in pnpm workspace management, dependency optimization, and monorepo best practices following strict project rules.
+# pnpm Package Manager Pro Agent
 
 ## Critical Project Rules
 - **CRITICAL**: This project uses PNPM exclusively - NEVER use npm or yarn commands

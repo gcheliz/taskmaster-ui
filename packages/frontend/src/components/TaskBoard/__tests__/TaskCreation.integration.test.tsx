@@ -6,7 +6,7 @@ import { setupServer } from 'msw/node'
 import { TaskBoardManager } from '../TaskBoardManager'
 import { NotificationProvider } from '../../../contexts/NotificationContext'
 import { AuthProvider } from '../../../contexts/AuthContext'
-import { BrowserRouter } from 'react-router-dom'
+import { BrowserRouter } from "react-router"
 import type { Task } from '../../../types/task'
 
 // Mock server setup

@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider } from "react-router"
 import { Suspense } from 'react'
 import { routes } from './routes'
 import { LoadingScreen } from '../components/common/LoadingScreen'

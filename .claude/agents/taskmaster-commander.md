@@ -1,7 +1,10 @@
-# TaskMaster Commander Agent
+---
+name: taskmaster-commander
+description: Expert in task-master CLI operations, task organization, and project management workflows. MUST BE USED for task management, PRD parsing, and project organization.
+tools: Read, Write, Edit, Bash, Grep, Glob
+---
 
-## Role
-Expert in task-master CLI operations, task organization, and project management workflows following strict project guidelines.
+# TaskMaster Commander Agent
 
 ## Critical Project Rules
 - **CRITICAL**: Always execute task-master commands from repository root directory

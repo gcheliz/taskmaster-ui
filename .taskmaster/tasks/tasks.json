@@ -985,7 +985,7 @@
         "description": "Upgrade React Router from version 6 to version 7, updating route configurations, navigation patterns, and testing to ensure compatibility with the new major version.",
         "details": "1. **Pre-migration Assessment**: Audit current React Router v6 usage by examining all route configurations, navigation hooks (useNavigate, useLocation, etc.), and route components. Review the official React Router v7 migration guide to identify breaking changes and new features. Document current routing patterns and components that will require updates. 2. **Update Core Dependencies**: Upgrade react-router-dom and related routing packages to v7 using pnpm. Check for peer dependency updates required for React Router v7 compatibility. 3. **Route Configuration Migration**: Update route definitions to v7 patterns - migrate from Routes/Route JSX to data router configurations if beneficial, update loader and action patterns, and modify route component structures as needed. Update any custom route guards or middleware. 4. **Navigation Updates**: Update navigation code to use v7 APIs - replace deprecated navigation methods, update programmatic navigation calls, and modify any custom navigation components. Ensure proper handling of route parameters and search params with v7 patterns. 5. **Component Updates**: Update route components to work with v7 - modify data loading patterns, update outlet usage if applicable, and ensure proper error boundary integration. Update any custom route-related hooks or utilities. 6. **Type Safety**: Update TypeScript definitions for React Router v7, ensuring proper typing for route parameters, loader data, and navigation functions.",
         "testStrategy": "1. **Route Navigation Testing**: Test all application routes to ensure proper navigation between pages, correct parameter passing, and proper component rendering. Verify programmatic navigation works correctly using updated v7 APIs. 2. **Data Loading Testing**: If using data router features, test route loaders and actions to ensure proper data fetching and form submissions. Verify error handling and loading states work as expected. 3. **Browser Integration Testing**: Test browser back/forward functionality, URL updates, and deep linking to ensure React Router v7 properly integrates with browser navigation. Test page refreshes maintain correct route state. 4. **TypeScript Compilation**: Run TypeScript compilation to ensure all React Router types are correctly updated and no type errors exist from the v7 migration. 5. **End-to-End Testing**: Run existing navigation tests and create additional tests for any new v7-specific features being utilized. Test complete user journeys through the application routing system.",
-        "status": "pending",
+        "status": "done",
         "dependencies": [
           2
         ],
@@ -997,7 +997,7 @@
             "description": "Conduct a comprehensive audit of the current React Router v6 usage throughout the application, identify all route configurations, navigation patterns, and prepare a migration plan based on the official v7 migration guide.",
             "dependencies": [],
             "details": "Search and document all React Router v6 usage patterns including: route configurations in App.tsx and other components, usage of hooks (useNavigate, useLocation, useParams, useSearchParams), route guards and protected routes, nested routing patterns, error boundaries, and custom route components. Review the React Router v7 migration guide to identify breaking changes, deprecated APIs, and new features. Create a migration checklist documenting all components and patterns that need updates.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Create a comprehensive inventory of all routing-related code by searching for react-router-dom imports and usage. Document current routing structure and identify potential migration risks. Verify the audit is complete by cross-referencing with the application's navigation flow."
           },
           {
@@ -1008,7 +1008,7 @@
               "4.1"
             ],
             "details": "Update react-router-dom and related packages to v7 using pnpm. Migrate route configurations from Routes/Route JSX patterns to createBrowserRouter or createMemoryRouter data router configurations if applicable. Update route definitions to use v7 patterns including loaders, actions, and error elements. Modify route guards and authentication wrappers to work with v7 APIs. Update TypeScript types for route parameters and navigation functions. Ensure proper integration with existing error boundaries.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Run pnpm install and verify successful dependency resolution. Test route configuration changes by starting the development server and navigating through all application routes. Verify that route parameters are properly typed and accessible. Test error boundary integration by triggering route errors."
           },
           {
@@ -1019,7 +1019,7 @@
               "4.2"
             ],
             "details": "Replace deprecated navigation methods with v7 equivalents throughout the codebase. Update all useNavigate usage to handle v7 navigation patterns. Modify Link and NavLink components to use new prop patterns if changed. Update any custom navigation components or utilities to work with v7 APIs. Ensure proper handling of route parameters and search params with new patterns. Update navigation-related TypeScript definitions. Test all navigation flows including programmatic navigation, browser back/forward, deep linking, and protected route redirects.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Manually test all application navigation flows to ensure routes load correctly and parameters are passed properly. Test programmatic navigation in various scenarios (form submissions, authentication flows, etc.). Verify browser navigation (back/forward buttons) works correctly. Test deep linking by accessing routes directly via URL. Run existing navigation-related tests and update any that fail due to API changes."
           }
         ]
@@ -1311,7 +1311,7 @@
     ],
     "metadata": {
       "created": "2025-07-25T18:35:51.262Z",
-      "updated": "2025-07-25T22:07:46.545Z",
+      "updated": "2025-07-25T22:30:10.415Z",
       "description": "Tag created on 25/7/2025"
     }
   }

@@ -5,7 +5,7 @@ import { Modal } from '../components/ui/molecules/Modal'
 import { AddRepository } from '../components/Repository/AddRepository'
 import { useRepositoryOperations } from '../hooks/useRepositoryOperations'
 import { logger } from '../utils/logger'
-import { RepositoryListSkeleton } from '../components/ui/loading'
+import { RepositoriesSkeleton } from '../components/ui/loading'
 import { 
   GitBranch, 
   Plus, 
@@ -285,12 +285,11 @@ const Repositories: React.FC = () => {
     return (
       <>
         <PageHeader 
-          title="Repositories" 
-          subtitle="Loading repositories..."
+          title="Repositories"
         />
         <div className="bg-white p-4 sm:p-6 md:p-8">
           <div className="max-w-7xl mx-auto">
-            <RepositoryListSkeleton count={4} />
+            <RepositoriesSkeleton />
           </div>
         </div>
       </>
@@ -300,26 +299,7 @@ const Repositories: React.FC = () => {
   return (
     <>
       <PageHeader 
-        title="Repositories" 
-        subtitle={`${displayRepositories.length} connected • ${displayRepositories.filter(r => r.status === 'active').length} active`}
-        actions={
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => refetch()}
-              className="p-2 text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-              title="Refresh"
-            >
-              <RefreshCw className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => setShowAddModal(true)}
-              className="px-4 py-2 bg-gray-900 text-white text-sm rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2"
-            >
-              <Plus className="w-4 h-4" />
-              Add Repository
-            </button>
-          </div>
-        }
+        title="Repositories"
       />
       <div className="bg-white p-4 sm:p-6 md:p-8">
         <div className="max-w-7xl mx-auto space-y-6">
@@ -333,14 +313,14 @@ const Repositories: React.FC = () => {
               placeholder="Search repositories..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-900 placeholder-gray-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
             />
-            <Search className="w-5 h-5 text-gray-400 absolute left-3 top-2.5" />
+            <Search className="w-5 h-5 text-gray-500 absolute left-3 top-2.5" />
           </div>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 hover:bg-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+            className="px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-900 hover:bg-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
           >
             <option value="all">All Status</option>
             <option value="active">Active</option>
@@ -544,7 +524,7 @@ const Repositories: React.FC = () => {
       {displayRepositories.length === 0 && !error && (
         <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
           <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-            <GitBranch className="w-8 h-8 text-gray-400" />
+            <GitBranch className="w-8 h-8 text-gray-500" />
           </div>
           <h3 className="text-lg font-medium text-gray-900 mb-2">No repositories found</h3>
           <p className="text-gray-600 mb-6">

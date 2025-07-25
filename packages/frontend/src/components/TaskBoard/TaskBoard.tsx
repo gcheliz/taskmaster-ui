@@ -1,6 +1,7 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 import type { TaskBoardData, TaskStatus } from '../../types/task'
 import { TaskColumn } from './TaskColumn'
+import { TaskCard } from './TaskCard'
 import { DragAndDropProvider } from './DragAndDropProvider'
 import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts'
 import { AriaLiveRegion } from '../common/AriaLiveRegion'
@@ -232,8 +233,30 @@ export const TaskBoard: React.FC<TaskBoardProps> = ({
     onTaskMove?.(taskId, fromStatus, toStatus)
   }
 
+  // Find the currently dragged task for the overlay
+  const [draggedTaskId, setDraggedTaskId] = useState<number | null>(null)
+  const draggedTask = draggedTaskId
+    ? Object.values(columns)
+        .flatMap(col => col.tasks)
+        .find(task => task.id === draggedTaskId)
+    : null
+
   return (
-    <DragAndDropProvider onTaskMove={handleTaskMove} className={className}>
+    <DragAndDropProvider 
+      onTaskMove={handleTaskMove} 
+      onDragStart={setDraggedTaskId}
+      onDragEnd={() => setDraggedTaskId(null)}
+      dragOverlay={
+        draggedTask ? (
+          <TaskCard
+            task={draggedTask}
+            isDraggable={false}
+            compact={true}
+          />
+        ) : null
+      }
+      className={className}
+    >
       <main className={`task-board ${className}`} role="main" aria-label="Task Board">
         <AriaLiveRegion message={announcement} politeness={politeness} />
         <header className="task-board__header">

@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/node'
-import { ProfilingIntegration } from '@sentry/profiling-node'
+// import { ProfilingIntegration } from '@sentry/profiling-node'
 import * as Tracing from '@sentry/tracing'
 import { Application, Request, Response, NextFunction } from 'express'
 import { logger } from '../utils/winston-adapter'
@@ -37,8 +37,8 @@ export function initSentry(app: Application): void {
       new Sentry.Integrations.Http({ tracing: true }),
       // Enable Express.js middleware tracing
       new Tracing.Integrations.Express({ app: app as any }),
-      // Enable profiling
-      new ProfilingIntegration(),
+      // Enable profiling (disabled due to missing native module)
+      // new ProfilingIntegration(),
       // Prisma integration
       new Tracing.Integrations.Prisma({ client: true }),
       // Additional integrations

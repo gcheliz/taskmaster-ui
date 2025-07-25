@@ -5,7 +5,7 @@ import { Icon, ChevronDownIcon } from './Icon'
 
 const selectVariants = cva(
   // Base styles with enhanced dark theme support and micro-interactions
-  'flex h-10 w-full items-center justify-between rounded-md border px-3 py-2 text-sm transition-[border-color,box-shadow,transform] duration-200 ease-in-out placeholder:text-secondary-500 dark:placeholder:text-secondary-400 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 appearance-none focus:ring-offset-surface-100 dark:focus:ring-offset-surface-900 hover:shadow-sm focus:shadow-md transform-gpu focus:scale-[1.02] focus:z-10',
+  'flex h-10 w-full items-center justify-between rounded-md border bg-white text-gray-900 px-3 py-2 text-sm transition-[border-color,box-shadow,transform] duration-200 ease-in-out placeholder:text-gray-500 dark:placeholder:text-secondary-400 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 appearance-none focus:ring-offset-white dark:focus:ring-offset-surface-900 hover:shadow-sm focus:shadow-md transform-gpu focus:scale-[1.02] focus:z-10',
   {
     variants: {
       variant: {

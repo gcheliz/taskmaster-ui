@@ -30,7 +30,7 @@ const modalContentVariants = cva(
 
 const modalHeaderVariants = cva('flex flex-col space-y-1.5 text-center sm:text-left')
 
-const modalTitleVariants = cva('text-lg font-semibold leading-none tracking-tight')
+const modalTitleVariants = cva('text-lg font-semibold leading-none tracking-tight text-gray-900')
 
 const modalDescriptionVariants = cva('text-sm text-secondary-600')
 

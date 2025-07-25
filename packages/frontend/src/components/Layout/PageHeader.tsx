@@ -4,11 +4,10 @@ import { Link, useLocation } from 'react-router-dom'
 
 interface PageHeaderProps {
   title: string
-  subtitle?: string
   actions?: React.ReactNode
 }
 
-export const PageHeader: React.FC<PageHeaderProps> = ({ title, subtitle, actions }) => {
+export const PageHeader: React.FC<PageHeaderProps> = ({ title, actions }) => {
   const location = useLocation()
   
   // Generate breadcrumb items based on current path
@@ -32,46 +31,41 @@ export const PageHeader: React.FC<PageHeaderProps> = ({ title, subtitle, actions
   const isHome = location.pathname === '/'
 
   return (
-    <div className="bg-white border-b border-gray-200 px-4 sm:px-6 md:px-8 py-4">
-      <div className="max-w-7xl mx-auto">
-        {/* Breadcrumb */}
-        {!isHome && (
-          <nav className="flex items-center space-x-1 text-sm mb-2">
-            {breadcrumbs.map((crumb, index) => (
-              <React.Fragment key={crumb.path}>
-                {index > 0 && (
-                  <ChevronRight className="w-4 h-4 text-gray-400" />
-                )}
-                {index === breadcrumbs.length - 1 ? (
-                  <span className="text-gray-900 font-medium">{crumb.label}</span>
-                ) : (
+    <div className="bg-white border-b border-gray-200 px-4 sm:px-6 md:px-8 py-3">
+      <div className="flex items-center justify-between">
+        {/* Left side with breadcrumb and title */}
+        <div className="flex items-center space-x-4">
+          {/* Breadcrumb for non-home pages */}
+          {!isHome && (
+            <nav className="flex items-center space-x-1 text-sm">
+              {breadcrumbs.slice(0, -1).map((crumb, index) => (
+                <React.Fragment key={crumb.path}>
+                  {index > 0 && (
+                    <ChevronRight className="w-3 h-3 text-gray-400" />
+                  )}
                   <Link 
                     to={crumb.path} 
                     className="text-gray-500 hover:text-gray-700 transition-colors flex items-center"
                   >
-                    {index === 0 && <Home className="w-4 h-4 mr-1" />}
+                    {index === 0 && <Home className="w-3 h-3 mr-1" />}
                     {crumb.label}
                   </Link>
-                )}
-              </React.Fragment>
-            ))}
-          </nav>
-        )}
-        
-        {/* Title and Actions */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-semibold text-gray-900">{title}</h1>
-            {subtitle && (
-              <p className="text-sm text-gray-500 mt-0.5">{subtitle}</p>
-            )}
-          </div>
-          {actions && (
-            <div className="flex items-center gap-3">
-              {actions}
-            </div>
+                </React.Fragment>
+              ))}
+              <ChevronRight className="w-3 h-3 text-gray-400" />
+            </nav>
           )}
+          
+          {/* Title */}
+          <h1 className="text-lg font-semibold text-gray-900">{title}</h1>
         </div>
+        
+        {/* Actions */}
+        {actions && (
+          <div className="flex items-center gap-2">
+            {actions}
+          </div>
+        )}
       </div>
     </div>
   )

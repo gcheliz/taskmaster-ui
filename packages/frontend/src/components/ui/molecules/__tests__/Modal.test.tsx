@@ -65,7 +65,8 @@ describe('Modal', () => {
       </Modal>
     )
 
-    expect(screen.getByTestId('modal-content')).toHaveClass('max-w-2xl')
+    // Modal has responsive classes, so we check for the sm: prefixed class
+    expect(screen.getByTestId('modal-content')).toHaveClass('sm:max-w-2xl')
   })
 
   it('handles escape key press', async () => {

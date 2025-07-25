@@ -36,8 +36,7 @@ const Settings: React.FC = () => {
     return (
       <>
         <PageHeader 
-          title="Settings" 
-          subtitle="Loading settings..."
+          title="Settings"
         />
         <div className="bg-white p-4 sm:p-6 md:p-8">
           <div className="max-w-7xl mx-auto space-y-8">
@@ -50,14 +49,7 @@ const Settings: React.FC = () => {
   return (
     <>
       <PageHeader 
-        title="Settings" 
-        subtitle="Manage your preferences"
-        actions={
-          <button className="px-4 py-2 bg-gray-900 text-white text-sm rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2">
-            <Save className="h-4 w-4" />
-            Save Changes
-          </button>
-        }
+        title="Settings"
       />
       <div className="bg-white p-4 sm:p-6 md:p-8">
         <div className="max-w-7xl mx-auto space-y-8">
@@ -97,9 +89,9 @@ const Settings: React.FC = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-3">Font Size</label>
-              <select className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 hover:bg-white text-gray-900 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+              <select defaultValue="Medium" className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 hover:bg-white text-gray-900 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
                 <option>Small</option>
-                <option selected>Medium</option>
+                <option>Medium</option>
                 <option>Large</option>
                 <option>Extra Large</option>
               </select>
@@ -407,7 +399,7 @@ const ToggleSetting: React.FC<{
   return (
     <div className="flex items-center justify-between py-2">
       <div className="flex items-start space-x-3">
-        {icon && <div className="text-gray-400 mt-0.5">{icon}</div>}
+        {icon && <div className="text-gray-600 mt-0.5">{icon}</div>}
         <div>
           <p className="text-sm font-medium text-gray-900">{label}</p>
           <p className="text-xs text-gray-500 mt-0.5">{description}</p>

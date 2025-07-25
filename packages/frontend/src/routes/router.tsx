@@ -3,7 +3,11 @@ import { Suspense } from 'react'
 import { routes } from './routes'
 import { LoadingScreen } from '../components/common/LoadingScreen'
 
-export const router = createBrowserRouter(routes)
+export const router = createBrowserRouter(routes, {
+  future: {
+    v7_startTransition: true,
+  },
+})
 
 export const AppRouter = () => {
   return (

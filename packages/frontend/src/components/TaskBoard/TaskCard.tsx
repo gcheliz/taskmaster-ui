@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDraggable } from '@dnd-kit/core'
+import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import type { Task } from '../../types/task'
 import type { DragData } from './DragAndDropProvider'
@@ -17,6 +17,8 @@ export interface TaskCardProps {
   showFullDetails?: boolean
   /** Whether the card is draggable */
   isDraggable?: boolean
+  /** Additional attributes to pass to the card element */
+  attributes?: Record<string, any>
 }
 
 /**
@@ -32,6 +34,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   compact = false,
   showFullDetails = true,
   isDraggable = true,
+  attributes: customAttributes,
 }) => {
   // Configure draggable behavior
   const dragData: DragData = {
@@ -40,19 +43,31 @@ export const TaskCard: React.FC<TaskCardProps> = ({
     status: task.status,
   }
 
-  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
+  const { 
+    attributes, 
+    listeners, 
+    setNodeRef, 
+    transform, 
+    transition,
+    isDragging 
+  } = useSortable({
     id: `task-${task.id}`,
     data: dragData,
     disabled: !isDraggable,
   })
 
   const style = {
-    transform: CSS.Translate.toString(transform),
+    transform: CSS.Transform.toString(transform),
+    transition,
     opacity: isDragging ? 0.5 : 1,
     cursor: isDragging ? 'grabbing' : isDraggable ? 'grab' : 'default',
   }
 
-  const handleTaskClick = () => {
+  const handleTaskClick = (e?: React.MouseEvent) => {
+    // Don't trigger click if it's from the drag handle
+    if (e && (e.target as HTMLElement).closest('[data-dnd-drag-handle]')) {
+      return
+    }
     if (onTaskClick && !isDragging) {
       onTaskClick(task.id)
     }
@@ -123,30 +138,28 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   // Merge accessibility attributes with DnD attributes
   const mergedAttributes = {
     ...attributes,
-    role: 'button',
+    ...customAttributes,
+    role: 'article',
     tabIndex: 0,
     'aria-label': `Task ${task.title}, priority ${task.priority}, status ${task.status}. Press Enter or Space to open details.`,
-    'aria-describedby': task.description ? `task-${task.id}-description` : undefined,
+    'aria-describedby': customAttributes?.['aria-describedby'] || (task.description ? `task-${task.id}-description` : undefined),
   }
 
   return (
     <div
       ref={setNodeRef}
       className={`
-        bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow cursor-grab active:cursor-grabbing
+        group relative bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-lg hover:border-gray-300 transition-all duration-200 cursor-pointer
         ${task.priority === 'urgent' ? 'border-l-4 border-l-red-500' : ''}
         ${task.priority === 'high' ? 'border-l-4 border-l-orange-500' : ''}
         ${task.priority === 'medium' ? 'border-l-4 border-l-yellow-500' : ''}
         ${task.priority === 'low' ? 'border-l-4 border-l-green-500' : ''}
-        ${compact ? 'p-2' : ''} 
+        ${compact ? 'p-3' : ''} 
         ${isOverdue ? 'bg-red-50 border-red-300' : ''} 
         ${isDueSoon ? 'bg-yellow-50 border-yellow-300' : ''}
         ${isDragging ? 'opacity-50 scale-95' : ''}
-        ${isDraggable ? 'cursor-grab hover:cursor-grab' : 'cursor-default'}
         ${className}
       `.trim()}
-      onClick={handleTaskClick}
-      onKeyDown={handleKeyDown}
       style={
         {
           '--priority-color': getPriorityColor(task.priority),
@@ -155,10 +168,24 @@ export const TaskCard: React.FC<TaskCardProps> = ({
       }
       {...mergedAttributes}
       {...listeners}
+      onClick={handleTaskClick}
+      onKeyDown={handleKeyDown}
     >
+      {/* Edit button positioned absolutely */}
+      <button
+        className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1 rounded hover:bg-gray-100 z-10"
+        title="Edit task"
+        onClick={(e) => e.stopPropagation()}
+        data-dnd-drag-handle
+      >
+        <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+        </svg>
+      </button>
+
       <div className="flex justify-between items-start mb-2">
         <div className="flex-1 min-w-0">
-          <h4 className="font-semibold text-gray-900 text-sm leading-tight truncate">
+          <h4 className="font-semibold text-gray-900 text-sm leading-tight truncate line-clamp-2">
             {task.title}
           </h4>
           <div className="flex items-center gap-2 mt-1">
@@ -171,16 +198,22 @@ export const TaskCard: React.FC<TaskCardProps> = ({
             </span>
           </div>
         </div>
-        <div className="flex-shrink-0 ml-2">
-          <span className="text-lg" title={`${task.priority} priority`}>
-            {getPriorityIcon(task.priority)}
+        <div className="flex-shrink-0 ml-2 flex items-center gap-2">
+          <span className={`inline-flex items-center px-2 py-1 text-xs rounded-full font-medium
+            ${task.priority === 'high' ? 'bg-red-100 text-red-700' : ''}
+            ${task.priority === 'medium' ? 'bg-yellow-100 text-yellow-700' : ''}
+            ${task.priority === 'low' ? 'bg-gray-100 text-gray-700' : ''}
+            ${task.priority === 'urgent' ? 'bg-red-200 text-red-800' : ''}
+          `}>
+            <span className="text-sm mr-1">{getPriorityIcon(task.priority)}</span>
+            {task.priority === 'medium' ? 'Medium' : task.priority === 'high' ? 'High' : task.priority === 'low' ? 'Low' : task.priority === 'urgent' ? 'Urgent' : task.priority}
           </span>
         </div>
       </div>
 
       {showFullDetails && task.description && (
         <div className="mb-3">
-          <p id={`task-${task.id}-description`} className="text-sm text-gray-600 leading-relaxed">
+          <p id={`task-${task.id}-description`} className="text-sm text-gray-600 leading-relaxed line-clamp-3">
             {task.description}
           </p>
         </div>
@@ -200,10 +233,17 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
             {task.complexity && (
               <div className="flex items-center gap-1 text-xs text-gray-500">
-                <span className="text-xs" aria-hidden="true">
-                  🔧
-                </span>
-                <span className="font-medium">{task.complexity}/10</span>
+                <span className="font-medium mr-1">Complexity:</span>
+                <div className="flex gap-0.5">
+                  {Array.from({ length: 5 }).map((_, index) => (
+                    <div
+                      key={index}
+                      className={`w-2 h-2 rounded-full ${
+                        index < (task.complexity || 0) ? 'bg-blue-600' : 'bg-gray-300'
+                      }`}
+                    />
+                  ))}
+                </div>
               </div>
             )}
 
@@ -220,11 +260,16 @@ export const TaskCard: React.FC<TaskCardProps> = ({
           </div>
 
           {task.assignedTo && (
-            <div className="flex items-center gap-1 text-xs text-gray-600">
-              <span className="text-xs" aria-hidden="true">
-                👤
+            <div className="flex items-center gap-2 text-xs text-gray-600">
+              <div className="flex items-center gap-1">
+                <span className="text-xs" aria-hidden="true">
+                  👤
+                </span>
+                <span className="font-medium">{task.assignedTo}</span>
+              </div>
+              <span className="inline-flex items-center justify-center w-6 h-6 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
+                {task.assignedTo?.split(' ').map(n => n[0]).join('').toUpperCase() || '?'}
               </span>
-              <span className="font-medium">{task.assignedTo}</span>
             </div>
           )}
         </div>

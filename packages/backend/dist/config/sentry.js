@@ -42,7 +42,7 @@ exports.measurePerformance = measurePerformance;
 exports.asyncHandler = asyncHandler;
 exports.captureErrorWithContext = captureErrorWithContext;
 const Sentry = __importStar(require("@sentry/node"));
-const profiling_node_1 = require("@sentry/profiling-node");
+// import { ProfilingIntegration } from '@sentry/profiling-node'
 const Tracing = __importStar(require("@sentry/tracing"));
 const winston_adapter_1 = require("../utils/winston-adapter");
 function initSentry(app) {
@@ -66,8 +66,8 @@ function initSentry(app) {
             new Sentry.Integrations.Http({ tracing: true }),
             // Enable Express.js middleware tracing
             new Tracing.Integrations.Express({ app: app }),
-            // Enable profiling
-            new profiling_node_1.ProfilingIntegration(),
+            // Enable profiling (disabled due to missing native module)
+            // new ProfilingIntegration(),
             // Prisma integration
             new Tracing.Integrations.Prisma({ client: true }),
             // Additional integrations

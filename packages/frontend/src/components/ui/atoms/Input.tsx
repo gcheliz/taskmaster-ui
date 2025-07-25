@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 
 const inputVariants = cva(
   // Base styles with enhanced dark theme support and micro-interactions
-  'input-base flex w-full transition-colors duration-200 ease-in-out file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-secondary-500 dark:placeholder:text-secondary-400 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 focus-visible:ring-offset-surface-100 dark:focus-visible:ring-offset-surface-900 focus-visible:z-10',
+  'flex w-full rounded-md border bg-white text-gray-900 transition-colors duration-200 ease-in-out file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 dark:placeholder:text-secondary-400 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 focus-visible:ring-offset-white dark:focus-visible:ring-offset-surface-900 focus-visible:z-10',
   {
     variants: {
       variant: {

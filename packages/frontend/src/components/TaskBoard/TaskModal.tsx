@@ -294,7 +294,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                 type="text"
                 value={formData.title || ''}
                 onChange={(e) => updateFormData('title', e.target.value)}
-                className={`block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${validationErrors.title ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
+                className={`block w-full px-3 py-2 border rounded-md shadow-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${validationErrors.title ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-white'}`}
                 placeholder="Enter task title..."
                 disabled={isLoading || isReadOnly}
                 maxLength={100}
@@ -314,7 +314,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                 id="task-description"
                 value={formData.description || ''}
                 onChange={(e) => updateFormData('description', e.target.value)}
-                className={`block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical ${validationErrors.description ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
+                className={`block w-full px-3 py-2 border rounded-md shadow-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical ${validationErrors.description ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-white'}`}
                 placeholder="Enter task description..."
                 disabled={isLoading || isReadOnly}
                 rows={4}
@@ -336,7 +336,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                   id="task-priority"
                   value={formData.priority || 'medium'}
                   onChange={(e) => updateFormData('priority', e.target.value)}
-                  className={`block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${validationErrors.priority ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
+                  className={`block w-full px-3 py-2 border rounded-md shadow-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${validationErrors.priority ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-white'}`}
                   disabled={isLoading || isReadOnly}
                   data-testid="task-priority-select"
                 >
@@ -364,15 +364,15 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                 )}
               </div>
 
-              <div className="form-group">
-                <label htmlFor="task-status" className="form-label">
+              <div className="space-y-2">
+                <label htmlFor="task-status" className="block text-sm font-medium text-gray-700">
                   Status *
                 </label>
                 <select
                   id="task-status"
                   value={formData.status || 'pending'}
                   onChange={(e) => updateFormData('status', e.target.value)}
-                  className={`form-select ${validationErrors.status ? 'error' : ''}`}
+                  className={`block w-full px-3 py-2 border rounded-md shadow-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${validationErrors.status ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-white'}`}
                   disabled={isLoading || isReadOnly}
                   data-testid="task-status-select"
                 >
@@ -383,17 +383,17 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                   ))}
                 </select>
                 {validationErrors.status && (
-                  <span className="form-error">{validationErrors.status}</span>
+                  <span className="text-sm text-red-600">{validationErrors.status}</span>
                 )}
                 {formData.status && (
-                  <div className="status-indicator">
+                  <div className="flex items-center gap-2 mt-2">
                     <span
-                      className="status-dot"
+                      className="w-3 h-3 rounded-full"
                       style={{
                         backgroundColor: getStatusColor(formData.status),
                       }}
                     />
-                    <span className="status-label">
+                    <span className="text-sm text-gray-600">
                       {TASK_STATUSES.find((s) => s.value === formData.status)?.label}
                     </span>
                   </div>
@@ -402,47 +402,47 @@ export const TaskModal: React.FC<TaskModalProps> = ({
             </div>
 
             {/* Details */}
-            <div className="form-group">
-              <label htmlFor="task-details" className="form-label">
+            <div className="space-y-2">
+              <label htmlFor="task-details" className="block text-sm font-medium text-gray-700">
                 Details
               </label>
               <textarea
                 id="task-details"
                 value={formData.details || ''}
                 onChange={(e) => updateFormData('details', e.target.value)}
-                className="form-textarea"
+                className="block w-full px-3 py-2 border border-gray-300 bg-white text-gray-900 placeholder-gray-500 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
                 placeholder="Enter additional task details..."
                 disabled={isLoading || isReadOnly}
                 rows={3}
                 data-testid="task-details-input"
               />
-              <div className="form-help">
+              <div className="text-sm text-gray-600 mt-1">
                 Optional detailed information about the task implementation.
               </div>
             </div>
 
             {/* Test Strategy */}
-            <div className="form-group">
-              <label htmlFor="task-test-strategy" className="form-label">
+            <div className="space-y-2">
+              <label htmlFor="task-test-strategy" className="block text-sm font-medium text-gray-700">
                 Test Strategy
               </label>
               <textarea
                 id="task-test-strategy"
                 value={formData.testStrategy || ''}
                 onChange={(e) => updateFormData('testStrategy', e.target.value)}
-                className="form-textarea"
+                className="block w-full px-3 py-2 border border-gray-300 bg-white text-gray-900 placeholder-gray-500 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
                 placeholder="Enter test strategy..."
                 disabled={isLoading || isReadOnly}
                 rows={3}
                 data-testid="task-test-strategy-input"
               />
-              <div className="form-help">How this task should be tested and validated.</div>
+              <div className="text-sm text-gray-600 mt-1">How this task should be tested and validated.</div>
             </div>
 
             {/* Assignment and Due Date Row */}
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="task-assigned-to" className="form-label">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label htmlFor="task-assigned-to" className="block text-sm font-medium text-gray-700">
                   Assigned To
                 </label>
                 <input
@@ -450,15 +450,15 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                   type="text"
                   value={formData.assignedTo || ''}
                   onChange={(e) => updateFormData('assignedTo', e.target.value)}
-                  className="form-input"
+                  className="block w-full px-3 py-2 border border-gray-300 bg-white text-gray-900 placeholder-gray-500 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Enter assignee name..."
                   disabled={isLoading || isReadOnly}
                   data-testid="task-assigned-to-input"
                 />
               </div>
 
-              <div className="form-group">
-                <label htmlFor="task-due-date" className="form-label">
+              <div className="space-y-2">
+                <label htmlFor="task-due-date" className="block text-sm font-medium text-gray-700">
                   Due Date
                 </label>
                 <input
@@ -471,19 +471,19 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                       e.target.value ? new Date(e.target.value).toISOString() : undefined
                     )
                   }
-                  className={`form-input ${validationErrors.dueDate ? 'error' : ''}`}
+                  className={`block w-full px-3 py-2 border rounded-md shadow-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${validationErrors.dueDate ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-white'}`}
                   disabled={isLoading || isReadOnly}
                   data-testid="task-due-date-input"
                 />
                 {validationErrors.dueDate && (
-                  <span className="form-error">{validationErrors.dueDate}</span>
+                  <span className="text-sm text-red-600">{validationErrors.dueDate}</span>
                 )}
               </div>
             </div>
 
             {/* Estimated Hours */}
-            <div className="form-group">
-              <label htmlFor="task-estimated-hours" className="form-label">
+            <div className="space-y-2">
+              <label htmlFor="task-estimated-hours" className="block text-sm font-medium text-gray-700">
                 Estimated Hours
               </label>
               <input
@@ -496,7 +496,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                     e.target.value ? Number(e.target.value) : undefined
                   )
                 }
-                className="form-input"
+                className="block w-full px-3 py-2 border border-gray-300 bg-white text-gray-900 placeholder-gray-500 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="Enter estimated hours..."
                 disabled={isLoading || isReadOnly}
                 min="0"
@@ -506,8 +506,8 @@ export const TaskModal: React.FC<TaskModalProps> = ({
             </div>
 
             {/* Tags */}
-            <div className="form-group">
-              <label htmlFor="task-tags" className="form-label">
+            <div className="space-y-2">
+              <label htmlFor="task-tags" className="block text-sm font-medium text-gray-700">
                 Tags
               </label>
               <input
@@ -523,18 +523,18 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                       .filter((tag) => tag)
                   )
                 }
-                className="form-input"
+                className="block w-full px-3 py-2 border border-gray-300 bg-white text-gray-900 placeholder-gray-500 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="Enter tags separated by commas..."
                 disabled={isLoading || isReadOnly}
                 data-testid="task-tags-input"
               />
-              <div className="form-help">Separate multiple tags with commas.</div>
+              <div className="text-sm text-gray-600 mt-1">Separate multiple tags with commas.</div>
             </div>
 
             {/* Dependencies */}
             {availableTasks.length > 0 && (
-              <div className="form-group">
-                <label className="form-label">Dependencies</label>
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700">Dependencies</label>
                 <div className="dependencies-container">
                   {/* Selected Dependencies */}
                   {formData.dependencies && formData.dependencies.length > 0 && (
@@ -617,7 +617,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                             </option>
                           ))}
                       </select>
-                      <div className="form-help">
+                      <div className="text-sm text-gray-600 mt-1">
                         Select tasks that must be completed before this task can be worked on.
                       </div>
                     </div>

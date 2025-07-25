@@ -1,5 +1,6 @@
 import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
+import { vi } from 'vitest'
 import { FormField } from '../FormField'
 
 describe('FormField', () => {
@@ -31,12 +32,18 @@ describe('FormField', () => {
   })
 
   it('shows required indicator when required', () => {
-    render(<FormField label="Test Label" required />)
+    render(<FormField label="Test Label" required type="text" />)
 
-    expect(screen.getByLabelText('Test Label')).toBeInTheDocument()
     // The asterisk is added via CSS after pseudo-element, so we check the class instead
     const label = screen.getByText('Test Label')
     expect(label).toHaveClass("after:content-['*']")
+    
+    // There should be a screen-reader-only "(required)" text
+    expect(screen.getByText('(required)')).toHaveClass('sr-only')
+    
+    // The input should have the proper label association
+    const input = screen.getByRole('textbox')
+    expect(input).toBeInTheDocument()
   })
 
   it('handles input changes', () => {

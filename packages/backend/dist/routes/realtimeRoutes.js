@@ -76,10 +76,10 @@ router.post('/repositories', (req, res) => {
  * DELETE /api/realtime/repositories/:repositoryPath
  * Remove a repository from real-time monitoring
  */
-router.delete('/repositories/*', async (req, res) => {
+router.delete('/repositories/*splat', async (req, res) => {
     try {
         // Get the repository path from the URL (everything after /repositories/)
-        const repositoryPath = '/' + req.params[0];
+        const repositoryPath = '/' + req.params['splat'];
         if (!repositoryPath || repositoryPath === '/') {
             return res.status(400).json({
                 success: false,

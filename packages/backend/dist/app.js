@@ -71,6 +71,7 @@ app.use((0, express_session_1.default)({
 app.use(passport_1.default.initialize());
 app.use(passport_1.default.session());
 // Sentry request and tracing middleware (must be after session)
+// Note: In Sentry v9, middleware is handled by the Express integration
 (0, sentry_1.setupSentryMiddleware)(app);
 // Security headers
 app.use((_req, res, next) => {

@@ -40,6 +40,14 @@ pnpm run dev
 curl http://localhost:3001/health/system
 ```
 
+## Framework
+
+This backend uses **Express.js v5** (upgraded from v4). Key improvements include:
+- Automatic promise rejection handling in middleware
+- Better async/await support
+- Improved TypeScript type definitions
+- Native Brotli compression support
+
 ## Documentation
 
 ### Core Documentation

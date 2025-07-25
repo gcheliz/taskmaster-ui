@@ -678,7 +678,7 @@ export const TaskModal = ({
                   {isCreateMode ? 'Creating...' : 'Saving...'}
                 </>
               ) : (
-                <>{isCreateMode ? 'Create Task' : 'Save Changes'}</>
+                isCreateMode ? 'Create Task' : 'Save Changes'
               )}
             </button>
           )}

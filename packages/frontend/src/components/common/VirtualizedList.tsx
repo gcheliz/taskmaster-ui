@@ -15,7 +15,7 @@ interface VirtualizedListProps<T> {
   gap?: number;
 }
 
-export function VirtualizedList<T>({
+export const VirtualizedList = <T,>({
   items,
   height = 400,
   itemHeight = 50,
@@ -26,7 +26,7 @@ export function VirtualizedList<T>({
   getItemKey,
   onScroll,
   gap = 0,
-}: VirtualizedListProps<T>) {
+}: VirtualizedListProps<T>) => {
   const parentRef = useRef<HTMLDivElement>(null);
 
   const virtualizer = useVirtualizer({
@@ -83,11 +83,11 @@ export function VirtualizedList<T>({
 }
 
 // Specialized virtualized list for uniform items
-export function UniformVirtualizedList<T>({
+export const UniformVirtualizedList = <T,>({
   items,
   itemHeight = 50,
   ...props
-}: Omit<VirtualizedListProps<T>, 'estimateSize'> & { itemHeight?: number }) {
+}: Omit<VirtualizedListProps<T>, 'estimateSize'> & { itemHeight?: number }) => {
   return (
     <VirtualizedList
       items={items}

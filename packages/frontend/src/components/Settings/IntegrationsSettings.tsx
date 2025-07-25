@@ -375,21 +375,19 @@ export const IntegrationsSettings = ({
                       size="sm"
                     />
                     {isEnabled && (
-                      <>
-                        {isConnected ? (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleDisconnect(integration.id)}
-                          >
-                            Disconnect
+                      isConnected ? (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleDisconnect(integration.id)}
+                        >
+                          Disconnect
+                        </Button>
+                      ) : (
+                        <Button size="sm" onClick={() => handleConnect(integration.id)}>
+                          Connect
                           </Button>
-                        ) : (
-                          <Button size="sm" onClick={() => handleConnect(integration.id)}>
-                            Connect
-                          </Button>
-                        )}
-                      </>
+                      )
                     )}
                   </div>
                 </div>

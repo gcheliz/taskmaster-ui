@@ -54,6 +54,9 @@ const TaskBoardComponent = ({
   const currentColumnRef = useRef<number>(0)
   const currentCardRef = useRef<number>(0)
   const { announcement, politeness, announceTaskMove, announceLoading } = useAriaAnnouncements()
+  
+  // Find the currently dragged task for the overlay - must be declared before any returns
+  const [draggedTaskId, setDraggedTaskId] = useState<number | null>(null)
 
   // Keyboard navigation for columns and cards
   const navigateColumns = (direction: 'left' | 'right') => {
@@ -242,7 +245,6 @@ const TaskBoardComponent = ({
   }
 
   // Find the currently dragged task for the overlay
-  const [draggedTaskId, setDraggedTaskId] = useState<number | null>(null)
   const draggedTask = draggedTaskId
     ? Object.values(columns)
         .flatMap(col => col.tasks)

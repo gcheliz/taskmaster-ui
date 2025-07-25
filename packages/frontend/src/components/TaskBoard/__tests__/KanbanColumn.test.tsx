@@ -10,7 +10,7 @@ vi.mock('@dnd-kit/core', () => ({
     setNodeRef: vi.fn(),
     isOver: false,
   }),
-  DndContext: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  DndContext: ({ children }: { children: React.ReactNode }) => children,
 }))
 
 // Mock KanbanTaskCard

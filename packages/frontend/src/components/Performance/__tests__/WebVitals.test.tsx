@@ -305,7 +305,9 @@ describe('WebVitals', () => {
       const lcpCallback = vi.mocked(onLCP).mock.calls[0][0]
       try {
         lcpCallback(null as any)
-      } catch {}
+      } catch (error) {
+        // Error is expected when passing null
+      }
       
       // Second metric succeeds
       const fidCallback = vi.mocked(onFID).mock.calls[0][0]

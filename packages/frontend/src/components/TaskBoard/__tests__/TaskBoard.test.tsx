@@ -13,7 +13,7 @@ vi.mock('../TaskModal', () => ({
 
 // Mock @dnd-kit/core
 vi.mock('@dnd-kit/core', () => ({
-  DndContext: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  DndContext: ({ children }: { children: React.ReactNode }) => children,
   closestCorners: vi.fn(),
   closestCenter: vi.fn(),
   pointerWithin: vi.fn(),
@@ -38,7 +38,7 @@ vi.mock('@dnd-kit/sortable', () => ({
     newArray.splice(to, 0, removed)
     return newArray
   }),
-  SortableContext: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  SortableContext: ({ children }: { children: React.ReactNode }) => children,
   sortableKeyboardCoordinates: vi.fn(),
   verticalListSortingStrategy: vi.fn(),
   useSortable: () => ({

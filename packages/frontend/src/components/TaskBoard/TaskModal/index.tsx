@@ -198,7 +198,6 @@ export const TaskModal: React.FC<TaskModalProps> = ({
   )
 }
 
-export { TaskModal }
 export default TaskModal
 export type { TaskModalProps }
 export type { TaskModalMode } from './types'

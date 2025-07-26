@@ -1,16 +1,23 @@
 import { renderHook, act } from '@testing-library/react'
 import { useOptimisticTaskCreation } from '../useOptimisticTaskCreation'
-import { taskService } from '../../services/taskService'
+import { vi, describe, it, expect, beforeEach } from 'vitest'
 import type { Task, TaskBoardData } from '../../types/task'
 
 // Mock the task service
-jest.mock('../../services/taskService')
+vi.mock('../../services/taskService', () => ({
+  taskService: {
+    createTask: vi.fn(),
+  }
+}))
+
+// Import after mocking
+import { taskService } from '../../services/taskService'
 
 describe('useOptimisticTaskCreation', () => {
-  const mockTaskService = taskService as jest.Mocked<typeof taskService>
+  const mockTaskService = taskService
 
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   const mockTaskData: Partial<Task> = {
@@ -55,7 +62,7 @@ describe('useOptimisticTaskCreation', () => {
         updatedAt: new Date().toISOString(),
       } as Task
 
-      mockTaskService.createTask.mockResolvedValue(serverTask)
+      vi.mocked(mockTaskService.createTask).mockResolvedValue(serverTask)
 
       let createdBoardData: TaskBoardData | null = null
 
@@ -97,7 +104,7 @@ describe('useOptimisticTaskCreation', () => {
         updatedAt: new Date().toISOString(),
       } as Task
 
-      mockTaskService.createTask.mockResolvedValue(serverTask)
+      vi.mocked(mockTaskService.createTask).mockResolvedValue(serverTask)
 
       let finalBoardData: TaskBoardData | null = null
       let returnedTask: Task | null = null
@@ -131,7 +138,7 @@ describe('useOptimisticTaskCreation', () => {
         })
       )
 
-      mockTaskService.createTask.mockRejectedValue(new Error('Creation failed'))
+      vi.mocked(mockTaskService.createTask).mockRejectedValue(new Error('Creation failed'))
 
       let finalBoardData: TaskBoardData | null = null
       let returnedTask: Task | null = null
@@ -169,7 +176,7 @@ describe('useOptimisticTaskCreation', () => {
         updatedAt: new Date().toISOString(),
       } as Task
 
-      mockTaskService.createTask.mockResolvedValue(serverTask)
+      vi.mocked(mockTaskService.createTask).mockResolvedValue(serverTask)
 
       let createdBoardData: TaskBoardData | null = null
 
@@ -205,7 +212,7 @@ describe('useOptimisticTaskCreation', () => {
         updatedAt: new Date().toISOString(),
       } as Task
 
-      mockTaskService.createTask.mockResolvedValue(serverTask)
+      vi.mocked(mockTaskService.createTask).mockResolvedValue(serverTask)
 
       let returnedBoardData: TaskBoardData | null = null
       let returnedTask: Task | null = null
@@ -234,7 +241,7 @@ describe('useOptimisticTaskCreation', () => {
         })
       )
 
-      mockTaskService.createTask.mockRejectedValue(new Error('Network error'))
+      vi.mocked(mockTaskService.createTask).mockRejectedValue(new Error('Network error'))
 
       // Initial state
       expect(result.current.createError).toBeNull()
@@ -269,7 +276,7 @@ describe('useOptimisticTaskCreation', () => {
         status: 400,
       }
 
-      mockTaskService.createTask.mockRejectedValue(apiError)
+      vi.mocked(mockTaskService.createTask).mockRejectedValue(apiError)
 
       await act(async () => {
         await result.current.createTaskOptimistically(mockTaskData, mockBoardData)
@@ -295,7 +302,7 @@ describe('useOptimisticTaskCreation', () => {
       } as Task
 
       // Add delay to observe loading state
-      mockTaskService.createTask.mockImplementation(
+      vi.mocked(mockTaskService.createTask).mockImplementation(
         () => new Promise(resolve => setTimeout(() => resolve(serverTask), 100))
       )
 
@@ -336,7 +343,7 @@ describe('useOptimisticTaskCreation', () => {
         updatedAt: new Date().toISOString(),
       } as Task
 
-      mockTaskService.createTask.mockResolvedValue(serverTask)
+      vi.mocked(mockTaskService.createTask).mockResolvedValue(serverTask)
 
       let createdBoardData: TaskBoardData | null = null
 
@@ -376,7 +383,7 @@ describe('useOptimisticTaskCreation', () => {
         updatedAt: new Date().toISOString(),
       } as Task
 
-      mockTaskService.createTask.mockResolvedValue(serverTask)
+      vi.mocked(mockTaskService.createTask).mockResolvedValue(serverTask)
 
       await act(async () => {
         await result.current.createTaskOptimistically(mockTaskData, mockBoardData)
@@ -395,7 +402,7 @@ describe('useOptimisticTaskCreation', () => {
         })
       )
 
-      mockTaskService.createTask.mockRejectedValue(new Error('API Error'))
+      vi.mocked(mockTaskService.createTask).mockRejectedValue(new Error('API Error'))
 
       await act(async () => {
         await result.current.createTaskOptimistically(mockTaskData, mockBoardData)

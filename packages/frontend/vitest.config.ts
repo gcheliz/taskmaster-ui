@@ -24,10 +24,13 @@ export default defineConfig({
     // Run tests sequentially to reduce CPU load
     maxConcurrency: 1,
     exclude: [
+      '**/node_modules/**',
       '**/*.e2e.test.ts',
       '**/e2e/**',
       '**/playwright/**',
       'tests/e2e/**',
+      '**/dist/**',
+      '**/.{idea,git,cache,output,temp}/**',
     ],
     coverage: {
       reporter: ['text', 'json', 'html'],

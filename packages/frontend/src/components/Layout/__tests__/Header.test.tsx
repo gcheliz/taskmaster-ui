@@ -110,6 +110,11 @@ describe('Header', () => {
       
       expect(screen.getByLabelText('Toggle dark mode')).toBeInTheDocument()
     })
+
+    it('calls onThemeToggle when theme button is clicked', async () => {
+      const user = userEvent.setup()
+      const onThemeToggle = vi.fn()
+      
       renderWithRouter(
         <Header showThemeToggle theme="light" onThemeToggle={onThemeToggle} />
       )

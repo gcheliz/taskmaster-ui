@@ -188,7 +188,7 @@ export function useOptimisticTaskCreation(
       let optimisticBoardData = currentBoardData
 
       // Apply optimistic update if enabled
-      if (optimisticUpdates && currentBoardData) {
+      if (optimisticUpdates) {
         optimisticBoardData = applyOptimisticCreate(currentBoardData, optimisticTask)
       }
 

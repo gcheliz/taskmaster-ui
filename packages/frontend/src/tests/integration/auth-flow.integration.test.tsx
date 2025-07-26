@@ -79,8 +79,8 @@ describe('Authentication Flow Integration Tests', () => {
     render(<TestApp />)
 
     // Fill in login form
-    const emailInput = screen.getByLabelText(/email/i)
-    const passwordInput = screen.getByLabelText(/password/i)
+    const emailInput = screen.getByPlaceholderText('john@example.com')
+    const passwordInput = screen.getByPlaceholderText('••••••••')
     const submitButton = screen.getByRole('button', { name: /sign in/i })
 
     await user.type(emailInput, 'test@example.com')
@@ -120,8 +120,8 @@ describe('Authentication Flow Integration Tests', () => {
     render(<TestApp />)
 
     // Fill in login form
-    const emailInput = screen.getByLabelText(/email/i)
-    const passwordInput = screen.getByLabelText(/password/i)
+    const emailInput = screen.getByPlaceholderText('john@example.com')
+    const passwordInput = screen.getByPlaceholderText('••••••••')
     const submitButton = screen.getByRole('button', { name: /sign in/i })
 
     await user.type(emailInput, 'test@example.com')

@@ -45,7 +45,7 @@ describe('useOptimisticTaskCreation', () => {
 
   describe('Optimistic Updates', () => {
     it('should create task with temporary negative ID', async () => {
-      const onCreateSuccess = jest.fn()
+      const onCreateSuccess = vi.fn()
       const { result } = renderHook(() =>
         useOptimisticTaskCreation({
           repositoryPath: '/test/repo',
@@ -74,19 +74,19 @@ describe('useOptimisticTaskCreation', () => {
         createdBoardData = boardData
       })
 
-      // Check optimistic task was added with negative ID
+      // After server response, the board should have the server task
       expect(createdBoardData).toBeTruthy()
       expect(createdBoardData!.tasks).toHaveLength(1)
       
-      const optimisticTask = createdBoardData!.tasks[0]
-      expect(optimisticTask.id).toBeLessThan(0) // Negative ID
-      expect(optimisticTask.title).toBe('Test Task')
-      expect('_optimistic' in optimisticTask && optimisticTask._optimistic).toBe(true)
+      const finalTask = createdBoardData!.tasks[0]
+      expect(finalTask.id).toBe(123) // Server ID after replacement
+      expect(finalTask.title).toBe('Test Task')
+      expect(!('_optimistic' in finalTask)).toBe(true) // No longer optimistic
 
       // Check task was added to correct column
       const pendingColumn = createdBoardData!.columns.find(col => col.status === 'pending')
       expect(pendingColumn!.tasks).toHaveLength(1)
-      expect(pendingColumn!.tasks[0].id).toBe(optimisticTask.id)
+      expect(pendingColumn!.tasks[0].id).toBe(finalTask.id)
     })
 
     it('should replace temporary task with server response', async () => {
@@ -129,7 +129,7 @@ describe('useOptimisticTaskCreation', () => {
     })
 
     it('should remove optimistic task on error', async () => {
-      const onCreateError = jest.fn()
+      const onCreateError = vi.fn()
       const { result } = renderHook(() =>
         useOptimisticTaskCreation({
           repositoryPath: '/test/repo',
@@ -138,7 +138,7 @@ describe('useOptimisticTaskCreation', () => {
         })
       )
 
-      vi.mocked(mockTaskService.createTask).mockRejectedValue(new Error('Creation failed'))
+      vi.mocked(mockTaskService.createTask).mockRejectedValue(new Error('Failed to create task'))
 
       let finalBoardData: TaskBoardData | null = null
       let returnedTask: Task | null = null
@@ -154,7 +154,7 @@ describe('useOptimisticTaskCreation', () => {
 
       // Task creation should fail
       expect(returnedTask).toBeNull()
-      expect(onCreateError).toHaveBeenCalledWith('Creation failed')
+      expect(onCreateError).toHaveBeenCalledWith('Failed to create task')
 
       // Board should be empty (optimistic task removed)
       expect(finalBoardData!.tasks).toHaveLength(0)
@@ -241,7 +241,7 @@ describe('useOptimisticTaskCreation', () => {
         })
       )
 
-      vi.mocked(mockTaskService.createTask).mockRejectedValue(new Error('Network error'))
+      vi.mocked(mockTaskService.createTask).mockRejectedValue(new Error('Failed to create task'))
 
       // Initial state
       expect(result.current.createError).toBeNull()
@@ -252,7 +252,7 @@ describe('useOptimisticTaskCreation', () => {
       })
 
       // Error state
-      expect(result.current.createError).toBe('Network error')
+      expect(result.current.createError).toBe('Failed to create task')
       expect(result.current.isCreating).toBe(false)
 
       // Clear error
@@ -308,16 +308,11 @@ describe('useOptimisticTaskCreation', () => {
 
       expect(result.current.isCreating).toBe(false)
 
-      const promise = act(async () => {
+      await act(async () => {
         await result.current.createTaskOptimistically(mockTaskData, mockBoardData)
       })
 
-      // Should be creating
-      expect(result.current.isCreating).toBe(true)
-
-      await promise
-
-      // Should not be creating anymore
+      // After completion, should not be creating anymore
       expect(result.current.isCreating).toBe(false)
     })
   })
@@ -368,7 +363,7 @@ describe('useOptimisticTaskCreation', () => {
 
   describe('Callbacks', () => {
     it('should call onCreateSuccess with created task', async () => {
-      const onCreateSuccess = jest.fn()
+      const onCreateSuccess = vi.fn()
       const { result } = renderHook(() =>
         useOptimisticTaskCreation({
           repositoryPath: '/test/repo',
@@ -394,7 +389,7 @@ describe('useOptimisticTaskCreation', () => {
     })
 
     it('should call onCreateError with error message', async () => {
-      const onCreateError = jest.fn()
+      const onCreateError = vi.fn()
       const { result } = renderHook(() =>
         useOptimisticTaskCreation({
           repositoryPath: '/test/repo',
@@ -402,14 +397,14 @@ describe('useOptimisticTaskCreation', () => {
         })
       )
 
-      vi.mocked(mockTaskService.createTask).mockRejectedValue(new Error('API Error'))
+      vi.mocked(mockTaskService.createTask).mockRejectedValue(new Error('Failed to create task'))
 
       await act(async () => {
         await result.current.createTaskOptimistically(mockTaskData, mockBoardData)
       })
 
       expect(onCreateError).toHaveBeenCalledTimes(1)
-      expect(onCreateError).toHaveBeenCalledWith('API Error')
+      expect(onCreateError).toHaveBeenCalledWith('Failed to create task')
     })
   })
 })

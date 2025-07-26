@@ -3,6 +3,8 @@ import { prisma } from './database'
 import { exportService } from './exportService'
 import { Queue } from 'bull'
 import { Redis } from 'ioredis'
+import { promises as fs } from 'fs'
+import * as path from 'path'
 
 // Export status types
 export type ExportStatus = 'queued' | 'processing' | 'completed' | 'failed'
@@ -243,10 +245,11 @@ class AsyncExportService {
           where: this.buildTaskWhereClause(options.filters)
         })
 
-      case 'analytics':
+      case 'analytics': {
         // For analytics, estimate based on date range
         const dayCount = this.getDayCountFromFilters(options.filters)
         return dayCount * 10 // Assume 10 data points per day
+      }
 
       case 'repository-activity':
         return await prisma.repositoryActivity.count({
@@ -272,7 +275,8 @@ class AsyncExportService {
     const allTasks: any[] = []
 
     // Fetch tasks in batches
-    while (true) {
+    let hasMore = true
+    while (hasMore) {
       const tasks = await prisma.task.findMany({
         where: this.buildTaskWhereClause(filters),
         skip: page * pageSize,
@@ -283,7 +287,10 @@ class AsyncExportService {
         }
       })
 
-      if (tasks.length === 0) break
+      if (tasks.length === 0) {
+        hasMore = false
+        break
+      }
 
       allTasks.push(...tasks)
       processedCount += tasks.length
@@ -363,8 +370,6 @@ class AsyncExportService {
   ): Promise<string> {
     // In production, upload to S3 or similar
     // For now, store in local filesystem
-    const fs = require('fs').promises
-    const path = require('path')
     
     const exportDir = path.join(process.cwd(), 'exports')
     await fs.mkdir(exportDir, { recursive: true })

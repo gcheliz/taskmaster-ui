@@ -456,7 +456,7 @@ export class AdvancedConnectionPool<T extends Connection> extends EventEmitter {
     }
   }
 
-  private removePendingRequest(resolve: Function): void {
+  private removePendingRequest(resolve: (value: T) => void): void {
     const index = this.pendingRequests.findIndex(
       req => req.resolve === resolve
     );

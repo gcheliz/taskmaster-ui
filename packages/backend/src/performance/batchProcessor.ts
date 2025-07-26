@@ -499,7 +499,10 @@ export class TaskMasterBatchProcessor implements BatchProcessor<any, any> {
       if (!grouped.has(operation)) {
         grouped.set(operation, []);
       }
-      grouped.get(operation)!.push(item);
+      const group = grouped.get(operation);
+      if (group) {
+        group.push(item);
+      }
     }
 
     return grouped;
@@ -606,7 +609,10 @@ export class TaskMasterBatchProcessor implements BatchProcessor<any, any> {
       if (!grouped.has(repo)) {
         grouped.set(repo, []);
       }
-      grouped.get(repo)!.push(item);
+      const group = grouped.get(repo);
+      if (group) {
+        group.push(item);
+      }
     }
 
     return grouped;

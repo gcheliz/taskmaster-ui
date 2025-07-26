@@ -9,6 +9,8 @@ exports.logConfiguration = logConfiguration;
 const dotenv_1 = __importDefault(require("dotenv"));
 const zod_1 = require("zod");
 const bootstrap_logger_1 = require("../utils/bootstrap-logger");
+const crypto_1 = __importDefault(require("crypto"));
+const ssl_validator_1 = require("./ssl-validator");
 // Load environment variables
 dotenv_1.default.config();
 // Environment validation schema
@@ -104,9 +106,7 @@ const getDatabaseConfig = () => {
     };
     // Add SSL configuration if enabled
     if (exports.env.DATABASE_SSL === 'true') {
-        // Import SSL validator to enforce SSL configuration
-        const { enforceSSLConfiguration } = require('./ssl-validator');
-        const sslConfig = enforceSSLConfiguration();
+        const sslConfig = (0, ssl_validator_1.enforceSSLConfiguration)();
         if (sslConfig.enabled) {
             config.ssl = {
                 rejectUnauthorized: sslConfig.rejectUnauthorized,
@@ -131,8 +131,7 @@ const getSecurityConfig = () => ({
 exports.getSecurityConfig = getSecurityConfig;
 // Generate a secure random key if not provided
 function generateSecretKey() {
-    const crypto = require('crypto');
-    const key = crypto.randomBytes(32).toString('hex');
+    const key = crypto_1.default.randomBytes(32).toString('hex');
     if (exports.env.NODE_ENV === 'production') {
         bootstrap_logger_1.configLogger.warn('⚠️  Using auto-generated secret key. Set JWT_SECRET/ENCRYPTION_KEY in production!');
     }

@@ -454,8 +454,8 @@ export class RepositoryRouteFactory {
 
   // Custom Validation Functions
 
-  private asyncHandler = (fn: Function) => {
-    return (req: any, res: any, next: any) => {
+  private asyncHandler = (fn: (req: Request, res: Response, next: NextFunction) => Promise<any>) => {
+    return (req: Request, res: Response, next: NextFunction) => {
       Promise.resolve(fn(req, res, next)).catch(next);
     };
   };

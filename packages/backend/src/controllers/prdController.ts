@@ -2,6 +2,9 @@ import { Request, Response } from 'express';
 import { taskMasterService } from '../services/taskMasterService';
 import { logger } from '../utils/logger';
 import { errorHandler } from '../utils/errorHandler';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as os from 'os';
 
 export interface PrdAnalysisRequest {
   repositoryPath: string;
@@ -64,9 +67,6 @@ export class PrdController {
       logger.info('Starting PRD analysis', context, 'controller');
 
       // Step 1: Save PRD content to temporary file
-      const fs = require('fs');
-      const path = require('path');
-      const os = require('os');
 
       const tempDir = os.tmpdir();
       const tempFile = path.join(tempDir, `prd_${requestId}.txt`);

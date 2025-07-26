@@ -2,6 +2,8 @@ import { Request, Response, NextFunction } from 'express'
 import { exportService, ExportOptions } from '../services/exportService'
 import { logger } from '../utils/logger'
 import { TaskInfo } from '../types/taskMaster'
+import * as path from 'path'
+import * as fs from 'fs'
 
 export class ExportController {
   /**
@@ -290,8 +292,6 @@ export class ExportController {
       
       // In production, redirect to S3 signed URL
       // For now, serve from local filesystem
-      const path = require('path')
-      const fs = require('fs')
       
       const filepath = path.join(process.cwd(), 'exports', `${exportId}-${filename}`)
       

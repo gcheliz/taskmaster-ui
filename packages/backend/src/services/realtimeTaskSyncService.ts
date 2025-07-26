@@ -88,7 +88,7 @@ export class RealtimeTaskSyncService {
     }
 
     // Check repository limit
-    if (this.watchedRepositories.size >= this.config.maxRepositories!) {
+    if (this.watchedRepositories.size >= (this.config.maxRepositories || 10)) {
       console.warn(
         `⚠️  Maximum repositories limit (${this.config.maxRepositories}) reached. Cannot add ${repositoryPath}`
       );

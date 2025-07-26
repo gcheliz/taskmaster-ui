@@ -23,6 +23,12 @@ export default defineConfig({
     watch: false,
     // Run tests sequentially to reduce CPU load
     maxConcurrency: 1,
+    exclude: [
+      '**/*.e2e.test.ts',
+      '**/e2e/**',
+      '**/playwright/**',
+      'tests/e2e/**',
+    ],
     coverage: {
       reporter: ['text', 'json', 'html'],
       exclude: [
@@ -32,6 +38,8 @@ export default defineConfig({
         '**/*.config.*',
         '**/mockData.ts',
         'src/stories/**',
+        '**/*.e2e.test.ts',
+        '**/e2e/**',
       ],
       thresholds: {
         global: {

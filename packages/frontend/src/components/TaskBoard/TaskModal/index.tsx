@@ -158,6 +158,7 @@ export const TaskModal = ({
         aria-modal="true"
         aria-labelledby="task-modal-title"
         tabIndex={-1}
+        data-testid="task-modal"
       >
         <TaskModalHeader mode={mode} onClose={handleClose} isLoading={isLoading} />
 

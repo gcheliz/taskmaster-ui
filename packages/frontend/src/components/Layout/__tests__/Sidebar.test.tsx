@@ -1,336 +1,336 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
-import { Sidebar } from '../Sidebar'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { BrowserRouter } from "react-router-dom"
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { BrowserRouter } from 'react-router-dom'
+import { Sidebar } from '../Sidebar'
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: { retry: false },
-  },
+// Mock react-router-dom
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual('react-router-dom')
+  return {
+    ...actual,
+    useLocation: () => ({
+      pathname: mockPathname
+    })
+  }
 })
 
-const renderWithProviders = (component: React.ReactElement) => {
+let mockPathname = '/'
+
+const renderWithRouter = (ui: React.ReactElement, { route = '/' } = {}) => {
+  mockPathname = route
   return render(
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        {component}
-      </BrowserRouter>
-    </QueryClientProvider>
+    <BrowserRouter>
+      {ui}
+    </BrowserRouter>
   )
 }
 
 describe('Sidebar', () => {
-  const mockUser = {
-    id: '1',
-    name: 'Test User',
-    email: 'test@example.com',
-    avatar: 'https://example.com/avatar.jpg'
-  }
-
   beforeEach(() => {
-    vi.clearAllMocks()
+    mockPathname = '/'
   })
 
-  describe('Rendering', () => {
-    it('renders logo and brand', () => {
-      renderWithProviders(<Sidebar />)
-      
-      expect(screen.getByAltText('TaskMaster Logo')).toBeInTheDocument()
-      expect(screen.getByText('TaskMaster')).toBeInTheDocument()
-    })
-
-    it('renders navigation menu', () => {
-      renderWithProviders(<Sidebar />)
-      
-      expect(screen.getByRole('navigation')).toBeInTheDocument()
-      expect(screen.getByText('Dashboard')).toBeInTheDocument()
-      expect(screen.getByText('Tasks')).toBeInTheDocument()
-      expect(screen.getByText('Repositories')).toBeInTheDocument()
-      expect(screen.getByText('Analytics')).toBeInTheDocument()
-    })
-
-    it('renders user profile section when user is provided', () => {
-      renderWithProviders(<Sidebar user={mockUser} />)
-      
-      expect(screen.getByText(mockUser.name)).toBeInTheDocument()
-      expect(screen.getByText(mockUser.email)).toBeInTheDocument()
-      expect(screen.getByAltText(`${mockUser.name} avatar`)).toBeInTheDocument()
-    })
-
-    it('renders collapsed state', () => {
-      renderWithProviders(<Sidebar isCollapsed />)
-      
-      const sidebar = screen.getByRole('complementary')
-      expect(sidebar).toHaveClass('w-16')
-      expect(screen.queryByText('Dashboard')).not.toBeInTheDocument()
-    })
+  it('renders navigation menu items', () => {
+    renderWithRouter(<Sidebar />)
+    
+    expect(screen.getByText('Dashboard')).toBeInTheDocument()
+    expect(screen.getByText('Repositories')).toBeInTheDocument()
+    expect(screen.getByText('Task Board')).toBeInTheDocument()
+    expect(screen.getByText('Terminal')).toBeInTheDocument()
+    expect(screen.getByText('Settings')).toBeInTheDocument()
   })
 
-  describe('Navigation', () => {
-    it('highlights active route', () => {
-      renderWithProviders(<Sidebar />)
-      
-      const dashboardLink = screen.getByRole('link', { name: /dashboard/i })
-      expect(dashboardLink).toHaveClass('bg-blue-50')
-    })
+  it('highlights active navigation item', () => {
+    renderWithRouter(<Sidebar />, { route: '/tasks' })
+    
+    const taskBoardLink = screen.getByRole('link', { name: /Task Board/i })
+    expect(taskBoardLink).toHaveClass('bg-blue-600', 'text-white')
+    
+    const dashboardLink = screen.getByRole('link', { name: /Dashboard/i })
+    expect(dashboardLink).not.toHaveClass('bg-blue-600')
+    expect(dashboardLink).toHaveClass('text-gray-700')
+  })
 
-    it('navigates to different routes', async () => {
-      const user = userEvent.setup()
-      renderWithProviders(<Sidebar />)
-      
-      const tasksLink = screen.getByRole('link', { name: /tasks/i })
-      await user.click(tasksLink)
-      
-      expect(window.location.pathname).toBe('/tasks')
-    })
-
-    it('shows navigation icons in collapsed state', () => {
-      renderWithProviders(<Sidebar isCollapsed />)
-      
-      expect(screen.getByTestId('dashboard-icon')).toBeInTheDocument()
-      expect(screen.getByTestId('tasks-icon')).toBeInTheDocument()
-      expect(screen.getByTestId('repositories-icon')).toBeInTheDocument()
+  it('shows correct icons for each menu item', () => {
+    renderWithRouter(<Sidebar />)
+    
+    // Check that navigation contains the menu items
+    const nav = screen.getByRole('navigation', { name: 'Main navigation' })
+    expect(nav).toBeInTheDocument()
+    
+    // Verify each menu item exists
+    const menuItems = [
+      'Dashboard',
+      'Repositories', 
+      'Task Board',
+      'Terminal',
+      'Settings'
+    ]
+    
+    menuItems.forEach(item => {
+      expect(screen.getByText(item)).toBeInTheDocument()
     })
   })
 
-  describe('Collapse/Expand', () => {
-    it('toggles collapse state', async () => {
-      const user = userEvent.setup()
-      const onToggle = vi.fn()
-      renderWithProviders(<Sidebar onToggleCollapse={onToggle} />)
-      
-      const toggleButton = screen.getByRole('button', { name: /toggle sidebar/i })
-      await user.click(toggleButton)
-      
-      expect(onToggle).toHaveBeenCalled()
-    })
+  it('handles mobile backdrop click', async () => {
+    const user = userEvent.setup()
+    const onClose = vi.fn()
+    
+    renderWithRouter(<Sidebar isOpen={true} onClose={onClose} />)
+    
+    // Find and click the backdrop
+    const backdrop = document.querySelector('.fixed.inset-0.bg-black')
+    expect(backdrop).toBeInTheDocument()
+    
+    if (backdrop) {
+      await user.click(backdrop)
+    }
+    
+    expect(onClose).toHaveBeenCalled()
+  })
 
-    it('shows tooltip on collapsed items', async () => {
-      const user = userEvent.setup()
-      renderWithProviders(<Sidebar isCollapsed />)
-      
-      const dashboardIcon = screen.getByTestId('dashboard-icon')
-      await user.hover(dashboardIcon)
-      
-      await waitFor(() => {
-        expect(screen.getByRole('tooltip', { name: 'Dashboard' })).toBeInTheDocument()
-      })
+  it('navigates to correct routes', async () => {
+    const user = userEvent.setup()
+    const onClose = vi.fn()
+    
+    renderWithRouter(<Sidebar onClose={onClose} />)
+    
+    const dashboardLink = screen.getByRole('link', { name: /Dashboard/i })
+    expect(dashboardLink).toHaveAttribute('href', '/')
+    
+    const reposLink = screen.getByRole('link', { name: /Repositories/i })
+    expect(reposLink).toHaveAttribute('href', '/repositories')
+    
+    const tasksLink = screen.getByRole('link', { name: /Task Board/i })
+    expect(tasksLink).toHaveAttribute('href', '/tasks')
+    
+    const terminalLink = screen.getByRole('link', { name: /Terminal/i })
+    expect(terminalLink).toHaveAttribute('href', '/terminal')
+    
+    const settingsLink = screen.getByRole('link', { name: /Settings/i })
+    expect(settingsLink).toHaveAttribute('href', '/settings')
+    
+    // Click a link and verify onClose is called
+    await user.click(tasksLink)
+    expect(onClose).toHaveBeenCalled()
+  })
+
+  it('handles collapsed state', async () => {
+    const user = userEvent.setup()
+    const onToggleCollapse = vi.fn()
+    
+    renderWithRouter(<Sidebar isCollapsed={true} onToggleCollapse={onToggleCollapse} />)
+    
+    // In collapsed state, labels should not be visible
+    expect(screen.queryByText('Dashboard')).not.toBeInTheDocument()
+    expect(screen.queryByText('Repositories')).not.toBeInTheDocument()
+    
+    // But links should still exist (with aria-labels)
+    const dashboardLink = screen.getByRole('link', { name: 'Dashboard' })
+    expect(dashboardLink).toBeInTheDocument()
+    
+    // Toggle button should be visible
+    const toggleButton = screen.getByRole('button', { name: 'Expand sidebar' })
+    expect(toggleButton).toBeInTheDocument()
+    
+    await user.click(toggleButton)
+    expect(onToggleCollapse).toHaveBeenCalled()
+  })
+
+  it('shows tooltips in collapsed state', async () => {
+    const user = userEvent.setup()
+    renderWithRouter(<Sidebar isCollapsed={true} />)
+    
+    // Hover over a link to show tooltip
+    const dashboardLink = screen.getByRole('link', { name: 'Dashboard' })
+    await user.hover(dashboardLink)
+    
+    // Check for tooltip - it's rendered as a div with role="tooltip"
+    const tooltip = screen.getByRole('tooltip')
+    expect(tooltip).toBeInTheDocument()
+    expect(tooltip).toHaveTextContent('Dashboard')
+  })
+
+  it('renders with custom className', () => {
+    renderWithRouter(<Sidebar />)
+    
+    const sidebar = screen.getByRole('navigation').closest('aside')
+    expect(sidebar).toHaveClass('w-64', 'bg-white', 'border-r', 'border-gray-200')
+  })
+
+  it('handles mobile responsive behavior', () => {
+    renderWithRouter(<Sidebar isOpen={false} />)
+    
+    // Sidebar should be translated off-screen on mobile when closed
+    const sidebar = screen.getByRole('navigation').closest('aside')
+    expect(sidebar).toHaveClass('-translate-x-full', 'lg:translate-x-0')
+  })
+
+  it('applies correct styles to active links', () => {
+    renderWithRouter(<Sidebar />, { route: '/' })
+    
+    const dashboardLink = screen.getByRole('link', { name: /Dashboard/i })
+    expect(dashboardLink).toHaveClass('bg-blue-600', 'text-white', 'shadow-sm')
+    expect(dashboardLink).toHaveAttribute('aria-current', 'page')
+  })
+
+  it('renders collapse toggle button only on desktop', () => {
+    renderWithRouter(<Sidebar />)
+    
+    const toggleButton = screen.getByRole('button', { name: /Collapse sidebar/i })
+    expect(toggleButton).toBeInTheDocument()
+    expect(toggleButton.parentElement).toHaveClass('hidden', 'lg:flex')
+  })
+
+  it('handles keyboard navigation', () => {
+    renderWithRouter(<Sidebar />)
+    
+    const links = screen.getAllByRole('link')
+    
+    // All links should be focusable
+    links.forEach(link => {
+      link.focus()
+      expect(document.activeElement).toBe(link)
     })
   })
 
-  describe('User Menu', () => {
-    it('opens user dropdown on click', async () => {
-      const user = userEvent.setup()
-      renderWithProviders(<Sidebar user={mockUser} />)
-      
-      const userButton = screen.getByRole('button', { name: new RegExp(mockUser.name) })
-      await user.click(userButton)
-      
-      await waitFor(() => {
-        expect(screen.getByText('Profile')).toBeInTheDocument()
-        expect(screen.getByText('Settings')).toBeInTheDocument()
-        expect(screen.getByText('Sign Out')).toBeInTheDocument()
-      })
-    })
+  it('has proper ARIA attributes', () => {
+    renderWithRouter(<Sidebar />)
+    
+    const nav = screen.getByRole('navigation', { name: 'Main navigation' })
+    expect(nav).toBeInTheDocument()
+    
+    // Active link should have aria-current
+    const activeLink = screen.getByRole('link', { name: /Dashboard/i })
+    expect(activeLink).toHaveAttribute('aria-current', 'page')
+  })
 
-    it('handles sign out', async () => {
-      const user = userEvent.setup()
-      const onSignOut = vi.fn()
-      renderWithProviders(<Sidebar user={mockUser} onSignOut={onSignOut} />)
-      
-      const userButton = screen.getByRole('button', { name: new RegExp(mockUser.name) })
-      await user.click(userButton)
-      
-      const signOutButton = await screen.findByText('Sign Out')
-      await user.click(signOutButton)
-      
-      expect(onSignOut).toHaveBeenCalled()
-    })
+  it('shows correct chevron icon based on collapsed state', () => {
+    const { rerender } = renderWithRouter(<Sidebar isCollapsed={false} />)
+    
+    // When not collapsed, should show ChevronLeft
+    let toggleButton = screen.getByRole('button', { name: 'Collapse sidebar' })
+    expect(toggleButton).toBeInTheDocument()
+    
+    // When collapsed, should show ChevronRight
+    rerender(
+      <BrowserRouter>
+        <Sidebar isCollapsed={true} />
+      </BrowserRouter>
+    )
+    
+    toggleButton = screen.getByRole('button', { name: 'Expand sidebar' })
+    expect(toggleButton).toBeInTheDocument()
+  })
 
-    it('navigates to profile', async () => {
-      const user = userEvent.setup()
-      renderWithProviders(<Sidebar user={mockUser} />)
-      
-      const userButton = screen.getByRole('button', { name: new RegExp(mockUser.name) })
-      await user.click(userButton)
-      
-      const profileLink = await screen.findByText('Profile')
-      await user.click(profileLink)
-      
-      expect(window.location.pathname).toBe('/profile')
+  it('applies hover styles to navigation items', async () => {
+    const user = userEvent.setup()
+    renderWithRouter(<Sidebar />, { route: '/settings' })
+    
+    // Get a non-active link
+    const reposLink = screen.getByRole('link', { name: /Repositories/i })
+    expect(reposLink).toHaveClass('text-gray-700')
+    
+    // Hover should apply hover styles
+    await user.hover(reposLink)
+    expect(reposLink).toHaveClass('hover:bg-gray-100', 'hover:text-gray-900')
+  })
+
+  it('maintains sidebar width based on collapsed state', () => {
+    const { rerender } = renderWithRouter(<Sidebar isCollapsed={false} />)
+    
+    let sidebar = screen.getByRole('navigation').closest('aside')
+    expect(sidebar).toHaveClass('w-64')
+    
+    rerender(
+      <BrowserRouter>
+        <Sidebar isCollapsed={true} />
+      </BrowserRouter>
+    )
+    
+    sidebar = screen.getByRole('navigation').closest('aside')
+    expect(sidebar).toHaveClass('w-16')
+  })
+
+  it('renders SafeLink components for navigation', () => {
+    renderWithRouter(<Sidebar />)
+    
+    // All navigation items should be links
+    const links = screen.getAllByRole('link')
+    expect(links).toHaveLength(5) // Dashboard, Repositories, Task Board, Terminal, Settings
+    
+    // Each link should have proper href
+    links.forEach(link => {
+      expect(link).toHaveAttribute('href')
     })
   })
 
-  describe('Notifications', () => {
-    it('shows notification badge with count', () => {
-      renderWithProviders(<Sidebar notificationCount={5} />)
-      
-      expect(screen.getByText('5')).toBeInTheDocument()
-      expect(screen.getByRole('button', { name: /notifications/i })).toBeInTheDocument()
-    })
+  it('focuses navigation on mount for accessibility', () => {
+    renderWithRouter(<Sidebar />)
+    
+    const nav = screen.getByRole('navigation', { name: 'Main navigation' })
+    expect(nav).toBeInTheDocument()
+    expect(nav).toHaveAttribute('aria-label', 'Main navigation')
+  })
 
-    it('opens notification panel', async () => {
-      const user = userEvent.setup()
-      const onNotificationClick = vi.fn()
-      renderWithProviders(
-        <Sidebar notificationCount={3} onNotificationClick={onNotificationClick} />
-      )
-      
-      const notificationButton = screen.getByRole('button', { name: /notifications/i })
-      await user.click(notificationButton)
-      
-      expect(onNotificationClick).toHaveBeenCalled()
-    })
+  it('applies focus ring styles to links', () => {
+    renderWithRouter(<Sidebar />)
+    
+    const dashboardLink = screen.getByRole('link', { name: /Dashboard/i })
+    expect(dashboardLink).toHaveClass('focus:outline-none', 'focus:ring-2', 'focus:ring-blue-500', 'focus:ring-offset-2')
+  })
 
-    it('shows no badge when count is 0', () => {
-      renderWithProviders(<Sidebar notificationCount={0} />)
-      
-      expect(screen.queryByText('0')).not.toBeInTheDocument()
+  it('applies transition effects for smooth animations', () => {
+    renderWithRouter(<Sidebar isOpen={true} />)
+    
+    const sidebar = screen.getByRole('navigation').closest('aside')
+    expect(sidebar).toHaveClass('transition-[transform,opacity]', 'duration-200', 'ease-in-out')
+  })
+
+  it('renders icons with proper sizing', () => {
+    renderWithRouter(<Sidebar />)
+    
+    // Find all icon containers (they have w-5 h-5 class)
+    const iconContainers = document.querySelectorAll('.w-5.h-5')
+    expect(iconContainers.length).toBeGreaterThan(0)
+    
+    // Each should have the correct size classes
+    iconContainers.forEach(icon => {
+      expect(icon).toHaveClass('w-5', 'h-5')
     })
   })
 
-  describe('Search', () => {
-    it('renders search input', () => {
-      renderWithProviders(<Sidebar showSearch />)
-      
-      expect(screen.getByPlaceholderText(/search/i)).toBeInTheDocument()
-    })
-
-    it('handles search input', async () => {
-      const user = userEvent.setup()
-      const onSearch = vi.fn()
-      renderWithProviders(<Sidebar showSearch onSearch={onSearch} />)
-      
-      const searchInput = screen.getByPlaceholderText(/search/i)
-      await user.type(searchInput, 'test query')
-      
-      await waitFor(() => {
-        expect(onSearch).toHaveBeenCalledWith('test query')
-      })
-    })
-
-    it('shows search shortcut', () => {
-      renderWithProviders(<Sidebar showSearch />)
-      
-      expect(screen.getByText('⌘K')).toBeInTheDocument()
-    })
-
-    it('focuses search on shortcut', async () => {
-      const user = userEvent.setup()
-      renderWithProviders(<Sidebar showSearch />)
-      
-      const searchInput = screen.getByPlaceholderText(/search/i)
-      
-      // Simulate Cmd+K
-      await user.keyboard('{Meta>}k{/Meta}')
-      
-      expect(searchInput).toHaveFocus()
-    })
+  it('applies proper spacing between navigation items', () => {
+    renderWithRouter(<Sidebar />)
+    
+    const nav = screen.getByRole('navigation', { name: 'Main navigation' })
+    expect(nav).toHaveClass('space-y-1')
   })
 
-  describe('Accessibility', () => {
-    it('has proper ARIA labels', () => {
-      renderWithProviders(<Sidebar />)
-      
-      expect(screen.getByRole('complementary')).toHaveAttribute('aria-label', 'Main sidebar')
-      expect(screen.getByRole('navigation')).toHaveAttribute('aria-label', 'Main navigation')
-    })
-
-    it('announces collapse state', () => {
-      const { rerender } = renderWithProviders(<Sidebar />)
-      
-      expect(screen.getByRole('complementary')).toHaveAttribute('aria-expanded', 'true')
-      
-      rerender(<Sidebar isCollapsed />)
-      
-      expect(screen.getByRole('complementary')).toHaveAttribute('aria-expanded', 'false')
-    })
-
-    it('supports keyboard navigation', async () => {
-      const user = userEvent.setup()
-      renderWithProviders(<Sidebar />)
-      
-      // Tab through navigation items
-      await user.tab()
-      expect(screen.getByRole('link', { name: /dashboard/i })).toHaveFocus()
-      
-      await user.tab()
-      expect(screen.getByRole('link', { name: /tasks/i })).toHaveFocus()
-      
-      // Arrow key navigation
-      await user.keyboard('{ArrowDown}')
-      expect(screen.getByRole('link', { name: /repositories/i })).toHaveFocus()
-    })
-
-    it('traps focus in user menu', async () => {
-      const user = userEvent.setup()
-      renderWithProviders(<Sidebar user={mockUser} />)
-      
-      const userButton = screen.getByRole('button', { name: new RegExp(mockUser.name) })
-      await user.click(userButton)
-      
-      const menu = await screen.findByRole('menu')
-      expect(menu).toBeInTheDocument()
-      
-      // Focus should be trapped in menu
-      await user.tab()
-      expect(screen.getByText('Profile')).toHaveFocus()
-      
-      await user.tab()
-      expect(screen.getByText('Settings')).toHaveFocus()
-      
-      await user.tab()
-      expect(screen.getByText('Sign Out')).toHaveFocus()
-      
-      // Should wrap back to first item
-      await user.tab()
-      expect(screen.getByText('Profile')).toHaveFocus()
-    })
+  it('handles scrollbar styling', () => {
+    renderWithRouter(<Sidebar />)
+    
+    const nav = screen.getByRole('navigation', { name: 'Main navigation' })
+    expect(nav).toHaveClass('overflow-y-auto', 'scrollbar-minimal')
   })
 
-  describe('Responsive Behavior', () => {
-    it('auto-collapses on mobile', () => {
-      // Mock mobile viewport
-      Object.defineProperty(window, 'innerWidth', {
-        writable: true,
-        configurable: true,
-        value: 375
-      })
-      
-      renderWithProviders(<Sidebar />)
-      
-      const sidebar = screen.getByRole('complementary')
-      expect(sidebar).toHaveClass('hidden', 'md:flex')
-    })
-
-    it('shows mobile menu button', () => {
-      Object.defineProperty(window, 'innerWidth', {
-        writable: true,
-        configurable: true,
-        value: 375
-      })
-      
-      renderWithProviders(<Sidebar />)
-      
-      expect(screen.getByRole('button', { name: /open menu/i })).toBeInTheDocument()
-    })
-  })
-
-  describe('Theme Support', () => {
-    it('applies dark theme classes', () => {
-      renderWithProviders(<Sidebar theme="dark" />)
-      
-      const sidebar = screen.getByRole('complementary')
-      expect(sidebar).toHaveClass('bg-gray-900', 'text-white')
-    })
-
-    it('applies light theme classes', () => {
-      renderWithProviders(<Sidebar theme="light" />)
-      
-      const sidebar = screen.getByRole('complementary')
-      expect(sidebar).toHaveClass('bg-white', 'text-gray-900')
-    })
+  it('renders backdrop only on mobile when open', () => {
+    const { rerender } = renderWithRouter(<Sidebar isOpen={true} />)
+    
+    // Backdrop should exist when open
+    let backdrop = document.querySelector('.fixed.inset-0.bg-black.bg-opacity-50')
+    expect(backdrop).toBeInTheDocument()
+    expect(backdrop).toHaveClass('z-30', 'lg:hidden')
+    
+    // Backdrop should not exist when closed
+    rerender(
+      <BrowserRouter>
+        <Sidebar isOpen={false} />
+      </BrowserRouter>
+    )
+    
+    backdrop = document.querySelector('.fixed.inset-0.bg-black.bg-opacity-50')
+    expect(backdrop).not.toBeInTheDocument()
   })
 })

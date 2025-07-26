@@ -46,6 +46,7 @@ exports.testSSLConnection = testSSLConnection;
 exports.getSSLCertificateInfo = getSSLCertificateInfo;
 exports.checkSSLCertificateExpiration = checkSSLCertificateExpiration;
 const fs = __importStar(require("fs"));
+const crypto = __importStar(require("crypto"));
 const environment_1 = require("./environment");
 const bootstrap_logger_1 = require("../utils/bootstrap-logger");
 /**
@@ -143,13 +144,13 @@ function validateSSLConfiguration() {
     const caValidation = environment_1.env.SSL_CA_PATH
         ? validateCertificateFile(environment_1.env.SSL_CA_PATH, 'CA')
         : { valid: true };
-    if (!certValidation.valid) {
+    if (!certValidation.valid && certValidation.error) {
         errors.push(certValidation.error);
     }
-    if (!keyValidation.valid) {
+    if (!keyValidation.valid && keyValidation.error) {
         errors.push(keyValidation.error);
     }
-    if (!caValidation.valid) {
+    if (!caValidation.valid && caValidation.error) {
         errors.push(caValidation.error);
     }
     // SSL configuration warnings
@@ -278,7 +279,6 @@ function getSSLCertificateInfo() {
     // Add certificate expiration info if available
     if (validation.configuration.cert) {
         try {
-            const crypto = require('crypto');
             const cert = crypto.X509Certificate
                 ? new crypto.X509Certificate(validation.configuration.cert)
                 : null;
@@ -307,7 +307,6 @@ function checkSSLCertificateExpiration() {
         return { expiring: false };
     }
     try {
-        const crypto = require('crypto');
         const cert = crypto.X509Certificate
             ? new crypto.X509Certificate(validation.configuration.cert)
             : null;

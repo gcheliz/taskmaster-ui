@@ -206,7 +206,7 @@ class SecretsManager {
                 await new Promise(resolve => setTimeout(resolve, delay));
             }
         }
-        throw lastError;
+        throw lastError || new Error('Failed to retrieve secret after multiple attempts');
     }
 }
 exports.SecretsManager = SecretsManager;

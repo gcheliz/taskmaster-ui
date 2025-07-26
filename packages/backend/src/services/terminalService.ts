@@ -3,6 +3,7 @@ import { EventEmitter } from 'events';
 import { v4 as uuidv4 } from 'uuid';
 import * as os from 'os';
 import * as path from 'path';
+import * as fs from 'fs';
 import { logger } from '../utils/logger';
 
 export interface TerminalSession {
@@ -347,7 +348,6 @@ export class TerminalService extends EventEmitter {
    */
   private isValidDirectory(directory: string): boolean {
     try {
-      const fs = require('fs');
       const stat = fs.statSync(directory);
       return stat.isDirectory();
     } catch (error) {

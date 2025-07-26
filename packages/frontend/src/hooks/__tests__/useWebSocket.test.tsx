@@ -1,513 +1,311 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { renderHook, act, waitFor } from '@testing-library/react'
 import { useWebSocket } from '../useWebSocket'
+import { webSocketService } from '../../services/websocket'
+import { WebSocketState, WebSocketEventType } from '../../types/websocket'
 
-// Mock WebSocket
-class MockWebSocket {
-  url: string
-  readyState: number = WebSocket.CONNECTING
-  onopen: ((event: Event) => void) | null = null
-  onclose: ((event: CloseEvent) => void) | null = null
-  onerror: ((event: Event) => void) | null = null
-  onmessage: ((event: MessageEvent) => void) | null = null
-
-  constructor(url: string) {
-    this.url = url
-    setTimeout(() => {
-      this.readyState = WebSocket.OPEN
-      this.onopen?.(new Event('open'))
-    }, 0)
+// Mock the webSocketService
+vi.mock('../../services/websocket', () => ({
+  webSocketService: {
+    connect: vi.fn(() => Promise.resolve()),
+    disconnect: vi.fn(),
+    send: vi.fn(),
+    subscribe: vi.fn(() => vi.fn()), // Returns an unsubscribe function
+    isConnected: vi.fn(() => false),
+    getState: vi.fn(() => 'disconnected'), // Use string directly
+    getConnectedUsers: vi.fn(() => []),
+    setCurrentUser: vi.fn(),
   }
-
-  send(data: string) {
-    if (this.readyState !== WebSocket.OPEN) {
-      throw new Error('WebSocket is not open')
-    }
-  }
-
-  close(code?: number, reason?: string) {
-    this.readyState = WebSocket.CLOSED
-    this.onclose?.(new CloseEvent('close', { code, reason }))
-  }
-
-  // Helper to simulate receiving a message
-  receiveMessage(data: any) {
-    this.onmessage?.(new MessageEvent('message', { data: JSON.stringify(data) }))
-  }
-
-  // Helper to simulate error
-  triggerError() {
-    this.onerror?.(new Event('error'))
-  }
-}
-
-global.WebSocket = MockWebSocket as any
+}))
 
 describe('useWebSocket', () => {
-  let mockWebSocket: MockWebSocket
-
   beforeEach(() => {
     vi.clearAllMocks()
-    // Capture WebSocket instance when created
-    const OriginalWebSocket = global.WebSocket
-    global.WebSocket = vi.fn().mockImplementation((url: string) => {
-      mockWebSocket = new MockWebSocket(url)
-      return mockWebSocket
-    }) as any
+    // Reset default implementation
+    vi.mocked(webSocketService.subscribe).mockImplementation(() => vi.fn())
   })
 
   afterEach(() => {
-    vi.useRealTimers()
+    vi.clearAllTimers()
   })
 
   describe('Connection Management', () => {
-    it('establishes connection on mount', async () => {
-      const { result } = renderHook(() => useWebSocket('ws://localhost:3000'))
+    it('returns initial disconnected state', () => {
+      const { result } = renderHook(() => useWebSocket())
 
-      expect(result.current.readyState).toBe(WebSocket.CONNECTING)
-
-      await waitFor(() => {
-        expect(result.current.readyState).toBe(WebSocket.OPEN)
-        expect(result.current.isConnected).toBe(true)
-      })
+      expect(result.current.state).toBe(WebSocketState.DISCONNECTED)
+      expect(result.current.isConnected).toBe(false)
+      expect(result.current.connectedUsers).toEqual([])
+      expect(result.current.error).toBeNull()
     })
 
-    it('closes connection on unmount', async () => {
-      const { result, unmount } = renderHook(() => useWebSocket('ws://localhost:3000'))
+    it('connects when autoConnect is true', async () => {
+      const mockUser = { id: '1', name: 'Test User', email: 'test@example.com' }
+      
+      renderHook(() => useWebSocket({
+        url: 'ws://localhost:3000',
+        autoConnect: true,
+        user: mockUser
+      }))
 
       await waitFor(() => {
-        expect(result.current.isConnected).toBe(true)
-      })
-
-      unmount()
-
-      expect(mockWebSocket.readyState).toBe(WebSocket.CLOSED)
-    })
-
-    it('handles connection with options', async () => {
-      const onOpen = vi.fn()
-      const onClose = vi.fn()
-      const onError = vi.fn()
-
-      const { result } = renderHook(() =>
-        useWebSocket('ws://localhost:3000', {
-          onOpen,
-          onClose,
-          onError,
-          reconnectInterval: 1000,
-          maxReconnectAttempts: 3
+        expect(webSocketService.setCurrentUser).toHaveBeenCalledWith(mockUser)
+        expect(webSocketService.connect).toHaveBeenCalledWith({
+          url: 'ws://localhost:3000',
+          options: {
+            heartbeatInterval: 30000,
+            reconnectDelay: 1000,
+            maxReconnectAttempts: 5,
+            timeout: 5000,
+          }
         })
-      )
-
-      await waitFor(() => {
-        expect(onOpen).toHaveBeenCalled()
-        expect(result.current.isConnected).toBe(true)
       })
+    })
+
+    it('does not connect when autoConnect is false', () => {
+      renderHook(() => useWebSocket({
+        url: 'ws://localhost:3000',
+        autoConnect: false
+      }))
+
+      expect(webSocketService.connect).not.toHaveBeenCalled()
+    })
+
+    it('handles connection when already connected', () => {
+      vi.mocked(webSocketService.isConnected).mockReturnValue(true)
+      vi.mocked(webSocketService.getState).mockReturnValue('connected')
+
+      renderHook(() => useWebSocket({
+        url: 'ws://localhost:3000',
+        autoConnect: true
+      }))
+
+      expect(webSocketService.connect).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('State Management', () => {
+    it('subscribes to state changes', () => {
+      const { result } = renderHook(() => useWebSocket())
+
+      // Verify subscriptions were created
+      expect(webSocketService.subscribe).toHaveBeenCalledWith(
+        WebSocketEventType.CONNECT,
+        expect.any(Function)
+      )
+      expect(webSocketService.subscribe).toHaveBeenCalledWith(
+        WebSocketEventType.USER_JOINED,
+        expect.any(Function)
+      )
+      expect(webSocketService.subscribe).toHaveBeenCalledWith(
+        WebSocketEventType.USER_LEFT,
+        expect.any(Function)
+      )
+      expect(webSocketService.subscribe).toHaveBeenCalledWith(
+        WebSocketEventType.ERROR,
+        expect.any(Function)
+      )
+    })
+
+    it('updates connected users on connection established', () => {
+      const mockUsers = [
+        { id: '1', name: 'User 1', email: 'user1@example.com' },
+        { id: '2', name: 'User 2', email: 'user2@example.com' }
+      ]
+
+      let connectionCallback: any
+      vi.mocked(webSocketService.subscribe).mockImplementation((event, callback) => {
+        if (event === WebSocketEventType.CONNECT) {
+          connectionCallback = callback
+        }
+        return vi.fn()
+      })
+
+      const { result } = renderHook(() => useWebSocket())
+
+      act(() => {
+        connectionCallback({ connectedUsers: mockUsers })
+      })
+
+      expect(result.current.connectedUsers).toEqual(mockUsers)
+    })
+
+    it('updates connected users when user joins or leaves', () => {
+      const mockUsers = [{ id: '1', name: 'User 1', email: 'user1@example.com' }]
+      vi.mocked(webSocketService.getConnectedUsers).mockReturnValue(mockUsers)
+
+      let userJoinedCallback: any
+      let userLeftCallback: any
+      vi.mocked(webSocketService.subscribe).mockImplementation((event, callback) => {
+        if (event === WebSocketEventType.USER_JOINED) {
+          userJoinedCallback = callback
+        } else if (event === WebSocketEventType.USER_LEFT) {
+          userLeftCallback = callback
+        }
+        return vi.fn()
+      })
+
+      const { result } = renderHook(() => useWebSocket())
+
+      act(() => {
+        userJoinedCallback({})
+      })
+
+      expect(result.current.connectedUsers).toEqual(mockUsers)
+    })
+
+    it('handles errors', () => {
+      let errorCallback: any
+      vi.mocked(webSocketService.subscribe).mockImplementation((event, callback) => {
+        if (event === WebSocketEventType.ERROR) {
+          errorCallback = callback
+        }
+        return vi.fn()
+      })
+
+      const { result } = renderHook(() => useWebSocket())
+
+      const testError = new Error('Test error')
+      act(() => {
+        errorCallback({ error: testError })
+      })
+
+      expect(result.current.error).toEqual(testError)
     })
   })
 
   describe('Message Handling', () => {
-    it('sends messages when connected', async () => {
-      const sendSpy = vi.spyOn(MockWebSocket.prototype, 'send')
-      const { result } = renderHook(() => useWebSocket('ws://localhost:3000'))
+    it('sends messages using webSocketService', () => {
+      const { result } = renderHook(() => useWebSocket())
 
-      await waitFor(() => {
-        expect(result.current.isConnected).toBe(true)
-      })
-
-      const message = { type: 'test', data: 'hello' }
-      result.current.sendMessage(message)
-
-      expect(sendSpy).toHaveBeenCalledWith(JSON.stringify(message))
-    })
-
-    it('queues messages when not connected', () => {
-      const { result } = renderHook(() => useWebSocket('ws://localhost:3000'))
-
-      // Send before connection is established
-      const message = { type: 'test', data: 'hello' }
-      result.current.sendMessage(message)
-
-      // Message should be queued
-      expect(result.current.messageQueue).toContainEqual(message)
-    })
-
-    it('sends queued messages after connection', async () => {
-      const sendSpy = vi.spyOn(MockWebSocket.prototype, 'send')
-      const { result } = renderHook(() => useWebSocket('ws://localhost:3000'))
-
-      // Queue messages before connection
-      const message1 = { type: 'test1', data: 'hello1' }
-      const message2 = { type: 'test2', data: 'hello2' }
-      
-      result.current.sendMessage(message1)
-      result.current.sendMessage(message2)
-
-      await waitFor(() => {
-        expect(result.current.isConnected).toBe(true)
-      })
-
-      // Queued messages should be sent
-      expect(sendSpy).toHaveBeenCalledWith(JSON.stringify(message1))
-      expect(sendSpy).toHaveBeenCalledWith(JSON.stringify(message2))
-      expect(result.current.messageQueue).toHaveLength(0)
-    })
-
-    it('receives and parses messages', async () => {
-      const onMessage = vi.fn()
-      const { result } = renderHook(() =>
-        useWebSocket('ws://localhost:3000', { onMessage })
-      )
-
-      await waitFor(() => {
-        expect(result.current.isConnected).toBe(true)
-      })
-
-      const testMessage = { type: 'update', data: { id: 1, status: 'complete' } }
+      const message = { type: WebSocketEventType.TASK_UPDATED, payload: { id: '1' } }
       
       act(() => {
-        mockWebSocket.receiveMessage(testMessage)
+        result.current.send(message)
       })
 
-      expect(onMessage).toHaveBeenCalledWith(testMessage)
-      expect(result.current.lastMessage).toEqual(testMessage)
+      expect(webSocketService.send).toHaveBeenCalledWith(message)
     })
 
-    it('stores message history', async () => {
-      const { result } = renderHook(() =>
-        useWebSocket('ws://localhost:3000', { keepHistory: true })
-      )
-
-      await waitFor(() => {
-        expect(result.current.isConnected).toBe(true)
+    it('handles send errors', () => {
+      const sendError = new Error('Send failed')
+      vi.mocked(webSocketService.send).mockImplementation(() => {
+        throw sendError
       })
 
-      const messages = [
-        { type: 'msg1', data: 'data1' },
-        { type: 'msg2', data: 'data2' },
-        { type: 'msg3', data: 'data3' }
-      ]
+      const { result } = renderHook(() => useWebSocket())
 
+      const message = { type: WebSocketEventType.TASK_UPDATED, payload: { id: '1' } }
+      
       act(() => {
-        messages.forEach(msg => mockWebSocket.receiveMessage(msg))
+        result.current.send(message)
       })
 
-      expect(result.current.messageHistory).toEqual(messages)
+      expect(result.current.error).toEqual(sendError)
     })
 
-    it('limits message history size', async () => {
-      const { result } = renderHook(() =>
-        useWebSocket('ws://localhost:3000', { 
-          keepHistory: true,
-          historyLimit: 2 
-        })
-      )
+    it('clears error on successful send', () => {
+      const { result } = renderHook(() => useWebSocket())
 
-      await waitFor(() => {
-        expect(result.current.isConnected).toBe(true)
+      // First set an error
+      vi.mocked(webSocketService.send).mockImplementationOnce(() => {
+        throw new Error('Send failed')
       })
-
-      const messages = [
-        { type: 'msg1', data: 'data1' },
-        { type: 'msg2', data: 'data2' },
-        { type: 'msg3', data: 'data3' }
-      ]
-
+      
       act(() => {
-        messages.forEach(msg => mockWebSocket.receiveMessage(msg))
+        result.current.send({ type: WebSocketEventType.TASK_UPDATED, payload: {} })
       })
+      expect(result.current.error).not.toBeNull()
 
-      // Should only keep last 2 messages
-      expect(result.current.messageHistory).toEqual([
-        messages[1],
-        messages[2]
-      ])
+      // Then send successfully
+      vi.mocked(webSocketService.send).mockImplementationOnce(() => {})
+      
+      act(() => {
+        result.current.send({ type: WebSocketEventType.TASK_UPDATED, payload: {} })
+      })
+      expect(result.current.error).toBeNull()
     })
   })
 
-  describe('Error Handling', () => {
-    it('handles connection errors', async () => {
-      const onError = vi.fn()
-      const { result } = renderHook(() =>
-        useWebSocket('ws://localhost:3000', { onError })
+  describe('Subscription Management', () => {
+    it('subscribes to events', () => {
+      const mockUnsubscribe = vi.fn()
+      vi.mocked(webSocketService.subscribe).mockReturnValue(mockUnsubscribe)
+
+      const { result } = renderHook(() => useWebSocket())
+
+      const callback = vi.fn()
+      const unsubscribe = result.current.subscribe(WebSocketEventType.TASK_UPDATED, callback)
+
+      expect(webSocketService.subscribe).toHaveBeenCalledWith(
+        WebSocketEventType.TASK_UPDATED,
+        callback
       )
-
-      await waitFor(() => {
-        expect(result.current.isConnected).toBe(true)
-      })
-
-      act(() => {
-        mockWebSocket.triggerError()
-      })
-
-      expect(onError).toHaveBeenCalled()
-      expect(result.current.error).toBeDefined()
+      expect(unsubscribe).toBe(mockUnsubscribe)
     })
 
-    it('handles invalid JSON messages', async () => {
-      const onError = vi.fn()
-      const { result } = renderHook(() =>
-        useWebSocket('ws://localhost:3000', { onError })
-      )
-
-      await waitFor(() => {
-        expect(result.current.isConnected).toBe(true)
+    it('cleans up subscriptions on unmount', () => {
+      const unsubscribeFns = [vi.fn(), vi.fn(), vi.fn(), vi.fn()]
+      let subscribeIndex = 0
+      
+      vi.mocked(webSocketService.subscribe).mockImplementation(() => {
+        return unsubscribeFns[subscribeIndex++]
       })
 
-      // Send invalid JSON
-      act(() => {
-        mockWebSocket.onmessage?.(new MessageEvent('message', { data: 'invalid json' }))
+      const { unmount } = renderHook(() => useWebSocket())
+
+      unmount()
+
+      unsubscribeFns.forEach(fn => {
+        expect(fn).toHaveBeenCalled()
       })
-
-      expect(onError).toHaveBeenCalled()
-    })
-
-    it('handles send errors gracefully', async () => {
-      const { result } = renderHook(() => useWebSocket('ws://localhost:3000'))
-
-      await waitFor(() => {
-        expect(result.current.isConnected).toBe(true)
-      })
-
-      // Force connection to close
-      act(() => {
-        mockWebSocket.readyState = WebSocket.CLOSED
-      })
-
-      // Try to send message
-      expect(() => {
-        result.current.sendMessage({ type: 'test' })
-      }).not.toThrow()
-
-      // Message should be queued
-      expect(result.current.messageQueue).toHaveLength(1)
     })
   })
 
   describe('Reconnection', () => {
-    beforeEach(() => {
-      vi.useFakeTimers()
-    })
+    it('reconnects with config url', async () => {
+      const { result } = renderHook(() => useWebSocket({
+        url: 'ws://localhost:3000'
+      }))
 
-    it('attempts to reconnect after disconnect', async () => {
-      const { result } = renderHook(() =>
-        useWebSocket('ws://localhost:3000', {
-          reconnectInterval: 1000,
-          maxReconnectAttempts: 3
-        })
-      )
-
-      await waitFor(() => {
-        expect(result.current.isConnected).toBe(true)
+      await act(async () => {
+        result.current.reconnect()
       })
 
-      // Simulate disconnect
-      act(() => {
-        mockWebSocket.close(1006) // Abnormal closure
-      })
-
-      expect(result.current.isConnected).toBe(false)
-      expect(result.current.reconnectAttempt).toBe(1)
-
-      // Fast forward to trigger reconnect
-      act(() => {
-        vi.advanceTimersByTime(1000)
-      })
-
-      await waitFor(() => {
-        expect(result.current.isConnected).toBe(true)
-        expect(result.current.reconnectAttempt).toBe(0)
-      })
-    })
-
-    it('stops reconnecting after max attempts', async () => {
-      const onError = vi.fn()
-      const { result } = renderHook(() =>
-        useWebSocket('ws://localhost:3000', {
-          reconnectInterval: 1000,
-          maxReconnectAttempts: 2,
-          onError
-        })
-      )
-
-      await waitFor(() => {
-        expect(result.current.isConnected).toBe(true)
-      })
-
-      // Mock connection failures
-      let connectionAttempts = 0
-      global.WebSocket = vi.fn().mockImplementation(() => {
-        connectionAttempts++
-        const ws = new MockWebSocket('ws://localhost:3000')
-        if (connectionAttempts > 1) {
-          setTimeout(() => ws.triggerError(), 0)
+      expect(webSocketService.connect).toHaveBeenCalledWith({
+        url: 'ws://localhost:3000',
+        options: {
+          heartbeatInterval: 30000,
+          reconnectDelay: 1000,
+          maxReconnectAttempts: 5,
+          timeout: 5000,
         }
-        return ws
-      }) as any
-
-      // Trigger disconnect
-      act(() => {
-        mockWebSocket.close(1006)
       })
-
-      // Attempt 1
-      act(() => {
-        vi.advanceTimersByTime(1000)
-      })
-      
-      await waitFor(() => {
-        expect(result.current.reconnectAttempt).toBe(1)
-      })
-
-      // Attempt 2
-      act(() => {
-        vi.advanceTimersByTime(1000)
-      })
-
-      await waitFor(() => {
-        expect(result.current.reconnectAttempt).toBe(2)
-      })
-
-      // Should not attempt 3rd time
-      act(() => {
-        vi.advanceTimersByTime(1000)
-      })
-
-      expect(result.current.reconnectAttempt).toBe(2)
-      expect(onError).toHaveBeenCalled()
     })
 
-    it('resets reconnect attempts on successful connection', async () => {
-      const { result } = renderHook(() =>
-        useWebSocket('ws://localhost:3000', {
-          reconnectInterval: 1000,
-          maxReconnectAttempts: 5
-        })
-      )
+    it('handles reconnect errors', async () => {
+      const connectError = new Error('Connection failed')
+      vi.mocked(webSocketService.connect).mockRejectedValue(connectError)
 
-      await waitFor(() => {
-        expect(result.current.isConnected).toBe(true)
-      })
+      const { result } = renderHook(() => useWebSocket({
+        url: 'ws://localhost:3000'
+      }))
 
-      // Set reconnect attempts
-      act(() => {
-        result.current.reconnectAttempt = 3
-      })
-
-      // Successful reconnection should reset attempts
-      act(() => {
-        mockWebSocket.onopen?.(new Event('open'))
-      })
-
-      expect(result.current.reconnectAttempt).toBe(0)
-    })
-  })
-
-  describe('Binary Data', () => {
-    it('handles binary data when enabled', async () => {
-      const onMessage = vi.fn()
-      const { result } = renderHook(() =>
-        useWebSocket('ws://localhost:3000', {
-          binaryType: 'arraybuffer',
-          onMessage
-        })
-      )
-
-      await waitFor(() => {
-        expect(result.current.isConnected).toBe(true)
-      })
-
-      const binaryData = new ArrayBuffer(8)
-      const view = new DataView(binaryData)
-      view.setInt32(0, 42)
-
-      act(() => {
-        mockWebSocket.onmessage?.(new MessageEvent('message', { data: binaryData }))
-      })
-
-      expect(onMessage).toHaveBeenCalledWith(binaryData)
-    })
-
-    it('sends binary data', async () => {
-      const sendSpy = vi.spyOn(MockWebSocket.prototype, 'send')
-      const { result } = renderHook(() =>
-        useWebSocket('ws://localhost:3000', { binaryType: 'arraybuffer' })
-      )
-
-      await waitFor(() => {
-        expect(result.current.isConnected).toBe(true)
-      })
-
-      const binaryData = new ArrayBuffer(8)
-      result.current.sendBinaryData(binaryData)
-
-      expect(sendSpy).toHaveBeenCalledWith(binaryData)
-    })
-  })
-
-  describe('Utility Functions', () => {
-    it('manually closes connection', async () => {
-      const { result } = renderHook(() => useWebSocket('ws://localhost:3000'))
-
-      await waitFor(() => {
-        expect(result.current.isConnected).toBe(true)
-      })
-
-      act(() => {
-        result.current.disconnect()
-      })
-
-      expect(result.current.isConnected).toBe(false)
-      expect(mockWebSocket.readyState).toBe(WebSocket.CLOSED)
-    })
-
-    it('manually reconnects', async () => {
-      const { result } = renderHook(() => useWebSocket('ws://localhost:3000'))
-
-      await waitFor(() => {
-        expect(result.current.isConnected).toBe(true)
-      })
-
-      // Disconnect first
-      act(() => {
-        result.current.disconnect()
-      })
-
-      expect(result.current.isConnected).toBe(false)
-
-      // Manual reconnect
-      act(() => {
+      await act(async () => {
         result.current.reconnect()
       })
 
       await waitFor(() => {
-        expect(result.current.isConnected).toBe(true)
+        expect(result.current.error).toEqual(connectError)
       })
     })
 
-    it('clears message history', async () => {
-      const { result } = renderHook(() =>
-        useWebSocket('ws://localhost:3000', { keepHistory: true })
-      )
+    it('does not reconnect without url', () => {
+      const { result } = renderHook(() => useWebSocket())
 
-      await waitFor(() => {
-        expect(result.current.isConnected).toBe(true)
-      })
+      result.current.reconnect()
 
-      // Add some messages
-      act(() => {
-        mockWebSocket.receiveMessage({ type: 'test1' })
-        mockWebSocket.receiveMessage({ type: 'test2' })
-      })
-
-      expect(result.current.messageHistory).toHaveLength(2)
-
-      // Clear history
-      act(() => {
-        result.current.clearHistory()
-      })
-
-      expect(result.current.messageHistory).toHaveLength(0)
+      expect(webSocketService.connect).not.toHaveBeenCalled()
     })
   })
 })

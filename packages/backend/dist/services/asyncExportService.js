@@ -1,10 +1,45 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.asyncExportService = void 0;
 const uuid_1 = require("uuid");
 const database_1 = require("./database");
 const exportService_1 = require("./exportService");
 const ioredis_1 = require("ioredis");
+const fs_1 = require("fs");
+const path = __importStar(require("path"));
 // Redis client for export progress tracking
 const redis = new ioredis_1.Redis({
     host: process.env.REDIS_HOST || 'localhost',
@@ -155,10 +190,11 @@ class AsyncExportService {
                 return await database_1.prisma.task.count({
                     where: this.buildTaskWhereClause(options.filters)
                 });
-            case 'analytics':
+            case 'analytics': {
                 // For analytics, estimate based on date range
                 const dayCount = this.getDayCountFromFilters(options.filters);
                 return dayCount * 10; // Assume 10 data points per day
+            }
             case 'repository-activity':
                 return await database_1.prisma.repositoryActivity.count({
                     where: this.buildActivityWhereClause(options.filters)
@@ -176,7 +212,8 @@ class AsyncExportService {
         let processedCount = 0;
         const allTasks = [];
         // Fetch tasks in batches
-        while (true) {
+        let hasMore = true;
+        while (hasMore) {
             const tasks = await database_1.prisma.task.findMany({
                 where: this.buildTaskWhereClause(filters),
                 skip: page * pageSize,
@@ -186,8 +223,10 @@ class AsyncExportService {
                     subtasks: true
                 }
             });
-            if (tasks.length === 0)
+            if (tasks.length === 0) {
+                hasMore = false;
                 break;
+            }
             allTasks.push(...tasks);
             processedCount += tasks.length;
             await onProgress(processedCount);
@@ -248,12 +287,10 @@ class AsyncExportService {
     async storeExportFile(exportId, filename, data) {
         // In production, upload to S3 or similar
         // For now, store in local filesystem
-        const fs = require('fs').promises;
-        const path = require('path');
         const exportDir = path.join(process.cwd(), 'exports');
-        await fs.mkdir(exportDir, { recursive: true });
+        await fs_1.promises.mkdir(exportDir, { recursive: true });
         const filepath = path.join(exportDir, `${exportId}-${filename}`);
-        await fs.writeFile(filepath, data);
+        await fs_1.promises.writeFile(filepath, data);
         // Return download URL
         const baseUrl = process.env.API_BASE_URL || 'http://localhost:3001';
         return `${baseUrl}/api/export/download/${exportId}/${filename}`;

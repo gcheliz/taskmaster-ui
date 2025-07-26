@@ -1,6 +1,9 @@
 // Advanced Logging System for TaskMaster CLI Service
 // Provides structured logging with different levels and contexts
 
+import fs from 'fs';
+import path from 'path';
+
 export interface LogContext {
   requestId?: string;
   repositoryPath?: string;
@@ -315,8 +318,6 @@ export class FileLogHandler implements LogHandler {
   }
 
   private ensureLogDirectory(): void {
-    const fs = require('fs');
-    const path = require('path');
     const logDir = path.dirname(this.logFile);
 
     if (!fs.existsSync(logDir)) {
@@ -325,7 +326,6 @@ export class FileLogHandler implements LogHandler {
   }
 
   handle(entry: LogEntry): void {
-    const fs = require('fs');
     const logLine =
       JSON.stringify({
         ...entry,

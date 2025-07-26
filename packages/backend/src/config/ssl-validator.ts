@@ -6,6 +6,7 @@
  */
 
 import * as fs from 'fs';
+import * as crypto from 'crypto';
 import { env } from './environment';
 import { sslLogger } from '../utils/bootstrap-logger';
 
@@ -137,16 +138,16 @@ export function validateSSLConfiguration(): SSLValidationResult {
     ? validateCertificateFile(env.SSL_CA_PATH, 'CA')
     : { valid: true };
 
-  if (!certValidation.valid) {
-    errors.push(certValidation.error!);
+  if (!certValidation.valid && certValidation.error) {
+    errors.push(certValidation.error);
   }
 
-  if (!keyValidation.valid) {
-    errors.push(keyValidation.error!);
+  if (!keyValidation.valid && keyValidation.error) {
+    errors.push(keyValidation.error);
   }
 
-  if (!caValidation.valid) {
-    errors.push(caValidation.error!);
+  if (!caValidation.valid && caValidation.error) {
+    errors.push(caValidation.error);
   }
 
   // SSL configuration warnings
@@ -305,7 +306,6 @@ export function getSSLCertificateInfo(): any {
   // Add certificate expiration info if available
   if (validation.configuration.cert) {
     try {
-      const crypto = require('crypto');
       const cert = crypto.X509Certificate
         ? new crypto.X509Certificate(validation.configuration.cert)
         : null;
@@ -342,7 +342,6 @@ export function checkSSLCertificateExpiration(): {
   }
 
   try {
-    const crypto = require('crypto');
     const cert = crypto.X509Certificate
       ? new crypto.X509Certificate(validation.configuration.cert)
       : null;

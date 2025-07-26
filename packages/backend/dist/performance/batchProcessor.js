@@ -354,7 +354,10 @@ class TaskMasterBatchProcessor {
             if (!grouped.has(operation)) {
                 grouped.set(operation, []);
             }
-            grouped.get(operation).push(item);
+            const group = grouped.get(operation);
+            if (group) {
+                group.push(item);
+            }
         }
         return grouped;
     }
@@ -438,7 +441,10 @@ class TaskMasterBatchProcessor {
             if (!grouped.has(repo)) {
                 grouped.set(repo, []);
             }
-            grouped.get(repo).push(item);
+            const group = grouped.get(repo);
+            if (group) {
+                group.push(item);
+            }
         }
         return grouped;
     }

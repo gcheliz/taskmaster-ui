@@ -278,18 +278,18 @@ export class QueryAnalyzer {
     }
 
     // Calculate basic stats
-    const durations = queryOnlyLogs.map(log => log.duration!);
+    const durations = queryOnlyLogs.map(log => log.duration).filter((d): d is number => d !== undefined);
     const totalQueries = queryOnlyLogs.length;
     const averageDuration =
       durations.reduce((sum, duration) => sum + duration, 0) / totalQueries;
 
     // Find slowest and fastest queries
     const slowestQuery = queryOnlyLogs.reduce((slowest, current) =>
-      current.duration! > (slowest?.duration || 0) ? current : slowest
+      (current.duration ?? 0) > (slowest?.duration ?? 0) ? current : slowest
     );
 
     const fastestQuery = queryOnlyLogs.reduce((fastest, current) =>
-      current.duration! < (fastest?.duration || Infinity) ? current : fastest
+      (current.duration ?? Infinity) < (fastest?.duration ?? Infinity) ? current : fastest
     );
 
     // Analyze query frequency and performance
@@ -419,7 +419,7 @@ export class QueryAnalyzer {
     }
 
     // Check for slow queries
-    if (stats.slowestQuery && stats.slowestQuery.duration! > 1000) {
+    if (stats.slowestQuery && (stats.slowestQuery.duration ?? 0) > 1000) {
       recommendations.push('Investigate and optimize the slowest queries');
     }
 

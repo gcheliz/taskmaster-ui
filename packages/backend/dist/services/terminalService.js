@@ -39,6 +39,7 @@ const events_1 = require("events");
 const uuid_1 = require("uuid");
 const os = __importStar(require("os"));
 const path = __importStar(require("path"));
+const fs = __importStar(require("fs"));
 const logger_1 = require("../utils/logger");
 class TerminalService extends events_1.EventEmitter {
     constructor() {
@@ -310,7 +311,6 @@ class TerminalService extends events_1.EventEmitter {
      */
     isValidDirectory(directory) {
         try {
-            const fs = require('fs');
             const stat = fs.statSync(directory);
             return stat.isDirectory();
         }

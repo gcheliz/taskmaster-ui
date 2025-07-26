@@ -247,7 +247,7 @@ export class SecretsManager {
       }
     }
 
-    throw lastError!;
+    throw lastError || new Error('Failed to retrieve secret after multiple attempts');
   }
 }
 

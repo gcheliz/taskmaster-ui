@@ -1,6 +1,8 @@
 import dotenv from 'dotenv';
 import { z } from 'zod';
 import { configLogger } from '../utils/bootstrap-logger';
+import crypto from 'crypto';
+import { enforceSSLConfiguration } from './ssl-validator';
 
 // Load environment variables
 dotenv.config();
@@ -112,8 +114,6 @@ export const getDatabaseConfig = () => {
 
   // Add SSL configuration if enabled
   if (env.DATABASE_SSL === 'true') {
-    // Import SSL validator to enforce SSL configuration
-    const { enforceSSLConfiguration } = require('./ssl-validator');
     const sslConfig = enforceSSLConfiguration();
 
     if (sslConfig.enabled) {
@@ -142,7 +142,6 @@ export const getSecurityConfig = () => ({
 
 // Generate a secure random key if not provided
 function generateSecretKey(): string {
-  const crypto = require('crypto');
   const key = crypto.randomBytes(32).toString('hex');
 
   if (env.NODE_ENV === 'production') {

@@ -1,8 +1,13 @@
 "use strict";
 // Advanced Logging System for TaskMaster CLI Service
 // Provides structured logging with different levels and contexts
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.logger = exports.FileLogHandler = exports.ConsoleLogHandler = exports.TaskMasterLogger = exports.LogLevel = void 0;
+const fs_1 = __importDefault(require("fs"));
+const path_1 = __importDefault(require("path"));
 var LogLevel;
 (function (LogLevel) {
     LogLevel["ERROR"] = "error";
@@ -193,15 +198,12 @@ class FileLogHandler {
         this.ensureLogDirectory();
     }
     ensureLogDirectory() {
-        const fs = require('fs');
-        const path = require('path');
-        const logDir = path.dirname(this.logFile);
-        if (!fs.existsSync(logDir)) {
-            fs.mkdirSync(logDir, { recursive: true });
+        const logDir = path_1.default.dirname(this.logFile);
+        if (!fs_1.default.existsSync(logDir)) {
+            fs_1.default.mkdirSync(logDir, { recursive: true });
         }
     }
     handle(entry) {
-        const fs = require('fs');
         const logLine = JSON.stringify({
             ...entry,
             error: entry.error
@@ -213,7 +215,7 @@ class FileLogHandler {
                 : undefined,
         }) + '\n';
         try {
-            fs.appendFileSync(this.logFile, logLine);
+            fs_1.default.appendFileSync(this.logFile, logLine);
         }
         catch (error) {
             console.error('Failed to write to log file:', error);

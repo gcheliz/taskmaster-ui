@@ -36,6 +36,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.exportController = exports.ExportController = void 0;
 const exportService_1 = require("../services/exportService");
 const logger_1 = require("../utils/logger");
+const path = __importStar(require("path"));
+const fs = __importStar(require("fs"));
 class ExportController {
     /**
      * Export tasks
@@ -287,8 +289,6 @@ class ExportController {
             }
             // In production, redirect to S3 signed URL
             // For now, serve from local filesystem
-            const path = require('path');
-            const fs = require('fs');
             const filepath = path.join(process.cwd(), 'exports', `${exportId}-${filename}`);
             if (!fs.existsSync(filepath)) {
                 return res.status(404).json({

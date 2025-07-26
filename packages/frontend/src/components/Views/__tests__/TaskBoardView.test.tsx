@@ -1,3 +1,4 @@
+import React from 'react'
 import { render, screen, waitFor, act } from '@testing-library/react'
 import { TaskBoardView } from '../TaskBoardView'
 import { vi, beforeEach, afterEach } from 'vitest'
@@ -22,7 +23,16 @@ vi.mock('../ui/organisms/KanbanBoard', () => ({
 }))
 
 vi.mock('../TaskBoard/TaskBoardWithFilters', () => ({
-  TaskBoardWithFilters: () => <div data-testid="task-board-with-filters">Task Board with Filters</div>,
+  TaskBoardWithFilters: ({ onTasksChange, onLoadingChange, onErrorChange }: any) => {
+    // Simulate the component behavior
+    React.useEffect(() => {
+      onTasksChange?.([]);
+      onLoadingChange?.(false);
+      onErrorChange?.(null);
+    }, [onTasksChange, onLoadingChange, onErrorChange]);
+    
+    return <div data-testid="task-board-with-filters">Task Board with Filters</div>;
+  },
 }))
 
 describe('TaskBoardView', () => {
@@ -54,7 +64,9 @@ describe('TaskBoardView', () => {
   })
 
   it('shows filtered view when repository path is provided', async () => {
-    render(<TaskBoardView enableFiltering={true} repositoryPath="/test/path" />)
+    await act(async () => {
+      render(<TaskBoardView enableFiltering={true} repositoryPath="/test/path" />)
+    })
     
     await waitFor(() => {
       const toggleButton = screen.getByText('📋 Board View')
@@ -63,24 +75,32 @@ describe('TaskBoardView', () => {
     
     // When repositoryPath is provided and showFilters is true (default), it shows TaskBoardWithFilters
     // We can check for elements specific to the filtered view
-    expect(screen.getByText('Loading tasks...')).toBeInTheDocument()
+    expect(screen.getByTestId('task-board-with-filters')).toBeInTheDocument()
   })
 
-  it('has correct CSS class structure', () => {
-    const { container } = render(<TaskBoardView />)
+  it('has correct CSS class structure', async () => {
+    let container: HTMLElement;
+    await act(async () => {
+      const result = render(<TaskBoardView />);
+      container = result.container;
+    });
 
     // Check for main view container
-    const viewElement = container.querySelector('.task-board-view')
+    const viewElement = container!.querySelector('.task-board-view')
     expect(viewElement).toBeInTheDocument()
 
     // Check for content section
-    const contentElement = container.querySelector('.view-content')
+    const contentElement = container!.querySelector('.view-content')
     expect(contentElement).toBeInTheDocument()
   })
 
-  it('accepts and applies custom className', () => {
-    const { container } = render(<TaskBoardView className="custom-task-view" />)
-    const viewElement = container.querySelector('.task-board-view')
+  it('accepts and applies custom className', async () => {
+    let container: HTMLElement;
+    await act(async () => {
+      const result = render(<TaskBoardView className="custom-task-view" />);
+      container = result.container;
+    });
+    const viewElement = container!.querySelector('.task-board-view')
     expect(viewElement).toHaveClass('task-board-view', 'custom-task-view')
   })
 

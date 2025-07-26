@@ -248,7 +248,10 @@ class OptimizedTaskMasterService {
             if (!groups.has(groupKey)) {
                 groups.set(groupKey, []);
             }
-            groups.get(groupKey).push(op);
+            const group = groups.get(groupKey);
+            if (group) {
+                group.push(op);
+            }
         }
         return groups;
     }

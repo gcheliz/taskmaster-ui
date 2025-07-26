@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import AuthService from '../services/authService';
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
     interface User {
       userId: string;

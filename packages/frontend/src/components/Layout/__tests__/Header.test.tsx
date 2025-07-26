@@ -259,4 +259,3 @@ describe('Header', () => {
       expect(screen.queryByText(mockUser.name)).not.toBeInTheDocument()
     })
   })
-})

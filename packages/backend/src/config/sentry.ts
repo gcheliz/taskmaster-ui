@@ -12,7 +12,7 @@ interface SentryConfig {
   debug?: boolean;
 }
 
-export function initSentry(app: Application): void {
+export function initSentry(_app: Application): void {
   const sentryDsn = process.env['SENTRY_DSN'];
 
   if (!sentryDsn) {
@@ -104,17 +104,17 @@ export function initSentry(app: Application): void {
 }
 
 // Sentry middleware setup
-export function setupSentryMiddleware(app: Application): void {
+export function setupSentryMiddleware(_app: Application): void {
   // In Sentry v9, Express handlers are part of the Express integration
   // No need for separate request/tracing handlers - they're handled automatically
   // by the Express integration during Sentry.init()
 }
 
 // Sentry error handler (must be before any other error middleware)
-export function setupSentryErrorHandler(app: Application): void {
+export function setupSentryErrorHandler(_app: Application): void {
   // In Sentry v9, the error handling is done automatically by the Express integration
   // We can add a custom error handler if needed
-  app.use((error: any, _req: Request, _res: Response, next: NextFunction) => {
+  _app.use((error: any, _req: Request, _res: Response, next: NextFunction) => {
     // Check if we should handle this error
     const shouldHandle =
       process.env['NODE_ENV'] !== 'production'
@@ -205,10 +205,10 @@ export function startTransaction(name: string, op: string) {
     finish: () => {
       spanFinished = true;
     },
-    setStatus: (status: any) => {
+    setStatus: (_status: any) => {
       // Status is handled within the span callback
     },
-    startChild: (childOp: { op: string; name: string }) => ({
+    startChild: (_childOp: { op: string; name: string }) => ({
       finish: () => {},
     }),
   };

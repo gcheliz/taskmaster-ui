@@ -13,7 +13,7 @@ export class PerformanceController {
   /**
    * Get query performance analysis
    */
-  public async getQueryAnalysis(req: Request, res: Response): Promise<void> {
+  public async getQueryAnalysis(_req: Request, res: Response): Promise<void> {
     try {
       const analysis = DatabaseService.getInstance().getQueryAnalysis();
 
@@ -35,7 +35,7 @@ export class PerformanceController {
   /**
    * Clear query logs and metrics
    */
-  public async clearLogs(req: Request, res: Response): Promise<void> {
+  public async clearLogs(_req: Request, res: Response): Promise<void> {
     try {
       DatabaseService.getInstance().clearQueryLogs();
 
@@ -56,7 +56,7 @@ export class PerformanceController {
   /**
    * Export query logs
    */
-  public async exportLogs(req: Request, res: Response): Promise<void> {
+  public async exportLogs(_req: Request, res: Response): Promise<void> {
     try {
       const filename = `query-logs-${Date.now()}.json`;
       const outputPath = `/tmp/${filename}`;
@@ -85,7 +85,7 @@ export class PerformanceController {
   /**
    * Get database connection info and pool status
    */
-  public async getConnectionInfo(req: Request, res: Response): Promise<void> {
+  public async getConnectionInfo(_req: Request, res: Response): Promise<void> {
     try {
       const dbService = DatabaseService.getInstance();
       const isHealthy = await dbService.healthCheck();
@@ -334,7 +334,9 @@ export class PerformanceController {
 
     // Analyze EXPLAIN plans for additional recommendations
     explainResults.forEach(result => {
-      const typedResult = result as { plan?: Array<{ Plan?: unknown; 'Execution Time'?: number }> };
+      const typedResult = result as {
+        plan?: Array<{ Plan?: unknown; 'Execution Time'?: number }>;
+      };
       if (typedResult.plan && Array.isArray(typedResult.plan)) {
         const plan = typedResult.plan[0];
         if (plan?.Plan) {

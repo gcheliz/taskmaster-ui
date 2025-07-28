@@ -8,7 +8,7 @@ import {
   checkSSLCertificateExpiration,
 } from '../config/ssl-validator';
 
-export const getHealth = (req: Request, res: Response): void => {
+export const getHealth = (_req: Request, res: Response): void => {
   const response: HealthResponse = {
     status: 'OK',
     timestamp: new Date().toISOString(),
@@ -18,7 +18,7 @@ export const getHealth = (req: Request, res: Response): void => {
   res.status(200).json(response);
 };
 
-export const getApiHealth = (req: Request, res: Response): void => {
+export const getApiHealth = (_req: Request, res: Response): void => {
   const response: HealthResponse = {
     status: 'API is running',
     version: '1.0.0',
@@ -30,7 +30,7 @@ export const getApiHealth = (req: Request, res: Response): void => {
 };
 
 export const getSecretsHealth = async (
-  req: Request,
+  _req: Request,
   res: Response
 ): Promise<void> => {
   try {
@@ -64,7 +64,7 @@ export const getSecretsHealth = async (
 };
 
 export const getSSLHealth = async (
-  req: Request,
+  _req: Request,
   res: Response
 ): Promise<void> => {
   try {
@@ -101,7 +101,7 @@ export const getSSLHealth = async (
 };
 
 export const getSystemHealth = async (
-  req: Request,
+  _req: Request,
   res: Response
 ): Promise<void> => {
   try {

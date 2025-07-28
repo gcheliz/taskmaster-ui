@@ -1,9 +1,7 @@
 import request from 'supertest';
 import express from 'express';
 import { createTaskMasterRoutes } from '../../routes/taskMasterRoutes';
-import { TaskMasterController } from '../taskMasterController';
 import { TaskMasterService } from '../../services/taskMasterService';
-import { ProjectService } from '../../services/projectService';
 import { errorMiddleware } from '../../middleware/errorMiddleware';
 import { apiResponseMiddleware, validationMiddleware } from '../../middleware';
 import type { TaskInfo, TaskMasterResult } from '../../types/taskMaster';
@@ -15,7 +13,6 @@ jest.mock('../../services/projectService');
 describe('TaskInfo Creation API Integration Tests', () => {
   let app: express.Application;
   let mockTaskMasterService: jest.Mocked<TaskMasterService>;
-  let mockProjectService: jest.Mocked<ProjectService>;
 
   beforeEach(() => {
     // Reset mocks
@@ -24,13 +21,12 @@ describe('TaskInfo Creation API Integration Tests', () => {
     // Create Express app
     app = express();
     app.use(express.json());
-    app.use(apiResponseMiddleware());
-    app.use(validationMiddleware({ validateRepositoryPath: true }));
+    app.use(apiResponseMiddleware() as express.RequestHandler);
+    app.use(validationMiddleware() as express.RequestHandler);
 
     // Create mocked services
     mockTaskMasterService =
       new TaskMasterService() as jest.Mocked<TaskMasterService>;
-    mockProjectService = new ProjectService() as jest.Mocked<ProjectService>;
 
     // Create routes with mocked services
     const taskMasterRoutes = createTaskMasterRoutes(mockTaskMasterService);

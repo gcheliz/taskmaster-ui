@@ -221,7 +221,7 @@ export class SecretsManager {
    * Execute operation with retries
    */
   private async withRetries<T>(operation: () => Promise<T>): Promise<T> {
-    let lastError: Error;
+    let lastError: Error | undefined;
 
     for (let attempt = 1; attempt <= this.config.retries; attempt++) {
       try {
@@ -247,7 +247,10 @@ export class SecretsManager {
       }
     }
 
-    throw lastError || new Error('Failed to retrieve secret after multiple attempts');
+    throw (
+      lastError ||
+      new Error('Failed to retrieve secret after multiple attempts')
+    );
   }
 }
 
@@ -335,7 +338,9 @@ export async function getApplicationSecrets(): Promise<{
       sslConfig = { ca, cert, key };
     } catch (error) {
       // SSL certificates not available, continue without SSL
-      securityLogger.warn('SSL certificates not available for database connection');
+      securityLogger.warn(
+        'SSL certificates not available for database connection'
+      );
     }
   }
 
@@ -344,9 +349,7 @@ export async function getApplicationSecrets(): Promise<{
     (await secretsManager.getSecret('github_token').catch(() => undefined));
   const slackToken =
     env.SLACK_BOT_TOKEN ||
-    (await secretsManager
-      .getSecret('slack_bot_token')
-      .catch(() => undefined));
+    (await secretsManager.getSecret('slack_bot_token').catch(() => undefined));
   const anthropicKey =
     env.ANTHROPIC_API_KEY ||
     (await secretsManager

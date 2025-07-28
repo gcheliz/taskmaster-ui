@@ -6,7 +6,6 @@ import { WebSocketService } from '../services/websocket';
 import { EnhancedRequest, EnhancedResponse } from '../middleware';
 import {
   CliExecuteRequest,
-  CliExecuteResponse,
   ProjectStatusRequest,
   TaskListRequest,
   TaskDetailRequest,

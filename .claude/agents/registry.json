@@ -13,15 +13,17 @@
         "create-documentation"
       ],
       "triggers": {
-        "commands": ["/api-endpoint"],
+        "commands": ["/api-generate", "/api-docs", "/api-validate"],
         "tags": ["api", "endpoint", "route"],
-        "filePatterns": ["**/routes/*.ts", "**/controllers/*.ts"]
+        "filePatterns": ["**/routes/*.ts", "**/controllers/*.ts"],
+        "autoTrigger": true
       },
       "dependencies": ["database-management"],
       "config": {
-        "templates": "backend-agents/api-templates",
+        "templates": "backend-agents/templates",
         "middleware": ["auth", "rateLimiter", "validation"],
-        "validation": "zod"
+        "validation": "zod",
+        "implementation": "backend-agents/api-development-core.ts"
       }
     },
     "database-management": {
@@ -36,15 +38,23 @@
         "rollback-support"
       ],
       "triggers": {
-        "commands": ["/db-schema", "/db-migrate"],
+        "commands": [
+          "/db-schema",
+          "/db-migrate",
+          "/db-seed",
+          "/db-optimize",
+          "/db-apply"
+        ],
         "tags": ["database", "migration", "schema"],
-        "filePatterns": ["**/prisma/schema.prisma", "**/migrations/*.sql"]
+        "filePatterns": ["**/prisma/schema.prisma", "**/migrations/*.sql"],
+        "autoTrigger": true
       },
       "dependencies": [],
       "config": {
         "orm": "prisma",
         "autoMigrate": false,
-        "seedEnvironments": ["development", "staging"]
+        "seedEnvironments": ["development", "staging"],
+        "implementation": "backend-agents/database-management-core.ts"
       }
     },
     "component-development": {

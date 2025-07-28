@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { BranchHealthVisualization } from '../../components/Repository/BranchHealthVisualization'
 import { PullRequestStatus } from '../../components/Repository/PullRequestStatus'
 

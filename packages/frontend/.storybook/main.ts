@@ -16,10 +16,7 @@ const config: StorybookConfig = {
   ],
   "addons": [
     getAbsolutePath('@storybook/addon-docs'),
-    getAbsolutePath('@storybook/addon-controls'),
-    getAbsolutePath('@storybook/addon-viewport'),
-    getAbsolutePath('@storybook/addon-a11y'),
-    getAbsolutePath('@storybook/addon-backgrounds'),
+    getAbsolutePath('@storybook/addon-a11y')
   ],
   "framework": {
     "name": getAbsolutePath('@storybook/react-vite'),

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Progress } from '../../components/ui/atoms/Progress'
 
 const meta: Meta<typeof Progress> = {

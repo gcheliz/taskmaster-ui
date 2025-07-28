@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import TaskBoard from '../../pages/TaskBoard'
 
 const meta: Meta<typeof TaskBoard> = {

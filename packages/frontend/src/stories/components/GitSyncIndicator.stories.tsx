@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { GitSyncIndicator } from '../../components/Repository/GitSyncIndicator'
 import { WebSocketProvider } from '../../providers/WebSocketProvider'
 

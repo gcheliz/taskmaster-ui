@@ -1030,7 +1030,7 @@
         "description": "Upgrade Storybook from version 8 to version 9, updating story configurations, component documentation, and ensuring compatibility with the new major version.",
         "details": "1. **Pre-migration Assessment**: Audit current Storybook v8 configuration by examining .storybook/main.js, preview.js, and all story files. Review the official Storybook v9 migration guide to identify breaking changes, new features, and deprecated APIs. Document current story patterns, addons, and configurations that will require updates. 2. **Update Core Dependencies**: Upgrade @storybook/react, @storybook/addon-essentials, @storybook/addon-actions, and all other Storybook packages to v9 using pnpm. Update any related development dependencies and ensure peer dependency compatibility. 3. **Configuration Migration**: Update .storybook/main.js and preview.js files to use v9 configuration patterns. Replace deprecated configuration options, update addon configurations, and migrate any custom webpack or Vite configurations. Update story loading patterns if changed in v9. 4. **Story File Updates**: Update all *.stories.js/ts files to use v9 story format. Migrate deprecated story syntax, update args and argTypes definitions, and ensure proper component documentation structure. Update play functions and interaction testing if using @storybook/addon-interactions. 5. **Addon Compatibility**: Review and update all Storybook addons to v9-compatible versions. Replace any deprecated addons with maintained alternatives. Test essential addons like controls, actions, docs, and viewport. 6. **Component Documentation Rebuild**: Regenerate component documentation using Storybook's autodocs feature. Update JSDoc comments and component prop definitions to ensure proper documentation generation. Verify that component controls and documentation display correctly in the new version.",
         "testStrategy": "1. **Build Verification**: Run Storybook build command to ensure all stories compile correctly without errors or warnings. Verify that the build output is properly generated and can be deployed. 2. **Story Functionality Testing**: Start Storybook development server and manually test all component stories to ensure proper rendering, controls functionality, and interaction behavior. Verify that all addons work correctly and component documentation is properly displayed. 3. **Documentation Accuracy**: Review generated component documentation to ensure JSDoc comments, prop types, and examples are correctly parsed and displayed. Test that autodocs feature generates comprehensive documentation for all components. 4. **Addon Integration Testing**: Test all installed addons including controls, actions, docs, viewport, and any custom addons to ensure they function properly with the new version. Verify that addon panels display correctly and interactions work as expected. 5. **Cross-browser Compatibility**: Test Storybook in different browsers to ensure the v9 upgrade doesn't introduce browser-specific issues. Verify that all interactive elements and documentation render correctly across different environments.",
-        "status": "pending",
+        "status": "in-progress",
         "dependencies": [
           2
         ],
@@ -1042,7 +1042,7 @@
             "description": "Perform comprehensive assessment of current Storybook v8 setup, review v9 migration guide, and create detailed migration plan documenting all required changes",
             "dependencies": [],
             "details": "1. **Inventory Current Setup**: Examine .storybook/main.js, preview.js, and manager.js configurations. Catalog all installed Storybook addons and their versions. Document custom webpack/Vite configurations and any decorators or global styles. 2. **Analyze Story Files**: Audit all *.stories.tsx files to identify story format patterns, args usage, play functions, and component documentation. Create list of deprecated patterns that need updating. 3. **Review Migration Guide**: Study official Storybook v9 migration documentation, focusing on breaking changes in configuration API, story format changes, and addon compatibility. 4. **Create Migration Checklist**: Document specific changes needed for configuration files, story file updates, addon replacements, and new v9 features to implement. Include risk assessment for each change.",
-            "status": "in-progress",
+            "status": "done",
             "testStrategy": "1. **Documentation Review**: Verify migration plan covers all Storybook files and configurations by cross-referencing with file system scan results. 2. **Dependency Analysis**: Use pnpm list to ensure all Storybook-related packages are identified for upgrade. 3. **Risk Validation**: Review migration checklist against v9 changelog to ensure no breaking changes are missed."
           },
           {
@@ -1053,7 +1053,7 @@
               "5.1"
             ],
             "details": "1. **Update Package Dependencies**: Use pnpm to upgrade @storybook/react, @storybook/addon-essentials, @storybook/addon-controls, @storybook/addon-actions, @storybook/addon-links, @storybook/addon-docs, and @storybook/builder-vite to v9. Update @storybook/testing-library and related test utilities. 2. **Migrate Configuration Files**: Update .storybook/main.js to use new v9 configuration format, including framework options, addon configurations, and build settings. Migrate preview.js to use new globals and parameter structures. Update manager.js if custom UI configurations exist. 3. **Update Build Configuration**: Ensure Vite configuration in main.js is compatible with v9 requirements. Update any custom webpack configurations to v9 format. 4. **Fix Import Paths**: Update any deprecated import paths for Storybook utilities and types according to v9 module structure.",
-            "status": "pending",
+            "status": "in-progress",
             "testStrategy": "1. **Dependency Verification**: Run pnpm list to confirm all Storybook packages are on v9 and no v8 packages remain. Check for peer dependency warnings. 2. **Configuration Validation**: Run storybook dev --debug to verify configurations load without errors. Check console for deprecation warnings. 3. **Build Test**: Execute pnpm build-storybook to ensure production build completes successfully with new configurations."
           },
           {
@@ -1311,7 +1311,7 @@
     ],
     "metadata": {
       "created": "2025-07-25T18:35:51.262Z",
-      "updated": "2025-07-28T10:08:37.469Z",
+      "updated": "2025-07-28T10:17:16.195Z",
       "description": "Tag created on 25/7/2025"
     }
   }

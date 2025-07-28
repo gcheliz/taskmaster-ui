@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { FormField } from '../../components/ui/molecules/FormField'
 import { Icon, EyeIcon, CheckIcon } from '../../components/ui/atoms/Icon'
 

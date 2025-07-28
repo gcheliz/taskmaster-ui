@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { CollaborativeTaskBoard } from '../../components/TaskBoard/CollaborativeTaskBoard'
 import { WebSocketProvider } from '../../providers/WebSocketProvider'
 import type { Task, User } from '../../types/websocket'

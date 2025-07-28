@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { TaskBoardWithSearch } from '../../components/TaskBoard/TaskBoardWithSearch'
 import type { TaskBoardData } from '../../types/task'
 

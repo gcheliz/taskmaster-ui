@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { RepositoryCard } from '../../components/Repository/RepositoryCard'
 import type { RepositoryCardProps } from '../../components/Repository/RepositoryCard'
 

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { ActivityTimeline } from '../../components/ui/organisms/ActivityTimeline'
 import type { ActivityItem } from '../../components/ui/organisms/ActivityTimeline'
 

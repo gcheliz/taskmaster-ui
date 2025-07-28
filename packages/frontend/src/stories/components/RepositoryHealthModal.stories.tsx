@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
 import { RepositoryHealthModal } from '../../components/Repository/RepositoryHealthModal'
 import { Button } from '../../components/ui/atoms/Button'

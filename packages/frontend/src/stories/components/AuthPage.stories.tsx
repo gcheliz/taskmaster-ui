@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { AuthPage } from '../../components/Auth/AuthPage'
 
 const meta: Meta<typeof AuthPage> = {

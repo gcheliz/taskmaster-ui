@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { RepositoryGrid } from '../../components/Repository/RepositoryGrid'
 import type { RepositoryGridProps } from '../../components/Repository/RepositoryGrid'
 

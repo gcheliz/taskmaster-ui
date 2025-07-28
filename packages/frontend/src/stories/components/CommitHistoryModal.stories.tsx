@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
 import { CommitHistoryModal } from '../../components/Repository/CommitHistoryModal'
 import { Button } from '../../components/ui/atoms/Button'

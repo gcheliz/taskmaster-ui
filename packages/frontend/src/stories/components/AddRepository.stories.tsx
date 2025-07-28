@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { AddRepository } from '../../components/Repository/AddRepository'
 
 const meta: Meta<typeof AddRepository> = {

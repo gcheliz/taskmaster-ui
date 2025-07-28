@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { KanbanColumn } from '../../components/ui/molecules/KanbanColumn'
 
 const meta: Meta<typeof KanbanColumn> = {

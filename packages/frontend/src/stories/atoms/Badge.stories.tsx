@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Badge } from '../../components/ui/atoms/Badge'
 import { Icon, CheckIcon, XMarkIcon, PlusIcon, EyeIcon } from '../../components/ui/atoms/Icon'
 

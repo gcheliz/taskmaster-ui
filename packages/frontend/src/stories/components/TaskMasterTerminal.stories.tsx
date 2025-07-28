@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { TaskMasterTerminal } from '../../components/Terminal/TaskMasterTerminal'
 import '../../components/Terminal/TaskMasterTerminal.css'
 

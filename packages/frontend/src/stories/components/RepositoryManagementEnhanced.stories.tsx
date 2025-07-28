@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { RepositoryManagementEnhanced } from '../../components/Repository/RepositoryManagementEnhanced'
 // Storybook interactions temporarily disabled due to missing dependencies
 

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Spinner, PulseSpinner, DotsSpinner } from '../../components/ui/atoms/Spinner'
 import { Button } from '../../components/ui/atoms/Button'
 

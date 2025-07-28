@@ -13,7 +13,7 @@ interface TaskActionsProps {
   isLoading?: boolean
 }
 
-export const TaskActions: React.FC<TaskActionsProps> = ({
+export const TaskActions = ({
   task,
   onStatusChange,
   onComplete,
@@ -21,7 +21,7 @@ export const TaskActions: React.FC<TaskActionsProps> = ({
   onDuplicate,
   onExport,
   isLoading = false,
-}) => {
+}: TaskActionsProps) => {
   const handleComplete = () => {
     if (onComplete) {
       onComplete(task.id)
@@ -125,7 +125,7 @@ export const TaskActions: React.FC<TaskActionsProps> = ({
   )
 }
 
-export const TaskActionsDropdown: React.FC<TaskActionsProps> = ({
+export const TaskActionsDropdown = ({
   task,
   onStatusChange,
   onComplete,
@@ -133,7 +133,7 @@ export const TaskActionsDropdown: React.FC<TaskActionsProps> = ({
   onDuplicate,
   onExport,
   isLoading = false,
-}) => {
+}: TaskActionsProps) => {
   const [isOpen, setIsOpen] = React.useState(false)
 
   const handleAction = (action: () => void) => {
@@ -212,11 +212,11 @@ interface TaskActionsBarProps extends TaskActionsProps {
   compact?: boolean
 }
 
-export const TaskActionsBar: React.FC<TaskActionsBarProps> = ({
+export const TaskActionsBar = ({
   className = '',
   compact = false,
   ...props
-}) => {
+}: TaskActionsBarProps) => {
   return (
     <div 
       className={`flex items-center space-x-2 ${className}`}

@@ -1,0 +1,23 @@
+.container {
+  /* Component container styles */
+  @apply relative;
+}
+
+/* Responsive styles */
+@media (min-width: 768px) {
+  .container {
+    /* Tablet and desktop styles */
+  }
+}
+
+/* Accessibility styles */
+.container:focus-visible {
+  @apply ring-2 ring-blue-500 ring-offset-2;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .container {
+    /* Dark mode styles */
+  }
+}

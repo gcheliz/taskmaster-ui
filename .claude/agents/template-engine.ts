@@ -1,7 +1,6 @@
 import * as Handlebars from 'handlebars';
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import { z } from 'zod';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 
@@ -33,7 +32,7 @@ export interface TemplateValidationResult {
 export class TemplateEngine {
   private handlebars: typeof Handlebars;
   private templateCache: Map<string, HandlebarsTemplateDelegate> = new Map();
-  private projectConfig: ProjectConfig;
+  private projectConfig!: ProjectConfig;
 
   constructor() {
     this.handlebars = Handlebars.create();

@@ -1,0 +1,78 @@
+import React{{#if hooks.length}}, { {{#each hooks}}use{{this}}{{#unless @last}}, {{/unless}}{{/each}} }{{/if}} from 'react';
+{{#if componentType}}import type { {{pascalCase componentName}}Props } from './{{componentName}}.types';{{/if}}
+import styles from './{{componentName}}.module.css';
+{{#each imports}}
+{{this}}
+{{/each}}
+
+/**
+ * {{description}}
+ * @component
+ * @atomic-type {{componentType}}
+ */
+export const {{componentName}}: React.FC{{#if props.length}}<{{pascalCase componentName}}Props>{{/if}} = ({
+{{#each props}}
+  {{name}},
+{{/each}}
+{{#if hasChildren}}
+  children,
+{{/if}}
+{{#if accessibility.ariaLabel}}
+  ariaLabel,
+{{/if}}
+{{#if accessibility.ariaDescribedBy}}
+  ariaDescribedBy,
+{{/if}}
+}) => {
+  {{#each hooks}}
+  const {{this}}Data = use{{this}}();
+  {{/each}}
+  {{#if accessibility.focusManagement}}
+  const containerRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    // Focus management logic
+    if (containerRef.current) {
+      // Implement focus trap if needed
+    }
+  }, []);
+  {{/if}}
+  {{#if accessibility.keyboard}}
+
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    switch (event.key) {
+      case 'Enter':
+      case ' ':
+        // Handle keyboard activation
+        event.preventDefault();
+        break;
+      case 'Escape':
+        // Handle escape key
+        break;
+    }
+  };
+  {{/if}}
+
+  return (
+    <div
+      {{#if accessibility.focusManagement}}ref={containerRef}{{/if}}
+      className={styles.container}
+      {{#if accessibility.role}}role="{{accessibility.role}}"{{/if}}
+      {{#if accessibility.ariaLabel}}aria-label={ariaLabel}{{/if}}
+      {{#if accessibility.ariaDescribedBy}}aria-describedby={ariaDescribedBy}{{/if}}
+      {{#if accessibility.keyboard}}
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
+      {{/if}}
+    >
+      {{#if hasChildren}}
+      {children}
+      {{else}}
+      {/* Component content */}
+      <span>{{componentName}} Component</span>
+      {{/if}}
+    </div>
+  );
+};
+
+{{componentName}}.displayName = '{{componentName}}';

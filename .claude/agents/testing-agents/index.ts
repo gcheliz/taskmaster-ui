@@ -59,6 +59,38 @@ export type {
   DataGenerationPreferences
 } from './intelligent-test-system';
 
+export { FileWatcher, fileWatcher } from './file-watcher';
+export type {
+  FileWatcherOptions,
+  FileChange,
+  TestTrigger,
+  TestResult
+} from './file-watcher';
+
+export { CoverageEnforcement, coverageEnforcement } from './coverage-enforcement';
+export type {
+  CoverageThresholds,
+  CoverageReport as CoverageEnforcementReport,
+  CoverageSummary,
+  CoverageViolation,
+  CoverageTrend
+} from './coverage-enforcement';
+
+export { 
+  CIIntegration,
+  githubIntegration,
+  gitlabIntegration,
+  jenkinsIntegration,
+  circleIntegration
+} from './ci-integration';
+export type {
+  CIIntegrationOptions,
+  NotificationChannel,
+  PipelineStage,
+  Job,
+  Step
+} from './ci-integration';
+
 /**
  * Testing agent command handlers
  */
@@ -73,17 +105,28 @@ export const testingCommands = {
   '/test:a11y': 'Generate accessibility tests',
   '/test:intelligent': 'Generate intelligent tests with full analysis',
   '/test:analyze': 'Analyze code complexity and test requirements',
+  '/test:watch': 'Start file watcher for automatic test generation',
+  '/test:ci': 'Generate CI/CD pipeline configuration',
 } as const;
 
 /**
  * Initialize all testing agents
  */
-export function initializeTestingAgents(projectRoot: string): void {
+export async function initializeTestingAgents(projectRoot: string): Promise<void> {
   console.log('🧪 Initializing Testing Agents...');
   console.log('✅ Backend Testing Agent ready');
   console.log('✅ Frontend Testing Agent ready');
   console.log('✅ Test Intelligence Engine ready');
   console.log('✅ Mock Generator ready');
   console.log('✅ Intelligent Test System ready');
+  console.log('✅ File Watcher ready');
+  console.log('✅ Coverage Enforcement ready');
+  console.log('✅ CI/CD Integration ready');
   console.log('📚 Available commands:', Object.keys(testingCommands).join(', '));
+  
+  // Start file watcher if enabled
+  if (process.env.AUTO_TEST === 'true') {
+    console.log('👀 Starting file watcher for automatic test generation...');
+    await fileWatcher.start();
+  }
 }

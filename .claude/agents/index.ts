@@ -8,6 +8,14 @@ export { AgentCommandRouter, handleClaudeCommand } from './command-router';
 export { AgentFileWatcher } from './file-watcher';
 export { TaskMasterIntegration } from './task-master-integration';
 
+// Re-export code review agent
+export { 
+  codeReviewEngine,
+  runCodeReview,
+  reviewAndFormat,
+  initializeCodeReviewAgent
+} from './code-review-agent';
+
 // Agent system configuration
 interface AgentSystemConfig {
   workspacePath: string;
@@ -68,6 +76,9 @@ export class ClaudeAgentSystem {
         }
       });
     }
+
+    // Initialize code review agent
+    await initializeCodeReviewAgent(this.config.workspacePath);
 
     logger.info('Claude Agent System initialized successfully');
   }

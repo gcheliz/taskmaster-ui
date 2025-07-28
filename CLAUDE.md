@@ -17,7 +17,7 @@ task-master show <id>                             # View detailed task informati
 task-master set-status --id=<id> --status=done    # Mark task complete
 
 # Task Management
-task-master add-task --prompt="description" --research        # Add new task with AI assistance
+task-master add-task --prompt="description" --research --append    # Add new task with AI assistance
 task-master expand --id=<id> --research --force              # Break task into subtasks
 task-master update-task --id=<id> --prompt="changes"         # Update specific task
 task-master update --from=<id> --prompt="changes"            # Update multiple tasks from ID onwards
@@ -83,8 +83,6 @@ project/
 - **CRITICAL**: Always check task status before starting work and after completing work
 - **IMPORTANT**: Use `task-master list` and `task-master show <id>` to verify current task status
 - **IMPORTANT**: Update task status immediately after completion with `task-master set-status --id=<id> --status=done`
-- **NOTE**: Subtask IDs use dot notation (e.g., 7.1, 7.2) not double notation (e.g., 7.7.1)
-- **NOTE**: If `update-subtask` command fails, you can manually edit `.taskmaster/tasks/tasks.json` to update status
 - **IMPORTANT**: When all subtasks are done, mark the parent task as done
 - **CRITICAL**: Regularly sync task status to avoid working on already completed tasks
 
@@ -97,28 +95,27 @@ project/
   - Use `pnpm run` instead of `npm run`
   - Use `pnpm exec` instead of `npx`
   - All package management must be done through pnpm to avoid dependency conflicts and warnings
-- **CRITICAL** Do not use the cd command to execute node commands. Place a common package.json into the root project folder to map all node actions into the multiple workspace project. Keep the monorepo workspace config execution through the main package.json file into the root folder.
 - **CRITICAL** Perform the subtask expansion always in batches, try generating 5 in parallel.
-- **CRITICAL** When you finish a subtask, execute the complete checks and tests and if there are any error fix it and NEVER continue to the next task if the tests are showing errors. Doesn't matter if the error is not related with the task changes. Commit the changes after the tests and checks does not return any error and continue to the next task.
-- **IMPORTANT** Never stop performing tasks if tasksmaster have pending tasks.
-- **IMPORTANT** Always keep updated the state of the tasks in taskmaster when you start, update or finish a task. If you are for example into the subtask 1.3 the subtasks 1.1 and 1.2 should have the done state
-- **CRITICAL** Task Status Update Rule: The task-master CLI has a bug with updating individual subtask statuses. Use the custom bash script `./update-subtask-status.sh <parentId> <subtaskNumber> <newStatus> <tag>` to update subtask status progressively. When all subtasks are complete, mark the parent task as done using `task-master set-status --id=<parent_id> --status=done --tag=<tag>`.
+- **CRITICAL** When you finish a subtask, execute the complete checks and tests and if there are any error fix it and
+  NEVER continue to the next task if the tests are showing errors. Doesn't matter if the error is not related with the
+  task changes. Commit the changes after the tests and checks does not return any error and continue to the next task.
 
 ### Command Execution Memories
 
-- **IMPORTANT** Always update the project CLAUDE.md file when you execute a wrong command and then find the right one to execute for always keeping into the CLAUDE.md file the right environment command execution
-- **LEARNED** To update subtask status progressively: Use `./update-subtask-status.sh <parentId> <subtaskNumber> <newStatus> <tag>` (e.g., `./update-subtask-status.sh 6 1 done ui-modernization` to update subtask 6.1). The script constructs the full subtask ID internally.
-- **LEARNED** Task-master displays subtask IDs with double notation (e.g., 6.6.1) but they are stored internally as single dot notation (e.g., 6.1). The update script expects just the number after the parent ID.
+- **IMPORTANT** Always update the project CLAUDE.md file when you execute a wrong command and then find the right one to
+  execute for always keeping into the CLAUDE.md file the right environment command execution
 - **LEARNED** Task status can become outdated in TaskMaster. Always verify current status before starting work
-- **LEARNED** If subtask update commands fail, directly edit `.taskmaster/tasks/tasks.json` to update status
-- **LEARNED** Common ESLint pre-commit hook errors can be bypassed with `--no-verify` flag when needed
 
 ### Critical Execution Rules
-- **IMPORTANT** NEVER FINISH A TASK OR SUBTASK IF IT'S ANY TEST OR CHECK ARE FAILING. THE CONDITION TO TAKE THE NEXT TASK IT'S "NO ERRORS"
+
+- **IMPORTANT** NEVER FINISH A TASK OR SUBTASK IF IT'S ANY TEST OR CHECK ARE FAILING. THE CONDITION TO TAKE THE NEXT
+  TASK IT'S "NO ERRORS"
 
 ### Test Execution Guidelines
+
 - **CRITICAL** Always run tests with `pnpm test` (not `pnpm test:watch`) to prevent CPU overload
 - **IMPORTANT** Vitest is configured with resource limits: max 2 threads, 30s timeout, no watch mode by default
-- **LEARNED** If Vitest processes hang and consume 100% CPU, kill them with: `ps aux | grep vitest` then `kill -9 [PIDs]`
+- **LEARNED** If Vitest processes hang and consume 100% CPU, kill them with: `ps aux | grep vitest` then
+  `kill -9 [PIDs]`
 - **IMPORTANT** Test scripts now use `--run` flag by default to ensure tests exit after completion
 - **IMPORTANT** Use `pnpm test:watch` only when actively developing and remember to stop it with Ctrl+C when done

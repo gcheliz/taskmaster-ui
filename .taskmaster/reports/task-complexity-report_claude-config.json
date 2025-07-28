@@ -1,0 +1,93 @@
+{
+  "meta": {
+    "generatedAt": "2025-07-28T15:30:53.517Z",
+    "tasksAnalyzed": 10,
+    "totalTasks": 10,
+    "analysisCount": 10,
+    "thresholdScore": 5,
+    "projectName": "Taskmaster UI",
+    "usedResearch": true
+  },
+  "complexityAnalysis": [
+    {
+      "taskId": 1,
+      "taskTitle": "Setup Claude Configuration Structure",
+      "complexityScore": 4,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Break down the Claude configuration setup into subtasks: 1) Create .claude directory structure with proper permissions, 2) Implement settings.json with agent registry and tool configurations, 3) Set up MCP server configuration in .mcp.json with proper endpoints, 4) Create agent configuration templates for backend/frontend/workflow agents, 5) Implement validation and testing framework for configuration files",
+      "reasoning": "Foundation task requiring careful directory structure setup, multiple configuration files, and template creation. Moderate complexity due to need for proper validation and integration with Claude Code requirements."
+    },
+    {
+      "taskId": 2,
+      "taskTitle": "Implement Backend Development Agents",
+      "complexityScore": 8,
+      "recommendedSubtasks": 8,
+      "expansionPrompt": "Implement backend agents in phases: 1) Create base agent framework with Express v5 integration, 2) Implement API Development Agent with route generation and middleware, 3) Add Prisma schema update capabilities with validation, 4) Create service layer generator with Zod validation patterns, 5) Implement Database Management Agent core functionality, 6) Add migration generation and validation logic, 7) Create seed data and query optimization features, 8) Integrate API documentation generation with existing patterns",
+      "reasoning": "High complexity due to multiple agent types, integration with Express v5 and Prisma, need for code generation templates, and validation requirements. Requires deep understanding of backend patterns and existing codebase structure."
+    },
+    {
+      "taskId": 3,
+      "taskTitle": "Implement Frontend Development Agents",
+      "complexityScore": 8,
+      "recommendedSubtasks": 8,
+      "expansionPrompt": "Create frontend agents systematically: 1) Build Component Development Agent framework with React 19 support, 2) Implement atomic design template generators (atoms/molecules/organisms), 3) Add Tailwind CSS integration and styling patterns, 4) Create Storybook story generation with proper configurations, 5) Implement State Management Agent with TanStack Query integration, 6) Add context provider and WebSocket connection generators, 7) Implement accessibility compliance checking (WCAG 2.1 AA), 8) Create performance optimization and Vite 6 integration features",
+      "reasoning": "High complexity due to multiple frontend technologies (React 19, Tailwind, Storybook, TanStack Query), atomic design pattern implementation, accessibility requirements, and need for sophisticated code generation."
+    },
+    {
+      "taskId": 4,
+      "taskTitle": "Implement Testing Agents",
+      "complexityScore": 9,
+      "recommendedSubtasks": 10,
+      "expansionPrompt": "Implement comprehensive testing agents: 1) Create base testing agent framework with auto-trigger capabilities, 2) Implement Backend Testing Agent with Jest unit test generation, 3) Add API integration test generation with proper mocking, 4) Create test data factory patterns and utilities, 5) Implement Frontend Testing Agent with Vitest component tests, 6) Add Playwright E2E test generation with page objects, 7) Implement visual regression testing setup, 8) Add accessibility testing automation, 9) Create coverage tracking and reporting system (80% threshold), 10) Implement resource-aware test execution with proper limits",
+      "reasoning": "Very high complexity due to multiple testing frameworks (Jest, Vitest, Playwright), different test types (unit, integration, E2E, visual, accessibility), coverage requirements, and need to respect existing resource constraints while maintaining auto-trigger functionality."
+    },
+    {
+      "taskId": 5,
+      "taskTitle": "Implement Code Review Agent",
+      "complexityScore": 6,
+      "recommendedSubtasks": 6,
+      "expansionPrompt": "Build code review automation: 1) Create Code Review Agent base with Git integration, 2) Implement ESLint rule enforcement with project-specific configurations, 3) Add TypeScript strict mode compliance checking and suggestions, 4) Integrate security vulnerability scanning using existing tools, 5) Implement performance optimization analysis and suggestions, 6) Create pre-commit hook integration and /review command interface",
+      "reasoning": "Moderate to high complexity due to integration with multiple tools (ESLint, TypeScript, security scanners), need for intelligent suggestion generation, and seamless Git workflow integration without blocking legitimate changes."
+    },
+    {
+      "taskId": 6,
+      "taskTitle": "Implement Documentation Agent",
+      "complexityScore": 7,
+      "recommendedSubtasks": 7,
+      "expansionPrompt": "Create documentation automation system: 1) Build Documentation Agent framework with code parsing capabilities, 2) Implement API documentation extraction from code annotations, 3) Create README update logic with smart content preservation, 4) Implement Mermaid diagram generation for architecture visualization, 5) Add CLAUDE.md context maintenance with learning capture, 6) Create release notes generation from commit analysis, 7) Implement /docs command and auto-trigger integration",
+      "reasoning": "High complexity due to need for intelligent code parsing, multiple documentation formats, diagram generation, and maintaining synchronization between code and documentation while preserving manual edits."
+    },
+    {
+      "taskId": 7,
+      "taskTitle": "Implement Workflow Orchestration System",
+      "complexityScore": 9,
+      "recommendedSubtasks": 9,
+      "expansionPrompt": "Build workflow orchestration engine: 1) Create core workflow engine with parallel/sequential execution support, 2) Implement feature development workflow with agent coordination, 3) Create bug fix workflow with root cause analysis, 4) Implement refactoring workflow with impact analysis, 5) Build YAML workflow template parser and validator, 6) Add conditional logic and decision tree support, 7) Implement error handling and recovery mechanisms, 8) Create task-master integration layer, 9) Build /feature command interface and auto-trigger logic",
+      "reasoning": "Very high complexity due to need for sophisticated orchestration logic, multiple workflow types, parallel execution management, conditional branching, error recovery, and deep integration with existing task-master system."
+    },
+    {
+      "taskId": 8,
+      "taskTitle": "Implement CI/CD Pipeline Integration",
+      "complexityScore": 8,
+      "recommendedSubtasks": 8,
+      "expansionPrompt": "Integrate with CI/CD pipeline: 1) Create pre-commit hook framework with PNPM support, 2) Implement lint, type-check, and format validation hooks, 3) Add Claude review integration to pre-commit flow, 4) Build PR pipeline with automated validation triggers, 5) Implement comprehensive test suite execution with reporting, 6) Create deployment pipeline for staging environment, 7) Add production deployment with health checks and smoke tests, 8) Implement rollback mechanisms and monitoring integration",
+      "reasoning": "High complexity due to multiple pipeline stages, need for PNPM-exclusive implementation, various validation steps, deployment to multiple environments, and requirement for robust error handling and rollback capabilities."
+    },
+    {
+      "taskId": 9,
+      "taskTitle": "Implement DevOps Agent",
+      "complexityScore": 7,
+      "recommendedSubtasks": 7,
+      "expansionPrompt": "Create DevOps automation agent: 1) Build DevOps Agent framework with infrastructure templates, 2) Implement Docker configuration generation and optimization, 3) Create Kubernetes manifest generator with best practices, 4) Add CI/CD pipeline optimization suggestions, 5) Implement secure environment variable management, 6) Create performance monitoring setup automation, 7) Build /deploy command with environment-specific logic and health checks",
+      "reasoning": "High complexity due to infrastructure complexity, multiple deployment targets, security requirements for environment variables, and need for production-ready configurations with proper health checks and monitoring."
+    },
+    {
+      "taskId": 10,
+      "taskTitle": "Implement Monitoring and Performance Optimization",
+      "complexityScore": 8,
+      "recommendedSubtasks": 8,
+      "expansionPrompt": "Build comprehensive monitoring system: 1) Create monitoring framework with metric collection infrastructure, 2) Implement performance baseline establishment and tracking, 3) Build automated optimization suggestion engine, 4) Create success metrics tracking (development velocity, coverage, PR approval), 5) Implement alerting system for critical thresholds, 6) Build dashboards for code quality and team metrics, 7) Create automated reporting and trend analysis, 8) Integrate monitoring with existing development workflow",
+      "reasoning": "High complexity due to need for comprehensive metric collection, intelligent optimization suggestions, multiple dashboard requirements, and integration with existing systems while tracking specific success criteria like 40% faster development."
+    }
+  ]
+}

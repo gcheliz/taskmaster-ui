@@ -115,6 +115,9 @@ const cardFooterVariants = cva('flex items-center justify-between space-x-2', {
   },
 })
 
+/**
+ * Card component properties
+ */
 export interface CardProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof cardVariants> {
@@ -170,6 +173,31 @@ export interface CardFooterProps
   extends React.HTMLAttributes<HTMLDivElement>,
     Pick<VariantProps<typeof cardFooterVariants>, 'size'> {}
 
+/**
+ * A flexible card component for content containers.
+ * Supports multiple variants, sizes, interactive states, and drag-and-drop functionality.
+ * Built with accessibility in mind and full dark theme support.
+ *
+ * @example
+ * ```tsx
+ * <Card variant="elevated" size="md">
+ *   <CardHeader>
+ *     <CardTitle>Card Title</CardTitle>
+ *   </CardHeader>
+ *   <CardContent>
+ *     Card content goes here
+ *   </CardContent>
+ * </Card>
+ * ```
+ *
+ * @example
+ * ```tsx
+ * // Interactive card
+ * <Card interactive onCardClick={handleClick}>
+ *   Click me!
+ * </Card>
+ * ```
+ */
 const Card = React.forwardRef<HTMLDivElement, CardProps>(
   (
     {
@@ -224,16 +252,20 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
         role={interactive ? 'button' : undefined}
         tabIndex={interactive ? 0 : undefined}
         aria-label={ariaLabel}
-        whileHover={interactive || draggable ? { 
-          scale: 1.02,
-          y: -4,
-          boxShadow: "0 10px 30px rgba(0, 0, 0, 0.1)"
-        } : undefined}
+        whileHover={
+          interactive || draggable
+            ? {
+                scale: 1.02,
+                y: -4,
+                boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)',
+              }
+            : undefined
+        }
         whileTap={interactive ? { scale: 0.98 } : undefined}
         transition={{
-          type: "spring",
+          type: 'spring',
           stiffness: 300,
-          damping: 20
+          damping: 20,
         }}
         {...props}
       />

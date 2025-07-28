@@ -7,1135 +7,493 @@
       "description": "Tasks for taskmaster-ui context"
     }
   },
-  "linter-fixes": {
-    "tasks": [],
-    "metadata": {
-      "created": "2025-07-24T12:40:56.294Z",
-      "updated": "2025-07-24T12:40:56.294Z",
-      "description": "Tag created on 24/7/2025"
-    }
-  },
-  "ui-modernization": {
+  "claude-config": {
     "tasks": [
       {
         "id": 1,
-        "title": "Remove .bak files and organize project structure",
-        "description": "Clean up the codebase by removing all .bak files and establishing a proper project structure",
-        "status": "done",
-        "dependencies": [],
+        "title": "Setup Claude Configuration Structure",
+        "description": "Initialize the foundational directory structure and configuration files for Claude AI sub-agents integration",
+        "details": "Create .claude/ directory structure with settings.json, commands/ subdirectory, and agent configuration templates. Set up MCP server configuration in .mcp.json. Initialize agent registry and workflow templates following the atomic design pattern. Create base configuration files for backend-agents, frontend-agents, and workflow orchestration as defined in the PRD.",
+        "testStrategy": "Validate directory structure exists, configuration files are valid JSON, and all required templates are present. Test that Claude Code can load and parse the configuration files without errors.",
         "priority": "high",
-        "details": "Remove all .bak files from the codebase (ActivityTimeline.tsx.bak, BranchHealthVisualization.tsx.bak, etc.). Organize components into proper directories following atomic design pattern. Set up .gitignore rules to prevent future .bak file commits.",
-        "testStrategy": "Verify all .bak files are removed using find command. Ensure project builds successfully. Check that no functionality is broken by running existing tests.",
+        "dependencies": [],
+        "status": "pending",
         "subtasks": [
           {
-            "id": "1.1",
-            "title": "Scan and remove all .bak files",
-            "description": "Identify and safely remove all .bak files from the codebase",
-            "status": "done",
+            "id": 1,
+            "title": "Create Base Directory Structure and Core Configuration",
+            "description": "Initialize .claude/ directory with settings.json, commands/ subdirectory, and .mcp.json file",
             "dependencies": [],
-            "priority": "high",
-            "details": "Use find command to locate all .bak files in the project. Create a list of files to be removed for review. Execute removal of all .bak files. Verify no critical files were accidentally removed.",
-            "testStrategy": "Run find command to confirm no .bak files remain. Check git status to ensure only .bak files were removed."
+            "details": "Create .claude/ directory at project root. Initialize settings.json with tool allowlist configuration for all required tools (Bash, Read, Write, Edit, etc.). Create commands/ subdirectory for custom slash commands. Create .mcp.json with initial MCP server configuration including name, command, args, and env settings. Ensure all JSON files are valid and properly formatted.",
+            "status": "pending",
+            "testStrategy": "Verify .claude/ directory exists with correct permissions. Validate settings.json and .mcp.json are valid JSON using JSON schema validation. Check commands/ subdirectory is created and accessible. Test Claude Code can successfully load and parse both configuration files."
           },
           {
-            "id": "1.2",
-            "title": "Reorganize component structure following atomic design",
-            "description": "Restructure components into atoms, molecules, organisms, templates, and pages",
-            "status": "done",
+            "id": 2,
+            "title": "Setup Agent Registry and Base Templates",
+            "description": "Create agent registry structure and base configuration templates for backend and frontend agents",
             "dependencies": ["1.1"],
-            "priority": "high",
-            "details": "Create directory structure for atomic design pattern. Move existing components to appropriate directories based on their complexity and reusability. Ensure proper categorization of each component.",
-            "testStrategy": "Verify new directory structure exists. Check that all components are properly categorized. Run build to ensure no missing components."
+            "details": "Create .claude/agents/ directory with registry.json for agent metadata. Initialize backend-agents/ and frontend-agents/ subdirectories. Create base template files: agent-template.json for common agent structure, workflow-template.json for orchestration patterns. Define agent interface with name, description, capabilities, dependencies, and trigger conditions. Set up configuration inheritance model for agent specialization.",
+            "status": "pending",
+            "testStrategy": "Validate registry.json contains required fields for each agent type. Verify template files follow atomic design principles. Test that agent configurations can inherit from base templates correctly. Ensure all agent metadata includes proper TypeScript type definitions."
           },
           {
-            "id": "1.3",
-            "title": "Update import paths",
-            "description": "Fix all import statements to reflect new component locations",
-            "status": "done",
+            "id": 3,
+            "title": "Configure Workflow Orchestration Templates",
+            "description": "Create workflow orchestration configurations and integration points for CI/CD pipeline",
             "dependencies": ["1.2"],
-            "priority": "high",
-            "details": "Update all import paths throughout the codebase to reflect new component locations. Use automated tools where possible. Manually verify complex import cases.",
-            "testStrategy": "Run TypeScript compiler to check for import errors. Execute full test suite. Build application successfully."
+            "details": "Create .claude/workflows/ directory with orchestration templates. Define workflow configurations for: pre-commit validation flow, PR review pipeline, deployment preparation workflow, and rollback procedures. Create integration hooks for existing Git hooks and CI/CD systems. Configure agent chaining rules and parallel execution strategies. Set up workflow state management and logging configuration.",
+            "status": "pending",
+            "testStrategy": "Verify workflow templates contain valid orchestration rules. Test workflow configurations can be parsed by task-master integration. Validate integration hooks match existing CI/CD pipeline requirements. Ensure workflow state transitions are properly defined and logged."
           },
           {
-            "id": "1.4",
-            "title": "Configure .gitignore rules",
-            "description": "Add rules to prevent .bak files and temporary files from being committed",
-            "status": "done",
-            "dependencies": ["1.1"],
-            "priority": "medium",
-            "details": "Add *.bak pattern to .gitignore. Include other common temporary file patterns. Add IDE-specific ignore patterns. Document the gitignore rules.",
-            "testStrategy": "Create test .bak file and verify it's ignored by git. Run git status to confirm ignore rules work correctly."
+            "id": 4,
+            "title": "Initialize Development Environment Integration",
+            "description": "Set up environment-specific configurations and PNPM workspace integration",
+            "dependencies": ["1.2", "1.3"],
+            "details": "Create environment-specific configuration files for development, staging, and production. Configure .claude/settings.json with PNPM-specific tool configurations. Set up agent access to PNPM workspace structure and monorepo paths. Create .claude/commands/init.md for quick agent initialization. Configure API key management through .env integration. Set up agent resource limits matching Vitest constraints (max threads, timeouts).",
+            "status": "pending",
+            "testStrategy": "Test agents can access PNPM workspace packages correctly. Verify environment variables are properly loaded from .env. Validate resource limits prevent CPU overload. Test custom slash commands execute correctly. Ensure all PNPM commands are used instead of npm equivalents."
           }
         ]
       },
       {
         "id": 2,
-        "title": "Configure TypeScript strict mode and linting rules",
-        "description": "Set up TypeScript strict mode and ESLint rules to prevent React.FC usage",
-        "status": "done",
-        "dependencies": [1],
+        "title": "Implement Backend Development Agents",
+        "description": "Create API Development Agent and Database Management Agent with Express v5 and Prisma support",
+        "details": "Implement API Development Agent with capabilities for Express route generation, Prisma schema updates, service layer creation with Zod validation, and API documentation. Create Database Management Agent for Prisma schema changes, migration generation/validation, seed data scripts, and query optimization. Use templates for controller, service, and route generation. Integrate with existing PNPM workspace structure.",
+        "testStrategy": "Test agent can generate valid Express routes with proper middleware, create Prisma migrations that pass validation, generate service layer code that follows project patterns, and produce working API endpoints with documentation.",
         "priority": "high",
-        "details": "Enable TypeScript strict mode in tsconfig.json. Configure ESLint rules to warn against React.FC usage. Set up pre-commit hooks to enforce these rules. Document the new coding standards.",
-        "testStrategy": "Run TypeScript compiler with strict mode enabled. Verify ESLint catches React.FC patterns. Test pre-commit hooks block commits with violations.",
+        "dependencies": [1],
+        "status": "pending",
         "subtasks": [
           {
-            "id": "2.1",
-            "title": "Enable TypeScript strict mode flags",
-            "description": "Configure tsconfig.json with all strict mode compiler options",
-            "status": "done",
+            "id": 1,
+            "title": "Create API Development Agent Core",
+            "description": "Implement the core API Development Agent with Express v5 route generation and Prisma schema integration capabilities",
             "dependencies": [],
-            "priority": "high",
-            "details": "Enable strict, noImplicitAny, strictNullChecks, strictFunctionTypes, strictBindCallApply, strictPropertyInitialization, noImplicitThis, and alwaysStrict flags in tsconfig.json.",
-            "testStrategy": "Run tsc --noEmit to verify configuration. Check that strict mode flags are properly applied."
+            "details": "Build the foundation of the API Development Agent including: Express v5 route generation with proper middleware support, Prisma schema update detection and handling, service layer creation with Zod validation schemas, and API documentation generation using OpenAPI/Swagger specifications. Create template system for controllers, services, and routes that follow project patterns. Ensure integration with existing PNPM workspace structure and TypeScript configuration.",
+            "status": "pending",
+            "testStrategy": "Verify agent can generate valid Express v5 routes with proper error handling and middleware chain, create Prisma schema updates that compile without errors, generate Zod validation schemas that match Prisma models, and produce OpenAPI documentation that accurately reflects generated endpoints. Test template system produces code following project conventions."
           },
           {
-            "id": "2.2",
-            "title": "Configure ESLint rules for React.FC deprecation",
-            "description": "Add ESLint rules to discourage React.FC usage",
-            "status": "done",
+            "id": 2,
+            "title": "Create Database Management Agent",
+            "description": "Implement the Database Management Agent for Prisma migration management and query optimization",
             "dependencies": [],
-            "priority": "high",
-            "details": "Install necessary ESLint plugins. Configure rules to warn against React.FC usage. Add custom rule or use existing plugin to enforce function component patterns.",
-            "testStrategy": "Create test file with React.FC and verify ESLint warning. Run ESLint on entire codebase to identify violations."
+            "details": "Develop the Database Management Agent with capabilities for: Prisma schema change detection and migration generation, migration validation and rollback strategies, seed data script generation for development and testing environments, and query optimization recommendations. Include support for database introspection, index suggestions, and performance monitoring integration. Ensure proper handling of migration conflicts and database state management.",
+            "status": "pending",
+            "testStrategy": "Test agent correctly generates Prisma migrations that pass validation and can be applied/rolled back safely, produces seed data scripts that work across different environments, identifies query optimization opportunities with measurable performance improvements, and handles migration conflicts gracefully without data loss."
           },
           {
-            "id": "2.3",
-            "title": "Set up Husky pre-commit hooks",
-            "description": "Install and configure Husky for pre-commit validation",
-            "status": "done",
+            "id": 3,
+            "title": "Implement Agent Command Interface and Integration",
+            "description": "Create the command interface system for both agents and integrate with existing development workflow",
             "dependencies": ["2.1", "2.2"],
-            "priority": "high",
-            "details": "Install Husky and lint-staged. Configure pre-commit hook to run TypeScript compiler and ESLint. Ensure hooks prevent commits with violations.",
-            "testStrategy": "Test commit with TypeScript error and verify it's blocked. Test commit with ESLint violation and verify it's blocked."
+            "details": "Build command interface supporting: /api-generate for creating new API endpoints with full stack (route, controller, service, validation), /db-migrate for schema changes and migration management, /db-seed for test data generation, and /api-docs for documentation updates. Implement auto-triggering on file changes for relevant agent actions. Ensure seamless integration with existing task-master workflow and CLAUDE.md context.",
+            "status": "pending",
+            "testStrategy": "Verify all commands execute correctly and produce expected outputs, auto-triggering works based on file change patterns without false positives, integration with task-master maintains proper task status updates, and generated code follows all project conventions including PNPM usage and TypeScript strict mode."
           },
           {
-            "id": "2.4",
-            "title": "Create documentation for coding standards",
-            "description": "Document TypeScript and React coding standards for the team",
-            "status": "done",
-            "dependencies": ["2.1", "2.2"],
-            "priority": "medium",
-            "details": "Create CODING_STANDARDS.md documenting TypeScript strict mode benefits, React component patterns without FC, and linting rules. Include examples of dos and don'ts.",
-            "testStrategy": "Review documentation for completeness. Ensure examples compile and follow standards."
-          },
-          {
-            "id": "2.5",
-            "title": "Fix initial TypeScript strict mode errors",
-            "description": "Address type errors introduced by enabling strict mode",
-            "status": "done",
-            "dependencies": ["2.1"],
-            "priority": "high",
-            "details": "Run TypeScript compiler and identify all strict mode errors. Fix type annotations, null checks, and implicit any types. Ensure no suppressions are used unless absolutely necessary.",
-            "testStrategy": "Run tsc --noEmit with zero errors. Verify no @ts-ignore or @ts-expect-error comments added."
+            "id": 4,
+            "title": "Add Template System and Project Pattern Compliance",
+            "description": "Implement comprehensive template system and ensure all generated code follows project patterns",
+            "dependencies": ["2.1", "2.2", "2.3"],
+            "details": "Create extensible template system for: Express controllers with proper error handling and middleware, service layer with dependency injection patterns, Prisma repository patterns with transaction support, and Zod validation schemas with custom validators. Ensure all templates follow project conventions including TypeScript strict mode, ESLint rules, proper imports structure, and PNPM workspace compatibility. Include template customization options and project-specific overrides.",
+            "status": "pending",
+            "testStrategy": "Test templates generate code that passes all linting and TypeScript checks, follows established project patterns for error handling and logging, integrates properly with existing authentication and authorization middleware, and maintains consistency across all generated files. Verify customization options work correctly for project-specific needs."
           }
         ]
       },
       {
         "id": 3,
-        "title": "Refactor large components - RepositoryHealthModal",
-        "description": "Break down RepositoryHealthModal (963 lines) into smaller, composable components",
-        "status": "done",
-        "dependencies": [2],
+        "title": "Implement Frontend Development Agents",
+        "description": "Create Component Development Agent and State Management Agent for React 19 with Vite 6",
+        "details": "Implement Component Development Agent following atomic design principles with React 19, Tailwind CSS, and Storybook story generation. Create State Management Agent for TanStack Query hooks, context providers, WebSocket connections, and performance optimization. Generate templates for atoms, molecules, and organisms. Ensure WCAG 2.1 AA accessibility compliance and integration with existing Vite 6 build system.",
+        "testStrategy": "Validate generated components render correctly, follow atomic design patterns, include proper TypeScript types, have corresponding Storybook stories, and pass accessibility audits. Test state management hooks work with TanStack Query and context providers function correctly.",
         "priority": "high",
-        "details": "Extract business logic into custom hooks. Create separate components for different sections (health metrics, charts, actions). Implement proper prop drilling prevention with context. Target < 300 lines per component.",
-        "testStrategy": "Verify component functionality remains intact. Check that all interactions work as before. Measure component sizes to ensure < 300 lines. Run performance tests to ensure no regression.",
-        "subtasks": [
-          {
-            "id": "3.1",
-            "title": "Analyze component structure and identify logical boundaries",
-            "description": "Map out the current structure and plan the refactoring approach",
-            "status": "done",
-            "dependencies": [],
-            "priority": "high",
-            "details": "Review RepositoryHealthModal code structure. Identify distinct sections and responsibilities. Create component hierarchy diagram. Plan data flow and state management approach.",
-            "testStrategy": "Document analysis results. Create refactoring plan with component boundaries clearly defined."
-          },
-          {
-            "id": "3.2",
-            "title": "Extract custom hooks for business logic",
-            "description": "Move business logic from component into reusable hooks",
-            "status": "done",
-            "dependencies": ["3.1"],
-            "priority": "high",
-            "details": "Create useRepositoryHealth hook for data fetching. Create useHealthMetrics hook for calculations. Create useChartData hook for data transformation. Ensure hooks are properly typed and tested.",
-            "testStrategy": "Unit test each hook independently. Verify hooks return expected data shapes. Test error handling in hooks."
-          },
-          {
-            "id": "3.3",
-            "title": "Create sub-components for health metrics section",
-            "description": "Extract health metrics display into separate component",
-            "status": "done",
-            "dependencies": ["3.2"],
-            "priority": "high",
-            "details": "Create HealthMetricsPanel component. Define props interface for metrics data. Implement metric cards and status indicators. Ensure responsive design.",
-            "testStrategy": "Test component renders all metrics correctly. Verify responsive behavior. Check accessibility of metric displays."
-          },
-          {
-            "id": "3.4",
-            "title": "Create charts sub-component",
-            "description": "Extract chart rendering logic into dedicated component",
-            "status": "done",
-            "dependencies": ["3.2"],
-            "priority": "high",
-            "details": "Create RepositoryCharts component. Handle different chart types (line, bar, pie). Implement chart configuration and theming. Add loading and error states.",
-            "testStrategy": "Test charts render with various data sets. Verify chart interactions work. Test loading and error states."
-          },
-          {
-            "id": "3.5",
-            "title": "Create actions sub-component",
-            "description": "Extract repository actions into separate component",
-            "status": "done",
-            "dependencies": ["3.1"],
-            "priority": "high",
-            "details": "Create RepositoryActions component. Implement action buttons and handlers. Add confirmation dialogs where needed. Handle action state and feedback.",
-            "testStrategy": "Test all actions trigger correctly. Verify confirmation dialogs work. Test loading states during actions."
-          },
-          {
-            "id": "3.6",
-            "title": "Implement context for state management",
-            "description": "Create context to manage shared state and prevent prop drilling",
-            "status": "done",
-            "dependencies": ["3.3", "3.4", "3.5"],
-            "priority": "high",
-            "details": "Create RepositoryHealthContext. Define context value interface. Implement context provider with state logic. Update components to use context.",
-            "testStrategy": "Test context provides correct values. Verify state updates propagate correctly. Check no prop drilling remains."
-          },
-          {
-            "id": "3.7",
-            "title": "Update tests and ensure functionality",
-            "description": "Update all tests and verify refactored component works correctly",
-            "status": "done",
-            "dependencies": ["3.6"],
-            "priority": "high",
-            "details": "Update existing tests for new component structure. Add integration tests for component interactions. Perform manual testing of all features. Check performance metrics.",
-            "testStrategy": "All existing tests pass. New integration tests cover refactored structure. Manual testing confirms no regressions."
-          }
-        ]
-      },
-      {
-        "id": 4,
-        "title": "Refactor large components - TaskModal",
-        "description": "Break down TaskModal (712 lines) into smaller, reusable components",
-        "status": "done",
-        "dependencies": [2],
-        "priority": "high",
-        "details": "Split TaskModal into TaskForm, TaskDetails, TaskActions components. Extract validation logic into custom hooks. Implement proper state management. Create reusable form components.",
-        "testStrategy": "Test all task CRUD operations work correctly. Verify form validation behaves as expected. Check modal interactions and animations. Ensure no performance degradation.",
-        "subtasks": [
-          {
-            "id": "4.1",
-            "title": "Analyze TaskModal structure and dependencies",
-            "description": "Map out current TaskModal implementation and plan refactoring",
-            "status": "done",
-            "dependencies": [],
-            "priority": "high",
-            "details": "Review TaskModal code and identify distinct sections. Map dependencies and state management. Plan component split strategy. Document current functionality to preserve.",
-            "testStrategy": "Create detailed documentation of current behavior. List all user interactions and states."
-          },
-          {
-            "id": "4.2",
-            "title": "Extract TaskForm component with validation",
-            "description": "Create separate form component with built-in validation",
-            "status": "done",
-            "dependencies": ["4.1"],
-            "priority": "high",
-            "details": "Create TaskForm component with all form fields. Implement form validation rules. Use React Hook Form or similar. Handle form state and submission.",
-            "testStrategy": "Test all form fields work correctly. Verify validation rules trigger appropriately. Test form submission and error handling."
-          },
-          {
-            "id": "4.3",
-            "title": "Create TaskDetails display component",
-            "description": "Extract read-only task details into separate component",
-            "status": "done",
-            "dependencies": ["4.1"],
-            "priority": "high",
-            "details": "Create TaskDetails component for viewing task information. Implement proper data display formatting. Add loading and empty states. Ensure responsive design.",
-            "testStrategy": "Test component displays all task fields correctly. Verify different task states render properly. Check responsive behavior."
-          },
-          {
-            "id": "4.4",
-            "title": "Create TaskActions component",
-            "description": "Extract task action buttons and handlers",
-            "status": "done",
-            "dependencies": ["4.1"],
-            "priority": "high",
-            "details": "Create TaskActions component with edit, delete, complete actions. Implement action handlers and confirmations. Add proper loading states. Handle permissions.",
-            "testStrategy": "Test all actions work correctly. Verify confirmations appear when needed. Test permission-based visibility."
-          },
-          {
-            "id": "4.5",
-            "title": "Implement shared form hooks",
-            "description": "Create reusable hooks for form logic",
-            "status": "done",
-            "dependencies": ["4.2"],
-            "priority": "high",
-            "details": "Create useTaskForm hook for form state. Create useTaskValidation hook for validation logic. Create useTaskSubmit hook for submission handling. Ensure proper TypeScript typing.",
-            "testStrategy": "Unit test each hook. Verify hooks work together correctly. Test error scenarios."
-          },
-          {
-            "id": "4.6",
-            "title": "Update integration tests",
-            "description": "Update tests for refactored TaskModal",
-            "status": "done",
-            "dependencies": ["4.2", "4.3", "4.4", "4.5"],
-            "priority": "high",
-            "details": "Update existing TaskModal tests. Add tests for new components. Test component integration. Verify no functionality lost.",
-            "testStrategy": "All existing tests pass. New component tests provide full coverage. Integration tests verify complete flow."
-          }
-        ]
-      },
-      {
-        "id": 5,
-        "title": "Remove React.FC anti-patterns",
-        "description": "Replace all 185 instances of React.FC with direct function components",
-        "status": "done",
-        "dependencies": [2],
-        "priority": "medium",
-        "details": "Systematically replace React.FC patterns with proper function component definitions. Update component prop types to use interface definitions. Ensure children props are explicitly typed where needed.",
-        "testStrategy": "Use grep to verify no React.FC patterns remain. Run TypeScript compiler to check for type errors. Execute full test suite to ensure no regressions.",
-        "subtasks": [
-          {
-            "id": "5.1",
-            "title": "Create automated script to identify React.FC usage",
-            "description": "Build tool to find and list all React.FC occurrences",
-            "status": "done",
-            "dependencies": [],
-            "priority": "high",
-            "details": "Create Node.js script using AST parsing or regex. Generate report of all files using React.FC. Group by directory for batch processing. Include line numbers for reference.",
-            "testStrategy": "Verify script finds all 185 known instances. Test script on sample files with various React.FC patterns."
-          },
-          {
-            "id": "5.2",
-            "title": "Update component definitions in batches",
-            "description": "Systematically replace React.FC in groups of related components",
-            "status": "done",
-            "dependencies": ["5.1"],
-            "priority": "high",
-            "details": "Process components by feature/directory. Replace React.FC with explicit function syntax. Update prop type definitions to interfaces. Handle special cases like children props.",
-            "testStrategy": "Run TypeScript check after each batch. Verify components still render correctly. Check prop types are properly defined."
-          },
-          {
-            "id": "5.3",
-            "title": "Fix TypeScript errors from prop typing changes",
-            "description": "Resolve type errors introduced by removing React.FC",
-            "status": "done",
-            "dependencies": ["5.2"],
-            "priority": "high",
-            "details": "Address missing children type definitions. Fix event handler typings. Update generic component patterns. Ensure all components have explicit return types.",
-            "testStrategy": "Run tsc --noEmit with zero errors. Verify all prop types are explicit. Check no implicit any types introduced."
-          },
-          {
-            "id": "5.4",
-            "title": "Run comprehensive test suite",
-            "description": "Execute all tests to ensure no regressions",
-            "status": "done",
-            "dependencies": ["5.3"],
-            "priority": "high",
-            "details": "Run unit tests for all modified components. Execute integration tests. Run E2E tests if available. Fix any test failures.",
-            "testStrategy": "All tests pass. No new warnings in test output. Manual smoke test of key features."
-          }
-        ]
-      },
-      {
-        "id": 6,
-        "title": "Implement route-based code splitting",
-        "description": "Add React.lazy and Suspense for route-level code splitting",
-        "status": "done",
-        "dependencies": [3, 4],
-        "priority": "high",
-        "details": "Implement React.lazy for all route components. Add proper Suspense boundaries with loading states. Configure Vite for optimal chunk splitting. Target 30% bundle size reduction.",
-        "testStrategy": "Measure bundle sizes before and after implementation. Verify lazy loading works correctly. Test loading states appear properly. Check network tab for proper chunk loading.",
-        "subtasks": [
-          {
-            "id": "6.1",
-            "title": "Analyze current bundle and identify split points",
-            "description": "Analyze bundle size and identify optimal code split boundaries",
-            "status": "done",
-            "dependencies": [],
-            "priority": "high",
-            "details": "Use bundle analyzer to review current bundle. Identify large dependencies and components. Map route components for splitting. Calculate potential size savings.",
-            "testStrategy": "Generate bundle analysis report. Document current bundle sizes. Identify top 10 largest modules."
-          },
-          {
-            "id": "6.2",
-            "title": "Implement React.lazy for route components",
-            "description": "Convert route components to use dynamic imports",
-            "status": "done",
-            "dependencies": ["6.1"],
-            "priority": "high",
-            "details": "Wrap route components with React.lazy. Use dynamic import() syntax. Maintain TypeScript types. Handle error boundaries.",
-            "testStrategy": "Verify each route loads dynamically. Check TypeScript types are preserved. Test error handling."
-          },
-          {
-            "id": "6.3",
-            "title": "Add Suspense boundaries with loading states",
-            "description": "Implement loading UI for lazy-loaded components",
-            "status": "done",
-            "dependencies": ["6.2"],
-            "priority": "high",
-            "details": "Add Suspense boundaries at route level. Create consistent loading components. Implement skeleton screens where appropriate. Handle loading errors gracefully.",
-            "testStrategy": "Test loading states appear correctly. Verify smooth transitions. Check error boundaries work."
-          },
-          {
-            "id": "6.4",
-            "title": "Configure Vite for optimal chunking",
-            "description": "Optimize Vite build configuration for code splitting",
-            "status": "done",
-            "dependencies": ["6.2"],
-            "priority": "high",
-            "details": "Configure manualChunks in Vite. Optimize chunk sizes. Set up vendor splitting. Configure preloading strategies.",
-            "testStrategy": "Review generated chunks. Verify optimal chunk sizes. Test preloading works correctly."
-          },
-          {
-            "id": "6.5",
-            "title": "Measure and optimize bundle sizes",
-            "description": "Verify bundle size reduction and optimize further",
-            "status": "done",
-            "dependencies": ["6.3", "6.4"],
-            "priority": "high",
-            "details": "Measure new bundle sizes. Compare with baseline. Optimize chunks that are still too large. Document size improvements.",
-            "testStrategy": "Achieve 30% bundle size reduction. Verify no performance regressions. Test on slow network conditions."
-          }
-        ]
-      },
-      {
-        "id": 7,
-        "title": "Implement missing task creation functionality",
-        "description": "Complete the TODO for task creation modal and API integration",
-        "status": "done",
-        "dependencies": [4],
-        "priority": "high",
-        "details": "Implement full task creation flow in TaskModal. Add API endpoints for task creation. Handle validation and error states. Add optimistic updates for better UX.",
-        "testStrategy": "Test task creation end-to-end. Verify API integration works correctly. Test error handling for various failure scenarios. Check optimistic updates and rollback.",
-        "subtasks": [
-          {
-            "id": "7.1",
-            "title": "Design task creation API endpoint",
-            "description": "Design and document the task creation API",
-            "status": "done",
-            "dependencies": [],
-            "priority": "high",
-            "details": "Define API endpoint structure for POST /api/tasks. Document request/response schemas. Define validation rules. Plan error response format.",
-            "testStrategy": "Review API design documentation. Validate schema definitions. Ensure consistency with existing APIs."
-          },
-          {
-            "id": "7.2",
-            "title": "Implement backend task creation logic",
-            "description": "Build the server-side task creation functionality",
-            "status": "done",
-            "dependencies": ["7.1"],
-            "priority": "high",
-            "details": "Implement task creation endpoint. Add input validation middleware. Implement database operations. Handle unique ID generation.",
-            "testStrategy": "Unit test endpoint with various inputs. Test validation rules. Verify database persistence. Test error scenarios."
-          },
-          {
-            "id": "7.3",
-            "title": "Create frontend task creation form",
-            "description": "Build the UI for creating new tasks",
-            "status": "done",
-            "dependencies": [],
-            "priority": "high",
-            "details": "Implement task creation form in modal. Add all required fields. Implement client-side validation. Create intuitive UI/UX.",
-            "testStrategy": "Test form renders correctly. Verify all fields work. Test client-side validation. Check accessibility."
-          },
-          {
-            "id": "7.4",
-            "title": "Add validation and error handling",
-            "description": "Implement comprehensive validation and error handling",
-            "status": "done",
-            "dependencies": ["7.2", "7.3"],
-            "priority": "high",
-            "details": "Implement field-level validation. Add form-level validation. Handle server validation errors. Display user-friendly error messages.",
-            "testStrategy": "Test all validation rules. Verify error messages display correctly. Test edge cases. Check error recovery."
-          },
-          {
-            "id": "7.5",
-            "title": "Implement optimistic updates",
-            "description": "Add optimistic UI updates for better user experience",
-            "status": "done",
-            "dependencies": ["7.3", "7.4"],
-            "priority": "high",
-            "details": "Implement optimistic task addition to UI. Handle rollback on error. Update local state immediately. Sync with server response.",
-            "testStrategy": "Test optimistic updates work smoothly. Verify rollback on error. Test race conditions. Check UI consistency."
-          },
-          {
-            "id": "7.6",
-            "title": "Add integration tests",
-            "description": "Create comprehensive tests for task creation flow",
-            "status": "done",
-            "dependencies": ["7.5"],
-            "priority": "high",
-            "details": "Write E2E tests for task creation. Test happy path and error scenarios. Test form validation flow. Verify API integration.",
-            "testStrategy": "All integration tests pass. Cover success and failure paths. Test performance under load."
-          }
-        ]
-      },
-      {
-        "id": 8,
-        "title": "Add data export functionality",
-        "description": "Implement missing export features for tasks and analytics",
-        "status": "done",
-        "dependencies": [7],
-        "priority": "medium",
-        "details": "Add export buttons to relevant components. Implement CSV and JSON export formats. Create backend endpoints for data export. Add proper error handling and progress indicators.",
-        "testStrategy": "Test export functionality for different data types. Verify exported files are correctly formatted. Test large data exports for performance. Check error handling for edge cases.",
-        "subtasks": [
-          {
-            "id": "8.1",
-            "title": "Design export API endpoints",
-            "description": "Design API for data export functionality",
-            "status": "done",
-            "dependencies": [],
-            "priority": "medium",
-            "details": "Design GET /api/export/tasks endpoint. Support format query parameter (csv, json). Plan pagination for large datasets. Define response headers.",
-            "testStrategy": "Review API design. Validate query parameters. Check header specifications."
-          },
-          {
-            "id": "8.2",
-            "title": "Implement CSV export logic",
-            "description": "Build CSV generation functionality",
-            "status": "done",
-            "dependencies": ["8.1"],
-            "priority": "medium",
-            "details": "Implement CSV generation library integration. Handle data transformation to CSV format. Manage special characters and escaping. Set proper MIME types.",
-            "testStrategy": "Test CSV generation with various data. Verify special characters handled. Check file downloads correctly."
-          },
-          {
-            "id": "8.3",
-            "title": "Implement JSON export logic",
-            "description": "Build JSON export functionality",
-            "status": "done",
-            "dependencies": ["8.1"],
-            "priority": "medium",
-            "details": "Implement JSON formatting for export. Handle nested data structures. Add metadata to exports. Implement pretty printing option.",
-            "testStrategy": "Test JSON exports are valid. Verify data completeness. Check formatting options work."
-          },
-          {
-            "id": "8.4",
-            "title": "Add export UI components",
-            "description": "Create export buttons and UI elements",
-            "status": "done",
-            "dependencies": [],
-            "priority": "medium",
-            "details": "Add export buttons to task lists and analytics. Create format selection dropdown. Implement download progress indicator. Add success/error notifications.",
-            "testStrategy": "Test UI components render correctly. Verify format selection works. Check progress indicators display."
-          },
-          {
-            "id": "8.5",
-            "title": "Handle large dataset exports with progress",
-            "description": "Implement streaming and progress for large exports",
-            "status": "done",
-            "dependencies": ["8.2", "8.3", "8.4"],
-            "priority": "medium",
-            "details": "Implement streaming for large datasets. Add progress tracking. Handle memory efficiently. Implement cancelation support.",
-            "testStrategy": "Test with large datasets (10k+ records). Monitor memory usage. Verify progress updates. Test cancelation."
-          }
-        ]
-      },
-      {
-        "id": 9,
-        "title": "Optimize performance and add monitoring",
-        "description": "Implement memoization, virtual scrolling, and performance monitoring",
-        "status": "done",
-        "dependencies": [6],
-        "priority": "medium",
-        "details": "Add React.memo to expensive components. Implement virtual scrolling for long lists. Set up performance monitoring with React DevTools Profiler. Add web vitals tracking.",
-        "testStrategy": "Measure render performance before and after optimization. Test virtual scrolling with large datasets. Verify memoization prevents unnecessary re-renders. Check Lighthouse scores > 90.",
-        "subtasks": [
-          {
-            "id": "9.1",
-            "title": "Add React.memo to expensive components",
-            "description": "Optimize component rendering with memoization",
-            "status": "done",
-            "dependencies": [],
-            "priority": "medium",
-            "details": "Identify components with expensive renders. Wrap components with React.memo. Implement custom comparison functions where needed. Verify prop stability.",
-            "testStrategy": "Use React DevTools Profiler to measure. Verify re-renders reduced. Test functionality unchanged."
-          },
-          {
-            "id": "9.2",
-            "title": "Implement virtual scrolling for lists",
-            "description": "Add virtualization to long list components",
-            "status": "done",
-            "dependencies": [],
-            "priority": "medium",
-            "details": "Integrate react-window or similar library. Implement for task lists and data tables. Handle dynamic row heights. Maintain scroll position.",
-            "testStrategy": "Test with 10k+ items. Verify smooth scrolling. Check memory usage reduced. Test keyboard navigation."
-          },
-          {
-            "id": "9.3",
-            "title": "Set up React DevTools Profiler integration",
-            "description": "Configure performance profiling tools",
-            "status": "done",
-            "dependencies": [],
-            "priority": "medium",
-            "details": "Add Profiler components to key areas. Set up performance marks. Create performance baseline. Document profiling process.",
-            "testStrategy": "Verify profiler data collected. Test performance marks work. Check no production impact."
-          },
-          {
-            "id": "9.4",
-            "title": "Add web vitals monitoring",
-            "description": "Implement Core Web Vitals tracking",
-            "status": "done",
-            "dependencies": [],
-            "priority": "medium",
-            "details": "Integrate web-vitals library. Track LCP, FID, CLS metrics. Send metrics to analytics. Create performance dashboard.",
-            "testStrategy": "Verify metrics collected correctly. Test analytics integration. Check dashboard displays data."
-          },
-          {
-            "id": "9.5",
-            "title": "Create performance dashboard",
-            "description": "Build dashboard to monitor performance metrics",
-            "status": "done",
-            "dependencies": ["9.3", "9.4"],
-            "priority": "medium",
-            "details": "Create performance monitoring view. Display web vitals trends. Show component render times. Add performance alerts.",
-            "testStrategy": "Test dashboard shows real data. Verify trends calculated correctly. Check alerts trigger appropriately."
-          }
-        ]
-      },
-      {
-        "id": 10,
-        "title": "Add comprehensive test coverage and accessibility",
-        "description": "Achieve 80% test coverage and full accessibility compliance",
-        "status": "done",
-        "dependencies": [7, 8, 9],
-        "priority": "medium",
-        "details": "Write unit tests for all components and hooks. Add integration tests for critical user flows. Implement E2E tests with Playwright. Perform accessibility audit and add ARIA labels.",
-        "testStrategy": "Run coverage reports to verify 80% threshold. Execute axe accessibility tests. Run E2E tests in multiple browsers. Perform manual keyboard navigation testing.",
-        "subtasks": [
-          {
-            "id": "10.1",
-            "title": "Write unit tests for components",
-            "description": "Create comprehensive unit tests for all components",
-            "status": "done",
-            "dependencies": [],
-            "priority": "medium",
-            "details": "Write tests for all UI components. Test props, states, and events. Mock dependencies appropriately. Aim for high branch coverage.",
-            "testStrategy": "Achieve 80% component coverage. All critical paths tested. No untested branches in key components."
-          },
-          {
-            "id": "10.2",
-            "title": "Write unit tests for hooks",
-            "description": "Test all custom React hooks",
-            "status": "in-progress",
-            "dependencies": [],
-            "priority": "medium",
-            "details": "Test hook state changes. Verify effect cleanup. Test error scenarios. Mock external dependencies.",
-            "testStrategy": "100% hook coverage. Test all state transitions. Verify no memory leaks."
-          },
-          {
-            "id": "10.3",
-            "title": "Create integration tests for user flows",
-            "description": "Test critical user workflows end-to-end",
-            "status": "done",
-            "dependencies": ["10.1", "10.2"],
-            "priority": "medium",
-            "details": "Test task creation flow. Test task editing flow. Test data export flow. Test authentication flow.",
-            "testStrategy": "All critical paths covered. Test happy and error paths. Verify data persistence."
-          },
-          {
-            "id": "10.4",
-            "title": "Set up E2E tests with Playwright",
-            "description": "Implement browser automation tests",
-            "status": "done",
-            "dependencies": [],
-            "priority": "medium",
-            "details": "Set up Playwright framework. Write tests for main user journeys. Test cross-browser compatibility. Add visual regression tests.",
-            "testStrategy": "Test in Chrome, Firefox, Safari. All user journeys tested. Visual regressions caught."
-          },
-          {
-            "id": "10.5",
-            "title": "Perform accessibility audit",
-            "description": "Ensure WCAG 2.1 AA compliance",
-            "status": "done",
-            "dependencies": [],
-            "priority": "high",
-            "details": "Run axe-core accessibility tests. Test keyboard navigation. Verify screen reader compatibility. Check color contrast ratios.",
-            "testStrategy": "Zero accessibility violations. All interactive elements keyboard accessible. Screen reader testing passes."
-          },
-          {
-            "id": "10.6",
-            "title": "Implement ARIA improvements",
-            "description": "Add proper ARIA labels and roles",
-            "status": "done",
-            "dependencies": ["10.5"],
-            "priority": "high",
-            "details": "Add ARIA labels to all interactive elements. Implement live regions for dynamic content. Add proper roles and landmarks. Fix any accessibility issues found.",
-            "testStrategy": "All ARIA labels meaningful. Live regions announce correctly. Landmarks properly structured."
-          }
-        ]
-      }
-    ],
-    "metadata": {
-      "created": "2025-07-25T09:02:45.000Z",
-      "updated": "2025-07-25T18:13:14.671Z",
-      "description": "TaskMaster UI Modernization - Code quality and performance improvements",
-      "projectName": "TaskMaster UI Modernization",
-      "sourceFile": "/Users/gonzalo/workspace/taskmaster-ui/.taskmaster/docs/prd.txt"
-    }
-  },
-  "dependency-update": {
-    "tasks": [
-      {
-        "id": 1,
-        "title": "Update Sentry packages from v7 to v9 in both frontend and backend following the official migration guide",
-        "description": "Upgrade Sentry SDK packages from version 7 to version 9 across the entire application stack, including frontend and backend components, while following the official migration documentation.",
-        "details": "1. **Audit Current Sentry Implementation**: Review existing Sentry usage in both frontend and backend code to identify all imports, configurations, and custom integrations. 2. **Update Package Dependencies**: Upgrade @sentry/node, @sentry/react, @sentry/tracing, and any other Sentry-related packages to v9 using pnpm. Remove deprecated packages if any. 3. **Configuration Migration**: Update Sentry initialization code following v9 patterns - replace deprecated options, update integration configurations, and modify error handling setup. Key changes include new SDK initialization patterns, updated performance monitoring setup, and revised error boundary implementations. 4. **Code Refactoring**: Update all Sentry method calls throughout the codebase - replace deprecated APIs like `Sentry.getCurrentHub()` with new equivalents, update transaction creation patterns, and modify context setting methods. 5. **Integration Updates**: Review and update custom Sentry integrations, ensuring compatibility with v9 architecture changes. Update any middleware configurations and error capture mechanisms. 6. **Environment Configuration**: Update environment-specific Sentry configurations, including DSN settings, environment detection, and release tracking setup.",
-        "testStrategy": "1. **Functionality Testing**: Verify error capture works correctly by triggering test errors in both frontend and backend. Confirm errors appear in Sentry dashboard with proper context and stack traces. 2. **Performance Monitoring**: Test transaction creation and performance monitoring features. Verify custom transactions are properly tracked and appear in Sentry performance monitoring. 3. **Integration Testing**: Test Sentry integration with existing error boundaries, async error handling, and custom error reporting mechanisms. 4. **Environment Testing**: Verify Sentry works correctly across development, staging, and production environments with appropriate configuration. 5. **Regression Testing**: Run full test suite to ensure no existing functionality is broken. Pay special attention to error handling flows and user experience during errors. 6. **Dashboard Verification**: Confirm all expected data (errors, performance metrics, user context) appears correctly in the Sentry dashboard with proper formatting and filtering.",
-        "status": "done",
-        "dependencies": [],
-        "priority": "high",
-        "subtasks": [
-          {
-            "id": 1,
-            "title": "Audit and document current Sentry v7 implementation",
-            "description": "Conduct a comprehensive audit of all Sentry v7 usage across frontend and backend codebases, documenting all imports, configurations, custom integrations, and deprecated APIs that need migration",
-            "dependencies": [],
-            "details": "1. Search and catalog all Sentry imports across the codebase using grep/find for patterns like '@sentry/', 'Sentry.', and sentry configuration files. 2. Document all Sentry initialization code in both frontend (likely in main.tsx or App.tsx) and backend (server entry points). 3. Identify all custom Sentry integrations, error boundaries, and context providers. 4. List all deprecated v7 APIs in use such as getCurrentHub(), custom transports, and legacy configuration options. 5. Create a migration checklist documenting: current DSN configurations, environment-specific settings, custom error handling logic, performance monitoring setup, and any Sentry-specific middleware. 6. Review package.json files to identify exact versions of all Sentry packages currently installed.",
-            "status": "done",
-            "testStrategy": "1. Verify audit completeness by running automated searches for Sentry imports and confirming all instances are documented. 2. Cross-reference found usages with Sentry v7 documentation to ensure no patterns are missed. 3. Validate that all configuration files and environment variables related to Sentry are identified and documented."
-          },
-          {
-            "id": 2,
-            "title": "Update Sentry packages and resolve dependency conflicts",
-            "description": "Upgrade all Sentry-related packages from v7 to v9 using pnpm, remove deprecated packages, and resolve any dependency conflicts that arise during the upgrade process",
-            "dependencies": ["1.1"],
-            "details": "1. Update package.json files to specify Sentry v9 versions: @sentry/node@^9.0.0, @sentry/react@^9.0.0, and remove deprecated @sentry/tracing package (now included in core SDKs). 2. Run 'pnpm update @sentry/node @sentry/react' in respective workspaces to upgrade packages. 3. Remove any deprecated Sentry packages that are no longer needed in v9 (e.g., @sentry/integrations if using built-in integrations). 4. Check for peer dependency warnings and update any related packages that may have Sentry version constraints. 5. Run 'pnpm install' to ensure lockfile is updated and all dependencies are resolved correctly. 6. Verify no duplicate Sentry versions exist by running 'pnpm list @sentry/core' to check for version conflicts.",
-            "status": "done",
-            "testStrategy": "1. Run 'pnpm install' and verify no errors or warnings related to Sentry packages. 2. Execute 'pnpm list' commands to confirm all Sentry packages are at v9.x.x versions. 3. Build both frontend and backend to ensure no compilation errors from package updates. 4. Check that no deprecated package warnings appear in console output."
-          },
-          {
-            "id": 3,
-            "title": "Migrate Sentry initialization and configuration code",
-            "description": "Update all Sentry initialization code to follow v9 patterns, replacing deprecated configuration options and updating integration setup according to the official migration guide",
-            "dependencies": ["1.2"],
-            "details": "1. Update frontend Sentry initialization: replace Sentry.init() deprecated options like 'integrations' array syntax with new v9 patterns, update dsn configuration, and migrate from old BrowserTracing to new browserTracingIntegration(). 2. Update backend initialization: migrate from hub-based architecture to new scope-based approach, update Node.js specific integrations, and replace deprecated transport configurations. 3. Update error boundary implementations in React: migrate from legacy Sentry.ErrorBoundary to new patterns, update fallback components, and ensure proper error context propagation. 4. Configure new v9 features: set up new replay integration if needed, configure new performance monitoring options, and update release tracking configuration. 5. Update environment-specific configurations: ensure development, staging, and production environments use proper v9 configuration patterns. 6. Remove any deprecated initialization patterns like manual hub creation or legacy integration instantiation.",
-            "status": "done",
-            "testStrategy": "1. Start application in development mode and verify Sentry initializes without console errors or warnings. 2. Trigger a test error and confirm it appears in Sentry dashboard with proper context and stack trace. 3. Verify performance monitoring by checking that transactions are created and sent to Sentry. 4. Test error boundaries by intentionally throwing errors in React components and confirming proper capture."
-          },
-          {
-            "id": 4,
-            "title": "Refactor Sentry API calls and validate error tracking",
-            "description": "Update all Sentry method calls throughout the codebase to use v9 APIs, replace deprecated methods, and thoroughly test error capture and performance monitoring functionality",
-            "dependencies": ["1.3"],
-            "details": "1. Search and replace deprecated API calls: update all instances of 'Sentry.getCurrentHub()' to 'Sentry.getCurrentScope()', migrate from 'hub.getClient()' to 'Sentry.getClient()', and update context setting from 'hub.configureScope()' to 'Sentry.withScope()'. 2. Update transaction creation: migrate from 'hub.startTransaction()' to 'Sentry.startSpan()' or 'Sentry.startInactiveSpan()', update span creation patterns, and ensure proper transaction finishing. 3. Update error capture patterns: replace any custom hub-based error capture with new v9 methods, update breadcrumb additions to use new API, and migrate user context setting to v9 patterns. 4. Update custom integrations: rewrite any custom integrations to follow v9 integration interface, update middleware to use new scope propagation, and ensure proper async context handling. 5. Add proper TypeScript types: update any custom Sentry type imports to use v9 types, fix any type errors from API changes. 6. Clean up any remaining deprecated code patterns identified during refactoring.",
-            "status": "done",
-            "testStrategy": "1. Run full test suite to ensure no runtime errors from API changes. 2. Manually trigger various error scenarios (uncaught exceptions, promise rejections, manual captures) and verify they appear correctly in Sentry dashboard. 3. Test performance monitoring by creating transactions and verifying they include proper spans and measurements. 4. Verify user context and custom tags are properly attached to errors. 5. Test in both development and production builds to ensure proper source map handling. 6. Monitor application for 24 hours after deployment to ensure no missed errors or performance regressions."
-          }
-        ]
-      },
-      {
-        "id": 2,
-        "title": "Replace deprecated type packages with maintained alternatives",
-        "description": "Replace deprecated TypeScript type packages including @types/terser, @types/bcryptjs, and @types/bull with actively maintained alternatives or built-in types to ensure compatibility and security updates.",
-        "details": "1. **Audit Deprecated Type Packages**: Identify all deprecated @types packages currently in use, focusing on @types/terser, @types/bcryptjs, and @types/bull. Check package.json files in all workspaces and verify their deprecation status and last update dates. 2. **Research Modern Alternatives**: For each deprecated package, research maintained alternatives: - @types/terser: Check if terser now includes built-in TypeScript definitions or use community-maintained alternatives - @types/bcryptjs: Evaluate bcrypt vs bcryptjs and their respective type support, consider migrating to bcrypt which has better type support - @types/bull: Research bullmq as a modern alternative to bull with built-in TypeScript support. 3. **Update Dependencies**: Remove deprecated type packages using pnpm and install their replacements. Update any related runtime packages if needed (e.g., bull to bullmq migration). 4. **Code Migration**: Update import statements and type annotations throughout the codebase to use the new packages. Pay special attention to: - Queue implementations if migrating from bull to bullmq - Hashing functions if switching bcryptjs implementations - Build tool configurations if updating terser types. 5. **Configuration Updates**: Update any configuration files, build scripts, or CI/CD pipelines that reference the old packages. Ensure webpack, vite, or other build tools work with the new type definitions.",
-        "testStrategy": "1. **Type Checking Verification**: Run TypeScript compilation across all workspaces using pnpm build to ensure no type errors from the package replacements. Verify that all imports resolve correctly and type definitions are properly recognized. 2. **Runtime Functionality Testing**: Test all functionality that depends on the replaced packages: - For terser: Verify minification still works in production builds - For bcrypt/bcryptjs: Test password hashing and verification functions - For bull/bullmq: Test job queue creation, processing, and monitoring. 3. **Integration Testing**: Run the full test suite with pnpm test to ensure no breaking changes in business logic. Pay special attention to authentication flows (bcrypt), build processes (terser), and background job processing (bull/bullmq). 4. **Dependency Audit**: Run pnpm audit to confirm no new security vulnerabilities are introduced and verify all packages are actively maintained with recent updates.",
-        "status": "done",
         "dependencies": [1],
-        "priority": "high",
+        "status": "pending",
         "subtasks": [
           {
             "id": 1,
-            "title": "Audit and verify deprecated type packages across all workspaces",
-            "description": "Perform a comprehensive audit of all TypeScript type packages in the project, focusing on @types/terser, @types/bcryptjs, and @types/bull. Verify their deprecation status and identify exact versions in use.",
+            "title": "Create Component Development Agent Core Infrastructure",
+            "description": "Build the foundational Component Development Agent with atomic design pattern support and template generation system",
             "dependencies": [],
-            "details": "1. Scan all package.json files in frontend/, backend/, and root directories to identify exact versions of @types/terser, @types/bcryptjs, and @types/bull currently in use. 2. Check npm registry for deprecation warnings and last update dates for each package. 3. Document current usage patterns by searching for imports and type references across the codebase using grep or similar tools. 4. Create an inventory of which workspaces use which deprecated packages and their specific version numbers. 5. Identify any other @types packages that might be deprecated beyond the three mentioned.",
-            "status": "done",
-            "testStrategy": "Run pnpm list across all workspaces to verify the complete list of @types packages. Use pnpm outdated to check for version discrepancies. Verify that the audit captures all instances of the deprecated packages by cross-referencing with import statements in TypeScript files."
+            "details": "Implement core agent structure with command parsing for component generation. Create template system for atoms, molecules, and organisms following atomic design principles. Include React 19 component scaffolding with TypeScript interfaces, prop validation, and automatic file organization. Integrate with existing Vite 6 build system and ensure proper module resolution.",
+            "status": "pending",
+            "testStrategy": "Verify agent correctly parses component generation commands, generates valid React 19 components with proper TypeScript types, creates files in correct atomic design folders, and templates compile without errors in Vite 6 environment"
           },
           {
             "id": 2,
-            "title": "Research and evaluate modern alternatives for each deprecated package",
-            "description": "Research maintained alternatives for @types/terser, @types/bcryptjs, and @types/bull, evaluating compatibility, migration complexity, and feature parity with current implementations.",
-            "dependencies": ["2.1"],
-            "details": "1. For @types/terser: Check if terser v5+ includes built-in TypeScript definitions. Research @types/terser-webpack-plugin as an alternative if using webpack integration. 2. For @types/bcryptjs: Compare bcrypt vs bcryptjs packages - bcrypt has native bindings and built-in types, while bcryptjs is pure JavaScript. Evaluate if switching to bcrypt with its included types is feasible. 3. For @types/bull: Research BullMQ as the modern successor to Bull, which includes built-in TypeScript support. Compare API differences and migration requirements. 4. Document breaking changes, API differences, and migration complexity for each alternative. 5. Verify compatibility with current Node.js and TypeScript versions in use.",
-            "status": "done",
-            "testStrategy": "Create small proof-of-concept implementations for each alternative to verify type definitions work correctly. Test basic functionality like queue operations for BullMQ, hashing for bcrypt, and minification for terser to ensure feature parity."
-          },
-          {
-            "id": 3,
-            "title": "Update dependencies and migrate code to use new packages",
-            "description": "Remove deprecated type packages and install their replacements, then update all import statements and type annotations throughout the codebase to use the new packages.",
-            "dependencies": ["2.2"],
-            "details": "1. Use pnpm remove to uninstall @types/terser, @types/bcryptjs, and @types/bull from relevant workspaces. 2. Install replacements: terser (if it includes types), bcrypt (instead of bcryptjs), and bullmq (instead of bull) using pnpm add. 3. Update all import statements from 'bull' to 'bullmq' and adjust queue initialization code according to BullMQ API. 4. Replace bcryptjs imports with bcrypt and verify hash/compare function signatures remain compatible. 5. Update any terser-related imports and ensure build tools recognize the new type definitions. 6. Fix any TypeScript errors that arise from API changes between old and new packages.",
-            "status": "done",
-            "testStrategy": "Run pnpm build across all workspaces to ensure TypeScript compilation succeeds with new type definitions. Execute existing unit tests for queue operations, password hashing, and build processes to verify functionality remains intact."
-          },
-          {
-            "id": 4,
-            "title": "Update configurations and verify complete migration",
-            "description": "Update all configuration files, build scripts, and CI/CD pipelines that reference the old packages, then perform comprehensive testing to ensure the migration is complete and functional.",
-            "dependencies": ["2.3"],
-            "details": "1. Update webpack, vite, or other build tool configurations that may reference terser options or plugins. 2. Modify any Docker files or deployment scripts that might have specific package requirements for bcrypt native bindings. 3. Update CI/CD pipeline configurations if they have specific steps for installing native dependencies required by bcrypt. 4. Review and update any queue configuration files or environment variables specific to Bull that need adjustment for BullMQ. 5. Update any documentation or README files that reference the old packages. 6. Run full test suite including unit, integration, and end-to-end tests to ensure no regressions.",
-            "status": "done",
-            "testStrategy": "Execute full CI/CD pipeline to verify builds pass in all environments. Run load tests on queue operations to ensure BullMQ performs equivalently to Bull. Verify password hashing performance meets requirements. Test production build output to ensure terser minification works correctly."
-          }
-        ]
-      },
-      {
-        "id": 3,
-        "title": "Update Express.js from v4 to v5 following the migration guide and update all middleware configurations",
-        "description": "Upgrade Express.js framework from version 4 to version 5 across the application, updating all middleware configurations, route handlers, and dependencies to ensure compatibility with the new major version.",
-        "details": "1. **Pre-migration Assessment**: Audit current Express.js usage by examining all route files, middleware configurations, and custom Express extensions. Document current v4 patterns and identify breaking changes from the official Express v5 migration guide. 2. **Update Core Dependencies**: Upgrade express package to v5 using pnpm, then update related middleware packages (express-session, cors, helmet, body-parser, etc.) to versions compatible with Express v5. Remove any middleware that's now built into Express v5. 3. **Middleware Configuration Updates**: Update middleware setup to use new v5 syntax - replace app.use() patterns that changed, update error handling middleware to use new signature, and migrate any custom middleware to new async/await patterns if required. 4. **Route Handler Migration**: Update route handlers to use new Express v5 features like improved async support, update parameter handling if changed, and ensure all route definitions work with new router behavior. 5. **Error Handling Updates**: Migrate error handling middleware to new v5 patterns, update error propagation to use Promise-based error handling, and ensure all custom error handlers work with new async error handling. 6. **Static File and View Engine Updates**: Update static file serving configuration if syntax changed, migrate view engine setup to v5 patterns, and ensure template rendering still works correctly. 7. **Testing and Validation**: Create comprehensive tests for all modified routes and middleware, verify that all existing API endpoints work correctly, and ensure no regression in application functionality.",
-        "testStrategy": "1. **Unit Testing**: Run existing Express route tests using pnpm test to ensure all endpoints respond correctly with Express v5. Create additional tests for any new v5-specific features being utilized. 2. **Integration Testing**: Test complete request/response cycles through all application routes, verify middleware chain execution order remains correct, and confirm error handling works as expected. 3. **Performance Testing**: Compare response times and memory usage between v4 and v5 to ensure no performance regressions. Test under load to verify stability with the new version. 4. **Manual API Testing**: Use Postman or similar tools to manually test all API endpoints, verify CORS headers are set correctly, and confirm authentication middleware works properly. 5. **Error Scenario Testing**: Trigger various error conditions to ensure error handling middleware catches and processes errors correctly with v5's async error handling improvements.",
-        "status": "done",
-        "dependencies": [2],
-        "priority": "high",
-        "subtasks": [
-          {
-            "id": 1,
-            "title": "Analyze Express v4 usage and identify breaking changes",
-            "description": "Perform comprehensive audit of current Express.js v4 implementation, document all middleware configurations, route handlers, and custom extensions while identifying specific breaking changes from the v5 migration guide",
-            "dependencies": [],
-            "details": "1. Scan all server files to identify Express usage patterns including app.js, server.js, and route files. 2. Document all middleware currently in use (body-parser, cors, helmet, express-session, etc.) and their configurations. 3. Review Express v5 migration guide and create a checklist of breaking changes that affect the codebase. 4. Identify deprecated methods like app.del(), res.json(status, obj), and req.param(). 5. Document custom error handling middleware and async route handlers that need updates. 6. Create migration plan document listing all required changes grouped by priority",
-            "status": "done",
-            "testStrategy": "1. Create test suite to verify current v4 functionality works correctly before migration begins. 2. Document baseline API behavior with integration tests for all endpoints. 3. Ensure all existing tests pass with current v4 setup"
-          },
-          {
-            "id": 2,
-            "title": "Update Express core and middleware dependencies",
-            "description": "Upgrade Express.js to v5 and update all related middleware packages to compatible versions, removing deprecated middleware and updating package configurations",
+            "title": "Integrate Tailwind CSS and Storybook Story Generation",
+            "description": "Add Tailwind CSS styling system and automatic Storybook story generation to Component Development Agent",
             "dependencies": ["3.1"],
-            "details": "1. Update express package to v5.x using pnpm add express@5. 2. Remove body-parser as it's now built into Express v5. 3. Update middleware packages: cors, helmet, express-session, compression, morgan to v5-compatible versions. 4. Replace deprecated multer configurations if present. 5. Update express-validator to latest version compatible with Express v5. 6. Remove any middleware that's been integrated into Express v5 core. 7. Update package.json scripts if they reference Express-specific commands. 8. Resolve any peer dependency conflicts that arise from the upgrade",
-            "status": "done",
-            "testStrategy": "1. Run pnpm install to verify no dependency conflicts exist. 2. Start the server to ensure it initializes without import errors. 3. Check that all middleware packages load correctly without deprecation warnings"
+            "details": "Extend Component Development Agent to include Tailwind CSS class generation with design system tokens. Implement automatic Storybook story file generation for each component with controls, args, and documentation. Create utility functions for common styling patterns and responsive design. Ensure generated stories follow Storybook 7+ Component Story Format.",
+            "status": "pending",
+            "testStrategy": "Test that generated components include appropriate Tailwind classes, Storybook stories render correctly with proper controls, design tokens are consistently applied, and stories display in Storybook UI without errors"
           },
           {
             "id": 3,
-            "title": "Migrate middleware configurations and route handlers to v5 patterns",
-            "description": "Update all middleware setup code, route handlers, and error handling to use Express v5 syntax and patterns, including async/await support and new error propagation",
-            "dependencies": ["3.2"],
-            "details": "1. Update app.use() calls to new v5 syntax where middleware order has changed. 2. Replace body-parser middleware with built-in express.json() and express.urlencoded(). 3. Update error handling middleware to use new 4-parameter signature with async support. 4. Convert route handlers to use native async/await without wrapper functions. 5. Update app.router usage as it's been removed in v5. 6. Migrate from app.del() to app.delete() for DELETE routes. 7. Replace res.json(status, obj) with res.status(status).json(obj). 8. Update req.param() calls to use req.params, req.query, or req.body explicitly. 9. Update static file serving configuration to new syntax if changed",
-            "status": "done",
-            "testStrategy": "1. Test each middleware individually to ensure proper initialization. 2. Verify error handling middleware catches both sync and async errors. 3. Test all HTTP methods (GET, POST, PUT, DELETE) work correctly with new syntax"
+            "title": "Implement State Management Agent with TanStack Query",
+            "description": "Create State Management Agent for managing application state, API integration, and WebSocket connections",
+            "dependencies": [],
+            "details": "Build State Management Agent with TanStack Query hook generation for API calls, including error handling, caching, and optimistic updates. Implement context provider templates for global state management. Add WebSocket connection management with reconnection logic and event handling. Include performance optimization through query invalidation strategies and selective re-rendering patterns.",
+            "status": "pending",
+            "testStrategy": "Validate generated TanStack Query hooks handle API calls correctly with proper error states, context providers manage state without unnecessary re-renders, WebSocket connections maintain stability with auto-reconnect, and performance optimizations reduce component re-renders by at least 30%"
           },
           {
             "id": 4,
-            "title": "Validate migration and update documentation",
-            "description": "Run comprehensive tests to validate the Express v5 migration, fix any remaining issues, update API documentation, and ensure all functionality works correctly",
-            "dependencies": ["3.3"],
-            "details": "1. Run full test suite with pnpm test to identify any failing tests after migration. 2. Fix any test failures related to Express v5 changes. 3. Perform manual testing of all API endpoints using Postman or similar tool. 4. Update API documentation to reflect any changes in behavior or syntax. 5. Test error handling scenarios including 404s, 500s, and validation errors. 6. Verify middleware execution order is correct and security headers are properly set. 7. Load test the application to ensure performance hasn't degraded. 8. Update README or migration notes with any project-specific changes made. 9. Create rollback plan in case issues are discovered in production",
-            "status": "done",
-            "testStrategy": "1. Execute integration test suite covering all API endpoints with various HTTP methods and payloads. 2. Run performance benchmarks comparing v4 vs v5 response times. 3. Test error scenarios including malformed requests, authentication failures, and server errors. 4. Verify all middleware (CORS, security headers, session handling) works as expected"
-          },
-          {
-            "id": 5,
-            "title": "Audit Express.js v4 Usage and Dependencies",
-            "description": "Perform comprehensive audit of current Express.js v4 implementation, examining all route files, middleware configurations, and dependencies to create a migration roadmap",
-            "dependencies": [],
-            "details": "1. **Route Analysis**: Use grep and file search to identify all Express route definitions (app.get, app.post, router.use) across the codebase. Document route patterns, parameter handling, and async/await usage. 2. **Middleware Inventory**: Catalog all Express middleware in use including body-parser, cors, helmet, express-session, and custom middleware. Check middleware initialization order and configuration patterns. 3. **Breaking Changes Review**: Study Express v5 migration guide to identify critical breaking changes affecting the codebase. Focus on removed methods, changed middleware signatures, and new async error handling. 4. **Dependency Compatibility Matrix**: Create a compatibility matrix for all Express-related packages, checking which versions support Express v5. Identify packages that need updates or replacements.",
-            "status": "done",
-            "testStrategy": "1. **Static Analysis**: Run ESLint with Express-specific rules to identify deprecated patterns. Use TypeScript compiler to check for type incompatibilities. 2. **Documentation Generation**: Generate comprehensive audit report listing all Express v4 patterns found, affected files, and required changes for v5 migration."
-          },
-          {
-            "id": 6,
-            "title": "Update Express Core and Middleware Dependencies",
-            "description": "Upgrade Express.js to v5 and update all middleware packages to compatible versions, ensuring proper dependency resolution and removing deprecated packages",
-            "dependencies": ["3.5"],
-            "details": "1. **Core Express Update**: Use pnpm to update express package to v5.x, handling any peer dependency warnings. Update @types/express for TypeScript support. 2. **Middleware Package Updates**: Update express-session, cors, helmet to v5-compatible versions. Remove body-parser as it's now built into Express v5. Update compression, cookie-parser, and any custom middleware packages. 3. **Dependency Resolution**: Resolve any conflicting dependencies using pnpm's resolution features. Ensure all Express-related packages are using compatible versions. 4. **Package Cleanup**: Remove deprecated middleware packages that are now part of Express v5 core. Update package.json scripts if needed for new Express v5 commands.",
-            "status": "done",
-            "testStrategy": "1. **Dependency Verification**: Run pnpm install --frozen-lockfile to ensure clean dependency installation. Use pnpm audit to check for security vulnerabilities in updated packages. 2. **Build Testing**: Execute pnpm build to verify TypeScript compilation succeeds with new package versions. Check for any type definition conflicts or missing types."
-          },
-          {
-            "id": 7,
-            "title": "Migrate Middleware and Route Handlers to Express v5",
-            "description": "Update all middleware configurations, route handlers, and error handling to use Express v5 patterns, including new async/await support and error propagation",
-            "dependencies": ["3.5", "3.6"],
-            "details": "1. **Middleware Configuration Migration**: Update app.use() patterns to v5 syntax, particularly for error handling middleware which now requires 4 parameters. Convert synchronous middleware to async where beneficial. Update middleware initialization order if required by v5. 2. **Route Handler Updates**: Migrate route handlers to use native async/await support without wrapper functions. Update parameter extraction patterns if changed in v5. Ensure proper error propagation in async routes. 3. **Error Handling Modernization**: Implement v5's improved Promise-based error handling. Update custom error middleware to handle async errors properly. Ensure all rejected promises in routes are caught. 4. **Static Files and Views**: Update express.static() configuration for any v5 syntax changes. Migrate view engine setup if using server-side rendering. Test that all static assets are served correctly.",
-            "status": "done",
-            "testStrategy": "1. **Integration Testing**: Run full test suite with pnpm test to verify all routes work correctly. Test error scenarios to ensure proper error handling and status codes. 2. **Manual Testing**: Start development server and test critical user flows. Verify middleware execution order using logging. Test file uploads, static file serving, and API endpoints. 3. **Performance Testing**: Compare response times between v4 and v5 implementations. Ensure no performance regressions in critical paths."
+            "title": "Add WCAG 2.1 AA Accessibility Compliance and Testing",
+            "description": "Implement accessibility features and automated testing for both Component and State Management agents",
+            "dependencies": ["3.1", "3.2", "3.3"],
+            "details": "Enhance both agents to ensure WCAG 2.1 AA compliance in generated code. Add automatic ARIA attributes, keyboard navigation support, and focus management to component templates. Implement accessibility testing integration using axe-core or similar tools. Create accessibility documentation and best practices guide. Include screen reader compatibility checks and color contrast validation.",
+            "status": "pending",
+            "testStrategy": "Verify all generated components pass automated accessibility audits, keyboard navigation works correctly, ARIA attributes are properly applied, color contrast meets WCAG standards, and screen reader announcements are appropriate for interactive elements"
           }
         ]
       },
       {
         "id": 4,
-        "title": "Update React Router from v6 to v7 with route configuration updates and navigation testing",
-        "description": "Upgrade React Router from version 6 to version 7, updating route configurations, navigation patterns, and testing to ensure compatibility with the new major version.",
-        "details": "1. **Pre-migration Assessment**: Audit current React Router v6 usage by examining all route configurations, navigation hooks (useNavigate, useLocation, etc.), and route components. Review the official React Router v7 migration guide to identify breaking changes and new features. Document current routing patterns and components that will require updates. 2. **Update Core Dependencies**: Upgrade react-router-dom and related routing packages to v7 using pnpm. Check for peer dependency updates required for React Router v7 compatibility. 3. **Route Configuration Migration**: Update route definitions to v7 patterns - migrate from Routes/Route JSX to data router configurations if beneficial, update loader and action patterns, and modify route component structures as needed. Update any custom route guards or middleware. 4. **Navigation Updates**: Update navigation code to use v7 APIs - replace deprecated navigation methods, update programmatic navigation calls, and modify any custom navigation components. Ensure proper handling of route parameters and search params with v7 patterns. 5. **Component Updates**: Update route components to work with v7 - modify data loading patterns, update outlet usage if applicable, and ensure proper error boundary integration. Update any custom route-related hooks or utilities. 6. **Type Safety**: Update TypeScript definitions for React Router v7, ensuring proper typing for route parameters, loader data, and navigation functions.",
-        "testStrategy": "1. **Route Navigation Testing**: Test all application routes to ensure proper navigation between pages, correct parameter passing, and proper component rendering. Verify programmatic navigation works correctly using updated v7 APIs. 2. **Data Loading Testing**: If using data router features, test route loaders and actions to ensure proper data fetching and form submissions. Verify error handling and loading states work as expected. 3. **Browser Integration Testing**: Test browser back/forward functionality, URL updates, and deep linking to ensure React Router v7 properly integrates with browser navigation. Test page refreshes maintain correct route state. 4. **TypeScript Compilation**: Run TypeScript compilation to ensure all React Router types are correctly updated and no type errors exist from the v7 migration. 5. **End-to-End Testing**: Run existing navigation tests and create additional tests for any new v7-specific features being utilized. Test complete user journeys through the application routing system.",
-        "status": "done",
-        "dependencies": [2],
+        "title": "Implement Testing Agents",
+        "description": "Create Backend Testing Agent and Frontend Testing Agent with comprehensive test coverage",
+        "details": "Implement Backend Testing Agent using Jest for unit tests, integration tests for APIs, external dependency mocking, test data factories, and performance testing. Create Frontend Testing Agent using Vitest for component tests, Playwright for E2E tests, visual regression testing, and accessibility testing. Auto-trigger on code changes and maintain 80% coverage threshold. Integrate with existing test:watch limitations and resource constraints.",
+        "testStrategy": "Verify agents generate comprehensive test suites with proper mocking, achieve required coverage thresholds, tests pass in CI pipeline, and performance tests identify bottlenecks. Test auto-triggering works correctly and respects resource limits.",
         "priority": "high",
+        "dependencies": [2, 3],
+        "status": "pending",
         "subtasks": [
           {
             "id": 1,
-            "title": "Audit current React Router v6 implementation and analyze v7 migration requirements",
-            "description": "Conduct a comprehensive audit of the current React Router v6 usage throughout the application, identify all route configurations, navigation patterns, and prepare a migration plan based on the official v7 migration guide.",
+            "title": "Create Backend Testing Agent Core Framework",
+            "description": "Build the foundational Backend Testing Agent with Jest integration, test runner capabilities, and code analysis features",
             "dependencies": [],
-            "details": "Search and document all React Router v6 usage patterns including: route configurations in App.tsx and other components, usage of hooks (useNavigate, useLocation, useParams, useSearchParams), route guards and protected routes, nested routing patterns, error boundaries, and custom route components. Review the React Router v7 migration guide to identify breaking changes, deprecated APIs, and new features. Create a migration checklist documenting all components and patterns that need updates.",
-            "status": "done",
-            "testStrategy": "Create a comprehensive inventory of all routing-related code by searching for react-router-dom imports and usage. Document current routing structure and identify potential migration risks. Verify the audit is complete by cross-referencing with the application's navigation flow."
+            "details": "Develop the core Backend Testing Agent architecture with Jest test runner integration, code parsing capabilities for automatic test generation, test file creation and management, coverage reporting integration, and command-line interface for manual triggering. Implement base classes for unit test generation, integration test templates, and test data factory patterns. Ensure compatibility with existing Jest configuration and resource constraints.",
+            "status": "pending",
+            "testStrategy": "Verify agent can parse backend code files, generate valid Jest test suites, execute tests with proper resource limits, produce accurate coverage reports, and handle various code patterns including Express routes, middleware, and database models."
           },
           {
             "id": 2,
-            "title": "Update React Router dependencies and migrate route configurations to v7",
-            "description": "Upgrade react-router-dom to version 7 and update all route configurations, switching from JSX-based routes to data router patterns where beneficial, and updating route component structures.",
-            "dependencies": ["4.1"],
-            "details": "Update react-router-dom and related packages to v7 using pnpm. Migrate route configurations from Routes/Route JSX patterns to createBrowserRouter or createMemoryRouter data router configurations if applicable. Update route definitions to use v7 patterns including loaders, actions, and error elements. Modify route guards and authentication wrappers to work with v7 APIs. Update TypeScript types for route parameters and navigation functions. Ensure proper integration with existing error boundaries.",
-            "status": "done",
-            "testStrategy": "Run pnpm install and verify successful dependency resolution. Test route configuration changes by starting the development server and navigating through all application routes. Verify that route parameters are properly typed and accessible. Test error boundary integration by triggering route errors."
+            "title": "Implement Frontend Testing Agent with Vitest and Playwright",
+            "description": "Create Frontend Testing Agent supporting component testing with Vitest and E2E testing with Playwright",
+            "dependencies": [],
+            "details": "Build Frontend Testing Agent with Vitest integration for component unit tests, React Testing Library support, Playwright setup for E2E testing, visual regression testing capabilities using Percy or similar tools, and accessibility testing with axe-core. Implement smart test generation based on component props and state, user interaction simulation, and cross-browser testing support. Include performance budgets and test execution optimization.",
+            "status": "pending",
+            "testStrategy": "Test agent generates valid Vitest component tests, Playwright E2E tests run successfully across browsers, visual regression baselines are established and maintained, accessibility violations are detected and reported, and test execution respects CPU and memory limits."
           },
           {
             "id": 3,
-            "title": "Update navigation code and test all routing functionality",
-            "description": "Update all navigation-related code to use React Router v7 APIs, including programmatic navigation, link components, and custom navigation utilities, then thoroughly test all routing functionality.",
-            "dependencies": ["4.2"],
-            "details": "Replace deprecated navigation methods with v7 equivalents throughout the codebase. Update all useNavigate usage to handle v7 navigation patterns. Modify Link and NavLink components to use new prop patterns if changed. Update any custom navigation components or utilities to work with v7 APIs. Ensure proper handling of route parameters and search params with new patterns. Update navigation-related TypeScript definitions. Test all navigation flows including programmatic navigation, browser back/forward, deep linking, and protected route redirects.",
-            "status": "done",
-            "testStrategy": "Manually test all application navigation flows to ensure routes load correctly and parameters are passed properly. Test programmatic navigation in various scenarios (form submissions, authentication flows, etc.). Verify browser navigation (back/forward buttons) works correctly. Test deep linking by accessing routes directly via URL. Run existing navigation-related tests and update any that fail due to API changes."
+            "title": "Develop Test Generation Intelligence and Mocking System",
+            "description": "Implement intelligent test case generation with comprehensive mocking capabilities for both backend and frontend agents",
+            "dependencies": ["4.1", "4.2"],
+            "details": "Create intelligent test generation system that analyzes code structure to identify test scenarios, generates comprehensive test cases covering edge cases and error handling, implements automatic mocking for external dependencies (APIs, databases, third-party services), creates test data factories with realistic data generation, and maintains test isolation. Include performance test generation for critical paths and load testing scenarios.",
+            "status": "pending",
+            "testStrategy": "Validate generated tests cover happy paths and edge cases, mocks properly isolate external dependencies, test data is realistic and varied, performance tests accurately measure bottlenecks, and generated tests maintain independence and can run in parallel."
+          },
+          {
+            "id": 4,
+            "title": "Integrate Auto-triggering and Coverage Enforcement",
+            "description": "Implement automatic test triggering on code changes with coverage threshold enforcement and CI/CD integration",
+            "dependencies": ["4.3"],
+            "details": "Develop file watcher system for automatic test triggering on code changes, implement coverage threshold enforcement (80% minimum) with reporting, create pre-commit hooks for test execution, integrate with CI/CD pipeline for continuous testing, and build coverage trend tracking with alerts for coverage drops. Include test result caching for unchanged code, parallel test execution optimization, and integration with existing development workflow respecting resource constraints.",
+            "status": "pending",
+            "testStrategy": "Verify file changes trigger appropriate tests, coverage thresholds block commits when not met, CI pipeline integration works smoothly, test execution is optimized to avoid redundant runs, and system respects CPU/memory limits while maintaining fast feedback loops."
           }
         ]
       },
       {
         "id": 5,
-        "title": "Update Storybook from v8 to v9 with story configuration updates and component documentation rebuild",
-        "description": "Upgrade Storybook from version 8 to version 9, updating story configurations, component documentation, and ensuring compatibility with the new major version.",
-        "details": "1. **Pre-migration Assessment**: Audit current Storybook v8 configuration by examining .storybook/main.js, preview.js, and all story files. Review the official Storybook v9 migration guide to identify breaking changes, new features, and deprecated APIs. Document current story patterns, addons, and configurations that will require updates. 2. **Update Core Dependencies**: Upgrade @storybook/react, @storybook/addon-essentials, @storybook/addon-actions, and all other Storybook packages to v9 using pnpm. Update any related development dependencies and ensure peer dependency compatibility. 3. **Configuration Migration**: Update .storybook/main.js and preview.js files to use v9 configuration patterns. Replace deprecated configuration options, update addon configurations, and migrate any custom webpack or Vite configurations. Update story loading patterns if changed in v9. 4. **Story File Updates**: Update all *.stories.js/ts files to use v9 story format. Migrate deprecated story syntax, update args and argTypes definitions, and ensure proper component documentation structure. Update play functions and interaction testing if using @storybook/addon-interactions. 5. **Addon Compatibility**: Review and update all Storybook addons to v9-compatible versions. Replace any deprecated addons with maintained alternatives. Test essential addons like controls, actions, docs, and viewport. 6. **Component Documentation Rebuild**: Regenerate component documentation using Storybook's autodocs feature. Update JSDoc comments and component prop definitions to ensure proper documentation generation. Verify that component controls and documentation display correctly in the new version.",
-        "testStrategy": "1. **Build Verification**: Run Storybook build command to ensure all stories compile correctly without errors or warnings. Verify that the build output is properly generated and can be deployed. 2. **Story Functionality Testing**: Start Storybook development server and manually test all component stories to ensure proper rendering, controls functionality, and interaction behavior. Verify that all addons work correctly and component documentation is properly displayed. 3. **Documentation Accuracy**: Review generated component documentation to ensure JSDoc comments, prop types, and examples are correctly parsed and displayed. Test that autodocs feature generates comprehensive documentation for all components. 4. **Addon Integration Testing**: Test all installed addons including controls, actions, docs, viewport, and any custom addons to ensure they function properly with the new version. Verify that addon panels display correctly and interactions work as expected. 5. **Cross-browser Compatibility**: Test Storybook in different browsers to ensure the v9 upgrade doesn't introduce browser-specific issues. Verify that all interactive elements and documentation render correctly across different environments.",
-        "status": "in-progress",
-        "dependencies": [2],
-        "priority": "high",
+        "title": "Implement Code Review Agent",
+        "description": "Create automated code quality and security validation agent",
+        "details": "Implement Code Review Agent with ESLint rule enforcement, TypeScript strict mode compliance, security vulnerability scanning using existing tools, performance optimization suggestions, and architecture pattern validation. Integrate with pre-commit hooks and PR creation triggers. Include /review command for manual reviews and automatic triggering on code changes.",
+        "testStrategy": "Test agent correctly identifies code quality issues, enforces TypeScript strict mode, catches security vulnerabilities, provides actionable performance suggestions, and integrates smoothly with Git workflow without blocking legitimate changes.",
+        "priority": "medium",
+        "dependencies": [2, 3],
+        "status": "pending",
         "subtasks": [
           {
             "id": 1,
-            "title": "Audit and prepare Storybook v8 to v9 migration plan",
-            "description": "Perform comprehensive assessment of current Storybook v8 setup, review v9 migration guide, and create detailed migration plan documenting all required changes",
+            "title": "Design and Implement Core Code Review Engine",
+            "description": "Create the foundational code review engine with pluggable analyzers for ESLint, TypeScript strict mode, and security scanning",
             "dependencies": [],
-            "details": "1. **Inventory Current Setup**: Examine .storybook/main.js, preview.js, and manager.js configurations. Catalog all installed Storybook addons and their versions. Document custom webpack/Vite configurations and any decorators or global styles. 2. **Analyze Story Files**: Audit all *.stories.tsx files to identify story format patterns, args usage, play functions, and component documentation. Create list of deprecated patterns that need updating. 3. **Review Migration Guide**: Study official Storybook v9 migration documentation, focusing on breaking changes in configuration API, story format changes, and addon compatibility. 4. **Create Migration Checklist**: Document specific changes needed for configuration files, story file updates, addon replacements, and new v9 features to implement. Include risk assessment for each change.",
-            "status": "done",
-            "testStrategy": "1. **Documentation Review**: Verify migration plan covers all Storybook files and configurations by cross-referencing with file system scan results. 2. **Dependency Analysis**: Use pnpm list to ensure all Storybook-related packages are identified for upgrade. 3. **Risk Validation**: Review migration checklist against v9 changelog to ensure no breaking changes are missed."
+            "details": "Build core review engine architecture with analyzer plugin system. Implement ESLint analyzer to enforce project rules, TypeScript strict mode analyzer to check compliance, and security scanner integration using existing tools. Create unified result format for all analyzers with severity levels, file locations, and fix suggestions. Implement configuration system for enabling/disabling specific checks and customizing rule severity.",
+            "status": "pending",
+            "testStrategy": "Unit test each analyzer independently with sample code containing known issues. Test plugin system can dynamically load analyzers. Verify result aggregation correctly merges findings from multiple analyzers. Test configuration changes properly enable/disable checks."
           },
           {
             "id": 2,
-            "title": "Upgrade Storybook dependencies and migrate configurations to v9",
-            "description": "Update all Storybook packages to v9, migrate configuration files to new format, and ensure build system compatibility",
+            "title": "Implement Performance and Architecture Analysis",
+            "description": "Create analyzers for performance optimization suggestions and architecture pattern validation",
             "dependencies": ["5.1"],
-            "details": "1. **Update Package Dependencies**: Use pnpm to upgrade @storybook/react, @storybook/addon-essentials, @storybook/addon-controls, @storybook/addon-actions, @storybook/addon-links, @storybook/addon-docs, and @storybook/builder-vite to v9. Update @storybook/testing-library and related test utilities. 2. **Migrate Configuration Files**: Update .storybook/main.js to use new v9 configuration format, including framework options, addon configurations, and build settings. Migrate preview.js to use new globals and parameter structures. Update manager.js if custom UI configurations exist. 3. **Update Build Configuration**: Ensure Vite configuration in main.js is compatible with v9 requirements. Update any custom webpack configurations to v9 format. 4. **Fix Import Paths**: Update any deprecated import paths for Storybook utilities and types according to v9 module structure.",
-            "status": "done",
-            "testStrategy": "1. **Dependency Verification**: Run pnpm list to confirm all Storybook packages are on v9 and no v8 packages remain. Check for peer dependency warnings. 2. **Configuration Validation**: Run storybook dev --debug to verify configurations load without errors. Check console for deprecation warnings. 3. **Build Test**: Execute pnpm build-storybook to ensure production build completes successfully with new configurations."
+            "details": "Develop performance analyzer to detect common performance anti-patterns like unnecessary re-renders, unoptimized loops, and memory leaks. Implement architecture validator to check adherence to project patterns including proper layering, dependency injection usage, and component structure. Create suggestion engine that provides actionable optimization recommendations with code examples. Integrate with existing codebase patterns and conventions.",
+            "status": "pending",
+            "testStrategy": "Test performance analyzer catches known anti-patterns in sample code. Verify architecture validator identifies violations of project conventions. Test suggestion engine provides relevant and actionable recommendations. Validate against real project code for false positive rate."
           },
           {
             "id": 3,
-            "title": "Update story files to v9 format and rebuild component documentation",
-            "description": "Migrate all story files to Storybook v9 format, update component documentation, and ensure all stories render correctly with proper controls",
-            "dependencies": ["5.2"],
-            "details": "1. **Update Story Format**: Convert all *.stories.tsx files to use v9 CSF3 format with proper meta exports and story objects. Update args and argTypes to new v9 patterns. Replace deprecated story properties with v9 equivalents. 2. **Migrate Decorators and Parameters**: Update story decorators to use new v9 syntax. Convert parameters to new structure, especially for controls and docs configuration. Update play functions to use new testing utilities. 3. **Enhance Component Documentation**: Add comprehensive JSDoc comments to all components for better autodocs generation. Update prop descriptions and default values for improved documentation. Configure docs page templates for consistent documentation. 4. **Update MDX Documentation**: If using MDX files, migrate to v9 MDX2 format and update Meta and Story components usage. 5. **Verify Story Rendering**: Test each story in Storybook UI to ensure proper rendering, working controls, and accurate documentation display.",
-            "status": "in-progress",
-            "testStrategy": "1. **Story Compilation**: Run storybook build to verify all stories compile without TypeScript or build errors. 2. **Interactive Testing**: Manually test each story in Storybook UI, verifying controls update components correctly, actions log properly, and documentation displays accurately. 3. **Accessibility Testing**: Use Storybook's a11y addon to verify all stories pass accessibility checks. 4. **Visual Regression**: Compare story screenshots before and after migration to ensure no visual regressions."
+            "title": "Integrate with Git Hooks and PR Workflow",
+            "description": "Set up pre-commit hooks and PR creation triggers for automatic code review",
+            "dependencies": ["5.1", "5.2"],
+            "details": "Implement pre-commit hook integration that runs lightweight checks without blocking commits. Create PR webhook handler for comprehensive review on pull request creation. Implement review comment posting to GitHub PRs with inline suggestions. Add bypass mechanism for emergency fixes. Configure selective review based on changed files and commit messages. Ensure integration respects existing Git workflow and doesn't introduce friction.",
+            "status": "pending",
+            "testStrategy": "Test pre-commit hooks run quickly and don't block legitimate commits. Verify PR integration posts meaningful comments without spam. Test bypass mechanism works for emergency commits. Validate selective review correctly identifies files needing review."
+          },
+          {
+            "id": 4,
+            "title": "Create Manual Review Command and Reporting",
+            "description": "Implement /review command for on-demand reviews and create comprehensive reporting system",
+            "dependencies": ["5.1", "5.2", "5.3"],
+            "details": "Build /review slash command that accepts file paths, directories, or commit ranges for targeted review. Implement interactive mode for reviewing findings and applying fixes. Create summary reports with metrics on code quality trends, common issues, and improvement suggestions. Add export functionality for reports in JSON and Markdown formats. Implement caching to avoid re-analyzing unchanged code.",
+            "status": "pending",
+            "testStrategy": "Test /review command correctly parses various input formats and targets appropriate code. Verify interactive mode allows users to review and apply fixes seamlessly. Test report generation produces accurate metrics and trends. Validate caching improves performance without missing new issues."
           }
         ]
       },
       {
         "id": 6,
-        "title": "Update ESLint to v9 with flat config format and update TypeScript ESLint plugins to v8",
-        "description": "Upgrade ESLint from current version to v9 implementing the new flat config format, and update all TypeScript ESLint plugins to version 8 for improved compatibility and performance.",
-        "details": "1. **Pre-migration Assessment**: Audit current ESLint configuration by examining .eslintrc files, package.json eslint configs, and all custom rules across the project. Review ESLint v9 migration guide focusing on flat config format changes and breaking changes from current version. Document current rule sets, plugins, and configurations that require updates. 2. **Update Core Dependencies**: Upgrade eslint package to v9 using pnpm, then update @typescript-eslint/parser and @typescript-eslint/eslint-plugin to v8. Update related ESLint plugins (eslint-plugin-react, eslint-plugin-import, etc.) to versions compatible with ESLint v9. 3. **Migrate to Flat Config Format**: Convert existing .eslintrc.js/.eslintrc.json files to the new eslint.config.js flat config format. Restructure configuration objects to use the new flat config syntax, updating extends, plugins, and rules properties. Handle workspace-specific configurations for monorepo structure. 4. **Update TypeScript Integration**: Configure @typescript-eslint/parser v8 with updated options and ensure proper TypeScript project references. Update parser options, project paths, and type-aware rules to work with the new plugin version. 5. **Rule Configuration Updates**: Review and update all ESLint rules, particularly those that changed behavior or syntax in v9. Update any custom rules or rule configurations that are no longer compatible. Test rule inheritance and overrides in the flat config format. 6. **IDE and Tool Integration**: Update VS Code settings, CI/CD pipeline configurations, and any other tooling that references ESLint configuration files. Ensure proper integration with build scripts and pre-commit hooks.",
-        "testStrategy": "1. **Linting Verification**: Run pnpm lint across all workspaces to ensure ESLint v9 processes files correctly without configuration errors. Verify that all existing code passes linting rules or shows expected violations. 2. **TypeScript Rule Testing**: Test TypeScript-specific ESLint rules by running linting on TypeScript files to ensure @typescript-eslint/eslint-plugin v8 works correctly with type-aware rules and project references. 3. **Configuration Validation**: Validate flat config format by testing ESLint in different directories of the monorepo to ensure proper rule inheritance and workspace-specific overrides work as expected. 4. **IDE Integration Testing**: Test ESLint integration in VS Code or other IDEs to ensure real-time error reporting works correctly with the new configuration format. Verify that auto-fix functionality works properly. 5. **CI/CD Pipeline Testing**: Run the complete CI/CD pipeline to ensure ESLint checks pass in the build environment and that the new configuration works correctly in automated testing contexts. 6. **Performance Testing**: Compare linting performance before and after the upgrade to ensure the new version maintains or improves execution speed, especially for large codebases.",
+        "title": "Implement Documentation Agent",
+        "description": "Create automated documentation generation and maintenance system",
+        "details": "Implement Documentation Agent for API documentation generation from code annotations, README file updates, Mermaid architecture diagrams, CLAUDE.md context maintenance, and release notes from commits. Auto-trigger after feature completion and provide /docs command. Generate documentation in docs/ folder following project structure guidelines.",
+        "testStrategy": "Validate generated API documentation is accurate and complete, README files are updated correctly, architecture diagrams reflect actual system structure, and release notes capture meaningful changes. Test documentation stays synchronized with code changes.",
+        "priority": "medium",
+        "dependencies": [2, 3],
         "status": "pending",
-        "dependencies": [2],
-        "priority": "high",
         "subtasks": [
           {
             "id": 1,
-            "title": "Audit and prepare ESLint v9 migration plan",
-            "description": "Conduct comprehensive assessment of current ESLint v8 configuration, analyze breaking changes for v9 flat config format, and create detailed migration strategy",
+            "title": "Create Documentation Generator Core Engine",
+            "description": "Build the foundational documentation generation engine with plugin architecture for different documentation types",
             "dependencies": [],
-            "details": "Review all existing .eslintrc.js/.eslintrc.json files across workspaces to catalog current rules, plugins, and extends configurations. Analyze ESLint v9 migration guide focusing on flat config format requirements, removed formatters, and API changes. Document all custom rules, shared configurations, and workspace-specific overrides that need conversion. Create a migration checklist identifying deprecated features, plugin compatibility issues, and required configuration restructuring. Assess impact on build scripts, pre-commit hooks, and CI/CD pipelines.",
+            "details": "Implement core documentation engine with TypeScript AST parsing for API documentation extraction from JSDoc/TSDoc annotations, plugin system for extensible documentation formats, template engine for consistent documentation output, and configuration management for documentation preferences. Create base classes for documentation generators and establish interfaces for different documentation types (API, architecture, release notes).",
             "status": "pending",
-            "testStrategy": "Create test cases for critical linting rules by setting up sample code files with known violations. Document current ESLint output for comparison after migration. Verify all workspace-specific configurations are properly identified and cataloged."
+            "testStrategy": "Test AST parser correctly extracts documentation from various code annotation formats, plugin system loads and executes documentation plugins correctly, template engine produces consistent output across different documentation types, and configuration changes are properly applied to generation process."
           },
           {
             "id": 2,
-            "title": "Upgrade ESLint and TypeScript ESLint to latest versions",
-            "description": "Update ESLint to v9 and @typescript-eslint packages to v8, ensuring all related plugins and dependencies are compatible",
+            "title": "Implement API Documentation Generator",
+            "description": "Create automated API documentation generator that extracts and formats documentation from code annotations",
             "dependencies": ["6.1"],
-            "details": "Execute pnpm update eslint@^9.0.0 @typescript-eslint/parser@^8.0.0 @typescript-eslint/eslint-plugin@^8.0.0 across all workspaces. Update essential plugins including eslint-plugin-react, eslint-plugin-react-hooks, eslint-plugin-import to ESLint v9 compatible versions. Handle any peer dependency conflicts by updating or replacing incompatible plugins. Update eslint-config-prettier and related formatting integrations. Verify all dependencies resolve correctly without version conflicts in pnpm lockfile.",
+            "details": "Build API documentation generator that parses TypeScript/JavaScript files for JSDoc/TSDoc comments, extracts endpoint definitions with parameters and response types, generates OpenAPI/Swagger specifications, creates markdown documentation with examples, and organizes documentation by module/service. Include support for REST APIs, GraphQL schemas, and WebSocket events. Generate interactive API documentation using tools like Swagger UI.",
             "status": "pending",
-            "testStrategy": "Run pnpm install to ensure clean dependency resolution without warnings. Execute basic ESLint CLI commands to verify core functionality. Test that TypeScript parser initializes correctly with sample TypeScript files."
+            "testStrategy": "Verify generator correctly parses all API annotation formats, produces valid OpenAPI specifications, includes all required fields and examples, handles edge cases like optional parameters and complex types, and generated documentation is browsable and accurate."
           },
           {
             "id": 3,
-            "title": "Convert to flat config format and verify functionality",
-            "description": "Transform existing ESLint configurations to new flat config format, update all references, and ensure proper rule inheritance across workspaces",
-            "dependencies": ["6.2"],
-            "details": "Create new eslint.config.js files replacing .eslintrc configurations using ES modules syntax. Convert extends arrays to imported configurations, transform plugin references to new format, and restructure rule definitions. Handle monorepo workspace configurations by creating appropriate config exports and imports. Update languageOptions for TypeScript parser configuration, configure sourceType and ecmaVersion appropriately. Migrate environment settings, globals, and ignore patterns to new flat config structure. Update all package.json scripts and tool configurations to reference new config files.",
+            "title": "Build Architecture Diagram and README Generator",
+            "description": "Implement generators for Mermaid architecture diagrams and automated README updates",
+            "dependencies": ["6.1"],
+            "details": "Create architecture diagram generator that analyzes codebase structure to generate Mermaid diagrams showing component relationships, data flow, and system architecture. Implement README generator that updates project documentation with latest features, installation instructions, API endpoints, and configuration options. Include CLAUDE.md context maintenance for AI assistant integration. Follow Google Cloud Platform diagramming style guidelines.",
             "status": "pending",
-            "testStrategy": "Run pnpm lint across all workspaces to verify no configuration errors occur. Test that all existing violations are still caught and no false positives appear. Verify workspace-specific overrides function correctly by testing files in different directories. Confirm IDE integration displays linting errors properly in VS Code."
+            "testStrategy": "Test diagram generator produces valid Mermaid syntax, accurately represents system architecture, updates reflect code changes, README sections are properly formatted and complete, and CLAUDE.md context remains relevant and up-to-date."
+          },
+          {
+            "id": 4,
+            "title": "Create Release Notes Generator and Integration",
+            "description": "Build automated release notes generation from commits and integrate documentation triggers",
+            "dependencies": ["6.1", "6.2", "6.3"],
+            "details": "Implement release notes generator that analyzes git commits to extract meaningful changes, groups changes by type (features, fixes, breaking changes), generates changelog in standard format, and creates version-specific documentation. Add auto-trigger mechanisms for documentation generation after feature completion, pre-commit hooks for documentation validation, and /docs command for manual documentation generation. Ensure all documentation is generated in docs/ folder with proper categorization.",
+            "status": "pending",
+            "testStrategy": "Verify release notes accurately capture commit changes, categorization follows conventional commit standards, auto-triggers execute at correct lifecycle points, /docs command generates complete documentation set, and all documentation is properly organized in docs/ folder structure."
           }
         ]
       },
       {
         "id": 7,
-        "title": "Update Jest from v29 to v30 and update all testing dependencies and configurations",
-        "description": "Upgrade Jest testing framework from version 29 to version 30, updating all related testing dependencies, configurations, and test files to ensure compatibility with the new major version.",
-        "details": "1. **Pre-migration Assessment**: Audit current Jest v29 configuration by examining jest.config.js, package.json test scripts, and all test files across workspaces. Review Jest v30 migration guide to identify breaking changes, deprecated APIs, and new features. Document current testing patterns, custom matchers, and configurations that require updates. 2. **Update Core Dependencies**: Upgrade jest, @types/jest, ts-jest, and jest-environment-jsdom to v30 using pnpm. Update related testing utilities like @testing-library/jest-dom, @testing-library/react, and any custom Jest plugins to compatible versions. 3. **Configuration Migration**: Update jest.config.js files following v30 patterns - replace deprecated configuration options, update preset configurations, and modify transform settings for TypeScript and modern JavaScript features. Update test scripts in package.json to use new CLI options if needed. 4. **Test File Updates**: Review and update test files that use deprecated Jest APIs or matchers. Update mock implementations, custom matchers, and test utilities to use v30 compatible syntax. Address any breaking changes in snapshot testing, async testing patterns, or module mocking. 5. **Integration Updates**: Ensure Jest v30 works correctly with existing tools like ESLint, TypeScript, and CI/CD pipelines. Update any Jest-related ESLint rules or configurations to be compatible with the new version.",
-        "testStrategy": "1. **Configuration Verification**: Run Jest with --init flag to verify configuration is valid and all options are recognized. Test configuration loading by running jest --showConfig to ensure no deprecated warnings appear. 2. **Test Suite Execution**: Run full test suite using pnpm test across all workspaces to ensure all existing tests pass with Jest v30. Address any test failures or deprecation warnings that appear. 3. **Feature Testing**: Test key Jest v30 features like improved error messages, updated snapshot format, and any new assertion methods. Verify that test coverage reports generate correctly and match expected coverage metrics. 4. **Performance Validation**: Compare test execution times between v29 and v30 to ensure performance improvements are realized. Run tests in CI environment to verify compatibility with build pipelines and deployment processes.",
+        "title": "Implement Workflow Orchestration System",
+        "description": "Create workflow engine for coordinating multiple agents in feature development and bug fixes",
+        "details": "Implement workflow orchestration engine supporting feature development, bug fix, and refactoring workflows as defined in PRD. Create parallel execution for backend/frontend agents, sequential validation steps, and conditional logic based on change types. Include workflow templates in YAML format and integration with task-master commands. Support both automatic triggering and manual /feature commands.",
+        "testStrategy": "Test workflows execute in correct sequence, parallel steps complete successfully, conditional logic works properly, workflows integrate with existing task-master system, and error handling gracefully manages failed steps.",
+        "priority": "high",
+        "dependencies": [2, 3, 4, 5, 6],
         "status": "pending",
-        "dependencies": [2, 6],
-        "priority": "medium",
         "subtasks": [
           {
             "id": 1,
-            "title": "Audit current Jest v29 setup and analyze migration requirements",
-            "description": "Perform comprehensive assessment of current Jest v29 configuration, test patterns, and dependencies to identify migration requirements for Jest v30",
+            "title": "Design Workflow Engine Core Architecture",
+            "description": "Design and implement the core workflow engine with support for parallel/sequential execution and conditional logic",
             "dependencies": [],
-            "details": "Review all jest.config.js files across workspaces, analyze package.json test scripts, document current Jest plugins and custom matchers. Study Jest v30 migration guide for breaking changes, deprecated APIs, and new features. Create migration checklist documenting: current test patterns, custom matchers, snapshot configurations, module mocking patterns, and TypeScript integration settings that require updates",
+            "details": "Create the foundational workflow engine that can parse workflow definitions, manage execution state, handle parallel and sequential task execution, and implement conditional branching based on workflow types (feature, bug fix, refactoring). Design the engine to be extensible and integrate with the existing task-master system. Include interfaces for workflow steps, execution context, and state management.",
             "status": "pending",
-            "testStrategy": "Verify audit completeness by running jest --showConfig across all workspaces to capture current configurations. Execute pnpm test to establish baseline test results and identify any existing issues before migration"
+            "testStrategy": "Unit test the workflow engine for correct state transitions, parallel execution handling, conditional logic evaluation, and error propagation. Test integration with task-master commands and verify workflow persistence/recovery mechanisms."
           },
           {
             "id": 2,
-            "title": "Update Jest core and testing dependencies to v30",
-            "description": "Upgrade Jest framework and all related testing dependencies to v30-compatible versions using pnpm",
+            "title": "Implement YAML Workflow Template System",
+            "description": "Create YAML-based workflow template parser and validator with predefined templates for common workflows",
             "dependencies": ["7.1"],
-            "details": "Update jest, @types/jest, ts-jest to v30 using pnpm commands. Upgrade jest-environment-jsdom, @testing-library/jest-dom, @testing-library/react to latest compatible versions. Update any Jest plugins like jest-extended or jest-mock-extended. Resolve any peer dependency conflicts and ensure all testing utilities are compatible with Jest v30",
+            "details": "Develop a YAML parser for workflow definitions that supports defining steps, dependencies, parallel execution blocks, conditional logic, and agent assignments. Create template library with predefined workflows for feature development, bug fixes, and refactoring. Include schema validation, template inheritance, and variable substitution capabilities. Store templates in .taskmaster/workflows/ directory.",
             "status": "pending",
-            "testStrategy": "Run pnpm install to verify no dependency conflicts. Execute jest --version across workspaces to confirm v30 installation. Run a subset of tests to verify basic functionality before full migration"
+            "testStrategy": "Test YAML parsing with valid and invalid templates, verify schema validation catches errors, test template inheritance and variable substitution, and ensure predefined templates execute correctly through the workflow engine."
           },
           {
             "id": 3,
-            "title": "Migrate Jest configurations and test scripts to v30 patterns",
-            "description": "Update all Jest configuration files and package.json scripts to use Jest v30 syntax and remove deprecated options",
-            "dependencies": ["7.2"],
-            "details": "Update jest.config.js files to replace deprecated options like testURL with testEnvironmentOptions. Migrate transform configurations for TypeScript and ESM support. Update coverage configurations if using deprecated coverage providers. Modify package.json test scripts to use new Jest v30 CLI options. Update preset configurations and ensure proper workspace resolution for monorepo setup",
+            "title": "Build Agent Coordination and Communication Layer",
+            "description": "Implement the communication system for coordinating multiple agents within workflows",
+            "dependencies": ["7.1"],
+            "details": "Create the coordination layer that manages agent lifecycle, handles inter-agent communication, manages shared context between agents, and implements result aggregation. Support parallel agent execution for backend/frontend development, implement queuing for sequential validation steps, and handle agent failures with retry logic. Include agent status tracking and progress reporting.",
             "status": "pending",
-            "testStrategy": "Validate configurations by running jest --showConfig to ensure no deprecation warnings. Test configuration loading with jest --listTests. Verify coverage collection works with pnpm test:coverage"
+            "testStrategy": "Test parallel agent execution completes successfully, verify sequential steps wait for dependencies, test failure handling and retry mechanisms, validate shared context is properly maintained between agents, and ensure progress tracking accurately reflects workflow state."
           },
           {
             "id": 4,
-            "title": "Update test files and verify CI/CD integration compatibility",
-            "description": "Refactor test files to use Jest v30 APIs and ensure all tests pass with proper CI/CD integration",
-            "dependencies": ["7.3"],
-            "details": "Update test files using deprecated Jest APIs like jest.runTimersToTime() to jest.advanceTimersByTime(). Refactor mock implementations using new v30 patterns. Update snapshot tests if serialization changes occurred. Fix async test patterns if breaking changes exist. Verify ESLint jest plugin rules are compatible. Update CI/CD configurations if Jest v30 requires different flags or environment variables",
+            "title": "Integrate Workflow Commands and Triggers",
+            "description": "Implement task-master command integration and automatic workflow triggering system",
+            "dependencies": ["7.1", "7.2", "7.3"],
+            "details": "Create /feature command for manual workflow triggering, implement automatic triggers based on task-master events (task creation, status changes), and integrate with existing CLI infrastructure. Add workflow status commands, workflow history tracking, and ability to pause/resume workflows. Implement webhook support for external triggers and ensure workflows respect existing resource constraints.",
             "status": "pending",
-            "testStrategy": "Execute full test suite with pnpm test across all workspaces. Run pnpm test:watch to verify watch mode functionality. Test CI pipeline locally to ensure Jest v30 works with current CI configuration. Verify all tests pass without deprecation warnings"
+            "testStrategy": "Test /feature command correctly initiates workflows, verify automatic triggers fire on appropriate events, test pause/resume functionality maintains workflow state, validate webhook triggers work correctly, and ensure integration doesn't break existing task-master commands."
           }
         ]
       },
       {
         "id": 8,
-        "title": "Update Vite and build tool dependencies, update TypeScript to latest stable version",
-        "description": "Upgrade Vite build tool and related dependencies to latest versions, and update TypeScript to the latest stable release to improve build performance and developer experience.",
-        "details": "1. **Pre-migration Assessment**: Audit current Vite configuration by examining vite.config.js/ts files, build scripts in package.json, and all Vite plugins currently in use. Review Vite changelog and migration guides to identify breaking changes and new features. Document current build configurations, plugins, and any custom Vite setup that may require updates. 2. **Update Core Build Dependencies**: Upgrade vite, @vitejs/plugin-react, and related Vite plugins to latest versions using pnpm. Update TypeScript to latest stable version (5.x series) and @types/node to compatible version. Check for peer dependency updates and resolve any version conflicts. 3. **Configuration Updates**: Update vite.config.js/ts files to use new API patterns if required by the updated version. Review and update build options, optimization settings, and plugin configurations. Ensure all environment variable handling and build target configurations remain compatible. 4. **TypeScript Configuration**: Update tsconfig.json files to leverage new TypeScript features and compiler options available in the latest version. Review strict mode settings and enable new type checking features that improve code quality. Update any custom TypeScript configurations in workspaces. 5. **Plugin Compatibility**: Verify all Vite plugins are compatible with the updated versions and update them if necessary. Test custom plugins or build scripts for compatibility issues. Update any build-related utilities or scripts that interact with Vite. 6. **Performance Optimization**: Review new Vite features for build performance improvements such as updated HMR, tree-shaking enhancements, or new bundling options. Configure any new optimization features that benefit the project.",
-        "testStrategy": "1. **Build Verification**: Run pnpm build across all workspaces to ensure successful compilation with updated Vite and TypeScript versions. Verify that build output is generated correctly and all assets are properly processed. 2. **Development Server Testing**: Start Vite development server using pnpm dev and test hot module replacement functionality with TypeScript files. Verify that TypeScript compilation errors are properly displayed and HMR works correctly. 3. **TypeScript Compilation**: Run pnpm tsc or type checking commands to ensure all TypeScript code compiles without errors using the updated compiler. Test that new TypeScript features can be used if applicable. 4. **Bundle Analysis**: Analyze build output to ensure bundle sizes are optimized and no unexpected issues occurred during the upgrade. Compare build performance before and after the upgrade. 5. **Cross-workspace Testing**: Test build and development commands in all workspace packages to ensure monorepo compatibility with updated tools. Verify that shared TypeScript configurations work correctly across workspaces.",
+        "title": "Implement CI/CD Pipeline Integration",
+        "description": "Integrate Claude agents with existing CI/CD pipeline and Git hooks",
+        "details": "Integrate agents with pre-commit, pull request, and deployment pipelines as specified in PRD. Configure pre-commit hooks for lint, type-check, format validation, and Claude review. Set up PR pipeline with build validation, full test suite, coverage reporting, and performance audits. Implement staging/production deployment with smoke tests, monitoring setup, and rollback preparation. Use PNPM commands throughout.",
+        "testStrategy": "Verify pre-commit hooks prevent bad commits, PR pipeline catches issues before merge, deployment pipeline successfully deploys to staging/production, monitoring and rollback systems work correctly, and all integrations use PNPM exclusively.",
+        "priority": "high",
+        "dependencies": [4, 5, 6, 7],
         "status": "pending",
-        "dependencies": [2, 6],
-        "priority": "medium",
         "subtasks": [
           {
             "id": 1,
-            "title": "Audit and prepare Vite/TypeScript migration",
-            "description": "Perform comprehensive assessment of current Vite and TypeScript configurations, identify breaking changes, and create migration plan",
+            "title": "Configure Pre-commit Hooks Integration",
+            "description": "Set up pre-commit hooks with Claude agent integration for automated code quality checks",
             "dependencies": [],
-            "details": "1. **Vite Configuration Audit**: Examine all vite.config.ts files across frontend workspace, document current plugins (@vitejs/plugin-react, etc.), build options, and custom configurations. 2. **TypeScript Assessment**: Review all tsconfig.json files in the monorepo, document current TypeScript version and compiler options, identify deprecated features in use. 3. **Dependency Analysis**: Run pnpm outdated to identify current vs latest versions of vite, @vitejs/plugin-react, typescript, and @types/node. Check peer dependency requirements for compatibility. 4. **Migration Guide Review**: Study Vite 5.x changelog and migration guide for breaking changes. Review TypeScript 5.x release notes for new features and breaking changes. 5. **Risk Documentation**: Create a migration checklist documenting potential issues, required config changes, and testing requirements",
+            "details": "Install and configure pre-commit framework with hooks for ESLint, TypeScript strict mode checking, Prettier formatting validation, and Claude review agent. Create .pre-commit-config.yaml with proper hook configurations. Ensure hooks use PNPM commands exclusively (pnpm run lint, pnpm run typecheck, pnpm run format:check). Add Claude review hook that triggers the code review agent for staged changes. Configure hook failure handling and provide clear error messages.",
             "status": "pending",
-            "testStrategy": "1. **Configuration Validation**: Use TypeScript compiler (tsc --noEmit) to validate current tsconfig.json files are error-free before migration. 2. **Build Baseline**: Run pnpm build in all workspaces and document current build times, output sizes, and any warnings for comparison after upgrade"
+            "testStrategy": "Test pre-commit hooks by attempting commits with linting errors, type errors, and formatting issues. Verify Claude review agent is triggered and provides feedback. Ensure hooks prevent bad commits while allowing valid ones. Test that all hooks use PNPM commands and respect resource limits."
           },
           {
             "id": 2,
-            "title": "Update core build dependencies and TypeScript",
-            "description": "Upgrade Vite, TypeScript, and related build dependencies to latest stable versions, resolving any dependency conflicts",
+            "title": "Implement Pull Request Pipeline",
+            "description": "Create comprehensive PR pipeline with Claude agent integration for automated validation and reporting",
             "dependencies": ["8.1"],
-            "details": "1. **Core Vite Updates**: Use pnpm update vite@latest @vitejs/plugin-react@latest in frontend workspace. Update any additional Vite plugins identified in assessment. 2. **TypeScript Upgrade**: Update to TypeScript 5.x latest stable using pnpm update typescript@latest across all workspaces. Update @types/node to compatible version. 3. **Peer Dependency Resolution**: Run pnpm install and resolve any peer dependency warnings or conflicts. Update related type definitions and build tools as needed. 4. **Lock File Update**: Ensure pnpm-lock.yaml is properly updated with all new versions. 5. **Initial Verification**: Run pnpm build in each workspace to identify immediate breaking changes or compilation errors",
+            "details": "Set up GitHub Actions workflow for pull requests including build validation with PNPM, full test suite execution (backend Jest, frontend Vitest/Playwright), code coverage reporting with 80% threshold enforcement, and performance audit integration. Configure Claude agents to run automatically: Code Review Agent for quality checks, Testing Agents for test generation if coverage is low, and Documentation Agent for API changes. Implement parallel job execution for efficiency and add status checks required for merge.",
             "status": "pending",
-            "testStrategy": "1. **Type Checking**: Run pnpm tsc --noEmit in all workspaces to verify TypeScript compilation succeeds with new version. 2. **Build Testing**: Execute pnpm build in frontend and backend workspaces, verify no build errors occur. 3. **Development Server**: Start Vite dev server with pnpm dev to ensure HMR and development features work correctly"
+            "testStrategy": "Create test PRs with various scenarios: failing tests, low coverage, performance regressions, and documentation gaps. Verify pipeline catches all issues, Claude agents provide helpful feedback, coverage reports are accurate, and all checks must pass before merge. Test pipeline performance and ensure it completes within reasonable time."
           },
           {
             "id": 3,
-            "title": "Update configurations and optimize performance",
-            "description": "Migrate Vite and TypeScript configurations to use new APIs and features, optimize build performance, and ensure all tests pass",
+            "title": "Setup Deployment Pipeline with Staging/Production",
+            "description": "Implement automated deployment pipeline with Claude DevOps agent integration for staging and production environments",
             "dependencies": ["8.2"],
-            "details": "1. **Vite Config Migration**: Update vite.config.ts to use new Vite 5.x API patterns if required. Enable new optimization features like improved tree-shaking or build performance options. Configure any new HMR improvements. 2. **TypeScript Config Updates**: Update tsconfig.json files to leverage new TypeScript 5.x features. Enable stricter type checking options where beneficial. Add new compiler options for improved performance. 3. **Plugin Compatibility**: Test and update all Vite plugins for compatibility with new versions. Update build scripts in package.json if API changes require it. 4. **Performance Tuning**: Implement new Vite performance features, configure build.rollupOptions for optimal bundling, enable new caching mechanisms. 5. **Final Testing**: Run complete test suite with pnpm test, ensure all linting passes with pnpm lint, verify type checking with pnpm typecheck",
+            "details": "Create deployment workflows for staging and production using GitHub Actions. Integrate DevOps Agent for Docker image building, Kubernetes manifest generation, and environment-specific configurations. Implement smoke tests that run post-deployment, monitoring setup with Datadog integration, and automated rollback preparation. Configure deployment gates with manual approval for production. Ensure all deployment scripts use PNPM for consistency. Add deployment status notifications and success metrics tracking.",
             "status": "pending",
-            "testStrategy": "1. **Full Test Suite**: Execute pnpm test across all workspaces to ensure no regressions from dependency updates. 2. **Build Performance**: Compare build times and bundle sizes with baseline from assessment phase. 3. **E2E Verification**: Run any E2E tests to ensure application functionality remains intact. 4. **Development Workflow**: Test hot module replacement, TypeScript error reporting, and development server performance"
+            "testStrategy": "Test deployment to staging environment with various scenarios: successful deployments, failed smoke tests triggering rollback, configuration errors, and monitoring alert generation. Verify DevOps Agent correctly generates Docker and K8s configs. Test production deployment approval process and rollback mechanisms. Ensure monitoring captures deployment metrics."
+          },
+          {
+            "id": 4,
+            "title": "Integrate Monitoring and Rollback Systems",
+            "description": "Implement comprehensive monitoring integration and automated rollback capabilities for the CI/CD pipeline",
+            "dependencies": ["8.3"],
+            "details": "Set up Datadog monitoring for CI/CD pipeline metrics including build times, test execution duration, deployment success rates, and rollback frequency. Implement automated rollback triggers based on failed smoke tests, performance degradation, or error rate spikes. Create dashboards for pipeline health, deployment history, and agent performance metrics. Configure alerts for pipeline failures, long-running jobs, and deployment issues. Integrate rollback system with Git for automatic revert commits when needed.",
+            "status": "pending",
+            "testStrategy": "Simulate deployment failures to test automatic rollback triggers. Verify monitoring captures all pipeline metrics accurately. Test alert configurations by introducing controlled failures. Validate dashboards show real-time pipeline status and historical trends. Ensure rollback system correctly reverts both code and infrastructure changes."
           }
         ]
       },
       {
         "id": 9,
-        "title": "Update remaining utility packages including framer-motion, react-hook-form, chokidar, dotenv, and concurrently to latest versions",
-        "description": "Upgrade various utility packages (framer-motion, react-hook-form, chokidar, dotenv, concurrently) to their latest stable versions to improve performance, security, and access new features.",
-        "details": "1. **Pre-migration Assessment**: Review current versions of utility packages by examining package.json files across all workspaces. Check changelogs for framer-motion (animation library), react-hook-form (form management), chokidar (file watching), dotenv (environment variables), and concurrently (parallel command execution) to identify breaking changes and migration requirements. Document current usage patterns and any custom configurations that may be affected. 2. **Update Animation Dependencies**: Upgrade framer-motion to latest version using pnpm, reviewing migration guide for any API changes in animation syntax, motion components, or gesture handling. Update all animation components to use new APIs if required, focusing on AnimatePresence, motion components, and animation variants. 3. **Update Form Management**: Upgrade react-hook-form to latest version, checking for changes in useForm hook API, validation patterns, and Controller component usage. Update form components to align with new best practices, particularly around TypeScript types and validation schemas. 4. **Update Development Tools**: Upgrade chokidar (file watcher), dotenv (environment variable loader), and concurrently (parallel command runner) to latest versions. Update any build scripts or development workflows that depend on these tools. Verify file watching patterns in development scripts still work correctly with new chokidar version. 5. **Configuration Updates**: Update any configuration files that reference these packages, including webpack configs for dotenv, development scripts using concurrently, and file watching patterns for chokidar. Ensure environment variable loading still works correctly across all environments. 6. **Type Definition Updates**: Update or install corresponding @types packages if needed, ensuring TypeScript compatibility with all upgraded packages. Remove any outdated type definitions that may conflict with built-in types in newer versions.",
-        "testStrategy": "1. **Animation Testing**: Test all framer-motion animations in the application by navigating through animated components and verifying smooth transitions, gesture responses, and proper cleanup on unmount. Check browser console for any deprecation warnings or errors. 2. **Form Functionality Testing**: Test all forms using react-hook-form by submitting valid and invalid data, verifying validation messages display correctly, and ensuring form state management works as expected. Test complex form scenarios including dynamic fields and conditional validation. 3. **Development Tool Testing**: Verify chokidar file watching by modifying files and ensuring hot reload/restart functionality works correctly. Test dotenv by checking environment variables load properly in different environments. Run concurrent tasks using concurrently and verify all processes start and terminate correctly. 4. **Build and Runtime Testing**: Execute full build process using pnpm build to ensure no errors from updated packages. Run the application in development and production modes to verify all functionality remains intact. 5. **Performance Testing**: Monitor application performance, particularly animation smoothness with new framer-motion version and form rendering performance with updated react-hook-form. Use browser dev tools to check for any memory leaks or performance regressions.",
-        "status": "pending",
-        "dependencies": [2, 6],
+        "title": "Implement DevOps Agent",
+        "description": "Create infrastructure and deployment management agent",
+        "details": "Implement DevOps Agent for Docker configuration updates, Kubernetes manifest generation, CI/CD pipeline optimization, environment variable management, and performance monitoring setup. Include /deploy command for environment-specific deployments and integration with existing infrastructure. Support staging and production environments with proper health checks and rollback capabilities.",
+        "testStrategy": "Test agent generates valid Docker configurations, Kubernetes manifests deploy successfully, environment variables are managed securely, monitoring systems capture relevant metrics, and deployment processes complete without errors across all target environments.",
         "priority": "medium",
+        "dependencies": [8],
+        "status": "pending",
         "subtasks": [
           {
             "id": 1,
-            "title": "Assess and upgrade animation dependencies (framer-motion)",
-            "description": "Review current framer-motion version, analyze breaking changes, and upgrade to latest stable version while updating all animation components to use new APIs",
+            "title": "Create DevOps Agent Core Infrastructure",
+            "description": "Build the foundational DevOps agent with Docker and Kubernetes configuration management capabilities",
             "dependencies": [],
-            "details": "Start by examining package.json files to identify current framer-motion version across all workspaces. Review the official framer-motion changelog and migration guide for breaking changes between current and latest versions. Focus on changes to motion components, AnimatePresence, animation variants, and gesture handling APIs. Update package using pnpm add framer-motion@latest in relevant workspaces. Then systematically update all animation implementations including motion.div components, animation variants objects, useAnimation hooks, and gesture handlers. Pay special attention to deprecated APIs and new animation performance optimizations. Ensure all TypeScript types are properly updated if using @types/framer-motion.",
+            "details": "Implement base DevOps agent class with Docker configuration parser and generator, Kubernetes manifest templates for deployments/services/configmaps, environment-specific configuration management system, and integration with existing .taskmaster agent framework. Include support for multi-stage Docker builds, resource limits, and health check configurations.",
             "status": "pending",
-            "testStrategy": "Navigate through all animated components in the application, verifying smooth transitions, proper gesture responses, and correct animation sequencing. Check browser console for deprecation warnings or runtime errors. Test animation cleanup on component unmount, especially for AnimatePresence wrapped components. Verify performance improvements by monitoring animation frame rates in browser DevTools."
+            "testStrategy": "Test Docker configurations parse and generate correctly, Kubernetes manifests are valid YAML with proper resource definitions, environment variables are correctly interpolated, and agent integrates properly with TaskMaster command structure"
           },
           {
             "id": 2,
-            "title": "Update form management and validation (react-hook-form)",
-            "description": "Upgrade react-hook-form to latest version, update form components to align with new API changes, and ensure TypeScript compatibility",
-            "dependencies": [],
-            "details": "Check current react-hook-form version in package.json and review the official migration guide for API changes. Key areas to examine include useForm hook initialization, Controller component usage, validation schema integration, and error handling patterns. Upgrade using pnpm add react-hook-form@latest. Update all form components focusing on register function usage, handleSubmit patterns, formState destructuring, and validation rules. Pay attention to TypeScript generic types for useForm, especially if using yup or zod for schema validation. Update any custom form field components that use Controller API. Check for deprecated methods like errors object access patterns and update to new formState.errors syntax.",
+            "title": "Implement CI/CD Pipeline Optimization",
+            "description": "Create CI/CD pipeline analysis and optimization features with automated improvement suggestions",
+            "dependencies": ["9.1"],
+            "details": "Build pipeline analyzer for GitHub Actions workflows, implement optimization recommendations for build times and resource usage, create caching strategy suggestions, add parallel job configuration optimizer, and develop automated dependency update workflows. Include analysis of test execution times and bottleneck identification.",
             "status": "pending",
-            "testStrategy": "Test all forms in the application by submitting with valid and invalid data. Verify validation messages display correctly, form state updates properly, and submission handlers receive correct data. Test field-level validation, form-level validation, and async validation scenarios. Ensure TypeScript types are correctly inferred for form data and no type errors occur during compilation."
+            "testStrategy": "Verify pipeline analysis correctly identifies optimization opportunities, generated workflow configurations are valid and improve build times, caching strategies reduce redundant operations, and parallel configurations maintain correct dependencies"
           },
           {
             "id": 3,
-            "title": "Upgrade development tooling (chokidar, dotenv, concurrently)",
-            "description": "Update file watching, environment variable, and parallel command execution tools to latest versions and verify all development workflows",
+            "title": "Build Deployment Command System",
+            "description": "Implement /deploy command with environment-specific deployment capabilities and rollback support",
             "dependencies": ["9.1", "9.2"],
-            "details": "Review current versions of chokidar, dotenv, and concurrently in package.json files. Upgrade each using pnpm: chokidar for file watching in development scripts, dotenv for environment variable loading, and concurrently for parallel command execution. Update any webpack or vite configurations that use dotenv for environment variable injection. Review all npm scripts in package.json that use concurrently and ensure syntax compatibility with latest version. Check file watching patterns in development scripts using chokidar, particularly in custom build scripts or hot-reload configurations. Verify that .env file loading works correctly across all environments (development, test, production). Update any programmatic usage of these tools in build scripts or development utilities.",
+            "details": "Create /deploy command handler with staging/production environment support, implement health check monitoring during deployments, build automated rollback mechanism on failure detection, add deployment status tracking and notifications, and create deployment history logging. Include blue-green deployment pattern support and database migration coordination.",
             "status": "pending",
-            "testStrategy": "Run all development scripts that use concurrently to verify parallel command execution works correctly. Test file watching by modifying files and ensuring watchers trigger appropriate actions. Verify environment variables load correctly by checking process.env values in different environments. Run full development workflow including hot-reload, file watching, and parallel builds to ensure smooth developer experience."
+            "testStrategy": "Test deployment commands execute correctly for each environment, health checks accurately determine deployment success, rollback mechanisms restore previous versions reliably, and deployment history is accurately tracked with proper error handling"
+          },
+          {
+            "id": 4,
+            "title": "Integrate Performance Monitoring Setup",
+            "description": "Implement performance monitoring configuration and automated alerting setup for deployed applications",
+            "dependencies": ["9.3"],
+            "details": "Build monitoring configuration generator for application metrics, create automated dashboard setup for key performance indicators, implement alerting rules for resource usage and error rates, add log aggregation configuration, and integrate with existing monitoring systems. Include custom metric definitions and SLO/SLA tracking configurations.",
+            "status": "pending",
+            "testStrategy": "Validate monitoring configurations deploy successfully, metrics are collected and visible in dashboards, alerts trigger appropriately for defined thresholds, and integration with existing monitoring infrastructure works seamlessly"
           }
         ]
       },
       {
         "id": 10,
-        "title": "Enable TypeScript strict mode, fix all TypeScript warnings and implicit any types, update deprecated API usage",
-        "description": "Enable TypeScript strict mode configuration, eliminate all TypeScript warnings and implicit any types throughout the codebase, and update any deprecated API usage to modern alternatives.",
-        "details": "1. **Enable Strict Mode Configuration**: Update tsconfig.json files across all workspaces to enable strict mode by setting \"strict\": true and individual strict flags (strictNullChecks, strictFunctionTypes, strictBindCallApply, strictPropertyInitialization, noImplicitAny, noImplicitReturns, noImplicitThis). Configure additional strict checks like noUncheckedIndexedAccess and exactOptionalPropertyTypes for enhanced type safety. 2. **Fix Implicit Any Types**: Systematically identify and fix all implicit any types by running TypeScript compiler with --noImplicitAny flag. Add explicit type annotations to function parameters, variables, and return types. Replace any types with specific type definitions or use unknown/object where appropriate. Create custom type definitions for third-party libraries lacking types. 3. **Eliminate TypeScript Warnings**: Address all TypeScript compiler warnings including unused variables/imports, unreachable code, deprecated API usage, and type assertion issues. Use TypeScript's strict mode to catch potential runtime errors at compile time. Update function signatures to properly handle null/undefined values with strict null checks. 4. **Update Deprecated API Usage**: Replace deprecated TypeScript compiler APIs, update old syntax patterns to modern equivalents, and ensure compatibility with the latest TypeScript version. Review and update any custom type utilities or mapped types that may use deprecated patterns. 5. **Type Safety Improvements**: Add proper error handling with typed error objects, implement discriminated unions for better type narrowing, and use const assertions where appropriate. Update React component props and hooks to use proper TypeScript patterns with generics and conditional types.",
-        "testStrategy": "1. **Type Checking Verification**: Run TypeScript compiler with strict mode enabled across all workspaces using pnpm build and verify zero TypeScript errors or warnings. Use tsc --noEmit to perform type checking without code generation and ensure all files pass strict type checking. 2. **Incremental Type Checking**: Test each workspace individually to isolate and verify type safety improvements. Run TypeScript compiler with --listFiles flag to ensure all files are being type-checked correctly. 3. **Runtime Behavior Testing**: Execute existing test suites using pnpm test to ensure strict mode changes don't break runtime functionality. Verify that all existing functionality works correctly with enhanced type safety. 4. **IDE Integration Testing**: Verify that development experience is improved with better IntelliSense, error detection, and autocompletion in VSCode or other TypeScript-aware editors. Check that import suggestions and refactoring tools work correctly with strict types. 5. **Build Performance Testing**: Measure TypeScript compilation time before and after strict mode enablement to ensure acceptable build performance. Test incremental compilation and watch mode functionality.",
+        "title": "Implement Monitoring and Performance Optimization",
+        "description": "Set up comprehensive monitoring, metrics collection, and automated performance optimization",
+        "details": "Implement monitoring system with performance baselines, automated optimization suggestions, success metrics tracking (40% faster development, 90% test coverage, 95% first-time PR approval), and alerting for critical issues. Create dashboards for development velocity, code quality metrics, and team satisfaction scores. Include automated reporting and trend analysis. Integrate with existing development workflow.",
+        "testStrategy": "Verify monitoring captures all defined success metrics, performance baselines are established and maintained, optimization suggestions improve actual performance, alerts trigger appropriately for critical issues, and dashboards provide actionable insights for continuous improvement.",
+        "priority": "medium",
+        "dependencies": [8, 9],
         "status": "pending",
-        "dependencies": [8, 6],
-        "priority": "high",
         "subtasks": [
           {
             "id": 1,
-            "title": "Enable TypeScript strict mode in all workspace configurations",
-            "description": "Update tsconfig.json files across all workspaces to enable strict mode with all strict compiler flags, ensuring consistent type safety configuration throughout the monorepo",
+            "title": "Set Up Monitoring Infrastructure and Metrics Collection",
+            "description": "Configure comprehensive monitoring system with metrics collection for development velocity, code quality, and performance baselines",
             "dependencies": [],
-            "details": "Update tsconfig.json in root and all workspace directories (frontend, backend, shared) to set \"strict\": true and enable individual strict flags including strictNullChecks, strictFunctionTypes, strictBindCallApply, strictPropertyInitialization, noImplicitAny, noImplicitReturns, and noImplicitThis. Also enable additional strict checks like noUncheckedIndexedAccess and exactOptionalPropertyTypes. Ensure all tsconfig files extend from a common base configuration for consistency. Document the enabled flags and their impact on the codebase.",
+            "details": "Install and configure monitoring infrastructure (Prometheus/Grafana or similar) with custom metrics exporters. Set up collectors for development velocity metrics (PR approval rates, deployment frequency, lead time), code quality metrics (test coverage, linting scores, TypeScript compliance), and performance baselines (build times, test execution times, application response times). Configure data retention policies and establish baseline measurements for all success metrics (40% faster development, 90% test coverage, 95% first-time PR approval).",
             "status": "pending",
-            "testStrategy": "Run TypeScript compiler with tsc --noEmit across all workspaces to verify configuration is properly loaded. Check that strict mode flags are active by intentionally introducing type errors that would only be caught in strict mode. Verify build scripts still work with pnpm build and that all configuration changes are properly inherited in workspace tsconfig files."
+            "testStrategy": "Verify monitoring infrastructure successfully collects all defined metrics, data is persisted according to retention policies, baseline measurements are accurately captured, and metrics exporters integrate properly with the development workflow without performance impact"
           },
           {
             "id": 2,
-            "title": "Fix all implicit any types and TypeScript warnings in the codebase",
-            "description": "Systematically identify and fix all implicit any types, add proper type annotations throughout the codebase, and resolve all TypeScript compiler warnings",
+            "title": "Create Performance Dashboards and Visualization",
+            "description": "Build comprehensive dashboards for real-time visualization of success metrics, development velocity, and team satisfaction scores",
             "dependencies": ["10.1"],
-            "details": "Run TypeScript compiler with --noImplicitAny flag to identify all locations with implicit any types. Add explicit type annotations to function parameters, return types, and variable declarations. Replace generic any types with specific type definitions, using unknown or proper interfaces where appropriate. Create custom type definitions for third-party libraries lacking types in a types directory. Fix all TypeScript warnings including unused variables/imports, unreachable code, and type assertion issues. Ensure proper null/undefined handling with strict null checks enabled.",
+            "details": "Design and implement interactive dashboards using Grafana or similar tools. Create views for development velocity (PR turnaround time, deployment frequency), code quality metrics (coverage trends, technical debt), team satisfaction scores (survey integration), and performance optimization opportunities. Include drill-down capabilities, historical trend analysis, and customizable time ranges. Implement role-based access control and mobile-responsive layouts for accessibility.",
             "status": "pending",
-            "testStrategy": "Execute pnpm typecheck across all workspaces to ensure zero TypeScript errors or warnings. Run individual workspace type checks to verify no implicit any types remain. Use TypeScript compiler with --listFiles flag to ensure all files are being type-checked. Verify that IDE TypeScript integration shows no errors or warnings in any file."
+            "testStrategy": "Validate dashboards display accurate real-time data, historical trends are correctly calculated, drill-down functionality works across all metric types, and dashboards load efficiently on both desktop and mobile devices"
           },
           {
             "id": 3,
-            "title": "Update deprecated TypeScript APIs and modernize type patterns",
-            "description": "Replace all deprecated TypeScript compiler APIs, update old syntax patterns to modern equivalents, and ensure full compatibility with the latest TypeScript version",
-            "dependencies": ["10.2"],
-            "details": "Identify and replace deprecated TypeScript APIs by reviewing TypeScript release notes and migration guides. Update old type syntax patterns such as namespace declarations to modern module syntax, replace enum usage with const assertions where appropriate, and update mapped types using deprecated patterns. Modernize React component type definitions to use proper TypeScript patterns with generics and conditional types. Update custom type utilities to use latest TypeScript features like template literal types and recursive type aliases. Ensure all type imports use the 'type' keyword for better tree-shaking.",
+            "title": "Implement Alerting and Automated Optimization System",
+            "description": "Configure intelligent alerting for critical issues and build automated performance optimization suggestions",
+            "dependencies": ["10.1"],
+            "details": "Set up multi-channel alerting system (Slack, email, PagerDuty) with intelligent thresholds for critical metrics: test coverage drops below 90%, PR approval rate falls below 95%, build times exceed baselines by 20%, or deployment failures. Implement ML-based anomaly detection for proactive issue identification. Create automated optimization engine that analyzes performance data and suggests improvements (dependency updates, build optimization, test parallelization). Include alert suppression and escalation policies.",
             "status": "pending",
-            "testStrategy": "Run full build pipeline with pnpm build to verify no deprecated API warnings appear. Execute TypeScript compiler with --strict flag to ensure all modern type patterns work correctly. Test that tree-shaking improvements are realized by analyzing bundle sizes before and after type import updates. Verify React components properly infer types with the updated patterns."
+            "testStrategy": "Test alerts trigger appropriately for all defined thresholds, optimization suggestions are actionable and improve actual performance, anomaly detection identifies real issues without false positives, and alert routing works correctly across all channels"
+          },
+          {
+            "id": 4,
+            "title": "Build Automated Reporting and Workflow Integration",
+            "description": "Create automated reporting system with trend analysis and seamless integration into existing development workflow",
+            "dependencies": ["10.2", "10.3"],
+            "details": "Develop automated weekly/monthly reports summarizing key metrics, trend analysis, and achievement of success targets. Implement API endpoints for programmatic access to metrics data. Create GitHub/GitLab integrations to display relevant metrics in PRs and commits. Build CLI tools for developers to check their personal metrics. Set up automated report distribution via email and Slack. Include executive summaries with actionable insights and recommendations for continuous improvement.",
+            "status": "pending",
+            "testStrategy": "Verify reports are generated on schedule with accurate data, API endpoints return correct metrics, GitHub/GitLab integrations display relevant information without cluttering UI, and CLI tools provide quick access to personal and team metrics"
           }
         ]
       }
     ],
     "metadata": {
-      "created": "2025-07-25T18:35:51.262Z",
-      "updated": "2025-07-28T10:52:19.976Z",
-      "description": "Tag created on 25/7/2025"
+      "created": "2025-07-28T15:29:54.211Z",
+      "updated": "2025-07-28T15:29:54.211Z",
+      "description": "Tasks for claude-config context"
     }
   }
 }

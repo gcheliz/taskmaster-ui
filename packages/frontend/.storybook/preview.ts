@@ -5,8 +5,8 @@ const preview: Preview = {
   parameters: {
     controls: {
       matchers: {
-       color: /(background|color)$/i,
-       date: /Date$/i,
+        color: /(background|color)$/i,
+        date: /Date$/i,
       },
       expanded: true,
       sort: 'alpha',
@@ -22,6 +22,9 @@ const preview: Preview = {
         unsafeTocbotOptions: {
           orderedList: false,
         },
+      },
+      source: {
+        state: 'open',
       },
     },
     backgrounds: {
@@ -77,6 +80,6 @@ const preview: Preview = {
       },
     },
   },
-};
+}
 
-export default preview;
+export default preview

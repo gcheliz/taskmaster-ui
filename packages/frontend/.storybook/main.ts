@@ -12,6 +12,9 @@ function getAbsolutePath(value: string): string {
 const config: StorybookConfig = {
   stories: ['../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
   addons: [getAbsolutePath('@storybook/addon-docs'), getAbsolutePath('@storybook/addon-a11y')],
+  docs: {
+    autodocs: 'tag',
+  },
   framework: {
     name: getAbsolutePath('@storybook/react-vite'),
     options: {},
@@ -23,7 +26,15 @@ const config: StorybookConfig = {
       shouldExtractLiteralValuesFromEnum: true,
       shouldRemoveUndefinedFromOptional: true,
       savePropValueAsString: true,
+      compilerOptions: {
+        allowSyntheticDefaultImports: false,
+        esModuleInterop: false,
+      },
       propFilter: (prop) => {
+        // Filter out internal React props
+        if (prop.parent) {
+          return !prop.parent.fileName.includes('node_modules/@types/react/')
+        }
         // Filter out props that are not relevant for documentation
         if (prop.name === 'children' && prop.type.name === 'ReactNode') {
           return false

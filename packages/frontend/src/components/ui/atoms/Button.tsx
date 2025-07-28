@@ -36,6 +36,9 @@ const buttonVariants = cva(
   }
 )
 
+/**
+ * Button component properties
+ */
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
@@ -64,6 +67,34 @@ export interface ButtonProps
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'icon'
 }
 
+/**
+ * A versatile button component with multiple variants, sizes, and states.
+ * Built with Tailwind CSS and class-variance-authority for consistent styling.
+ * Features enhanced dark theme support, micro-interactions, and WCAG 2.1 AA compliance.
+ *
+ * @example
+ * ```tsx
+ * <Button variant="primary" size="md" onClick={handleClick}>
+ *   Click me
+ * </Button>
+ * ```
+ *
+ * @example
+ * ```tsx
+ * // With loading state
+ * <Button variant="primary" loading>
+ *   Processing...
+ * </Button>
+ * ```
+ *
+ * @example
+ * ```tsx
+ * // With icons
+ * <Button leftIcon={<PlusIcon />} variant="secondary">
+ *   Add Item
+ * </Button>
+ * ```
+ */
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
     { className, variant, size, loading, leftIcon, rightIcon, children, disabled, ...props },
@@ -84,19 +115,27 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={isDisabled}
         aria-disabled={isDisabled}
         aria-busy={loading}
-        whileHover={!isDisabled ? { 
-          scale: 1.02, 
-          y: -1,
-          transform: 'translateY(-1px) scale(1.02) translateZ(0)'
-        } : undefined}
-        whileTap={!isDisabled ? { 
-          scale: 0.98,
-          transform: 'scale(0.98) translateZ(0)'
-        } : undefined}
+        whileHover={
+          !isDisabled
+            ? {
+                scale: 1.02,
+                y: -1,
+                transform: 'translateY(-1px) scale(1.02) translateZ(0)',
+              }
+            : undefined
+        }
+        whileTap={
+          !isDisabled
+            ? {
+                scale: 0.98,
+                transform: 'scale(0.98) translateZ(0)',
+              }
+            : undefined
+        }
         transition={{
-          type: "spring",
+          type: 'spring',
           stiffness: 400,
-          damping: 17
+          damping: 17,
         }}
         {...props}
       >
@@ -110,19 +149,19 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
               viewBox="0 0 24 24"
               aria-hidden="true"
             >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            />
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            />
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              />
             </svg>
           </>
         )}

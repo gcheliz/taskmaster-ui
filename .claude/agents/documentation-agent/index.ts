@@ -12,6 +12,7 @@ import {
   DocumentationType
 } from './core-engine';
 import { apiDocumentationPlugin } from './plugins/api-documentation';
+import { openAPIGeneratorPlugin } from './plugins/openapi-generator';
 import { architecturePlugin } from './plugins/architecture-diagram';
 import { readmePlugin } from './plugins/readme-generator';
 import { changelogPlugin } from './plugins/changelog-generator';
@@ -19,6 +20,7 @@ import { claudeContextPlugin } from './plugins/claude-context';
 
 // Register all plugins
 documentationEngine.registerPlugin(apiDocumentationPlugin);
+documentationEngine.registerPlugin(openAPIGeneratorPlugin);
 documentationEngine.registerPlugin(architecturePlugin);
 documentationEngine.registerPlugin(readmePlugin);
 documentationEngine.registerPlugin(changelogPlugin);

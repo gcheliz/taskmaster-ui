@@ -265,7 +265,7 @@
             "description": "Build the foundational documentation generation engine with plugin architecture for different documentation types",
             "dependencies": [],
             "details": "Implement core documentation engine with TypeScript AST parsing for API documentation extraction from JSDoc/TSDoc annotations, plugin system for extensible documentation formats, template engine for consistent documentation output, and configuration management for documentation preferences. Create base classes for documentation generators and establish interfaces for different documentation types (API, architecture, release notes).",
-            "status": "in-progress",
+            "status": "done",
             "testStrategy": "Test AST parser correctly extracts documentation from various code annotation formats, plugin system loads and executes documentation plugins correctly, template engine produces consistent output across different documentation types, and configuration changes are properly applied to generation process."
           },
           {
@@ -274,7 +274,7 @@
             "description": "Create automated API documentation generator that extracts and formats documentation from code annotations",
             "dependencies": ["6.1"],
             "details": "Build API documentation generator that parses TypeScript/JavaScript files for JSDoc/TSDoc comments, extracts endpoint definitions with parameters and response types, generates OpenAPI/Swagger specifications, creates markdown documentation with examples, and organizes documentation by module/service. Include support for REST APIs, GraphQL schemas, and WebSocket events. Generate interactive API documentation using tools like Swagger UI.",
-            "status": "pending",
+            "status": "in-progress",
             "testStrategy": "Verify generator correctly parses all API annotation formats, produces valid OpenAPI specifications, includes all required fields and examples, handles edge cases like optional parameters and complex types, and generated documentation is browsable and accurate."
           },
           {
@@ -492,7 +492,7 @@
     ],
     "metadata": {
       "created": "2025-07-28T15:29:54.211Z",
-      "updated": "2025-07-28T19:06:43.656Z",
+      "updated": "2025-07-28T19:13:41.593Z",
       "description": "Tasks for claude-config context"
     }
   }

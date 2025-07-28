@@ -1,0 +1,68 @@
+import { z } from 'zod';
+
+{{#each schemas}}
+/**
+ * {{description}}
+ */
+export const {{name}} = z.object({
+  {{#if params}}
+  params: z.object({
+    {{#each params}}
+    {{name}}: {{#if zodType}}{{zodType}}{{else}}z.{{type}}(){{/if}}{{#if optional}}.optional(){{/if}}{{#if validation}}
+      {{#each validation}}
+      .{{@key}}({{this}})
+      {{/each}}
+    {{/if}},
+    {{/each}}
+  }),
+  {{/if}}
+  {{#if body}}
+  body: z.object({
+    {{#each body}}
+    {{name}}: {{#if zodType}}{{zodType}}{{else}}z.{{type}}(){{/if}}{{#if optional}}.optional(){{/if}}{{#if validation}}
+      {{#each validation}}
+      .{{@key}}({{this}})
+      {{/each}}
+    {{/if}},
+    {{/each}}
+  }),
+  {{/if}}
+  {{#if query}}
+  query: z.object({
+    {{#each query}}
+    {{name}}: {{#if zodType}}{{zodType}}{{else}}z.{{type}}(){{/if}}{{#if optional}}.optional(){{/if}}{{#if validation}}
+      {{#each validation}}
+      .{{@key}}({{this}})
+      {{/each}}
+    {{/if}},
+    {{/each}}
+  }),
+  {{/if}}
+});
+
+export type {{pascalCase name}}Input = z.infer<typeof {{name}}>;
+{{#if params}}
+export type {{pascalCase name}}Params = {{pascalCase name}}Input['params'];
+{{/if}}
+{{#if body}}
+export type {{pascalCase name}}Body = {{pascalCase name}}Input['body'];
+{{/if}}
+{{#if query}}
+export type {{pascalCase name}}Query = {{pascalCase name}}Input['query'];
+{{/if}}
+
+{{/each}}
+
+{{#if customValidations}}
+// Custom validations
+{{#each customValidations}}
+{{this}}
+{{/each}}
+{{/if}}
+
+{{#if helpers}}
+// Validation helpers
+{{#each helpers}}
+export const {{name}} = {{implementation}};
+{{/each}}
+{{/if}}

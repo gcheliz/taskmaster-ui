@@ -1,0 +1,70 @@
+-- Migration: {{name}}
+-- Description: {{description}}
+-- Generated at: {{timestamp}}
+
+{{#if createTables}}
+-- Create tables
+{{#each createTables}}
+CREATE TABLE "{{name}}" (
+  {{#each columns}}
+  "{{name}}" {{type}}{{#if primaryKey}} PRIMARY KEY{{/if}}{{#if notNull}} NOT NULL{{/if}}{{#if unique}} UNIQUE{{/if}}{{#if defaultValue}} DEFAULT {{defaultValue}}{{/if}}{{#unless @last}},{{/unless}}
+  {{/each}}
+  {{#if indexes}}
+  ,
+  {{#each indexes}}
+  {{#if unique}}UNIQUE {{/if}}INDEX "{{name}}" ({{columns}}){{#unless @last}},{{/unless}}
+  {{/each}}
+  {{/if}}
+);
+{{/each}}
+{{/if}}
+
+{{#if alterTables}}
+-- Alter existing tables
+{{#each alterTables}}
+{{#if addColumns}}
+{{#each addColumns}}
+ALTER TABLE "{{../table}}" ADD COLUMN "{{name}}" {{type}}{{#if notNull}} NOT NULL{{/if}}{{#if defaultValue}} DEFAULT {{defaultValue}}{{/if}};
+{{/each}}
+{{/if}}
+{{#if dropColumns}}
+{{#each dropColumns}}
+ALTER TABLE "{{../table}}" DROP COLUMN "{{this}}";
+{{/each}}
+{{/if}}
+{{#if modifyColumns}}
+{{#each modifyColumns}}
+ALTER TABLE "{{../table}}" ALTER COLUMN "{{name}}" {{modification}};
+{{/each}}
+{{/if}}
+{{/each}}
+{{/if}}
+
+{{#if createIndexes}}
+-- Create indexes
+{{#each createIndexes}}
+CREATE {{#if unique}}UNIQUE {{/if}}INDEX "{{name}}" ON "{{table}}" ({{columns}});
+{{/each}}
+{{/if}}
+
+{{#if createRelations}}
+-- Add foreign key constraints
+{{#each createRelations}}
+ALTER TABLE "{{fromTable}}" ADD CONSTRAINT "{{name}}" 
+  FOREIGN KEY ("{{fromColumn}}") REFERENCES "{{toTable}}" ("{{toColumn}}") 
+  {{#if onDelete}}ON DELETE {{onDelete}}{{/if}}
+  {{#if onUpdate}}ON UPDATE {{onUpdate}}{{/if}};
+{{/each}}
+{{/if}}
+
+{{#if customSql}}
+-- Custom SQL
+{{customSql}}
+{{/if}}
+
+{{#if rollback}}
+-- Rollback commands
+/*
+{{rollback}}
+*/
+{{/if}}

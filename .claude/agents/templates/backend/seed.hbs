@@ -1,0 +1,94 @@
+import { PrismaClient } from '@prisma/client';
+import { faker } from '@faker-js/faker';
+
+const prisma = new PrismaClient();
+
+/**
+ * Seed {{modelName}} data
+ * Generated for: {{environment}}
+ */
+export async function seed{{pascalCase modelName}}(): Promise<void> {
+  console.log('🌱 Seeding {{modelName}}...');
+
+  {{#if clearExisting}}
+  // Clear existing data
+  await prisma.{{camelCase modelName}}.deleteMany();
+  {{/if}}
+
+  {{#if relatedData}}
+  // Ensure related data exists
+  {{#each relatedData}}
+  const {{camelCase name}}Count = await prisma.{{camelCase name}}.count();
+  if ({{camelCase name}}Count === 0) {
+    throw new Error('No {{name}} records found. Please seed {{name}} first.');
+  }
+  const {{camelCase name}}Records = await prisma.{{camelCase name}}.findMany();
+  {{/each}}
+  {{/if}}
+
+  const records = [];
+
+  for (let i = 0; i < {{count}}; i++) {
+    const record = {
+      {{#each fields}}
+      {{name}}: {{#if type.static}}{{type.value}}{{/if}}
+        {{#if type.faker}}faker.{{type.faker}}{{/if}}
+        {{#if type.sequence}}`{{type.prefix}}${i + 1}`{{/if}}
+        {{#if type.random}}[{{#each type.values}}'{{this}}'{{#unless @last}}, {{/unless}}{{/each}}][Math.floor(Math.random() * {{type.values.length}})]{{/if}}
+        {{#if type.relation}}{{camelCase type.model}}Records[Math.floor(Math.random() * {{camelCase type.model}}Records.length)].id{{/if}}
+        {{#if type.custom}}{{type.custom}}{{/if}},
+      {{/each}}
+    };
+    records.push(record);
+  }
+
+  {{#if batchInsert}}
+  // Batch insert for performance
+  await prisma.{{camelCase modelName}}.createMany({
+    data: records,
+    skipDuplicates: true,
+  });
+  {{else}}
+  // Individual inserts for complex relations
+  for (const record of records) {
+    await prisma.{{camelCase modelName}}.create({
+      data: record,
+      {{#if includeRelations}}
+      include: {
+        {{#each includeRelations}}
+        {{this}}: true,
+        {{/each}}
+      },
+      {{/if}}
+    });
+  }
+  {{/if}}
+
+  const count = await prisma.{{camelCase modelName}}.count();
+  console.log(`✅ Seeded ${count} {{modelName}} records`);
+
+  {{#if postSeedActions}}
+  // Post-seed actions
+  {{#each postSeedActions}}
+  {{this}}
+  {{/each}}
+  {{/if}}
+}
+
+{{#if standalone}}
+// Run as standalone script
+if (require.main === module) {
+  seed{{pascalCase modelName}}()
+    .then(() => {
+      console.log('Seeding completed successfully');
+      process.exit(0);
+    })
+    .catch((error) => {
+      console.error('Seeding failed:', error);
+      process.exit(1);
+    })
+    .finally(() => {
+      prisma.$disconnect();
+    });
+}
+{{/if}}

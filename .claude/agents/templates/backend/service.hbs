@@ -1,0 +1,103 @@
+{{#if usePrisma}}
+import { PrismaClient } from '@prisma/client';
+import { prisma } from '../config/database';
+{{/if}}
+import { AppError } from '../utils/errors';
+import { logger } from '../utils/logger';
+{{#each imports}}
+import {{this}};
+{{/each}}
+
+{{#each interfaces}}
+export interface {{name}} {
+  {{#each fields}}
+  {{name}}{{#if optional}}?{{/if}}: {{tsType type}};
+  {{/each}}
+}
+{{/each}}
+
+export class {{pascalCase resourceName}}Service {
+  {{#if usePrisma}}
+  private prisma: PrismaClient;
+
+  constructor() {
+    this.prisma = prisma;
+  }
+  {{/if}}
+
+  {{#each methods}}
+  /**
+   * {{description}}
+   */
+  async {{name}}({{#if params}}params: {{interfaceName}}{{/if}}): Promise<{{returnType}}> {
+    try {
+      {{#if implementation}}
+      {{implementation}}
+      {{else if prismaOperation}}
+      const result = await this.prisma.{{model}}.{{prismaOperation}}({
+        {{#if where}}
+        where: {
+          {{#each where}}
+          {{@key}}: {{this}},
+          {{/each}}
+        },
+        {{/if}}
+        {{#if data}}
+        data: {
+          {{#each data}}
+          {{@key}}: {{this}},
+          {{/each}}
+        },
+        {{/if}}
+        {{#if include}}
+        include: {
+          {{#each include}}
+          {{this}}: true,
+          {{/each}}
+        },
+        {{/if}}
+        {{#if orderBy}}
+        orderBy: {
+          {{orderBy.field}}: '{{orderBy.direction}}',
+        },
+        {{/if}}
+        {{#if pagination}}
+        skip: (params.page - 1) * params.limit,
+        take: params.limit,
+        {{/if}}
+      });
+
+      {{#if postProcess}}
+      {{postProcess}}
+      {{/if}}
+
+      return result;
+      {{else}}
+      // TODO: Implement {{name}} logic
+      throw new AppError('Not implemented', 501);
+      {{/if}}
+    } catch (error) {
+      logger.error(`Error in {{name}}:`, error);
+      if (error instanceof AppError) {
+        throw error;
+      }
+      throw new AppError('Internal server error', 500);
+    }
+  }
+  {{/each}}
+
+  {{#if helperMethods}}
+  // Helper methods
+  {{#each helperMethods}}
+  private {{name}}({{#if params}}{{params}}{{/if}}): {{returnType}} {
+    {{implementation}}
+  }
+  {{/each}}
+  {{/if}}
+
+  {{#if customMethods}}
+  {{#each customMethods}}
+  {{this}}
+  {{/each}}
+  {{/if}}
+}

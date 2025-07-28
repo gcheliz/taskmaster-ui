@@ -1,0 +1,80 @@
+import { Request, Response, NextFunction } from 'express';
+import { {{pascalCase resourceName}}Service } from '../services/{{camelCase resourceName}}Service';
+import { {{pascalCase resourceName}}Validation } from '../types/validation/{{camelCase resourceName}}Validation';
+import { AppError } from '../utils/errors';
+import { asyncHandler } from '../middleware/asyncHandler';
+{{#if customImports}}
+{{#each customImports}}
+import {{this}};
+{{/each}}
+{{/if}}
+
+export class {{pascalCase resourceName}}Controller {
+  private {{camelCase resourceName}}Service: {{pascalCase resourceName}}Service;
+
+  constructor() {
+    this.{{camelCase resourceName}}Service = new {{pascalCase resourceName}}Service();
+  }
+
+  {{#each methods}}
+  /**
+   * {{description}}
+   * @route {{method}} {{endpoint}}
+   {{#if auth}}* @access Private{{else}}* @access Public{{/if}}
+   */
+  {{name}} = asyncHandler(async (
+    req: Request<{{#if params}}{{pascalCase ../resourceName}}Params{{else}}{}{{/if}}, {}, {{#if body}}{{pascalCase ../resourceName}}{{pascalCase name}}Body{{else}}{}{{/if}}, {{#if query}}{{pascalCase ../resourceName}}Query{{else}}{}{{/if}}>,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    {{#if validation}}
+    // Validation is handled by middleware
+    {{/if}}
+    {{#if body}}
+    const data = req.body;
+    {{/if}}
+    {{#if params}}
+    const { {{#each params}}{{this}}{{#unless @last}}, {{/unless}}{{/each}} } = req.params;
+    {{/if}}
+    {{#if query}}
+    const query = req.query;
+    {{/if}}
+
+    {{#if serviceMethod}}
+    const result = await this.{{camelCase ../resourceName}}Service.{{serviceMethod}}({
+      {{#if params}}
+      {{#each params}}
+      {{this}},
+      {{/each}}
+      {{/if}}
+      {{#if body}}
+      ...data,
+      {{/if}}
+      {{#if query}}
+      ...query,
+      {{/if}}
+    });
+    {{else}}
+    // TODO: Implement business logic
+    const result = { message: '{{description}}' };
+    {{/if}}
+
+    res.status({{statusCode}}).json({
+      success: true,
+      {{#if responseWrapper}}
+      {{responseWrapper}}: result,
+      {{else}}
+      data: result,
+      {{/if}}
+    });
+  });
+  {{/each}}
+
+  {{#if customMethods}}
+  {{#each customMethods}}
+  {{this}}
+  {{/each}}
+  {{/if}}
+}
+
+export const {{camelCase resourceName}}Controller = new {{pascalCase resourceName}}Controller();

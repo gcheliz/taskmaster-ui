@@ -2,6 +2,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { z } from 'zod';
 import { PrismaClient } from '@prisma/client';
+import { templateEngine } from '../template-engine';
 
 // Input validation schemas
 export const generateEndpointSchema = z.object({
@@ -140,80 +141,34 @@ export class APIDevelopmentAgent {
    * Generate controller code
    */
   private async generateController(params: any): Promise<string> {
-    const { method, controllerName, serviceName, resourceName, authentication, description } = params;
+    const { method, controllerName, serviceName, resourceName, authentication, description, endpoint, validation } = params;
     
-    return `import { Request, Response } from 'express';
-import { ${serviceName} } from '../services/${serviceName}';
-import { logger } from '../utils/winston-adapter';
-${authentication ? "import type { AuthenticatedRequest } from '../middleware/auth';" : ''}
-${params.validation ? `import { ${resourceName}ValidationSchemas } from '../types/validation/${resourceName}Validation';` : ''}
+    const templateVars = {
+      resourceName,
+      methods: [{
+        name: `${method.toLowerCase()}${this.capitalize(resourceName)}`,
+        description,
+        method,
+        endpoint,
+        auth: authentication,
+        params: this.extractParams(endpoint),
+        body: method !== 'GET' && method !== 'DELETE',
+        statusCode: this.getStatusCode(method),
+        serviceMethod: `${method.toLowerCase()}${this.capitalize(resourceName)}`,
+        validation: !!validation,
+      }],
+    };
 
-export class ${controllerName} {
-  /**
-   * ${description}
-   */
-  static async ${method.toLowerCase()}${resourceName}(req: ${authentication ? 'AuthenticatedRequest' : 'Request'}, res: Response): Promise<Response> {
-    try {
-      ${authentication ? `
-      if (!req.user?.userId) {
-        return res.status(401).json({
-          success: false,
-          error: {
-            code: 'UNAUTHORIZED',
-            message: 'User not authenticated',
-          },
-        });
-      }
-      ` : ''}
-      
-      ${params.validation ? `
-      // Validate request data
-      const validationResult = ${resourceName}ValidationSchemas.${method.toLowerCase()}.safeParse({
-        body: req.body,
-        params: req.params,
-        query: req.query,
-      });
-      
-      if (!validationResult.success) {
-        return res.status(400).json({
-          success: false,
-          error: {
-            code: 'VALIDATION_ERROR',
-            message: 'Invalid request data',
-            details: validationResult.error.flatten(),
-          },
-        });
-      }
-      ` : ''}
-      
-      // Call service method
-      const result = await ${serviceName}.${method.toLowerCase()}${resourceName}(${
-        params.validation ? 'validationResult.data' : 'req'
-      }${authentication ? ', req.user.userId' : ''});
-      
-      return res.json({
-        success: true,
-        data: result,
-      });
-    } catch (error) {
-      logger.error('${controllerName}.${method.toLowerCase()}${resourceName} error:', error);
-      
-      const message = error instanceof Error ? error.message : 'Request failed';
-      const statusCode = (error as any).statusCode || 500;
-      
-      return res.status(statusCode).json({
-        success: false,
-        error: {
-          code: 'REQUEST_FAILED',
-          message,
-        },
-      });
-    }
-  }
-}
-
-export default ${controllerName};
-`;
+    return await templateEngine.generate({
+      name: 'controller',
+      templatePath: path.join(__dirname, '../templates/backend/controller.hbs'),
+      outputPath: path.join(this.backendPath, 'src', 'controllers', `${controllerName}.ts`),
+      variables: templateVars,
+      validationRules: {
+        typescript: true,
+        eslint: true,
+      },
+    });
   }
 
   /**
@@ -406,4 +361,29 @@ export default router;
     // For now, returning a placeholder
     throw new Error('API documentation generation not implemented yet');
   }
-}
+
+  // Helper methods
+  private extractParams(endpoint: string): string[] {
+    const regex = /:([\w]+)/g;
+    const params: string[] = [];
+    let match;
+    while ((match = regex.exec(endpoint)) !== null) {
+      params.push(match[1]);
+    }
+    return params;
+  }
+
+  private getStatusCode(method: string): number {
+    const statusCodes: Record<string, number> = {
+      GET: 200,
+      POST: 201,
+      PUT: 200,
+      PATCH: 200,
+      DELETE: 204,
+    };
+    return statusCodes[method] || 200;
+  }
+
+  private capitalize(str: string): string {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }

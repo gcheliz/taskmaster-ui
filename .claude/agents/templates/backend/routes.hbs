@@ -1,0 +1,49 @@
+import { Router } from 'express';
+import { {{camelCase resourceName}}Controller } from '../controllers/{{camelCase resourceName}}Controller';
+{{#if auth}}
+import { authenticate } from '../middleware/auth';
+{{/if}}
+{{#if validation}}
+import { validate } from '../middleware/validate';
+import { 
+  {{#each validationSchemas}}
+  {{this}},
+  {{/each}}
+} from '../types/validation/{{camelCase resourceName}}Validation';
+{{/if}}
+{{#each middlewareImports}}
+import {{this}};
+{{/each}}
+
+const router = Router();
+
+{{#each routes}}
+/**
+ * @route {{method}} {{path}}
+ * @description {{description}}
+ {{#if auth}}* @access Private{{else}}* @access Public{{/if}}
+ */
+router.{{toLowerCase method}}(
+  '{{path}}',
+  {{#if auth}}
+  authenticate,
+  {{/if}}
+  {{#if validation}}
+  validate({{validationSchema}}),
+  {{/if}}
+  {{#each middleware}}
+  {{this}},
+  {{/each}}
+  {{camelCase ../resourceName}}Controller.{{handler}}
+);
+
+{{/each}}
+
+{{#if customRoutes}}
+// Custom routes
+{{#each customRoutes}}
+{{this}}
+{{/each}}
+{{/if}}
+
+export { router as {{camelCase resourceName}}Routes };

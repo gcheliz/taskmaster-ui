@@ -3,6 +3,7 @@ import path from 'path';
 import { z } from 'zod';
 import { exec } from 'child_process';
 import { promisify } from 'util';
+import { templateEngine } from '../template-engine';
 
 const execAsync = promisify(exec);
 

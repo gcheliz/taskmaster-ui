@@ -1,0 +1,209 @@
+id: refactoring-workflow-v1
+name: Code Refactoring Workflow
+description: Workflow for refactoring code with comprehensive testing and validation
+type: refactor
+version: '1.0.0'
+author: TaskMaster Team
+tags:
+  - refactor
+  - code-quality
+  - testing
+
+variables:
+  - name: refactorDescription
+    type: string
+    required: true
+    description: Description of the refactoring to perform
+  - name: targetFiles
+    type: array
+    required: true
+    description: List of files or modules to refactor
+  - name: performanceCheck
+    type: boolean
+    default: true
+    description: Whether to run performance benchmarks
+
+steps:
+  - id: create-branch
+    name: Create Refactor Branch
+    type: command
+    command: git checkout -b refactor/{{refactorDescription | replace(' ', '-') | lower}}
+    timeout: 10000
+
+  - id: analyze-codebase
+    name: Analyze Codebase
+    type: sequential
+    steps:
+      - id: code-analysis
+        name: Static Code Analysis
+        type: command
+        command: pnpm analyze
+        timeout: 120000
+
+      - id: identify-issues
+        name: Identify Refactoring Opportunities
+        type: agent
+        agentType: code-review
+        description: Analyze {{targetFiles}} and identify refactoring opportunities
+        timeout: 180000
+
+  - id: capture-baseline
+    name: Capture Baseline Metrics
+    type: parallel
+    dependsOn:
+      - analyze-codebase
+    steps:
+      - id: test-baseline
+        name: Run Baseline Tests
+        type: command
+        command: pnpm test -- --json > baseline-tests.json
+        timeout: 120000
+
+      - id: performance-baseline
+        name: Performance Baseline
+        type: condition
+        condition: context.performanceCheck === true
+        steps:
+          - id: run-benchmarks
+            name: Run Performance Benchmarks
+            type: command
+            command: pnpm benchmark > baseline-performance.json
+            timeout: 180000
+
+  - id: implement-refactoring
+    name: Implement Refactoring
+    type: sequential
+    dependsOn:
+      - capture-baseline
+    steps:
+      - id: refactor-code
+        name: Refactor Code
+        type: agent
+        agentType: backend
+        description: Refactor {{refactorDescription}} in {{targetFiles}}
+        timeout: 300000
+
+      - id: update-imports
+        name: Update Import Statements
+        type: agent
+        agentType: backend
+        description: Update all import statements affected by refactoring
+        timeout: 120000
+
+      - id: update-tests
+        name: Update Tests
+        type: agent
+        agentType: testing
+        description: Update tests affected by refactoring
+        timeout: 180000
+
+  - id: validate-refactoring
+    name: Validate Refactoring
+    type: sequential
+    dependsOn:
+      - implement-refactoring
+    steps:
+      - id: run-tests
+        name: Run All Tests
+        type: command
+        command: pnpm test
+        timeout: 120000
+
+      - id: compare-results
+        name: Compare Test Results
+        type: command
+        command: |
+          pnpm test -- --json > after-tests.json
+          node scripts/compare-test-results.js baseline-tests.json after-tests.json
+        timeout: 30000
+
+      - id: performance-check
+        name: Performance Validation
+        type: condition
+        condition: context.performanceCheck === true
+        steps:
+          - id: run-benchmarks-after
+            name: Run Performance Benchmarks After
+            type: command
+            command: pnpm benchmark > after-performance.json
+            timeout: 180000
+
+          - id: compare-performance
+            name: Compare Performance
+            type: command
+            command: node scripts/compare-performance.js baseline-performance.json after-performance.json
+            timeout: 30000
+
+  - id: code-quality-check
+    name: Code Quality Check
+    type: parallel
+    dependsOn:
+      - validate-refactoring
+    steps:
+      - id: lint-check
+        name: Lint Check
+        type: command
+        command: pnpm lint:all
+        timeout: 60000
+
+      - id: type-check
+        name: Type Check
+        type: command
+        command: pnpm typecheck:all
+        timeout: 60000
+
+      - id: complexity-check
+        name: Code Complexity Check
+        type: command
+        command: pnpm complexity
+        timeout: 60000
+
+  - id: code-review
+    name: Code Review
+    type: agent
+    agentType: code-review
+    description: Review refactored code for quality and best practices
+    dependsOn:
+      - code-quality-check
+    timeout: 120000
+
+  - id: documentation
+    name: Update Documentation
+    type: agent
+    agentType: documentation
+    description: Update documentation to reflect refactoring changes
+    dependsOn:
+      - code-review
+    timeout: 90000
+
+  - id: commit-refactoring
+    name: Commit Refactoring
+    type: command
+    command: |
+      git add -A
+      git commit -m "refactor: {{refactorDescription}}"
+    dependsOn:
+      - documentation
+    timeout: 10000
+
+onSuccess:
+  - id: cleanup
+    name: Cleanup Temporary Files
+    type: command
+    command: rm -f baseline-*.json after-*.json
+
+  - id: success-notification
+    name: Success Notification
+    type: command
+    command: echo "Refactoring completed successfully!"
+
+onFailure:
+  - id: cleanup
+    name: Cleanup Temporary Files
+    type: command
+    command: rm -f baseline-*.json after-*.json
+
+  - id: failure-notification
+    name: Failure Notification
+    type: command
+    command: echo "Refactoring workflow failed. Check logs for details."

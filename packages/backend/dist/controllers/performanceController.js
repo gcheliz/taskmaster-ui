@@ -16,7 +16,7 @@ class PerformanceController {
     /**
      * Get query performance analysis
      */
-    async getQueryAnalysis(req, res) {
+    async getQueryAnalysis(_req, res) {
         try {
             const analysis = database_1.DatabaseService.getInstance().getQueryAnalysis();
             res.json({
@@ -37,7 +37,7 @@ class PerformanceController {
     /**
      * Clear query logs and metrics
      */
-    async clearLogs(req, res) {
+    async clearLogs(_req, res) {
         try {
             database_1.DatabaseService.getInstance().clearQueryLogs();
             res.json({
@@ -57,7 +57,7 @@ class PerformanceController {
     /**
      * Export query logs
      */
-    async exportLogs(req, res) {
+    async exportLogs(_req, res) {
         try {
             const filename = `query-logs-${Date.now()}.json`;
             const outputPath = `/tmp/${filename}`;
@@ -84,7 +84,7 @@ class PerformanceController {
     /**
      * Get database connection info and pool status
      */
-    async getConnectionInfo(req, res) {
+    async getConnectionInfo(_req, res) {
         try {
             const dbService = database_1.DatabaseService.getInstance();
             const isHealthy = await dbService.healthCheck();

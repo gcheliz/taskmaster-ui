@@ -7,7 +7,7 @@ exports.getSystemHealth = exports.getSSLHealth = exports.getSecretsHealth = expo
 const secrets_manager_1 = require("../config/secrets-manager");
 const database_1 = __importDefault(require("../services/database"));
 const ssl_validator_1 = require("../config/ssl-validator");
-const getHealth = (req, res) => {
+const getHealth = (_req, res) => {
     const response = {
         status: 'OK',
         timestamp: new Date().toISOString(),
@@ -16,7 +16,7 @@ const getHealth = (req, res) => {
     res.status(200).json(response);
 };
 exports.getHealth = getHealth;
-const getApiHealth = (req, res) => {
+const getApiHealth = (_req, res) => {
     const response = {
         status: 'API is running',
         version: '1.0.0',
@@ -26,7 +26,7 @@ const getApiHealth = (req, res) => {
     res.status(200).json(response);
 };
 exports.getApiHealth = getApiHealth;
-const getSecretsHealth = async (req, res) => {
+const getSecretsHealth = async (_req, res) => {
     try {
         const secretsManager = (0, secrets_manager_1.getSecretsManager)();
         const statusMap = await secretsManager.getProviderStatus();
@@ -55,7 +55,7 @@ const getSecretsHealth = async (req, res) => {
     }
 };
 exports.getSecretsHealth = getSecretsHealth;
-const getSSLHealth = async (req, res) => {
+const getSSLHealth = async (_req, res) => {
     try {
         const validation = (0, ssl_validator_1.validateSSLConfiguration)();
         const certInfo = (0, ssl_validator_1.getSSLCertificateInfo)();
@@ -88,7 +88,7 @@ const getSSLHealth = async (req, res) => {
     }
 };
 exports.getSSLHealth = getSSLHealth;
-const getSystemHealth = async (req, res) => {
+const getSystemHealth = async (_req, res) => {
     try {
         const secretsManager = (0, secrets_manager_1.getSecretsManager)();
         const dbService = database_1.default;

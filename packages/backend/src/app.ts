@@ -14,6 +14,7 @@ import dashboardRoutes from './routes/dashboardRoutes';
 import performanceRoutes from './routes/performanceRoutes';
 import settingsRoutes from './routes/settingsRoutes';
 import exportRoutes from './routes/exportRoutes';
+import workflowRoutes from './routes/workflowRoutes';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 import DatabaseService from './services/database';
 import {
@@ -23,7 +24,10 @@ import {
   logConfiguration,
 } from './config/environment';
 import { logger } from './utils/winston-adapter';
-import { setupSentryMiddleware, setupSentryErrorHandler } from './config/sentry';
+import {
+  setupSentryMiddleware,
+  setupSentryErrorHandler,
+} from './config/sentry';
 
 // Validate environment and secrets
 validateProductionSecrets();
@@ -40,7 +44,9 @@ const initializeDatabase = async () => {
   } catch (error) {
     logger.error('Failed to initialize database:', error);
     // process.exit(1);
-    logger.warn('Running without database connection - some features will be unavailable');
+    logger.warn(
+      'Running without database connection - some features will be unavailable'
+    );
   }
 };
 
@@ -116,6 +122,7 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/performance', performanceRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/export', exportRoutes);
+app.use('/api/workflows', workflowRoutes);
 
 // Error handling middleware
 app.use(notFoundHandler);

@@ -95,7 +95,7 @@ class ExportController {
                     priority: 'medium',
                     complexity: 3,
                     dependencies: ['1'],
-                }
+                },
             ];
             // TODO: Replace with actual TaskMaster service call
             // const tasks = await taskMasterService.getTasks(options)
@@ -107,7 +107,7 @@ class ExportController {
                     code: 'EXPORT_TOO_LARGE',
                     recordCount: tasks.length,
                     limit: EXPORT_LIMIT,
-                    suggestion: 'Use async export endpoint for large datasets'
+                    suggestion: 'Use async export endpoint for large datasets',
                 });
                 return;
             }
@@ -122,7 +122,7 @@ class ExportController {
             logger_1.logger.info('Tasks exported successfully', {
                 userId: req.user?.id,
                 format: options.format,
-                count: result.totalCount
+                count: result.totalCount,
             });
         }
         catch (error) {
@@ -136,12 +136,16 @@ class ExportController {
      */
     async exportAnalytics(req, res, next) {
         try {
-            const { format, type, projectId, userId, dateFrom, dateTo, groupBy = 'day' } = req.query;
+            const { format, type, 
+            // projectId,
+            // userId,
+            dateFrom, dateTo, groupBy = 'day', } = req.query;
             if (!format || !type || !dateFrom || !dateTo) {
-                return res.status(400).json({
+                res.status(400).json({
                     error: 'Missing required parameters',
-                    required: ['format', 'type', 'dateFrom', 'dateTo']
+                    required: ['format', 'type', 'dateFrom', 'dateTo'],
                 });
+                return;
             }
             // TODO: Implement analytics export logic based on type
             // For now, return a sample response
@@ -151,10 +155,10 @@ class ExportController {
                     completedTasks: 350,
                     inProgressTasks: 100,
                     pendingTasks: 50,
-                    completionRate: 0.70,
-                    averageCompletionTime: '5.2 days'
+                    completionRate: 0.7,
+                    averageCompletionTime: '5.2 days',
                 },
-                timeline: []
+                timeline: [],
             };
             const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
             if (format === 'csv') {
@@ -174,8 +178,8 @@ class ExportController {
                         exportDate: new Date().toISOString(),
                         period: { from: dateFrom, to: dateTo },
                         type,
-                        groupBy
-                    }
+                        groupBy,
+                    },
                 });
             }
         }
@@ -196,14 +200,14 @@ class ExportController {
             if (!exportJob) {
                 return res.status(404).json({
                     success: false,
-                    error: 'Export not found'
+                    error: 'Export not found',
                 });
             }
             res.json({
                 status: exportJob.status,
                 progress: exportJob.progress / 100, // Convert to 0-1 range
                 downloadUrl: exportJob.downloadUrl,
-                error: exportJob.error
+                error: exportJob.error,
             });
         }
         catch (error) {
@@ -219,26 +223,29 @@ class ExportController {
         try {
             const { type, format, filters, notifyEmail } = req.body;
             if (!type || !format) {
-                return res.status(400).json({
+                res.status(400).json({
                     error: 'Missing required fields',
-                    required: ['type', 'format']
+                    required: ['type', 'format'],
                 });
+                return;
             }
             // Validate export type
             const validTypes = ['tasks', 'analytics', 'repository-activity'];
             if (!validTypes.includes(type)) {
-                return res.status(400).json({
+                res.status(400).json({
                     error: 'Invalid export type',
-                    valid: validTypes
+                    valid: validTypes,
                 });
+                return;
             }
             // Validate format
             const validFormats = ['csv', 'json'];
             if (!validFormats.includes(format)) {
-                return res.status(400).json({
+                res.status(400).json({
                     error: 'Invalid export format',
-                    valid: validFormats
+                    valid: validFormats,
                 });
+                return;
             }
             const { asyncExportService } = await Promise.resolve().then(() => __importStar(require('../services/asyncExportService')));
             const result = await asyncExportService.initiateExport({
@@ -246,17 +253,17 @@ class ExportController {
                 format,
                 filters: filters || {},
                 userId: req.user?.id,
-                notifyEmail
+                notifyEmail,
             });
             res.json({
                 exportId: result.exportId,
-                estimatedTime: result.estimatedTime
+                estimatedTime: result.estimatedTime,
             });
             logger_1.logger.info('Async export initiated', {
                 userId: req.user?.id,
                 exportId: result.exportId,
                 type,
-                format
+                format,
             });
         }
         catch (error) {
@@ -277,27 +284,30 @@ class ExportController {
             if (!exportJob) {
                 return res.status(404).json({
                     success: false,
-                    error: 'Export not found'
+                    error: 'Export not found',
                 });
             }
             if (exportJob.status !== 'completed') {
                 return res.status(400).json({
                     success: false,
                     error: 'Export not completed yet',
-                    status: exportJob.status
+                    status: exportJob.status,
                 });
             }
             // In production, redirect to S3 signed URL
             // For now, serve from local filesystem
             const filepath = path.join(process.cwd(), 'exports', `${exportId}-${filename}`);
             if (!fs.existsSync(filepath)) {
-                return res.status(404).json({
+                res.status(404).json({
                     success: false,
-                    error: 'Export file not found'
+                    error: 'Export file not found',
                 });
+                return;
             }
             // Set appropriate headers
-            const contentType = filename.endsWith('.csv') ? 'text/csv' : 'application/json';
+            const contentType = filename.endsWith('.csv')
+                ? 'text/csv'
+                : 'application/json';
             res.setHeader('Content-Type', contentType);
             res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
             // Stream the file

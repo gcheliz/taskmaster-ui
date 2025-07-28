@@ -17,6 +17,7 @@ import { architecturePlugin } from './plugins/architecture-diagram';
 import { readmePlugin } from './plugins/readme-generator';
 import { changelogPlugin } from './plugins/changelog-generator';
 import { claudeContextPlugin } from './plugins/claude-context';
+import { releaseNotesPlugin } from './plugins/release-notes';
 
 // Register all plugins
 documentationEngine.registerPlugin(apiDocumentationPlugin);
@@ -25,6 +26,7 @@ documentationEngine.registerPlugin(architecturePlugin);
 documentationEngine.registerPlugin(readmePlugin);
 documentationEngine.registerPlugin(changelogPlugin);
 documentationEngine.registerPlugin(claudeContextPlugin);
+documentationEngine.registerPlugin(releaseNotesPlugin);
 
 export {
   documentationEngine,
@@ -44,6 +46,7 @@ export const documentationCommands = {
   '/docs:readme': 'Update or generate README files',
   '/docs:changelog': 'Generate changelog from git commits',
   '/docs:claude': 'Update CLAUDE.md context file',
+  '/docs:release': 'Generate release notes and migration guide',
   '/docs:all': 'Generate all documentation types',
   '/docs:watch': 'Watch for changes and auto-generate documentation',
   '/docs:serve': 'Serve generated documentation in browser'
@@ -140,6 +143,25 @@ export async function updateClaudeContext(
     ...options,
     plugins: [plugin],
     outputPath: '.'
+  });
+}
+
+/**
+ * Generate release notes
+ */
+export async function generateReleaseNotes(
+  sourcePaths: string[] = ['.'],
+  options: Partial<DocumentationOptions> = {}
+): Promise<DocumentationResult> {
+  const plugin = documentationEngine.getPluginInfo('release-notes');
+  if (!plugin) {
+    throw new Error('Release notes plugin not found');
+  }
+
+  return generateDocumentation(sourcePaths, {
+    ...options,
+    plugins: [plugin],
+    outputPath: options.outputPath || 'docs/releases'
   });
 }
 
@@ -252,6 +274,11 @@ export const commandHandlers = {
   
   '/docs:claude': async (_args: string[]) => {
     const result = await updateClaudeContext();
+    return formatResult(result);
+  },
+  
+  '/docs:release': async (_args: string[]) => {
+    const result = await generateReleaseNotes();
     return formatResult(result);
   },
   
@@ -412,6 +439,9 @@ export async function exampleUsage(): Promise<void> {
   
   // Update Claude context
   await updateClaudeContext();
+  
+  // Generate release notes
+  await generateReleaseNotes();
   
   // Watch for changes
   // await watchDocumentation(['src']);

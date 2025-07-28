@@ -271,8 +271,17 @@ class TaskMasterController {
             const request = req.validatedBody; // TaskCreateRequest type
             const { repositoryPath, title, description, priority, status = 'pending', dependencies = [], tags = [], ...optionalFields } = request;
             // Check if repository is initialized
-            const projectStatus = await this.taskMasterService.getProjectStatus(repositoryPath);
-            if (!projectStatus.success || !projectStatus.data?.initialized) {
+            let projectStatus;
+            try {
+                projectStatus =
+                    await this.taskMasterService.getProjectStatus(repositoryPath);
+            }
+            catch (error) {
+                throw new Error('Failed to check project status');
+            }
+            if (!projectStatus ||
+                !projectStatus.success ||
+                !projectStatus.data?.initialized) {
                 throw new Error('TaskMaster is not initialized in this repository');
             }
             // Get current tasks to determine next ID
@@ -290,20 +299,19 @@ class TaskMasterController {
                 const existingIds = new Set(currentTasks.data.map(t => t.id));
                 const invalidDeps = dependencies.filter(depId => !existingIds.has(depId));
                 if (invalidDeps.length > 0) {
-                    res.status(400).apiError({
+                    return res.apiError({
                         code: 'INVALID_DEPENDENCY',
                         message: `Dependencies not found: ${invalidDeps.join(', ')}`,
-                    });
-                    return;
+                    }, 400);
                 }
             }
             // Check for circular dependencies
-            if (optionalFields.parentTaskId && dependencies.includes(optionalFields.parentTaskId)) {
-                res.status(400).apiError({
+            if (optionalFields.parentTaskId &&
+                dependencies.includes(optionalFields.parentTaskId)) {
+                return res.apiError({
                     code: 'CIRCULAR_DEPENDENCY',
                     message: 'A subtask cannot depend on its parent task',
-                });
-                return;
+                }, 400);
             }
             // Prepare task object
             const newTask = {
@@ -327,10 +335,10 @@ class TaskMasterController {
                 tags: tags.length > 0 ? tags.join(',') : undefined,
             }, {
                 research: optionalFields.aiEnhancement?.generateDetails || false,
-                tag: this.extractTagFromPath(repositoryPath)
+                tag: this.extractTagFromPath(repositoryPath),
             });
             if (!createResult.success) {
-                throw new Error('Failed to create task');
+                throw new Error(createResult.error || 'Failed to create task');
             }
             // Emit WebSocket notification
             this.emitWebSocketEvent('task:created', {
@@ -349,7 +357,9 @@ class TaskMasterController {
                 },
                 links: {
                     self: `/api/tasks/${newTaskId}`,
-                    parent: optionalFields.parentTaskId ? `/api/tasks/${optionalFields.parentTaskId}` : undefined,
+                    parent: optionalFields.parentTaskId
+                        ? `/api/tasks/${optionalFields.parentTaskId}`
+                        : undefined,
                     dependencies: dependencies.map((depId) => `/api/tasks/${depId}`),
                 },
             });
@@ -548,9 +558,12 @@ class TaskMasterController {
             error: error.message,
             timestamp: new Date().toISOString(),
         });
+        const errorCode = this.getErrorCode(error);
         const apiError = {
-            code: this.getErrorCode(error),
-            message: error.message,
+            code: errorCode,
+            message: errorCode === 'INTERNAL_ERROR' && process.env.NODE_ENV !== 'development'
+                ? 'An unexpected error occurred'
+                : error.message,
             details: process.env.NODE_ENV === 'development'
                 ? {
                     stack: error.stack,

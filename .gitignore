@@ -110,3 +110,5 @@ test-results/
 /ssl-certs/
 /secrets/
 /packages/backend/performance-reports/
+
+**/*/dist

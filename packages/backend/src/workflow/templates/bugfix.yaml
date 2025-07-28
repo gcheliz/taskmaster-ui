@@ -1,0 +1,173 @@
+id: bugfix-workflow-v1
+name: Bug Fix Workflow
+description: Workflow for fixing bugs with thorough testing and validation
+type: bugfix
+version: '1.0.0'
+author: TaskMaster Team
+tags:
+  - bugfix
+  - testing
+  - validation
+
+variables:
+  - name: bugDescription
+    type: string
+    required: true
+    description: Description of the bug to fix
+  - name: bugId
+    type: string
+    required: true
+    description: Bug ID or reference number
+  - name: affectedArea
+    type: string
+    default: unknown
+    description: Area of code affected (backend, frontend, both)
+
+steps:
+  - id: create-branch
+    name: Create Bugfix Branch
+    type: command
+    command: git checkout -b bugfix/{{bugId}}
+    timeout: 10000
+
+  - id: analyze-bug
+    name: Analyze Bug
+    type: sequential
+    steps:
+      - id: reproduce-bug
+        name: Reproduce Bug
+        type: agent
+        agentType: testing
+        description: Reproduce and document the bug {{bugDescription}}
+        timeout: 120000
+
+      - id: identify-root-cause
+        name: Identify Root Cause
+        type: agent
+        agentType: backend
+        description: Identify root cause of {{bugDescription}}
+        timeout: 180000
+
+  - id: implement-fix
+    name: Implement Bug Fix
+    type: condition
+    condition: context.affectedArea !== 'unknown'
+    dependsOn:
+      - analyze-bug
+    steps:
+      - id: backend-fix
+        name: Backend Fix
+        type: condition
+        condition: context.affectedArea === 'backend' || context.affectedArea === 'both'
+        steps:
+          - id: fix-backend
+            name: Fix Backend Code
+            type: agent
+            agentType: backend
+            description: Fix bug {{bugId}} in backend - {{bugDescription}}
+            timeout: 180000
+
+      - id: frontend-fix
+        name: Frontend Fix
+        type: condition
+        condition: context.affectedArea === 'frontend' || context.affectedArea === 'both'
+        steps:
+          - id: fix-frontend
+            name: Fix Frontend Code
+            type: agent
+            agentType: frontend
+            description: Fix bug {{bugId}} in frontend - {{bugDescription}}
+            timeout: 180000
+
+  - id: write-tests
+    name: Write Regression Tests
+    type: agent
+    agentType: testing
+    description: Write regression tests for bug {{bugId}}
+    dependsOn:
+      - implement-fix
+    timeout: 120000
+
+  - id: validate-fix
+    name: Validate Fix
+    type: sequential
+    dependsOn:
+      - write-tests
+    steps:
+      - id: run-unit-tests
+        name: Run Unit Tests
+        type: parallel
+        steps:
+          - id: backend-unit-tests
+            name: Backend Unit Tests
+            type: command
+            command: cd packages/backend && pnpm test
+            timeout: 60000
+
+          - id: frontend-unit-tests
+            name: Frontend Unit Tests
+            type: command
+            command: cd packages/frontend && pnpm test
+            timeout: 60000
+
+      - id: run-integration-tests
+        name: Run Integration Tests
+        type: command
+        command: pnpm test:integration
+        timeout: 120000
+
+      - id: verify-fix
+        name: Verify Fix
+        type: agent
+        agentType: testing
+        description: Verify that bug {{bugId}} is fixed and no regressions introduced
+        timeout: 90000
+
+  - id: code-review
+    name: Code Review
+    type: agent
+    agentType: code-review
+    description: Review fix for bug {{bugId}}
+    dependsOn:
+      - validate-fix
+    timeout: 90000
+
+  - id: final-checks
+    name: Final Checks
+    type: parallel
+    dependsOn:
+      - code-review
+    steps:
+      - id: lint-check
+        name: Lint Check
+        type: command
+        command: pnpm lint:all
+        timeout: 60000
+
+      - id: type-check
+        name: Type Check
+        type: command
+        command: pnpm typecheck:all
+        timeout: 60000
+
+  - id: commit-fix
+    name: Commit Bug Fix
+    type: command
+    command: |
+      git add -A
+      git commit -m "fix: resolve bug {{bugId}} - {{bugDescription}}"
+    dependsOn:
+      - final-checks
+    timeout: 10000
+
+onSuccess:
+  - id: success-notification
+    name: Success Notification
+    type: command
+    command: echo "Bug {{bugId}} fixed successfully!"
+
+onFailure:
+  - id: failure-notification
+    name: Failure Notification
+    type: command
+    command: echo "Bug fix workflow failed for {{bugId}}. Check logs for details."

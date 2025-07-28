@@ -1,0 +1,195 @@
+id: feature-development-v1
+name: Feature Development Workflow
+description: Complete workflow for developing new features with parallel backend/frontend development
+type: feature
+version: '1.0.0'
+author: TaskMaster Team
+tags:
+  - feature
+  - development
+  - parallel
+
+variables:
+  - name: featureDescription
+    type: string
+    required: true
+    description: Description of the feature to implement
+  - name: featureName
+    type: string
+    required: true
+    description: Short name for the feature (used in branch names)
+  - name: includeTests
+    type: boolean
+    default: true
+    description: Whether to include test implementation
+  - name: includeDocumentation
+    type: boolean
+    default: true
+    description: Whether to include documentation updates
+
+steps:
+  - id: create-branch
+    name: Create Feature Branch
+    type: command
+    command: git checkout -b feature/{{featureName}}
+    timeout: 10000
+
+  - id: initial-commit
+    name: Create Initial Commit
+    type: command
+    command: |
+      echo "# Feature: {{featureName}}" > FEATURE.md
+      git add FEATURE.md
+      git commit -m "feat: initialize {{featureName}} feature"
+    dependsOn:
+      - create-branch
+
+  - id: implementation
+    name: Parallel Implementation
+    type: parallel
+    timeout: 600000
+    steps:
+      - id: backend-implementation
+        name: Backend Implementation
+        type: agent
+        agentType: backend
+        description: Implement backend for {{featureDescription}}
+        timeout: 300000
+        retries: 1
+
+      - id: frontend-implementation
+        name: Frontend Implementation
+        type: agent
+        agentType: frontend
+        description: Implement frontend for {{featureDescription}}
+        timeout: 300000
+        retries: 1
+
+  - id: test-implementation
+    name: Test Implementation
+    type: condition
+    condition: context.includeTests === true
+    dependsOn:
+      - implementation
+    steps:
+      - id: write-tests
+        name: Write Tests
+        type: agent
+        agentType: testing
+        description: Write comprehensive tests for {{featureName}} feature
+        timeout: 180000
+
+      - id: run-tests
+        name: Run Tests
+        type: sequential
+        steps:
+          - id: backend-tests
+            name: Run Backend Tests
+            type: command
+            command: cd packages/backend && pnpm test
+            timeout: 60000
+
+          - id: frontend-tests
+            name: Run Frontend Tests
+            type: command
+            command: cd packages/frontend && pnpm test
+            timeout: 60000
+
+  - id: code-review
+    name: Code Review
+    type: agent
+    agentType: code-review
+    description: Review implementation of {{featureName}} feature
+    dependsOn:
+      - implementation
+    timeout: 120000
+
+  - id: documentation
+    name: Update Documentation
+    type: condition
+    condition: context.includeDocumentation === true
+    dependsOn:
+      - implementation
+    steps:
+      - id: update-docs
+        name: Update Documentation
+        type: agent
+        agentType: documentation
+        description: Update documentation for {{featureName}} feature
+        timeout: 120000
+
+  - id: final-validation
+    name: Final Validation
+    type: sequential
+    dependsOn:
+      - code-review
+    steps:
+      - id: lint-check
+        name: Lint Check
+        type: parallel
+        steps:
+          - id: backend-lint
+            name: Backend Lint
+            type: command
+            command: cd packages/backend && pnpm lint
+            timeout: 30000
+
+          - id: frontend-lint
+            name: Frontend Lint
+            type: command
+            command: cd packages/frontend && pnpm lint
+            timeout: 30000
+
+      - id: type-check
+        name: Type Check
+        type: parallel
+        steps:
+          - id: backend-typecheck
+            name: Backend Type Check
+            type: command
+            command: cd packages/backend && pnpm typecheck
+            timeout: 30000
+
+          - id: frontend-typecheck
+            name: Frontend Type Check
+            type: command
+            command: cd packages/frontend && pnpm typecheck
+            timeout: 30000
+
+      - id: build-check
+        name: Build Check
+        type: parallel
+        steps:
+          - id: backend-build
+            name: Backend Build
+            type: command
+            command: cd packages/backend && pnpm build
+            timeout: 60000
+
+          - id: frontend-build
+            name: Frontend Build
+            type: command
+            command: cd packages/frontend && pnpm build
+            timeout: 60000
+
+  - id: commit-changes
+    name: Commit Final Changes
+    type: command
+    command: |
+      git add -A
+      git commit -m "feat: complete {{featureName}} implementation"
+    dependsOn:
+      - final-validation
+    timeout: 10000
+
+onSuccess:
+  - id: success-notification
+    name: Success Notification
+    type: command
+    command: echo "Feature {{featureName}} completed successfully!"
+
+onFailure:
+  - id: failure-notification
+    name: Failure Notification
+    type: command
+    command: echo "Feature {{featureName}} workflow failed. Check logs for details."

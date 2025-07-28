@@ -65,7 +65,14 @@ const apiResponseMiddleware = () => {
                     ...metadata,
                 },
             };
-            res.status(200).json(response);
+            // Don't call status() again if it's already been set
+            if (!res.headersSent) {
+                if (res.statusCode === 200) {
+                    // Only set to 200 if no status has been explicitly set
+                    res.status(200);
+                }
+                res.json(response);
+            }
         };
         // Error response helper
         res.apiError = (error, statusCode = 500) => {

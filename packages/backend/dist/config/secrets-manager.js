@@ -206,7 +206,8 @@ class SecretsManager {
                 await new Promise(resolve => setTimeout(resolve, delay));
             }
         }
-        throw lastError || new Error('Failed to retrieve secret after multiple attempts');
+        throw (lastError ||
+            new Error('Failed to retrieve secret after multiple attempts'));
     }
 }
 exports.SecretsManager = SecretsManager;
@@ -280,9 +281,7 @@ async function getApplicationSecrets() {
     const githubToken = environment_1.env.GITHUB_TOKEN ||
         (await secretsManager.getSecret('github_token').catch(() => undefined));
     const slackToken = environment_1.env.SLACK_BOT_TOKEN ||
-        (await secretsManager
-            .getSecret('slack_bot_token')
-            .catch(() => undefined));
+        (await secretsManager.getSecret('slack_bot_token').catch(() => undefined));
     const anthropicKey = environment_1.env.ANTHROPIC_API_KEY ||
         (await secretsManager
             .getSecret('anthropic_api_key')

@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { rest } from 'msw'
+import { http, HttpResponse } from 'msw'
 import { setupServer } from 'msw/node'
 import { TaskBoardManager } from '../TaskBoardManager'
 import { NotificationProvider } from '../../../contexts/NotificationContext'
@@ -11,37 +11,34 @@ import type { Task } from '../../../types/task'
 
 // Mock server setup
 const server = setupServer(
-  // Mock GET tasks endpoint
-  rest.get('/api/tasks', (req, res, ctx) => {
-    return res(
-      ctx.json({
-        'test-project': {
-          tasks: [
-            {
-              id: 1,
-              title: 'Existing Task',
-              description: 'This task already exists',
-              status: 'pending',
-              priority: 'medium',
-              tags: [],
-              dependencies: [],
-              subtasks: [],
-              createdAt: new Date().toISOString(),
-              updatedAt: new Date().toISOString(),
-            },
-          ],
-          metadata: {
-            created: new Date().toISOString(),
-            updated: new Date().toISOString(),
-          },
+  // Mock GET tasks by repository endpoint
+  http.get('/api/tasks/repository', () => {
+    return HttpResponse.json({
+      tasks: [
+        {
+          id: 1,
+          title: 'Existing Task',
+          description: 'This task already exists',
+          status: 'pending',
+          priority: 'medium',
+          tags: [],
+          dependencies: [],
+          subtasks: [],
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
         },
-      })
-    )
+      ],
+      metadata: {
+        created: new Date().toISOString(),
+        updated: new Date().toISOString(),
+        count: 1,
+      },
+    })
   }),
 
   // Mock POST tasks endpoint
-  rest.post('/api/tasks', async (req, res, ctx) => {
-    const body = await req.json()
+  http.post('/api/tasks', async ({ request }) => {
+    const body = await request.json() as any
     const newTask: Task = {
       id: Math.floor(Math.random() * 1000) + 100,
       title: body.title,
@@ -63,16 +60,14 @@ const server = setupServer(
     // Simulate network delay
     await new Promise((resolve) => setTimeout(resolve, 500))
 
-    return res(
-      ctx.json({
-        task: newTask,
-        metadata: {
-          createdAt: newTask.createdAt,
-          createdBy: 'test-user',
-          taskNumber: newTask.id.toString(),
-        },
-      })
-    )
+    return HttpResponse.json({
+      task: newTask,
+      metadata: {
+        createdAt: newTask.createdAt,
+        createdBy: 'test-user',
+        taskNumber: newTask.id.toString(),
+      },
+    })
   })
 )
 

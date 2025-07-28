@@ -1,9 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { BrowserRouter, Routes, Route } from "react-router"
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AuthProvider } from '../../contexts/AuthContext'
+import { RepositoryProvider } from '../../contexts/RepositoryContext'
 import Repositories from '../../pages/Repositories'
 import RepositoryDetail from '../../pages/RepositoryDetail'
 
@@ -39,10 +40,12 @@ const TestApp = () => (
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
       <AuthProvider>
-        <Routes>
-          <Route path="/" element={<Repositories />} />
-          <Route path="/repositories/:id" element={<RepositoryDetail />} />
-        </Routes>
+        <RepositoryProvider>
+          <Routes>
+            <Route path="/" element={<Repositories />} />
+            <Route path="/repositories/:id" element={<RepositoryDetail />} />
+          </Routes>
+        </RepositoryProvider>
       </AuthProvider>
     </BrowserRouter>
   </QueryClientProvider>

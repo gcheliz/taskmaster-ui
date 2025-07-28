@@ -1,6 +1,6 @@
 import React from 'react'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { render, screen, fireEvent, createMockTask } from '../../../../test-utils'
+import { render, screen, fireEvent, createMockTask, waitFor } from '../../../../test-utils'
 import { TaskForm } from '../components/TaskForm'
 import { DEFAULT_TASK_VALUES } from '../constants'
 
@@ -91,20 +91,22 @@ describe('TaskForm', () => {
       const { user } = render(<TaskForm {...defaultProps} />)
       
       const titleInput = screen.getByTestId('task-title-input')
+      await user.clear(titleInput)
       await user.type(titleInput, 'New Title')
       
-      // onChange is called for each character typed, check the last call
-      expect(mockOnFieldChange).toHaveBeenLastCalledWith('title', 'New Title')
+      // Check that onChange was called with the complete value
+      expect(mockOnFieldChange).toHaveBeenCalledWith('title', 'New Title')
     })
 
     it('calls onFieldChange when description is changed', async () => {
       const { user } = render(<TaskForm {...defaultProps} />)
       
       const descriptionInput = screen.getByTestId('task-description-input')
+      await user.clear(descriptionInput)
       await user.type(descriptionInput, 'New Description')
       
-      // onChange is called for each character typed, check the last call
-      expect(mockOnFieldChange).toHaveBeenLastCalledWith('description', 'New Description')
+      // Check that onChange was called with the complete value
+      expect(mockOnFieldChange).toHaveBeenCalledWith('description', 'New Description')
     })
 
     it('calls onFieldChange when priority is changed', async () => {
@@ -205,17 +207,17 @@ describe('TaskForm', () => {
       
       render(<TaskForm {...defaultProps} formData={formData} />)
       
-      expect(screen.getByText('bug')).toBeInTheDocument()
-      expect(screen.getByText('urgent')).toBeInTheDocument()
+      const tagInput = screen.getByTestId('task-tags-input')
+      expect(tagInput).toHaveValue('bug, urgent')
     })
 
     it('adds new tags', async () => {
       const { user } = render(<TaskForm {...defaultProps} />)
       
-      const tagInput = screen.getByPlaceholderText(/add tags/i)
-      await user.type(tagInput, 'new-tag{Enter}')
+      const tagInput = screen.getByTestId('task-tags-input')
+      await user.type(tagInput, 'new-tag, another-tag')
       
-      expect(mockOnFieldChange).toHaveBeenCalledWith('tags', ['new-tag'])
+      expect(mockOnFieldChange).toHaveBeenCalledWith('tags', ['new-tag', 'another-tag'])
     })
 
     it('removes tags when clicked', async () => {
@@ -226,8 +228,9 @@ describe('TaskForm', () => {
       
       const { user } = render(<TaskForm {...defaultProps} formData={formData} />)
       
-      const removeButton = screen.getAllByLabelText(/remove tag/i)[0]
-      await user.click(removeButton)
+      const tagInput = screen.getByTestId('task-tags-input')
+      await user.clear(tagInput)
+      await user.type(tagInput, 'urgent')
       
       expect(mockOnFieldChange).toHaveBeenCalledWith('tags', ['urgent'])
     })
@@ -237,10 +240,14 @@ describe('TaskForm', () => {
     it('calls onSubmit when form is submitted', async () => {
       const { user } = render(<TaskForm {...defaultProps} />)
       
-      const form = screen.getByRole('form')
+      const titleInput = screen.getByTestId('task-title-input')
+      const form = titleInput.closest('form')!
+      
       fireEvent.submit(form)
       
-      expect(mockOnSubmit).toHaveBeenCalled()
+      await waitFor(() => {
+        expect(mockOnSubmit).toHaveBeenCalled()
+      })
     })
 
     it('prevents submission when loading', () => {

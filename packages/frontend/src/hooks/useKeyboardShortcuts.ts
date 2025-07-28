@@ -36,14 +36,20 @@ const matchesShortcut = (event: KeyboardEvent, shortcut: string): boolean => {
   const { modifiers, key } = parseShortcut(shortcut)
   const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0
 
-  // Check modifiers
-  const ctrlKey = isMac ? event.metaKey : event.ctrlKey
-  const cmdKey = isMac ? event.metaKey : event.ctrlKey
-
-  if (modifiers.ctrl && !ctrlKey) return false
-  if (modifiers.cmd && !cmdKey) return false
+  // Check modifiers - handle both ctrl and cmd
+  const ctrlOrCmdPressed = event.ctrlKey || event.metaKey
+  
+  // For ctrl/cmd shortcuts, accept either key
+  if ((modifiers.ctrl || modifiers.cmd) && !ctrlOrCmdPressed) return false
+  
+  // Check other modifiers strictly
   if (modifiers.alt && !event.altKey) return false
   if (modifiers.shift && !event.shiftKey) return false
+  
+  // Also check that no extra modifiers are pressed
+  if (!modifiers.ctrl && !modifiers.cmd && ctrlOrCmdPressed) return false
+  if (!modifiers.alt && event.altKey) return false
+  if (!modifiers.shift && event.shiftKey) return false
 
   // Check key
   return event.key.toLowerCase() === key
@@ -63,7 +69,8 @@ export const useKeyboardShortcuts = (shortcuts: KeyboardShortcut[]) => {
       // Don't trigger shortcuts when typing in inputs
       const target = event.target as HTMLElement
       const isTyping = ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName) ||
-                      target.isContentEditable
+                      target.isContentEditable ||
+                      (target as any).contentEditable === 'true'
 
       if (isTyping && !event.metaKey && !event.ctrlKey) {
         return

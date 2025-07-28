@@ -105,9 +105,13 @@ describe('Comprehensive Accessibility Audit', () => {
   });
 
   it('should audit Repositories page', async () => {
+    const { RepositoryProvider } = await import('../../contexts/RepositoryContext');
+    
     await runAccessibilityAudit('Repositories Page', 
       <TestWrapper>
-        <Repositories />
+        <RepositoryProvider>
+          <Repositories />
+        </RepositoryProvider>
       </TestWrapper>
     );
   });
@@ -191,9 +195,17 @@ describe('Comprehensive Accessibility Audit', () => {
   });
 
   it('should audit NotificationList component', async () => {
+    const mockNotifications = [
+      { id: '1', type: 'email' as const, enabled: true, label: 'Email notifications' },
+      { id: '2', type: 'push' as const, enabled: false, label: 'Push notifications' }
+    ];
+    
     await runAccessibilityAudit('NotificationList Component', 
       <TestWrapper>
-        <NotificationList />
+        <NotificationList 
+          notifications={mockNotifications}
+          onToggle={() => {}}
+        />
       </TestWrapper>
     );
   });
@@ -254,11 +266,11 @@ describe('Comprehensive Accessibility Audit', () => {
 
   // Loading states audit
   it('should audit loading states', async () => {
-    const { LoadingSkeleton } = await import('../../components/ui/loading');
+    const { Skeleton } = await import('../../components/ui/loading');
     
     await runAccessibilityAudit('Loading Skeleton', 
       <TestWrapper>
-        <LoadingSkeleton />
+        <Skeleton className="h-4 w-32" />
       </TestWrapper>
     );
   });

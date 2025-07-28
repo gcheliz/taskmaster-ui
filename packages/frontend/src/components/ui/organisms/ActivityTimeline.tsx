@@ -15,12 +15,21 @@ export interface ActivityItem {
   details?: Record<string, unknown>
 }
 
+/**
+ * Props for the ActivityTimeline component
+ */
 export interface ActivityTimelineProps {
+  /** Array of activity items to display in the timeline */
   activities: ActivityItem[]
+  /** Whether the timeline is in a loading state */
   loading?: boolean
+  /** Error message to display if activities failed to load */
   error?: string
+  /** Maximum number of items to display (others will be hidden) */
   maxItems?: number
+  /** Whether to show filter controls */
   showFilters?: boolean
+  /** Whether to show user avatars */
   showAvatar?: boolean
   showTimestamp?: boolean
   groupByDate?: boolean

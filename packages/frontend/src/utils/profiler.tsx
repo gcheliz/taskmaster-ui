@@ -1,38 +1,38 @@
-import React, { Profiler, ProfilerOnRenderCallback } from 'react'
+/**
+ * React Profiler utilities for performance monitoring
+ */
+import React from 'react'
 
 interface ProfilerData {
   id: string
-  phase: 'mount' | 'update' | 'nested-update'
+  phase: 'mount' | 'update'
   actualDuration: number
   baseDuration: number
   startTime: number
   commitTime: number
-  interactions: Set<any>
+  interactions?: Set<{ id: number; name: string; timestamp: number }>
 }
 
-// Store for profiler data
-const profilerData: Map<string, ProfilerData[]> = new Map()
-
-// Enable profiler data collection only in development
-const ENABLE_PROFILING = process.env.NODE_ENV === 'development' && 
-  import.meta.env.VITE_ENABLE_PROFILER === 'true'
+// Store profiler data
+const profilerData: Record<string, ProfilerData[]> = {}
 
 /**
- * Callback function for React Profiler
- * Collects performance metrics for components
+ * Record profiler data for a component
  */
-const onRenderCallback: ProfilerOnRenderCallback = (
-  id,
-  phase,
-  actualDuration,
-  baseDuration,
-  startTime,
-  commitTime,
-  interactions
-) => {
-  if (!ENABLE_PROFILING) return
+export const recordProfilerData = (
+  id: string,
+  phase: 'mount' | 'update',
+  actualDuration: number,
+  baseDuration: number,
+  startTime: number,
+  commitTime: number,
+  interactions?: Set<{ id: number; name: string; timestamp: number }>
+): void => {
+  if (!profilerData[id]) {
+    profilerData[id] = []
+  }
 
-  const data: ProfilerData = {
+  profilerData[id].push({
     id,
     phase,
     actualDuration,
@@ -40,61 +40,77 @@ const onRenderCallback: ProfilerOnRenderCallback = (
     startTime,
     commitTime,
     interactions,
-  }
+  })
 
-  // Store profiler data
-  if (!profilerData.has(id)) {
-    profilerData.set(id, [])
-  }
-  profilerData.get(id)!.push(data)
-
-  // Log slow renders in development
-  if (actualDuration > 16) {
-    console.warn(
-      `[Performance] Slow render detected in "${id}"`,
-      {
-        phase,
-        actualDuration: `${actualDuration.toFixed(2)}ms`,
-        baseDuration: `${baseDuration.toFixed(2)}ms`,
-      }
-    )
+  // Keep only last 100 entries per component
+  if (profilerData[id].length > 100) {
+    profilerData[id] = profilerData[id].slice(-100)
   }
 }
 
 /**
- * Get profiler data for a specific component
+ * Export all profiler data
  */
-export function getProfilerData(componentId: string): ProfilerData[] {
-  return profilerData.get(componentId) || []
-}
-
-/**
- * Get average render time for a component
- */
-export function getAverageRenderTime(componentId: string): number {
-  const data = getProfilerData(componentId)
-  if (data.length === 0) return 0
-
-  const total = data.reduce((sum, item) => sum + item.actualDuration, 0)
-  return total / data.length
+export const exportProfilerData = (): Record<string, ProfilerData[]> => {
+  return { ...profilerData }
 }
 
 /**
  * Clear all profiler data
  */
-export function clearProfilerData(): void {
-  profilerData.clear()
+export const clearProfilerData = (): void => {
+  Object.keys(profilerData).forEach((key) => {
+    delete profilerData[key]
+  })
 }
 
 /**
- * Export profiler data for analysis
+ * Get profiler data for a specific component
  */
-export function exportProfilerData(): Record<string, ProfilerData[]> {
-  const result: Record<string, ProfilerData[]> = {}
-  profilerData.forEach((value, key) => {
-    result[key] = value
+export const getComponentProfilerData = (componentId: string): ProfilerData[] => {
+  return profilerData[componentId] || []
+}
+
+/**
+ * Calculate average render time for a component
+ */
+export const getAverageRenderTime = (componentId: string): number => {
+  const data = profilerData[componentId]
+  if (!data || data.length === 0) return 0
+
+  const total = data.reduce((sum, entry) => sum + entry.actualDuration, 0)
+  return total / data.length
+}
+
+/**
+ * Get slow renders (> 16ms)
+ */
+export const getSlowRenders = (threshold = 16): Record<string, ProfilerData[]> => {
+  const slowRenders: Record<string, ProfilerData[]> = {}
+
+  Object.entries(profilerData).forEach(([id, data]) => {
+    const slow = data.filter((entry) => entry.actualDuration > threshold)
+    if (slow.length > 0) {
+      slowRenders[id] = slow
+    }
   })
-  return result
+
+  return slowRenders
+}
+
+/**
+ * React Profiler onRender callback
+ */
+export const onRenderCallback = (
+  id: string,
+  phase: 'mount' | 'update',
+  actualDuration: number,
+  baseDuration: number,
+  startTime: number,
+  commitTime: number,
+  interactions?: Set<{ id: number; name: string; timestamp: number }>
+): void => {
+  recordProfilerData(id, phase, actualDuration, baseDuration, startTime, commitTime, interactions)
 }
 
 /**
@@ -103,57 +119,12 @@ export function exportProfilerData(): Record<string, ProfilerData[]> {
 interface ProfilerWrapperProps {
   id: string
   children: React.ReactNode
-  onRender?: ProfilerOnRenderCallback
 }
 
-export const ProfilerWrapper = ({ 
-  id, 
-  children, 
-  onRender = onRenderCallback 
-}: ProfilerWrapperProps) => {
-  if (!ENABLE_PROFILING) {
-    return children
-  }
-
+export const ProfilerWrapper = ({ id, children }: ProfilerWrapperProps) => {
   return (
-    <Profiler id={id} onRender={onRender}>
+    <React.Profiler id={id} onRender={onRenderCallback}>
       {children}
-    </Profiler>
+    </React.Profiler>
   )
-}
-
-/**
- * Hook to use profiler data
- */
-export function useProfiler(componentId: string) {
-  const [data, setData] = React.useState<ProfilerData[]>([])
-
-  React.useEffect(() => {
-    if (!ENABLE_PROFILING) return
-
-    const interval = setInterval(() => {
-      setData(getProfilerData(componentId))
-    }, 1000)
-
-    return () => clearInterval(interval)
-  }, [componentId])
-
-  return {
-    data,
-    averageRenderTime: getAverageRenderTime(componentId),
-    clearData: () => {
-      profilerData.delete(componentId)
-      setData([])
-    },
-  }
-}
-
-// Expose functions to window in development
-if (ENABLE_PROFILING && typeof window !== 'undefined') {
-  (window as any).__PROFILER__ = {
-    getProfilerData,
-    getAverageRenderTime,
-    clearProfilerData,
-    exportProfilerData,
-  }
 }

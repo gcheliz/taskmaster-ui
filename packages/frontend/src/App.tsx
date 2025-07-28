@@ -37,12 +37,11 @@ const App = () => {
           <NotificationProvider>
             <RepositoryProvider>
               <AppRouter />
-              {import.meta.env.VITE_ENABLE_FPS_MONITOR === 'true' && 
-                process.env.NODE_ENV === 'development' && 
-                <FPSMonitor enabled={true} />}
-              
+              {import.meta.env.VITE_ENABLE_FPS_MONITOR === 'true' &&
+                process.env.NODE_ENV === 'development' && <FPSMonitor enabled={true} />}
+
               {import.meta.env.VITE_ENABLE_WEB_VITALS === 'true' && (
-                <WebVitalsMonitor 
+                <WebVitalsMonitor
                   enabled={true}
                   debug={process.env.NODE_ENV === 'development'}
                   onReport={(metric) => {
@@ -53,8 +52,8 @@ const App = () => {
                   }}
                 />
               )}
-              
-              {import.meta.env.VITE_ENABLE_PERFORMANCE_MONITORING === 'true' && 
+
+              {import.meta.env.VITE_ENABLE_PERFORMANCE_MONITORING === 'true' &&
                 process.env.NODE_ENV === 'development' && (
                   <>
                     <PerformanceMonitor />
@@ -71,3 +70,4 @@ const App = () => {
 }
 
 export default App
+// Test comment

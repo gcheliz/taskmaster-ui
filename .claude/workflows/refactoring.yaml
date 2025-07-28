@@ -1,0 +1,197 @@
+name: Refactoring Workflow
+version: 1.0.0
+description: Workflow for safe code refactoring with comprehensive testing
+
+triggers:
+  commands:
+    - /refactor
+  events:
+    - pr:labeled:refactor
+    - task:tagged:refactoring
+  conditions:
+    - tag: refactor
+    - type: technical-debt
+
+parameters:
+  target:
+    type: string
+    required: true
+    description: Target for refactoring (file, module, or pattern)
+  scope:
+    type: string
+    enum: [file, module, pattern, architecture]
+    default: module
+  refactorType:
+    type: string
+    enum: [rename, extract, inline, restructure, optimize]
+    required: true
+  description:
+    type: string
+    required: true
+  preserveApi:
+    type: boolean
+    default: true
+
+steps:
+  - id: analyze-impact
+    name: Analyze Refactoring Impact
+    agent: workflow-orchestration
+    input:
+      action: analyze-refactoring
+      target: '${parameters.target}'
+      scope: '${parameters.scope}'
+      type: '${parameters.refactorType}'
+    output:
+      impactAnalysis: impactReport
+      affectedFiles: filesImpacted
+      dependencies: dependencyGraph
+      riskLevel: assessedRisk
+    timeout: 60000
+
+  - id: create-safety-tests
+    name: Create Safety Test Harness
+    agent: "${contains(parameters.target, 'backend') ? 'backend-testing' : 'frontend-testing'}"
+    dependsOn: [analyze-impact]
+    input:
+      affectedFiles: '${outputs.analyze-impact.affectedFiles}'
+      dependencies: '${outputs.analyze-impact.dependencies}'
+      coverage: 95
+    output:
+      safetyTests: testHarness
+      baseline: performanceBaseline
+      coverage: currentCoverage
+    timeout: 90000
+
+  - id: execute-refactoring
+    name: Execute Refactoring
+    agent: "${contains(parameters.target, 'backend') ? 'api-development' : 'component-development'}"
+    dependsOn: [create-safety-tests]
+    input:
+      target: '${parameters.target}'
+      type: '${parameters.refactorType}'
+      description: '${parameters.description}'
+      preserveApi: '${parameters.preserveApi}'
+      safetyTests: '${outputs.create-safety-tests.safetyTests}'
+    output:
+      refactoredFiles: modifiedFiles
+      changes: appliedChanges
+      migrations: requiredMigrations
+    timeout: 180000
+
+  - id: validate-behavior
+    name: Validate Behavior Preservation
+    agent: "${contains(parameters.target, 'backend') ? 'backend-testing' : 'frontend-testing'}"
+    dependsOn: [execute-refactoring]
+    input:
+      safetyTests: '${outputs.create-safety-tests.safetyTests}'
+      refactoredFiles: '${outputs.execute-refactoring.refactoredFiles}'
+      baseline: '${outputs.create-safety-tests.baseline}'
+    output:
+      behaviorPreserved: isPreserved
+      testResults: validationResults
+      performanceComparison: performanceMetrics
+    timeout: 90000
+    onError: fail
+    retries: 2
+
+  - id: update-dependencies
+    name: Update Dependencies
+    agent: workflow-orchestration
+    condition:
+      and:
+        - equals: ['${outputs.validate-behavior.behaviorPreserved}', true]
+        - exists: '${outputs.execute-refactoring.migrations}'
+    dependsOn: [validate-behavior]
+    input:
+      dependencies: '${outputs.analyze-impact.dependencies}'
+      migrations: '${outputs.execute-refactoring.migrations}'
+    output:
+      updatedDependencies: dependencyUpdates
+      configChanges: configurationChanges
+    timeout: 60000
+
+  - id: code-review
+    name: Review Refactored Code
+    agent: code-review
+    dependsOn: [validate-behavior, update-dependencies]
+    input:
+      files: '${outputs.execute-refactoring.refactoredFiles}'
+      refactorType: '${parameters.refactorType}'
+      preserveApi: '${parameters.preserveApi}'
+      performance: '${outputs.validate-behavior.performanceComparison}'
+    output:
+      approved: reviewApproved
+      codeQuality: qualityMetrics
+      suggestions: improvementSuggestions
+    timeout: 45000
+
+  - id: update-documentation
+    name: Update Documentation
+    agent: documentation
+    condition:
+      equals: ['${outputs.code-review.approved}', true]
+    dependsOn: [code-review]
+    input:
+      refactoring: '${parameters.description}'
+      changes: '${outputs.execute-refactoring.changes}'
+      apiChanges: '${not(parameters.preserveApi)}'
+    output:
+      updatedDocs: documentationChanges
+      architectureDiagram: updatedDiagrams
+      migrationGuide: migrationInstructions
+    timeout: 45000
+
+  - id: finalize-refactoring
+    name: Finalize Refactoring
+    agent: workflow-orchestration
+    dependsOn: [update-documentation]
+    input:
+      action: finalize-refactoring
+      results: '${outputs}'
+      riskLevel: '${outputs.analyze-impact.riskLevel}'
+    output:
+      summary: refactoringSummary
+      metrics: improvementMetrics
+      nextSteps: recommendedActions
+    timeout: 30000
+
+outputs:
+  target: '${parameters.target}'
+  type: '${parameters.refactorType}'
+  status: '${outputs.validate-behavior.behaviorPreserved}'
+  changes:
+    files: '${outputs.execute-refactoring.refactoredFiles}'
+    details: '${outputs.execute-refactoring.changes}'
+  validation:
+    behaviorPreserved: '${outputs.validate-behavior.behaviorPreserved}'
+    coverage: '${outputs.create-safety-tests.coverage}'
+    performance: '${outputs.validate-behavior.performanceComparison}'
+  quality:
+    approved: '${outputs.code-review.approved}'
+    metrics: '${outputs.code-review.codeQuality}'
+  documentation:
+    updated: '${outputs.update-documentation.updatedDocs}'
+    migrationGuide: '${outputs.update-documentation.migrationGuide}'
+  summary: '${outputs.finalize-refactoring.summary}'
+
+errorHandling:
+  strategy: rollback
+  rollbackSteps:
+    - execute-refactoring
+    - update-dependencies
+  notifications:
+    - type: email
+      to: ['tech-lead@example.com']
+      on: [failure]
+
+notifications:
+  onStart:
+    - 'Starting ${parameters.refactorType} refactoring: ${parameters.description}'
+    - 'Risk level: ${outputs.analyze-impact.riskLevel}'
+  onSuccess:
+    - 'Refactoring completed successfully'
+    - 'Code quality: ${outputs.code-review.codeQuality}'
+    - 'Performance impact: ${outputs.validate-behavior.performanceComparison}'
+  onFailure:
+    - 'Refactoring failed: ${error.message}'
+    - 'Rollback initiated for safety'

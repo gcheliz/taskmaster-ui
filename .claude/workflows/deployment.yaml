@@ -1,0 +1,255 @@
+name: Deployment Workflow
+version: 1.0.0
+description: Automated deployment workflow with health checks and rollback
+
+triggers:
+  commands:
+    - /deploy
+  events:
+    - push:main
+    - pr:merged:main
+    - tag:created:v*
+  conditions:
+    - branch: [main, production]
+    - tag: deploy
+
+parameters:
+  environment:
+    type: string
+    enum: [staging, production]
+    required: true
+    description: Target deployment environment
+  version:
+    type: string
+    required: true
+    description: Version tag or commit SHA
+  skipTests:
+    type: boolean
+    default: false
+  rollbackOnFailure:
+    type: boolean
+    default: true
+
+steps:
+  - id: pre-deployment-checks
+    name: Pre-deployment Validation
+    agent: devops
+    input:
+      action: validate-deployment
+      environment: '${parameters.environment}'
+      version: '${parameters.version}'
+    output:
+      ready: isReady
+      currentVersion: currentDeployedVersion
+      configValid: configurationValid
+    timeout: 30000
+    onError: fail
+
+  - id: run-tests
+    name: Run Full Test Suite
+    agent: workflow-orchestration
+    condition:
+      equals: ['${parameters.skipTests}', false]
+    dependsOn: [pre-deployment-checks]
+    input:
+      action: run-all-tests
+      includeE2E: true
+      includeIntegration: true
+    output:
+      passed: allTestsPassed
+      coverage: overallCoverage
+      report: testReport
+    timeout: 300000
+
+  - id: build-artifacts
+    name: Build Deployment Artifacts
+    agent: devops
+    dependsOn: [run-tests]
+    input:
+      action: build
+      environment: '${parameters.environment}'
+      version: '${parameters.version}'
+      optimize: true
+    output:
+      backendImage: backendDockerImage
+      frontendImage: frontendDockerImage
+      manifests: kubernetesManifests
+    timeout: 180000
+
+  - id: security-scan-images
+    name: Scan Docker Images
+    agent: code-review
+    dependsOn: [build-artifacts]
+    parallel: true
+    input:
+      action: scan-images
+      images:
+        [
+          '${outputs.build-artifacts.backendImage}',
+          '${outputs.build-artifacts.frontendImage}',
+        ]
+      severity: ['critical', 'high']
+    output:
+      vulnerabilities: imageVulnerabilities
+      safe: imagesAreSafe
+    timeout: 120000
+
+  - id: deploy-backend
+    name: Deploy Backend Services
+    agent: devops
+    condition:
+      equals: ['${outputs.security-scan-images.safe}', true]
+    dependsOn: [security-scan-images]
+    input:
+      action: deploy-backend
+      environment: '${parameters.environment}'
+      image: '${outputs.build-artifacts.backendImage}'
+      manifests: '${outputs.build-artifacts.manifests}'
+      strategy: 'rolling-update'
+    output:
+      deployed: backendDeployed
+      endpoints: backendEndpoints
+      pods: backendPods
+    timeout: 300000
+    retries: 2
+
+  - id: deploy-frontend
+    name: Deploy Frontend Application
+    agent: devops
+    dependsOn: [deploy-backend]
+    input:
+      action: deploy-frontend
+      environment: '${parameters.environment}'
+      image: '${outputs.build-artifacts.frontendImage}'
+      manifests: '${outputs.build-artifacts.manifests}'
+      strategy: 'blue-green'
+    output:
+      deployed: frontendDeployed
+      url: frontendUrl
+      pods: frontendPods
+    timeout: 300000
+    retries: 2
+
+  - id: run-smoke-tests
+    name: Run Smoke Tests
+    agent: frontend-testing
+    dependsOn: [deploy-backend, deploy-frontend]
+    input:
+      environment: '${parameters.environment}'
+      endpoints: '${outputs.deploy-backend.endpoints}'
+      frontendUrl: '${outputs.deploy-frontend.url}'
+      tests: ['health', 'auth', 'critical-paths']
+    output:
+      passed: smokeTestsPassed
+      results: smokeTestResults
+      metrics: performanceMetrics
+    timeout: 180000
+    onError: continue
+
+  - id: configure-monitoring
+    name: Setup Monitoring
+    agent: devops
+    dependsOn: [run-smoke-tests]
+    parallel: true
+    input:
+      action: configure-monitoring
+      environment: '${parameters.environment}'
+      services: ['backend', 'frontend']
+      alerts: true
+    output:
+      dashboards: monitoringDashboards
+      alerts: alertsConfigured
+    timeout: 60000
+
+  - id: rollback-decision
+    name: Evaluate Deployment Success
+    agent: workflow-orchestration
+    dependsOn: [run-smoke-tests, configure-monitoring]
+    input:
+      action: evaluate-deployment
+      smokeTests: '${outputs.run-smoke-tests.passed}'
+      performance: '${outputs.run-smoke-tests.metrics}'
+      rollbackEnabled: '${parameters.rollbackOnFailure}'
+    output:
+      success: deploymentSuccess
+      shouldRollback: needsRollback
+      reasons: failureReasons
+    timeout: 30000
+
+  - id: execute-rollback
+    name: Rollback Deployment
+    agent: devops
+    condition:
+      equals: ['${outputs.rollback-decision.shouldRollback}', true]
+    dependsOn: [rollback-decision]
+    input:
+      action: rollback
+      environment: '${parameters.environment}'
+      targetVersion: '${outputs.pre-deployment-checks.currentVersion}'
+      services: ['backend', 'frontend']
+    output:
+      rolledBack: rollbackComplete
+      restoredVersion: restoredToVersion
+    timeout: 300000
+
+  - id: notify-deployment
+    name: Send Deployment Notification
+    agent: workflow-orchestration
+    dependsOn: [rollback-decision, execute-rollback]
+    input:
+      action: notify-deployment
+      environment: '${parameters.environment}'
+      version: '${parameters.version}'
+      success: '${outputs.rollback-decision.success}'
+      rollback: '${outputs.execute-rollback.rolledBack}'
+    output:
+      notified: notificationsSent
+    timeout: 30000
+
+outputs:
+  environment: '${parameters.environment}'
+  version: '${parameters.version}'
+  status: "${outputs.rollback-decision.success ? 'deployed' : 'failed'}"
+  deployment:
+    backend:
+      deployed: '${outputs.deploy-backend.deployed}'
+      endpoints: '${outputs.deploy-backend.endpoints}'
+    frontend:
+      deployed: '${outputs.deploy-frontend.deployed}'
+      url: '${outputs.deploy-frontend.url}'
+  testing:
+    preDeploy: '${outputs.run-tests.passed}'
+    smokeTets: '${outputs.run-smoke-tests.passed}'
+    coverage: '${outputs.run-tests.coverage}'
+  monitoring:
+    dashboards: '${outputs.configure-monitoring.dashboards}'
+    alerts: '${outputs.configure-monitoring.alerts}'
+  rollback:
+    executed: '${outputs.execute-rollback.rolledBack}'
+    restoredVersion: '${outputs.execute-rollback.restoredToVersion}'
+
+errorHandling:
+  strategy: rollback
+  rollbackSteps:
+    - deploy-frontend
+    - deploy-backend
+  notifications:
+    - type: slack
+      channel: '#deployments'
+      on: [failure, rollback]
+    - type: pagerduty
+      severity: critical
+      on: [failure]
+
+notifications:
+  onStart:
+    - '🚀 Starting deployment to ${parameters.environment}'
+    - 'Version: ${parameters.version}'
+  onSuccess:
+    - '✅ Deployment successful!'
+    - 'Frontend: ${outputs.deploy-frontend.url}'
+    - 'Backend: ${outputs.deploy-backend.endpoints}'
+  onFailure:
+    - '❌ Deployment failed!'
+    - 'Reason: ${outputs.rollback-decision.reasons}'
+    - "${outputs.execute-rollback.rolledBack ? 'Rolled back to: ' + outputs.execute-rollback.restoredToVersion : 'Rollback disabled'}"

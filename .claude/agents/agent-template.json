@@ -1,0 +1,106 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Claude Agent Template",
+  "description": "Base template for Claude AI agents",
+  "type": "object",
+  "required": ["name", "version", "description", "capabilities", "interface"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Agent name"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semantic version"
+    },
+    "description": {
+      "type": "string",
+      "description": "Agent purpose and functionality"
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of agent capabilities"
+    },
+    "interface": {
+      "type": "object",
+      "required": ["input", "output", "commands"],
+      "properties": {
+        "input": {
+          "type": "object",
+          "description": "Expected input schema"
+        },
+        "output": {
+          "type": "object",
+          "description": "Output schema"
+        },
+        "commands": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "description", "parameters"],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "parameters": {
+                "type": "array"
+              }
+            }
+          }
+        }
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Required agent dependencies"
+    },
+    "configuration": {
+      "type": "object",
+      "description": "Agent-specific configuration"
+    },
+    "hooks": {
+      "type": "object",
+      "properties": {
+        "beforeExecute": {
+          "type": "string",
+          "description": "Hook called before execution"
+        },
+        "afterExecute": {
+          "type": "string",
+          "description": "Hook called after execution"
+        },
+        "onError": {
+          "type": "string",
+          "description": "Hook called on error"
+        }
+      }
+    },
+    "resourceLimits": {
+      "type": "object",
+      "properties": {
+        "maxExecutionTime": {
+          "type": "number",
+          "description": "Maximum execution time in ms"
+        },
+        "maxMemory": {
+          "type": "string",
+          "description": "Maximum memory usage"
+        },
+        "maxConcurrency": {
+          "type": "number",
+          "description": "Maximum concurrent operations"
+        }
+      }
+    }
+  }
+}

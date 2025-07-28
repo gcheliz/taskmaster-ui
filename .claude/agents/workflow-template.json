@@ -1,0 +1,150 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Claude Workflow Template",
+  "description": "Template for workflow orchestration patterns",
+  "type": "object",
+  "required": ["name", "version", "description", "steps", "triggers"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Workflow name"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semantic version"
+    },
+    "description": {
+      "type": "string",
+      "description": "Workflow purpose"
+    },
+    "triggers": {
+      "type": "object",
+      "properties": {
+        "commands": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "parameters": {
+      "type": "object",
+      "description": "Workflow input parameters"
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "agent"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Step identifier"
+          },
+          "name": {
+            "type": "string",
+            "description": "Step name"
+          },
+          "agent": {
+            "type": "string",
+            "description": "Agent to execute"
+          },
+          "dependsOn": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Step dependencies"
+          },
+          "parallel": {
+            "type": "boolean",
+            "default": false,
+            "description": "Execute in parallel with dependencies"
+          },
+          "condition": {
+            "type": "object",
+            "description": "Conditional execution"
+          },
+          "input": {
+            "type": "object",
+            "description": "Step input mapping"
+          },
+          "output": {
+            "type": "object",
+            "description": "Step output mapping"
+          },
+          "onError": {
+            "type": "string",
+            "enum": ["fail", "continue", "retry"],
+            "default": "fail"
+          },
+          "retries": {
+            "type": "number",
+            "default": 0
+          },
+          "timeout": {
+            "type": "number",
+            "description": "Step timeout in ms"
+          }
+        }
+      }
+    },
+    "outputs": {
+      "type": "object",
+      "description": "Workflow output mapping"
+    },
+    "errorHandling": {
+      "type": "object",
+      "properties": {
+        "strategy": {
+          "type": "string",
+          "enum": ["fail-fast", "continue-on-error", "rollback"],
+          "default": "fail-fast"
+        },
+        "rollbackSteps": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "notifications": {
+      "type": "object",
+      "properties": {
+        "onStart": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "onSuccess": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "onFailure": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "name": "staging",
+  "description": "Staging environment configuration",
+  "settings": {
+    "debug": false,
+    "verbose": false,
+    "autoReload": false,
+    "caching": true
+  },
+  "paths": {
+    "workspace": ".",
+    "backend": "packages/backend",
+    "frontend": "packages/frontend",
+    "artifacts": "dist"
+  },
+  "commands": {
+    "packageManager": "pnpm",
+    "install": "pnpm install --prod",
+    "build": "pnpm build:prod",
+    "test": "pnpm test:e2e",
+    "deploy": "pnpm deploy:staging"
+  },
+  "services": {
+    "backend": {
+      "url": "https://api-staging.taskmaster.example.com",
+      "healthCheck": "/health"
+    },
+    "frontend": {
+      "url": "https://staging.taskmaster.example.com",
+      "cdn": true
+    },
+    "database": {
+      "url": "${STAGING_DATABASE_URL}",
+      "provider": "postgresql",
+      "ssl": true
+    }
+  },
+  "deployment": {
+    "platform": "kubernetes",
+    "namespace": "taskmaster-staging",
+    "registry": "gcr.io/taskmaster-project/staging",
+    "monitoring": {
+      "provider": "datadog",
+      "dashboards": ["staging-overview", "api-performance"]
+    }
+  },
+  "testing": {
+    "smoke": {
+      "endpoints": ["/health", "/api/v1/status"],
+      "timeout": 60000
+    },
+    "e2e": {
+      "framework": "playwright",
+      "browsers": ["chromium", "firefox"],
+      "parallel": true
+    }
+  },
+  "resourceLimits": {
+    "maxThreads": 4,
+    "maxMemory": "1GB",
+    "timeout": 60000,
+    "deployTimeout": 600000
+  }
+}

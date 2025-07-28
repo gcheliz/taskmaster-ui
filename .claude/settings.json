@@ -1,0 +1,95 @@
+{
+  "tools": {
+    "allowedTools": [
+      "Bash",
+      "Read",
+      "Write",
+      "Edit",
+      "MultiEdit",
+      "Glob",
+      "Grep",
+      "LS",
+      "WebFetch",
+      "WebSearch",
+      "TodoWrite",
+      "Task",
+      "ExitPlanMode",
+      "NotebookRead",
+      "NotebookEdit"
+    ],
+    "preferences": {
+      "autoApprove": false,
+      "confirmBeforeExecution": true,
+      "resourceLimits": {
+        "maxThreads": 2,
+        "timeout": 30000,
+        "memoryLimit": "512MB",
+        "maxMemory": "512MB",
+        "testTimeout": 120000
+      }
+    }
+  },
+  "agents": {
+    "registry": ".claude/agents/registry.json",
+    "enabledAgents": [
+      "api-development",
+      "database-management",
+      "component-development",
+      "state-management",
+      "backend-testing",
+      "frontend-testing",
+      "code-review",
+      "documentation",
+      "devops",
+      "workflow-orchestration"
+    ]
+  },
+  "workflows": {
+    "directory": ".claude/workflows",
+    "defaultTimeout": 300000,
+    "parallelExecutionLimit": 4
+  },
+  "environment": {
+    "packageManager": "pnpm",
+    "workspaces": {
+      "backend": "packages/backend",
+      "frontend": "packages/frontend"
+    },
+    "testFrameworks": {
+      "backend": "jest",
+      "frontend": "vitest",
+      "e2e": "playwright"
+    },
+    "current": "development",
+    "workspace": ".",
+    "backend": "packages/backend",
+    "frontend": "packages/frontend",
+    "temp": ".claude/tmp",
+    "logs": ".claude/logs"
+  },
+  "commands": {
+    "directory": ".claude/commands",
+    "prefix": "/",
+    "builtinCommands": {
+      "api-endpoint": "Create new API endpoint",
+      "component": "Generate React component",
+      "test": "Generate test files",
+      "review": "Run code review",
+      "docs": "Generate documentation",
+      "deploy": "Deploy to environment",
+      "feature": "Start feature workflow"
+    }
+  },
+  "integration": {
+    "taskMaster": {
+      "enabled": true,
+      "autoUpdateStatus": true,
+      "tagPrefix": "claude-"
+    },
+    "git": {
+      "preCommitHooks": true,
+      "prReviews": true,
+      "autoCommitGenerated": false
+    }
+  }
+}

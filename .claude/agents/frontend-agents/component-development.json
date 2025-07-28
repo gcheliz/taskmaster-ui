@@ -1,0 +1,141 @@
+{
+  "name": "Component Development Agent",
+  "version": "1.0.0",
+  "description": "Generates React components following atomic design principles",
+  "capabilities": [
+    "generate-components",
+    "create-stories",
+    "add-tests",
+    "ensure-accessibility",
+    "generate-styles"
+  ],
+  "interface": {
+    "input": {
+      "type": "object",
+      "required": ["name", "type", "description"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[A-Z][a-zA-Z0-9]+$"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["atom", "molecule", "organism", "template", "page"]
+        },
+        "description": {
+          "type": "string"
+        },
+        "props": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "type": { "type": "string" },
+              "required": { "type": "boolean" },
+              "default": { "type": "any" }
+            }
+          }
+        },
+        "state": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "accessibility": {
+          "type": "object",
+          "properties": {
+            "role": { "type": "string" },
+            "ariaLabel": { "type": "boolean" },
+            "keyboardNav": { "type": "boolean" }
+          }
+        }
+      }
+    },
+    "output": {
+      "type": "object",
+      "properties": {
+        "component": {
+          "type": "object",
+          "properties": {
+            "path": { "type": "string" },
+            "content": { "type": "string" }
+          }
+        },
+        "story": {
+          "type": "object",
+          "properties": {
+            "path": { "type": "string" },
+            "content": { "type": "string" }
+          }
+        },
+        "test": {
+          "type": "object",
+          "properties": {
+            "path": { "type": "string" },
+            "content": { "type": "string" }
+          }
+        },
+        "styles": {
+          "type": "object"
+        }
+      }
+    },
+    "commands": [
+      {
+        "name": "generate",
+        "description": "Generate a new component",
+        "parameters": ["name", "type", "props"]
+      },
+      {
+        "name": "add-story",
+        "description": "Add Storybook story",
+        "parameters": ["component", "variants"]
+      },
+      {
+        "name": "add-test",
+        "description": "Add component tests",
+        "parameters": ["component", "scenarios"]
+      }
+    ]
+  },
+  "dependencies": ["state-management"],
+  "configuration": {
+    "templates": {
+      "atom": ".claude/agents/frontend-agents/templates/atom.template.tsx",
+      "molecule": ".claude/agents/frontend-agents/templates/molecule.template.tsx",
+      "organism": ".claude/agents/frontend-agents/templates/organism.template.tsx"
+    },
+    "paths": {
+      "atoms": "packages/frontend/src/components/ui/atoms",
+      "molecules": "packages/frontend/src/components/ui/molecules",
+      "organisms": "packages/frontend/src/components/ui/organisms",
+      "stories": "packages/frontend/src/stories",
+      "tests": "packages/frontend/src/components/__tests__"
+    },
+    "styling": {
+      "system": "tailwind",
+      "tokens": {
+        "colors": "config/colors.js",
+        "spacing": "config/spacing.js",
+        "typography": "config/typography.js"
+      }
+    },
+    "storybook": {
+      "version": "9",
+      "format": "CSF3",
+      "addons": ["essentials", "a11y", "interactions"]
+    }
+  },
+  "hooks": {
+    "beforeExecute": "check-design-system",
+    "afterExecute": "update-component-index",
+    "onError": "cleanup-generated"
+  },
+  "resourceLimits": {
+    "maxExecutionTime": 20000,
+    "maxMemory": "128MB",
+    "maxConcurrency": 2
+  }
+}

@@ -1,0 +1,200 @@
+name: Pre-commit Validation Workflow
+version: 1.0.0
+description: Validates code changes before commit using Claude agents
+
+triggers:
+  hooks:
+    - pre-commit
+  commands:
+    - /validate-commit
+  events:
+    - files:staged
+
+parameters:
+  files:
+    type: array
+    required: true
+    description: List of staged files
+  skipTests:
+    type: boolean
+    default: false
+  quickMode:
+    type: boolean
+    default: true
+    description: Run only essential checks for quick feedback
+
+steps:
+  - id: categorize-files
+    name: Categorize Changed Files
+    agent: workflow-orchestration
+    input:
+      action: categorize-files
+      files: '${parameters.files}'
+    output:
+      backend: backendFiles
+      frontend: frontendFiles
+      config: configFiles
+      docs: documentationFiles
+    timeout: 5000
+
+  - id: lint-backend
+    name: Lint Backend Code
+    agent: code-review
+    condition:
+      exists: '${outputs.categorize-files.backend}'
+    dependsOn: [categorize-files]
+    parallel: true
+    input:
+      files: '${outputs.categorize-files.backend}'
+      action: lint
+      fix: true
+    output:
+      issues: backendLintIssues
+      fixed: backendFixed
+    timeout: 15000
+
+  - id: lint-frontend
+    name: Lint Frontend Code
+    agent: code-review
+    condition:
+      exists: '${outputs.categorize-files.frontend}'
+    dependsOn: [categorize-files]
+    parallel: true
+    input:
+      files: '${outputs.categorize-files.frontend}'
+      action: lint
+      fix: true
+    output:
+      issues: frontendLintIssues
+      fixed: frontendFixed
+    timeout: 15000
+
+  - id: type-check
+    name: TypeScript Type Check
+    agent: code-review
+    dependsOn: [categorize-files]
+    parallel: true
+    input:
+      files: '${concat(outputs.categorize-files.backend, outputs.categorize-files.frontend)}'
+      action: type-check
+      strict: true
+    output:
+      errors: typeErrors
+      warnings: typeWarnings
+    timeout: 20000
+
+  - id: format-check
+    name: Code Formatting
+    agent: code-review
+    dependsOn: [lint-backend, lint-frontend]
+    input:
+      files: '${parameters.files}'
+      action: format
+      fix: true
+    output:
+      formatted: formattedFiles
+      issues: formatIssues
+    timeout: 10000
+
+  - id: security-scan
+    name: Security Vulnerability Scan
+    agent: code-review
+    condition:
+      equals: ['${parameters.quickMode}', false]
+    dependsOn: [categorize-files]
+    parallel: true
+    input:
+      files: '${parameters.files}'
+      action: security-scan
+      includeDevDependencies: false
+    output:
+      vulnerabilities: securityIssues
+      severity: highestSeverity
+    timeout: 30000
+
+  - id: test-affected
+    name: Run Affected Tests
+    agent: "${outputs.categorize-files.backend ? 'backend-testing' : 'frontend-testing'}"
+    condition:
+      and:
+        - equals: ['${parameters.skipTests}', false]
+        - equals: ['${parameters.quickMode}', false]
+    dependsOn: [lint-backend, lint-frontend, type-check]
+    input:
+      affectedFiles: '${parameters.files}'
+      runOnly: affected
+      coverage: false
+    output:
+      passed: testsPassed
+      failed: failedTests
+    timeout: 60000
+
+  - id: validate-commit-message
+    name: Validate Commit Message
+    agent: workflow-orchestration
+    dependsOn: [format-check]
+    input:
+      action: validate-commit-message
+      conventional: true
+    output:
+      valid: messageValid
+      type: commitType
+      scope: commitScope
+    timeout: 5000
+
+  - id: generate-summary
+    name: Generate Validation Summary
+    agent: workflow-orchestration
+    dependsOn:
+      [
+        lint-backend,
+        lint-frontend,
+        type-check,
+        format-check,
+        security-scan,
+        test-affected,
+        validate-commit-message,
+      ]
+    input:
+      action: summarize-validation
+      results: '${outputs}'
+      quickMode: '${parameters.quickMode}'
+    output:
+      summary: validationSummary
+      canCommit: isValid
+      mustFix: criticalIssues
+    timeout: 10000
+
+outputs:
+  valid: '${outputs.generate-summary.canCommit}'
+  summary: '${outputs.generate-summary.summary}'
+  issues:
+    lint: '${concat(outputs.lint-backend.issues, outputs.lint-frontend.issues)}'
+    type: '${outputs.type-check.errors}'
+    format: '${outputs.format-check.issues}'
+    security: '${outputs.security-scan.vulnerabilities}'
+    tests: '${outputs.test-affected.failed}'
+  fixed:
+    lint: '${concat(outputs.lint-backend.fixed, outputs.lint-frontend.fixed)}'
+    format: '${outputs.format-check.formatted}'
+  commitMessage:
+    valid: '${outputs.validate-commit-message.valid}'
+    type: '${outputs.validate-commit-message.type}'
+
+errorHandling:
+  strategy: fail-fast
+  notifications:
+    - type: console
+      format: detailed
+      on: [failure]
+
+notifications:
+  onStart:
+    - '🔍 Validating ${length(parameters.files)} staged files...'
+  onSuccess:
+    - '✅ All validation checks passed!'
+    - '${outputs.generate-summary.summary}'
+  onFailure:
+    - '❌ Validation failed!'
+    - 'Critical issues: ${outputs.generate-summary.mustFix}'
+    - "Run 'git diff --cached' to see staged changes"

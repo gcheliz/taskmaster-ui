@@ -1,0 +1,94 @@
+{
+  "name": "production",
+  "description": "Production environment configuration",
+  "settings": {
+    "debug": false,
+    "verbose": false,
+    "autoReload": false,
+    "caching": true,
+    "performanceMode": true
+  },
+  "paths": {
+    "workspace": ".",
+    "backend": "packages/backend",
+    "frontend": "packages/frontend",
+    "artifacts": "dist"
+  },
+  "commands": {
+    "packageManager": "pnpm",
+    "install": "pnpm install --prod --frozen-lockfile",
+    "build": "pnpm build:prod",
+    "deploy": "pnpm deploy:production"
+  },
+  "services": {
+    "backend": {
+      "url": "https://api.taskmaster.example.com",
+      "healthCheck": "/health",
+      "loadBalancer": true
+    },
+    "frontend": {
+      "url": "https://app.taskmaster.example.com",
+      "cdn": {
+        "provider": "cloudflare",
+        "zones": ["global"]
+      }
+    },
+    "database": {
+      "url": "${PRODUCTION_DATABASE_URL}",
+      "provider": "postgresql",
+      "ssl": true,
+      "pooling": true,
+      "replicas": ["${PRODUCTION_DATABASE_REPLICA_URL}"]
+    }
+  },
+  "deployment": {
+    "platform": "kubernetes",
+    "namespace": "taskmaster-prod",
+    "registry": "gcr.io/taskmaster-project/production",
+    "scaling": {
+      "backend": {
+        "min": 3,
+        "max": 10,
+        "targetCPU": 70
+      },
+      "frontend": {
+        "min": 2,
+        "max": 5,
+        "targetCPU": 80
+      }
+    },
+    "monitoring": {
+      "provider": "datadog",
+      "dashboards": [
+        "production-overview",
+        "api-performance",
+        "user-experience"
+      ],
+      "alerts": true,
+      "slo": {
+        "availability": 99.9,
+        "responseTime": 200
+      }
+    }
+  },
+  "security": {
+    "waf": true,
+    "ddosProtection": true,
+    "secretsManager": "gcp-secret-manager",
+    "encryption": {
+      "inTransit": true,
+      "atRest": true
+    }
+  },
+  "backup": {
+    "enabled": true,
+    "frequency": "daily",
+    "retention": 30
+  },
+  "resourceLimits": {
+    "maxThreads": 8,
+    "maxMemory": "2GB",
+    "timeout": 30000,
+    "deployTimeout": 900000
+  }
+}

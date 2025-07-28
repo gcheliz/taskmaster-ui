@@ -1,0 +1,72 @@
+{
+  "name": "development",
+  "description": "Local development environment configuration",
+  "settings": {
+    "debug": true,
+    "verbose": true,
+    "autoReload": true,
+    "caching": false
+  },
+  "paths": {
+    "workspace": ".",
+    "backend": "packages/backend",
+    "frontend": "packages/frontend",
+    "temp": ".claude/tmp",
+    "logs": ".claude/logs"
+  },
+  "commands": {
+    "packageManager": "pnpm",
+    "install": "pnpm install",
+    "dev": "pnpm dev",
+    "build": "pnpm build",
+    "test": "pnpm test",
+    "lint": "pnpm lint",
+    "typeCheck": "pnpm type-check"
+  },
+  "services": {
+    "backend": {
+      "port": 3000,
+      "host": "localhost",
+      "protocol": "http"
+    },
+    "frontend": {
+      "port": 5173,
+      "host": "localhost",
+      "protocol": "http"
+    },
+    "database": {
+      "url": "${DATABASE_URL}",
+      "provider": "postgresql"
+    }
+  },
+  "testing": {
+    "backend": {
+      "framework": "jest",
+      "config": "packages/backend/jest.config.js",
+      "coverage": {
+        "threshold": 80,
+        "reports": ["text", "lcov", "html"]
+      }
+    },
+    "frontend": {
+      "framework": "vitest",
+      "config": "packages/frontend/vitest.config.ts",
+      "coverage": {
+        "threshold": 80,
+        "reports": ["text", "lcov", "html"]
+      },
+      "browser": false
+    },
+    "e2e": {
+      "framework": "playwright",
+      "config": "playwright.config.ts",
+      "browsers": ["chromium"]
+    }
+  },
+  "resourceLimits": {
+    "maxThreads": 2,
+    "maxMemory": "512MB",
+    "timeout": 30000,
+    "testTimeout": 120000
+  }
+}

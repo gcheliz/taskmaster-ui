@@ -1,0 +1,270 @@
+{
+  "version": "1.0.0",
+  "agents": {
+    "api-development": {
+      "name": "API Development Agent",
+      "description": "Handles API endpoint creation and modification with Express v5 and Prisma",
+      "category": "backend",
+      "capabilities": [
+        "generate-routes",
+        "create-controllers",
+        "update-schema",
+        "generate-validation",
+        "create-documentation"
+      ],
+      "triggers": {
+        "commands": ["/api-endpoint"],
+        "tags": ["api", "endpoint", "route"],
+        "filePatterns": ["**/routes/*.ts", "**/controllers/*.ts"]
+      },
+      "dependencies": ["database-management"],
+      "config": {
+        "templates": "backend-agents/api-templates",
+        "middleware": ["auth", "rateLimiter", "validation"],
+        "validation": "zod"
+      }
+    },
+    "database-management": {
+      "name": "Database Management Agent",
+      "description": "Manages Prisma schema, migrations, and database operations",
+      "category": "backend",
+      "capabilities": [
+        "schema-updates",
+        "migration-generation",
+        "seed-data",
+        "query-optimization",
+        "rollback-support"
+      ],
+      "triggers": {
+        "commands": ["/db-schema", "/db-migrate"],
+        "tags": ["database", "migration", "schema"],
+        "filePatterns": ["**/prisma/schema.prisma", "**/migrations/*.sql"]
+      },
+      "dependencies": [],
+      "config": {
+        "orm": "prisma",
+        "autoMigrate": false,
+        "seedEnvironments": ["development", "staging"]
+      }
+    },
+    "component-development": {
+      "name": "Component Development Agent",
+      "description": "Creates React components following atomic design principles",
+      "category": "frontend",
+      "capabilities": [
+        "generate-components",
+        "create-stories",
+        "add-tests",
+        "ensure-accessibility",
+        "generate-styles"
+      ],
+      "triggers": {
+        "commands": ["/component"],
+        "tags": ["component", "ui", "frontend"],
+        "filePatterns": ["**/components/**/*.tsx"]
+      },
+      "dependencies": ["state-management"],
+      "config": {
+        "designSystem": "atomic",
+        "styling": "tailwind",
+        "storybook": true,
+        "templates": "frontend-agents/component-templates"
+      }
+    },
+    "state-management": {
+      "name": "State Management Agent",
+      "description": "Handles application state with TanStack Query and Context API",
+      "category": "frontend",
+      "capabilities": [
+        "generate-hooks",
+        "create-contexts",
+        "websocket-integration",
+        "cache-management",
+        "performance-optimization"
+      ],
+      "triggers": {
+        "commands": ["/state"],
+        "tags": ["state", "context", "query"],
+        "filePatterns": ["**/hooks/*.ts", "**/contexts/*.tsx"]
+      },
+      "dependencies": [],
+      "config": {
+        "queryClient": "tanstack",
+        "stateLibrary": "context",
+        "websocket": true
+      }
+    },
+    "backend-testing": {
+      "name": "Backend Testing Agent",
+      "description": "Generates comprehensive tests for backend code",
+      "category": "testing",
+      "capabilities": [
+        "unit-tests",
+        "integration-tests",
+        "mock-generation",
+        "test-factories",
+        "performance-tests"
+      ],
+      "triggers": {
+        "commands": ["/test-backend"],
+        "tags": ["test", "backend", "jest"],
+        "autoTrigger": true
+      },
+      "dependencies": [],
+      "config": {
+        "framework": "jest",
+        "coverage": 80,
+        "mockLibrary": "jest",
+        "testLocation": "__tests__"
+      }
+    },
+    "frontend-testing": {
+      "name": "Frontend Testing Agent",
+      "description": "Creates tests for React components and E2E scenarios",
+      "category": "testing",
+      "capabilities": [
+        "component-tests",
+        "e2e-tests",
+        "visual-regression",
+        "accessibility-tests",
+        "performance-tests"
+      ],
+      "triggers": {
+        "commands": ["/test-frontend"],
+        "tags": ["test", "frontend", "vitest"],
+        "autoTrigger": true
+      },
+      "dependencies": [],
+      "config": {
+        "unitTest": "vitest",
+        "e2e": "playwright",
+        "visualRegression": "percy",
+        "coverage": 80
+      }
+    },
+    "code-review": {
+      "name": "Code Review Agent",
+      "description": "Automated code quality and security validation",
+      "category": "quality",
+      "capabilities": [
+        "lint-check",
+        "type-check",
+        "security-scan",
+        "performance-analysis",
+        "pattern-validation"
+      ],
+      "triggers": {
+        "commands": ["/review"],
+        "hooks": ["pre-commit", "pre-push"],
+        "autoTrigger": true
+      },
+      "dependencies": [],
+      "config": {
+        "eslint": true,
+        "typescript": "strict",
+        "security": ["audit", "snyk"],
+        "performance": true
+      }
+    },
+    "documentation": {
+      "name": "Documentation Agent",
+      "description": "Generates and maintains project documentation",
+      "category": "documentation",
+      "capabilities": [
+        "api-docs",
+        "readme-updates",
+        "architecture-diagrams",
+        "release-notes",
+        "context-maintenance"
+      ],
+      "triggers": {
+        "commands": ["/docs"],
+        "tags": ["docs", "documentation"],
+        "hooks": ["post-feature"]
+      },
+      "dependencies": [],
+      "config": {
+        "apiFormat": "openapi",
+        "diagrams": "mermaid",
+        "changelog": "conventional",
+        "output": "docs/"
+      }
+    },
+    "devops": {
+      "name": "DevOps Agent",
+      "description": "Manages infrastructure and deployments",
+      "category": "infrastructure",
+      "capabilities": [
+        "docker-config",
+        "k8s-manifests",
+        "ci-cd-optimization",
+        "env-management",
+        "monitoring-setup"
+      ],
+      "triggers": {
+        "commands": ["/deploy"],
+        "tags": ["devops", "deployment", "infrastructure"]
+      },
+      "dependencies": ["code-review", "backend-testing", "frontend-testing"],
+      "config": {
+        "containerization": "docker",
+        "orchestration": "kubernetes",
+        "ci": "github-actions",
+        "monitoring": "datadog"
+      }
+    },
+    "workflow-orchestration": {
+      "name": "Workflow Orchestration Agent",
+      "description": "Coordinates multiple agents for complex workflows",
+      "category": "orchestration",
+      "capabilities": [
+        "workflow-execution",
+        "parallel-coordination",
+        "conditional-logic",
+        "state-management",
+        "error-recovery"
+      ],
+      "triggers": {
+        "commands": ["/feature", "/bugfix", "/refactor"],
+        "tags": ["workflow", "orchestration"]
+      },
+      "dependencies": ["*"],
+      "config": {
+        "maxParallel": 4,
+        "timeout": 300000,
+        "retries": 3,
+        "stateStore": ".claude/workflow-state"
+      }
+    }
+  },
+  "categories": {
+    "backend": {
+      "description": "Backend development agents",
+      "color": "#3B82F6"
+    },
+    "frontend": {
+      "description": "Frontend development agents",
+      "color": "#10B981"
+    },
+    "testing": {
+      "description": "Testing and quality assurance agents",
+      "color": "#F59E0B"
+    },
+    "quality": {
+      "description": "Code quality and review agents",
+      "color": "#8B5CF6"
+    },
+    "documentation": {
+      "description": "Documentation generation agents",
+      "color": "#6366F1"
+    },
+    "infrastructure": {
+      "description": "DevOps and infrastructure agents",
+      "color": "#EF4444"
+    },
+    "orchestration": {
+      "description": "Workflow coordination agents",
+      "color": "#EC4899"
+    }
+  }
+}

@@ -1,0 +1,109 @@
+{
+  "name": "API Development Agent",
+  "version": "1.0.0",
+  "description": "Generates Express v5 API endpoints with Prisma integration",
+  "capabilities": [
+    "generate-routes",
+    "create-controllers",
+    "update-schema",
+    "generate-validation",
+    "create-documentation"
+  ],
+  "interface": {
+    "input": {
+      "type": "object",
+      "required": ["endpoint", "method", "description"],
+      "properties": {
+        "endpoint": {
+          "type": "string",
+          "pattern": "^/[a-zA-Z0-9/-]+$"
+        },
+        "method": {
+          "type": "string",
+          "enum": ["GET", "POST", "PUT", "PATCH", "DELETE"]
+        },
+        "description": {
+          "type": "string"
+        },
+        "authentication": {
+          "type": "boolean",
+          "default": true
+        },
+        "validation": {
+          "type": "object"
+        },
+        "response": {
+          "type": "object"
+        }
+      }
+    },
+    "output": {
+      "type": "object",
+      "properties": {
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "path": { "type": "string" },
+              "content": { "type": "string" },
+              "action": { "type": "string", "enum": ["create", "update"] }
+            }
+          }
+        },
+        "migrations": {
+          "type": "array"
+        },
+        "documentation": {
+          "type": "object"
+        }
+      }
+    },
+    "commands": [
+      {
+        "name": "generate",
+        "description": "Generate a new API endpoint",
+        "parameters": ["endpoint", "method", "description"]
+      },
+      {
+        "name": "update",
+        "description": "Update an existing endpoint",
+        "parameters": ["endpoint", "changes"]
+      },
+      {
+        "name": "document",
+        "description": "Generate API documentation",
+        "parameters": ["format"]
+      }
+    ]
+  },
+  "dependencies": ["database-management"],
+  "configuration": {
+    "templates": {
+      "route": ".claude/agents/backend-agents/templates/route.template.ts",
+      "controller": ".claude/agents/backend-agents/templates/controller.template.ts",
+      "service": ".claude/agents/backend-agents/templates/service.template.ts",
+      "validation": ".claude/agents/backend-agents/templates/validation.template.ts"
+    },
+    "middleware": {
+      "default": ["errorHandler", "rateLimiter"],
+      "authenticated": ["auth", "errorHandler", "rateLimiter"]
+    },
+    "paths": {
+      "routes": "packages/backend/src/routes",
+      "controllers": "packages/backend/src/controllers",
+      "services": "packages/backend/src/services",
+      "types": "packages/backend/src/types"
+    }
+  },
+  "hooks": {
+    "beforeExecute": "validate-workspace",
+    "afterExecute": "update-api-docs",
+    "onError": "rollback-changes"
+  },
+  "resourceLimits": {
+    "maxExecutionTime": 30000,
+    "maxMemory": "256MB",
+    "maxConcurrency": 1
+  }
+}

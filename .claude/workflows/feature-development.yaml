@@ -1,0 +1,218 @@
+name: Feature Development Workflow
+version: 1.0.0
+description: Complete workflow for developing new features across backend and frontend
+
+triggers:
+  commands:
+    - /feature
+  events:
+    - task:created
+    - pr:opened
+  conditions:
+    - tag: feature
+    - type: enhancement
+
+parameters:
+  featureName:
+    type: string
+    required: true
+    description: Name of the feature to implement
+  scope:
+    type: array
+    enum: [backend, frontend, fullstack]
+    default: fullstack
+  includeTests:
+    type: boolean
+    default: true
+  includeDocs:
+    type: boolean
+    default: true
+
+steps:
+  - id: analyze
+    name: Analyze Requirements
+    agent: workflow-orchestration
+    input:
+      action: analyze-requirements
+      feature: '${parameters.featureName}'
+    output:
+      requirements: requirements
+      components: affectedComponents
+    timeout: 60000
+
+  - id: backend-api
+    name: Generate Backend API
+    agent: api-development
+    condition:
+      or:
+        - equals: ['${parameters.scope}', 'backend']
+        - equals: ['${parameters.scope}', 'fullstack']
+    dependsOn: [analyze]
+    input:
+      requirements: '${outputs.analyze.requirements}'
+      apiSpec: '${outputs.analyze.apiSpec}'
+    output:
+      endpoints: generatedEndpoints
+      schema: updatedSchema
+    timeout: 120000
+
+  - id: database-update
+    name: Update Database Schema
+    agent: database-management
+    condition:
+      exists: '${outputs.backend-api.schema}'
+    dependsOn: [backend-api]
+    input:
+      schema: '${outputs.backend-api.schema}'
+      action: migrate
+    output:
+      migration: migrationFile
+      rollback: rollbackScript
+    timeout: 90000
+
+  - id: frontend-components
+    name: Generate Frontend Components
+    agent: component-development
+    condition:
+      or:
+        - equals: ['${parameters.scope}', 'frontend']
+        - equals: ['${parameters.scope}', 'fullstack']
+    dependsOn: [analyze]
+    parallel: true
+    input:
+      requirements: '${outputs.analyze.requirements}'
+      components: '${outputs.analyze.components}'
+    output:
+      components: generatedComponents
+      stories: storybookStories
+    timeout: 120000
+
+  - id: state-management
+    name: Setup State Management
+    agent: state-management
+    condition:
+      exists: '${outputs.frontend-components.components}'
+    dependsOn: [frontend-components]
+    input:
+      components: '${outputs.frontend-components.components}'
+      apiEndpoints: '${outputs.backend-api.endpoints}'
+    output:
+      hooks: generatedHooks
+      contexts: generatedContexts
+    timeout: 60000
+
+  - id: backend-tests
+    name: Generate Backend Tests
+    agent: backend-testing
+    condition:
+      and:
+        - equals: ['${parameters.includeTests}', true]
+        - exists: '${outputs.backend-api.endpoints}'
+    dependsOn: [backend-api, database-update]
+    parallel: true
+    input:
+      endpoints: '${outputs.backend-api.endpoints}'
+      coverage: 80
+    output:
+      tests: backendTests
+      coverage: backendCoverage
+    timeout: 90000
+
+  - id: frontend-tests
+    name: Generate Frontend Tests
+    agent: frontend-testing
+    condition:
+      and:
+        - equals: ['${parameters.includeTests}', true]
+        - exists: '${outputs.frontend-components.components}'
+    dependsOn: [frontend-components, state-management]
+    parallel: true
+    input:
+      components: '${outputs.frontend-components.components}'
+      hooks: '${outputs.state-management.hooks}'
+      coverage: 80
+    output:
+      tests: frontendTests
+      coverage: frontendCoverage
+    timeout: 90000
+
+  - id: code-review
+    name: Run Code Review
+    agent: code-review
+    dependsOn: [backend-tests, frontend-tests]
+    input:
+      files: '${concat(outputs.backend-api.files, outputs.frontend-components.files)}'
+      strictMode: true
+    output:
+      issues: reviewIssues
+      suggestions: reviewSuggestions
+    onError: continue
+    timeout: 60000
+
+  - id: documentation
+    name: Generate Documentation
+    agent: documentation
+    condition:
+      equals: ['${parameters.includeDocs}', true]
+    dependsOn: [code-review]
+    input:
+      feature: '${parameters.featureName}'
+      endpoints: '${outputs.backend-api.endpoints}'
+      components: '${outputs.frontend-components.components}'
+    output:
+      apiDocs: apiDocumentation
+      componentDocs: componentDocumentation
+      changelog: changelogEntry
+    timeout: 60000
+
+  - id: finalize
+    name: Finalize Feature
+    agent: workflow-orchestration
+    dependsOn: [documentation]
+    input:
+      action: finalize
+      outputs: '${outputs}'
+      issues: '${outputs.code-review.issues}'
+    output:
+      summary: featureSummary
+      nextSteps: recommendedActions
+    timeout: 30000
+
+outputs:
+  feature:
+    name: '${parameters.featureName}'
+    status: '${steps.finalize.status}'
+  backend:
+    endpoints: '${outputs.backend-api.endpoints}'
+    migration: '${outputs.database-update.migration}'
+    tests: '${outputs.backend-tests.tests}'
+    coverage: '${outputs.backend-tests.coverage}'
+  frontend:
+    components: '${outputs.frontend-components.components}'
+    hooks: '${outputs.state-management.hooks}'
+    tests: '${outputs.frontend-tests.tests}'
+    coverage: '${outputs.frontend-tests.coverage}'
+  documentation:
+    api: '${outputs.documentation.apiDocs}'
+    components: '${outputs.documentation.componentDocs}'
+  summary: '${outputs.finalize.summary}'
+
+errorHandling:
+  strategy: continue-on-error
+  rollbackSteps:
+    - database-update
+    - backend-api
+  notifications:
+    - type: slack
+      channel: '#dev-alerts'
+      on: [failure]
+
+notifications:
+  onStart:
+    - 'Starting feature development: ${parameters.featureName}'
+  onSuccess:
+    - 'Feature ${parameters.featureName} completed successfully'
+    - 'Coverage: Backend ${outputs.backend-tests.coverage}%, Frontend ${outputs.frontend-tests.coverage}%'
+  onFailure:
+    - 'Feature ${parameters.featureName} failed at step: ${failedStep}'
+    - 'Error: ${error.message}'

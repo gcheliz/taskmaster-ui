@@ -1,0 +1,39 @@
+{
+  "mcpServers": {
+    "taskmaster-ui": {
+      "name": "TaskMaster UI MCP Server",
+      "command": "node",
+      "args": [".claude/mcp-server/index.js"],
+      "env": {
+        "NODE_ENV": "development",
+        "MCP_PORT": "3333",
+        "PROJECT_ROOT": ".",
+        "PACKAGE_MANAGER": "pnpm"
+      },
+      "capabilities": {
+        "agents": true,
+        "workflows": true,
+        "codeGeneration": true,
+        "testing": true,
+        "documentation": true
+      }
+    }
+  },
+  "clients": {
+    "claude-code": {
+      "allowedServers": ["taskmaster-ui"],
+      "permissions": {
+        "fileSystem": "readWrite",
+        "network": "localhost",
+        "processes": "spawn"
+      }
+    }
+  },
+  "settings": {
+    "autoStart": true,
+    "reconnectInterval": 5000,
+    "maxReconnectAttempts": 10,
+    "logLevel": "info",
+    "healthCheckInterval": 30000
+  }
+}

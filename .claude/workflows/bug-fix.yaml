@@ -1,0 +1,167 @@
+name: Bug Fix Workflow
+version: 1.0.0
+description: Workflow for identifying, fixing, and testing bugs
+
+triggers:
+  commands:
+    - /bugfix
+  events:
+    - issue:labeled:bug
+    - pr:opened:bugfix
+  conditions:
+    - tag: bug
+    - priority: [critical, high]
+
+parameters:
+  issueId:
+    type: string
+    required: true
+    description: Issue or bug ID
+  description:
+    type: string
+    required: true
+    description: Bug description
+  affectedArea:
+    type: string
+    enum: [backend, frontend, fullstack]
+    required: true
+  severity:
+    type: string
+    enum: [critical, high, medium, low]
+    default: medium
+
+steps:
+  - id: analyze-bug
+    name: Analyze Bug
+    agent: workflow-orchestration
+    input:
+      action: analyze-bug
+      issue: '${parameters.issueId}'
+      description: '${parameters.description}'
+    output:
+      rootCause: rootCauseAnalysis
+      affectedFiles: impactedFiles
+      testScenarios: reproductionSteps
+    timeout: 45000
+
+  - id: reproduce-bug
+    name: Reproduce Bug
+    agent: '${parameters.affectedArea}-testing'
+    dependsOn: [analyze-bug]
+    input:
+      scenarios: '${outputs.analyze-bug.testScenarios}'
+      files: '${outputs.analyze-bug.affectedFiles}'
+    output:
+      reproduced: wasReproduced
+      testCase: failingTest
+      logs: errorLogs
+    timeout: 60000
+    retries: 2
+
+  - id: implement-fix
+    name: Implement Fix
+    agent: '${parameters.affectedArea}-development'
+    condition:
+      equals: ['${outputs.reproduce-bug.reproduced}', true]
+    dependsOn: [reproduce-bug]
+    input:
+      rootCause: '${outputs.analyze-bug.rootCause}'
+      affectedFiles: '${outputs.analyze-bug.affectedFiles}'
+      testCase: '${outputs.reproduce-bug.testCase}'
+    output:
+      fixedFiles: modifiedFiles
+      changes: appliedChanges
+    timeout: 120000
+
+  - id: add-regression-tests
+    name: Add Regression Tests
+    agent: '${parameters.affectedArea}-testing'
+    dependsOn: [implement-fix]
+    parallel: true
+    input:
+      bugScenario: '${outputs.reproduce-bug.testCase}'
+      fixedFiles: '${outputs.implement-fix.fixedFiles}'
+      coverage: 90
+    output:
+      regressionTests: newTests
+      coverage: testCoverage
+    timeout: 60000
+
+  - id: validate-fix
+    name: Validate Fix
+    agent: '${parameters.affectedArea}-testing'
+    dependsOn: [implement-fix, add-regression-tests]
+    input:
+      originalTest: '${outputs.reproduce-bug.testCase}'
+      fixedFiles: '${outputs.implement-fix.fixedFiles}'
+      regressionTests: '${outputs.add-regression-tests.regressionTests}'
+    output:
+      fixed: isFixed
+      testResults: validationResults
+    timeout: 45000
+    onError: fail
+
+  - id: code-review
+    name: Review Changes
+    agent: code-review
+    dependsOn: [validate-fix]
+    input:
+      files: '${outputs.implement-fix.fixedFiles}'
+      severity: '${parameters.severity}'
+      bugContext: '${outputs.analyze-bug.rootCause}'
+    output:
+      approved: reviewApproved
+      issues: reviewIssues
+      suggestions: improvementSuggestions
+    timeout: 30000
+
+  - id: update-documentation
+    name: Update Documentation
+    agent: documentation
+    condition:
+      equals: ['${outputs.code-review.approved}', true]
+    dependsOn: [code-review]
+    input:
+      bugId: '${parameters.issueId}'
+      fix: '${outputs.implement-fix.changes}'
+      impact: '${outputs.analyze-bug.rootCause}'
+    output:
+      changelog: changelogEntry
+      releaseNotes: releaseNotesUpdate
+    timeout: 30000
+
+outputs:
+  bugId: '${parameters.issueId}'
+  status: '${outputs.validate-fix.fixed}'
+  fix:
+    files: '${outputs.implement-fix.fixedFiles}'
+    changes: '${outputs.implement-fix.changes}'
+  tests:
+    regression: '${outputs.add-regression-tests.regressionTests}'
+    coverage: '${outputs.add-regression-tests.coverage}'
+    results: '${outputs.validate-fix.testResults}'
+  review:
+    approved: '${outputs.code-review.approved}'
+    issues: '${outputs.code-review.issues}'
+  documentation:
+    changelog: '${outputs.update-documentation.changelog}'
+
+errorHandling:
+  strategy: fail-fast
+  rollbackSteps:
+    - implement-fix
+  notifications:
+    - type: slack
+      channel: '#bug-alerts'
+      on: [failure, success]
+
+notifications:
+  onStart:
+    - 'Starting bug fix for ${parameters.issueId}: ${parameters.description}'
+  onSuccess:
+    - 'Bug ${parameters.issueId} fixed successfully'
+    - 'Test coverage: ${outputs.add-regression-tests.coverage}%'
+  onFailure:
+    - 'Bug fix failed for ${parameters.issueId}'
+    - 'Failed at: ${failedStep}'
+    - 'Severity: ${parameters.severity}'

@@ -1,0 +1,144 @@
+{
+  "name": "Database Management Agent",
+  "version": "1.0.0",
+  "description": "Manages Prisma schema, migrations, and database operations",
+  "capabilities": [
+    "schema-updates",
+    "migration-generation",
+    "seed-data",
+    "query-optimization",
+    "rollback-support"
+  ],
+  "interface": {
+    "input": {
+      "type": "object",
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["command", "model", "action"],
+          "properties": {
+            "command": { "const": "schema" },
+            "model": { "type": "string" },
+            "action": { "enum": ["create", "update", "delete"] },
+            "fields": { "type": "array" },
+            "indexes": { "type": "array" }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["command", "name"],
+          "properties": {
+            "command": { "const": "migrate" },
+            "name": { "type": "string" },
+            "description": { "type": "string" },
+            "autoApply": { "type": "boolean" },
+            "environment": { "enum": ["development", "staging", "production"] }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["command", "model"],
+          "properties": {
+            "command": { "const": "seed" },
+            "model": { "type": "string" },
+            "count": { "type": "number" },
+            "fields": { "type": "object" }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["command", "model"],
+          "properties": {
+            "command": { "const": "optimize" },
+            "model": { "type": "string" }
+          }
+        }
+      ]
+    },
+    "output": {
+      "type": "object",
+      "properties": {
+        "success": { "type": "boolean" },
+        "message": { "type": "string" },
+        "files": { "type": "array" },
+        "migration": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string" },
+            "sql": { "type": "string" }
+          }
+        },
+        "rollbackCommand": { "type": "string" }
+      }
+    },
+    "commands": [
+      {
+        "name": "schema",
+        "description": "Update Prisma schema with new models or modifications",
+        "parameters": ["model", "action", "fields", "indexes"]
+      },
+      {
+        "name": "migrate",
+        "description": "Generate and manage database migrations",
+        "parameters": ["name", "description", "autoApply", "environment"]
+      },
+      {
+        "name": "seed",
+        "description": "Generate seed data scripts for testing",
+        "parameters": ["model", "count", "fields"]
+      },
+      {
+        "name": "optimize",
+        "description": "Analyze queries and suggest optimizations",
+        "parameters": ["model"]
+      },
+      {
+        "name": "validate",
+        "description": "Validate migration safety before applying",
+        "parameters": ["path", "name"]
+      },
+      {
+        "name": "apply",
+        "description": "Apply pending migrations to database",
+        "parameters": ["environment"]
+      }
+    ]
+  },
+  "dependencies": [],
+  "configuration": {
+    "prismaPath": "packages/backend/prisma",
+    "migrationsPath": "packages/backend/prisma/migrations",
+    "environments": {
+      "development": {
+        "autoMigrate": true,
+        "seedData": true
+      },
+      "staging": {
+        "autoMigrate": false,
+        "seedData": true
+      },
+      "production": {
+        "autoMigrate": false,
+        "seedData": false
+      }
+    },
+    "optimizationRules": {
+      "indexForeignKeys": true,
+      "uniqueConstraints": ["email", "username", "slug"],
+      "compositeIndexes": {
+        "User": ["email", "createdAt"],
+        "Task": ["userId", "status", "createdAt"]
+      }
+    }
+  },
+  "hooks": {
+    "beforeExecute": "validate-database-connection",
+    "afterExecute": "generate-typescript-types",
+    "onError": "rollback-migration"
+  },
+  "resourceLimits": {
+    "maxExecutionTime": 60000,
+    "maxMemory": "512MB",
+    "maxConcurrency": 1
+  }
+}

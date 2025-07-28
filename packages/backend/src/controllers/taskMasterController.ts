@@ -271,14 +271,14 @@ export class TaskMasterController implements ITaskMasterController {
 
       // Apply filters
       if (filters.status && filters.status.length > 0) {
-        filteredTasks = filteredTasks.filter(task =>
-          filters.status?.includes(task.status) ?? false
+        filteredTasks = filteredTasks.filter(
+          task => filters.status?.includes(task.status) ?? false
         );
       }
 
       if (filters.priority && filters.priority.length > 0) {
-        filteredTasks = filteredTasks.filter(task =>
-          filters.priority?.includes(task.priority) ?? false
+        filteredTasks = filteredTasks.filter(
+          task => filters.priority?.includes(task.priority) ?? false
         );
       }
 
@@ -400,42 +400,59 @@ export class TaskMasterController implements ITaskMasterController {
   async createTask(req: EnhancedRequest, res: EnhancedResponse): Promise<void> {
     try {
       const request = req.validatedBody as any; // TaskCreateRequest type
-      const { 
-        repositoryPath, 
+      const {
+        repositoryPath,
         title,
         description,
         priority,
         status = 'pending',
         dependencies = [],
         tags = [],
-        ...optionalFields 
+        ...optionalFields
       } = request;
 
       // Check if repository is initialized
-      const projectStatus = await this.taskMasterService.getProjectStatus(repositoryPath);
-      if (!projectStatus.success || !projectStatus.data?.initialized) {
+      let projectStatus;
+      try {
+        projectStatus =
+          await this.taskMasterService.getProjectStatus(repositoryPath);
+      } catch (error) {
+        throw new Error('Failed to check project status');
+      }
+
+      if (
+        !projectStatus ||
+        !projectStatus.success ||
+        !projectStatus.data?.initialized
+      ) {
         throw new Error('TaskMaster is not initialized in this repository');
       }
 
       // Get current tasks to determine next ID
-      const currentTasks = await this.taskMasterService.listTasks(repositoryPath, {
-        tag: this.extractTagFromPath(repositoryPath),
-      });
+      const currentTasks = await this.taskMasterService.listTasks(
+        repositoryPath,
+        {
+          tag: this.extractTagFromPath(repositoryPath),
+        }
+      );
 
       if (!currentTasks.success || !currentTasks.data) {
         throw new Error('Failed to retrieve current tasks');
       }
 
       // Calculate next task ID
-      const maxId = currentTasks.data.reduce((max, task) => 
-        Math.max(max, task.id), 0
+      const maxId = currentTasks.data.reduce(
+        (max, task) => Math.max(max, task.id),
+        0
       );
       const newTaskId = maxId + 1;
 
       // Validate dependencies exist
       if (dependencies.length > 0) {
         const existingIds = new Set(currentTasks.data.map(t => t.id));
-        const invalidDeps = dependencies.filter(depId => !existingIds.has(depId));
+        const invalidDeps = dependencies.filter(
+          depId => !existingIds.has(depId)
+        );
         if (invalidDeps.length > 0) {
           res.status(400).apiError({
             code: 'INVALID_DEPENDENCY',
@@ -446,7 +463,10 @@ export class TaskMasterController implements ITaskMasterController {
       }
 
       // Check for circular dependencies
-      if (optionalFields.parentTaskId && dependencies.includes(optionalFields.parentTaskId)) {
+      if (
+        optionalFields.parentTaskId &&
+        dependencies.includes(optionalFields.parentTaskId)
+      ) {
         res.status(400).apiError({
           code: 'CIRCULAR_DEPENDENCY',
           message: 'A subtask cannot depend on its parent task',
@@ -475,12 +495,13 @@ export class TaskMasterController implements ITaskMasterController {
           prompt: `${title}: ${description}`,
           priority,
           status,
-          dependencies: dependencies.length > 0 ? dependencies.join(',') : undefined,
+          dependencies:
+            dependencies.length > 0 ? dependencies.join(',') : undefined,
           tags: tags.length > 0 ? tags.join(',') : undefined,
         },
-        { 
+        {
           research: optionalFields.aiEnhancement?.generateDetails || false,
-          tag: this.extractTagFromPath(repositoryPath) 
+          tag: this.extractTagFromPath(repositoryPath),
         }
       );
 
@@ -506,8 +527,12 @@ export class TaskMasterController implements ITaskMasterController {
         },
         links: {
           self: `/api/tasks/${newTaskId}`,
-          parent: optionalFields.parentTaskId ? `/api/tasks/${optionalFields.parentTaskId}` : undefined,
-          dependencies: dependencies.map((depId: number) => `/api/tasks/${depId}`),
+          parent: optionalFields.parentTaskId
+            ? `/api/tasks/${optionalFields.parentTaskId}`
+            : undefined,
+          dependencies: dependencies.map(
+            (depId: number) => `/api/tasks/${depId}`
+          ),
         },
       });
 
@@ -592,15 +617,11 @@ export class TaskMasterController implements ITaskMasterController {
       const request = req.validatedBody as TaskExpansionRequest;
       const { repositoryPath, options = {} } = request;
 
-      await this.taskMasterService.expandTask(
-        repositoryPath,
-        taskId,
-        {
-          research: options.research,
-          force: options.force,
-          tag: this.extractTagFromPath(repositoryPath),
-        }
-      );
+      await this.taskMasterService.expandTask(repositoryPath, taskId, {
+        research: options.research,
+        force: options.force,
+        tag: this.extractTagFromPath(repositoryPath),
+      });
 
       // Create expansion result
       const responseData = {
@@ -756,9 +777,13 @@ export class TaskMasterController implements ITaskMasterController {
       timestamp: new Date().toISOString(),
     });
 
+    const errorCode = this.getErrorCode(error);
     const apiError: ApiError = {
-      code: this.getErrorCode(error),
-      message: error.message,
+      code: errorCode,
+      message:
+        errorCode === 'INTERNAL_ERROR' && process.env.NODE_ENV !== 'development'
+          ? 'An unexpected error occurred'
+          : error.message,
       details:
         process.env.NODE_ENV === 'development'
           ? {
@@ -814,12 +839,18 @@ export class TaskMasterController implements ITaskMasterController {
 
   private calculateProjectStats(tasks: unknown[]): any {
     const totalTasks = tasks.length;
-    const completedTasks = tasks.filter(t => (t as any).status === 'done').length;
+    const completedTasks = tasks.filter(
+      t => (t as any).status === 'done'
+    ).length;
     const inProgressTasks = tasks.filter(
       t => (t as any).status === 'in-progress'
     ).length;
-    const pendingTasks = tasks.filter(t => (t as any).status === 'pending').length;
-    const blockedTasks = tasks.filter(t => (t as any).status === 'blocked').length;
+    const pendingTasks = tasks.filter(
+      t => (t as any).status === 'pending'
+    ).length;
+    const blockedTasks = tasks.filter(
+      t => (t as any).status === 'blocked'
+    ).length;
 
     return {
       totalTasks,

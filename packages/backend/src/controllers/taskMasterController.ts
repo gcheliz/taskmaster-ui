@@ -454,11 +454,13 @@ export class TaskMasterController implements ITaskMasterController {
           depId => !existingIds.has(depId)
         );
         if (invalidDeps.length > 0) {
-          res.status(400).apiError({
-            code: 'INVALID_DEPENDENCY',
-            message: `Dependencies not found: ${invalidDeps.join(', ')}`,
-          });
-          return;
+          return res.apiError(
+            {
+              code: 'INVALID_DEPENDENCY',
+              message: `Dependencies not found: ${invalidDeps.join(', ')}`,
+            },
+            400
+          );
         }
       }
 
@@ -467,11 +469,13 @@ export class TaskMasterController implements ITaskMasterController {
         optionalFields.parentTaskId &&
         dependencies.includes(optionalFields.parentTaskId)
       ) {
-        res.status(400).apiError({
-          code: 'CIRCULAR_DEPENDENCY',
-          message: 'A subtask cannot depend on its parent task',
-        });
-        return;
+        return res.apiError(
+          {
+            code: 'CIRCULAR_DEPENDENCY',
+            message: 'A subtask cannot depend on its parent task',
+          },
+          400
+        );
       }
 
       // Prepare task object
@@ -506,7 +510,7 @@ export class TaskMasterController implements ITaskMasterController {
       );
 
       if (!createResult.success) {
-        throw new Error('Failed to create task');
+        throw new Error(createResult.error || 'Failed to create task');
       }
 
       // Emit WebSocket notification
